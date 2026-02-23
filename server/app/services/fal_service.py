@@ -41,8 +41,8 @@ class FalService:
         seed: int | None = None,
         texture_size: int = 1024,
         mesh_simplify: float = 0.95,
-        ss_guidance_strength: float = 7.5,
-        slat_guidance_strength: float = 3.0,
+        ss_guidance_strength: float = 10.0,
+        slat_guidance_strength: float = 5.0,
     ) -> TrellisResponse:
         if not self._configured:
             raise RuntimeError("fal.ai not configured. Set FAL_KEY.")

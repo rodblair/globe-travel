@@ -1,6 +1,9 @@
 import json
+import re
 import asyncio
-from typing import Optional, Literal, cast
+from typing import Optional, Literal, cast, Any
+
+import aiohttp
 import openai
 
 from ..config import get_settings
@@ -217,19 +220,17 @@ Respond in JSON format:
 
         render_prompt = (
             f"Isometric 3/4 view from slightly above of {enhanced_prompt}, "
-            "showing front and side clearly, "
-            "the structure floats in pure white empty void, "
-            "suspended in infinite white space with empty white below, "
-            "bottom of structure is cropped flush at ground floor level, "
-            "structure appears to hover weightlessly in white emptiness, "
-            "only the building exists, surrounded by pure white on all sides including underneath, "
-            "bright flat shadowless studio lighting from all angles, "
-            "evenly illuminated surfaces, "
-            "photorealistic materials and accurate vibrant colors, "
+            "showing front and side faces clearly, "
+            "COMPLETE building visible from roof to ground floor foundation, "
+            "building floats in pure white void with nothing underneath, "
+            "absolutely NO platform NO pedestal NO base NO ground NO floor beneath it, "
+            "pure white background on all sides including below the building, "
+            "bright even studio lighting from all angles eliminating shadows, "
+            "photorealistic materials with accurate vibrant colors, "
             "extremely high detail and sharp clean edges, "
-            "centered composition filling 80% of frame, "
-            "complete sealed structure, "
-            "professional product photography on infinite white backdrop"
+            "centered composition filling 70% of frame, "
+            "the building is the ONLY object in the image, "
+            "professional product photography on seamless white"
         )
 
         size_param = cast(Literal["1024x1024", "1792x1024", "1024x1792"], size)
@@ -266,39 +267,130 @@ Respond in JSON format:
             preview_3d_url=preview_3d_url
         )
 
+    async def _search_reference_images(self, query: str, max_images: int = 3) -> list[str]:
+        try:
+            search_query = f"{query} building exterior architecture photo"
+            async with aiohttp.ClientSession() as session:
+                async with session.get("https://duckduckgo.com/", params={"q": search_query}) as resp:
+                    text = await resp.text()
+                    vqd_match = re.search(r'vqd=["\']([^"\']+)["\']', text)
+                    if not vqd_match:
+                        vqd_match = re.search(r'vqd=([^&"\']+)', text)
+                    if not vqd_match:
+                        return []
+                    vqd = vqd_match.group(1)
+
+                params = {
+                    "l": "us-en",
+                    "o": "json",
+                    "q": search_query,
+                    "vqd": vqd,
+                    "f": ",,,,,",
+                    "p": "1",
+                }
+                headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+                async with session.get("https://duckduckgo.com/i.js", params=params, headers=headers) as resp:
+                    if resp.status != 200:
+                        return []
+                    data = await resp.json()
+                    results = data.get("results", [])
+                    return [r.get("image") for r in results[:max_images] if r.get("image")]
+        except Exception:
+            return []
+
+    async def _analyze_reference_images(self, prompt: str, image_urls: list[str]) -> str:
+        if not self._client or not image_urls:
+            return prompt
+
+        try:
+            content: list[Any] = [
+                {
+                    "type": "text",
+                    "text": f"""Analyze these reference images of "{prompt}" and provide a DETAILED architectural description.
+
+Focus on:
+1. EXACT shape and form - is it rectangular, cylindrical, has wings, towers, unique geometry?
+2. Materials and colors - concrete, glass, brick, steel? What colors exactly?
+3. Distinctive features - any unique architectural elements, patterns, windows, facades?
+4. Proportions - height vs width, number of floors visible, any setbacks?
+5. Style - brutalist, modern, classical, etc?
+
+Be VERY SPECIFIC. This description will be used to generate an accurate 3D model.
+If images show different buildings or aren't helpful, describe what you can see.
+
+Respond with ONLY the detailed description, no JSON or formatting."""
+                }
+            ]
+
+            for url in image_urls[:3]:
+                content.append({
+                    "type": "image_url",
+                    "image_url": {"url": url, "detail": "high"}
+                })
+
+            response = await self._client.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "user", "content": content}],  # type: ignore[arg-type]
+                max_tokens=500
+            )
+
+            result = response.choices[0].message.content
+            if result:
+                return result.strip()
+            return prompt
+
+        except Exception:
+            return prompt
+
     async def _enhance_prompt_for_landmarks(self, prompt: str) -> str:
         if not self._client:
             return prompt
 
         try:
+            check_response = await self._client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": """Determine if this is a request for a SPECIFIC REAL-WORLD building or landmark.
+Return JSON: {"is_real_building": true/false, "search_query": "optimized search query if true, else null"}
+
+Examples:
+- "CN Tower" -> {"is_real_building": true, "search_query": "CN Tower Toronto"}
+- "MC Building Waterloo" -> {"is_real_building": true, "search_query": "MC Building University of Waterloo"}
+- "Empire State Building" -> {"is_real_building": true, "search_query": "Empire State Building New York"}
+- "modern glass skyscraper" -> {"is_real_building": false, "search_query": null}
+- "a cozy cottage" -> {"is_real_building": false, "search_query": null}"""},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={"type": "json_object"},
+                temperature=0.1,
+                max_tokens=100
+            )
+
+            check_content = check_response.choices[0].message.content
+            if not check_content:
+                return prompt
+            check_result = json.loads(check_content)
+
+            if check_result.get("is_real_building"):
+                search_query = check_result.get("search_query", prompt)
+                image_urls = await self._search_reference_images(search_query)
+                if image_urls:
+                    enhanced = await self._analyze_reference_images(prompt, image_urls)
+                    return enhanced
+
             response = await self._client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": """You are an expert at identifying famous landmarks, buildings, and structures.
-
-Your job is to determine if the user is asking for a KNOWN REAL-WORLD STRUCTURE and if so, provide specific visual details.
-
-If the input references a known landmark (CN Tower, Eiffel Tower, Burj Khalifa, Sydney Opera House, etc.):
-1. Set is_landmark to true
-2. Provide a detailed visual description including:
-   - Exact architectural features and shapes
-   - Real materials and colors
-   - Distinctive proportions
-   - Key identifying elements
-
-If it's a generic description (e.g., "modern skyscraper", "japanese garden"), set is_landmark to false.
+                    {"role": "system", "content": """You are an expert at identifying famous landmarks and buildings.
+If this is a KNOWN landmark, provide a detailed visual description from your knowledge.
+If it's generic, return the original prompt unchanged.
 
 Respond in JSON:
 {
     "is_landmark": true/false,
-    "enhanced_description": "If landmark: detailed visual description. If not: return the original prompt unchanged."
-}
-
-Examples:
-- "CN Tower" -> {"is_landmark": true, "enhanced_description": "the CN Tower of Toronto, a 553m tall concrete communications tower with distinctive Y-shaped base supports, narrow concrete shaft rising to the main observation pod (a seven-story donut-shaped structure with dark glass windows), topped by a white SkyPod and tall antenna spire, gray concrete with white accents"}
-- "Eiffel Tower" -> {"is_landmark": true, "enhanced_description": "the Eiffel Tower of Paris, wrought iron lattice tower with four curved legs meeting at the top, distinctive brown iron color, intricate geometric cross-bracing patterns, three observation levels, tapering gracefully to a point with antenna"}
-- "modern glass building" -> {"is_landmark": false, "enhanced_description": "modern glass building"}"""},
-                    {"role": "user", "content": f"Analyze this prompt: {prompt}"}
+    "enhanced_description": "detailed visual description or original prompt"
+}"""},
+                    {"role": "user", "content": f"Describe: {prompt}"}
                 ],
                 response_format={"type": "json_object"},
                 temperature=0.3,

@@ -410,7 +410,21 @@ export const Prompt3DGenerator = memo(function Prompt3DGenerator({ isVisible, on
 
   const handleClose = () => {
     localStorage.removeItem(STORAGE_KEY);
+    setPrompt("");
+    setStyle("architectural");
+    setWorkflowStage("input");
+    setPreviewResult(null);
+    setSelectedImageIndex(0);
+    setThreeDJob(null);
+    setError(null);
+    setIsGeneratingPreview(false);
+    setIsExpandedView(false);
+    setIsPlacing(false);
     setIsMinimized(false);
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
     onClose();
   };
 
