@@ -6,10 +6,11 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
+import { cn } from '@/lib/utils'
 
 const TripGlobe = dynamic(() => import('@/components/globes/TripGlobe'), {
   ssr: false,
@@ -26,6 +27,27 @@ type Trip = {
 type TripPayload = {
   trip: Trip
   days: TripDay[]
+}
+
+type TripFeedback = {
+  id: string
+  author_name: string
+  author_email?: string | null
+  sentiment: 'love_it' | 'curious' | 'practical'
+  comment: string
+  created_at: string
+}
+
+const sentimentLabel: Record<TripFeedback['sentiment'], string> = {
+  love_it: 'Love it',
+  curious: 'Curious',
+  practical: 'Practical note',
+}
+
+const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
+  love_it: 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300',
+  curious: 'border-sky-500/25 bg-sky-500/10 text-sky-300',
+  practical: 'border-amber-500/25 bg-amber-500/10 text-amber-300',
 }
 
 export default function TripStudioPage() {
@@ -47,6 +69,15 @@ export default function TripStudioPage() {
 
   const trip = data?.trip
   const days = data?.days || []
+
+  const { data: feedback = [] } = useQuery({
+    queryKey: ['trip-feedback', tripId],
+    queryFn: async () => {
+      const res = await fetch(`/api/trips/${tripId}/feedback`)
+      if (!res.ok) return [] as TripFeedback[]
+      return res.json() as Promise<TripFeedback[]>
+    },
+  })
 
   const ensureSelectedDayExists = useMemo(() => {
     if (days.length === 0) return 1
@@ -116,6 +147,9 @@ export default function TripStudioPage() {
   }, [tripId, ensureSelectedDayExists, refetch])
 
   const shareUrl = trip?.share_slug ? `${typeof window !== 'undefined' ? window.location.origin : ''}/t/${trip.share_slug}` : null
+  const inviteMessage = shareUrl
+    ? `Review my trip ideas for ${trip?.title || 'this trip'} and tell me what you think: ${shareUrl}`
+    : ''
 
   const togglePublic = useCallback(async () => {
     if (!trip) return
@@ -126,6 +160,24 @@ export default function TripStudioPage() {
     })
     await refetch()
   }, [tripId, trip, refetch])
+
+  const copyInviteLink = useCallback(async () => {
+    if (!shareUrl) return
+    await navigator.clipboard.writeText(shareUrl)
+  }, [shareUrl])
+
+  const shareInvite = useCallback(async () => {
+    if (!shareUrl) return
+    if (navigator.share) {
+      await navigator.share({
+        title: trip?.title || 'Trip ideas',
+        text: inviteMessage,
+        url: shareUrl,
+      })
+      return
+    }
+    await navigator.clipboard.writeText(inviteMessage)
+  }, [shareUrl, inviteMessage, trip?.title])
 
   return (
     <div className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
@@ -184,6 +236,93 @@ export default function TripStudioPage() {
         </motion.div>
       </div>
 
+      {/* Invite + feedback */}
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 w-[min(720px,calc(100%-2rem))] pointer-events-none">
+        <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-3 pointer-events-auto">
+          <div className="bg-black/55 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-wider text-white/25">Invite friends</p>
+                <p className="text-sm text-white/75 mt-1">
+                  Turn on public sharing, send the link, and collect feedback on this itinerary.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={togglePublic}
+                  className={cn(
+                    'px-3 py-2 rounded-xl text-xs font-medium border transition-colors',
+                    trip?.is_public
+                      ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300'
+                      : 'border-white/10 bg-white/5 text-white/50 hover:text-white/80'
+                  )}
+                >
+                  {trip?.is_public ? 'Public link on' : 'Enable public link'}
+                </button>
+              </div>
+            </div>
+
+            {trip?.is_public && shareUrl ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <div className="min-w-0 flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/40 truncate">
+                  {shareUrl}
+                </div>
+                <button
+                  onClick={copyInviteLink}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors"
+                >
+                  <Copy className="w-4 h-4" />
+                  Copy link
+                </button>
+                <button
+                  onClick={shareInvite}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/15 border border-amber-500/25 text-xs text-amber-300 hover:bg-amber-500/20 transition-colors"
+                >
+                  <Send className="w-4 h-4" />
+                  Share invite
+                </button>
+              </div>
+            ) : (
+              <p className="mt-3 text-xs text-white/35">
+                Reviews open automatically once the trip is public.
+              </p>
+            )}
+          </div>
+
+          <div className="bg-black/55 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-white/25">Friend feedback</p>
+                <p className="text-sm text-white/75 mt-1">
+                  {feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}
+                </p>
+              </div>
+              <MessageSquareQuote className="w-5 h-5 text-white/25" />
+            </div>
+
+            <div className="mt-3 space-y-2 max-h-40 overflow-y-auto">
+              {feedback.length === 0 ? (
+                <p className="text-xs text-white/35">
+                  No reviews yet. Invite a few friends and ask them where the itinerary feels too busy or exciting.
+                </p>
+              ) : (
+                feedback.slice(0, 3).map((entry) => (
+                  <div key={entry.id} className="rounded-xl bg-white/5 border border-white/10 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs text-white/70 font-medium truncate">{entry.author_name}</p>
+                      <span className={cn('px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
+                        {sentimentLabel[entry.sentiment]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/45 leading-relaxed mt-2 line-clamp-3">{entry.comment}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Left panel: chat */}
       <AnimatePresence>
         {chatOpen && (
@@ -192,7 +331,7 @@ export default function TripStudioPage() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="absolute top-4 left-4 bottom-4 w-[calc(100%-2rem)] md:w-[360px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
+            className="absolute top-[178px] md:top-36 left-4 bottom-4 w-[calc(100%-2rem)] md:w-[360px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
           >
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 flex-shrink-0">
               <span className="text-xs font-medium text-white/70">Trip Planner</span>
@@ -226,7 +365,7 @@ export default function TripStudioPage() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="absolute top-4 right-4 bottom-4 w-[calc(100%-2rem)] md:w-[420px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
+        className="absolute top-[178px] md:top-36 right-4 bottom-4 w-[calc(100%-2rem)] md:w-[420px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
       >
         <ItineraryArtifact
           tripTitle={trip?.title || 'Trip'}
@@ -250,4 +389,3 @@ export default function TripStudioPage() {
     </div>
   )
 }
-

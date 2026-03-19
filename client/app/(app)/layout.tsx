@@ -1,16 +1,13 @@
 'use client'
 
 import { AuthProvider } from '@/components/providers/AuthProvider'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState } from 'react'
+import { QueryProvider } from '@/components/providers/QueryProvider'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Sidebar } from '@/components/layout/Sidebar'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient())
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryProvider>
       <AuthProvider>
         <div className="flex h-screen bg-black text-white">
           <Sidebar />
@@ -20,6 +17,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <BottomNav />
         </div>
       </AuthProvider>
-    </QueryClientProvider>
+    </QueryProvider>
   )
 }

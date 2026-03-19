@@ -180,6 +180,19 @@ create table trip_routes (
   unique(trip_day_id, mode)
 );
 
+-- TRIP_FEEDBACK
+create table trip_feedback (
+  id uuid primary key default uuid_generate_v4(),
+  trip_id uuid references trips on delete cascade not null,
+  author_name text not null,
+  author_email text,
+  sentiment text not null check (sentiment in ('love_it', 'curious', 'practical')),
+  comment text not null,
+  created_at timestamptz default now()
+);
+
+create index idx_trip_feedback_trip_created on trip_feedback(trip_id, created_at desc);
+
 -- COLLECTION_PLACES
 create table collection_places (
   id uuid primary key default uuid_generate_v4(),
@@ -289,6 +302,7 @@ alter table trips enable row level security;
 alter table trip_days enable row level security;
 alter table trip_items enable row level security;
 alter table trip_routes enable row level security;
+alter table trip_feedback enable row level security;
 
 -- Profiles: users can read all, update own
 create policy "Public profiles are viewable by everyone" on profiles for select using (true);
@@ -458,6 +472,32 @@ create policy "Users can delete own trip routes" on trip_routes
       from trip_days d
       join trips t on t.id = d.trip_id
       where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+
+-- Trip feedback: public can read/write on public trips, owners can read their own
+create policy "Public trip feedback is viewable" on trip_feedback
+  for select using (
+    exists (
+      select 1
+      from trips t
+      where t.id = trip_id and t.is_public = true
+    )
+  );
+create policy "Owners can view trip feedback" on trip_feedback
+  for select using (
+    exists (
+      select 1
+      from trips t
+      where t.id = trip_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Public can create feedback on public trips" on trip_feedback
+  for insert with check (
+    exists (
+      select 1
+      from trips t
+      where t.id = trip_id and t.is_public = true
     )
   );
 
