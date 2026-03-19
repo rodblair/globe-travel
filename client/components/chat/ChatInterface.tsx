@@ -13,6 +13,7 @@ interface ChatInterfaceProps {
   onSendMessage: (content: string) => void
   onStop: () => void
   placeholder?: string
+  suggestions?: string[]
 }
 
 export default function ChatInterface({
@@ -21,6 +22,7 @@ export default function ChatInterface({
   onSendMessage,
   onStop,
   placeholder = 'Type your message...',
+  suggestions = [],
 }: ChatInterfaceProps) {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -81,6 +83,21 @@ export default function ChatInterface({
 
       {/* Input bar */}
       <div className="flex-shrink-0 border-t border-white/10 bg-black/40 backdrop-blur-xl px-4 py-3">
+        {suggestions.length > 0 && (
+          <div className="max-w-3xl mx-auto mb-2 flex gap-2 overflow-x-auto pb-1">
+            {suggestions.slice(0, 6).map((s) => (
+              <motion.button
+                key={s}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onSendMessage(s)}
+                className="flex-shrink-0 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white/70 hover:bg-white/10 transition-all"
+              >
+                {s}
+              </motion.button>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-2 max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl px-3 py-1.5 focus-within:border-white/20 focus-within:ring-1 focus-within:ring-white/10 transition-all">
           <textarea
             ref={inputRef}

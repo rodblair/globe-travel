@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { Plus, SortAsc, Heart, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 type SortKey = 'date' | 'country' | 'name'
 
@@ -18,6 +19,7 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ]
 
 export default function BucketListPage() {
+  const router = useRouter()
   const [sortBy, setSortBy] = useState<SortKey>('date')
   const [showSortMenu, setShowSortMenu] = useState(false)
   const supabase = createClient()
@@ -163,7 +165,22 @@ export default function BucketListPage() {
             </Link>
           </motion.div>
         ) : (
-          <PlaceGrid places={places} />
+          <PlaceGrid
+            places={places}
+            onPlanTrip={async (place) => {
+              const res = await fetch('/api/trips', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  title: `${place.name} Trip`,
+                  constraints: { destination_query: `${place.name}, ${place.country}`, days: 4 },
+                }),
+              })
+              if (!res.ok) return
+              const json = await res.json()
+              router.push(`/trips/${json.tripId}`)
+            }}
+          />
         )}
       </div>
 

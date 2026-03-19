@@ -15,9 +15,10 @@ type Place = {
 type PlaceGridProps = {
   places: Place[]
   onPlaceClick?: (place: Place) => void
+  onPlanTrip?: (place: Place) => void
 }
 
-export function PlaceGrid({ places, onPlaceClick }: PlaceGridProps) {
+export function PlaceGrid({ places, onPlaceClick, onPlanTrip }: PlaceGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {places.map((place, index) => (
@@ -33,6 +34,7 @@ export function PlaceGrid({ places, onPlaceClick }: PlaceGridProps) {
             rating={place.rating}
             reason={place.reason}
             onClick={() => onPlaceClick?.(place)}
+            onPlanTrip={onPlanTrip ? () => onPlanTrip(place) : undefined}
           />
         </div>
       ))}

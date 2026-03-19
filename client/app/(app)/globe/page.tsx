@@ -191,6 +191,12 @@ export default function GlobePage() {
                 onSendMessage={sendMessage}
                 onStop={stop}
                 placeholder="Ask about destinations, plan trips..."
+                suggestions={[
+                  'Suggest a weekend getaway',
+                  'Add a dream destination to my bucket list',
+                  'Plan a 4-day trip to Tokyo',
+                  'Build a day-by-day itinerary for Paris',
+                ]}
               />
             </div>
           </motion.div>

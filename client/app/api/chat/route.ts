@@ -8,6 +8,8 @@ import {
 } from 'ai'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase-server'
+import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
+import { randomSlug } from '@/app/api/trips/_utils'
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   onboarding:
@@ -37,7 +39,22 @@ You can:
 
 IMPORTANT: When discussing a specific city or place, ALWAYS call navigateToPlace to fly the map there. When they ask to add a place, use the appropriate tool immediately.`,
   plan:
-    "You are a trip planning assistant. Help the user plan their trip to a specific destination with itinerary suggestions, must-see attractions, local food recommendations, budget estimates, and practical tips.",
+    `You are a trip planning assistant inside Globe Travel.
+
+CRITICAL OUTPUT RULE: The itinerary panel is the real output. Keep your text replies short (2-4 sentences) and ALWAYS update the trip itinerary using the provided trip tools.
+
+Rules:
+- Prefer tools over prose. Whenever you propose a day plan or change, reflect it by calling tools.
+- Do NOT invent coordinates. Use resolvePlace and place_query fields so the server can geocode.
+- If tripId is provided in the request, you MUST edit that trip. Do not create a new trip unless explicitly asked.
+- If the user references "Day 2 morning" or a specific item, do a scoped edit (update/move/delete only what’s needed).
+- Ask at most ONE clarifying question if destination or number of days is missing; otherwise proceed with reasonable assumptions.
+
+When you add items:
+- Use realistic time blocks (morning/afternoon/evening) and keep activities geographically coherent.
+- Mix categories: activity + meal + transit/rest as needed.
+
+After meaningful changes to a day, call computeDayRoute for that day (mode "walk" for cities).`,
 }
 
 const tools = {
@@ -83,6 +100,29 @@ const tools = {
   }),
 }
 
+async function ensureTripDay(supabase: any, tripId: string, dayIndex: number) {
+  const { data: existing, error } = await supabase
+    .from('trip_days')
+    .select('id')
+    .eq('trip_id', tripId)
+    .eq('day_index', dayIndex)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  if (existing?.id) return existing.id as string
+
+  const { data: created, error: createErr } = await supabase
+    .from('trip_days')
+    .insert({ trip_id: tripId, day_index: dayIndex })
+    .select('id')
+    .single()
+  if (createErr) throw new Error(createErr.message)
+  return created.id as string
+}
+
+function tripPatch(tripId: string) {
+  return JSON.stringify({ kind: 'trip_patch', tripId })
+}
+
 export async function POST(req: Request) {
   try {
     const supabase = await createClient()
@@ -92,9 +132,10 @@ export async function POST(req: Request) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const { messages, type } = await req.json() as {
+    const { messages, type, tripId } = await req.json() as {
       messages: UIMessage[]
       type: 'onboarding' | 'explore' | 'plan'
+      tripId?: string
     }
 
     // Fetch user's places for context in explore/plan modes
@@ -195,7 +236,7 @@ export async function POST(req: Request) {
           best_time: z.string().optional().describe('Best time to visit, e.g. "March to May"'),
         }),
         execute: async ({ name, country, latitude, longitude, description, highlights, best_time }) => {
-          return JSON.stringify({ success: true, action: 'navigate', name, country, latitude, longitude, description, highlights, best_time })
+          return JSON.stringify({ kind: 'navigate', success: true, action: 'navigate', name, country, latitude, longitude, description, highlights, best_time })
         },
       }),
       setTravelPreferences: tool({
@@ -208,6 +249,271 @@ export async function POST(req: Request) {
         execute: async ({ style, interests, budget_preference }) => {
           await supabase.from('profiles').update({ travel_style: `${style} | ${interests.join(', ')} | ${budget_preference}` }).eq('id', user.id)
           return `Successfully set travel preferences: ${style}`
+        },
+      }),
+
+      // ----------------------------
+      // Trip planning tools (type: "plan")
+      // ----------------------------
+      resolvePlace: tool({
+        description: 'Resolve a place query into a canonical place record. Always use this if you need a specific location.',
+        inputSchema: z.object({
+          query: z.string().describe('Place query like "Shinjuku, Tokyo" or "Senso-ji Temple"'),
+        }),
+        execute: async ({ query }) => {
+          const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+          if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
+          const result = await geocodePlace(query, token)
+          if (!result) return JSON.stringify({ kind: 'resolve_place', ok: false, query })
+
+          const { data: place, error } = await supabase
+            .from('places')
+            .upsert(
+              {
+                name: result.name,
+                country: result.country,
+                country_code: result.country_code || null,
+                latitude: result.latitude,
+                longitude: result.longitude,
+                mapbox_place_id: result.mapbox_place_id,
+              },
+              { onConflict: 'mapbox_place_id' }
+            )
+            .select('id,name,country,latitude,longitude')
+            .single()
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+
+          return JSON.stringify({ kind: 'resolve_place', ok: true, place })
+        },
+      }),
+
+      createTrip: tool({
+        description: 'Create a new trip (only if the user explicitly asks).',
+        inputSchema: z.object({
+          title: z.string(),
+          days: z.number().int().min(1).max(30).optional(),
+        }),
+        execute: async ({ title, days }) => {
+          const slug = randomSlug()
+          const { data: created, error } = await supabase
+            .from('trips')
+            .insert({ user_id: user.id, title, share_slug: slug, constraints: {} })
+            .select('id')
+            .single()
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+
+          const count = days || 4
+          const dayRows = Array.from({ length: count }, (_, i) => ({ trip_id: created.id, day_index: i + 1 }))
+          await supabase.from('trip_days').insert(dayRows)
+
+          return JSON.stringify({ kind: 'trip_created', tripId: created.id })
+        },
+      }),
+
+      setTripDays: tool({
+        description: 'Set trip day metadata (titles/dates).',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          days: z.array(z.object({
+            day_index: z.number().int().min(1),
+            title: z.string().optional(),
+            date: z.string().optional(),
+            notes: z.string().optional(),
+          })),
+        }),
+        execute: async ({ trip_id, days }) => {
+          const tid = trip_id || tripId
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          for (const d of days) {
+            const dayId = await ensureTripDay(supabase, tid, d.day_index)
+            await supabase
+              .from('trip_days')
+              .update({
+                title: d.title ?? null,
+                date: d.date ?? null,
+                notes: d.notes ?? null,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', dayId)
+          }
+          return tripPatch(tid)
+        },
+      }),
+
+      addTripItem: tool({
+        description: 'Add an itinerary item to a specific day.',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          day_index: z.number().int().min(1),
+          type: z.enum(['activity', 'meal', 'lodging', 'transit', 'note']),
+          title: z.string(),
+          place_query: z.string().optional().describe('Optional place query to geocode and attach'),
+          start_time: z.string().optional().describe('HH:MM'),
+          end_time: z.string().optional().describe('HH:MM'),
+          duration_minutes: z.number().int().min(0).max(1440).optional(),
+          notes: z.string().optional(),
+        }),
+        execute: async ({ trip_id, day_index, type, title, place_query, start_time, end_time, duration_minutes, notes }) => {
+          const tid = trip_id || tripId
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const dayId = await ensureTripDay(supabase, tid, day_index)
+
+          let placeId: string | null = null
+          if (place_query) {
+            const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+            if (token) {
+              const result = await geocodePlace(place_query, token)
+              if (result) {
+                const { data: place } = await supabase
+                  .from('places')
+                  .upsert(
+                    {
+                      name: result.name,
+                      country: result.country,
+                      country_code: result.country_code || null,
+                      latitude: result.latitude,
+                      longitude: result.longitude,
+                      mapbox_place_id: result.mapbox_place_id,
+                    },
+                    { onConflict: 'mapbox_place_id' }
+                  )
+                  .select('id')
+                  .single()
+                if (place?.id) placeId = place.id
+              }
+            }
+          }
+
+          const { data: existing, error: maxErr } = await supabase
+            .from('trip_items')
+            .select('order_index')
+            .eq('trip_day_id', dayId)
+            .order('order_index', { ascending: false })
+            .limit(1)
+          if (maxErr) return JSON.stringify({ kind: 'error', message: maxErr.message })
+
+          const nextOrder = existing && existing[0]?.order_index != null ? (existing[0].order_index as number) + 1 : 0
+
+          const { error } = await supabase
+            .from('trip_items')
+            .insert({
+              trip_day_id: dayId,
+              type,
+              title,
+              place_id: placeId,
+              start_time: start_time ?? null,
+              end_time: end_time ?? null,
+              duration_minutes: duration_minutes ?? null,
+              notes: notes ?? null,
+              order_index: nextOrder,
+            })
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+
+          return tripPatch(tid)
+        },
+      }),
+
+      moveTripItem: tool({
+        description: 'Move an item to another day (or reorder within a day).',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          item_id: z.string().uuid(),
+          to_day_index: z.number().int().min(1),
+          to_order_index: z.number().int().min(0).optional(),
+        }),
+        execute: async ({ trip_id, item_id, to_day_index, to_order_index }) => {
+          const tid = trip_id || tripId
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const toDayId = await ensureTripDay(supabase, tid, to_day_index)
+          const orderIndex = to_order_index ?? 0
+          await supabase.from('trip_items').update({ trip_day_id: toDayId, updated_at: new Date().toISOString() }).eq('id', item_id)
+          await supabase.from('trip_items').update({ order_index: orderIndex, updated_at: new Date().toISOString() }).eq('id', item_id)
+          return tripPatch(tid)
+        },
+      }),
+
+      updateTripItem: tool({
+        description: 'Update fields on an existing itinerary item.',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          item_id: z.string().uuid(),
+          title: z.string().optional(),
+          notes: z.string().optional(),
+          start_time: z.string().optional(),
+          end_time: z.string().optional(),
+          duration_minutes: z.number().int().min(0).max(1440).optional(),
+          type: z.enum(['activity', 'meal', 'lodging', 'transit', 'note']).optional(),
+        }),
+        execute: async ({ trip_id, item_id, ...fields }) => {
+          const tid = trip_id || tripId
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const { error } = await supabase
+            .from('trip_items')
+            .update({ ...fields, updated_at: new Date().toISOString() })
+            .eq('id', item_id)
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+          return tripPatch(tid)
+        },
+      }),
+
+      deleteTripItem: tool({
+        description: 'Delete an itinerary item.',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          item_id: z.string().uuid(),
+        }),
+        execute: async ({ trip_id, item_id }) => {
+          const tid = trip_id || tripId
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const { error } = await supabase.from('trip_items').delete().eq('id', item_id)
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+          return tripPatch(tid)
+        },
+      }),
+
+      computeDayRoute: tool({
+        description: 'Compute and cache a route line for a day based on current item order.',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          day_index: z.number().int().min(1),
+          mode: z.enum(['walk', 'drive', 'transit']).default('walk'),
+        }),
+        execute: async ({ trip_id, day_index, mode }) => {
+          const tid = trip_id || tripId
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+          if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
+          const dayId = await ensureTripDay(supabase, tid, day_index)
+
+          const { data: items, error } = await supabase
+            .from('trip_items')
+            .select('place:places(latitude,longitude)')
+            .eq('trip_day_id', dayId)
+            .order('order_index', { ascending: true })
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+
+          const coords = (items || [])
+            .map((it: any) => ({ latitude: it.place?.latitude, longitude: it.place?.longitude }))
+            .filter((c: any) => typeof c.latitude === 'number' && typeof c.longitude === 'number')
+
+          const route = await directionsGeojson(coords, token, mode)
+          if (!route) return tripPatch(tid)
+
+          const { error: routeErr } = await supabase
+            .from('trip_routes')
+            .upsert(
+              {
+                trip_day_id: dayId,
+                geojson: route.geojson,
+                distance_m: route.distance_m,
+                duration_s: route.duration_s,
+                mode,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'trip_day_id,mode' }
+            )
+          if (routeErr) return JSON.stringify({ kind: 'error', message: routeErr.message })
+          return tripPatch(tid)
         },
       }),
     }

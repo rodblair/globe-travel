@@ -24,14 +24,29 @@ export type PlaceEvent = {
   }
 }
 
+export type NavigateEvent = {
+  latitude: number
+  longitude: number
+  name?: string
+  country?: string
+  description?: string
+  highlights?: string[]
+  best_time?: string
+}
+
 export function useChat(options: {
   type: 'onboarding' | 'explore' | 'plan'
   conversationId?: string
+  tripId?: string
   onPlaceAdded?: (event: PlaceEvent) => void
+  onTripPatch?: (tripId: string) => void
+  onNavigate?: (event: NavigateEvent) => void
 }) {
   const optionsRef = useRef(options)
-  optionsRef.current = options
   const seenToolCallsRef = useRef<Set<string>>(new Set())
+  useEffect(() => {
+    optionsRef.current = options
+  }, [options])
 
   const {
     messages: aiMessages,
@@ -45,14 +60,13 @@ export function useChat(options: {
       body: {
         type: options.type,
         conversationId: options.conversationId,
+        tripId: options.tripId,
       },
     }),
   })
 
-  // Watch for tool call results in messages and fire onPlaceAdded
+  // Watch for tool call results in messages and fire events
   useEffect(() => {
-    if (!optionsRef.current.onPlaceAdded) return
-
     for (const msg of aiMessages) {
       if (msg.role !== 'assistant') continue
       for (const part of msg.parts) {
@@ -70,9 +84,26 @@ export function useChat(options: {
           if (typeof output === 'string') {
             try {
               const parsed = JSON.parse(output)
-              if (parsed.success && parsed.name) {
+              if (parsed?.kind === 'trip_patch' && parsed.tripId && optionsRef.current.onTripPatch) {
+                optionsRef.current.onTripPatch(parsed.tripId)
+              }
+
+              if (parsed?.kind === 'navigate' && optionsRef.current.onNavigate) {
+                optionsRef.current.onNavigate({
+                  latitude: parsed.latitude || 0,
+                  longitude: parsed.longitude || 0,
+                  name: parsed.name,
+                  country: parsed.country,
+                  description: parsed.description,
+                  highlights: parsed.highlights,
+                  best_time: parsed.best_time,
+                })
+              }
+
+              // Back-compat: place add / navigate events used by onboarding/explore.
+              if (parsed.success && parsed.name && optionsRef.current.onPlaceAdded) {
                 if (parsed.action === 'navigate') {
-                  optionsRef.current.onPlaceAdded!({
+                  optionsRef.current.onPlaceAdded({
                     type: 'place_added',
                     place: {
                       name: parsed.name,
@@ -86,7 +117,7 @@ export function useChat(options: {
                     },
                   })
                 } else {
-                  optionsRef.current.onPlaceAdded!({
+                  optionsRef.current.onPlaceAdded({
                     type: 'place_added',
                     place: {
                       name: parsed.name,

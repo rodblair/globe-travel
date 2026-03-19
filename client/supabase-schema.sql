@@ -111,6 +111,75 @@ create table collections (
   updated_at timestamptz default now()
 );
 
+-- TRIPS
+create table trips (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles on delete cascade not null,
+  title text not null,
+  destination_place_id uuid references places on delete set null,
+  start_date date,
+  end_date date,
+  travelers_count int default 1,
+  pace text,
+  budget_level text,
+  constraints jsonb default '{}'::jsonb,
+  is_public boolean default false,
+  share_slug text unique,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index idx_trips_user on trips(user_id, updated_at desc);
+create index idx_trips_share_slug on trips(share_slug);
+
+-- TRIP_DAYS
+create table trip_days (
+  id uuid primary key default uuid_generate_v4(),
+  trip_id uuid references trips on delete cascade not null,
+  day_index int not null,
+  date date,
+  title text,
+  notes text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique(trip_id, day_index)
+);
+
+create index idx_trip_days_trip on trip_days(trip_id, day_index);
+
+-- TRIP_ITEMS
+create table trip_items (
+  id uuid primary key default uuid_generate_v4(),
+  trip_day_id uuid references trip_days on delete cascade not null,
+  type text not null check (type in ('activity','meal','lodging','transit','note')),
+  title text not null,
+  place_id uuid references places on delete set null,
+  start_time time,
+  end_time time,
+  duration_minutes int,
+  cost_estimate numeric,
+  notes text,
+  metadata jsonb default '{}'::jsonb,
+  order_index int default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index idx_trip_items_day_order on trip_items(trip_day_id, order_index);
+create index idx_trip_items_place on trip_items(place_id);
+
+-- TRIP_ROUTES (cached)
+create table trip_routes (
+  id uuid primary key default uuid_generate_v4(),
+  trip_day_id uuid references trip_days on delete cascade not null,
+  geojson jsonb not null,
+  distance_m int,
+  duration_s int,
+  mode text default 'walk',
+  updated_at timestamptz default now(),
+  unique(trip_day_id, mode)
+);
+
 -- COLLECTION_PLACES
 create table collection_places (
   id uuid primary key default uuid_generate_v4(),
@@ -216,6 +285,10 @@ alter table collection_places enable row level security;
 alter table friendships enable row level security;
 alter table achievements enable row level security;
 alter table user_achievements enable row level security;
+alter table trips enable row level security;
+alter table trip_days enable row level security;
+alter table trip_items enable row level security;
+alter table trip_routes enable row level security;
 
 -- Profiles: users can read all, update own
 create policy "Public profiles are viewable by everyone" on profiles for select using (true);
@@ -259,6 +332,134 @@ create policy "Users can view own messages" on chat_messages for select using (
 create policy "Users can create messages" on chat_messages for insert with check (
   exists (select 1 from chat_conversations cc where cc.id = conversation_id and cc.user_id = auth.uid())
 );
+
+-- Trips: users manage their own, public trips are viewable
+create policy "Public trips are viewable by everyone" on trips
+  for select using (is_public = true);
+create policy "Users can view own trips" on trips
+  for select using (auth.uid() = user_id);
+create policy "Users can create own trips" on trips
+  for insert with check (auth.uid() = user_id);
+create policy "Users can update own trips" on trips
+  for update using (auth.uid() = user_id);
+create policy "Users can delete own trips" on trips
+  for delete using (auth.uid() = user_id);
+
+-- Trip days: owner can manage, public trip days are viewable
+create policy "Public trip days are viewable" on trip_days
+  for select using (
+    exists (select 1 from trips t where t.id = trip_id and t.is_public = true)
+  );
+create policy "Users can view own trip days" on trip_days
+  for select using (
+    exists (select 1 from trips t where t.id = trip_id and t.user_id = auth.uid())
+  );
+create policy "Users can create own trip days" on trip_days
+  for insert with check (
+    exists (select 1 from trips t where t.id = trip_id and t.user_id = auth.uid())
+  );
+create policy "Users can update own trip days" on trip_days
+  for update using (
+    exists (select 1 from trips t where t.id = trip_id and t.user_id = auth.uid())
+  );
+create policy "Users can delete own trip days" on trip_days
+  for delete using (
+    exists (select 1 from trips t where t.id = trip_id and t.user_id = auth.uid())
+  );
+
+-- Trip items: owner can manage, public trip items are viewable
+create policy "Public trip items are viewable" on trip_items
+  for select using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.is_public = true
+    )
+  );
+create policy "Users can view own trip items" on trip_items
+  for select using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Users can create own trip items" on trip_items
+  for insert with check (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Users can update own trip items" on trip_items
+  for update using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Users can delete own trip items" on trip_items
+  for delete using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+
+-- Trip routes: viewable if trip is public or owned
+create policy "Public trip routes are viewable" on trip_routes
+  for select using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.is_public = true
+    )
+  );
+create policy "Users can view own trip routes" on trip_routes
+  for select using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Users can upsert own trip routes" on trip_routes
+  for insert with check (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Users can update own trip routes" on trip_routes
+  for update using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
+create policy "Users can delete own trip routes" on trip_routes
+  for delete using (
+    exists (
+      select 1
+      from trip_days d
+      join trips t on t.id = d.trip_id
+      where d.id = trip_day_id and t.user_id = auth.uid()
+    )
+  );
 
 -- Collections: public ones viewable by all, own ones manageable
 create policy "Public collections viewable" on collections for select using (is_public = true or auth.uid() = user_id);

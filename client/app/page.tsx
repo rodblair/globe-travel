@@ -192,7 +192,7 @@ export default function Home() {
               <span className="text-white/70 italic">Your Story.</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Every place you've been. Every dream you'll chase. All on one
+              Every place you&apos;ve been. Every dream you&apos;ll chase. All on one
               beautiful globe.
             </p>
             <button
@@ -271,7 +271,7 @@ export default function Home() {
                   Interactive Globe
                 </h3>
                 <p className="text-white/60 font-serif italic text-lg">
-                  See every country you've explored light up on your personal 3D
+                  See every country you&apos;ve explored light up on your personal 3D
                   globe.
                 </p>
               </div>
@@ -351,7 +351,7 @@ export default function Home() {
                   Bucket List
                 </h3>
                 <p className="text-white/50 font-serif italic text-lg">
-                  Build your dream list. Track what's next. Share with friends.
+                  Build your dream list. Track what&apos;s next. Share with friends.
                 </p>
               </div>
             </motion.div>
@@ -429,8 +429,8 @@ export default function Home() {
                   Tell Your Story
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Chat with our AI about your adventures. We'll map every place
-                  you've been.
+                  Chat with our AI about your adventures. We&apos;ll map every place
+                  you&apos;ve been.
                 </p>
               </div>
             </motion.div>
@@ -489,7 +489,7 @@ export default function Home() {
                   Share Your Globe
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Show the world where you've been. Inspire friends to explore.
+                  Show the world where you&apos;ve been. Inspire friends to explore.
                 </p>
               </div>
             </motion.div>

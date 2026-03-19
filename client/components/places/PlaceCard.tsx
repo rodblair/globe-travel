@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { MapPin, Star, Check, Heart } from 'lucide-react'
+import { MapPin, Star, Check, Heart, CalendarPlus } from 'lucide-react'
 
 type PlaceCardProps = {
   name: string
@@ -11,6 +11,7 @@ type PlaceCardProps = {
   rating?: number
   reason?: string
   onClick?: () => void
+  onPlanTrip?: () => void
 }
 
 function getFlagEmoji(country: string): string {
@@ -25,7 +26,7 @@ function getFlagEmoji(country: string): string {
   return flags[country] || '🌍'
 }
 
-export function PlaceCard({ name, country, status, photo_url, rating, reason, onClick }: PlaceCardProps) {
+export function PlaceCard({ name, country, status, photo_url, rating, reason, onClick, onPlanTrip }: PlaceCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
@@ -94,6 +95,20 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
 
         {reason && (
           <p className="text-sm text-white/40 line-clamp-2">{reason}</p>
+        )}
+
+        {status === 'bucket_list' && onPlanTrip && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onPlanTrip()
+            }}
+            className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/25 text-cyan-300 text-xs font-medium hover:bg-cyan-500/25 transition-colors"
+            title="Plan a trip here"
+          >
+            <CalendarPlus className="w-4 h-4" />
+            Plan this trip
+          </button>
         )}
       </div>
     </motion.div>

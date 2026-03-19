@@ -29,9 +29,15 @@ export default function ProfileGlobe({
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const popupRef = useRef<mapboxgl.Popup | null>(null);
   const pinsRef = useRef(pins);
-  pinsRef.current = pins;
   const onPinClickRef = useRef(onPinClick);
-  onPinClickRef.current = onPinClick;
+
+  useEffect(() => {
+    pinsRef.current = pins;
+  }, [pins]);
+
+  useEffect(() => {
+    onPinClickRef.current = onPinClick;
+  }, [onPinClick]);
 
   // Spin globe
   const spinEnabled = useRef(true);
