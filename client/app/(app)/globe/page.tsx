@@ -39,7 +39,7 @@ const GREETING: Message = {
 }
 
 export default function GlobePage() {
-  const { profile } = useAuth()
+  useAuth()
   const [chatOpen, setChatOpen] = useState(true)
   const [selectedPlace, setSelectedPlace] = useState<PinData | null>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase-browser'
 import { PlaceGrid } from '@/components/places/PlaceGrid'
 import { motion, AnimatePresence } from 'motion/react'
@@ -23,7 +23,6 @@ export default function BucketListPage() {
   const [sortBy, setSortBy] = useState<SortKey>('date')
   const [showSortMenu, setShowSortMenu] = useState(false)
   const supabase = createClient()
-  const queryClient = useQueryClient()
 
   const { data: userPlaces, isLoading } = useQuery({
     queryKey: ['user-places', 'bucket_list'],
@@ -34,18 +33,6 @@ export default function BucketListPage() {
         .eq('status', 'bucket_list')
         .order('created_at', { ascending: false })
       return data
-    },
-  })
-
-  const markVisited = useMutation({
-    mutationFn: async (userPlaceId: string) => {
-      await supabase
-        .from('user_places')
-        .update({ status: 'visited', visit_date: new Date().toISOString() })
-        .eq('id', userPlaceId)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user-places'] })
     },
   })
 

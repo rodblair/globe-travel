@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { createClient } from '@/lib/supabase-browser'
@@ -69,12 +70,14 @@ export default function SettingsPage() {
 
           {/* Avatar */}
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 overflow-hidden flex items-center justify-center flex-shrink-0">
+            <div className="relative w-16 h-16 rounded-full bg-white/10 border border-white/20 overflow-hidden flex items-center justify-center flex-shrink-0">
               {profile?.avatar_url ? (
-                <img
+                <Image
                   src={profile.avatar_url}
                   alt=""
-                  className="w-full h-full object-cover"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
               ) : (
                 <User className="w-8 h-8 text-white/30" />

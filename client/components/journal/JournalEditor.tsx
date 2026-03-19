@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { X, Save, Image, ChevronDown } from 'lucide-react'
+import { X, Save, ImageIcon, ChevronDown } from 'lucide-react'
 import { MoodPicker } from './MoodPicker'
 
 type JournalEditorProps = {
@@ -153,7 +153,7 @@ export function JournalEditor({
                 <div>
                   <label className="text-sm text-white/50 mb-1.5 block">Photos</label>
                   <div className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-white/20 transition-colors cursor-pointer">
-                    <Image className="w-8 h-8 text-white/30 mb-2" />
+                    <ImageIcon className="w-8 h-8 text-white/30 mb-2" />
                     <p className="text-sm text-white/40">Click to upload photos</p>
                     <p className="text-xs text-white/25 mt-1">JPG, PNG up to 10MB</p>
                   </div>

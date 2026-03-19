@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
@@ -76,12 +77,14 @@ export function Sidebar() {
       {/* User Section */}
       <div className="p-3 border-t border-white/10">
         <div className="flex items-center gap-3 px-3 py-2.5">
-          <div className="w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0">
+          <div className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0">
             {profile?.avatar_url ? (
-              <img
+              <Image
                 src={profile.avatar_url}
                 alt={profile.display_name || 'User'}
-                className="w-full h-full object-cover"
+                fill
+                unoptimized
+                className="object-cover"
               />
             ) : (
               <User className="w-4 h-4 text-white/40" />

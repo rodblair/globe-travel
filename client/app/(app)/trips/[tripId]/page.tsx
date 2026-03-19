@@ -29,6 +29,8 @@ type TripPayload = {
   days: TripDay[]
 }
 
+const EMPTY_DAYS: TripDay[] = []
+
 type TripFeedback = {
   id: string
   author_name: string
@@ -68,7 +70,7 @@ export default function TripStudioPage() {
   })
 
   const trip = data?.trip
-  const days = data?.days || []
+  const days = data?.days ?? EMPTY_DAYS
 
   const { data: feedback = [] } = useQuery({
     queryKey: ['trip-feedback', tripId],

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'motion/react'
 import { Calendar, MapPin } from 'lucide-react'
 
@@ -33,11 +34,13 @@ export function JournalCard({
       <div className="flex">
         {/* Photo thumbnail */}
         {photoUrl && (
-          <div className="w-24 md:w-32 flex-shrink-0">
-            <img
+          <div className="relative w-24 md:w-32 flex-shrink-0">
+            <Image
               src={photoUrl}
               alt={title}
-              className="w-full h-full object-cover"
+              fill
+              unoptimized
+              className="object-cover"
             />
           </div>
         )}

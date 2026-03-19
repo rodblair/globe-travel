@@ -1,11 +1,11 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase-browser'
 import { useAuth } from '@/components/providers/AuthProvider'
-import { motion } from 'motion/react'
 import {
   Globe2,
   MapPin,
@@ -94,12 +94,14 @@ export default function ProfilePage() {
         {/* Profile info overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <div className="flex items-end gap-4">
-            <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 overflow-hidden flex items-center justify-center flex-shrink-0">
+            <div className="relative w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 overflow-hidden flex items-center justify-center flex-shrink-0">
               {profile?.avatar_url ? (
-                <img
+                <Image
                   src={profile.avatar_url}
                   alt={profile.display_name || ''}
-                  className="w-full h-full object-cover"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
               ) : (
                 <span className="text-3xl">🌍</span>

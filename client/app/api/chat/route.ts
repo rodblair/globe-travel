@@ -57,49 +57,6 @@ When you add items:
 After meaningful changes to a day, call computeDayRoute for that day (mode "walk" for cities).`,
 }
 
-const tools = {
-  addVisitedPlace: tool({
-    description: 'Add a place the user has visited to their travel map',
-    inputSchema: z.object({
-      name: z.string().describe('Name of the place or city'),
-      country: z.string().describe('Country name'),
-      country_code: z.string().describe('ISO 2-letter country code'),
-      latitude: z.number().describe('Latitude coordinate'),
-      longitude: z.number().describe('Longitude coordinate'),
-      rating: z.number().min(1).max(5).optional().describe('User rating 1-5'),
-    }),
-    execute: async ({ name, country, country_code, latitude, longitude, rating }) => {
-      // Will be overridden per-request with user context
-      return { success: true, name, country, status: 'visited' as const }
-    },
-  }),
-  addBucketListPlace: tool({
-    description: 'Add a place to the user bucket list',
-    inputSchema: z.object({
-      name: z.string().describe('Name of the place or city'),
-      country: z.string().describe('Country name'),
-      country_code: z.string().describe('ISO 2-letter country code'),
-      latitude: z.number().describe('Latitude coordinate'),
-      longitude: z.number().describe('Longitude coordinate'),
-      reason: z.string().optional().describe('Why the user wants to visit'),
-    }),
-    execute: async ({ name, country }) => {
-      return { success: true, name, country, status: 'bucket_list' as const }
-    },
-  }),
-  setTravelPreferences: tool({
-    description: 'Set the user travel style and preferences',
-    inputSchema: z.object({
-      style: z.string().describe('Travel style: adventure, luxury, budget, family, backpacker, etc.'),
-      interests: z.array(z.string()).describe('List of travel interests'),
-      budget_preference: z.string().describe('Budget preference: budget, moderate, luxury'),
-    }),
-    execute: async ({ style, interests, budget_preference }) => {
-      return { success: true, style, interests, budget_preference }
-    },
-  }),
-}
-
 async function ensureTripDay(supabase: any, tripId: string, dayIndex: number) {
   const { data: existing, error } = await supabase
     .from('trip_days')

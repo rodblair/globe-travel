@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'motion/react'
 import { MapPin, Star, Check, Heart, CalendarPlus } from 'lucide-react'
 
@@ -37,10 +38,12 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
       {/* Image */}
       <div className="relative h-40 overflow-hidden">
         {photo_url ? (
-          <img
+          <Image
             src={photo_url}
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fill
+            unoptimized
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/[0.02] flex items-center justify-center">

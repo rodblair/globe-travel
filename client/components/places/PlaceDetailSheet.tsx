@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { X, Star, Calendar, MapPin, BookOpen, Edit3 } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 
@@ -66,10 +67,12 @@ export function PlaceDetailSheet({ place, isOpen, onClose }: PlaceDetailSheetPro
               {/* Photo banner */}
               {place.photo_url ? (
                 <div className="relative h-48 mx-4 mt-2 rounded-2xl overflow-hidden">
-                  <img
+                  <Image
                     src={place.photo_url}
                     alt={place.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    unoptimized
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>

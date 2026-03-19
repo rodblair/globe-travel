@@ -27,7 +27,6 @@ export default function ProfileGlobe({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
-  const popupRef = useRef<mapboxgl.Popup | null>(null);
   const pinsRef = useRef(pins);
   const onPinClickRef = useRef(onPinClick);
 
@@ -92,7 +91,7 @@ export default function ProfileGlobe({
         map.setConfigProperty("basemap", "showPointOfInterestLabels", false);
         map.setConfigProperty("basemap", "showTransitLabels", false);
         map.setConfigProperty("basemap", "showRoadLabels", false);
-      } catch (e) {
+      } catch {
         // Fallback if Standard config API not available
       }
       map.setFog({
@@ -216,7 +215,7 @@ export default function ProfileGlobe({
       markersRef.current.forEach((m) => m.remove());
       map.remove();
     };
-  }, [spinGlobe]);
+  }, [flyToRef, spinGlobe]);
 
   // Update markers when pins change
   useEffect(() => {
