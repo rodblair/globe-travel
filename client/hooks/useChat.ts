@@ -44,6 +44,7 @@ export function useChat(options: {
 }) {
   const optionsRef = useRef(options)
   const seenToolCallsRef = useRef<Set<string>>(new Set())
+  const hadPlanActivityRef = useRef(false)
   useEffect(() => {
     optionsRef.current = options
   }, [options])
@@ -65,6 +66,22 @@ export function useChat(options: {
     }),
   })
 
+  const parseToolOutput = useCallback((output: unknown) => {
+    if (typeof output === 'string') {
+      try {
+        return JSON.parse(output)
+      } catch {
+        return null
+      }
+    }
+
+    if (output && typeof output === 'object') {
+      return output
+    }
+
+    return null
+  }, [])
+
   // Watch for tool call results in messages and fire events
   useEffect(() => {
     for (const msg of aiMessages) {
@@ -81,62 +98,75 @@ export function useChat(options: {
           seenToolCallsRef.current.add(toolCallId)
 
           const output = (part as { output?: unknown }).output
-          if (typeof output === 'string') {
-            try {
-              const parsed = JSON.parse(output)
-              if (parsed?.kind === 'trip_patch' && parsed.tripId && optionsRef.current.onTripPatch) {
-                optionsRef.current.onTripPatch(parsed.tripId)
-              }
+          const parsed = parseToolOutput(output)
+          if (!parsed) continue
 
-              if (parsed?.kind === 'navigate' && optionsRef.current.onNavigate) {
-                optionsRef.current.onNavigate({
+          if (optionsRef.current.type === 'plan') {
+            hadPlanActivityRef.current = true
+          }
+
+          if (parsed?.kind === 'trip_patch' && parsed.tripId && optionsRef.current.onTripPatch) {
+            optionsRef.current.onTripPatch(parsed.tripId)
+          }
+
+          if (parsed?.kind === 'navigate' && optionsRef.current.onNavigate) {
+            optionsRef.current.onNavigate({
+              latitude: parsed.latitude || 0,
+              longitude: parsed.longitude || 0,
+              name: parsed.name,
+              country: parsed.country,
+              description: parsed.description,
+              highlights: parsed.highlights,
+              best_time: parsed.best_time,
+            })
+          }
+
+          // Back-compat: place add / navigate events used by onboarding/explore.
+          if (parsed.success && parsed.name && optionsRef.current.onPlaceAdded) {
+            if (parsed.action === 'navigate') {
+              optionsRef.current.onPlaceAdded({
+                type: 'place_added',
+                place: {
+                  name: parsed.name,
+                  country: parsed.country || '',
                   latitude: parsed.latitude || 0,
                   longitude: parsed.longitude || 0,
-                  name: parsed.name,
-                  country: parsed.country,
+                  status: 'visited',
                   description: parsed.description,
                   highlights: parsed.highlights,
                   best_time: parsed.best_time,
-                })
-              }
-
-              // Back-compat: place add / navigate events used by onboarding/explore.
-              if (parsed.success && parsed.name && optionsRef.current.onPlaceAdded) {
-                if (parsed.action === 'navigate') {
-                  optionsRef.current.onPlaceAdded({
-                    type: 'place_added',
-                    place: {
-                      name: parsed.name,
-                      country: parsed.country || '',
-                      latitude: parsed.latitude || 0,
-                      longitude: parsed.longitude || 0,
-                      status: 'visited',
-                      description: parsed.description,
-                      highlights: parsed.highlights,
-                      best_time: parsed.best_time,
-                    },
-                  })
-                } else {
-                  optionsRef.current.onPlaceAdded({
-                    type: 'place_added',
-                    place: {
-                      name: parsed.name,
-                      country: parsed.country || '',
-                      latitude: parsed.latitude || 0,
-                      longitude: parsed.longitude || 0,
-                      status: parsed.status === 'bucket_list' ? 'bucket_list' : 'visited',
-                    },
-                  })
-                }
-              }
-            } catch {
-              // Not JSON, ignore
+                },
+              })
+            } else {
+              optionsRef.current.onPlaceAdded({
+                type: 'place_added',
+                place: {
+                  name: parsed.name,
+                  country: parsed.country || '',
+                  latitude: parsed.latitude || 0,
+                  longitude: parsed.longitude || 0,
+                  status: parsed.status === 'bucket_list' ? 'bucket_list' : 'visited',
+                },
+              })
             }
           }
         }
       }
     }
-  }, [aiMessages])
+  }, [aiMessages, parseToolOutput])
+
+  useEffect(() => {
+    if (
+      status === 'ready' &&
+      optionsRef.current.type === 'plan' &&
+      optionsRef.current.tripId &&
+      optionsRef.current.onTripPatch &&
+      hadPlanActivityRef.current
+    ) {
+      hadPlanActivityRef.current = false
+      optionsRef.current.onTripPatch(optionsRef.current.tripId)
+    }
+  }, [status])
 
   const isLoading = status === 'streaming' || status === 'submitted'
 
@@ -155,6 +185,9 @@ export function useChat(options: {
   }).filter((m: Message) => m.content.length > 0 || m.role === 'user')
 
   const sendMessage = useCallback(async (content: string) => {
+    if (optionsRef.current.type === 'plan') {
+      hadPlanActivityRef.current = true
+    }
     aiSendMessage({ text: content })
   }, [aiSendMessage])
 

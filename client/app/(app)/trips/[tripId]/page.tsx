@@ -63,7 +63,7 @@ export default function TripStudioPage() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['trip', tripId],
     queryFn: async () => {
-      const res = await fetch(`/api/trips/${tripId}`)
+      const res = await fetch(`/api/trips/${tripId}`, { cache: 'no-store' })
       if (!res.ok) throw new Error('Failed to load trip')
       return res.json() as Promise<TripPayload>
     },
