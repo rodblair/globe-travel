@@ -12,22 +12,13 @@ const vertexShader = `
 
   void main() {
     vUv = uv;
-
-    // For a sphere, normal is just the normalized position (direction from center)
     vec3 sphereNormal = normalize(position);
-
-    // Sample bump map for elevation
     vec4 bumpData = texture2D(bumpTexture, uv);
     vDisplacement = bumpData.r;
-
-    // Calculate displacement from bump map
     float displacement = bumpData.r * bumpScale;
-
-    // Apply displacement along sphere normal
     vec3 newPosition = position + sphereNormal * displacement;
-
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-    gl_PointSize = 2.5;
+    gl_PointSize = 1.4;
   }
 `;
 
@@ -39,21 +30,16 @@ const fragmentShader = `
   varying float vDisplacement;
 
   void main() {
-    // Sample textures
     vec4 rainbow = texture2D(rainbowTexture, vUv);
     vec4 spec = texture2D(specTexture, vUv);
-
-    // spec.r: 0 = land (black), 1 = ocean (white)
     float isLand = 1.0 - spec.r;
 
-    // Land gets rainbow color, ocean is very dim
-    vec3 landColor = rainbow.rgb * (0.8 + vDisplacement * 0.4);
-    vec3 oceanColor = vec3(0.1, 0.15, 0.2);
+    vec3 landColor = vec3(0.15, 0.35, 0.2) + rainbow.rgb * 0.3 * (0.7 + vDisplacement * 0.5);
+    vec3 oceanColor = vec3(0.04, 0.07, 0.15);
 
     vec3 finalColor = mix(oceanColor, landColor, isLand);
-    float alpha = mix(0.3, 1.0, isLand);
+    float alpha = mix(0.15, 1.0, isLand);
 
-    // Circular point shape
     vec2 center = gl_PointCoord - vec2(0.5);
     float dist = length(center);
     if (dist > 0.5) discard;
@@ -72,13 +58,13 @@ export default function LandingGlobe() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       45,
-      window.innerWidth / window.innerHeight,
+      mountNode.clientWidth / mountNode.clientHeight,
       0.1,
       1000,
     );
 
     const getCameraZ = () => {
-      const width = window.innerWidth;
+      const width = mountNode.clientWidth;
       if (width < 400) return 9.0;
       if (width < 480) return 8.0;
       if (width < 768) return 7.0;
@@ -89,7 +75,7 @@ export default function LandingGlobe() {
     camera.position.set(0, 0.3, getCameraZ());
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(mountNode.clientWidth, mountNode.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 1);
 
@@ -97,7 +83,10 @@ export default function LandingGlobe() {
 
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
-    const rotationSpeed = 0.005;
+    let targetRotationY = 0;
+    let targetRotationX = 0;
+    let currentRotationY = 0;
+    let currentRotationX = 0;
 
     const textureLoader = new THREE.TextureLoader();
     const bumpTexture = textureLoader.load("/texture1.jpg");
@@ -113,19 +102,7 @@ export default function LandingGlobe() {
     const radius = 1.3;
     const scale = 1.4;
 
-    const wireGeo = new THREE.IcosahedronGeometry(radius, 16);
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x3366ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.03,
-    });
-    const wireMesh = new THREE.Mesh(wireGeo, wireMat);
-    wireMesh.scale.set(scale, scale, scale);
-    globeGroup.add(wireMesh);
-
-    const pointsGeo = new THREE.IcosahedronGeometry(radius, 120);
-
+    const pointsGeo = new THREE.IcosahedronGeometry(radius, 160);
     const shaderMaterial = new THREE.ShaderMaterial({
       uniforms: {
         rainbowTexture: { value: rainbowTexture },
@@ -145,8 +122,15 @@ export default function LandingGlobe() {
 
     function animate() {
       if (!isDragging) {
-        globeGroup.rotation.y += 0.0012;
+        targetRotationY += 0.001;
       }
+
+      // Smooth lerp for rotation
+      currentRotationY += (targetRotationY - currentRotationY) * 0.05;
+      currentRotationX += (targetRotationX - currentRotationX) * 0.05;
+
+      globeGroup.rotation.y = currentRotationY;
+      globeGroup.rotation.x = currentRotationX;
 
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
@@ -158,8 +142,8 @@ export default function LandingGlobe() {
         const deltaX = evt.clientX - previousMousePosition.x;
         const deltaY = evt.clientY - previousMousePosition.y;
 
-        globeGroup.rotation.y += deltaX * rotationSpeed;
-        globeGroup.rotation.x += deltaY * rotationSpeed;
+        targetRotationY += deltaX * 0.005;
+        targetRotationX += deltaY * 0.005;
 
         previousMousePosition = { x: evt.clientX, y: evt.clientY };
       }
@@ -168,16 +152,12 @@ export default function LandingGlobe() {
     function onMouseDown(evt: MouseEvent) {
       isDragging = true;
       previousMousePosition = { x: evt.clientX, y: evt.clientY };
-      if (mountNode) {
-        mountNode.style.cursor = "grabbing";
-      }
+      if (mountNode) mountNode.style.cursor = "grabbing";
     }
 
     function onMouseUp() {
       isDragging = false;
-      if (mountNode) {
-        mountNode.style.cursor = "grab";
-      }
+      if (mountNode) mountNode.style.cursor = "grab";
     }
 
     function onTouchStart(evt: TouchEvent) {
@@ -195,8 +175,8 @@ export default function LandingGlobe() {
         const deltaX = evt.touches[0].clientX - previousMousePosition.x;
         const deltaY = evt.touches[0].clientY - previousMousePosition.y;
 
-        globeGroup.rotation.y += deltaX * rotationSpeed;
-        globeGroup.rotation.x += deltaY * rotationSpeed;
+        targetRotationY += deltaX * 0.005;
+        targetRotationX += deltaY * 0.005;
 
         previousMousePosition = {
           x: evt.touches[0].clientX,
@@ -210,15 +190,14 @@ export default function LandingGlobe() {
     }
 
     function onResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      if (!mountNode) return;
+      camera.aspect = mountNode.clientWidth / mountNode.clientHeight;
       camera.position.z = getCameraZ();
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(mountNode.clientWidth, mountNode.clientHeight);
     }
 
-    if (mountNode) {
-      mountNode.style.cursor = "grab";
-    }
+    mountNode.style.cursor = "grab";
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mousedown", onMouseDown);

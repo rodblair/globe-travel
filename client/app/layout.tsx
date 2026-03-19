@@ -4,8 +4,8 @@ import { inter, playfair } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Arcki",
-  description: "Beautiful architecture visualization with custom 3D modelling",
+  title: "Globe Travel",
+  description: "Your world. Your story. Track, dream, and share your travel adventures.",
 };
 
 export default function RootLayout({

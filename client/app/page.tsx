@@ -1,13 +1,11 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import { MobileWarningModal } from "@/components/modals/MobileWarningModal";
-import { useMobileCheck } from "@/hooks/useMobileCheck";
 
 const LandingGlobe = dynamic(() => import("@/components/globes/LandingGlobe"), {
   ssr: false,
@@ -34,21 +32,10 @@ const staggerContainer = {
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const isMobile = useMobileCheck();
-  const [showMobileWarning, setShowMobileWarning] = useState(false);
 
-  // Prefetch /map route so JS bundle downloads while user is on landing
   useEffect(() => {
-    router.prefetch("/map");
+    router.prefetch("/signup");
   }, [router]);
-
-  const handleMapNavigation = () => {
-    if (isMobile) {
-      setShowMobileWarning(true);
-    } else {
-      router.push("/map");
-    }
-  };
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -76,7 +63,6 @@ export default function Home() {
     [1, 0.85, 0.7],
   );
 
-  // Stars parallax - organic, non-linear movement
   const starsY = useTransform(
     scrollYProgress,
     [0, 0.2, 0.4, 0.6, 0.8, 1],
@@ -88,7 +74,6 @@ export default function Home() {
     ["0%", "-3%", "5%", "-8%", "2%", "-12%"],
   );
 
-  // Second layer moves differently for depth
   const stars2Y = useTransform(
     scrollYProgress,
     [0, 0.25, 0.5, 0.75, 1],
@@ -102,6 +87,7 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="bg-black text-white relative">
+      {/* Stars layer 1 */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-2"
         style={{ y: starsY, x: starsX }}
@@ -137,6 +123,7 @@ export default function Home() {
         />
       </motion.div>
 
+      {/* Stars layer 2 */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-2"
         style={{ y: stars2Y, x: stars2X }}
@@ -172,6 +159,7 @@ export default function Home() {
         />
       </motion.div>
 
+      {/* Globe */}
       <motion.div
         className="fixed inset-0 z-1 pointer-events-auto"
         style={{
@@ -184,6 +172,7 @@ export default function Home() {
         <LandingGlobe />
       </motion.div>
 
+      {/* Hero Section */}
       <div className="relative h-screen overflow-hidden z-10">
         <div
           className="absolute inset-0 bg-linear-to-b from-black/60 via-transparent to-transparent"
@@ -198,19 +187,18 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.1] tracking-tight font-serif">
-              <span className="text-white">Architect the world</span>
+              <span className="text-white">Your World.</span>
               <br />
-              <span className="text-white/70 italic">
-                the way you imagine it.
-              </span>
+              <span className="text-white/70 italic">Your Story.</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed whitespace-nowrap">
-              Destroy cities and design them yourself.
+            <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Every place you've been. Every dream you'll chase. All on one
+              beautiful globe.
             </p>
             <button
-              onClick={handleMapNavigation}
-              className="group relative h-16 mx-auto rounded-full overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105 shadow-lg shadow-black/30 hover:shadow-xl flex items-center justify-center"
-              style={{ width: "240px" }}
+              onClick={() => router.push("/signup")}
+              className="group relative h-16 mx-auto rounded-full overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105 shadow-lg shadow-black/30 hover:shadow-xl flex items-center justify-center gap-3"
+              style={{ width: "280px" }}
             >
               <div
                 className="absolute inset-0 opacity-35"
@@ -228,13 +216,15 @@ export default function Home() {
                 }}
               />
               <span className="relative z-10 text-white font-semibold text-xl font-serif tracking-wide">
-                Build
+                Start Your Journey
               </span>
+              <ArrowRight className="relative z-10 w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
         </div>
       </div>
 
+      {/* Features Section */}
       <section id="features" className="relative z-10 py-24 px-6">
         <div
           className="absolute inset-0 pointer-events-none"
@@ -246,11 +236,10 @@ export default function Home() {
         <div className="max-w-5xl mx-auto relative">
           <motion.div className="text-center mb-16" {...fadeInUp}>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 font-serif">
-              Everything you need to build
+              Your travel companion, reimagined
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Powerful tools designed for architects, urban planners, and
-              visionaries.
+              Everything you need to track, dream, and share your adventures.
             </p>
           </motion.div>
 
@@ -261,11 +250,10 @@ export default function Home() {
             whileInView="whileInView"
             viewport={{ once: true }}
           >
+            {/* Interactive Globe - large card */}
             <motion.div
               className="md:col-span-2 lg:col-span-2 row-span-2 rounded-2xl overflow-hidden relative min-h-75 md:min-h-100 group backdrop-blur-sm border border-white/5"
-              style={{
-                background: "rgba(15, 12, 10, 0.4)",
-              }}
+              style={{ background: "rgba(15, 12, 10, 0.4)" }}
               variants={fadeInUp}
             >
               <div
@@ -280,20 +268,19 @@ export default function Home() {
               <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-black/20" />
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <h3 className="text-2xl font-semibold mb-2 font-serif text-white">
-                  Global Coverage
+                  Interactive Globe
                 </h3>
                 <p className="text-white/60 font-serif italic text-lg">
-                  Access detailed 3D maps of any location worldwide, powered by
-                  Mapbox.
+                  See every country you've explored light up on your personal 3D
+                  globe.
                 </p>
               </div>
             </motion.div>
 
+            {/* AI Travel Advisor */}
             <motion.div
               className="rounded-2xl overflow-hidden relative group backdrop-blur-sm border border-white/5"
-              style={{
-                background: "rgba(15, 12, 10, 0.35)",
-              }}
+              style={{ background: "rgba(15, 12, 10, 0.35)" }}
               variants={fadeInUp}
             >
               <div
@@ -308,20 +295,19 @@ export default function Home() {
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/20" />
               <div className="relative p-6">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  AI-Powered
+                  AI Travel Advisor
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Let AI do literally anything. Change the weather, delete &
-                  insert buildings.
+                  Chat with AI that knows your style and suggests your next dream
+                  destination.
                 </p>
               </div>
             </motion.div>
 
+            {/* Travel Journal */}
             <motion.div
               className="rounded-2xl overflow-hidden relative group backdrop-blur-sm border border-white/5"
-              style={{
-                background: "rgba(15, 12, 10, 0.35)",
-              }}
+              style={{ background: "rgba(15, 12, 10, 0.35)" }}
               variants={fadeInUp}
             >
               <div
@@ -336,19 +322,18 @@ export default function Home() {
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/20" />
               <div className="relative p-6">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  3D Generation
+                  Travel Journal
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Transform text into detailed 3D models in seconds.
+                  Capture memories, photos, and stories from every adventure.
                 </p>
               </div>
             </motion.div>
 
+            {/* Bucket List - wide card */}
             <motion.div
               className="md:col-span-2 lg:col-span-2 rounded-2xl overflow-hidden relative group backdrop-blur-sm border border-white/5"
-              style={{
-                background: "rgba(15, 12, 10, 0.35)",
-              }}
+              style={{ background: "rgba(15, 12, 10, 0.35)" }}
               variants={fadeInUp}
             >
               <div
@@ -363,20 +348,18 @@ export default function Home() {
               <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-black/30" />
               <div className="relative p-8">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  Asset Library
+                  Bucket List
                 </h3>
                 <p className="text-white/50 font-serif italic text-lg">
-                  Import your own 3D assets. All models you generate are saved
-                  to your library.
+                  Build your dream list. Track what's next. Share with friends.
                 </p>
               </div>
             </motion.div>
 
+            {/* Share & Connect */}
             <motion.div
               className="rounded-2xl overflow-hidden relative group backdrop-blur-sm border border-white/5"
-              style={{
-                background: "rgba(15, 12, 10, 0.35)",
-              }}
+              style={{ background: "rgba(15, 12, 10, 0.35)" }}
               variants={fadeInUp}
             >
               <div
@@ -391,10 +374,11 @@ export default function Home() {
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/20" />
               <div className="relative p-6">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  Intuitive Controls
+                  Share & Connect
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Drag, drop, rotate, and scale with natural gestures.
+                  Compare maps with friends. Plan trips together. Inspire each
+                  other.
                 </p>
               </div>
             </motion.div>
@@ -402,6 +386,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How It Works Section */}
       <section className="relative z-10 py-24 px-6">
         <div
           className="absolute inset-0 pointer-events-none"
@@ -413,10 +398,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto relative">
           <motion.div className="text-center mb-16" {...fadeInUp}>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 font-serif">
-              How it works
+              Three steps to your travel universe
             </h2>
             <p className="text-white/50 text-lg max-w-2xl mx-auto font-serif italic">
-              Three steps to reshape reality.
+              From memories to dreams, all in one place.
             </p>
           </motion.div>
 
@@ -441,11 +426,11 @@ export default function Home() {
               </div>
               <div className="p-6 relative">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  Choose a Location
+                  Tell Your Story
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Search any address. We load the 3D terrain and structures
-                  automatically.
+                  Chat with our AI about your adventures. We'll map every place
+                  you've been.
                 </p>
               </div>
             </motion.div>
@@ -471,10 +456,11 @@ export default function Home() {
               </div>
               <div className="p-6 relative">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  Generate & Import
+                  Dream & Discover
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Create 3D models with text prompts or import your own assets.
+                  Explore new destinations with AI recommendations tailored to
+                  you.
                 </p>
               </div>
             </motion.div>
@@ -500,11 +486,10 @@ export default function Home() {
               </div>
               <div className="p-6 relative">
                 <h3 className="text-xl font-semibold mb-2 font-serif text-white">
-                  Design Your Vision
+                  Share Your Globe
                 </h3>
                 <p className="text-white/50 font-serif italic">
-                  Delete existing buildings and replace them with your
-                  creations.
+                  Show the world where you've been. Inspire friends to explore.
                 </p>
               </div>
             </motion.div>
@@ -512,6 +497,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CTA Section */}
       <section className="relative z-10 py-24 px-6">
         <div
           className="absolute inset-0 pointer-events-none"
@@ -525,45 +511,30 @@ export default function Home() {
           {...fadeInUp}
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-6 font-serif">
-            Ready to reshape the world?
+            Ready to map your world?
           </h2>
           <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of architects and designers who are already building
-            the future.
+            Join thousands of travelers sharing their journeys.
           </p>
           <Button
             size="lg"
             className="bg-white hover:bg-white/90 text-black font-semibold px-8 py-6 rounded-full"
-            onClick={handleMapNavigation}
+            onClick={() => router.push("/signup")}
           >
-            Try it
+            Get Started Free
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </motion.div>
       </section>
 
+      {/* Footer */}
       <footer className="relative z-10 py-8 px-6 bg-black border-t border-white/10">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto flex items-center justify-center">
           <p className="text-gray-400 text-sm">
-            © 2026 Arcki. ⭐️ Star us on Github!
+            &copy; 2026 Globe Travel. Made with wanderlust.
           </p>
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-            </svg>
-          </a>
         </div>
       </footer>
-
-      <MobileWarningModal
-        isOpen={showMobileWarning}
-        onClose={() => setShowMobileWarning(false)}
-      />
     </div>
   );
 }
