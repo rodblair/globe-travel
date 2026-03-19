@@ -47,6 +47,7 @@ Rules:
 - Prefer tools over prose. Whenever you propose a day plan or change, reflect it by calling tools.
 - For an initial itinerary or a major rewrite, prefer setFullTripPlan so the artifact fills in immediately.
 - Do NOT invent coordinates. Use resolvePlace and place_query fields so the server can geocode.
+- For location-based activities and meals, include a specific place_query whenever possible so each day can render on the map.
 - If tripId is provided in the request, you MUST edit that trip. Do not create a new trip unless explicitly asked.
 - If the user references "Day 2 morning" or a specific item, do a scoped edit (update/move/delete only what’s needed).
 - Ask at most ONE clarifying question if destination or number of days is missing; otherwise proceed with reasonable assumptions.
@@ -461,7 +462,7 @@ export async function POST(req: Request) {
       }),
 
       setFullTripPlan: tool({
-        description: 'Create or replace a full multi-day itinerary in one call. Use this for the initial trip plan or full-day rewrites.',
+        description: 'Create or replace a full multi-day itinerary in one call. Use this for the initial trip plan or full-day rewrites. Include place_query for any activity or meal that should appear on the day map.',
         inputSchema: z.object({
           trip_id: z.string().uuid().optional(),
           title: z.string().optional(),

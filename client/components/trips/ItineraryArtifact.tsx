@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { GripVertical, Trash2, Pencil, Clock, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import TripDayMap from '@/components/trips/TripDayMap'
 
 export type TripDay = {
   id: string
@@ -86,6 +87,31 @@ export default function ItineraryArtifact({
     if (!selectedDay) return []
     return [...(selectedDay.items || [])].sort((a, b) => a.order_index - b.order_index)
   }, [selectedDay])
+
+  const dayMapCards = useMemo(() => {
+    return days.map((day) => {
+      const sortedDayItems = [...(day.items || [])].sort((a, b) => a.order_index - b.order_index)
+      const stops = sortedDayItems
+        .filter((item) => item.place?.latitude != null && item.place?.longitude != null)
+        .map((item, index) => ({
+          id: item.id,
+          title: item.place?.name || item.title,
+          latitude: item.place?.latitude || 0,
+          longitude: item.place?.longitude || 0,
+          index: index + 1,
+        }))
+
+      const routeGeojson = day.routes?.find((route) => route.mode === 'walk')?.geojson || day.routes?.[0]?.geojson || null
+      const subtitleParts = [day.date, `${stops.length} stop${stops.length === 1 ? '' : 's'}`].filter(Boolean)
+
+      return {
+        day,
+        stops,
+        routeGeojson,
+        subtitle: subtitleParts.join(' • '),
+      }
+    })
+  }, [days])
 
   const handleDragStart = (item: TripItem, e: React.DragEvent) => {
     e.dataTransfer.setData('application/json', JSON.stringify({
@@ -188,6 +214,22 @@ export default function ItineraryArtifact({
               Day {d.day_index}
             </button>
           ))}
+        </div>
+
+        <div className="mt-4 -mx-1 px-1 overflow-x-auto">
+          <div className="flex items-stretch gap-3 pb-1">
+            {dayMapCards.map(({ day, stops, routeGeojson, subtitle }) => (
+              <TripDayMap
+                key={day.id}
+                stops={stops}
+                routeGeojson={routeGeojson}
+                title={`Day ${day.day_index}${day.title ? ` · ${day.title}` : ''}`}
+                subtitle={subtitle}
+                active={day.day_index === selectedDay.day_index}
+                onClick={() => setSelectedDayIndex(day.day_index)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -323,4 +365,3 @@ export default function ItineraryArtifact({
     </div>
   )
 }
-
