@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { cn } from '@/lib/utils'
@@ -35,6 +35,7 @@ export default function TripDayMap({
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<mapboxgl.Marker[]>([])
+  const [mapReady, setMapReady] = useState(false)
 
   const validStops = useMemo(
     () => stops.filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude)),
@@ -60,6 +61,7 @@ export default function TripDayMap({
     mapRef.current = map
 
     map.on('load', () => {
+      setMapReady(true)
       map.addSource('day-route', {
         type: 'geojson',
         data: { type: 'FeatureCollection', features: [] },
@@ -79,6 +81,7 @@ export default function TripDayMap({
     })
 
     return () => {
+      setMapReady(false)
       markersRef.current.forEach((marker) => marker.remove())
       markersRef.current = []
       map.remove()
@@ -88,7 +91,7 @@ export default function TripDayMap({
 
   useEffect(() => {
     const map = mapRef.current
-    if (!map) return
+    if (!map || !mapReady) return
 
     const source = map.getSource('day-route') as mapboxgl.GeoJSONSource | undefined
     if (source) {
@@ -103,11 +106,11 @@ export default function TripDayMap({
       )
       map.setPaintProperty('day-route-line', 'line-width', active ? 3.5 : 2.75)
     }
-  }, [routeGeojson, active])
+  }, [routeGeojson, active, mapReady])
 
   useEffect(() => {
     const map = mapRef.current
-    if (!map) return
+    if (!map || !mapReady) return
 
     markersRef.current.forEach((marker) => marker.remove())
     markersRef.current = []
@@ -159,7 +162,7 @@ export default function TripDayMap({
       maxZoom: 11,
       duration: 0,
     })
-  }, [validStops, active])
+  }, [validStops, active, mapReady])
 
   return (
     <button

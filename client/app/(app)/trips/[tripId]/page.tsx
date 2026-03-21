@@ -1,12 +1,12 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -58,7 +58,9 @@ export default function TripStudioPage() {
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [chatOpen, setChatOpen] = useState(true)
+  const [isHydratingMaps, setIsHydratingMaps] = useState(false)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
+  const hydrationAttemptedRef = useRef<string | null>(null)
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['trip', tripId],
@@ -111,6 +113,22 @@ export default function TripStudioPage() {
     return route.geojson
   }, [selectedDay])
 
+  const mappingSummary = useMemo(() => {
+    const itemCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
+    const mappedItemCount = days.reduce(
+      (sum, day) => sum + day.items.filter((item) => item.place?.latitude != null && item.place?.longitude != null).length,
+      0
+    )
+    const routeDayCount = days.filter((day) => (day.routes?.length || 0) > 0).length
+
+    return {
+      itemCount,
+      mappedItemCount,
+      routeDayCount,
+      needsHydration: itemCount > 0 && (mappedItemCount < itemCount || routeDayCount < days.length),
+    }
+  }, [days])
+
   const onBulkOps = useCallback(async (ops: any[]) => {
     await fetch(`/api/trips/${tripId}/items/bulk`, {
       method: 'POST',
@@ -147,6 +165,31 @@ export default function TripStudioPage() {
     await fetch(`/api/trips/${tripId}/days/${ensureSelectedDayExists}/optimize`, { method: 'POST' })
     await refetch()
   }, [tripId, ensureSelectedDayExists, refetch])
+
+  const hydrateMaps = useCallback(async () => {
+    if (isHydratingMaps) return
+    setIsHydratingMaps(true)
+    try {
+      await fetch(`/api/trips/${tripId}/hydrate-map`, { method: 'POST' })
+      await refetch()
+    } finally {
+      setIsHydratingMaps(false)
+    }
+  }, [tripId, refetch, isHydratingMaps])
+
+  useEffect(() => {
+    hydrationAttemptedRef.current = null
+  }, [tripId])
+
+  useEffect(() => {
+    if (isLoading || isHydratingMaps || !mappingSummary.needsHydration) return
+
+    const hydrationKey = `${tripId}:${mappingSummary.itemCount}:${mappingSummary.mappedItemCount}:${mappingSummary.routeDayCount}`
+    if (hydrationAttemptedRef.current === hydrationKey) return
+
+    hydrationAttemptedRef.current = hydrationKey
+    void hydrateMaps()
+  }, [tripId, isLoading, isHydratingMaps, mappingSummary, hydrateMaps])
 
   const shareUrl = trip?.share_slug ? `${typeof window !== 'undefined' ? window.location.origin : ''}/t/${trip.share_slug}` : null
   const inviteMessage = shareUrl
@@ -212,6 +255,16 @@ export default function TripStudioPage() {
           >
             <ArrowLeftRight className="w-4 h-4 text-white/30" />
             Optimize order
+          </button>
+          <div className="w-px h-3 bg-white/10" />
+          <button
+            onClick={hydrateMaps}
+            disabled={isHydratingMaps}
+            className="text-xs text-white/50 hover:text-white/80 transition-colors inline-flex items-center gap-1.5 disabled:opacity-50"
+            title="Repair or rebuild day map locations and routes"
+          >
+            <Route className="w-4 h-4 text-white/30" />
+            {isHydratingMaps ? 'Building maps…' : 'Build maps'}
           </button>
           <div className="w-px h-3 bg-white/10" />
           <button
