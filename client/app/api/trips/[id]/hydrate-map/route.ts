@@ -4,29 +4,64 @@ import { requireUser } from '@/app/api/trips/_utils'
 
 function extractTripContext(title: string | null | undefined) {
   if (!title) return ''
-  const match = title.match(/\b(?:in|to)\s+(.+)$/i)
-  return match?.[1]?.trim() || title
+  const cleaned = title.trim()
+  const monthPattern = '(January|February|March|April|May|June|July|August|September|October|November|December)'
+
+  const patterns = [
+    new RegExp(`^\\d+\\s+Days?\\s+in\\s+(.+)$`, 'i'),
+    new RegExp(`^(.+?)\\s+in\\s+${monthPattern}\\b`, 'i'),
+    /^(.+?)\s+Day\s+Trip$/i,
+    /^Trip to\s+(.+)$/i,
+    /^(.+?)\s+Trip$/i,
+  ]
+
+  for (const pattern of patterns) {
+    const match = cleaned.match(pattern)
+    if (match?.[1]) {
+      return match[1].trim()
+    }
+  }
+
+  return cleaned
 }
 
-function buildQueries(itemTitle: string, dayTitle: string | null, tripTitle: string) {
+function haversineKm(
+  latitude1: number,
+  longitude1: number,
+  latitude2: number,
+  longitude2: number
+) {
+  const toRad = (value: number) => (value * Math.PI) / 180
+  const earthRadiusKm = 6371
+  const dLat = toRad(latitude2 - latitude1)
+  const dLng = toRad(longitude2 - longitude1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(latitude1)) * Math.cos(toRad(latitude2)) * Math.sin(dLng / 2) ** 2
+
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function buildQueries(itemTitle: string, dayTitle: string | null, destinationContext: string) {
   const normalized = itemTitle.replace(/\s+/g, ' ').trim()
   const stripped = normalized
     .replace(/^(Breakfast|Brunch|Lunch|Dinner)\s+at\s+/i, '')
+    .replace(/^(Lunch|Dinner|Breakfast|Brunch)\s+near\s+/i, '')
     .replace(/^(Morning|Afternoon|Evening)\s+(at|in)\s+/i, '')
     .replace(/^(Explore|Visit|Tour|Walk through|Stroll through)\s+/i, '')
     .replace(/\s+(Tour|Visit|Experience)$/i, '')
     .trim()
 
-  const tripContext = extractTripContext(tripTitle)
   const dayContext = dayTitle?.trim() || ''
 
   return Array.from(
     new Set(
       [
-        normalized,
-        stripped,
-        stripped && tripContext ? `${stripped}, ${tripContext}` : '',
-        stripped && dayContext && tripContext ? `${stripped}, ${dayContext}, ${tripContext}` : '',
+        normalized && destinationContext ? `${normalized}, ${destinationContext}` : normalized,
+        stripped && destinationContext ? `${stripped}, ${destinationContext}` : stripped,
+        stripped && dayContext && destinationContext ? `${stripped}, ${dayContext}, ${destinationContext}` : '',
+        normalized.includes(destinationContext) ? normalized : '',
+        stripped.includes(destinationContext) ? stripped : '',
       ].filter(Boolean)
     )
   )
@@ -104,25 +139,61 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
   if (daysErr) return NextResponse.json({ error: daysErr.message }, { status: 500 })
 
+  const destinationContext = extractTripContext(trip.title)
+  const destinationPlace = destinationContext
+    ? await geocodePlace(destinationContext, token)
+    : null
+
   let geocodedItems = 0
   let routeDays = 0
 
   for (const day of tripDays || []) {
+    const dayFallbackPlace =
+      destinationContext && day.title
+        ? await geocodePlace(`${day.title}, ${destinationContext}`, token)
+        : null
+
     const { data: items, error: itemsErr } = await supabase
       .from('trip_items')
-      .select('id,title,type,place_id')
+      .select('id,title,type,place_id,place:places(id,name,country,latitude,longitude)')
       .eq('trip_day_id', day.id)
       .order('order_index', { ascending: true })
 
     if (itemsErr) return NextResponse.json({ error: itemsErr.message }, { status: 500 })
 
     for (const item of items || []) {
-      if (item.place_id || !['activity', 'meal', 'lodging'].includes(item.type)) continue
+      if (!['activity', 'meal', 'lodging'].includes(item.type)) continue
+
+      const currentPlace = Array.isArray(item.place) ? item.place[0] : item.place
+      const currentDistanceKm =
+        destinationPlace &&
+        typeof currentPlace?.latitude === 'number' &&
+        typeof currentPlace?.longitude === 'number'
+          ? haversineKm(
+              currentPlace.latitude,
+              currentPlace.longitude,
+              destinationPlace.latitude,
+              destinationPlace.longitude
+            )
+          : null
+
+      const shouldRepair =
+        !item.place_id ||
+        (destinationPlace != null && currentDistanceKm != null && currentDistanceKm > 120)
+
+      if (!shouldRepair) continue
 
       let resolvedPlace: any = null
-      for (const query of buildQueries(item.title, day.title, trip.title)) {
+      for (const query of buildQueries(item.title, day.title, destinationContext)) {
         const result = await geocodePlace(query, token)
         if (!result) continue
+
+        if (
+          destinationPlace &&
+          haversineKm(result.latitude, result.longitude, destinationPlace.latitude, destinationPlace.longitude) > 120
+        ) {
+          continue
+        }
 
         const { data: place, error: placeErr } = await supabase
           .from('places')
@@ -146,6 +217,48 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
         resolvedPlace = place
         break
+      }
+
+      if (!resolvedPlace && dayFallbackPlace) {
+        const { data: place, error: placeErr } = await supabase
+          .from('places')
+          .upsert(
+            {
+              name: dayFallbackPlace.name,
+              country: dayFallbackPlace.country,
+              country_code: dayFallbackPlace.country_code || null,
+              latitude: dayFallbackPlace.latitude,
+              longitude: dayFallbackPlace.longitude,
+              mapbox_place_id: dayFallbackPlace.mapbox_place_id,
+            },
+            { onConflict: 'mapbox_place_id' }
+          )
+          .select('id')
+          .single()
+
+        if (placeErr) return NextResponse.json({ error: placeErr.message }, { status: 500 })
+        resolvedPlace = place
+      }
+
+      if (!resolvedPlace && destinationPlace) {
+        const { data: place, error: placeErr } = await supabase
+          .from('places')
+          .upsert(
+            {
+              name: destinationPlace.name,
+              country: destinationPlace.country,
+              country_code: destinationPlace.country_code || null,
+              latitude: destinationPlace.latitude,
+              longitude: destinationPlace.longitude,
+              mapbox_place_id: destinationPlace.mapbox_place_id,
+            },
+            { onConflict: 'mapbox_place_id' }
+          )
+          .select('id')
+          .single()
+
+        if (placeErr) return NextResponse.json({ error: placeErr.message }, { status: 500 })
+        resolvedPlace = place
       }
 
       if (!resolvedPlace?.id) continue

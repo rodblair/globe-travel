@@ -125,7 +125,7 @@ export default function TripStudioPage() {
       itemCount,
       mappedItemCount,
       routeDayCount,
-      needsHydration: itemCount > 0 && (mappedItemCount < itemCount || routeDayCount < days.length),
+      needsHydration: itemCount > 0,
     }
   }, [days])
 
