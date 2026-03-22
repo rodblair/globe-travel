@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { GripVertical, Trash2, Pencil, Clock, Sparkles } from 'lucide-react'
+import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
 
@@ -52,6 +52,85 @@ type ItineraryArtifactProps = {
   isLoading?: boolean
 }
 
+type DerivedStop = {
+  title: string
+  latitude: number
+  longitude: number
+}
+
+type DisplayStop = {
+  id: string
+  title: string
+  latitude: number
+  longitude: number
+  index: number
+  item: TripItem
+  placeName: string | null
+  country: string | null
+  timeLabel: string | null
+  mapped: boolean
+}
+
+const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
+  {
+    pattern: /colosseum.*roman forum|roman forum.*colosseum/i,
+    stops: [
+      { title: 'Colosseum', latitude: 41.89021, longitude: 12.49223 },
+      { title: 'Roman Forum', latitude: 41.89246, longitude: 12.48533 },
+    ],
+  },
+  {
+    pattern: /vatican museums.*sistine chapel|sistine chapel.*vatican museums/i,
+    stops: [
+      { title: 'Vatican Museums', latitude: 41.90649, longitude: 12.45362 },
+      { title: 'Sistine Chapel', latitude: 41.90293, longitude: 12.45486 },
+    ],
+  },
+]
+
+function buildDisplayStops(items: TripItem[]) {
+  const sortedItems = [...items].sort((a, b) => a.order_index - b.order_index)
+  const displayStops: DisplayStop[] = []
+
+  for (const item of sortedItems) {
+    const timeLabel = [item.start_time, item.end_time].filter(Boolean).join('–') || null
+    const derivedStops = DERIVED_STOP_RULES.find((entry) => entry.pattern.test(item.title))?.stops || null
+
+    if (derivedStops) {
+      for (const stop of derivedStops) {
+        displayStops.push({
+          id: `${item.id}:${stop.title}`,
+          title: stop.title,
+          latitude: stop.latitude,
+          longitude: stop.longitude,
+          index: displayStops.length + 1,
+          item,
+          placeName: stop.title,
+          country: item.place?.country || 'Italy',
+          timeLabel,
+          mapped: true,
+        })
+      }
+      continue
+    }
+
+    displayStops.push({
+      id: item.id,
+      title: item.place?.name || item.title,
+      latitude: item.place?.latitude || 0,
+      longitude: item.place?.longitude || 0,
+      index: displayStops.length + 1,
+      item,
+      placeName: item.place?.name || null,
+      country: item.place?.country || null,
+      timeLabel,
+      mapped: item.place?.latitude != null && item.place?.longitude != null,
+    })
+  }
+
+  return displayStops
+}
+
 function timeChip(start: string | null, end: string | null) {
   if (!start && !end) return null
   const label = [start, end].filter(Boolean).join('–')
@@ -82,6 +161,7 @@ export default function ItineraryArtifact({
   const [dragOverItemId, setDragOverItemId] = useState<string | null>(null)
   const [editingItemId, setEditingItemId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState<string>('')
+  const [mapExpanded, setMapExpanded] = useState(false)
 
   const sortedItems = useMemo(() => {
     if (!selectedDay) return []
@@ -91,17 +171,13 @@ export default function ItineraryArtifact({
   const dayMapCards = useMemo(() => {
     return days.map((day) => {
       const sortedDayItems = [...(day.items || [])].sort((a, b) => a.order_index - b.order_index)
-      const stops = sortedDayItems
-        .filter((item) => item.place?.latitude != null && item.place?.longitude != null)
-        .map((item, index) => ({
-          id: item.id,
-          title: item.place?.name || item.title,
-          latitude: item.place?.latitude || 0,
-          longitude: item.place?.longitude || 0,
-          index: index + 1,
-        }))
+      const stops = buildDisplayStops(sortedDayItems).filter((stop) => stop.mapped)
 
       const routeGeojson = day.routes?.find((route) => route.mode === 'walk')?.geojson || day.routes?.[0]?.geojson || null
+      const route = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
+      const routeSummary = route?.distance_m && route?.duration_s
+        ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
+        : null
       const subtitleParts = [day.date, `${stops.length} stop${stops.length === 1 ? '' : 's'}`].filter(Boolean)
 
       return {
@@ -109,9 +185,31 @@ export default function ItineraryArtifact({
         stops,
         routeGeojson,
         subtitle: subtitleParts.join(' • '),
+        routeSummary,
+        stopPreview: buildDisplayStops(sortedDayItems).map((stop) => stop.title),
       }
     })
   }, [days])
+
+  const selectedDayMap = useMemo(() => {
+    if (!selectedDay) return null
+
+    const sortedDayItems = [...(selectedDay.items || [])].sort((a, b) => a.order_index - b.order_index)
+    const displayStops = buildDisplayStops(sortedDayItems)
+    const mappedStops = displayStops.filter((stop) => stop.mapped)
+
+    const route = selectedDay.routes?.find((entry) => entry.mode === 'walk') || selectedDay.routes?.[0]
+
+    return {
+      routeGeojson: route?.geojson || null,
+      routeSummary:
+        route?.distance_m && route?.duration_s
+          ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
+          : null,
+      mappedStops,
+      stopDetails: displayStops,
+    }
+  }, [selectedDay])
 
   const handleDragStart = (item: TripItem, e: React.DragEvent) => {
     e.dataTransfer.setData('application/json', JSON.stringify({
@@ -218,19 +316,100 @@ export default function ItineraryArtifact({
 
         <div className="mt-4 -mx-1 px-1 overflow-x-auto">
           <div className="flex items-stretch gap-3 pb-1">
-            {dayMapCards.map(({ day, stops, routeGeojson, subtitle }) => (
+            {dayMapCards.map(({ day, stops, routeGeojson, subtitle, routeSummary, stopPreview }) => (
               <TripDayMap
                 key={day.id}
                 stops={stops}
                 routeGeojson={routeGeojson}
                 title={`Day ${day.day_index}${day.title ? ` · ${day.title}` : ''}`}
                 subtitle={subtitle}
+                routeSummary={routeSummary}
+                stopPreview={stopPreview}
                 active={day.day_index === selectedDay.day_index}
                 onClick={() => setSelectedDayIndex(day.day_index)}
               />
             ))}
           </div>
         </div>
+
+        {selectedDayMap && (
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-white/80 truncate">
+                  Day {selectedDay.day_index} map
+                </p>
+                <p className="mt-1 text-[11px] text-white/40 truncate">
+                  {selectedDayMap.routeSummary ||
+                    `${selectedDayMap.mappedStops.length} mapped stop${selectedDayMap.mappedStops.length === 1 ? '' : 's'}`}
+                </p>
+              </div>
+              <button
+                onClick={() => setMapExpanded((current) => !current)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
+              >
+                {mapExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                {mapExpanded ? 'Shrink' : 'Enlarge'}
+              </button>
+            </div>
+
+            <div className="mt-3">
+              <TripDayMap
+                stops={selectedDayMap.mappedStops}
+                routeGeojson={selectedDayMap.routeGeojson}
+                title={`Day ${selectedDay.day_index}`}
+                subtitle={selectedDay.title}
+                routeSummary={selectedDayMap.routeSummary}
+                interactive
+                showDetails={false}
+                mapHeightClassName={mapExpanded ? 'h-80' : 'h-56'}
+                className="min-w-0 overflow-hidden"
+              />
+            </div>
+
+            <div className="mt-3 grid gap-2">
+              {selectedDayMap.stopDetails.map((stop, index) => (
+                <button
+                  key={stop.id}
+                  onClick={() => onSelectItem?.(stop.item)}
+                  className={cn(
+                    'flex items-start gap-3 rounded-2xl border px-3 py-2 text-left transition-colors',
+                    stop.mapped
+                      ? 'border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]'
+                      : 'border-amber-500/20 bg-amber-500/[0.06] hover:bg-amber-500/[0.1]'
+                  )}
+                >
+                  <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-400/90 text-[11px] font-semibold text-black">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-xs font-medium text-white/80">{stop.title}</p>
+                      {stop.timeLabel && (
+                        <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/45">
+                          {stop.timeLabel}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-[11px] text-white/40 truncate">
+                      {stop.placeName || 'No pinned place yet'}
+                      {stop.country ? ` • ${stop.country}` : ''}
+                    </p>
+                  </div>
+                  <span className={cn(
+                    'inline-flex flex-shrink-0 items-center gap-1 rounded-full border px-2 py-1 text-[10px]',
+                    stop.mapped
+                      ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+                      : 'border-amber-500/20 bg-amber-500/10 text-amber-300'
+                  )}>
+                    <MapPin className="h-3 w-3" />
+                    {stop.mapped ? 'Pinned' : 'Needs map data'}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* List */}

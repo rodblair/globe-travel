@@ -18,6 +18,11 @@ type TripDayMapProps = {
   routeGeojson?: GeoJSON.FeatureCollection | GeoJSON.Feature | null
   title: string
   subtitle?: string | null
+  routeSummary?: string | null
+  stopPreview?: string[]
+  interactive?: boolean
+  mapHeightClassName?: string
+  showDetails?: boolean
   active?: boolean
   onClick?: () => void
   className?: string
@@ -28,6 +33,11 @@ export default function TripDayMap({
   routeGeojson,
   title,
   subtitle,
+  routeSummary,
+  stopPreview = [],
+  interactive = false,
+  mapHeightClassName = 'h-32',
+  showDetails = true,
   active = false,
   onClick,
   className,
@@ -51,14 +61,19 @@ export default function TripDayMap({
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
+      style: 'mapbox://styles/mapbox/navigation-night-v1',
       center: [0, 20],
       zoom: 1.25,
       attributionControl: false,
-      interactive: false,
+      interactive,
+      dragRotate: false,
+      touchZoomRotate: interactive ? { around: 'center' } : false,
     })
 
     mapRef.current = map
+    if (interactive) {
+      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
+    }
 
     map.on('load', () => {
       setMapReady(true)
@@ -87,7 +102,7 @@ export default function TripDayMap({
       map.remove()
       mapRef.current = null
     }
-  }, [])
+  }, [interactive])
 
   useEffect(() => {
     const map = mapRef.current
@@ -119,15 +134,15 @@ export default function TripDayMap({
       const element = document.createElement('div')
       element.innerHTML = `
         <div style="
-          width:20px;
-          height:20px;
+          width:${interactive ? 24 : 20}px;
+          height:${interactive ? 24 : 20}px;
           border-radius:999px;
           background:${active ? 'rgba(251,191,36,0.92)' : 'rgba(125,211,252,0.9)'};
           color:#050510;
           display:flex;
           align-items:center;
           justify-content:center;
-          font-size:10px;
+          font-size:${interactive ? 11 : 10}px;
           font-weight:700;
           box-shadow:0 0 0 2px rgba(5,5,16,0.8);
         ">${stop.index}</div>
@@ -158,25 +173,25 @@ export default function TripDayMap({
     }
 
     map.fitBounds(bounds, {
-      padding: 42,
-      maxZoom: 11,
+      padding: interactive ? 56 : 42,
+      maxZoom: interactive ? 13 : 11,
       duration: 0,
     })
-  }, [validStops, active, mapReady])
+  }, [validStops, active, mapReady, interactive])
 
   return (
-    <button
-      type="button"
+    <div
       onClick={onClick}
       className={cn(
         'group min-w-[220px] overflow-hidden rounded-2xl border bg-black/40 text-left transition-colors',
         active
           ? 'border-amber-500/30 bg-amber-500/[0.06]'
           : 'border-white/10 hover:border-white/20 hover:bg-white/[0.04]',
+        onClick ? 'cursor-pointer' : '',
         className
       )}
     >
-      <div className="relative h-32 w-full overflow-hidden">
+      <div className={cn('relative w-full overflow-hidden', mapHeightClassName)}>
         <div ref={containerRef} className="h-full w-full" />
         {validStops.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-center">
@@ -187,12 +202,32 @@ export default function TripDayMap({
         )}
       </div>
 
-      <div className="px-3 py-3">
-        <p className="text-xs font-medium text-white/80 truncate">{title}</p>
-        <p className="mt-1 text-[11px] text-white/35 truncate">
-          {subtitle || `${validStops.length} mapped stop${validStops.length === 1 ? '' : 's'}`}
-        </p>
-      </div>
-    </button>
+      {showDetails && (
+        <div className="px-3 py-3">
+          <p className="text-xs font-medium text-white/80 truncate">{title}</p>
+          <p className="mt-1 text-[11px] text-white/35 truncate">
+            {subtitle || `${validStops.length} mapped stop${validStops.length === 1 ? '' : 's'}`}
+          </p>
+          {routeSummary && (
+            <p className="mt-1 text-[11px] text-amber-300/80 truncate">
+              {routeSummary}
+            </p>
+          )}
+          {stopPreview.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {stopPreview.slice(0, 3).map((stop, index) => (
+                <span
+                  key={`${stop}-${index}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[10px] text-white/55"
+                >
+                  <span className="text-amber-300/80">{index + 1}</span>
+                  <span className="truncate max-w-[120px]">{stop}</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
