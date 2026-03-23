@@ -163,15 +163,11 @@ export default function ItineraryArtifact({
   const [editingTitle, setEditingTitle] = useState<string>('')
   const [mapExpanded, setMapExpanded] = useState(false)
 
-  const sortedItems = useMemo(() => {
-    if (!selectedDay) return []
-    return [...(selectedDay.items || [])].sort((a, b) => a.order_index - b.order_index)
-  }, [selectedDay])
-
   const dayMapCards = useMemo(() => {
     return days.map((day) => {
       const sortedDayItems = [...(day.items || [])].sort((a, b) => a.order_index - b.order_index)
-      const stops = buildDisplayStops(sortedDayItems).filter((stop) => stop.mapped)
+      const displayStops = buildDisplayStops(sortedDayItems)
+      const stops = displayStops.filter((stop) => stop.mapped)
 
       const routeGeojson = day.routes?.find((route) => route.mode === 'walk')?.geojson || day.routes?.[0]?.geojson || null
       const route = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
@@ -182,45 +178,39 @@ export default function ItineraryArtifact({
 
       return {
         day,
+        sortedItems: sortedDayItems,
+        displayStops,
         stops,
         routeGeojson,
         subtitle: subtitleParts.join(' • '),
         routeSummary,
-        stopPreview: buildDisplayStops(sortedDayItems).map((stop) => stop.title),
+        stopPreview: displayStops.map((stop) => stop.title),
       }
     })
   }, [days])
 
   const selectedDayMap = useMemo(() => {
-    if (!selectedDay) return null
-
-    const sortedDayItems = [...(selectedDay.items || [])].sort((a, b) => a.order_index - b.order_index)
-    const displayStops = buildDisplayStops(sortedDayItems)
-    const mappedStops = displayStops.filter((stop) => stop.mapped)
-
-    const route = selectedDay.routes?.find((entry) => entry.mode === 'walk') || selectedDay.routes?.[0]
+    const selectedCard = dayMapCards.find(({ day }) => day.day_index === selectedDay?.day_index)
+    if (!selectedCard) return null
 
     return {
-      routeGeojson: route?.geojson || null,
-      routeSummary:
-        route?.distance_m && route?.duration_s
-          ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
-          : null,
-      mappedStops,
-      stopDetails: displayStops,
+      routeGeojson: selectedCard.routeGeojson,
+      routeSummary: selectedCard.routeSummary,
+      mappedStops: selectedCard.stops,
+      stopDetails: selectedCard.displayStops,
     }
-  }, [selectedDay])
+  }, [dayMapCards, selectedDay])
 
-  const handleDragStart = (item: TripItem, e: React.DragEvent) => {
+  const handleDragStart = (item: TripItem, fromDayIndex: number, e: React.DragEvent) => {
     e.dataTransfer.setData('application/json', JSON.stringify({
       kind: 'trip_item',
       item_id: item.id,
-      from_day_index: selectedDay.day_index,
+      from_day_index: fromDayIndex,
     }))
     e.dataTransfer.effectAllowed = 'move'
   }
 
-  const handleDropOnList = async (toIndex: number, e: React.DragEvent) => {
+  const handleDropOnList = async (dayIndex: number, sortedDayItems: TripItem[], toIndex: number, e: React.DragEvent) => {
     e.preventDefault()
     setDragOverItemId(null)
 
@@ -234,16 +224,15 @@ export default function ItineraryArtifact({
 
     const itemId = payload.item_id as string
     const fromDayIndex = payload.from_day_index as number
-    const toDayIndex = selectedDay.day_index
 
-    if (fromDayIndex !== toDayIndex) {
-      await onBulkOps([{ op: 'move', item_id: itemId, to_day_index: toDayIndex, to_order_index: toIndex }])
+    if (fromDayIndex !== dayIndex) {
+      await onBulkOps([{ op: 'move', item_id: itemId, to_day_index: dayIndex, to_order_index: toIndex }])
       return
     }
 
-    const ids = sortedItems.map((it) => it.id).filter((id) => id !== itemId)
+    const ids = sortedDayItems.map((it) => it.id).filter((id) => id !== itemId)
     ids.splice(toIndex, 0, itemId)
-    await onBulkOps([{ op: 'reorder', day_index: toDayIndex, ordered_item_ids: ids }])
+    await onBulkOps([{ op: 'reorder', day_index: dayIndex, ordered_item_ids: ids }])
   }
 
   const startEditing = (item: TripItem) => {
@@ -273,7 +262,6 @@ export default function ItineraryArtifact({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
       <div className="flex-shrink-0 px-4 py-3 border-b border-white/10">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
@@ -296,7 +284,6 @@ export default function ItineraryArtifact({
           </div>
         </div>
 
-        {/* Day tabs */}
         <div className="mt-3 flex items-center gap-2 overflow-x-auto">
           {days.map((d) => (
             <button
@@ -412,134 +399,214 @@ export default function ItineraryArtifact({
         )}
       </div>
 
-      {/* List */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-2">
-        {/* Dropzone at top */}
-        <div
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => handleDropOnList(0, e)}
-          className="h-2 rounded-lg"
-        />
-
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
         <AnimatePresence mode="popLayout">
-          {sortedItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              layout
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.18 }}
-            >
-              <div
-                draggable
-                onDragStart={(e) => handleDragStart(item, e)}
-                onDragOver={(e) => {
-                  e.preventDefault()
-                  setDragOverItemId(item.id)
-                }}
-                onDragLeave={() => {
-                  setDragOverItemId((prev) => (prev === item.id ? null : prev))
-                }}
-                onDrop={(e) => handleDropOnList(index, e)}
+          {dayMapCards.map(({ day, sortedItems, stops, routeGeojson, routeSummary, subtitle, stopPreview, displayStops }) => {
+            const isSelectedDay = day.day_index === selectedDay.day_index
+
+            return (
+              <motion.section
+                key={day.id}
+                layout
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
                 className={cn(
-                  'group rounded-2xl bg-white/5 border border-white/10 p-3 transition-colors',
-                  dragOverItemId === item.id ? 'border-amber-500/30 bg-amber-500/[0.06]' : 'hover:border-white/20'
+                  'rounded-3xl border p-4',
+                  isSelectedDay ? 'border-amber-500/25 bg-amber-500/[0.05]' : 'border-white/10 bg-white/[0.02]'
                 )}
               >
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 text-white/20 group-hover:text-white/35 transition-colors">
-                    <GripVertical className="w-4 h-4" />
-                  </div>
-
-                  <button
-                    onClick={() => onSelectItem?.(item)}
-                    className="flex-1 min-w-0 text-left"
-                  >
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {timeChip(item.start_time, item.end_time)}
-                      <span className="text-[10px] px-2 py-1 rounded-full bg-black/40 border border-white/10 text-white/40">
-                        {item.type}
-                      </span>
-                    </div>
-
-                    <div className="mt-2">
-                      {editingItemId === item.id ? (
-                        <input
-                          autoFocus
-                          value={editingTitle}
-                          onChange={(e) => setEditingTitle(e.target.value)}
-                          onBlur={commitEditing}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') commitEditing()
-                            if (e.key === 'Escape') setEditingItemId(null)
-                          }}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-500/40"
-                        />
-                      ) : (
-                        <p className="text-sm text-white/80 font-medium truncate">
-                          {item.title}
-                        </p>
-                      )}
-                      {item.place?.country && (
-                        <p className="text-xs text-white/35 truncate mt-0.5">
-                          {item.place.country}
-                        </p>
-                      )}
-                      {item.notes && (
-                        <p className="text-xs text-white/40 line-clamp-2 mt-2">
-                          {item.notes}
-                        </p>
-                      )}
-                    </div>
+                <div className="flex items-start justify-between gap-3">
+                  <button onClick={() => setSelectedDayIndex(day.day_index)} className="min-w-0 text-left">
+                    <p className="text-[11px] uppercase tracking-wider text-white/30">Day {day.day_index}</p>
+                    <h3 className="mt-1 text-sm font-medium text-white/85">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
+                    <p className="mt-1 text-xs text-white/40">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
                   </button>
-
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => startEditing(item)}
-                      className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
-                      title="Edit title"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => onSwapItem?.(item)}
-                      className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
-                      title="Swap this activity"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => deleteItem(item.id)}
-                      className="w-8 h-8 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 flex items-center justify-center text-red-300 transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => onRegenerateDay?.(day.day_index)}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Regenerate day
+                  </button>
                 </div>
-              </div>
 
-              {/* Dropzone after each item */}
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleDropOnList(index + 1, e)}
-                className="h-2 rounded-lg"
-              />
-            </motion.div>
-          ))}
+                <div className="mt-4">
+                  <TripDayMap
+                    stops={stops}
+                    routeGeojson={routeGeojson}
+                    title={`Day ${day.day_index}`}
+                    subtitle={day.title}
+                    routeSummary={routeSummary}
+                    stopPreview={stopPreview}
+                    interactive={isSelectedDay}
+                    showDetails={false}
+                    active={isSelectedDay}
+                    mapHeightClassName={isSelectedDay ? 'h-56' : 'h-44'}
+                    className="min-w-0 overflow-hidden"
+                    onClick={() => setSelectedDayIndex(day.day_index)}
+                  />
+                </div>
+
+                {displayStops.length > 0 && (
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    {displayStops.map((stop, index) => (
+                      <button
+                        key={stop.id}
+                        onClick={() => onSelectItem?.(stop.item)}
+                        className={cn(
+                          'flex items-start gap-3 rounded-2xl border px-3 py-2 text-left transition-colors',
+                          stop.mapped
+                            ? 'border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]'
+                            : 'border-amber-500/20 bg-amber-500/[0.06] hover:bg-amber-500/[0.1]'
+                        )}
+                      >
+                        <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-400/90 text-[11px] font-semibold text-black">
+                          {index + 1}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-xs font-medium text-white/80">{stop.title}</p>
+                            {stop.timeLabel && (
+                              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/45">
+                                {stop.timeLabel}
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-1 text-[11px] text-white/40 truncate">
+                            {stop.placeName || 'No pinned place yet'}
+                            {stop.country ? ` • ${stop.country}` : ''}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-4 space-y-2">
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleDropOnList(day.day_index, sortedItems, 0, e)}
+                    className="h-2 rounded-lg"
+                  />
+
+                  {sortedItems.map((item, index) => (
+                    <div key={item.id}>
+                      <div
+                        draggable
+                        onDragStart={(e) => handleDragStart(item, day.day_index, e)}
+                        onDragOver={(e) => {
+                          e.preventDefault()
+                          setSelectedDayIndex(day.day_index)
+                          setDragOverItemId(item.id)
+                        }}
+                        onDragLeave={() => {
+                          setDragOverItemId((prev) => (prev === item.id ? null : prev))
+                        }}
+                        onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index, e)}
+                        className={cn(
+                          'group rounded-2xl border p-3 transition-colors',
+                          dragOverItemId === item.id ? 'border-amber-500/30 bg-amber-500/[0.06]' : 'border-white/10 bg-white/5 hover:border-white/20'
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="mt-0.5 text-white/20 group-hover:text-white/35 transition-colors">
+                            <GripVertical className="w-4 h-4" />
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              setSelectedDayIndex(day.day_index)
+                              onSelectItem?.(item)
+                            }}
+                            className="flex-1 min-w-0 text-left"
+                          >
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {timeChip(item.start_time, item.end_time)}
+                              <span className="text-[10px] px-2 py-1 rounded-full bg-black/40 border border-white/10 text-white/40">
+                                {item.type}
+                              </span>
+                            </div>
+
+                            <div className="mt-2">
+                              {editingItemId === item.id ? (
+                                <input
+                                  autoFocus
+                                  value={editingTitle}
+                                  onChange={(e) => setEditingTitle(e.target.value)}
+                                  onBlur={commitEditing}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') commitEditing()
+                                    if (e.key === 'Escape') setEditingItemId(null)
+                                  }}
+                                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-500/40"
+                                />
+                              ) : (
+                                <p className="text-sm text-white/80 font-medium truncate">
+                                  {item.title}
+                                </p>
+                              )}
+                              {item.place?.country && (
+                                <p className="text-xs text-white/35 truncate mt-0.5">
+                                  {item.place.country}
+                                </p>
+                              )}
+                              {item.notes && (
+                                <p className="text-xs text-white/40 line-clamp-2 mt-2">
+                                  {item.notes}
+                                </p>
+                              )}
+                            </div>
+                          </button>
+
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => startEditing(item)}
+                              className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
+                              title="Edit title"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => onSwapItem?.(item)}
+                              className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
+                              title="Swap this activity"
+                            >
+                              <Sparkles className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteItem(item.id)}
+                              className="w-8 h-8 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 flex items-center justify-center text-red-300 transition-colors"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index + 1, e)}
+                        className="h-2 rounded-lg"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {!isLoading && sortedItems.length === 0 && (
+                  <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-black/20 px-4 py-5 text-center">
+                    <p className="text-sm text-white/40">Ask the AI to build this day.</p>
+                    <p className="mt-2 text-xs text-white/25">
+                      Example: “Plan Day {day.day_index} around great food and neighborhoods.”
+                    </p>
+                  </div>
+                )}
+              </motion.section>
+            )
+          })}
         </AnimatePresence>
-
-        {!isLoading && sortedItems.length === 0 && (
-          <div className="mt-10 text-center">
-            <p className="text-sm text-white/40">
-              Ask the AI to build your day.
-            </p>
-            <p className="text-xs text-white/25 mt-2">
-              Example: “Plan Day {selectedDay.day_index} around great food and neighborhoods.”
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
