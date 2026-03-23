@@ -1,12 +1,14 @@
 'use client'
 
 import { useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { Compass, Sparkles } from 'lucide-react'
+import { ArrowLeft, Compass, Sparkles } from 'lucide-react'
 import { useChat, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 
 export default function ChatPage() {
+  const router = useRouter()
   const handlePlaceAdded = useCallback((event: PlaceEvent) => {
     // Could trigger a toast or visual feedback
     console.log('Place added:', event.place.name)
@@ -29,6 +31,13 @@ export default function ChatPage() {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between max-w-3xl mx-auto">
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.back()}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/55 transition-colors hover:bg-white/10 hover:text-white/80"
+                title="Go back"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
               <motion.div
                 initial={{ rotate: 0 }}
                 animate={{ rotate: 360 }}
