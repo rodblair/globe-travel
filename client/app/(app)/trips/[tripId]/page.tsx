@@ -5,8 +5,8 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { motion, AnimatePresence } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route } from 'lucide-react'
+import { motion, AnimatePresence, useDragControls } from 'motion/react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -52,6 +52,26 @@ const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
   practical: 'border-amber-500/25 bg-amber-500/10 text-amber-300',
 }
 
+function extractDestinationLabel(title: string | null | undefined) {
+  if (!title) return null
+
+  const cleaned = title.trim()
+  const patterns = [
+    /^\d+\s+Days?\s+in\s+(.+)$/i,
+    /^(.+?)\s+in\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b/i,
+    /^(.+?)\s+Day\s+Trip$/i,
+    /^Trip to\s+(.+)$/i,
+    /^(.+?)\s+Trip$/i,
+  ]
+
+  for (const pattern of patterns) {
+    const match = cleaned.match(pattern)
+    if (match?.[1]) return match[1].trim()
+  }
+
+  return cleaned
+}
+
 export default function TripStudioPage() {
   const params = useParams<{ tripId: string }>()
   const tripId = params.tripId
@@ -59,8 +79,11 @@ export default function TripStudioPage() {
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [chatOpen, setChatOpen] = useState(true)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
+  const studioRef = useRef<HTMLDivElement>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
+  const chatDragControls = useDragControls()
+  const itineraryDragControls = useDragControls()
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['trip', tripId],
@@ -112,6 +135,23 @@ export default function TripStudioPage() {
     if (!route?.geojson) return null
     return route.geojson
   }, [selectedDay])
+
+  const tripDestination = useMemo(() => extractDestinationLabel(trip?.title), [trip?.title])
+
+  const tripDestinationCenter = useMemo(() => {
+    const allStops = days
+      .flatMap((day) => day.items || [])
+      .filter((item) => item.place?.latitude != null && item.place?.longitude != null)
+
+    if (allStops.length === 0) return null
+
+    const latitude =
+      allStops.reduce((sum, item) => sum + (item.place?.latitude || 0), 0) / allStops.length
+    const longitude =
+      allStops.reduce((sum, item) => sum + (item.place?.longitude || 0), 0) / allStops.length
+
+    return { latitude, longitude }
+  }, [days])
 
   const mappingSummary = useMemo(() => {
     const itemCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
@@ -225,12 +265,14 @@ export default function TripStudioPage() {
   }, [shareUrl, inviteMessage, trip?.title])
 
   return (
-    <div className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
+    <div ref={studioRef} className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
       {/* Globe */}
       <div className="absolute inset-0">
         <TripGlobe
           stops={selectedStops}
           routeGeojson={selectedRouteGeojson}
+          destinationLabel={tripDestination}
+          destinationCenter={tripDestinationCenter}
           flyToRef={flyToRef}
           className="w-full h-full"
         />
@@ -386,11 +428,30 @@ export default function TripStudioPage() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            drag
+            dragControls={chatDragControls}
+            dragListener={false}
+            dragConstraints={studioRef}
+            dragMomentum={false}
+            dragElastic={0.08}
             className="absolute top-[178px] md:top-36 left-4 bottom-4 w-[calc(100%-2rem)] md:w-[360px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
           >
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 flex-shrink-0">
-              <span className="text-xs font-medium text-white/70">Trip Planner</span>
+            <div
+              onPointerDown={(event) => chatDragControls.start(event)}
+              className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 flex-shrink-0 cursor-grab active:cursor-grabbing"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-white/70">Trip Planner</span>
+                <span
+                  className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] text-white/45"
+                  title="Drag chat window"
+                >
+                  <GripHorizontal className="h-3.5 w-3.5" />
+                  Move
+                </span>
+              </div>
               <button
+                onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => setChatOpen(false)}
                 className="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-white/30 hover:text-white/60 transition-colors"
               >
@@ -420,19 +481,34 @@ export default function TripStudioPage() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+        drag
+        dragControls={itineraryDragControls}
+        dragListener={false}
+        dragConstraints={studioRef}
+        dragMomentum={false}
+        dragElastic={0.08}
         className="absolute top-[178px] md:top-36 right-4 bottom-4 w-[calc(100%-2rem)] md:w-[420px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
       >
-        <ItineraryArtifact
-          tripTitle={trip?.title || 'Trip'}
-          days={days}
-          selectedDayIndex={ensureSelectedDayExists}
-          setSelectedDayIndex={setSelectedDayIndex}
-          onSelectItem={onSelectItem}
-          onBulkOps={onBulkOps}
-          onRegenerateDay={handleRegenerateDay}
-          onSwapItem={handleSwapItem}
-          isLoading={isLoading}
-        />
+        <div
+          onPointerDown={(event) => itineraryDragControls.start(event)}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="absolute right-3 top-3 z-30 hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] text-white/45 cursor-grab active:cursor-grabbing">
+            <GripHorizontal className="h-3.5 w-3.5" />
+            Move
+          </div>
+          <ItineraryArtifact
+            tripTitle={trip?.title || 'Trip'}
+            days={days}
+            selectedDayIndex={ensureSelectedDayExists}
+            setSelectedDayIndex={setSelectedDayIndex}
+            onSelectItem={onSelectItem}
+            onBulkOps={onBulkOps}
+            onRegenerateDay={handleRegenerateDay}
+            onSwapItem={handleSwapItem}
+            isLoading={isLoading}
+          />
+        </div>
       </motion.div>
 
       {/* Loading overlay if trip payload is empty */}

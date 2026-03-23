@@ -2,6 +2,43 @@ import { NextResponse } from 'next/server'
 import { directionsGeojson, geocodePlace } from '@/app/api/trips/_mapbox'
 import { requireUser } from '@/app/api/trips/_utils'
 
+type CanonicalPlaceOverride = {
+  pattern: RegExp
+  query?: string
+  name?: string
+  country?: string
+  country_code?: string
+  latitude?: number
+  longitude?: number
+  manualId?: string
+}
+
+const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
+  { pattern: /nonna betta/i, name: 'Nonna Betta', country: 'Italy', country_code: 'IT', latitude: 41.89244, longitude: 12.47562, manualId: 'manual:rome:nonna-betta' },
+  { pattern: /da enzo al 29/i, name: 'Da Enzo al 29', country: 'Italy', country_code: 'IT', latitude: 41.88798, longitude: 12.46947, manualId: 'manual:rome:da-enzo-al-29' },
+  { pattern: /armando al pantheon/i, name: 'Armando al Pantheon', country: 'Italy', country_code: 'IT', latitude: 41.89861, longitude: 12.47679, manualId: 'manual:rome:armando-al-pantheon' },
+  { pattern: /bonci pizzarium|pizzarium/i, name: 'Pizzarium Bonci', country: 'Italy', country_code: 'IT', latitude: 41.90708, longitude: 12.44645, manualId: 'manual:rome:pizzarium-bonci' },
+  { pattern: /roscioli salumeria|roscioli/i, name: 'Roscioli Salumeria con Cucina', country: 'Italy', country_code: 'IT', latitude: 41.89553, longitude: 12.47225, manualId: 'manual:rome:roscioli' },
+  { pattern: /casina valadier/i, name: 'Casina Valadier', country: 'Italy', country_code: 'IT', latitude: 41.91398, longitude: 12.48617, manualId: 'manual:rome:casina-valadier' },
+  { pattern: /casa manco/i, name: 'Casa Manco Testaccio', country: 'Italy', country_code: 'IT', latitude: 41.87441, longitude: 12.47587, manualId: 'manual:rome:casa-manco' },
+  { pattern: /la taverna dei fori imperiali/i, name: 'La Taverna dei Fori Imperiali', country: 'Italy', country_code: 'IT', latitude: 41.89303, longitude: 12.48923, manualId: 'manual:rome:taverna-fori-imperiali' },
+  { pattern: /panino divino/i, name: 'Panino Divino', country: 'Italy', country_code: 'IT', latitude: 41.90623, longitude: 12.45742, manualId: 'manual:rome:panino-divino' },
+  { pattern: /piatto romano/i, name: 'Piatto Romano', country: 'Italy', country_code: 'IT', latitude: 41.87779, longitude: 12.47872, manualId: 'manual:rome:piatto-romano' },
+  { pattern: /jewish ghetto/i, name: 'Jewish Ghetto', country: 'Italy', country_code: 'IT', latitude: 41.8924, longitude: 12.4751, manualId: 'manual:rome:jewish-ghetto' },
+  { pattern: /trastevere/i, name: 'Trastevere', country: 'Italy', country_code: 'IT', latitude: 41.88802, longitude: 12.46984, manualId: 'manual:rome:trastevere' },
+  { pattern: /colosseum|roman forum/i, name: 'Colosseum', country: 'Italy', country_code: 'IT', latitude: 41.89021, longitude: 12.49223, manualId: 'manual:rome:colosseum' },
+  { pattern: /palatine hill/i, name: 'Palatine Hill', country: 'Italy', country_code: 'IT', latitude: 41.88933, longitude: 12.48899, manualId: 'manual:rome:palatine-hill' },
+  { pattern: /vatican museums|sistine chapel/i, name: 'Vatican Museums', country: 'Vatican City', country_code: 'VA', latitude: 41.90649, longitude: 12.45362, manualId: 'manual:vatican:museums' },
+  { pattern: /st\.?\s*peter'?s basilica/i, name: "St. Peter's Basilica", country: 'Vatican City', country_code: 'VA', latitude: 41.90217, longitude: 12.45394, manualId: 'manual:vatican:st-peters' },
+  { pattern: /villa borghese/i, name: 'Villa Borghese Gardens', country: 'Italy', country_code: 'IT', latitude: 41.9142, longitude: 12.49232, manualId: 'manual:rome:villa-borghese' },
+  { pattern: /piazza navona/i, name: 'Piazza Navona', country: 'Italy', country_code: 'IT', latitude: 41.89893, longitude: 12.47307, manualId: 'manual:rome:piazza-navona' },
+  { pattern: /pantheon/i, name: 'Pantheon', country: 'Italy', country_code: 'IT', latitude: 41.89861, longitude: 12.47687, manualId: 'manual:rome:pantheon' },
+  { pattern: /trevi fountain/i, name: 'Trevi Fountain', country: 'Italy', country_code: 'IT', latitude: 41.90093, longitude: 12.48331, manualId: 'manual:rome:trevi-fountain' },
+  { pattern: /spanish steps/i, name: 'Spanish Steps', country: 'Italy', country_code: 'IT', latitude: 41.90599, longitude: 12.48278, manualId: 'manual:rome:spanish-steps' },
+  { pattern: /campo de[’']? fiori/i, name: "Campo de' Fiori", country: 'Italy', country_code: 'IT', latitude: 41.89574, longitude: 12.4722, manualId: 'manual:rome:campo-de-fiori' },
+  { pattern: /testaccio/i, name: 'Testaccio Market', country: 'Italy', country_code: 'IT', latitude: 41.87416, longitude: 12.47543, manualId: 'manual:rome:testaccio' },
+]
+
 function extractTripContext(title: string | null | undefined) {
   if (!title) return ''
   const cleaned = title.trim()
@@ -53,10 +90,12 @@ function buildQueries(itemTitle: string, dayTitle: string | null, destinationCon
     .trim()
 
   const dayContext = dayTitle?.trim() || ''
+  const canonicalOverride = CANONICAL_PLACE_OVERRIDES.find((entry) => entry.pattern.test(normalized))?.query
 
   return Array.from(
     new Set(
       [
+        canonicalOverride || '',
         normalized && destinationContext ? `${normalized}, ${destinationContext}` : normalized,
         stripped && destinationContext ? `${stripped}, ${destinationContext}` : stripped,
         stripped && dayContext && destinationContext ? `${stripped}, ${dayContext}, ${destinationContext}` : '',
@@ -65,6 +104,38 @@ function buildQueries(itemTitle: string, dayTitle: string | null, destinationCon
       ].filter(Boolean)
     )
   )
+}
+
+async function upsertCanonicalPlace(supabase: any, override: CanonicalPlaceOverride) {
+  if (
+    !override.name ||
+    !override.country ||
+    !override.country_code ||
+    typeof override.latitude !== 'number' ||
+    typeof override.longitude !== 'number' ||
+    !override.manualId
+  ) {
+    return null
+  }
+
+  const { data: place, error } = await supabase
+    .from('places')
+    .upsert(
+      {
+        name: override.name,
+        country: override.country,
+        country_code: override.country_code,
+        latitude: override.latitude,
+        longitude: override.longitude,
+        mapbox_place_id: override.manualId,
+      },
+      { onConflict: 'mapbox_place_id' }
+    )
+    .select('id')
+    .single()
+
+  if (error) throw new Error(error.message)
+  return place
 }
 
 async function computeAndStoreDayRoute(
@@ -163,6 +234,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
     for (const item of items || []) {
       if (!['activity', 'meal', 'lodging'].includes(item.type)) continue
+      const canonicalOverride = CANONICAL_PLACE_OVERRIDES.find((entry) => entry.pattern.test(item.title))
 
       const currentPlace = Array.isArray(item.place) ? item.place[0] : item.place
       const currentDistanceKm =
@@ -178,13 +250,19 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
           : null
 
       const shouldRepair =
+        canonicalOverride != null ||
         !item.place_id ||
         (destinationPlace != null && currentDistanceKm != null && currentDistanceKm > 120)
 
       if (!shouldRepair) continue
 
       let resolvedPlace: any = null
+      if (canonicalOverride?.manualId) {
+        resolvedPlace = await upsertCanonicalPlace(supabase, canonicalOverride)
+      }
+
       for (const query of buildQueries(item.title, day.title, destinationContext)) {
+        if (resolvedPlace) break
         const result = await geocodePlace(query, token)
         if (!result) continue
 

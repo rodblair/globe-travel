@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { cn } from '@/lib/utils'
@@ -51,6 +51,31 @@ export default function TripDayMap({
     () => stops.filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude)),
     [stops]
   )
+
+  const fitMapToStops = useCallback((map: mapboxgl.Map) => {
+    if (validStops.length === 0) {
+      map.flyTo({ center: [0, 20], zoom: 1.15, duration: 0 })
+      return
+    }
+
+    const bounds = new mapboxgl.LngLatBounds()
+    validStops.forEach((stop) => bounds.extend([stop.longitude, stop.latitude]))
+
+    if (validStops.length === 1) {
+      map.flyTo({
+        center: [validStops[0].longitude, validStops[0].latitude],
+        zoom: 10,
+        duration: 0,
+      })
+      return
+    }
+
+    map.fitBounds(bounds, {
+      padding: interactive ? 56 : 42,
+      maxZoom: interactive ? 13 : 11,
+      duration: 0,
+    })
+  }, [interactive, validStops])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -155,29 +180,20 @@ export default function TripDayMap({
       markersRef.current.push(marker)
     })
 
-    if (validStops.length === 0) {
-      map.flyTo({ center: [0, 20], zoom: 1.15, duration: 0 })
-      return
-    }
+    fitMapToStops(map)
+  }, [validStops, active, mapReady, interactive, fitMapToStops])
 
-    const bounds = new mapboxgl.LngLatBounds()
-    validStops.forEach((stop) => bounds.extend([stop.longitude, stop.latitude]))
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !mapReady) return
 
-    if (validStops.length === 1) {
-      map.flyTo({
-        center: [validStops[0].longitude, validStops[0].latitude],
-        zoom: 10,
-        duration: 0,
-      })
-      return
-    }
-
-    map.fitBounds(bounds, {
-      padding: interactive ? 56 : 42,
-      maxZoom: interactive ? 13 : 11,
-      duration: 0,
+    const frame = window.requestAnimationFrame(() => {
+      map.resize()
+      fitMapToStops(map)
     })
-  }, [validStops, active, mapReady, interactive])
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [mapHeightClassName, mapReady, interactive, validStops, fitMapToStops])
 
   return (
     <div

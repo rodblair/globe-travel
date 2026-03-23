@@ -15,6 +15,8 @@ export type TripStop = {
 type TripGlobeProps = {
   stops: TripStop[]
   routeGeojson?: any | null
+  destinationLabel?: string | null
+  destinationCenter?: { latitude: number; longitude: number } | null
   onStopClick?: (stop: TripStop) => void
   flyToRef?: React.MutableRefObject<((lat: number, lng: number, zoom?: number) => void) | null>
   className?: string
@@ -23,6 +25,8 @@ type TripGlobeProps = {
 export default function TripGlobe({
   stops,
   routeGeojson,
+  destinationLabel,
+  destinationCenter,
   onStopClick,
   flyToRef,
   className,
@@ -206,13 +210,46 @@ export default function TripGlobe({
       markersRef.current.push(marker)
     })
 
+    if (
+      destinationLabel &&
+      destinationCenter &&
+      Number.isFinite(destinationCenter.latitude) &&
+      Number.isFinite(destinationCenter.longitude)
+    ) {
+      const el = document.createElement('div')
+      el.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="
+            width:12px;height:12px;border-radius:999px;
+            background:rgba(251,191,36,0.95);
+            box-shadow:0 0 0 4px rgba(251,191,36,0.18), 0 0 18px rgba(251,191,36,0.35);
+          "></div>
+          <div style="
+            padding:4px 8px;border-radius:999px;
+            background:rgba(5,5,16,0.82);
+            border:1px solid rgba(251,191,36,0.22);
+            color:rgba(255,255,255,0.88);
+            font-size:11px;font-weight:600;letter-spacing:0.02em;
+            font-family:Inter,system-ui,sans-serif;
+            white-space:nowrap;
+            text-shadow:0 1px 6px rgba(0,0,0,0.9);
+          ">${destinationLabel}</div>
+        </div>
+      `
+
+      const destinationMarker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat([destinationCenter.longitude, destinationCenter.latitude])
+        .addTo(map)
+
+      markersRef.current.push(destinationMarker)
+    }
+
     if (validStops.length > 0) {
       const bounds = new mapboxgl.LngLatBounds()
       for (const s of validStops) bounds.extend([s.longitude, s.latitude])
       map.fitBounds(bounds, { padding: 120, maxZoom: 6, duration: 1400 })
     }
-  }, [stops, onStopClick])
+  }, [stops, onStopClick, destinationLabel, destinationCenter])
 
   return <div ref={containerRef} className={className} style={{ width: '100%', height: '100%' }} />
 }
-
