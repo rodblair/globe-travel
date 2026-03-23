@@ -45,7 +45,7 @@ export default function ChatPage() {
 
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400/40" />
-              <span className="text-xs text-white/30">Powered by Gemini</span>
+              <span className="text-xs text-white/30">Powered by OpenAI GPT-5.4</span>
             </div>
           </div>
         </div>

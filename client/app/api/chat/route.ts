@@ -1,7 +1,8 @@
-import { google } from '@ai-sdk/google'
+import { openai } from '@ai-sdk/openai'
 import {
   type UIMessage,
   convertToModelMessages,
+  pruneMessages,
   streamText,
   tool,
   stepCountIs,
@@ -82,6 +83,123 @@ function tripPatch(tripId: string) {
   return JSON.stringify({ kind: 'trip_patch', tripId })
 }
 
+type PlanIntent = 'full-plan' | 'item-edit' | 'add-items' | 'clarify'
+
+function extractLatestUserMessage(messages: UIMessage[]) {
+  const latestUserMessage = [...messages].reverse().find((message) => message.role === 'user')
+  if (!latestUserMessage) return ''
+
+  return latestUserMessage.parts
+    .filter((part) => part.type === 'text')
+    .map((part) => (part as { type: 'text'; text: string }).text)
+    .join(' ')
+    .trim()
+}
+
+function inferPlanIntent({
+  latestUserText,
+  hasExistingTrip,
+  hasExistingDays,
+  hasExistingItems,
+}: {
+  latestUserText: string
+  hasExistingTrip: boolean
+  hasExistingDays: boolean
+  hasExistingItems: boolean
+}): PlanIntent {
+  const normalized = latestUserText.toLowerCase().replace(/\s+/g, ' ').trim()
+
+  if (!normalized) {
+    return hasExistingTrip || hasExistingDays || hasExistingItems ? 'item-edit' : 'clarify'
+  }
+
+  const itemEditPatterns = [
+    /\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit)\b.*\b(day|morning|afternoon|evening|activity|meal|item|stop)\b/,
+    /\b(day\s*\d+)\b.*\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit)\b/,
+    /\b(this activity|this stop|that stop|this item|that item)\b/,
+  ]
+  if (itemEditPatterns.some((pattern) => pattern.test(normalized))) {
+    return 'item-edit'
+  }
+
+  const addPatterns = [
+    /\b(add|include|insert|append|also add|add another|more)\b.*\b(day trip|stop|activity|meal|place|museum|restaurant|attraction)\b/,
+    /\bday trip\b/,
+  ]
+  if (addPatterns.some((pattern) => pattern.test(normalized))) {
+    return 'add-items'
+  }
+
+  const fullPlanPatterns = [
+    /\b(plan|build|create|make|generate)\b.*\b(itinerary|trip|days?|schedule)\b/,
+    /\b(full itinerary|from scratch|start over|replace the whole trip|whole trip|full trip)\b/,
+    /\b(make it more relaxed|better flow|less packed|more packed|optimize order)\b/,
+  ]
+  if (fullPlanPatterns.some((pattern) => pattern.test(normalized))) {
+    return 'full-plan'
+  }
+
+  if (!hasExistingDays || !hasExistingItems) {
+    return 'full-plan'
+  }
+
+  return hasExistingTrip ? 'item-edit' : 'clarify'
+}
+
+function getPlanToolSelection(intent: PlanIntent, hasTripId: boolean) {
+  const baseSelection = ['resolvePlace']
+
+  if (intent === 'clarify') {
+    return [] as string[]
+  }
+
+  if (intent === 'full-plan') {
+    return hasTripId
+      ? [...baseSelection, 'setFullTripPlan']
+      : [...baseSelection, 'createTrip', 'setFullTripPlan']
+  }
+
+  if (intent === 'add-items') {
+    return hasTripId
+      ? [...baseSelection, 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem']
+      : [...baseSelection, 'createTrip', 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem']
+  }
+
+  return hasTripId
+    ? [...baseSelection, 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem']
+    : [...baseSelection, 'createTrip', 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem']
+}
+
+function getPlanToolChoice(stepNumber: number, intent: PlanIntent) {
+  if (intent === 'clarify') return 'none' as const
+  if (stepNumber === 0 && intent === 'full-plan') {
+    return { type: 'tool' as const, toolName: 'setFullTripPlan' as const }
+  }
+  if (stepNumber === 0) return 'required' as const
+  return 'none' as const
+}
+
+function buildPlanStepMessages(
+  messages: Parameters<typeof pruneMessages>[0]['messages'],
+  stepNumber: number
+) {
+  if (stepNumber === 0) {
+    return pruneMessages({
+      messages,
+      reasoning: 'none',
+      toolCalls: 'none',
+      emptyMessages: 'remove',
+    })
+  }
+
+  return pruneMessages({
+    messages: messages.slice(-8),
+    reasoning: 'none',
+    toolCalls: 'before-last-message',
+    emptyMessages: 'remove',
+  })
+}
+
 async function computeAndStoreDayRoute(
   supabase: any,
   tripDayId: string,
@@ -134,9 +252,13 @@ export async function POST(req: Request) {
       type: 'onboarding' | 'explore' | 'plan'
       tripId?: string
     }
+    const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+    const latestUserText = extractLatestUserMessage(messages)
 
     // Fetch user's places for context in explore/plan modes
     let placesContext = ''
+    let hasExistingDays = false
+    let hasExistingItems = false
     if (type === 'explore' || type === 'plan') {
       const { data: userPlaces } = await supabase
         .from('user_places')
@@ -194,6 +316,7 @@ export async function POST(req: Request) {
       }
 
       if (tripDays && tripDays.length > 0) {
+        hasExistingDays = true
         const dayIds = tripDays.map((day) => day.id)
         const { data: dayItems } = await supabase
           .from('trip_items')
@@ -210,6 +333,7 @@ export async function POST(req: Request) {
         tripContext += '\n\nCURRENT ITINERARY:'
         for (const day of tripDays) {
           const items = itemsByDay.get(day.id) || []
+          if (items.length > 0) hasExistingItems = true
           const summary = items.length > 0
             ? items.map((item: any) => `${item.start_time || 'unscheduled'} ${item.title} (${item.type})`).join('; ')
             : 'empty'
@@ -309,7 +433,7 @@ export async function POST(req: Request) {
           query: z.string().describe('Place query like "Shinjuku, Tokyo" or "Senso-ji Temple"'),
         }),
         execute: async ({ query }) => {
-          const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+          const token = mapboxToken
           if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
           const result = await geocodePlace(query, token)
           if (!result) return JSON.stringify({ kind: 'resolve_place', ok: false, query })
@@ -405,10 +529,10 @@ export async function POST(req: Request) {
           const tid = trip_id || tripId
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const dayId = await ensureTripDay(supabase, tid, day_index)
+          const token = mapboxToken
 
           let placeId: string | null = null
           if (place_query) {
-            const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
             if (token) {
               const result = await geocodePlace(place_query, token)
               if (result) {
@@ -457,6 +581,10 @@ export async function POST(req: Request) {
             })
           if (error) return JSON.stringify({ kind: 'error', message: error.message })
 
+          if (token) {
+            await computeAndStoreDayRoute(supabase, dayId, token, 'walk')
+          }
+
           return tripPatch(tid)
         },
       }),
@@ -491,7 +619,7 @@ export async function POST(req: Request) {
           const tid = trip_id || tripId
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
 
-          const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+          const token = mapboxToken
           if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
 
           if (title || start_date || end_date || pace || budget_level) {
@@ -589,10 +717,25 @@ export async function POST(req: Request) {
         execute: async ({ trip_id, item_id, to_day_index, to_order_index }) => {
           const tid = trip_id || tripId
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const token = mapboxToken
+          const { data: currentItem, error: currentErr } = await supabase
+            .from('trip_items')
+            .select('trip_day_id')
+            .eq('id', item_id)
+            .maybeSingle()
+          if (currentErr) return JSON.stringify({ kind: 'error', message: currentErr.message })
+          const fromDayId = currentItem?.trip_day_id as string | undefined
           const toDayId = await ensureTripDay(supabase, tid, to_day_index)
           const orderIndex = to_order_index ?? 0
-          await supabase.from('trip_items').update({ trip_day_id: toDayId, updated_at: new Date().toISOString() }).eq('id', item_id)
-          await supabase.from('trip_items').update({ order_index: orderIndex, updated_at: new Date().toISOString() }).eq('id', item_id)
+          const { error } = await supabase
+            .from('trip_items')
+            .update({ trip_day_id: toDayId, order_index: orderIndex, updated_at: new Date().toISOString() })
+            .eq('id', item_id)
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+          if (token) {
+            if (fromDayId) await computeAndStoreDayRoute(supabase, fromDayId, token, 'walk')
+            await computeAndStoreDayRoute(supabase, toDayId, token, 'walk')
+          }
           return tripPatch(tid)
         },
       }),
@@ -612,11 +755,21 @@ export async function POST(req: Request) {
         execute: async ({ trip_id, item_id, ...fields }) => {
           const tid = trip_id || tripId
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const token = mapboxToken
+          const { data: currentItem, error: currentErr } = await supabase
+            .from('trip_items')
+            .select('trip_day_id')
+            .eq('id', item_id)
+            .maybeSingle()
+          if (currentErr) return JSON.stringify({ kind: 'error', message: currentErr.message })
           const { error } = await supabase
             .from('trip_items')
             .update({ ...fields, updated_at: new Date().toISOString() })
             .eq('id', item_id)
           if (error) return JSON.stringify({ kind: 'error', message: error.message })
+          if (token && currentItem?.trip_day_id) {
+            await computeAndStoreDayRoute(supabase, currentItem.trip_day_id, token, 'walk')
+          }
           return tripPatch(tid)
         },
       }),
@@ -630,8 +783,18 @@ export async function POST(req: Request) {
         execute: async ({ trip_id, item_id }) => {
           const tid = trip_id || tripId
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const token = mapboxToken
+          const { data: currentItem, error: currentErr } = await supabase
+            .from('trip_items')
+            .select('trip_day_id')
+            .eq('id', item_id)
+            .maybeSingle()
+          if (currentErr) return JSON.stringify({ kind: 'error', message: currentErr.message })
           const { error } = await supabase.from('trip_items').delete().eq('id', item_id)
           if (error) return JSON.stringify({ kind: 'error', message: error.message })
+          if (token && currentItem?.trip_day_id) {
+            await computeAndStoreDayRoute(supabase, currentItem.trip_day_id, token, 'walk')
+          }
           return tripPatch(tid)
         },
       }),
@@ -646,7 +809,7 @@ export async function POST(req: Request) {
         execute: async ({ trip_id, day_index, mode }) => {
           const tid = trip_id || tripId
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
-          const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+          const token = mapboxToken
           if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
           const dayId = await ensureTripDay(supabase, tid, day_index)
 
@@ -683,15 +846,73 @@ export async function POST(req: Request) {
       }),
     }
 
+    if (!process.env.OPENAI_API_KEY) {
+      return new Response('OPENAI_API_KEY is not configured', { status: 500 })
+    }
+
+    const modelName = process.env.OPENAI_MODEL || 'gpt-5.4'
+    const planMode = type === 'plan'
+    const latestPlanIntent = planMode
+      ? inferPlanIntent({
+          latestUserText,
+          hasExistingTrip: Boolean(tripId),
+          hasExistingDays,
+          hasExistingItems,
+        })
+      : 'clarify'
+    const activePlanTools = getPlanToolSelection(latestPlanIntent, Boolean(tripId)) as Array<keyof typeof userTools>
+
     const result = streamText({
-      model: google('gemini-3.1-flash-lite-preview'),
+      model: openai(modelName),
       system: systemPrompt,
       messages: await convertToModelMessages(messages),
-      stopWhen: stepCountIs(12),
+      stopWhen: stepCountIs(planMode ? 4 : 12),
       tools: userTools,
+      prepareStep: planMode
+        ? ({ stepNumber, steps, messages: stepMessages }) => {
+            const previousStep = steps[steps.length - 1]
+            const previousToolNames = new Set(previousStep?.toolCalls.map((call) => call.toolName) || [])
+            const needsRouteRefresh =
+              stepNumber > 0 &&
+              ['addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem'].some((toolName) =>
+                previousToolNames.has(toolName)
+              ) &&
+              !previousToolNames.has('computeDayRoute')
+
+            return {
+              messages: buildPlanStepMessages(stepMessages, stepNumber),
+              activeTools: needsRouteRefresh ? ['computeDayRoute'] : activePlanTools,
+              toolChoice: needsRouteRefresh ? 'required' : getPlanToolChoice(stepNumber, latestPlanIntent),
+              system:
+                stepNumber === 0
+                  ? `${systemPrompt}\n\nUse tools first. Keep chat minimal and artifact-first.`
+                  : `${systemPrompt}\n\nIf the itinerary has already been updated this turn, reply with at most one short sentence and do not restate the itinerary in chat.`,
+            }
+          }
+        : undefined,
+      onStepFinish: planMode
+        ? ({ stepNumber, text, toolCalls, toolResults, finishReason }) => {
+            console.info(
+              '[chat-step]',
+              JSON.stringify({
+                type,
+                tripId: tripId || null,
+                planIntent: latestPlanIntent,
+                stepNumber,
+                finishReason,
+                usedTools: toolCalls.length > 0,
+                textLength: text.trim().length,
+                toolCalls: toolCalls.map((call) => call.toolName),
+                toolResults: toolResults.map((result) => result.toolName),
+              })
+            )
+          }
+        : undefined,
     })
 
-    return result.toUIMessageStreamResponse()
+    return result.toUIMessageStreamResponse({
+      sendReasoning: false,
+    })
   } catch (error) {
     console.error('Chat API error:', error)
     return new Response('Internal Server Error', { status: 500 })

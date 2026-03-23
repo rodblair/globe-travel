@@ -34,6 +34,16 @@ export type NavigateEvent = {
   best_time?: string
 }
 
+function isClarifyingQuestion(text: string) {
+  const normalized = text.trim()
+  if (!normalized) return false
+
+  return (
+    normalized.includes('?') ||
+    /\b(tell me|what city|which city|how many days|what dates|do you have|could you|would you|please share|let me know|what's the|what is the)\b/i.test(normalized)
+  )
+}
+
 export function useChat(options: {
   type: 'onboarding' | 'explore' | 'plan'
   conversationId?: string
@@ -177,10 +187,28 @@ export function useChat(options: {
       .map((p: { type: string; text?: string }) => (p as { type: 'text'; text: string }).text)
       .join('') || ''
 
+    const hasSuccessfulTripPatch =
+      options.type === 'plan' &&
+      m.role === 'assistant' &&
+      m.parts?.some((part) => {
+        if (!part.type.startsWith('tool-') || !('state' in part) || (part as { state: string }).state !== 'output-available') {
+          return false
+        }
+
+        const output = (part as { output?: unknown }).output
+        const parsed = parseToolOutput(output)
+        return parsed?.kind === 'trip_patch'
+      }) === true
+
+    const shouldCollapseAssistantCopy =
+      hasSuccessfulTripPatch &&
+      m.role === 'assistant' &&
+      !isClarifyingQuestion(textContent)
+
     return {
       id: m.id,
       role: m.role as 'user' | 'assistant',
-      content: textContent,
+      content: shouldCollapseAssistantCopy ? '' : textContent,
     }
   }).filter((m: Message) => m.content.length > 0 || m.role === 'user')
 

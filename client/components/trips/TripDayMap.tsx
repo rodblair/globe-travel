@@ -106,6 +106,10 @@ export default function TripDayMap({
         type: 'geojson',
         data: { type: 'FeatureCollection', features: [] },
       })
+      map.addSource('day-stops', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      })
 
       map.addLayer({
         id: 'day-route-line',
@@ -116,6 +120,48 @@ export default function TripDayMap({
           'line-color': 'rgba(125,211,252,0.85)',
           'line-width': 2.75,
           'line-blur': 0.3,
+        },
+      })
+
+      map.addLayer({
+        id: 'day-stop-outline',
+        type: 'circle',
+        source: 'day-stops',
+        paint: {
+          'circle-radius': interactive ? 18 : 12,
+          'circle-color': 'rgba(125,211,252,0.12)',
+          'circle-stroke-width': interactive ? 2 : 1.5,
+          'circle-stroke-color': 'rgba(125,211,252,0.75)',
+        },
+      })
+
+      map.addLayer({
+        id: 'day-stop-fill',
+        type: 'circle',
+        source: 'day-stops',
+        paint: {
+          'circle-radius': interactive ? 6 : 4,
+          'circle-color': 'rgba(125,211,252,0.92)',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': 'rgba(5,5,16,0.9)',
+        },
+      })
+
+      map.addLayer({
+        id: 'day-stop-labels',
+        type: 'symbol',
+        source: 'day-stops',
+        layout: {
+          'text-field': ['get', 'title'],
+          'text-size': interactive ? 11 : 10,
+          'text-offset': [0, 1.4],
+          'text-anchor': 'top',
+          visibility: interactive ? 'visible' : 'none',
+        },
+        paint: {
+          'text-color': 'rgba(255,255,255,0.82)',
+          'text-halo-color': 'rgba(5,5,16,0.92)',
+          'text-halo-width': 1.1,
         },
       })
     })
@@ -151,6 +197,53 @@ export default function TripDayMap({
   useEffect(() => {
     const map = mapRef.current
     if (!map || !mapReady) return
+
+    const stopSource = map.getSource('day-stops') as mapboxgl.GeoJSONSource | undefined
+    if (stopSource) {
+      stopSource.setData({
+        type: 'FeatureCollection',
+        features: validStops.map((stop) => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [stop.longitude, stop.latitude],
+          },
+          properties: {
+            id: stop.id,
+            index: stop.index,
+            title: stop.title,
+          },
+        })),
+      } as GeoJSON.FeatureCollection)
+    }
+
+    if (map.getLayer('day-stop-outline')) {
+      map.setPaintProperty(
+        'day-stop-outline',
+        'circle-color',
+        active ? 'rgba(251,191,36,0.1)' : 'rgba(125,211,252,0.12)'
+      )
+      map.setPaintProperty(
+        'day-stop-outline',
+        'circle-stroke-color',
+        active ? 'rgba(251,191,36,0.78)' : 'rgba(125,211,252,0.75)'
+      )
+      map.setPaintProperty('day-stop-outline', 'circle-radius', interactive ? 18 : 12)
+    }
+
+    if (map.getLayer('day-stop-fill')) {
+      map.setPaintProperty(
+        'day-stop-fill',
+        'circle-color',
+        active ? 'rgba(251,191,36,0.92)' : 'rgba(125,211,252,0.92)'
+      )
+      map.setPaintProperty('day-stop-fill', 'circle-radius', interactive ? 6 : 4)
+    }
+
+    if (map.getLayer('day-stop-labels')) {
+      map.setLayoutProperty('day-stop-labels', 'visibility', interactive ? 'visible' : 'none')
+      map.setLayoutProperty('day-stop-labels', 'text-size', interactive ? 11 : 10)
+    }
 
     markersRef.current.forEach((marker) => marker.remove())
     markersRef.current = []

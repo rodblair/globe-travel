@@ -1,0 +1,107 @@
+{
+  "trip": {
+    "title": "4 Days in Rome",
+    "destination": "Rome, Italy",
+    "pace": "balanced",
+    "budget_level": "mid"
+  },
+  "days": [
+    {
+      "day_index": 1,
+      "title": "Ancient Rome and Centro Storico",
+      "items": [
+        {
+          "type": "activity",
+          "title": "Colosseum & Roman Forum Tour",
+          "place_query": "Colosseum, Rome, Italy",
+          "derived_stops": [
+            "Colosseum",
+            "Roman Forum"
+          ]
+        },
+        {
+          "type": "meal",
+          "title": "Lunch at La Taverna dei Fori Imperiali",
+          "place_query": "La Taverna dei Fori Imperiali, Rome, Italy"
+        },
+        {
+          "type": "activity",
+          "title": "Afternoon at Piazza Navona",
+          "place_query": "Piazza Navona, Rome, Italy"
+        }
+      ]
+    },
+    {
+      "day_index": 2,
+      "title": "Vatican Day",
+      "items": [
+        {
+          "type": "activity",
+          "title": "Vatican Museums & Sistine Chapel",
+          "place_query": "Vatican Museums, Vatican City",
+          "derived_stops": [
+            "Vatican Museums",
+            "Sistine Chapel"
+          ]
+        },
+        {
+          "type": "meal",
+          "title": "Lunch at Pizzarium Bonci",
+          "place_query": "Pizzarium Bonci, Rome, Italy"
+        },
+        {
+          "type": "activity",
+          "title": "St. Peter's Basilica Visit",
+          "place_query": "St. Peter's Basilica, Vatican City"
+        }
+      ]
+    },
+    {
+      "day_index": 3,
+      "title": "Classic Rome Walk",
+      "items": [
+        {
+          "type": "activity",
+          "title": "Explore the Pantheon",
+          "place_query": "Pantheon, Rome, Italy"
+        },
+        {
+          "type": "meal",
+          "title": "Lunch at Panino Divino",
+          "place_query": "Panino Divino, Rome, Italy"
+        },
+        {
+          "type": "activity",
+          "title": "Trevi Fountain Visit",
+          "place_query": "Trevi Fountain, Rome, Italy"
+        },
+        {
+          "type": "activity",
+          "title": "Spanish Steps & Shopping",
+          "place_query": "Spanish Steps, Rome, Italy"
+        }
+      ]
+    },
+    {
+      "day_index": 4,
+      "title": "Parks and Trastevere",
+      "items": [
+        {
+          "type": "activity",
+          "title": "Villa Borghese Gardens",
+          "place_query": "Villa Borghese Gardens, Rome, Italy"
+        },
+        {
+          "type": "meal",
+          "title": "Lunch at Casina Valadier",
+          "place_query": "Casina Valadier, Rome, Italy"
+        },
+        {
+          "type": "activity",
+          "title": "Evening in Trastevere & Dinner",
+          "place_query": "Trastevere, Rome, Italy"
+        }
+      ]
+    }
+  ]
+}
