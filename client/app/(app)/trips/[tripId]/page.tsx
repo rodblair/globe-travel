@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
@@ -10,13 +9,8 @@ import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, Message
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops, getDestinationFallback } from '@/components/trips/derivedStops'
+import { buildDisplayStops } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
-
-const TripGlobe = dynamic(() => import('@/components/globes/TripGlobe'), {
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-[#050510]" />,
-})
 
 type Trip = {
   id: string
@@ -31,7 +25,6 @@ type TripPayload = {
 }
 
 const EMPTY_DAYS: TripDay[] = []
-const TRIP_CACHE_PREFIX = 'globe-travel:trip-payload:'
 const INITIAL_PROMPT_PREFIX = 'globe-travel:trip:initial-prompt:'
 
 type TripFeedback = {
@@ -92,31 +85,11 @@ export default function TripStudioPage() {
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [chatOpen, setChatOpen] = useState(true)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
-  const [cachedPayload, setCachedPayload] = useState<TripPayload | null>(null)
   const studioRef = useRef<HTMLDivElement>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
   const chatDragControls = useDragControls()
   const itineraryDragControls = useDragControls()
-
-  useEffect(() => {
-    if (!tripId || typeof window === 'undefined') return
-
-    try {
-      const raw = window.localStorage.getItem(`${TRIP_CACHE_PREFIX}${tripId}`)
-      if (!raw) {
-        setCachedPayload(null)
-        return
-      }
-      const parsed = JSON.parse(raw) as TripPayload
-      if (parsed?.trip && Array.isArray(parsed?.days)) {
-        setCachedPayload(parsed)
-      }
-    } catch {
-      window.localStorage.removeItem(`${TRIP_CACHE_PREFIX}${tripId}`)
-      setCachedPayload(null)
-    }
-  }, [tripId])
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['trip', tripId],
@@ -128,13 +101,7 @@ export default function TripStudioPage() {
     retry: 1,
   })
 
-  useEffect(() => {
-    if (!tripId || !data || typeof window === 'undefined') return
-    window.localStorage.setItem(`${TRIP_CACHE_PREFIX}${tripId}`, JSON.stringify(data))
-    setCachedPayload(data)
-  }, [data, tripId])
-
-  const resolvedPayload = data ?? cachedPayload
+  const resolvedPayload = data
   const trip = resolvedPayload?.trip
   const days = resolvedPayload?.days ?? EMPTY_DAYS
 
@@ -153,22 +120,6 @@ export default function TripStudioPage() {
     return has ? selectedDayIndex : days[0].day_index
   }, [days, selectedDayIndex])
 
-  const selectedDay = useMemo(
-    () => days.find((d) => d.day_index === ensureSelectedDayExists),
-    [days, ensureSelectedDayExists]
-  )
-
-  const selectedStops = useMemo(
-    () => buildDisplayStops((selectedDay?.items || []) as any).filter((stop) => stop.mapped).map((stop) => ({
-      id: stop.id,
-      title: stop.title,
-      latitude: stop.latitude,
-      longitude: stop.longitude,
-      index: stop.index,
-    })),
-    [selectedDay]
-  )
-
   const tripStops = useMemo(
     () =>
       days
@@ -184,27 +135,7 @@ export default function TripStudioPage() {
     [days]
   )
 
-  const selectedRouteGeojson = useMemo(() => {
-    const route = selectedDay?.routes?.find((r) => r.mode === 'walk') || selectedDay?.routes?.[0]
-    if (!route?.geojson) return null
-    return route.geojson
-  }, [selectedDay])
-
   const tripDestination = useMemo(() => extractDestinationLabel(trip?.title), [trip?.title])
-  const destinationFallback = useMemo(() => getDestinationFallback(tripDestination || trip?.title), [tripDestination, trip?.title])
-
-  const tripDestinationCenter = useMemo(() => {
-    const allStops = days.flatMap((day) => buildDisplayStops((day.items || []) as any)).filter((stop) => stop.mapped)
-
-    if (allStops.length === 0) return destinationFallback
-
-    const latitude =
-      allStops.reduce((sum, item) => sum + item.latitude, 0) / allStops.length
-    const longitude =
-      allStops.reduce((sum, item) => sum + item.longitude, 0) / allStops.length
-
-    return { latitude, longitude }
-  }, [days, destinationFallback])
 
   const mappingSummary = useMemo(() => {
     const itemCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
@@ -345,20 +276,17 @@ export default function TripStudioPage() {
     <div ref={studioRef} className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
       {/* Globe */}
       <div className="absolute inset-0">
-        <TripGlobe
-          stops={tripStops.length > 0 ? tripStops : destinationFallback ? [{
-            id: `destination:${destinationFallback.title}`,
-            title: destinationFallback.title,
-            latitude: destinationFallback.latitude,
-            longitude: destinationFallback.longitude,
-            index: 1,
-          }] : selectedStops}
-          routeGeojson={selectedRouteGeojson}
-          destinationLabel={tripDestination}
-          destinationCenter={tripDestinationCenter}
-          flyToRef={flyToRef}
-          className="w-full h-full"
-        />
+        <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.09),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(56,189,248,0.08),transparent_26%),linear-gradient(180deg,rgba(5,5,16,0.98),rgba(3,4,10,1))]" />
+        <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
+        <div className="absolute right-4 top-4 z-10 rounded-[28px] border border-white/12 bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Trip Map Status</p>
+          <p className="mt-1 text-sm font-medium text-white">{tripDestination || trip?.title || 'Trip Studio'}</p>
+          <p className="mt-2 text-xs text-white/62">
+            {tripStops.length > 0
+              ? `${tripStops.length} routed stops across ${days.length} day${days.length === 1 ? '' : 's'}`
+              : 'Using itinerary-first map previews for stability'}
+          </p>
+        </div>
       </div>
 
       {/* Top bar */}

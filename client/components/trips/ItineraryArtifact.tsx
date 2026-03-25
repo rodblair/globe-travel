@@ -248,7 +248,6 @@ export default function ItineraryArtifact({
                 title={`Day ${selectedDay.day_index}`}
                 subtitle={selectedDay.title}
                 routeSummary={selectedDayMap.routeSummary}
-                interactive
                 showDetails={false}
                 mapHeightClassName={mapExpanded ? 'h-80' : 'h-56'}
                 className="min-w-0 overflow-hidden"
@@ -341,7 +340,6 @@ export default function ItineraryArtifact({
                     subtitle={day.title}
                     routeSummary={routeSummary}
                     stopPreview={stopPreview}
-                    interactive={isSelectedDay}
                     showDetails={false}
                     active={isSelectedDay}
                     mapHeightClassName={isSelectedDay ? 'h-56' : 'h-44'}
