@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -34,9 +34,15 @@ export default function TripGlobe({
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<mapboxgl.Marker[]>([])
+  const [globeUnavailable, setGlobeUnavailable] = useState(false)
 
   const spinEnabled = useRef(true)
   const userInteracting = useRef(false)
+  const validStops = useMemo(
+    () => (stops || []).filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude)),
+    [stops]
+  )
+  const mapboxSupported = typeof window === 'undefined' ? true : mapboxgl.supported()
 
   const spinGlobe = useCallback(() => {
     const map = mapRef.current
@@ -50,26 +56,33 @@ export default function TripGlobe({
     if (!containerRef.current) return
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
     if (!token) return
+    if (!mapboxSupported) return
 
     mapboxgl.accessToken = token
 
-    const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: 'mapbox://styles/mapbox/standard',
-      config: {
-        basemap: {
-          lightPreset: 'night',
-          showPointOfInterestLabels: false,
-          showTransitLabels: false,
-          showPlaceLabels: false,
-          showRoadLabels: false,
+    let map: mapboxgl.Map
+    try {
+      map = new mapboxgl.Map({
+        container: containerRef.current,
+        style: 'mapbox://styles/mapbox/standard',
+        config: {
+          basemap: {
+            lightPreset: 'night',
+            showPointOfInterestLabels: false,
+            showTransitLabels: false,
+            showPlaceLabels: false,
+            showRoadLabels: false,
+          },
         },
-      },
-      projection: 'globe',
-      zoom: 1.35,
-      center: [0, 25],
-      attributionControl: false,
-    })
+        projection: 'globe',
+        zoom: 1.35,
+        center: [0, 25],
+        attributionControl: false,
+      })
+    } catch {
+      queueMicrotask(() => setGlobeUnavailable(true))
+      return
+    }
 
     mapRef.current = map
 
@@ -152,7 +165,7 @@ export default function TripGlobe({
       map.remove()
       mapRef.current = null
     }
-  }, [spinGlobe, flyToRef, routeGeojson])
+  }, [spinGlobe, flyToRef, routeGeojson, mapboxSupported])
 
   useEffect(() => {
     const map = mapRef.current
@@ -171,8 +184,6 @@ export default function TripGlobe({
 
     markersRef.current.forEach((m) => m.remove())
     markersRef.current = []
-
-    const validStops = (stops || []).filter((s) => Number.isFinite(s.latitude) && Number.isFinite(s.longitude))
 
     validStops.forEach((stop) => {
       const el = document.createElement('div')
@@ -249,7 +260,29 @@ export default function TripGlobe({
       for (const s of validStops) bounds.extend([s.longitude, s.latitude])
       map.fitBounds(bounds, { padding: 120, maxZoom: 6, duration: 1400 })
     }
-  }, [stops, onStopClick, destinationLabel, destinationCenter])
+  }, [validStops, onStopClick, destinationLabel, destinationCenter])
+
+  if (!mapboxSupported || globeUnavailable) {
+    return (
+      <div
+        className={className}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.12),transparent_45%),linear-gradient(180deg,rgba(6,6,16,0.96),rgba(3,4,10,0.98))]">
+          <div className="rounded-3xl border border-white/10 bg-black/45 px-6 py-5 text-center backdrop-blur">
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/30">Trip Map</p>
+            <p className="mt-2 text-lg font-medium text-white/85">{destinationLabel || 'Destination'}</p>
+            <p className="mt-2 text-sm text-white/45">
+              {validStops.length} mapped stop{validStops.length === 1 ? '' : 's'}
+            </p>
+            <p className="mt-4 text-xs text-white/35">
+              Globe preview unavailable on this device. Day maps still render below.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return <div ref={containerRef} className={className} style={{ width: '100%', height: '100%' }} />
 }

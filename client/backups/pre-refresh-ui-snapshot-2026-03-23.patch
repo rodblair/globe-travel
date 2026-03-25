@@ -1,0 +1,650 @@
+diff --git a/client/app/(app)/chat/page.tsx b/client/app/(app)/chat/page.tsx
+index 49a5161..a4100d2 100644
+--- a/client/app/(app)/chat/page.tsx
++++ b/client/app/(app)/chat/page.tsx
+@@ -33,10 +33,11 @@ export default function ChatPage() {
+             <div className="flex items-center gap-3">
+               <button
+                 onClick={() => router.back()}
+-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/55 transition-colors hover:bg-white/10 hover:text-white/80"
++                className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/15 px-4 py-2 text-sm font-medium text-amber-200 shadow-lg shadow-amber-500/10 transition-colors hover:bg-amber-500/20 hover:text-white"
+                 title="Go back"
+               >
+                 <ArrowLeft className="w-4 h-4" />
++                <span>Back</span>
+               </button>
+               <motion.div
+                 initial={{ rotate: 0 }}
+diff --git a/client/components/globes/TripGlobe.tsx b/client/components/globes/TripGlobe.tsx
+index 4867705..3d6e515 100644
+--- a/client/components/globes/TripGlobe.tsx
++++ b/client/components/globes/TripGlobe.tsx
+@@ -1,6 +1,6 @@
+ 'use client'
+ 
+-import { useEffect, useRef, useCallback } from 'react'
++import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
+ import mapboxgl from 'mapbox-gl'
+ import 'mapbox-gl/dist/mapbox-gl.css'
+ 
+@@ -34,9 +34,15 @@ export default function TripGlobe({
+   const containerRef = useRef<HTMLDivElement>(null)
+   const mapRef = useRef<mapboxgl.Map | null>(null)
+   const markersRef = useRef<mapboxgl.Marker[]>([])
++  const [globeUnavailable, setGlobeUnavailable] = useState(false)
+ 
+   const spinEnabled = useRef(true)
+   const userInteracting = useRef(false)
++  const validStops = useMemo(
++    () => (stops || []).filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude)),
++    [stops]
++  )
++  const mapboxSupported = typeof window === 'undefined' ? true : mapboxgl.supported()
+ 
+   const spinGlobe = useCallback(() => {
+     const map = mapRef.current
+@@ -50,26 +56,33 @@ export default function TripGlobe({
+     if (!containerRef.current) return
+     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+     if (!token) return
++    if (!mapboxSupported) return
+ 
+     mapboxgl.accessToken = token
+ 
+-    const map = new mapboxgl.Map({
+-      container: containerRef.current,
+-      style: 'mapbox://styles/mapbox/standard',
+-      config: {
+-        basemap: {
+-          lightPreset: 'night',
+-          showPointOfInterestLabels: false,
+-          showTransitLabels: false,
+-          showPlaceLabels: false,
+-          showRoadLabels: false,
++    let map: mapboxgl.Map
++    try {
++      map = new mapboxgl.Map({
++        container: containerRef.current,
++        style: 'mapbox://styles/mapbox/standard',
++        config: {
++          basemap: {
++            lightPreset: 'night',
++            showPointOfInterestLabels: false,
++            showTransitLabels: false,
++            showPlaceLabels: false,
++            showRoadLabels: false,
++          },
+         },
+-      },
+-      projection: 'globe',
+-      zoom: 1.35,
+-      center: [0, 25],
+-      attributionControl: false,
+-    })
++        projection: 'globe',
++        zoom: 1.35,
++        center: [0, 25],
++        attributionControl: false,
++      })
++    } catch {
++      queueMicrotask(() => setGlobeUnavailable(true))
++      return
++    }
+ 
+     mapRef.current = map
+ 
+@@ -152,7 +165,7 @@ export default function TripGlobe({
+       map.remove()
+       mapRef.current = null
+     }
+-  }, [spinGlobe, flyToRef, routeGeojson])
++  }, [spinGlobe, flyToRef, routeGeojson, mapboxSupported])
+ 
+   useEffect(() => {
+     const map = mapRef.current
+@@ -172,8 +185,6 @@ export default function TripGlobe({
+     markersRef.current.forEach((m) => m.remove())
+     markersRef.current = []
+ 
+-    const validStops = (stops || []).filter((s) => Number.isFinite(s.latitude) && Number.isFinite(s.longitude))
+-
+     validStops.forEach((stop) => {
+       const el = document.createElement('div')
+       el.style.cssText = 'cursor:pointer;'
+@@ -249,7 +260,29 @@ export default function TripGlobe({
+       for (const s of validStops) bounds.extend([s.longitude, s.latitude])
+       map.fitBounds(bounds, { padding: 120, maxZoom: 6, duration: 1400 })
+     }
+-  }, [stops, onStopClick, destinationLabel, destinationCenter])
++  }, [validStops, onStopClick, destinationLabel, destinationCenter])
++
++  if (!mapboxSupported || globeUnavailable) {
++    return (
++      <div
++        className={className}
++        style={{ width: '100%', height: '100%' }}
++      >
++        <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.12),transparent_45%),linear-gradient(180deg,rgba(6,6,16,0.96),rgba(3,4,10,0.98))]">
++          <div className="rounded-3xl border border-white/10 bg-black/45 px-6 py-5 text-center backdrop-blur">
++            <p className="text-[11px] uppercase tracking-[0.24em] text-white/30">Trip Map</p>
++            <p className="mt-2 text-lg font-medium text-white/85">{destinationLabel || 'Destination'}</p>
++            <p className="mt-2 text-sm text-white/45">
++              {validStops.length} mapped stop{validStops.length === 1 ? '' : 's'}
++            </p>
++            <p className="mt-4 text-xs text-white/35">
++              Globe preview unavailable on this device. Day maps still render below.
++            </p>
++          </div>
++        </div>
++      </div>
++    )
++  }
+ 
+   return <div ref={containerRef} className={className} style={{ width: '100%', height: '100%' }} />
+ }
+diff --git a/client/components/trips/TripDayMap.tsx b/client/components/trips/TripDayMap.tsx
+index b6b5cf9..f4b2a4f 100644
+--- a/client/components/trips/TripDayMap.tsx
++++ b/client/components/trips/TripDayMap.tsx
+@@ -1,6 +1,7 @@
+ 'use client'
+ 
+ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
++import Image from 'next/image'
+ import mapboxgl from 'mapbox-gl'
+ import 'mapbox-gl/dist/mapbox-gl.css'
+ import { cn } from '@/lib/utils'
+@@ -46,12 +47,110 @@ export default function TripDayMap({
+   const mapRef = useRef<mapboxgl.Map | null>(null)
+   const markersRef = useRef<mapboxgl.Marker[]>([])
+   const [mapReady, setMapReady] = useState(false)
++  const [failedStaticMapUrl, setFailedStaticMapUrl] = useState<string | null>(null)
++  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+ 
+   const validStops = useMemo(
+     () => stops.filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude)),
+     [stops]
+   )
+ 
++  const staticMapUrl = useMemo(() => {
++    if (interactive || !mapboxToken || validStops.length === 0) return null
++
++    const lineFeature =
++      routeGeojson && routeGeojson.type === 'Feature'
++        ? routeGeojson
++        : routeGeojson &&
++            routeGeojson.type === 'FeatureCollection' &&
++            routeGeojson.features.find((feature) => feature.geometry?.type === 'LineString')
++          ? routeGeojson.features.find((feature) => feature.geometry?.type === 'LineString')
++          : null
++
++    const overlays: string[] = []
++
++    if (lineFeature) {
++      const routeOverlay = `geojson(${encodeURIComponent(
++        JSON.stringify({
++          type: 'Feature',
++          properties: {
++            stroke: active ? '#fbbf24' : '#7dd3fc',
++            'stroke-width': active ? 4 : 3,
++            'stroke-opacity': 0.9,
++          },
++          geometry: lineFeature.geometry,
++        })
++      )})`
++      overlays.push(routeOverlay)
++    }
++
++    validStops.forEach((stop) => {
++      const markerLabel = `${Math.min(stop.index, 9)}`
++      const markerColor = active ? 'fbbf24' : '7dd3fc'
++      overlays.push(`pin-s-${markerLabel}+${markerColor}(${stop.longitude},${stop.latitude})`)
++    })
++
++    return `https://api.mapbox.com/styles/v1/mapbox/navigation-night-v1/static/${overlays.join(',')}/auto/1200x720?padding=48,48,48,48&access_token=${mapboxToken}`
++  }, [active, interactive, mapboxToken, routeGeojson, validStops])
++  const staticMapFailed = !!staticMapUrl && failedStaticMapUrl === staticMapUrl
++
++  const previewGeometry = useMemo(() => {
++    const lineFeature =
++      routeGeojson && routeGeojson.type === 'Feature'
++        ? routeGeojson
++        : routeGeojson &&
++            routeGeojson.type === 'FeatureCollection' &&
++            routeGeojson.features.find((feature) => feature.geometry?.type === 'LineString')
++          ? routeGeojson.features.find((feature) => feature.geometry?.type === 'LineString')
++          : null
++
++    const lineCoordinates: [number, number][] =
++      lineFeature?.geometry?.type === 'LineString'
++        ? lineFeature.geometry.coordinates
++            .filter((coordinate): coordinate is [number, number] => coordinate.length >= 2)
++            .map((coordinate) => [coordinate[0], coordinate[1]])
++        : validStops.map((stop) => [stop.longitude, stop.latitude] as [number, number])
++
++    const points = validStops.map((stop) => ({
++      ...stop,
++      longitude: stop.longitude,
++      latitude: stop.latitude,
++    }))
++
++    const allCoordinates = [
++      ...lineCoordinates,
++      ...points.map((point) => [point.longitude, point.latitude] as [number, number]),
++    ]
++
++    if (allCoordinates.length === 0) return null
++
++    const longitudes = allCoordinates.map(([longitude]) => longitude)
++    const latitudes = allCoordinates.map(([, latitude]) => latitude)
++    const minLng = Math.min(...longitudes)
++    const maxLng = Math.max(...longitudes)
++    const minLat = Math.min(...latitudes)
++    const maxLat = Math.max(...latitudes)
++    const lngSpan = Math.max(maxLng - minLng, 0.01)
++    const latSpan = Math.max(maxLat - minLat, 0.01)
++    const padding = 24
++    const width = 100
++    const height = 100
++
++    const project = ([longitude, latitude]: [number, number]) => {
++      const x = padding + ((longitude - minLng) / lngSpan) * (width - padding * 2)
++      const y = height - padding - ((latitude - minLat) / latSpan) * (height - padding * 2)
++      return [x, y] as const
++    }
++
++    return {
++      linePoints: lineCoordinates.map(project).map(([x, y]) => `${x},${y}`).join(' '),
++      pointNodes: points.map((point) => {
++        const [x, y] = project([point.longitude, point.latitude])
++        return { ...point, x, y }
++      }),
++    }
++  }, [routeGeojson, validStops])
++
+   const fitMapToStops = useCallback((map: mapboxgl.Map) => {
+     if (validStops.length === 0) {
+       map.flyTo({ center: [0, 20], zoom: 1.15, duration: 0 })
+@@ -78,11 +177,11 @@ export default function TripDayMap({
+   }, [interactive, validStops])
+ 
+   useEffect(() => {
++    if (!interactive) return
+     if (!containerRef.current) return
+-    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+-    if (!token) return
++    if (!mapboxToken) return
+ 
+-    mapboxgl.accessToken = token
++    mapboxgl.accessToken = mapboxToken
+ 
+     const map = new mapboxgl.Map({
+       container: containerRef.current,
+@@ -173,7 +272,7 @@ export default function TripDayMap({
+       map.remove()
+       mapRef.current = null
+     }
+-  }, [interactive])
++  }, [interactive, mapboxToken])
+ 
+   useEffect(() => {
+     const map = mapRef.current
+@@ -301,7 +400,68 @@ export default function TripDayMap({
+       )}
+     >
+       <div className={cn('relative w-full overflow-hidden', mapHeightClassName)}>
+-        <div ref={containerRef} className="h-full w-full" />
++        {interactive ? (
++          <div ref={containerRef} className="h-full w-full" />
++        ) : staticMapUrl ? (
++          staticMapFailed ? (
++            <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.14),transparent_58%),linear-gradient(180deg,rgba(9,12,24,0.96),rgba(4,5,12,0.98))]">
++              {previewGeometry && (
++                <svg viewBox="0 0 100 100" className="h-full w-full">
++                  {previewGeometry.linePoints && (
++                    <polyline
++                      points={previewGeometry.linePoints}
++                      fill="none"
++                      stroke={active ? 'rgba(251,191,36,0.95)' : 'rgba(125,211,252,0.92)'}
++                      strokeWidth="2.75"
++                      strokeLinecap="round"
++                      strokeLinejoin="round"
++                    />
++                  )}
++                  {previewGeometry.pointNodes.map((point) => (
++                    <g key={point.id}>
++                      <circle
++                        cx={point.x}
++                        cy={point.y}
++                        r="4.8"
++                        fill={active ? 'rgba(251,191,36,0.18)' : 'rgba(125,211,252,0.16)'}
++                        stroke={active ? 'rgba(251,191,36,0.9)' : 'rgba(125,211,252,0.85)'}
++                        strokeWidth="1.2"
++                      />
++                      <circle
++                        cx={point.x}
++                        cy={point.y}
++                        r="2.2"
++                        fill={active ? 'rgba(251,191,36,0.98)' : 'rgba(125,211,252,0.98)'}
++                      />
++                      <text
++                        x={point.x}
++                        y={point.y + 0.8}
++                        textAnchor="middle"
++                        fontSize="3.5"
++                        fontWeight="700"
++                        fill="rgba(5,5,16,0.95)"
++                      >
++                        {point.index}
++                      </text>
++                    </g>
++                  ))}
++                </svg>
++              )}
++            </div>
++          ) : (
++            <Image
++              key={staticMapUrl}
++              src={staticMapUrl}
++              alt={`${title} map preview`}
++              fill
++              unoptimized
++              className="object-cover"
++              onError={() => setFailedStaticMapUrl(staticMapUrl)}
++            />
++          )
++        ) : (
++          <div ref={containerRef} className="h-full w-full" />
++        )}
+         {validStops.length === 0 && (
+           <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-center">
+             <p className="max-w-[160px] text-xs text-white/45">
+@@ -309,6 +469,13 @@ export default function TripDayMap({
+             </p>
+           </div>
+         )}
++        {!interactive && !staticMapUrl && validStops.length > 0 && (
++          <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-center">
++            <p className="max-w-[180px] text-xs text-white/45">
++              Map previews need a valid Mapbox token.
++            </p>
++          </div>
++        )}
+       </div>
+ 
+       {showDetails && (
+diff --git a/client/package-lock.json b/client/package-lock.json
+index e141cf8..0e92629 100644
+--- a/client/package-lock.json
++++ b/client/package-lock.json
+@@ -47,6 +47,8 @@
+         "@types/react-dom": "^19",
+         "eslint": "^9",
+         "eslint-config-next": "16.1.1",
++        "pg": "^8.20.0",
++        "playwright": "^1.58.2",
+         "tailwindcss": "^4",
+         "tw-animate-css": "^1.4.0",
+         "typescript": "^5"
+@@ -5216,6 +5218,21 @@
+         }
+       }
+     },
++    "node_modules/fsevents": {
++      "version": "2.3.2",
++      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz",
++      "integrity": "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==",
++      "dev": true,
++      "hasInstallScript": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
++      }
++    },
+     "node_modules/function-bind": {
+       "version": "1.1.2",
+       "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz",
+@@ -7148,6 +7165,103 @@
+         "pbf": "bin/pbf"
+       }
+     },
++    "node_modules/pg": {
++      "version": "8.20.0",
++      "resolved": "https://registry.npmjs.org/pg/-/pg-8.20.0.tgz",
++      "integrity": "sha512-ldhMxz2r8fl/6QkXnBD3CR9/xg694oT6DZQ2s6c/RI28OjtSOpxnPrUCGOBJ46RCUxcWdx3p6kw/xnDHjKvaRA==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "pg-connection-string": "^2.12.0",
++        "pg-pool": "^3.13.0",
++        "pg-protocol": "^1.13.0",
++        "pg-types": "2.2.0",
++        "pgpass": "1.0.5"
++      },
++      "engines": {
++        "node": ">= 16.0.0"
++      },
++      "optionalDependencies": {
++        "pg-cloudflare": "^1.3.0"
++      },
++      "peerDependencies": {
++        "pg-native": ">=3.0.1"
++      },
++      "peerDependenciesMeta": {
++        "pg-native": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/pg-cloudflare": {
++      "version": "1.3.0",
++      "resolved": "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.3.0.tgz",
++      "integrity": "sha512-6lswVVSztmHiRtD6I8hw4qP/nDm1EJbKMRhf3HCYaqud7frGysPv7FYJ5noZQdhQtN2xJnimfMtvQq21pdbzyQ==",
++      "dev": true,
++      "license": "MIT",
++      "optional": true
++    },
++    "node_modules/pg-connection-string": {
++      "version": "2.12.0",
++      "resolved": "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.12.0.tgz",
++      "integrity": "sha512-U7qg+bpswf3Cs5xLzRqbXbQl85ng0mfSV/J0nnA31MCLgvEaAo7CIhmeyrmJpOr7o+zm0rXK+hNnT5l9RHkCkQ==",
++      "dev": true,
++      "license": "MIT"
++    },
++    "node_modules/pg-int8": {
++      "version": "1.0.1",
++      "resolved": "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz",
++      "integrity": "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==",
++      "dev": true,
++      "license": "ISC",
++      "engines": {
++        "node": ">=4.0.0"
++      }
++    },
++    "node_modules/pg-pool": {
++      "version": "3.13.0",
++      "resolved": "https://registry.npmjs.org/pg-pool/-/pg-pool-3.13.0.tgz",
++      "integrity": "sha512-gB+R+Xud1gLFuRD/QgOIgGOBE2KCQPaPwkzBBGC9oG69pHTkhQeIuejVIk3/cnDyX39av2AxomQiyPT13WKHQA==",
++      "dev": true,
++      "license": "MIT",
++      "peerDependencies": {
++        "pg": ">=8.0"
++      }
++    },
++    "node_modules/pg-protocol": {
++      "version": "1.13.0",
++      "resolved": "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.13.0.tgz",
++      "integrity": "sha512-zzdvXfS6v89r6v7OcFCHfHlyG/wvry1ALxZo4LqgUoy7W9xhBDMaqOuMiF3qEV45VqsN6rdlcehHrfDtlCPc8w==",
++      "dev": true,
++      "license": "MIT"
++    },
++    "node_modules/pg-types": {
++      "version": "2.2.0",
++      "resolved": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz",
++      "integrity": "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "pg-int8": "1.0.1",
++        "postgres-array": "~2.0.0",
++        "postgres-bytea": "~1.0.0",
++        "postgres-date": "~1.0.4",
++        "postgres-interval": "^1.1.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/pgpass": {
++      "version": "1.0.5",
++      "resolved": "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz",
++      "integrity": "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "split2": "^4.1.0"
++      }
++    },
+     "node_modules/picocolors": {
+       "version": "1.1.1",
+       "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+@@ -7167,6 +7281,38 @@
+         "url": "https://github.com/sponsors/jonschlinkert"
+       }
+     },
++    "node_modules/playwright": {
++      "version": "1.58.2",
++      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.58.2.tgz",
++      "integrity": "sha512-vA30H8Nvkq/cPBnNw4Q8TWz1EJyqgpuinBcHET0YVJVFldr8JDNiU9LaWAE1KqSkRYazuaBhTpB5ZzShOezQ6A==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "dependencies": {
++        "playwright-core": "1.58.2"
++      },
++      "bin": {
++        "playwright": "cli.js"
++      },
++      "engines": {
++        "node": ">=18"
++      },
++      "optionalDependencies": {
++        "fsevents": "2.3.2"
++      }
++    },
++    "node_modules/playwright-core": {
++      "version": "1.58.2",
++      "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.58.2.tgz",
++      "integrity": "sha512-yZkEtftgwS8CsfYo7nm0KE8jsvm6i/PTgVtB8DL726wNf6H2IMsDuxCpJj59KDaxCtSnrWan2AeDqM7JBaultg==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "bin": {
++        "playwright-core": "cli.js"
++      },
++      "engines": {
++        "node": ">=18"
++      }
++    },
+     "node_modules/point-in-polygon-hao": {
+       "version": "1.2.4",
+       "resolved": "https://registry.npmjs.org/point-in-polygon-hao/-/point-in-polygon-hao-1.2.4.tgz",
+@@ -7233,6 +7379,49 @@
+         "node": "^10 || ^12 || >=14"
+       }
+     },
++    "node_modules/postgres-array": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz",
++      "integrity": "sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==",
++      "dev": true,
++      "license": "MIT",
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/postgres-bytea": {
++      "version": "1.0.1",
++      "resolved": "https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz",
++      "integrity": "sha512-5+5HqXnsZPE65IJZSMkZtURARZelel2oXUEO8rH83VS/hxH5vv1uHquPg5wZs8yMAfdv971IU+kcPUczi7NVBQ==",
++      "dev": true,
++      "license": "MIT",
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/postgres-date": {
++      "version": "1.0.7",
++      "resolved": "https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz",
++      "integrity": "sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==",
++      "dev": true,
++      "license": "MIT",
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/postgres-interval": {
++      "version": "1.2.0",
++      "resolved": "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz",
++      "integrity": "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "xtend": "^4.0.0"
++      },
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
+     "node_modules/potpack": {
+       "version": "2.1.0",
+       "resolved": "https://registry.npmjs.org/potpack/-/potpack-2.1.0.tgz",
+@@ -7815,6 +8004,16 @@
+       "integrity": "sha512-D50hKrjZgBzqD3FT2Ek53f2dcDLAQT8SSGrzj3vidNH5ISRgceeGVJ2dQIthKOuayqFXfFjXheHNo4bbt9LhRQ==",
+       "license": "MIT"
+     },
++    "node_modules/split2": {
++      "version": "4.2.0",
++      "resolved": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz",
++      "integrity": "sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==",
++      "dev": true,
++      "license": "ISC",
++      "engines": {
++        "node": ">= 10.x"
++      }
++    },
+     "node_modules/stable-hash": {
+       "version": "0.0.5",
+       "resolved": "https://registry.npmjs.org/stable-hash/-/stable-hash-0.0.5.tgz",
+@@ -8706,6 +8905,16 @@
+         }
+       }
+     },
++    "node_modules/xtend": {
++      "version": "4.0.2",
++      "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
++      "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==",
++      "dev": true,
++      "license": "MIT",
++      "engines": {
++        "node": ">=0.4"
++      }
++    },
+     "node_modules/yallist": {
+       "version": "3.1.1",
+       "resolved": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
+diff --git a/client/package.json b/client/package.json
+index 3dbc11f..bb16555 100644
+--- a/client/package.json
++++ b/client/package.json
+@@ -48,6 +48,8 @@
+     "@types/react-dom": "^19",
+     "eslint": "^9",
+     "eslint-config-next": "16.1.1",
++    "pg": "^8.20.0",
++    "playwright": "^1.58.2",
+     "tailwindcss": "^4",
+     "tw-animate-css": "^1.4.0",
+     "typescript": "^5"

@@ -2,6 +2,31 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireUser, TripBudgetSchema, TripPaceSchema } from '../_utils'
 
+function coerceCoordinate(value: unknown) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
+  if (typeof value === 'string' && value.trim().length > 0) {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+  return null
+}
+
+function normalizeTripItem(item: any) {
+  const latitude = coerceCoordinate(item?.place?.latitude)
+  const longitude = coerceCoordinate(item?.place?.longitude)
+
+  return {
+    ...item,
+    place: item?.place
+      ? {
+          ...item.place,
+          latitude,
+          longitude,
+        }
+      : item?.place,
+  }
+}
+
 const UpdateTripSchema = z.object({
   title: z.string().min(1).optional(),
   start_date: z.string().nullable().optional(),
@@ -68,7 +93,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   const byDayItems = new Map<string, any[]>()
   for (const it of items || []) {
     if (!byDayItems.has(it.trip_day_id)) byDayItems.set(it.trip_day_id, [])
-    byDayItems.get(it.trip_day_id)!.push(it)
+    byDayItems.get(it.trip_day_id)!.push(normalizeTripItem(it))
   }
 
   const byDayRoutes = new Map<string, any[]>()

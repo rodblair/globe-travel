@@ -2,7 +2,7 @@
 
 import { useChat as useAIChat } from '@ai-sdk/react'
 import { DefaultChatTransport, type UIMessage } from 'ai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 export type Message = {
   id: string
@@ -55,6 +55,20 @@ export function useChat(options: {
   const optionsRef = useRef(options)
   const seenToolCallsRef = useRef<Set<string>>(new Set())
   const hadPlanActivityRef = useRef(false)
+  const restoredMessagesRef = useRef(false)
+
+  const storageKey = useMemo(() => {
+    if (options.type === 'plan' && options.tripId) {
+      return `globe-travel:chat:plan:${options.tripId}`
+    }
+
+    if (options.conversationId) {
+      return `globe-travel:chat:${options.type}:${options.conversationId}`
+    }
+
+    return `globe-travel:chat:${options.type}`
+  }, [options.conversationId, options.tripId, options.type])
+
   useEffect(() => {
     optionsRef.current = options
   }, [options])
@@ -211,6 +225,44 @@ export function useChat(options: {
       content: shouldCollapseAssistantCopy ? '' : textContent,
     }
   }).filter((m: Message) => m.content.length > 0 || m.role === 'user')
+
+  useEffect(() => {
+    restoredMessagesRef.current = false
+  }, [storageKey])
+
+  useEffect(() => {
+    if (restoredMessagesRef.current || typeof window === 'undefined') return
+
+    const raw = window.localStorage.getItem(storageKey)
+    restoredMessagesRef.current = true
+    if (!raw) return
+
+    try {
+      const parsed = JSON.parse(raw) as Message[]
+      if (!Array.isArray(parsed) || parsed.length === 0) return
+
+      setAIMessages(
+        parsed.map((message) => ({
+          id: message.id,
+          role: message.role as 'user' | 'assistant',
+          parts: [{ type: 'text' as const, text: message.content }],
+        }))
+      )
+    } catch {
+      window.localStorage.removeItem(storageKey)
+    }
+  }, [setAIMessages, storageKey])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !restoredMessagesRef.current) return
+
+    if (messages.length === 0) {
+      window.localStorage.removeItem(storageKey)
+      return
+    }
+
+    window.localStorage.setItem(storageKey, JSON.stringify(messages))
+  }, [messages, storageKey])
 
   const sendMessage = useCallback(async (content: string) => {
     if (optionsRef.current.type === 'plan') {

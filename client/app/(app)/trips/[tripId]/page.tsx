@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence, useDragControls } from 'motion/react'
 import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
+import { buildDisplayStops, getDestinationFallback } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
 
 const TripGlobe = dynamic(() => import('@/components/globes/TripGlobe'), {
@@ -30,6 +31,8 @@ type TripPayload = {
 }
 
 const EMPTY_DAYS: TripDay[] = []
+const TRIP_CACHE_PREFIX = 'globe-travel:trip-payload:'
+const INITIAL_PROMPT_PREFIX = 'globe-travel:trip:initial-prompt:'
 
 type TripFeedback = {
   id: string
@@ -72,18 +75,48 @@ function extractDestinationLabel(title: string | null | undefined) {
   return cleaned
 }
 
+function coerceCoordinate(value: unknown) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
+  if (typeof value === 'string' && value.trim().length > 0) {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+  return null
+}
+
 export default function TripStudioPage() {
   const params = useParams<{ tripId: string }>()
+  const searchParams = useSearchParams()
   const tripId = params.tripId
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [chatOpen, setChatOpen] = useState(true)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
+  const [cachedPayload, setCachedPayload] = useState<TripPayload | null>(null)
   const studioRef = useRef<HTMLDivElement>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
   const chatDragControls = useDragControls()
   const itineraryDragControls = useDragControls()
+
+  useEffect(() => {
+    if (!tripId || typeof window === 'undefined') return
+
+    try {
+      const raw = window.localStorage.getItem(`${TRIP_CACHE_PREFIX}${tripId}`)
+      if (!raw) {
+        setCachedPayload(null)
+        return
+      }
+      const parsed = JSON.parse(raw) as TripPayload
+      if (parsed?.trip && Array.isArray(parsed?.days)) {
+        setCachedPayload(parsed)
+      }
+    } catch {
+      window.localStorage.removeItem(`${TRIP_CACHE_PREFIX}${tripId}`)
+      setCachedPayload(null)
+    }
+  }, [tripId])
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['trip', tripId],
@@ -92,10 +125,18 @@ export default function TripStudioPage() {
       if (!res.ok) throw new Error('Failed to load trip')
       return res.json() as Promise<TripPayload>
     },
+    retry: 1,
   })
 
-  const trip = data?.trip
-  const days = data?.days ?? EMPTY_DAYS
+  useEffect(() => {
+    if (!tripId || !data || typeof window === 'undefined') return
+    window.localStorage.setItem(`${TRIP_CACHE_PREFIX}${tripId}`, JSON.stringify(data))
+    setCachedPayload(data)
+  }, [data, tripId])
+
+  const resolvedPayload = data ?? cachedPayload
+  const trip = resolvedPayload?.trip
+  const days = resolvedPayload?.days ?? EMPTY_DAYS
 
   const { data: feedback = [] } = useQuery({
     queryKey: ['trip-feedback', tripId],
@@ -117,18 +158,31 @@ export default function TripStudioPage() {
     [days, ensureSelectedDayExists]
   )
 
-  const selectedStops = useMemo(() => {
-    const items = (selectedDay?.items || [])
-      .filter((it) => it.place?.latitude && it.place?.longitude)
-      .sort((a, b) => a.order_index - b.order_index)
-    return items.map((it, idx) => ({
-      id: it.id,
-      title: it.place?.name || it.title,
-      latitude: it.place?.latitude || 0,
-      longitude: it.place?.longitude || 0,
-      index: idx + 1,
-    }))
-  }, [selectedDay])
+  const selectedStops = useMemo(
+    () => buildDisplayStops((selectedDay?.items || []) as any).filter((stop) => stop.mapped).map((stop) => ({
+      id: stop.id,
+      title: stop.title,
+      latitude: stop.latitude,
+      longitude: stop.longitude,
+      index: stop.index,
+    })),
+    [selectedDay]
+  )
+
+  const tripStops = useMemo(
+    () =>
+      days
+        .flatMap((day) => buildDisplayStops((day.items || []) as any))
+        .filter((stop) => stop.mapped)
+        .map((stop, index) => ({
+          id: stop.id,
+          title: stop.title,
+          latitude: stop.latitude,
+          longitude: stop.longitude,
+          index: index + 1,
+        })),
+    [days]
+  )
 
   const selectedRouteGeojson = useMemo(() => {
     const route = selectedDay?.routes?.find((r) => r.mode === 'walk') || selectedDay?.routes?.[0]
@@ -137,26 +191,25 @@ export default function TripStudioPage() {
   }, [selectedDay])
 
   const tripDestination = useMemo(() => extractDestinationLabel(trip?.title), [trip?.title])
+  const destinationFallback = useMemo(() => getDestinationFallback(tripDestination || trip?.title), [tripDestination, trip?.title])
 
   const tripDestinationCenter = useMemo(() => {
-    const allStops = days
-      .flatMap((day) => day.items || [])
-      .filter((item) => item.place?.latitude != null && item.place?.longitude != null)
+    const allStops = days.flatMap((day) => buildDisplayStops((day.items || []) as any)).filter((stop) => stop.mapped)
 
-    if (allStops.length === 0) return null
+    if (allStops.length === 0) return destinationFallback
 
     const latitude =
-      allStops.reduce((sum, item) => sum + (item.place?.latitude || 0), 0) / allStops.length
+      allStops.reduce((sum, item) => sum + item.latitude, 0) / allStops.length
     const longitude =
-      allStops.reduce((sum, item) => sum + (item.place?.longitude || 0), 0) / allStops.length
+      allStops.reduce((sum, item) => sum + item.longitude, 0) / allStops.length
 
     return { latitude, longitude }
-  }, [days])
+  }, [days, destinationFallback])
 
   const mappingSummary = useMemo(() => {
     const itemCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
     const mappedItemCount = days.reduce(
-      (sum, day) => sum + day.items.filter((item) => item.place?.latitude != null && item.place?.longitude != null).length,
+      (sum, day) => sum + day.items.filter((item) => coerceCoordinate(item.place?.latitude) != null && coerceCoordinate(item.place?.longitude) != null).length,
       0
     )
     const routeDayCount = days.filter((day) => (day.routes?.length || 0) > 0).length
@@ -179,19 +232,43 @@ export default function TripStudioPage() {
   }, [tripId, refetch])
 
   const onSelectItem = useCallback((item: TripItem) => {
-    if (item.place?.latitude && item.place?.longitude) {
-      flyToRef.current?.(item.place.latitude, item.place.longitude, 4)
+    const latitude = coerceCoordinate(item.place?.latitude)
+    const longitude = coerceCoordinate(item.place?.longitude)
+    if (latitude != null && longitude != null) {
+      flyToRef.current?.(latitude, longitude, 4)
     }
   }, [])
+
+  const refreshTripWithMaps = useCallback(async () => {
+    await fetch(`/api/trips/${tripId}/hydrate-map`, { method: 'POST' }).catch(() => null)
+    await refetch()
+  }, [tripId, refetch])
 
   const { messages, isLoading: chatLoading, sendMessage, stop } = useChat({
     type: 'plan',
     tripId,
-    onTripPatch: () => refetch(),
+    onTripPatch: () => {
+      void refreshTripWithMaps()
+    },
     onNavigate: (nav) => {
-      if (nav.latitude && nav.longitude) flyToRef.current?.(nav.latitude, nav.longitude, 4)
+      if (coerceCoordinate(nav.latitude) != null && coerceCoordinate(nav.longitude) != null) {
+        flyToRef.current?.(Number(nav.latitude), Number(nav.longitude), 4)
+      }
     },
   })
+
+  useEffect(() => {
+    if (!tripId || typeof window === 'undefined') return
+
+    const prompt = searchParams.get('prompt')?.trim()
+    if (!prompt) return
+
+    const storageKey = `${INITIAL_PROMPT_PREFIX}${tripId}:${prompt}`
+    if (window.sessionStorage.getItem(storageKey)) return
+
+    window.sessionStorage.setItem(storageKey, 'sent')
+    sendMessage(prompt)
+  }, [searchParams, sendMessage, tripId])
 
   const handleRegenerateDay = useCallback((dayIndex: number) => {
     sendMessage(`Regenerate Day ${dayIndex} with a better flow. Keep it realistic with timing and neighborhoods.`)
@@ -269,7 +346,13 @@ export default function TripStudioPage() {
       {/* Globe */}
       <div className="absolute inset-0">
         <TripGlobe
-          stops={selectedStops}
+          stops={tripStops.length > 0 ? tripStops : destinationFallback ? [{
+            id: `destination:${destinationFallback.title}`,
+            title: destinationFallback.title,
+            latitude: destinationFallback.latitude,
+            longitude: destinationFallback.longitude,
+            index: 1,
+          }] : selectedStops}
           routeGeojson={selectedRouteGeojson}
           destinationLabel={tripDestination}
           destinationCenter={tripDestinationCenter}
@@ -279,79 +362,89 @@ export default function TripStudioPage() {
       </div>
 
       {/* Top bar */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[min(960px,calc(100%-2rem))]">
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 px-4 py-2.5 bg-black/50 backdrop-blur-xl border border-white/10 rounded-full"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-white/15 bg-[rgba(9,9,15,0.78)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur-2xl"
         >
-          <Calendar className="w-4 h-4 text-amber-400" />
-          <span className="text-xs text-white/70 font-medium">
-            {trip?.title || 'Trip Studio'}
-          </span>
-          <div className="w-px h-3 bg-white/10" />
-          <button
-            onClick={handleOptimize}
-            className="text-xs text-white/50 hover:text-white/80 transition-colors inline-flex items-center gap-1.5"
-            title="Optimize the order for this day"
-          >
-            <ArrowLeftRight className="w-4 h-4 text-white/30" />
-            Optimize order
-          </button>
-          <div className="w-px h-3 bg-white/10" />
-          <button
-            onClick={hydrateMaps}
-            disabled={isHydratingMaps}
-            className="text-xs text-white/50 hover:text-white/80 transition-colors inline-flex items-center gap-1.5 disabled:opacity-50"
-            title="Repair or rebuild day map locations and routes"
-          >
-            <Route className="w-4 h-4 text-white/30" />
-            {isHydratingMaps ? 'Building maps…' : 'Build maps'}
-          </button>
-          <div className="w-px h-3 bg-white/10" />
-          <button
-            onClick={togglePublic}
-            className="text-xs text-white/50 hover:text-white/80 transition-colors inline-flex items-center gap-1.5"
-            title="Toggle public sharing"
-          >
-            <Share2 className="w-4 h-4 text-white/30" />
-            {trip?.is_public ? 'Public' : 'Private'}
-          </button>
-          {trip?.is_public && shareUrl && (
-            <>
-              <div className="w-px h-3 bg-white/10" />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-400/25 bg-amber-400/12">
+                <Calendar className="h-4 w-4 text-amber-300" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Rome Trip Studio</p>
+                <p className="truncate text-sm font-medium text-white">{trip?.title || 'Trip Studio'}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleOptimize}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+              title="Optimize the order for this day"
+            >
+              <ArrowLeftRight className="h-4 w-4 text-amber-300" />
+              Optimize day
+            </button>
+            <button
+              onClick={hydrateMaps}
+              disabled={isHydratingMaps}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12 disabled:opacity-50"
+              title="Repair or rebuild day map locations and routes"
+            >
+              <Route className="h-4 w-4 text-sky-300" />
+              {isHydratingMaps ? 'Building maps…' : 'Build maps'}
+            </button>
+            <button
+              onClick={togglePublic}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
+                trip?.is_public
+                  ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200 hover:bg-emerald-400/16'
+                  : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+              )}
+              title="Toggle public sharing"
+            >
+              <Share2 className="h-4 w-4" />
+              {trip?.is_public ? 'Public review on' : 'Enable review link'}
+            </button>
+            {trip?.is_public && shareUrl && (
               <Link
                 href={`/t/${trip.share_slug}`}
-                className="text-xs text-amber-300 hover:text-amber-200 transition-colors inline-flex items-center gap-1.5"
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-400/12 px-3 py-2 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/18"
                 title="Open public share link"
               >
-                <LinkIcon className="w-4 h-4" />
+                <LinkIcon className="h-4 w-4" />
                 View share
               </Link>
-            </>
-          )}
+            )}
+          </div>
         </motion.div>
       </div>
 
       {/* Invite + feedback */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 w-[min(720px,calc(100%-2rem))] pointer-events-none">
-        <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-3 pointer-events-auto">
-          <div className="bg-black/55 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3">
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-30 w-[min(920px,calc(100%-2rem))] pointer-events-none">
+        <div className="grid gap-3 pointer-events-auto md:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-wider text-white/25">Invite friends</p>
-                <p className="text-sm text-white/75 mt-1">
-                  Turn on public sharing, send the link, and collect feedback on this itinerary.
+                <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Group review</p>
+                <p className="mt-1 text-sm font-medium text-white">Invite friends to react to this Rome plan.</p>
+                <p className="mt-1 text-xs leading-relaxed text-white/62">
+                  Keep the planning flow social without burying the itinerary in extra controls.
                 </p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={togglePublic}
                   className={cn(
-                    'px-3 py-2 rounded-xl text-xs font-medium border transition-colors',
+                    'rounded-full border px-3 py-2 text-xs font-medium transition-colors',
                     trip?.is_public
-                      ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300'
-                      : 'border-white/10 bg-white/5 text-white/50 hover:text-white/80'
+                      ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200'
+                      : 'border-white/15 bg-white/8 text-white/78 hover:bg-white/12'
                   )}
                 >
                   {trip?.is_public ? 'Public link on' : 'Enable public link'}
@@ -360,58 +453,58 @@ export default function TripStudioPage() {
             </div>
 
             {trip?.is_public && shareUrl ? (
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <div className="min-w-0 flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/40 truncate">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <div className="min-w-0 flex-1 rounded-2xl border border-white/12 bg-white/7 px-3 py-2 text-xs text-white/72 truncate">
                   {shareUrl}
                 </div>
                 <button
                   onClick={copyInviteLink}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
                 >
                   <Copy className="w-4 h-4" />
                   Copy link
                 </button>
                 <button
                   onClick={shareInvite}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/15 border border-amber-500/25 text-xs text-amber-300 hover:bg-amber-500/20 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-400/12 px-3 py-2 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/18"
                 >
                   <Send className="w-4 h-4" />
                   Share invite
                 </button>
               </div>
             ) : (
-              <p className="mt-3 text-xs text-white/35">
+              <p className="mt-4 text-xs text-white/58">
                 Reviews open automatically once the trip is public.
               </p>
             )}
           </div>
 
-          <div className="bg-black/55 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3">
+          <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-white/25">Friend feedback</p>
-                <p className="text-sm text-white/75 mt-1">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Friend feedback</p>
+                <p className="mt-1 text-sm font-medium text-white">
                   {feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}
                 </p>
               </div>
               <MessageSquareQuote className="w-5 h-5 text-white/25" />
             </div>
 
-            <div className="mt-3 space-y-2 max-h-40 overflow-y-auto">
+            <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
               {feedback.length === 0 ? (
-                <p className="text-xs text-white/35">
+                <p className="text-xs leading-relaxed text-white/58">
                   No reviews yet. Invite a few friends and ask them where the itinerary feels too busy or exciting.
                 </p>
               ) : (
                 feedback.slice(0, 3).map((entry) => (
-                  <div key={entry.id} className="rounded-xl bg-white/5 border border-white/10 p-3">
+                  <div key={entry.id} className="rounded-2xl border border-white/12 bg-white/8 p-3">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs text-white/70 font-medium truncate">{entry.author_name}</p>
+                      <p className="truncate text-xs font-medium text-white">{entry.author_name}</p>
                       <span className={cn('px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
                         {sentimentLabel[entry.sentiment]}
                       </span>
                     </div>
-                    <p className="text-xs text-white/45 leading-relaxed mt-2 line-clamp-3">{entry.comment}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-white/72 line-clamp-3">{entry.comment}</p>
                   </div>
                 ))
               )}
@@ -434,16 +527,19 @@ export default function TripStudioPage() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="absolute top-[178px] md:top-36 left-4 bottom-4 w-[calc(100%-2rem)] md:w-[360px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
+            className="absolute top-[214px] md:top-44 left-4 bottom-4 w-[calc(100%-2rem)] md:w-[360px] z-20 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.82)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}
-              className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 flex-shrink-0 cursor-grab active:cursor-grabbing"
+              className="flex flex-shrink-0 items-center justify-between border-b border-white/12 px-5 py-4 cursor-grab active:cursor-grabbing"
             >
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-white/70">Trip Planner</span>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-white/38">Planner chat</p>
+                  <p className="text-sm font-medium text-white">Guide the itinerary</p>
+                </div>
                 <span
-                  className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] text-white/45"
+                  className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55"
                   title="Drag chat window"
                 >
                   <GripHorizontal className="h-3.5 w-3.5" />
@@ -465,6 +561,7 @@ export default function TripStudioPage() {
                 onSendMessage={sendMessage}
                 onStop={stop}
                 placeholder="Tell me where/when you’re going, your vibe, and your must-dos…"
+                storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
                 suggestions={[
                   `Plan Day ${ensureSelectedDayExists} around food and neighborhoods`,
                   `Add a day trip from here`,
@@ -487,13 +584,13 @@ export default function TripStudioPage() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="absolute top-[178px] md:top-36 right-4 bottom-4 w-[calc(100%-2rem)] md:w-[420px] z-20 flex flex-col bg-black/70 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden"
+        className="absolute top-[214px] md:top-44 right-4 bottom-4 w-[calc(100%-2rem)] md:w-[460px] z-20 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.82)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl"
       >
         <div
           onPointerDown={(event) => itineraryDragControls.start(event)}
           className="flex min-h-0 flex-1 flex-col"
         >
-          <div className="absolute right-3 top-3 z-30 hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] text-white/45 cursor-grab active:cursor-grabbing">
+          <div className="absolute right-4 top-4 z-30 hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55 cursor-grab active:cursor-grabbing">
             <GripHorizontal className="h-3.5 w-3.5" />
             Move
           </div>
@@ -512,7 +609,7 @@ export default function TripStudioPage() {
       </motion.div>
 
       {/* Loading overlay if trip payload is empty */}
-      {isLoading && (
+      {isLoading && !resolvedPayload && (
         <div className="absolute inset-0 z-40 bg-black/40 flex items-center justify-center">
           <div className="text-sm text-white/50">Loading trip…</div>
         </div>

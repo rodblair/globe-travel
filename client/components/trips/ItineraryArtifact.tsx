@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
+import { buildDisplayStops } from '@/components/trips/derivedStops'
 
 export type TripDay = {
   id: string
@@ -50,85 +51,6 @@ type ItineraryArtifactProps = {
   onRegenerateDay?: (dayIndex: number) => void
   onSwapItem?: (item: TripItem) => void
   isLoading?: boolean
-}
-
-type DerivedStop = {
-  title: string
-  latitude: number
-  longitude: number
-}
-
-type DisplayStop = {
-  id: string
-  title: string
-  latitude: number
-  longitude: number
-  index: number
-  item: TripItem
-  placeName: string | null
-  country: string | null
-  timeLabel: string | null
-  mapped: boolean
-}
-
-const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
-  {
-    pattern: /colosseum.*roman forum|roman forum.*colosseum/i,
-    stops: [
-      { title: 'Colosseum', latitude: 41.89021, longitude: 12.49223 },
-      { title: 'Roman Forum', latitude: 41.89246, longitude: 12.48533 },
-    ],
-  },
-  {
-    pattern: /vatican museums.*sistine chapel|sistine chapel.*vatican museums/i,
-    stops: [
-      { title: 'Vatican Museums', latitude: 41.90649, longitude: 12.45362 },
-      { title: 'Sistine Chapel', latitude: 41.90293, longitude: 12.45486 },
-    ],
-  },
-]
-
-function buildDisplayStops(items: TripItem[]) {
-  const sortedItems = [...items].sort((a, b) => a.order_index - b.order_index)
-  const displayStops: DisplayStop[] = []
-
-  for (const item of sortedItems) {
-    const timeLabel = [item.start_time, item.end_time].filter(Boolean).join('–') || null
-    const derivedStops = DERIVED_STOP_RULES.find((entry) => entry.pattern.test(item.title))?.stops || null
-
-    if (derivedStops) {
-      for (const stop of derivedStops) {
-        displayStops.push({
-          id: `${item.id}:${stop.title}`,
-          title: stop.title,
-          latitude: stop.latitude,
-          longitude: stop.longitude,
-          index: displayStops.length + 1,
-          item,
-          placeName: stop.title,
-          country: item.place?.country || 'Italy',
-          timeLabel,
-          mapped: true,
-        })
-      }
-      continue
-    }
-
-    displayStops.push({
-      id: item.id,
-      title: item.place?.name || item.title,
-      latitude: item.place?.latitude || 0,
-      longitude: item.place?.longitude || 0,
-      index: displayStops.length + 1,
-      item,
-      placeName: item.place?.name || null,
-      country: item.place?.country || null,
-      timeLabel,
-      mapped: item.place?.latitude != null && item.place?.longitude != null,
-    })
-  }
-
-  return displayStops
 }
 
 function timeChip(start: string | null, end: string | null) {
@@ -262,20 +184,16 @@ export default function ItineraryArtifact({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-shrink-0 px-4 py-3 border-b border-white/10">
+      <div className="flex-shrink-0 border-b border-white/12 px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-wider text-white/25">
-              Itinerary
-            </p>
-            <h2 className="text-sm font-medium text-white/80 truncate">
-              {tripTitle}
-            </h2>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Itinerary</p>
+            <h2 className="truncate text-base font-medium text-white">{tripTitle}</h2>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => onRegenerateDay?.(selectedDay.day_index)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
               title="Regenerate this day"
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -301,39 +219,22 @@ export default function ItineraryArtifact({
           ))}
         </div>
 
-        <div className="mt-4 -mx-1 px-1 overflow-x-auto">
-          <div className="flex items-stretch gap-3 pb-1">
-            {dayMapCards.map(({ day, stops, routeGeojson, subtitle, routeSummary, stopPreview }) => (
-              <TripDayMap
-                key={day.id}
-                stops={stops}
-                routeGeojson={routeGeojson}
-                title={`Day ${day.day_index}${day.title ? ` · ${day.title}` : ''}`}
-                subtitle={subtitle}
-                routeSummary={routeSummary}
-                stopPreview={stopPreview}
-                active={day.day_index === selectedDay.day_index}
-                onClick={() => setSelectedDayIndex(day.day_index)}
-              />
-            ))}
-          </div>
-        </div>
-
         {selectedDayMap && (
-          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+          <div className="mt-4 rounded-[26px] border border-white/12 bg-white/[0.05] p-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-white/80 truncate">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Selected route</p>
+                <p className="mt-1 truncate text-sm font-medium text-white">
                   Day {selectedDay.day_index} map
                 </p>
-                <p className="mt-1 text-[11px] text-white/40 truncate">
+                <p className="mt-1 text-[11px] leading-relaxed text-white/66 truncate">
                   {selectedDayMap.routeSummary ||
                     `${selectedDayMap.mappedStops.length} mapped stop${selectedDayMap.mappedStops.length === 1 ? '' : 's'}`}
                 </p>
               </div>
               <button
                 onClick={() => setMapExpanded((current) => !current)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
               >
                 {mapExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
                 {mapExpanded ? 'Shrink' : 'Enlarge'}
@@ -360,9 +261,9 @@ export default function ItineraryArtifact({
                   key={stop.id}
                   onClick={() => onSelectItem?.(stop.item)}
                   className={cn(
-                    'flex items-start gap-3 rounded-2xl border px-3 py-2 text-left transition-colors',
+                    'flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
                     stop.mapped
-                      ? 'border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]'
+                      ? 'border-white/12 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.06]'
                       : 'border-amber-500/20 bg-amber-500/[0.06] hover:bg-amber-500/[0.1]'
                   )}
                 >
@@ -370,15 +271,18 @@ export default function ItineraryArtifact({
                     {index + 1}
                   </span>
                   <div className="min-w-0 flex-1">
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/38">
+                      Stop {index + 1}
+                    </p>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-xs font-medium text-white/80">{stop.title}</p>
+                      <p className="text-xs font-medium text-white">{stop.title}</p>
                       {stop.timeLabel && (
-                        <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/45">
+                        <span className="rounded-full border border-white/12 bg-white/8 px-2 py-0.5 text-[10px] text-white/62">
                           {stop.timeLabel}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-[11px] text-white/40 truncate">
+                    <p className="mt-1 text-[11px] text-white/62 truncate">
                       {stop.placeName || 'No pinned place yet'}
                       {stop.country ? ` • ${stop.country}` : ''}
                     </p>
@@ -399,7 +303,7 @@ export default function ItineraryArtifact({
         )}
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
         <AnimatePresence mode="popLayout">
           {dayMapCards.map(({ day, sortedItems, stops, routeGeojson, routeSummary, subtitle, stopPreview, displayStops }) => {
             const isSelectedDay = day.day_index === selectedDay.day_index
@@ -412,20 +316,17 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className={cn(
-                  'rounded-3xl border p-4',
-                  isSelectedDay ? 'border-amber-500/25 bg-amber-500/[0.05]' : 'border-white/10 bg-white/[0.02]'
-                )}
+                className={cn('rounded-[28px] border p-4.5', isSelectedDay ? 'border-amber-400/28 bg-amber-400/[0.055]' : 'border-white/12 bg-white/[0.035]')}
               >
                 <div className="flex items-start justify-between gap-3">
                   <button onClick={() => setSelectedDayIndex(day.day_index)} className="min-w-0 text-left">
-                    <p className="text-[11px] uppercase tracking-wider text-white/30">Day {day.day_index}</p>
-                    <h3 className="mt-1 text-sm font-medium text-white/85">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
-                    <p className="mt-1 text-xs text-white/40">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-white/42">Day {day.day_index}</p>
+                    <h3 className="mt-1 text-sm font-medium text-white">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
+                    <p className="mt-1 text-xs text-white/62">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
                   </button>
                   <button
                     onClick={() => onRegenerateDay?.(day.day_index)}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Regenerate day
@@ -456,9 +357,9 @@ export default function ItineraryArtifact({
                         key={stop.id}
                         onClick={() => onSelectItem?.(stop.item)}
                         className={cn(
-                          'flex items-start gap-3 rounded-2xl border px-3 py-2 text-left transition-colors',
+                          'flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
                           stop.mapped
-                            ? 'border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]'
+                            ? 'border-white/12 bg-white/[0.05] hover:border-white/22 hover:bg-white/[0.07]'
                             : 'border-amber-500/20 bg-amber-500/[0.06] hover:bg-amber-500/[0.1]'
                         )}
                       >
@@ -466,15 +367,18 @@ export default function ItineraryArtifact({
                           {index + 1}
                         </span>
                         <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-[0.16em] text-white/38">
+                            Stop {index + 1}
+                          </p>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-xs font-medium text-white/80">{stop.title}</p>
+                            <p className="text-xs font-medium text-white">{stop.title}</p>
                             {stop.timeLabel && (
-                              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/45">
+                              <span className="rounded-full border border-white/12 bg-white/8 px-2 py-0.5 text-[10px] text-white/62">
                                 {stop.timeLabel}
                               </span>
                             )}
                           </div>
-                          <p className="mt-1 text-[11px] text-white/40 truncate">
+                          <p className="mt-1 text-[11px] text-white/62 truncate">
                             {stop.placeName || 'No pinned place yet'}
                             {stop.country ? ` • ${stop.country}` : ''}
                           </p>
@@ -507,7 +411,7 @@ export default function ItineraryArtifact({
                         onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index, e)}
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
-                          dragOverItemId === item.id ? 'border-amber-500/30 bg-amber-500/[0.06]' : 'border-white/10 bg-white/5 hover:border-white/20'
+                          dragOverItemId === item.id ? 'border-amber-400/35 bg-amber-400/[0.08]' : 'border-white/12 bg-white/8 hover:border-white/22'
                         )}
                       >
                         <div className="flex items-start gap-3">
@@ -543,17 +447,17 @@ export default function ItineraryArtifact({
                                   className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-500/40"
                                 />
                               ) : (
-                                <p className="text-sm text-white/80 font-medium truncate">
+                                <p className="truncate text-sm font-medium text-white">
                                   {item.title}
                                 </p>
                               )}
                               {item.place?.country && (
-                                <p className="text-xs text-white/35 truncate mt-0.5">
+                                <p className="mt-0.5 truncate text-xs text-white/55">
                                   {item.place.country}
                                 </p>
                               )}
                               {item.notes && (
-                                <p className="text-xs text-white/40 line-clamp-2 mt-2">
+                                <p className="mt-2 line-clamp-2 text-xs text-white/62">
                                   {item.notes}
                                 </p>
                               )}

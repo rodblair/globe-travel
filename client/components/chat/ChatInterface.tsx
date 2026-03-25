@@ -14,6 +14,7 @@ interface ChatInterfaceProps {
   onStop: () => void
   placeholder?: string
   suggestions?: string[]
+  storageKey?: string
 }
 
 export default function ChatInterface({
@@ -23,10 +24,30 @@ export default function ChatInterface({
   onStop,
   placeholder = 'Type your message...',
   suggestions = [],
+  storageKey,
 }: ChatInterfaceProps) {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState(() => {
+    if (!storageKey || typeof window === 'undefined') return ''
+    return window.localStorage.getItem(`${storageKey}:draft`) || ''
+  })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (!storageKey || typeof window === 'undefined') return
+    const saved = window.localStorage.getItem(`${storageKey}:draft`)
+    queueMicrotask(() => setInput(saved || ''))
+  }, [storageKey])
+
+  useEffect(() => {
+    if (!storageKey || typeof window === 'undefined') return
+    const key = `${storageKey}:draft`
+    if (input.trim()) {
+      window.localStorage.setItem(key, input)
+    } else {
+      window.localStorage.removeItem(key)
+    }
+  }, [input, storageKey])
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -38,6 +59,9 @@ export default function ChatInterface({
     if (!trimmed || isLoading) return
     onSendMessage(trimmed)
     setInput('')
+    if (storageKey && typeof window !== 'undefined') {
+      window.localStorage.removeItem(`${storageKey}:draft`)
+    }
     // Reset textarea height
     if (inputRef.current) {
       inputRef.current.style.height = 'auto'
