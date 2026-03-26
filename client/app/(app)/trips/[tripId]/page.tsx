@@ -175,7 +175,7 @@ export default function TripStudioPage() {
     await refetch()
   }, [tripId, refetch])
 
-  const { messages, isLoading: chatLoading, sendMessage, stop } = useChat({
+  const { messages, isLoading: chatLoading, error: chatError, sendMessage, stop } = useChat({
     type: 'plan',
     tripId,
     onTripPatch: () => {
@@ -302,7 +302,7 @@ export default function TripStudioPage() {
                 <Calendar className="h-4 w-4 text-amber-300" />
               </span>
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Rome Trip Studio</p>
+                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">{tripDestination ? `${tripDestination} Trip Studio` : 'Trip Studio'}</p>
                 <p className="truncate text-sm font-medium text-white">{trip?.title || 'Trip Studio'}</p>
               </div>
             </div>
@@ -360,7 +360,7 @@ export default function TripStudioPage() {
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Group review</p>
-                <p className="mt-1 text-sm font-medium text-white">Invite friends to react to this Rome plan.</p>
+                <p className="mt-1 text-sm font-medium text-white">Invite friends to react to this {tripDestination || 'trip'} plan.</p>
                 <p className="mt-1 text-xs leading-relaxed text-white/62">
                   Keep the planning flow social without burying the itinerary in extra controls.
                 </p>
@@ -486,6 +486,7 @@ export default function TripStudioPage() {
               <ChatInterface
                 messages={messages}
                 isLoading={chatLoading}
+                error={chatError}
                 onSendMessage={sendMessage}
                 onStop={stop}
                 placeholder="Tell me where/when you’re going, your vibe, and your must-dos…"

@@ -10,6 +10,7 @@ import TypingIndicator from './TypingIndicator'
 interface ChatInterfaceProps {
   messages: Message[]
   isLoading: boolean
+  error?: string | null
   onSendMessage: (content: string) => void
   onStop: () => void
   placeholder?: string
@@ -20,6 +21,7 @@ interface ChatInterfaceProps {
 export default function ChatInterface({
   messages,
   isLoading,
+  error,
   onSendMessage,
   onStop,
   placeholder = 'Type your message...',
@@ -80,6 +82,12 @@ export default function ChatInterface({
         </AnimatePresence>
 
         {showTyping && <TypingIndicator />}
+
+        {error && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {error}
+          </div>
+        )}
 
         <div ref={messagesEndRef} />
       </div>

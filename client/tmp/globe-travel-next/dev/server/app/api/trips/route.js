@@ -1,0 +1,10 @@
+var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/trips/route.js")
+R.c("server/chunks/node_modules_next_62b26a6b._.js")
+R.c("server/chunks/node_modules_@opentelemetry_api_build_esm_7e8f41ca._.js")
+R.c("server/chunks/node_modules_zod_v4_da12b5b3._.js")
+R.c("server/chunks/node_modules_@supabase_auth-js_dist_module_02e1b12e._.js")
+R.c("server/chunks/node_modules_3dccb458._.js")
+R.c("server/chunks/[root-of-the-server]__92bd4584._.js")
+R.c("server/chunks/_next-internal_server_app_api_trips_route_actions_2c8e8ec4.js")
+R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/trips/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/trips/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports

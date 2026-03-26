@@ -62,6 +62,7 @@ export function useChat(options: {
   const {
     messages: aiMessages,
     status,
+    error: aiError,
     sendMessage: aiSendMessage,
     stop,
     setMessages: setAIMessages,
@@ -179,6 +180,7 @@ export function useChat(options: {
   }, [status])
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const error = aiError ? (aiError.message || 'Something went wrong. Please try again.') : null
 
   // Convert AI SDK UIMessages to our simple Message format
   const messages: Message[] = aiMessages.map((m: UIMessage) => {
@@ -227,5 +229,5 @@ export function useChat(options: {
     })))
   }, [setAIMessages])
 
-  return { messages, isLoading, sendMessage, stop, setMessages }
+  return { messages, isLoading, error, sendMessage, stop, setMessages }
 }

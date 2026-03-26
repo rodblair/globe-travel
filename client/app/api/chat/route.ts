@@ -494,7 +494,7 @@ export async function POST(req: Request) {
           })),
         }),
         execute: async ({ trip_id, days }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           for (const d of days) {
             const dayId = await ensureTripDay(supabase, tid, d.day_index)
@@ -526,7 +526,7 @@ export async function POST(req: Request) {
           notes: z.string().optional(),
         }),
         execute: async ({ trip_id, day_index, type, title, place_query, start_time, end_time, duration_minutes, notes }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const dayId = await ensureTripDay(supabase, tid, day_index)
           const token = mapboxToken
@@ -616,7 +616,7 @@ export async function POST(req: Request) {
           })).min(1),
         }),
         execute: async ({ trip_id, title, start_date, end_date, pace, budget_level, clear_existing, days }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
 
           const token = mapboxToken
@@ -678,8 +678,11 @@ export async function POST(req: Request) {
                     )
                     .select('id')
                     .single()
-                  if (placeErr) return JSON.stringify({ kind: 'error', message: placeErr.message })
-                  placeId = place?.id || null
+                  if (placeErr) {
+                    console.error('[setFullTripPlan] places upsert error (continuing without place)', placeErr.message)
+                  } else {
+                    placeId = place?.id || null
+                  }
                 }
               }
 
@@ -715,7 +718,7 @@ export async function POST(req: Request) {
           to_order_index: z.number().int().min(0).optional(),
         }),
         execute: async ({ trip_id, item_id, to_day_index, to_order_index }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const token = mapboxToken
           const { data: currentItem, error: currentErr } = await supabase
@@ -753,7 +756,7 @@ export async function POST(req: Request) {
           type: z.enum(['activity', 'meal', 'lodging', 'transit', 'note']).optional(),
         }),
         execute: async ({ trip_id, item_id, ...fields }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const token = mapboxToken
           const { data: currentItem, error: currentErr } = await supabase
@@ -781,7 +784,7 @@ export async function POST(req: Request) {
           item_id: z.string().uuid(),
         }),
         execute: async ({ trip_id, item_id }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const token = mapboxToken
           const { data: currentItem, error: currentErr } = await supabase
@@ -807,7 +810,7 @@ export async function POST(req: Request) {
           mode: z.enum(['walk', 'drive', 'transit']).default('walk'),
         }),
         execute: async ({ trip_id, day_index, mode }) => {
-          const tid = trip_id || tripId
+          const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const token = mapboxToken
           if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })

@@ -93,7 +93,7 @@ export default function ChatPage() {
     onNavigate: handleNavigate,
   })
 
-  const { data: tripPayload } = useQuery({
+  const { data: tripPayload, isError: tripPreviewFailed } = useQuery({
     queryKey: ['chat-trip-preview', activeTripId],
     enabled: Boolean(activeTripId),
     queryFn: async () => {
@@ -101,7 +101,15 @@ export default function ChatPage() {
       if (!res.ok) throw new Error('Failed to load trip preview')
       return res.json() as Promise<TripPayload>
     },
+    retry: 1,
   })
+
+  // If the stored activeTripId no longer exists, clear it so a new trip is created next time.
+  useEffect(() => {
+    if (tripPreviewFailed && activeTripId) {
+      setActiveTripId(null)
+    }
+  }, [tripPreviewFailed, activeTripId])
 
   const isPlanningPrompt = useCallback((text: string) => {
     const normalized = text.toLowerCase()
@@ -150,6 +158,7 @@ export default function ChatPage() {
 
   const activeMessages = exploreChat.messages
   const activeLoading = exploreChat.isLoading
+  const activeError = exploreChat.error
   const activeStop = exploreChat.stop
 
   const handleBack = useCallback(() => {
@@ -170,17 +179,27 @@ export default function ChatPage() {
     router.push('/explore')
   }, [router])
 
+  const [planningError, setPlanningError] = useState<string | null>(null)
+  const [planningInProgress, setPlanningInProgress] = useState(false)
+
   const sendMessage = useCallback(async (content: string) => {
     const trimmed = content.trim()
     if (!trimmed) return
 
     if (isPlanningPrompt(trimmed)) {
-      const tripId = activeTripId || await createDraftTrip(trimmed)
-      const target = `/trips/${tripId}?prompt=${encodeURIComponent(trimmed)}`
-      if (typeof window !== 'undefined') {
-        window.location.assign(target)
-      } else {
-        router.push(target)
+      setPlanningError(null)
+      setPlanningInProgress(true)
+      try {
+        const tripId = activeTripId || await createDraftTrip(trimmed)
+        const target = `/trips/${tripId}?prompt=${encodeURIComponent(trimmed)}`
+        if (typeof window !== 'undefined') {
+          window.location.assign(target)
+        } else {
+          router.push(target)
+        }
+      } catch {
+        setPlanningError('Could not start trip planning. Please try again.')
+        setPlanningInProgress(false)
       }
       return
     }
@@ -340,6 +359,7 @@ export default function ChatPage() {
               <ChatInterface
                 messages={activeMessages}
                 isLoading={activeLoading}
+                error={activeError}
                 onSendMessage={sendMessage}
                 onStop={activeStop}
                 placeholder={activeTripId ? 'Refine this itinerary, change a day, or ask for walking routes...' : 'Ask about destinations, trips, or travel tips...'}
@@ -424,11 +444,17 @@ export default function ChatPage() {
       {/* Input when no messages (overlaid at bottom) */}
       {activeMessages.length === 0 && (
         <div className="relative z-10 flex-shrink-0 border-t border-white/10 bg-black/40 backdrop-blur-xl px-4 py-3">
+          {planningError && (
+            <div className="max-w-3xl mx-auto mb-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300">
+              {planningError}
+            </div>
+          )}
           <div className="flex items-center gap-3 max-w-3xl mx-auto">
             <input
               type="text"
-              placeholder="Ask about destinations, trips, or travel tips..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/10 transition-all"
+              placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Ask about destinations, trips, or travel tips...'}
+              disabled={planningInProgress}
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/10 transition-all disabled:opacity-50"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   sendMessage(e.currentTarget.value.trim())
