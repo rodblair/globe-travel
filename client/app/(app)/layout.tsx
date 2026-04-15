@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <AuthProvider>
         <div className="flex h-screen bg-black text-white">
           <Sidebar />
-          <main className="flex-1 overflow-auto pb-16 md:pb-0">
+          <main className="flex-1 min-h-0 overflow-auto pb-16 md:pb-0">
             {children}
           </main>
           <BottomNav />

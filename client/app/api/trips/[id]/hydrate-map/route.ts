@@ -22,6 +22,11 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /casina valadier/i, name: 'Casina Valadier', country: 'Italy', country_code: 'IT', latitude: 41.91398, longitude: 12.48617, manualId: 'manual:rome:casina-valadier' },
   { pattern: /casa manco/i, name: 'Casa Manco Testaccio', country: 'Italy', country_code: 'IT', latitude: 41.87441, longitude: 12.47587, manualId: 'manual:rome:casa-manco' },
   { pattern: /la taverna dei fori imperiali/i, name: 'La Taverna dei Fori Imperiali', country: 'Italy', country_code: 'IT', latitude: 41.89303, longitude: 12.48923, manualId: 'manual:rome:taverna-fori-imperiali' },
+  { pattern: /\btaverna romana\b/i, name: 'Taverna Romana', country: 'Italy', country_code: 'IT', latitude: 41.8944, longitude: 12.4894, manualId: 'manual:rome:taverna-romana' },
+  { pattern: /sant'eustachio il caff[eé]|sant'eustachio/i, name: "Sant'Eustachio il Caffè", country: 'Italy', country_code: 'IT', latitude: 41.8987, longitude: 12.4727, manualId: 'manual:rome:sant-eustachio' },
+  { pattern: /\balla rampa\b/i, name: 'Alla Rampa', country: 'Italy', country_code: 'IT', latitude: 41.9059, longitude: 12.4832, manualId: 'manual:rome:alla-rampa' },
+  { pattern: /\bpierluigi\b/i, name: 'Pierluigi', country: 'Italy', country_code: 'IT', latitude: 41.8961, longitude: 12.4699, manualId: 'manual:rome:pierluigi' },
+  { pattern: /\bil sorpasso\b/i, name: 'Il Sorpasso', country: 'Italy', country_code: 'IT', latitude: 41.9053, longitude: 12.4641, manualId: 'manual:rome:il-sorpasso' },
   { pattern: /panino divino/i, name: 'Panino Divino', country: 'Italy', country_code: 'IT', latitude: 41.90623, longitude: 12.45742, manualId: 'manual:rome:panino-divino' },
   { pattern: /piatto romano/i, name: 'Piatto Romano', country: 'Italy', country_code: 'IT', latitude: 41.87779, longitude: 12.47872, manualId: 'manual:rome:piatto-romano' },
   { pattern: /jewish ghetto/i, name: 'Jewish Ghetto', country: 'Italy', country_code: 'IT', latitude: 41.8924, longitude: 12.4751, manualId: 'manual:rome:jewish-ghetto' },
@@ -29,14 +34,23 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /colosseum|roman forum/i, name: 'Colosseum', country: 'Italy', country_code: 'IT', latitude: 41.89021, longitude: 12.49223, manualId: 'manual:rome:colosseum' },
   { pattern: /palatine hill/i, name: 'Palatine Hill', country: 'Italy', country_code: 'IT', latitude: 41.88933, longitude: 12.48899, manualId: 'manual:rome:palatine-hill' },
   { pattern: /vatican museums|sistine chapel/i, name: 'Vatican Museums', country: 'Vatican City', country_code: 'VA', latitude: 41.90649, longitude: 12.45362, manualId: 'manual:vatican:museums' },
-  { pattern: /st\.?\s*peter'?s basilica/i, name: "St. Peter's Basilica", country: 'Vatican City', country_code: 'VA', latitude: 41.90217, longitude: 12.45394, manualId: 'manual:vatican:st-peters' },
+  { pattern: /st\.?\s*peter'?s (basilica|square)|piazza san pietro|\bvatican\b/i, name: "St. Peter's Square", country: 'Vatican City', country_code: 'VA', latitude: 41.90217, longitude: 12.45394, manualId: 'manual:vatican:st-peters' },
   { pattern: /villa borghese/i, name: 'Villa Borghese Gardens', country: 'Italy', country_code: 'IT', latitude: 41.9142, longitude: 12.49232, manualId: 'manual:rome:villa-borghese' },
   { pattern: /piazza navona/i, name: 'Piazza Navona', country: 'Italy', country_code: 'IT', latitude: 41.89893, longitude: 12.47307, manualId: 'manual:rome:piazza-navona' },
   { pattern: /pantheon/i, name: 'Pantheon', country: 'Italy', country_code: 'IT', latitude: 41.89861, longitude: 12.47687, manualId: 'manual:rome:pantheon' },
   { pattern: /trevi fountain/i, name: 'Trevi Fountain', country: 'Italy', country_code: 'IT', latitude: 41.90093, longitude: 12.48331, manualId: 'manual:rome:trevi-fountain' },
   { pattern: /spanish steps/i, name: 'Spanish Steps', country: 'Italy', country_code: 'IT', latitude: 41.90599, longitude: 12.48278, manualId: 'manual:rome:spanish-steps' },
-  { pattern: /campo de[’']? fiori/i, name: "Campo de' Fiori", country: 'Italy', country_code: 'IT', latitude: 41.89574, longitude: 12.4722, manualId: 'manual:rome:campo-de-fiori' },
-  { pattern: /testaccio/i, name: 'Testaccio Market', country: 'Italy', country_code: 'IT', latitude: 41.87416, longitude: 12.47543, manualId: 'manual:rome:testaccio' },
+  { pattern: /campo de['']? fiori/i, name: "Campo de' Fiori", country: 'Italy', country_code: 'IT', latitude: 41.89574, longitude: 12.4722, manualId: 'manual:rome:campo-de-fiori' },
+  { pattern: /testaccio/i, name: 'Testaccio', country: 'Italy', country_code: 'IT', latitude: 41.87416, longitude: 12.47543, manualId: 'manual:rome:testaccio' },
+  // Additional Rome landmarks frequently misgeocoded
+  { pattern: /castel sant'?angelo|castle sant'?angelo/i, name: "Castel Sant'Angelo", country: 'Italy', country_code: 'IT', latitude: 41.90317, longitude: 12.46631, manualId: 'manual:rome:castel-santangelo' },
+  { pattern: /capitoline hill|campidoglio/i, name: 'Capitoline Hill', country: 'Italy', country_code: 'IT', latitude: 41.89330, longitude: 12.48275, manualId: 'manual:rome:capitoline-hill' },
+  { pattern: /vittoriano|altare della patria|piazza venezia/i, name: 'Vittoriano', country: 'Italy', country_code: 'IT', latitude: 41.89492, longitude: 12.48278, manualId: 'manual:rome:vittoriano' },
+  { pattern: /piazza del popolo/i, name: 'Piazza del Popolo', country: 'Italy', country_code: 'IT', latitude: 41.91102, longitude: 12.47625, manualId: 'manual:rome:piazza-del-popolo' },
+  { pattern: /piazza di spagna/i, name: 'Piazza di Spagna', country: 'Italy', country_code: 'IT', latitude: 41.90599, longitude: 12.48278, manualId: 'manual:rome:piazza-di-spagna' },
+  { pattern: /\bmonti\b/i, name: 'Monti', country: 'Italy', country_code: 'IT', latitude: 41.89472, longitude: 12.49556, manualId: 'manual:rome:monti' },
+  { pattern: /\bprati\b/i, name: 'Prati', country: 'Italy', country_code: 'IT', latitude: 41.90580, longitude: 12.46073, manualId: 'manual:rome:prati' },
+  { pattern: /\borganic market\b/i, name: 'Testaccio Market', country: 'Italy', country_code: 'IT', latitude: 41.87416, longitude: 12.47543, manualId: 'manual:rome:testaccio-market' },
 ]
 
 function extractTripContext(title: string | null | undefined) {
@@ -47,6 +61,9 @@ function extractTripContext(title: string | null | undefined) {
   const patterns = [
     new RegExp(`^\\d+\\s+Days?\\s+in\\s+(.+)$`, 'i'),
     new RegExp(`^(.+?)\\s+in\\s+${monthPattern}\\b`, 'i'),
+    /^(.+?)\s+in\s+\d+\s+Days?$/i,           // "Rome in 3 Days"
+    /^(.+?)\s+in\s+\d+\s+Nights?$/i,         // "Paris in 5 Nights"
+    /^(.+?)\s+Weekend\s+Getaway$/i,           // "Tokyo Weekend Getaway"
     /^(.+?)\s+Day\s+Trip$/i,
     /^Trip to\s+(.+)$/i,
     /^(.+?)\s+Trip$/i,
@@ -127,9 +144,9 @@ async function upsertCanonicalPlace(supabase: any, override: CanonicalPlaceOverr
         country_code: override.country_code,
         latitude: override.latitude,
         longitude: override.longitude,
-        mapbox_place_id: override.manualId,
+        mapbox_id: override.manualId,
       },
-      { onConflict: 'mapbox_place_id' }
+      { onConflict: 'mapbox_id' }
     )
     .select('id')
     .single()
@@ -252,7 +269,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
       const shouldRepair =
         canonicalOverride != null ||
         !item.place_id ||
-        (destinationPlace != null && currentDistanceKm != null && currentDistanceKm > 120)
+        (destinationPlace != null && currentDistanceKm != null && currentDistanceKm > 30)
 
       if (!shouldRepair) continue
 
@@ -268,7 +285,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
         if (
           destinationPlace &&
-          haversineKm(result.latitude, result.longitude, destinationPlace.latitude, destinationPlace.longitude) > 120
+          haversineKm(result.latitude, result.longitude, destinationPlace.latitude, destinationPlace.longitude) > 30
         ) {
           continue
         }
@@ -282,9 +299,9 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
               country_code: result.country_code || null,
               latitude: result.latitude,
               longitude: result.longitude,
-              mapbox_place_id: result.mapbox_place_id,
+              mapbox_id: result.mapbox_place_id,
             },
-            { onConflict: 'mapbox_place_id' }
+            { onConflict: 'mapbox_id' }
           )
           .select('id')
           .single()
@@ -307,9 +324,9 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
               country_code: dayFallbackPlace.country_code || null,
               latitude: dayFallbackPlace.latitude,
               longitude: dayFallbackPlace.longitude,
-              mapbox_place_id: dayFallbackPlace.mapbox_place_id,
+              mapbox_id: dayFallbackPlace.mapbox_place_id,
             },
-            { onConflict: 'mapbox_place_id' }
+            { onConflict: 'mapbox_id' }
           )
           .select('id')
           .single()
@@ -328,9 +345,9 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
               country_code: destinationPlace.country_code || null,
               latitude: destinationPlace.latitude,
               longitude: destinationPlace.longitude,
-              mapbox_place_id: destinationPlace.mapbox_place_id,
+              mapbox_id: destinationPlace.mapbox_place_id,
             },
-            { onConflict: 'mapbox_place_id' }
+            { onConflict: 'mapbox_id' }
           )
           .select('id')
           .single()

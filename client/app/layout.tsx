@@ -4,8 +4,8 @@ import { inter, playfair } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Globe Travel",
-  description: "Your world. Your story. Track, dream, and share your travel adventures.",
+  title: "Globe Travel | Short city breaks with friends",
+  description: "Coordinate short city breaks with friends, align everyone's travel style, and turn group chat chaos into a weekend plan you'll actually book.",
 };
 
 export default function RootLayout({

@@ -14,25 +14,26 @@ import {
   User,
   Settings,
   LogOut,
+  Zap,
 } from 'lucide-react'
+import { useSubscription } from '@/hooks/useSubscription'
 import { useAuth } from '@/components/providers/AuthProvider'
 
 const navItems = [
   { href: '/globe', label: 'Globe', icon: Globe },
   { href: '/map', label: 'Map', icon: Map },
   { href: '/explore', label: 'Explore', icon: Compass },
-  { href: '/chat', label: 'Chat', icon: MessageCircle },
-  { href: '/trips', label: 'Trips', icon: Calendar },
+  { href: '/chat', label: 'Group Planner', icon: MessageCircle },
+  { href: '/trips', label: 'City Breaks', icon: Calendar },
   { href: '/bucket-list', label: 'Bucket List', icon: Star },
   { href: '/journal', label: 'Journal', icon: BookOpen },
-  { href: '/profile', label: 'Profile', icon: User },
-  { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { profile, signOut } = useAuth()
+  const { isPro } = useSubscription()
 
   const handleSignOut = async () => {
     await signOut()
@@ -74,10 +75,26 @@ export function Sidebar() {
         })}
       </nav>
 
+      {/* Upgrade CTA */}
+      {!isPro && (
+        <div className="px-3 pb-3">
+          <Link
+            href="/pricing"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/15 transition-all duration-200 group"
+          >
+            <Zap className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-amber-300 leading-tight">Upgrade to Pro</p>
+              <p className="text-[10px] text-amber-500/60 leading-tight">7-day free trial</p>
+            </div>
+          </Link>
+        </div>
+      )}
+
       {/* User Section */}
       <div className="p-3 border-t border-white/10">
-        <div className="flex items-center gap-3 px-3 py-2.5">
-          <div className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0">
+        <div className="flex items-center gap-2 px-2 py-2">
+          <Link href="/profile" className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-amber-500/40 transition-all">
             {profile?.avatar_url ? (
               <Image
                 src={profile.avatar_url}
@@ -89,15 +106,22 @@ export function Sidebar() {
             ) : (
               <User className="w-4 h-4 text-white/40" />
             )}
-          </div>
+          </Link>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">
               {profile?.display_name || 'Traveler'}
             </p>
             <p className="text-xs text-white/40 truncate">
-              {profile?.username ? `@${profile.username}` : 'Set up your profile'}
+              {profile?.username ? `@${profile.username}` : 'Set up profile'}
             </p>
           </div>
+          <Link
+            href="/settings"
+            className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-all duration-200"
+            title="Settings"
+          >
+            <Settings className="w-4 h-4" />
+          </Link>
           <button
             onClick={handleSignOut}
             className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-all duration-200"

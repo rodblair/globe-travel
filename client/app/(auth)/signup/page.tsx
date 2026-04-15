@@ -67,10 +67,10 @@ export default function SignupPage() {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <h2 className="text-3xl font-serif font-semibold mb-3">
-              Start your adventure.
+              Start your next city break.
             </h2>
             <p className="text-white/50 text-lg">
-              Join a community of explorers mapping their journeys across the globe.
+              Bring your friends, line up the vibe, and turn a loose idea into a booked weekend away.
             </p>
           </motion.div>
         </div>
@@ -93,7 +93,7 @@ export default function SignupPage() {
               </span>
             </Link>
             <h1 className="text-3xl font-serif font-semibold mb-2">Create your account</h1>
-            <p className="text-white/50">Begin tracking your travels today</p>
+            <p className="text-white/50">Start coordinating short city breaks with your friends</p>
           </div>
 
           {/* Google OAuth */}

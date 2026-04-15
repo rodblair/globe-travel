@@ -120,7 +120,7 @@ export default function TripDayMap({
   const [mapReady, setMapReady] = useState(false)
   const [mapFailed, setMapFailed] = useState(false)
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-  const shouldRenderInteractive = interactive && Boolean(mapboxToken) && !mapFailed
+  const shouldRenderMap = Boolean(mapboxToken) && !mapFailed
 
   const validStops = useMemo(
     () =>
@@ -220,13 +220,12 @@ export default function TripDayMap({
 
     map.fitBounds(bounds, {
       padding: interactive ? 56 : 42,
-      maxZoom: interactive ? 13 : 11,
+      maxZoom: interactive ? 14 : 13,
       duration: 0,
     })
   }, [interactive, validStops])
 
   useEffect(() => {
-    if (!interactive) return
     if (!containerRef.current) return
     if (!mapboxToken) return
 
@@ -236,10 +235,12 @@ export default function TripDayMap({
     try {
       map = new mapboxgl.Map({
         container: containerRef.current,
-        style: 'mapbox://styles/mapbox/navigation-night-v1',
+        style: 'mapbox://styles/mapbox/dark-v11',
         center: [0, 20],
         zoom: 1.25,
         attributionControl: false,
+        // Non-interactive maps must NOT capture pointer/wheel events — doing so
+        // prevents the parent page/panel from scrolling between days.
         interactive,
         dragRotate: false,
         touchZoomRotate: interactive ? { around: 'center' } : false,
@@ -250,9 +251,10 @@ export default function TripDayMap({
     }
 
     mapRef.current = map
-    if (interactive) {
-      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
-    }
+    if (interactive) map.dragRotate.disable()
+
+    // +/− zoom buttons work programmatically even on non-interactive maps.
+    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
 
     map.on('error', () => {
       setMapFailed(true)
@@ -314,7 +316,7 @@ export default function TripDayMap({
           'text-size': interactive ? 11 : 10,
           'text-offset': [0, 1.4],
           'text-anchor': 'top',
-          visibility: interactive ? 'visible' : 'none',
+          visibility: 'visible',
         },
         paint: {
           'text-color': 'rgba(255,255,255,0.82)',
@@ -399,7 +401,7 @@ export default function TripDayMap({
     }
 
     if (map.getLayer('day-stop-labels')) {
-      map.setLayoutProperty('day-stop-labels', 'visibility', interactive ? 'visible' : 'none')
+      map.setLayoutProperty('day-stop-labels', 'visibility', 'visible')
       map.setLayoutProperty('day-stop-labels', 'text-size', interactive ? 11 : 10)
     }
 
@@ -489,7 +491,7 @@ export default function TripDayMap({
             </span>
           </div>
         )}
-        {shouldRenderInteractive ? (
+        {shouldRenderMap ? (
           <div ref={containerRef} className="h-full w-full" />
         ) : (
           <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.14),transparent_58%),linear-gradient(180deg,rgba(9,12,24,0.96),rgba(4,5,12,0.98))]">
@@ -561,14 +563,14 @@ export default function TripDayMap({
             </p>
           </div>
         )}
-        {!shouldRenderInteractive && !previewGeometry && !stopOnlyPreview && validStops.length > 0 && (
+        {!shouldRenderMap && !previewGeometry && !stopOnlyPreview && validStops.length > 0 && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-center">
             <p className="max-w-[180px] text-xs text-white/45">
               Day preview could not be drawn from the current stop geometry.
             </p>
           </div>
         )}
-        {interactive && !shouldRenderInteractive && validStops.length > 0 && (
+        {interactive && !shouldRenderMap && validStops.length > 0 && (
           <div className="pointer-events-none absolute bottom-3 right-3 rounded-full border border-amber-300/20 bg-[rgba(8,10,18,0.82)] px-2.5 py-1 text-[10px] font-medium text-amber-100/92">
             Static map fallback
           </div>

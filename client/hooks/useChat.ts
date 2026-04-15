@@ -2,7 +2,7 @@
 
 import { useChat as useAIChat } from '@ai-sdk/react'
 import { DefaultChatTransport, type UIMessage } from 'ai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 export type Message = {
   id: string
@@ -59,6 +59,22 @@ export function useChat(options: {
     optionsRef.current = options
   }, [options])
 
+  // Stabilize transport — must not be recreated on every render or the
+  // Chat instance loses its internal state and throws on sendMessage.
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: '/api/chat',
+        body: {
+          type: options.type,
+          conversationId: options.conversationId,
+          tripId: options.tripId,
+        },
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [] // intentionally stable — options changes handled via optionsRef
+  )
+
   const {
     messages: aiMessages,
     status,
@@ -66,16 +82,7 @@ export function useChat(options: {
     sendMessage: aiSendMessage,
     stop,
     setMessages: setAIMessages,
-  } = useAIChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-      body: {
-        type: options.type,
-        conversationId: options.conversationId,
-        tripId: options.tripId,
-      },
-    }),
-  })
+  } = useAIChat({ transport })
 
   const parseToolOutput = useCallback((output: unknown) => {
     if (typeof output === 'string') {
@@ -179,6 +186,7 @@ export function useChat(options: {
     }
   }, [status])
 
+  const isReady = status === 'ready'
   const isLoading = status === 'streaming' || status === 'submitted'
   const error = aiError ? (aiError.message || 'Something went wrong. Please try again.') : null
 
@@ -218,7 +226,7 @@ export function useChat(options: {
     if (optionsRef.current.type === 'plan') {
       hadPlanActivityRef.current = true
     }
-    aiSendMessage({ text: content })
+    await aiSendMessage({ text: content })
   }, [aiSendMessage])
 
   const setMessages = useCallback((msgs: Message[]) => {
@@ -229,5 +237,5 @@ export function useChat(options: {
     })))
   }, [setAIMessages])
 
-  return { messages, isLoading, error, sendMessage, stop, setMessages }
+  return { messages, isReady, isLoading, error, sendMessage, stop, setMessages }
 }

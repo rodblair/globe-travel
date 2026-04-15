@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase-browser'
 import { useAuth } from '@/components/providers/AuthProvider'
@@ -15,6 +15,7 @@ import {
   Edit3,
   BookOpen,
   Calendar,
+  Check,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -26,6 +27,23 @@ const ProfileGlobe = dynamic(
 export default function ProfilePage() {
   const { profile } = useAuth()
   const supabase = createClient()
+  const [copied, setCopied] = useState(false)
+
+  const handleShare = async () => {
+    const shareUrl = typeof window !== 'undefined'
+      ? window.location.origin + (profile?.username ? `/u/${profile.username}` : '/globe')
+      : '/globe'
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    } catch {
+      // Fallback: try opening share sheet on mobile
+      if (typeof navigator.share === 'function') {
+        await navigator.share({ title: 'Globe Travel', url: shareUrl }).catch(() => {})
+      }
+    }
+  }
 
   const { data: userPlaces } = useQuery({
     queryKey: ['user-places'],
@@ -132,9 +150,21 @@ export default function ProfilePage() {
             <Edit3 className="w-4 h-4" />
             Edit Profile
           </Link>
-          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30 text-sm font-medium text-amber-400 hover:bg-amber-500/30 transition-colors">
-            <Share2 className="w-4 h-4" />
-            Share Your Globe
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30 text-sm font-medium text-amber-400 hover:bg-amber-500/30 transition-all duration-200"
+          >
+            {copied ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span className="text-emerald-400">Link Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-4 h-4" />
+                Share Your Globe
+              </>
+            )}
           </button>
         </div>
 
@@ -200,7 +230,7 @@ export default function ProfilePage() {
                   <p className="text-sm text-white/50 line-clamp-2">{entry.content}</p>
                   <div className="flex items-center gap-2 mt-2 text-xs text-white/30">
                     <Calendar className="w-3 h-3" />
-                    {new Date(entry.created_at).toLocaleDateString()}
+                    {new Date(entry.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                   </div>
                 </div>
               ))}

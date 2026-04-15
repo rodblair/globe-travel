@@ -1,25 +1,36 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Compass, Sparkles, TrendingUp, Heart, BookOpen } from 'lucide-react'
+import { Compass, Sparkles, TrendingUp, BookOpen, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const trendingDestinations = [
-  { name: 'Tokyo', country: 'Japan', emoji: '🇯🇵', description: 'Neon-lit streets meet ancient temples', image: null },
-  { name: 'Santorini', country: 'Greece', emoji: '🇬🇷', description: 'Blue domes and Mediterranean sunsets', image: null },
-  { name: 'Marrakech', country: 'Morocco', emoji: '🇲🇦', description: 'Spice markets and desert adventures', image: null },
-  { name: 'Reykjavik', country: 'Iceland', emoji: '🇮🇸', description: 'Northern lights and volcanic landscapes', image: null },
-  { name: 'Kyoto', country: 'Japan', emoji: '🇯🇵', description: 'Bamboo forests and zen gardens', image: null },
-  { name: 'Lisbon', country: 'Portugal', emoji: '🇵🇹', description: 'Pastel tiles and coastal charm', image: null },
+  { name: 'Tokyo', country: 'Japan', emoji: '🇯🇵', description: 'Neon-lit streets meet ancient temples', query: 'Tell me about Tokyo, Japan — what makes it special and what are the best things to see and do there?' },
+  { name: 'Santorini', country: 'Greece', emoji: '🇬🇷', description: 'Blue domes and Mediterranean sunsets', query: 'Tell me about Santorini, Greece — what makes it magical and what should I experience there?' },
+  { name: 'Marrakech', country: 'Morocco', emoji: '🇲🇦', description: 'Spice markets and desert adventures', query: 'Tell me about Marrakech, Morocco — what makes it unique and what should I see there?' },
+  { name: 'Reykjavik', country: 'Iceland', emoji: '🇮🇸', description: 'Northern lights and volcanic landscapes', query: 'Tell me about Reykjavik, Iceland — what makes it special and what are the best experiences there?' },
+  { name: 'Kyoto', country: 'Japan', emoji: '🇯🇵', description: 'Bamboo forests and zen gardens', query: 'Tell me about Kyoto, Japan — what makes it so beautiful and what should I see and do there?' },
+  { name: 'Lisbon', country: 'Portugal', emoji: '🇵🇹', description: 'Pastel tiles and coastal charm', query: 'Tell me about Lisbon, Portugal — what makes it charming and what are the best things to experience there?' },
+  { name: 'Bali', country: 'Indonesia', emoji: '🇮🇩', description: 'Tropical temples and rice terraces', query: 'Tell me about Bali, Indonesia — what makes it so popular and what should I see and do there?' },
+  { name: 'Dubrovnik', country: 'Croatia', emoji: '🇭🇷', description: 'Medieval walls above the Adriatic', query: 'Tell me about Dubrovnik, Croatia — what makes it stunning and what should I experience there?' },
+  { name: 'Cape Town', country: 'South Africa', emoji: '🇿🇦', description: 'Mountains, ocean and vibrant culture', query: 'Tell me about Cape Town, South Africa — what makes it amazing and what are the best things to do there?' },
 ]
 
 const collections = [
-  { name: 'Hidden Gems in Southeast Asia', count: 12, emoji: '💎' },
-  { name: 'Best Food Cities in the World', count: 15, emoji: '🍜' },
-  { name: 'Romantic Getaways', count: 8, emoji: '💕' },
-  { name: 'Adventure & Adrenaline', count: 10, emoji: '🏔️' },
-  { name: 'Budget-Friendly Europe', count: 14, emoji: '💰' },
-  { name: 'Beaches You Must Visit', count: 9, emoji: '🏖️' },
+  { name: 'Hidden Gems in Southeast Asia', count: 12, emoji: '💎', query: 'Show me the best hidden gems and underrated destinations in Southeast Asia' },
+  { name: 'Best Food Cities in the World', count: 15, emoji: '🍜', query: 'What are the best cities in the world for food lovers? Give me the top picks' },
+  { name: 'Romantic Getaways', count: 8, emoji: '💕', query: 'Suggest the most romantic travel destinations for a couple — dreamy and unforgettable' },
+  { name: 'Adventure & Adrenaline', count: 10, emoji: '🏔️', query: 'What are the best adventure travel destinations for thrill-seekers and outdoor lovers?' },
+  { name: 'Budget-Friendly Europe', count: 14, emoji: '💰', query: 'What are the best budget-friendly European destinations that are beautiful but affordable?' },
+  { name: 'Beaches You Must Visit', count: 9, emoji: '🏖️', query: 'What are the most stunning beach destinations in the world that everyone should visit?' },
+]
+
+const seasonalPicks = [
+  { season: 'Spring', destinations: 'Cherry blossoms in Japan', emoji: '🌸', query: 'Where should I travel in spring to see cherry blossoms and enjoy the best spring weather?' },
+  { season: 'Summer', destinations: 'Greek islands & Scandinavia', emoji: '☀️', query: 'What are the best summer travel destinations for beach lovers and outdoor explorers?' },
+  { season: 'Autumn', destinations: 'New England & Kyoto', emoji: '🍁', query: 'Where should I travel in autumn to see the most beautiful fall foliage and scenery?' },
+  { season: 'Winter', destinations: 'Christmas markets & ski resorts', emoji: '❄️', query: 'What are the best winter travel destinations for festive markets, skiing, and cozy vibes?' },
 ]
 
 const fadeInUp = {
@@ -30,6 +41,13 @@ const fadeInUp = {
 }
 
 export default function ExplorePage() {
+  const router = useRouter()
+
+  const openChat = (query: string) => {
+    const params = new URLSearchParams({ q: query })
+    router.push(`/chat?${params.toString()}`)
+  }
+
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
@@ -75,25 +93,58 @@ export default function ExplorePage() {
             <h2 className="text-xl font-serif font-semibold text-white">
               Trending Destinations
             </h2>
+            <span className="text-xs text-white/30 ml-1">Click to explore with AI</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {trendingDestinations.map((dest) => (
-              <motion.div
+              <motion.button
                 key={dest.name}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 cursor-pointer hover:border-white/20 transition-colors"
+                whileTap={{ scale: 0.98 }}
+                onClick={() => openChat(dest.query)}
+                className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 cursor-pointer hover:border-amber-500/30 hover:bg-white/[0.07] transition-all text-left"
               >
                 <div className="flex items-start gap-3">
                   <span className="text-3xl">{dest.emoji}</span>
-                  <div>
-                    <h3 className="font-serif font-semibold text-white group-hover:text-amber-300 transition-colors">
-                      {dest.name}
-                    </h3>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-serif font-semibold text-white group-hover:text-amber-300 transition-colors">
+                        {dest.name}
+                      </h3>
+                      <ArrowRight className="w-3.5 h-3.5 text-white/20 group-hover:text-amber-400/60 transition-colors opacity-0 group-hover:opacity-100" />
+                    </div>
                     <p className="text-sm text-white/40 mt-0.5">{dest.country}</p>
                     <p className="text-sm text-white/50 mt-2">{dest.description}</p>
                   </div>
                 </div>
-              </motion.div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Seasonal Picks */}
+        <motion.section {...fadeInUp}>
+          <div className="flex items-center gap-2 mb-6">
+            <span className="text-lg">📅</span>
+            <h2 className="text-xl font-serif font-semibold text-white">
+              Travel by Season
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {seasonalPicks.map((pick) => (
+              <motion.button
+                key={pick.season}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => openChat(pick.query)}
+                className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 cursor-pointer hover:border-amber-500/30 hover:bg-white/[0.07] transition-all text-left"
+              >
+                <div className="text-2xl mb-2">{pick.emoji}</div>
+                <h3 className="font-semibold text-white text-sm group-hover:text-amber-300 transition-colors">
+                  {pick.season}
+                </h3>
+                <p className="text-xs text-white/40 mt-1">{pick.destinations}</p>
+              </motion.button>
             ))}
           </div>
         </motion.section>
@@ -105,47 +156,31 @@ export default function ExplorePage() {
             <h2 className="text-xl font-serif font-semibold text-white">
               Curated Collections
             </h2>
+            <span className="text-xs text-white/30 ml-1">Click to explore with AI</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {collections.map((col) => (
-              <motion.div
+              <motion.button
                 key={col.name}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 cursor-pointer hover:border-white/20 transition-colors"
+                whileTap={{ scale: 0.98 }}
+                onClick={() => openChat(col.query)}
+                className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 cursor-pointer hover:border-cyan-500/30 hover:bg-white/[0.07] transition-all text-left"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{col.emoji}</span>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-white group-hover:text-amber-300 transition-colors truncate">
-                      {col.name}
-                    </h3>
-                    <p className="text-xs text-white/40 mt-0.5">{col.count} places</p>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium text-white group-hover:text-cyan-300 transition-colors truncate">
+                        {col.name}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-white/40 mt-0.5">{col.count} destinations</p>
                   </div>
+                  <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-cyan-400/60 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100" />
                 </div>
-              </motion.div>
+              </motion.button>
             ))}
-          </div>
-        </motion.section>
-
-        {/* Recommended */}
-        <motion.section {...fadeInUp}>
-          <div className="flex items-center gap-2 mb-6">
-            <Heart className="w-5 h-5 text-rose-400" />
-            <h2 className="text-xl font-serif font-semibold text-white">
-              Recommended for You
-            </h2>
-          </div>
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center">
-            <p className="text-white/40 mb-4">
-              Add some places to your globe and we will recommend destinations you will love.
-            </p>
-            <Link
-              href="/chat"
-              className="inline-flex items-center gap-2 text-sm text-amber-400 hover:text-amber-300 transition-colors"
-            >
-              <Sparkles className="w-4 h-4" />
-              Tell our AI about your travels
-            </Link>
           </div>
         </motion.section>
       </div>

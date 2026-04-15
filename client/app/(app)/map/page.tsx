@@ -101,8 +101,8 @@ export default function MapPage() {
         transition={{ delay: 0.5 }}
         className="absolute top-20 md:top-4 left-4 md:left-4"
       >
-        <div className="bg-black/60 backdrop-blur-lg border border-white/10 rounded-xl px-4 py-2">
-          <span className="text-sm text-white/60">
+        <div className="bg-black/60 backdrop-blur-lg border border-white/10 rounded-xl px-3 py-1.5">
+          <span className="text-xs font-medium text-white/50">
             {filteredPlaces.length} {filteredPlaces.length === 1 ? 'place' : 'places'}
           </span>
         </div>

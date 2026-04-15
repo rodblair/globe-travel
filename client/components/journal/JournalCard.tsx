@@ -1,81 +1,104 @@
 'use client'
 
-import Image from 'next/image'
 import { motion } from 'motion/react'
-import { Calendar, MapPin } from 'lucide-react'
+import { Calendar, MapPin, Pencil, Trash2 } from 'lucide-react'
 
 type JournalCardProps = {
   id: string
   title: string
-  placeName: string
+  placeName?: string
+  location?: string
   date: string
+  visitedDate?: string
   mood?: string
   content: string
-  photoUrl?: string
+  tripTitle?: string
   onClick?: () => void
+  onEdit?: () => void
+  onDelete?: () => void
 }
 
 export function JournalCard({
   title,
   placeName,
+  location,
   date,
+  visitedDate,
   mood,
   content,
-  photoUrl,
+  tripTitle,
   onClick,
+  onEdit,
+  onDelete,
 }: JournalCardProps) {
+  const displayDate = visitedDate
+    ? new Date(visitedDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+
+  const displayLocation = location || (placeName && placeName !== 'Unknown Place' ? placeName : null)
+
   return (
     <motion.div
-      whileHover={{ scale: 1.01, y: -2 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClick}
-      className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden cursor-pointer hover:border-white/20 transition-colors"
+      whileHover={{ y: -1 }}
+      transition={{ duration: 0.18 }}
+      className="group relative bg-white/[0.04] border border-white/8 rounded-2xl overflow-hidden hover:border-white/15 hover:bg-white/[0.06] transition-all duration-200"
     >
-      <div className="flex">
-        {/* Photo thumbnail */}
-        {photoUrl && (
-          <div className="relative w-24 md:w-32 flex-shrink-0">
-            <Image
-              src={photoUrl}
-              alt={title}
-              fill
-              unoptimized
-              className="object-cover"
-            />
+      <button className="w-full text-left p-5" onClick={onClick}>
+        {/* Date + place row */}
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-1.5 text-white/35">
+            <Calendar className="w-3 h-3 shrink-0" />
+            <span className="text-[11px]">{displayDate}</span>
           </div>
-        )}
-
-        {/* Content */}
-        <div className="flex-1 p-4 md:p-5 space-y-2">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-serif font-semibold text-white group-hover:text-amber-300 transition-colors truncate">
-                {mood && <span className="mr-2">{mood}</span>}
-                {title}
-              </h3>
-              <div className="flex items-center gap-3 mt-1">
-                <div className="flex items-center gap-1 text-white/40">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span className="text-xs">{placeName}</span>
-                </div>
-                <div className="flex items-center gap-1 text-white/40">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span className="text-xs">
-                    {new Date(date).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
+          {displayLocation && (
+            <>
+              <span className="text-white/15 text-[10px]">·</span>
+              <div className="flex items-center gap-1 text-white/35 min-w-0">
+                <MapPin className="w-3 h-3 shrink-0" />
+                <span className="text-[11px] truncate">{displayLocation}</span>
               </div>
-            </div>
-          </div>
-
-          <p className="text-sm text-white/50 line-clamp-2 leading-relaxed">
-            {content}
-          </p>
+            </>
+          )}
+          {tripTitle && (
+            <>
+              <span className="text-white/15 text-[10px]">·</span>
+              <span className="text-[11px] text-amber-400/60 truncate">{tripTitle}</span>
+            </>
+          )}
         </div>
+
+        {/* Title */}
+        <h3 className="font-serif text-lg font-semibold text-white group-hover:text-amber-300/90 transition-colors leading-snug mb-2">
+          {mood && <span className="mr-2 not-italic">{mood}</span>}
+          {title}
+        </h3>
+
+        {/* Excerpt */}
+        <p className="text-sm text-white/45 line-clamp-3 leading-relaxed">
+          {content}
+        </p>
+      </button>
+
+      {/* Action buttons — visible on hover */}
+      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {onEdit && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit() }}
+            className="p-1.5 rounded-lg bg-white/8 hover:bg-white/15 text-white/40 hover:text-white transition-colors"
+            title="Edit entry"
+          >
+            <Pencil className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {onDelete && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete() }}
+            className="p-1.5 rounded-lg bg-white/8 hover:bg-red-500/20 text-white/40 hover:text-red-400 transition-colors"
+            title="Delete entry"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
     </motion.div>
   )

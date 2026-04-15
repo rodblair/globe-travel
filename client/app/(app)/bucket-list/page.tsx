@@ -134,21 +134,19 @@ export default function BucketListPage() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-24 text-center"
           >
-            <div className="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center mb-6">
-              <Sparkles className="w-10 h-10 text-cyan-400" />
-            </div>
+            <div className="text-5xl mb-6">🌏</div>
             <h2 className="text-2xl font-serif font-semibold text-white mb-2">
-              Your adventure list starts here
+              Your dream list awaits
             </h2>
-            <p className="text-white/50 max-w-md mb-8">
-              Dream big. Add the places you want to explore. Ask our AI for ideas!
+            <p className="text-white/40 max-w-sm mb-8 text-sm leading-relaxed">
+              Tell the AI where you want to go someday — it will save each destination to your bucket list and map it.
             </p>
             <Link
               href="/chat"
-              className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-6 py-3 rounded-full transition-all duration-200 hover:scale-105"
+              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-6 py-3 rounded-full transition-all duration-200 hover:scale-105"
             >
               <Sparkles className="w-5 h-5" />
-              Ask AI for Ideas
+              Tell AI your dream destinations
             </Link>
           </motion.div>
         ) : (
@@ -180,10 +178,10 @@ export default function BucketListPage() {
         >
           <Link
             href="/chat"
-            className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-5 py-3 rounded-full shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:scale-105"
+            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-5 py-3 rounded-full shadow-lg shadow-amber-500/20 transition-all duration-200 hover:scale-105"
           >
             <Plus className="w-5 h-5" />
-            <span>Add to Bucket List</span>
+            <span>Add destination</span>
           </Link>
         </motion.div>
       )}

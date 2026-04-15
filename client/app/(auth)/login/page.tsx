@@ -74,10 +74,10 @@ export default function LoginPage() {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <h2 className="text-3xl font-serif font-semibold mb-3">
-              Your world, your story.
+              Your crew, your next break.
             </h2>
             <p className="text-white/50 text-lg">
-              Track every journey, plan your next adventure, and connect with fellow travelers.
+              Coordinate quick city escapes, align everyone&apos;s taste, and get to a plan your friends will actually commit to.
             </p>
           </motion.div>
         </div>
@@ -100,7 +100,7 @@ export default function LoginPage() {
               </span>
             </Link>
             <h1 className="text-3xl font-serif font-semibold mb-2">Welcome back</h1>
-            <p className="text-white/50">Sign in to continue your journey</p>
+            <p className="text-white/50">Sign in to keep planning your next city break</p>
           </div>
 
           {/* Google OAuth */}

@@ -2,16 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Globe2, Map, Compass, Heart, BookOpen, Calendar } from 'lucide-react'
+import { Globe2, Map, Compass, MessageCircle, Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/globe', icon: Globe2, label: 'Globe' },
-  { href: '/map', icon: Map, label: 'Map' },
   { href: '/explore', icon: Compass, label: 'Explore' },
+  { href: '/chat', icon: MessageCircle, label: 'Chat' },
   { href: '/trips', icon: Calendar, label: 'Trips' },
-  { href: '/bucket-list', icon: Heart, label: 'Bucket List' },
-  { href: '/journal', icon: BookOpen, label: 'Journal' },
+  { href: '/map', icon: Map, label: 'Map' },
 ]
 
 export function BottomNav() {

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin } from 'lucide-react'
+import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
 import { buildDisplayStops } from '@/components/trips/derivedStops'
@@ -50,6 +50,7 @@ type ItineraryArtifactProps = {
   onBulkOps: (ops: any[]) => Promise<void>
   onRegenerateDay?: (dayIndex: number) => void
   onSwapItem?: (item: TripItem) => void
+  onOptimize?: (dayIndex: number) => Promise<void>
   isLoading?: boolean
 }
 
@@ -73,6 +74,7 @@ export default function ItineraryArtifact({
   onBulkOps,
   onRegenerateDay,
   onSwapItem,
+  onOptimize,
   isLoading,
 }: ItineraryArtifactProps) {
   const selectedDay = useMemo(
@@ -84,6 +86,21 @@ export default function ItineraryArtifact({
   const [editingItemId, setEditingItemId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState<string>('')
   const [mapExpanded, setMapExpanded] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [optimizeDone, setOptimizeDone] = useState(false)
+
+  const handleOptimize = async () => {
+    if (!selectedDay || !onOptimize || isOptimizing) return
+    setIsOptimizing(true)
+    setOptimizeDone(false)
+    try {
+      await onOptimize(selectedDay.day_index)
+      setOptimizeDone(true)
+      setTimeout(() => setOptimizeDone(false), 2500)
+    } finally {
+      setIsOptimizing(false)
+    }
+  }
 
   const dayMapCards = useMemo(() => {
     return days.map((day) => {
@@ -191,6 +208,26 @@ export default function ItineraryArtifact({
             <h2 className="truncate text-base font-medium text-white">{tripTitle}</h2>
           </div>
           <div className="flex items-center gap-2">
+            {onOptimize && (
+              <button
+                onClick={handleOptimize}
+                disabled={isOptimizing}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
+                  optimizeDone
+                    ? 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300'
+                    : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+                )}
+                title="Optimize stop order to minimize walking"
+              >
+                {optimizeDone ? (
+                  <Check className="w-3.5 h-3.5" />
+                ) : (
+                  <ArrowLeftRight className={cn('w-3.5 h-3.5 text-amber-300', isOptimizing && 'animate-pulse')} />
+                )}
+                {isOptimizing ? 'Optimizing…' : optimizeDone ? 'Optimized!' : 'Optimize'}
+              </button>
+            )}
             <button
               onClick={() => onRegenerateDay?.(selectedDay.day_index)}
               className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
@@ -218,9 +255,11 @@ export default function ItineraryArtifact({
             </button>
           ))}
         </div>
+      </div>
 
+      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
         {selectedDayMap && (
-          <div className="mt-4 rounded-[26px] border border-white/12 bg-white/[0.05] p-3.5">
+          <div className="rounded-[26px] border border-white/12 bg-white/[0.05] p-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Selected route</p>
@@ -249,6 +288,7 @@ export default function ItineraryArtifact({
                 subtitle={selectedDay.title}
                 routeSummary={selectedDayMap.routeSummary}
                 showDetails={false}
+                interactive={true}
                 mapHeightClassName={mapExpanded ? 'h-80' : 'h-56'}
                 className="min-w-0 overflow-hidden"
               />
@@ -300,9 +340,6 @@ export default function ItineraryArtifact({
             </div>
           </div>
         )}
-      </div>
-
-      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
         <AnimatePresence mode="popLayout">
           {dayMapCards.map(({ day, sortedItems, stops, routeGeojson, routeSummary, subtitle, stopPreview, displayStops }) => {
             const isSelectedDay = day.day_index === selectedDay.day_index

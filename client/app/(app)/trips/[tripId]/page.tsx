@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence, useDragControls } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3 } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -26,6 +26,7 @@ type TripPayload = {
 
 const EMPTY_DAYS: TripDay[] = []
 const INITIAL_PROMPT_PREFIX = 'globe-travel:trip:initial-prompt:'
+const GROUP_BRIEF_KEY = 'globe-travel:trip:group-brief:'
 
 type TripFeedback = {
   id: string
@@ -34,6 +35,26 @@ type TripFeedback = {
   sentiment: 'love_it' | 'curious' | 'practical'
   comment: string
   created_at: string
+}
+
+type PlannerWorkflowJob = {
+  id: string
+  tripId: string
+  type: 'decision_memo' | 'generate_variants' | 'feedback_refresh'
+  status: 'queued' | 'running' | 'completed' | 'failed'
+  createdAt: string
+  updatedAt: string
+  result?: any
+  error?: string
+}
+
+type GroupBrief = {
+  groupSize?: number
+  originCity?: string
+  budget?: string
+  vibe?: string
+  days?: number
+  destination?: string
 }
 
 const sentimentLabel: Record<TripFeedback['sentiment'], string> = {
@@ -85,6 +106,36 @@ export default function TripStudioPage() {
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [chatOpen, setChatOpen] = useState(true)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [optimizeDone, setOptimizeDone] = useState(false)
+  const [pageOrigin, setPageOrigin] = useState('')
+  const [groupBrief, setGroupBrief] = useState<GroupBrief | null>(null)
+  const [creatingWorkflow, setCreatingWorkflow] = useState<string | null>(null)
+
+  // Capture window.location.origin after mount to avoid SSR ↔ client mismatch
+  useEffect(() => { setPageOrigin(window.location.origin) }, [])
+  useEffect(() => {
+    if (!tripId || typeof window === 'undefined') return
+
+    const fromUrl = searchParams.get('brief')
+    if (fromUrl) {
+      try {
+        const parsed = JSON.parse(fromUrl) as GroupBrief
+        setGroupBrief(parsed)
+        window.localStorage.setItem(`${GROUP_BRIEF_KEY}${tripId}`, JSON.stringify(parsed))
+        return
+      } catch {
+      }
+    }
+
+    try {
+      const saved = window.localStorage.getItem(`${GROUP_BRIEF_KEY}${tripId}`)
+      if (saved) {
+        setGroupBrief(JSON.parse(saved) as GroupBrief)
+      }
+    } catch {
+    }
+  }, [tripId, searchParams])
   const studioRef = useRef<HTMLDivElement>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
@@ -111,6 +162,19 @@ export default function TripStudioPage() {
       const res = await fetch(`/api/trips/${tripId}/feedback`)
       if (!res.ok) return [] as TripFeedback[]
       return res.json() as Promise<TripFeedback[]>
+    },
+  })
+
+  const { data: workflowJobs = [], refetch: refetchWorkflowJobs } = useQuery({
+    queryKey: ['planner-jobs', tripId],
+    queryFn: async () => {
+      const res = await fetch(`/api/trips/${tripId}/planner-jobs`)
+      if (!res.ok) return [] as PlannerWorkflowJob[]
+      return res.json() as Promise<PlannerWorkflowJob[]>
+    },
+    refetchInterval: (query) => {
+      const jobs = (query.state.data as PlannerWorkflowJob[] | undefined) || []
+      return jobs.some((job) => job.status === 'queued' || job.status === 'running') ? 2500 : false
     },
   })
 
@@ -170,16 +234,11 @@ export default function TripStudioPage() {
     }
   }, [])
 
-  const refreshTripWithMaps = useCallback(async () => {
-    await fetch(`/api/trips/${tripId}/hydrate-map`, { method: 'POST' }).catch(() => null)
-    await refetch()
-  }, [tripId, refetch])
-
-  const { messages, isLoading: chatLoading, error: chatError, sendMessage, stop } = useChat({
+  const { messages, isReady: chatReady, isLoading: chatLoading, error: chatError, sendMessage, stop } = useChat({
     type: 'plan',
     tripId,
     onTripPatch: () => {
-      void refreshTripWithMaps()
+      void refetch()
     },
     onNavigate: (nav) => {
       if (coerceCoordinate(nav.latitude) != null && coerceCoordinate(nav.longitude) != null) {
@@ -188,8 +247,33 @@ export default function TripStudioPage() {
     },
   })
 
+  // If the trip has days but 0 items (e.g. a previous plan run failed to insert),
+  // auto-generate an itinerary — either by clearing the URL-prompt lock or by sending
+  // a fallback generate message derived from the trip title.
   useEffect(() => {
     if (!tripId || typeof window === 'undefined') return
+    if (isLoading || !chatReady) return
+    const totalItems = days.reduce((sum, d) => sum + (d.items?.length ?? 0), 0)
+    if (days.length === 0 || totalItems > 0) return
+
+    const urlPrompt = searchParams.get('prompt')?.trim()
+    if (urlPrompt) {
+      // Clear URL-prompt lock so the send-effect below can fire
+      window.sessionStorage.removeItem(`${INITIAL_PROMPT_PREFIX}${tripId}:${urlPrompt}`)
+      return
+    }
+
+    // No URL prompt — use a fallback derived from the trip title
+    const dest = trip?.title?.trim() || 'this destination'
+    const fallback = `Plan a ${days.length}-day trip to ${dest}. Build a complete itinerary for each day with specific activities, meals, and must-see sights. Include real place names with timing.`
+    const fallbackKey = `${INITIAL_PROMPT_PREFIX}${tripId}:fallback`
+    if (window.sessionStorage.getItem(fallbackKey)) return
+    window.sessionStorage.setItem(fallbackKey, 'sent')
+    sendMessage(fallback).catch(() => window.sessionStorage.removeItem(fallbackKey))
+  }, [tripId, isLoading, chatReady, days, searchParams, trip?.title, sendMessage])
+
+  useEffect(() => {
+    if (!tripId || typeof window === 'undefined' || !chatReady) return
 
     const prompt = searchParams.get('prompt')?.trim()
     if (!prompt) return
@@ -198,8 +282,10 @@ export default function TripStudioPage() {
     if (window.sessionStorage.getItem(storageKey)) return
 
     window.sessionStorage.setItem(storageKey, 'sent')
-    sendMessage(prompt)
-  }, [searchParams, sendMessage, tripId])
+    sendMessage(prompt).catch(() => {
+      window.sessionStorage.removeItem(storageKey)
+    })
+  }, [searchParams, sendMessage, tripId, chatReady])
 
   const handleRegenerateDay = useCallback((dayIndex: number) => {
     sendMessage(`Regenerate Day ${dayIndex} with a better flow. Keep it realistic with timing and neighborhoods.`)
@@ -209,10 +295,20 @@ export default function TripStudioPage() {
     sendMessage(`Swap this activity for something better:\nDay ${ensureSelectedDayExists}\nCurrent: ${item.title}\nPreference: similar vibe, nearby, and fits the day's flow.`)
   }, [sendMessage, ensureSelectedDayExists])
 
-  const handleOptimize = useCallback(async () => {
-    await fetch(`/api/trips/${tripId}/days/${ensureSelectedDayExists}/optimize`, { method: 'POST' })
-    await refetch()
-  }, [tripId, ensureSelectedDayExists, refetch])
+  const handleOptimize = useCallback(async (dayIndex?: number) => {
+    if (isOptimizing) return
+    const targetDay = dayIndex ?? ensureSelectedDayExists
+    setIsOptimizing(true)
+    setOptimizeDone(false)
+    try {
+      await fetch(`/api/trips/${tripId}/days/${targetDay}/optimize`, { method: 'POST' })
+      await refetch()
+      setOptimizeDone(true)
+      setTimeout(() => setOptimizeDone(false), 2500)
+    } finally {
+      setIsOptimizing(false)
+    }
+  }, [tripId, ensureSelectedDayExists, refetch, isOptimizing])
 
   const hydrateMaps = useCallback(async () => {
     if (isHydratingMaps) return
@@ -239,10 +335,11 @@ export default function TripStudioPage() {
     void hydrateMaps()
   }, [tripId, isLoading, isHydratingMaps, mappingSummary, hydrateMaps])
 
-  const shareUrl = trip?.share_slug ? `${typeof window !== 'undefined' ? window.location.origin : ''}/t/${trip.share_slug}` : null
+  const shareUrl = trip?.share_slug && pageOrigin ? `${pageOrigin}/t/${trip.share_slug}` : null
   const inviteMessage = shareUrl
     ? `Review my trip ideas for ${trip?.title || 'this trip'} and tell me what you think: ${shareUrl}`
     : ''
+  const readinessCount = Number(Boolean(trip?.is_public)) + Math.min(feedback.length, 2) + Number(Boolean(groupBrief?.groupSize))
 
   const togglePublic = useCallback(async () => {
     if (!trip) return
@@ -271,6 +368,23 @@ export default function TripStudioPage() {
     }
     await navigator.clipboard.writeText(inviteMessage)
   }, [shareUrl, inviteMessage, trip?.title])
+
+  const latestWorkflowJob = workflowJobs[0]
+
+  const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
+    if (!tripId || creatingWorkflow) return
+    setCreatingWorkflow(type)
+    try {
+      await fetch(`/api/trips/${tripId}/planner-jobs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type }),
+      })
+      await refetchWorkflowJobs()
+    } finally {
+      setCreatingWorkflow(null)
+    }
+  }, [tripId, creatingWorkflow, refetchWorkflowJobs])
 
   return (
     <div ref={studioRef} className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
@@ -310,12 +424,22 @@ export default function TripStudioPage() {
 
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={handleOptimize}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+              onClick={() => handleOptimize()}
+              disabled={isOptimizing}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
+                optimizeDone
+                  ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200'
+                  : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+              )}
               title="Optimize the order for this day"
             >
-              <ArrowLeftRight className="h-4 w-4 text-amber-300" />
-              Optimize day
+              {optimizeDone ? (
+                <Check className="h-4 w-4 text-emerald-300" />
+              ) : (
+                <ArrowLeftRight className={cn('h-4 w-4 text-amber-300', isOptimizing && 'animate-pulse')} />
+              )}
+              {isOptimizing ? 'Optimizing…' : optimizeDone ? 'Optimized!' : 'Optimize day'}
             </button>
             <button
               onClick={hydrateMaps}
@@ -355,7 +479,7 @@ export default function TripStudioPage() {
 
       {/* Invite + feedback */}
       <div className="absolute top-24 left-1/2 -translate-x-1/2 z-30 w-[min(920px,calc(100%-2rem))] pointer-events-none">
-        <div className="grid gap-3 pointer-events-auto md:grid-cols-[1.15fr_0.85fr]">
+        <div className="grid gap-3 pointer-events-auto md:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
@@ -407,35 +531,133 @@ export default function TripStudioPage() {
             )}
           </div>
 
-          <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Friend feedback</p>
-                <p className="mt-1 text-sm font-medium text-white">
-                  {feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}
-                </p>
+          <div className="grid gap-3">
+            <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Crew brief</p>
+                  <p className="mt-1 text-sm font-medium text-white">
+                    {groupBrief?.groupSize ? `${groupBrief.groupSize} travelers` : 'Add crew context in chat'}
+                  </p>
+                </div>
+                <Sparkles className="w-5 h-5 text-amber-300/60" />
               </div>
-              <MessageSquareQuote className="w-5 h-5 text-white/25" />
+
+              <div className="mt-4 grid gap-2">
+                <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
+                  <Users className="w-4 h-4 text-amber-300" />
+                  <span>{groupBrief?.groupSize ? `${groupBrief.groupSize} friends` : 'Crew size not set yet'}</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
+                  <Wallet className="w-4 h-4 text-emerald-300" />
+                  <span>{groupBrief?.budget ? `Budget: ${groupBrief.budget}` : 'Budget still flexible'}</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
+                  <Plane className="w-4 h-4 text-sky-300" />
+                  <span>{groupBrief?.originCity ? `Leaving from ${groupBrief.originCity}` : 'Origin city not set'}</span>
+                </div>
+                <div className="rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
+                  Vibe: {groupBrief?.vibe || 'Balanced weekend with broad appeal'}
+                </div>
+                <div className="rounded-2xl border border-amber-400/18 bg-amber-400/10 px-3 py-2 text-xs text-amber-100/90">
+                  Trip readiness: {readinessCount}/4 — {trip?.is_public ? 'shareable' : 'turn on sharing'}, {feedback.length > 0 ? 'crew reacting' : 'needs reactions'}.
+                </div>
+              </div>
             </div>
 
-            <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
-              {feedback.length === 0 ? (
-                <p className="text-xs leading-relaxed text-white/58">
-                  No reviews yet. Invite a few friends and ask them where the itinerary feels too busy or exciting.
-                </p>
-              ) : (
-                feedback.slice(0, 3).map((entry) => (
-                  <div key={entry.id} className="rounded-2xl border border-white/12 bg-white/8 p-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="truncate text-xs font-medium text-white">{entry.author_name}</p>
-                      <span className={cn('px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
-                        {sentimentLabel[entry.sentiment]}
-                      </span>
+            <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Friend feedback</p>
+                  <p className="mt-1 text-sm font-medium text-white">
+                    {feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}
+                  </p>
+                </div>
+                <MessageSquareQuote className="w-5 h-5 text-white/25" />
+              </div>
+
+              <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
+                {feedback.length === 0 ? (
+                  <p className="text-xs leading-relaxed text-white/58">
+                    No reviews yet. Invite a few friends and ask them where the itinerary feels too busy, expensive, or worth keeping.
+                  </p>
+                ) : (
+                  feedback.slice(0, 3).map((entry) => (
+                    <div key={entry.id} className="rounded-2xl border border-white/12 bg-white/8 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="truncate text-xs font-medium text-white">{entry.author_name}</p>
+                        <span className={cn('px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
+                          {sentimentLabel[entry.sentiment]}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs leading-relaxed text-white/72 line-clamp-3">{entry.comment}</p>
                     </div>
-                    <p className="mt-2 text-xs leading-relaxed text-white/72 line-clamp-3">{entry.comment}</p>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Planner workflows</p>
+                  <p className="mt-1 text-sm font-medium text-white">Run async planning jobs</p>
+                </div>
+                <Wand2 className="w-5 h-5 text-white/25" />
+              </div>
+
+              <div className="mt-4 grid gap-2">
+                <button
+                  onClick={() => startWorkflow('decision_memo')}
+                  disabled={Boolean(creatingWorkflow)}
+                  className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                >
+                  <span>Generate decision memo</span>
+                  <Scale3 className="w-4 h-4 text-amber-300" />
+                </button>
+                <button
+                  onClick={() => startWorkflow('generate_variants')}
+                  disabled={Boolean(creatingWorkflow)}
+                  className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                >
+                  <span>Create cheap / balanced / premium variants</span>
+                  <Wand2 className="w-4 h-4 text-sky-300" />
+                </button>
+                <button
+                  onClick={() => startWorkflow('feedback_refresh')}
+                  disabled={Boolean(creatingWorkflow)}
+                  className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                >
+                  <span>Refresh plan from feedback</span>
+                  <RefreshCcw className="w-4 h-4 text-emerald-300" />
+                </button>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-white/12 bg-white/8 p-3">
+                {latestWorkflowJob ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-medium text-white capitalize">{latestWorkflowJob.type.replace(/_/g, ' ')}</p>
+                      <span className="text-[10px] uppercase tracking-[0.16em] text-white/40">{latestWorkflowJob.status}</span>
+                    </div>
+                    {latestWorkflowJob.status === 'completed' && latestWorkflowJob.result && (
+                      <pre className="whitespace-pre-wrap text-[11px] leading-relaxed text-white/70">
+                        {JSON.stringify(latestWorkflowJob.result, null, 2)}
+                      </pre>
+                    )}
+                    {latestWorkflowJob.status === 'failed' && (
+                      <p className="text-[11px] text-red-300">{latestWorkflowJob.error || 'Workflow failed'}</p>
+                    )}
+                    {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && (
+                      <p className="text-[11px] text-white/55">Working through the planner job…</p>
+                    )}
                   </div>
-                ))
-              )}
+                ) : (
+                  <p className="text-[11px] leading-relaxed text-white/55">
+                    No workflow runs yet. Use these to generate decision support, itinerary variants, or feedback-driven refresh ideas.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -464,7 +686,7 @@ export default function TripStudioPage() {
               <div className="flex items-center gap-2">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-white/38">Planner chat</p>
-                  <p className="text-sm font-medium text-white">Guide the itinerary</p>
+                  <p className="text-sm font-medium text-white">Guide the crew itinerary</p>
                 </div>
                 <span
                   className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55"
@@ -489,12 +711,12 @@ export default function TripStudioPage() {
                 error={chatError}
                 onSendMessage={sendMessage}
                 onStop={stop}
-                placeholder="Tell me where/when you’re going, your vibe, and your must-dos…"
+                placeholder="Tell me the crew vibe, must-dos, budget tension, and where compromise matters…"
                 storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
                 suggestions={[
-                  `Plan Day ${ensureSelectedDayExists} around food and neighborhoods`,
-                  `Add a day trip from here`,
-                  `Make Day ${ensureSelectedDayExists} more relaxed`,
+                  `Make Day ${ensureSelectedDayExists} work for ${groupBrief?.groupSize || 4} friends with mixed energy`,
+                  `Keep this weekend walkable and group-friendly`,
+                  `Add one standout dinner and one easy late-night stop`,
                 ]}
               />
             </div>
@@ -532,6 +754,7 @@ export default function TripStudioPage() {
             onBulkOps={onBulkOps}
             onRegenerateDay={handleRegenerateDay}
             onSwapItem={handleSwapItem}
+            onOptimize={handleOptimize}
             isLoading={isLoading}
           />
         </div>
