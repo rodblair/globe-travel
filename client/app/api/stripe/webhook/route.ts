@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { upsertSubscription } from '@/lib/subscription'
 import { createServiceClient } from '@/lib/supabase-service'
 import type Stripe from 'stripe'
@@ -9,6 +9,7 @@ export const runtime = 'nodejs'
 
 async function getUserIdFromCustomer(
   supabase: Awaited<ReturnType<typeof createServiceClient>>,
+  stripe: Stripe,
   customerId: string
 ): Promise<string | null> {
   // First try our subscriptions table
@@ -26,6 +27,7 @@ async function getUserIdFromCustomer(
 }
 
 export async function POST(request: NextRequest) {
+  const stripe = getStripe()
   const body = await request.text()
   const sig = request.headers.get('stripe-signature')
 
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription
         const customerId = subscription.customer as string
-        const userId = await getUserIdFromCustomer(supabase, customerId)
+        const userId = await getUserIdFromCustomer(supabase, stripe, customerId)
         if (!userId) break
 
         const priceId = subscription.items.data[0]?.price.id
@@ -80,7 +82,7 @@ export async function POST(request: NextRequest) {
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription
         const customerId = subscription.customer as string
-        const userId = await getUserIdFromCustomer(supabase, customerId)
+        const userId = await getUserIdFromCustomer(supabase, stripe, customerId)
         if (!userId) break
 
         await upsertSubscription(supabase, {
@@ -106,7 +108,7 @@ export async function POST(request: NextRequest) {
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice
         const customerId = invoice.customer as string
-        const userId = await getUserIdFromCustomer(supabase, customerId)
+        const userId = await getUserIdFromCustomer(supabase, stripe, customerId)
         if (userId) {
           await supabase
             .from('subscriptions')

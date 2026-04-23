@@ -3,7 +3,17 @@
 import Stripe from 'stripe'
 export { PLANS, type Plan } from './plans'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-03-25.dahlia',
-  typescript: true,
-})
+const PLACEHOLDER_KEY = 'sk_test_placeholder'
+
+export function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY
+
+  if (!key || key === PLACEHOLDER_KEY) {
+    throw new Error('Stripe is not configured yet. Add STRIPE_SECRET_KEY to your environment variables.')
+  }
+
+  return new Stripe(key, {
+    apiVersion: '2026-03-25.dahlia',
+    typescript: true,
+  })
+}
