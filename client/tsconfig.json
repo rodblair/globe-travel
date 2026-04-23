@@ -39,6 +39,8 @@
     "/tmp/globe-travel-next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next/types/**/* 2.ts",
+    ".next/dev/types/**/* 2.ts"
   ]
 }

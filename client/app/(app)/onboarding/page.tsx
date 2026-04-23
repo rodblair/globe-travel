@@ -47,7 +47,7 @@ export default function OnboardingPage() {
     setCompleting(true)
     setShowCelebration(true)
 
-    // Update DB via API - must complete before redirect so middleware allows /globe
+    // Complete onboarding before leaving this fullscreen flow so middleware allows the app shell.
     try {
       await fetch('/api/profile', {
         method: 'PATCH',
@@ -60,7 +60,7 @@ export default function OnboardingPage() {
 
     // Navigate after short celebration
     setTimeout(() => {
-      router.push('/globe')
+      router.push('/chat')
     }, 1500)
   }, [router, completing])
 

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
-import { Compass, Sparkles, MapPinned, ExternalLink, Users, Wallet, CalendarDays, TrendingUp, BookOpen } from 'lucide-react'
+import { Compass, Sparkles, MapPinned, ExternalLink, Users, Wallet, CalendarDays } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -23,75 +23,44 @@ type ChatMapStop = {
 const CHAT_MAP_STORAGE_KEY = 'globe-travel:chat:explore:map-stops'
 const CHAT_ACTIVE_TRIP_KEY = 'globe-travel:chat:active-trip-id'
 
-const TRENDING_DESTINATIONS = [
+const STARTER_PROMPTS = [
   {
-    name: 'Tokyo',
-    country: 'Japan',
-    emoji: '🇯🇵',
-    description: 'Neon-lit streets meet ancient temples',
-    query: 'Tell me about Tokyo, Japan — what makes it special and what are the best things to see and do there?',
+    label: 'Build a trip',
+    sub: 'Turn a rough idea into a day-by-day plan',
+    q: 'Plan a detailed 3-day city break for 4 friends who want food, cocktails, and one cultural highlight',
   },
   {
-    name: 'Lisbon',
-    country: 'Portugal',
-    emoji: '🇵🇹',
-    description: 'Pastel tiles, great food, easy pace',
-    query: 'Tell me about Lisbon, Portugal — what makes it charming and what are the best things to experience there?',
+    label: 'Pick the city',
+    sub: 'Compare options for the group',
+    q: 'Compare Lisbon, Copenhagen, and Barcelona for a 3-day city break for friends in their early 30s',
   },
   {
-    name: 'Marrakech',
-    country: 'Morocco',
-    emoji: '🇲🇦',
-    description: 'Spice markets and bold group energy',
-    query: 'Tell me about Marrakech, Morocco — what makes it unique and what should I see there?',
-  },
-] as const
-
-const SEASONAL_PICKS = [
-  {
-    season: 'Spring',
-    emoji: '🌸',
-    destinations: 'Cherry blossoms and first-sun weekends',
-    query: 'Where should I travel in spring to see cherry blossoms and enjoy the best spring weather?',
+    label: 'Easy weekend',
+    sub: 'Low-friction ideas from home',
+    q: 'Suggest 5 short city breaks for 4 friends leaving from Toronto, with good food and a walkable centre',
   },
   {
-    season: 'Summer',
-    emoji: '☀️',
-    destinations: 'Coasts, terraces, and long evenings',
-    query: 'What are the best summer travel destinations for beach lovers and outdoor explorers?',
-  },
-  {
-    season: 'Autumn',
-    emoji: '🍁',
-    destinations: 'Leafy cities and shoulder-season value',
-    query: 'Where should I travel in autumn to see the most beautiful fall foliage and scenery?',
-  },
-  {
-    season: 'Winter',
-    emoji: '❄️',
-    destinations: 'Markets, ski towns, and cozy escapes',
-    query: 'What are the best winter travel destinations for festive markets, skiing, and cozy vibes?',
+    label: 'Best value',
+    sub: 'Keep cost and energy realistic',
+    q: 'Where should a group of friends go for a budget-friendly city break with great food and nightlife?',
   },
 ] as const
 
-const CURATED_COLLECTIONS = [
+const PLANNING_STEPS = [
   {
-    name: 'Best food cities',
-    count: 15,
-    emoji: '🍜',
-    query: 'What are the best cities in the world for food lovers? Give me the top picks',
+    icon: Users,
+    label: 'Start with the crew',
+    value: 'Tell us who is going, the pace, budget, and what each person cares about.',
   },
   {
-    name: 'Budget-friendly Europe',
-    count: 14,
-    emoji: '💰',
-    query: 'What are the best budget-friendly European destinations that are beautiful but affordable?',
+    icon: Wallet,
+    label: 'Compare the tradeoffs',
+    value: 'See which cities fit the group before committing to a full itinerary.',
   },
   {
-    name: 'Adventure weekends',
-    count: 10,
-    emoji: '🏔️',
-    query: 'What are the best adventure travel destinations for thrill-seekers and outdoor lovers?',
+    icon: CalendarDays,
+    label: 'Open Trip Studio',
+    value: 'When the idea is real, we create a trip you can refine, map, and share.',
   },
 ] as const
 
@@ -373,139 +342,61 @@ function ChatPageContent() {
           <div className="min-h-0 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
             {activeMessages.length === 0 ? (
               <div className="flex h-full flex-col">
-                {/* Hero area */}
                 <div className="flex-1 flex items-center justify-center px-8 py-8">
                   <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-lg"
+                    className="w-full max-w-3xl"
                   >
-                    <div className="mb-8">
-                      <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight mb-3">
-                        Which city<br />
-                        <span className="text-amber-400/90 italic">fits the crew?</span>
+                    <div className="mb-7 max-w-xl">
+                      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-200">
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Start here
+                      </div>
+                      <h2 className="font-serif text-3xl md:text-5xl text-white leading-[0.98] mb-4">
+                        Plan the trip your friends will actually say yes to.
                       </h2>
-                      <p className="text-sm text-white/40 leading-relaxed max-w-sm">
-                        Use this like a smart group-planning copilot. Ask for easy weekend escapes,
-                        compare cities, or turn a rough idea into a complete shared itinerary.
+                      <p className="text-sm md:text-base text-white/46 leading-relaxed">
+                        Describe the group, the vibe, and the constraints. Globe Travel will help choose
+                        the city, shape the itinerary, and move the plan into Trip Studio when it is ready.
                       </p>
                     </div>
 
-                    <div className="mb-6 grid gap-2 sm:grid-cols-3">
-                      {[
-                        { icon: Users, label: 'Group-first', value: 'Built for friends with different tastes' },
-                        { icon: Wallet, label: 'Budget aware', value: 'Works from cheap flights to treat-yourself weekends' },
-                        { icon: CalendarDays, label: 'Short-break ready', value: 'Optimized for 2–4 day city escapes' },
-                      ].map((item) => {
+                    <div className="mb-7 grid gap-2.5 md:grid-cols-3">
+                      {PLANNING_STEPS.map((item, index) => {
                         const Icon = item.icon
                         return (
                           <div key={item.label} className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
-                            <div className="flex items-center gap-2 text-white/80">
+                            <div className="mb-3 flex items-center justify-between gap-3">
+                              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/28">
+                                Step {index + 1}
+                              </span>
                               <Icon className="w-4 h-4 text-amber-400/80" />
-                              <span className="text-xs font-medium uppercase tracking-[0.16em]">{item.label}</span>
                             </div>
+                            <p className="text-sm font-medium text-white/86">{item.label}</p>
                             <p className="mt-2 text-xs leading-relaxed text-white/38">{item.value}</p>
                           </div>
                         )
                       })}
                     </div>
 
-                    {/* Quick prompts as action tiles */}
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {[
-                        { label: 'Easy from London', sub: 'Friends weekend', q: 'Suggest 5 short city breaks for 4 friends leaving from London, with good food and a fun walkable centre' },
-                        { label: 'Compare 3 cities', sub: 'Choose the best fit', q: 'Compare Lisbon, Copenhagen, and Barcelona for a 3-day city break for friends in their early 30s' },
-                        { label: 'Plan a 3-day break', sub: 'Day-by-day itinerary', q: 'Plan a detailed 3-day city break for 4 friends who want food, cocktails, and one cultural highlight' },
-                        { label: 'Budget-friendly pick', sub: 'Best value right now', q: 'Where should a group of friends go for a budget-friendly city break with great food and nightlife?' },
-                      ].map((item) => (
+                    <div className="mb-4 flex items-center justify-between gap-4">
+                      <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Choose a starting point</h3>
+                      <span className="hidden text-xs text-white/26 sm:inline">Or type your own idea below</span>
+                    </div>
+                    <div className="grid gap-2.5 sm:grid-cols-2">
+                      {STARTER_PROMPTS.map((item) => (
                         <motion.button
                           key={item.label}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => sendMessage(item.q)}
-                          className="group text-left p-4 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
+                          className="group min-h-24 text-left p-4 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
                         >
                           <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{item.label}</p>
-                          <p className="text-xs text-white/30 mt-0.5">{item.sub}</p>
+                          <p className="mt-2 text-xs leading-relaxed text-white/34">{item.sub}</p>
                         </motion.button>
                       ))}
-                    </div>
-
-                    <div className="mt-8 space-y-6">
-                      <div>
-                        <div className="mb-3 flex items-center gap-2">
-                          <TrendingUp className="h-4 w-4 text-amber-400/80" />
-                          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Popular starts</h3>
-                        </div>
-                        <div className="grid gap-2 sm:grid-cols-3">
-                          {TRENDING_DESTINATIONS.map((item) => (
-                            <motion.button
-                              key={item.name}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.97 }}
-                              onClick={() => sendMessage(item.query)}
-                              className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-left transition-all duration-200 hover:border-amber-500/25 hover:bg-amber-500/[0.05]"
-                            >
-                              <div className="flex items-start gap-3">
-                                <span className="text-2xl">{item.emoji}</span>
-                                <div className="min-w-0">
-                                  <p className="text-sm font-medium text-white/82">{item.name}</p>
-                                  <p className="text-xs text-white/32">{item.country}</p>
-                                  <p className="mt-2 text-xs leading-relaxed text-white/38">{item.description}</p>
-                                </div>
-                              </div>
-                            </motion.button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="mb-3 flex items-center gap-2">
-                          <CalendarDays className="h-4 w-4 text-amber-400/80" />
-                          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Browse by season</h3>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                          {SEASONAL_PICKS.map((item) => (
-                            <motion.button
-                              key={item.season}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.97 }}
-                              onClick={() => sendMessage(item.query)}
-                              className="rounded-2xl border border-white/8 bg-white/[0.03] p-3 text-left transition-all duration-200 hover:border-amber-500/25 hover:bg-amber-500/[0.05]"
-                            >
-                              <div className="text-xl">{item.emoji}</div>
-                              <p className="mt-2 text-sm font-medium text-white/82">{item.season}</p>
-                              <p className="mt-1 text-[11px] leading-relaxed text-white/34">{item.destinations}</p>
-                            </motion.button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="mb-3 flex items-center gap-2">
-                          <BookOpen className="h-4 w-4 text-cyan-400/80" />
-                          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Curated collections</h3>
-                        </div>
-                        <div className="grid gap-2 sm:grid-cols-3">
-                          {CURATED_COLLECTIONS.map((item) => (
-                            <motion.button
-                              key={item.name}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.97 }}
-                              onClick={() => sendMessage(item.query)}
-                              className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-left transition-all duration-200 hover:border-cyan-500/25 hover:bg-cyan-500/[0.05]"
-                            >
-                              <div className="flex items-center gap-3">
-                                <span className="text-xl">{item.emoji}</span>
-                                <div className="min-w-0">
-                                  <p className="truncate text-sm font-medium text-white/82">{item.name}</p>
-                                  <p className="text-[11px] text-white/32">{item.count} ideas</p>
-                                </div>
-                              </div>
-                            </motion.button>
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   </motion.div>
                 </div>
