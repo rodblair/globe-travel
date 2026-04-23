@@ -337,44 +337,41 @@ function ChatPageContent() {
         </div>
       </div>
 
-      <div className="relative z-10 flex-1 min-h-0 px-4 py-4 md:px-6">
-        <div className="mx-auto grid h-full max-w-7xl gap-4 md:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="min-h-0 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 xl:overflow-hidden">
+        <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-28 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_360px] xl:pb-0">
+          <div className="min-h-[560px] overflow-y-auto rounded-3xl border border-white/10 bg-white/[0.03] xl:min-h-0">
             {activeMessages.length === 0 ? (
               <div className="flex h-full flex-col">
-                <div className="flex-1 flex items-center justify-center px-8 py-8">
+                <div className="flex-1 flex items-start justify-center px-6 py-8 md:px-8">
                   <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-3xl"
                   >
-                    <div className="mb-7 max-w-xl">
-                      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-200">
+                    <div className="mb-5 max-w-xl">
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-200">
                         <Sparkles className="h-3.5 w-3.5" />
                         Start here
                       </div>
-                      <h2 className="font-serif text-3xl md:text-5xl text-white leading-[0.98] mb-4">
+                      <h2 className="font-serif text-3xl md:text-4xl text-white leading-[1.02] mb-3">
                         Plan the trip your friends will actually say yes to.
                       </h2>
-                      <p className="text-sm md:text-base text-white/46 leading-relaxed">
+                      <p className="text-sm text-white/46 leading-relaxed">
                         Describe the group, the vibe, and the constraints. Globe Travel will help choose
                         the city, shape the itinerary, and move the plan into Trip Studio when it is ready.
                       </p>
                     </div>
 
-                    <div className="mb-7 grid gap-2.5 md:grid-cols-3">
+                    <div className="mb-5 flex flex-wrap gap-2">
                       {PLANNING_STEPS.map((item, index) => {
                         const Icon = item.icon
                         return (
-                          <div key={item.label} className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
-                            <div className="mb-3 flex items-center justify-between gap-3">
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/28">
-                                Step {index + 1}
-                              </span>
-                              <Icon className="w-4 h-4 text-amber-400/80" />
-                            </div>
-                            <p className="text-sm font-medium text-white/86">{item.label}</p>
-                            <p className="mt-2 text-xs leading-relaxed text-white/38">{item.value}</p>
+                          <div key={item.label} className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.04] px-3 py-2">
+                            <Icon className="w-3.5 h-3.5 text-amber-400/80" />
+                            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/30">
+                              {index + 1}
+                            </span>
+                            <span className="text-xs font-medium text-white/72">{item.label}</span>
                           </div>
                         )
                       })}
@@ -391,7 +388,7 @@ function ChatPageContent() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => sendMessage(item.q)}
-                          className="group min-h-24 text-left p-4 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
+                          className="group min-h-20 text-left p-3.5 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
                         >
                           <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{item.label}</p>
                           <p className="mt-2 text-xs leading-relaxed text-white/34">{item.sub}</p>
@@ -419,7 +416,7 @@ function ChatPageContent() {
             )}
           </div>
 
-          <div className="flex min-h-[280px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
+          <div className="flex min-h-[360px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] xl:min-h-[280px]">
             <div className="border-b border-white/10 px-4 py-3">
               <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
                 {tripPayload ? 'Itinerary Maps' : 'Map Preview'}
