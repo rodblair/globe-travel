@@ -1,16 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { motion } from 'motion/react'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
-
-const LandingGlobe = dynamic(() => import('@/components/globes/LandingGlobe'), {
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />,
-})
+import LandingGlobe from '@/components/globes/LandingGlobe'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -18,37 +14,82 @@ export default function SignupPage() {
   const [fullName, setFullName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isResending, setIsResending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
+  const [pendingConfirmationEmail, setPendingConfirmationEmail] = useState<string | null>(null)
+  const router = useRouter()
   const supabase = createClient()
+  const authRedirectTo = typeof window === 'undefined'
+    ? '/callback'
+    : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback`
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
     setMessage(null)
+    setPendingConfirmationEmail(null)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/callback`,
-      },
-    })
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo: authRedirectTo,
+        },
+      })
 
-    if (error) {
-      setError(error.message)
-    } else {
-      setMessage('Check your email to confirm your account!')
+      if (error) {
+        setError(error.message)
+      } else if (data.session) {
+        router.push('/chat')
+        router.refresh()
+      } else if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setPendingConfirmationEmail(email)
+        setMessage('This email already has an account or a pending confirmation. Try signing in, or resend the confirmation email below.')
+      } else {
+        setPendingConfirmationEmail(email)
+        setMessage(`We sent a confirmation link to ${email}. If it doesn't show up, check spam or resend it here.`)
+      }
+    } catch {
+      setError('Could not start signup. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
+  }
+
+  const handleResendConfirmation = async () => {
+    if (!pendingConfirmationEmail) return
+
+    setIsResending(true)
+    setError(null)
+    setMessage(null)
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: pendingConfirmationEmail,
+        options: { emailRedirectTo: authRedirectTo },
+      })
+
+      if (error) {
+        setError(error.message)
+      } else {
+        setMessage(`We sent another confirmation link to ${pendingConfirmationEmail}.`)
+      }
+    } catch {
+      setError('Could not resend the confirmation email. Please try again in a minute.')
+    } finally {
+      setIsResending(false)
+    }
   }
 
   const handleGoogleSignup = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/callback` },
+      options: { redirectTo: authRedirectTo },
     })
   }
 
@@ -186,13 +227,25 @@ export default function SignupPage() {
             )}
 
             {message && (
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-emerald-400 text-sm text-center"
+                className="space-y-3"
               >
-                {message}
-              </motion.p>
+                <p className="text-emerald-400 text-sm text-center">
+                  {message}
+                </p>
+                {pendingConfirmationEmail && (
+                  <button
+                    type="button"
+                    onClick={handleResendConfirmation}
+                    disabled={isResending}
+                    className="w-full h-10 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-white/80 hover:bg-white/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isResending ? 'Sending...' : 'Resend confirmation email'}
+                  </button>
+                )}
+              </motion.div>
             )}
 
             <button

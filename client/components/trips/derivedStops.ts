@@ -31,6 +31,7 @@ type DerivedStop = {
   title: string
   latitude: number
   longitude: number
+  country?: string
 }
 
 export function coerceCoordinate(value: unknown) {
@@ -65,6 +66,39 @@ export function getDestinationFallback(title: string | null | undefined) {
 }
 
 const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
+  {
+    pattern: /acropolis.*parthenon|parthenon.*acropolis/i,
+    stops: [
+      { title: 'Acropolis of Athens', latitude: 37.97153, longitude: 23.72575, country: 'Greece' },
+      { title: 'Parthenon', latitude: 37.97153, longitude: 23.72672, country: 'Greece' },
+    ],
+  },
+  { pattern: /acropolis museum/i, stops: [{ title: 'Acropolis Museum', latitude: 37.96845, longitude: 23.72853, country: 'Greece' }] },
+  { pattern: /long lunch in plaka|lunch.*plaka/i, stops: [{ title: 'Plaka', latitude: 37.97308, longitude: 23.73051, country: 'Greece' }] },
+  {
+    pattern: /plaka.*anafiotika|anafiotika.*plaka/i,
+    stops: [
+      { title: 'Plaka', latitude: 37.97308, longitude: 23.73051, country: 'Greece' },
+      { title: 'Anafiotika', latitude: 37.97233, longitude: 23.72786, country: 'Greece' },
+    ],
+  },
+  { pattern: /rooftop dinner.*acropolis|acropolis views/i, stops: [{ title: 'A for Athens Rooftop', latitude: 37.97615, longitude: 23.72566, country: 'Greece' }] },
+  { pattern: /coffee.*monastiraki|walk through monastiraki/i, stops: [{ title: 'Monastiraki Square', latitude: 37.97608, longitude: 23.72557, country: 'Greece' }] },
+  { pattern: /central market|food stroll/i, stops: [{ title: 'Athens Central Market', latitude: 37.98005, longitude: 23.72672, country: 'Greece' }] },
+  { pattern: /lunch in psiri|\bpsiri\b|\bpsyri\b/i, stops: [{ title: 'Psiri', latitude: 37.97855, longitude: 23.72328, country: 'Greece' }] },
+  { pattern: /ermou street/i, stops: [{ title: 'Ermou Street', latitude: 37.97682, longitude: 23.7247, country: 'Greece' }] },
+  {
+    pattern: /national garden.*syntagma|syntagma.*national garden/i,
+    stops: [
+      { title: 'National Garden', latitude: 37.97393, longitude: 23.73624, country: 'Greece' },
+      { title: 'Syntagma Square', latitude: 37.97554, longitude: 23.7348, country: 'Greece' },
+    ],
+  },
+  { pattern: /koukaki/i, stops: [{ title: 'Koukaki', latitude: 37.96393, longitude: 23.72141, country: 'Greece' }] },
+  { pattern: /brunch in kolonaki|\bkolonaki\b/i, stops: [{ title: 'Kolonaki', latitude: 37.97798, longitude: 23.74132, country: 'Greece' }] },
+  { pattern: /museum stop|boutique browsing/i, stops: [{ title: 'Benaki Museum', latitude: 37.97595, longitude: 23.74029, country: 'Greece' }] },
+  { pattern: /pangrati/i, stops: [{ title: 'Pangrati', latitude: 37.96991, longitude: 23.74531, country: 'Greece' }] },
+  { pattern: /lycabettus/i, stops: [{ title: 'Lycabettus Hill', latitude: 37.98178, longitude: 23.74306, country: 'Greece' }] },
   {
     pattern: /colosseum.*roman forum|roman forum.*colosseum/i,
     stops: [
@@ -110,7 +144,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
           index: displayStops.length + 1,
           item,
           placeName: stop.title,
-          country: item.place?.country || 'Italy',
+          country: item.place?.country || stop.country || 'Italy',
           timeLabel,
           mapped: true,
         })

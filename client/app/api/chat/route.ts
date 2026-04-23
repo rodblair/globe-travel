@@ -12,7 +12,7 @@ import { createServiceClient } from '@/lib/supabase-service'
 import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
-import { buildPlanStepMessages, getPlanToolChoice, getPlanToolSelection, inferPlanIntent } from '@/lib/planner/tools'
+import { getPlanToolChoice, getPlanToolSelection, inferPlanIntent } from '@/lib/planner/tools'
 import { extractDestinationFromTitle } from '@/lib/planner/runtime'
 import { loadPlannerSession } from '@/lib/planner/session'
 import { compareDestinations, listScoredDestinations } from '@/lib/planner/scoring'
@@ -482,33 +482,48 @@ export async function POST(req: Request) {
               let placeId: string | null = null
 
               if (item.place_query) {
-                const result = await geocodePlace(item.place_query, token)
-                if (result) {
+                const queryCandidates = Array.from(
+                  new Set(
+                    [
+                      destinationLabel &&
+                      !item.place_query.toLowerCase().includes(destinationLabel.toLowerCase())
+                        ? `${item.place_query}, ${destinationLabel}`
+                        : '',
+                      item.place_query,
+                    ].filter(Boolean)
+                  )
+                )
+
+                for (const query of queryCandidates) {
+                  const result = await geocodePlace(query, token)
+                  if (!result) continue
+
                   // Reject geocode results that are > 120 km from the trip's destination anchor
                   const tooFar = destinationAnchor != null &&
                     haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > 120
 
-                  if (!tooFar) {
-                    const { data: place, error: placeErr } = await db
-                      .from('places')
-                      .upsert(
-                        {
-                          name: result.name,
-                          country: result.country,
-                          country_code: result.country_code || null,
-                          latitude: result.latitude,
-                          longitude: result.longitude,
-                          mapbox_id: result.mapbox_place_id,
-                        },
-                        { onConflict: 'mapbox_id' }
-                      )
-                      .select('id')
-                      .single()
-                    if (placeErr) {
-                      console.error('[setFullTripPlan] places upsert error (continuing without place)', placeErr.message)
-                    } else {
-                      placeId = place?.id || null
-                    }
+                  if (tooFar) continue
+
+                  const { data: place, error: placeErr } = await db
+                    .from('places')
+                    .upsert(
+                      {
+                        name: result.name,
+                        country: result.country,
+                        country_code: result.country_code || null,
+                        latitude: result.latitude,
+                        longitude: result.longitude,
+                        mapbox_id: result.mapbox_place_id,
+                      },
+                      { onConflict: 'mapbox_id' }
+                    )
+                    .select('id')
+                    .single()
+                  if (placeErr) {
+                    console.error('[setFullTripPlan] places upsert error (continuing without place)', placeErr.message)
+                  } else {
+                    placeId = place?.id || null
+                    break
                   }
                 }
               }
@@ -724,7 +739,7 @@ export async function POST(req: Request) {
               : policyHook.preferredToolChoice ?? fallbackToolChoice
 
             return {
-              messages: buildPlanStepMessages(stepMessages, stepNumber),
+              messages: stepNumber === 0 ? stepMessages : stepMessages.slice(-8),
               activeTools:
                 policyHook.requiresClarification
                   ? []

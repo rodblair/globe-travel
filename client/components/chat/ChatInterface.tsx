@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, type KeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Send, Square } from 'lucide-react'
+import { Send, Sparkles, Square } from 'lucide-react'
 import type { Message } from '@/hooks/useChat'
 import ChatMessage from './ChatMessage'
 import TypingIndicator from './TypingIndicator'
@@ -70,9 +70,9 @@ export default function ChatInterface({
     (messages.length === 0 || messages[messages.length - 1]?.content === '')
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full min-h-0 flex-col">
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+      <div className="flex-1 space-y-4 overflow-y-auto px-4 py-6 sm:px-6">
         <AnimatePresence mode="popLayout">
           {messages
             .filter((m) => m.content || m.role === 'user')
@@ -93,7 +93,10 @@ export default function ChatInterface({
       </div>
 
       {/* Input bar */}
-      <div className="flex-shrink-0 border-t border-white/10 bg-black/40 backdrop-blur-xl px-4 py-3">
+      <div
+        className="flex-shrink-0 border-t border-white/10 bg-black/80 px-4 pt-3 shadow-[0_-20px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-6"
+        style={{ paddingBottom: 'max(0.9rem, env(safe-area-inset-bottom))' }}
+      >
         {suggestions.length > 0 && (
           <div className="max-w-3xl mx-auto mb-2 flex gap-2 overflow-x-auto pb-1">
             {suggestions.slice(0, 6).map((s) => (
@@ -109,7 +112,10 @@ export default function ChatInterface({
             ))}
           </div>
         )}
-        <div className="flex items-center gap-2 max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl px-3 py-1.5 focus-within:border-white/20 focus-within:ring-1 focus-within:ring-white/10 transition-all">
+        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-[1.4rem] border border-white/15 bg-white/[0.07] px-3 py-2 shadow-lg shadow-black/30 transition-all focus-within:border-amber-400/40 focus-within:ring-1 focus-within:ring-amber-400/20 sm:px-4">
+          <div className="mb-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-black/35 text-amber-300/70">
+            <Sparkles className="h-4 w-4" />
+          </div>
           <textarea
             ref={inputRef}
             value={input}
@@ -117,7 +123,7 @@ export default function ChatInterface({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             rows={1}
-            className="flex-1 resize-none bg-transparent py-2 px-1 text-sm text-white placeholder:text-white/30 focus:outline-none"
+            className="min-h-9 flex-1 resize-none bg-transparent px-1 py-2 text-base leading-5 text-white placeholder:text-white/35 focus:outline-none sm:text-sm"
             style={{ maxHeight: '120px' }}
           />
 
@@ -126,7 +132,7 @@ export default function ChatInterface({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onStop}
-              className="flex-shrink-0 w-9 h-9 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/30 transition-colors"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-red-500/20 text-red-400 transition-colors hover:bg-red-500/30"
             >
               <Square className="w-4 h-4" />
             </motion.button>
@@ -136,7 +142,7 @@ export default function ChatInterface({
               whileTap={{ scale: 0.95 }}
               onClick={handleSend}
               disabled={!input.trim()}
-              className="flex-shrink-0 w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-black hover:bg-amber-400 transition-colors disabled:opacity-20 disabled:cursor-default disabled:bg-white/10 disabled:text-white/30"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-black transition-colors hover:bg-amber-400 disabled:cursor-default disabled:bg-white/10 disabled:text-white/30 disabled:opacity-30"
             >
               <Send className="w-4 h-4" />
             </motion.button>

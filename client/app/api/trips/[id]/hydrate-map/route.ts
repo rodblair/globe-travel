@@ -14,6 +14,29 @@ type CanonicalPlaceOverride = {
 }
 
 const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
+  { pattern: /acropolis.*parthenon|parthenon.*acropolis/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
+  { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
+  { pattern: /long lunch in plaka|lunch.*plaka/i, name: 'Plaka', country: 'Greece', country_code: 'GR', latitude: 37.97308, longitude: 23.73051, manualId: 'manual:athens:plaka' },
+  { pattern: /plaka.*anafiotika|anafiotika.*plaka/i, name: 'Anafiotika', country: 'Greece', country_code: 'GR', latitude: 37.97233, longitude: 23.72786, manualId: 'manual:athens:anafiotika' },
+  { pattern: /rooftop dinner.*acropolis|acropolis views/i, name: 'A for Athens Rooftop', country: 'Greece', country_code: 'GR', latitude: 37.97615, longitude: 23.72566, manualId: 'manual:athens:a-for-athens-rooftop' },
+  { pattern: /coffee.*monastiraki|walk through monastiraki/i, name: 'Monastiraki Square', country: 'Greece', country_code: 'GR', latitude: 37.97608, longitude: 23.72557, manualId: 'manual:athens:monastiraki-square' },
+  { pattern: /central market|food stroll/i, name: 'Athens Central Market', country: 'Greece', country_code: 'GR', latitude: 37.98005, longitude: 23.72672, manualId: 'manual:athens:central-market' },
+  { pattern: /lunch in psiri|\bpsiri\b|\bpsyri\b/i, name: 'Psiri', country: 'Greece', country_code: 'GR', latitude: 37.97855, longitude: 23.72328, manualId: 'manual:athens:psiri' },
+  { pattern: /ermou street/i, name: 'Ermou Street', country: 'Greece', country_code: 'GR', latitude: 37.97682, longitude: 23.7247, manualId: 'manual:athens:ermou-street' },
+  { pattern: /national garden.*syntagma|syntagma.*national garden/i, name: 'National Garden', country: 'Greece', country_code: 'GR', latitude: 37.97393, longitude: 23.73624, manualId: 'manual:athens:national-garden' },
+  { pattern: /koukaki/i, name: 'Koukaki', country: 'Greece', country_code: 'GR', latitude: 37.96393, longitude: 23.72141, manualId: 'manual:athens:koukaki' },
+  { pattern: /brunch in kolonaki|\bkolonaki\b/i, name: 'Kolonaki', country: 'Greece', country_code: 'GR', latitude: 37.97798, longitude: 23.74132, manualId: 'manual:athens:kolonaki' },
+  { pattern: /museum stop|boutique browsing/i, name: 'Benaki Museum', country: 'Greece', country_code: 'GR', latitude: 37.97595, longitude: 23.74029, manualId: 'manual:athens:benaki-museum' },
+  { pattern: /pangrati/i, name: 'Pangrati', country: 'Greece', country_code: 'GR', latitude: 37.96991, longitude: 23.74531, manualId: 'manual:athens:pangrati' },
+  { pattern: /lycabettus/i, name: 'Lycabettus Hill', country: 'Greece', country_code: 'GR', latitude: 37.98178, longitude: 23.74306, manualId: 'manual:athens:lycabettus-hill' },
+  { pattern: /\bmile end\b/i, name: 'Mile End', country: 'Canada', country_code: 'CA', latitude: 45.52358, longitude: -73.60078, manualId: 'manual:montreal:mile-end' },
+  { pattern: /\bplateau\b|\bplateau mont-royal\b/i, name: 'Plateau Mont-Royal', country: 'Canada', country_code: 'CA', latitude: 45.52654, longitude: -73.58195, manualId: 'manual:montreal:plateau' },
+  { pattern: /jean-talon market/i, name: 'Jean-Talon Market', country: 'Canada', country_code: 'CA', latitude: 45.53617, longitude: -73.61434, manualId: 'manual:montreal:jean-talon-market' },
+  { pattern: /old montreal|vieux-montreal|vieux-montr[eé]al/i, name: 'Vieux-Montréal', country: 'Canada', country_code: 'CA', latitude: 45.50233, longitude: -73.55859, manualId: 'manual:montreal:old-montreal' },
+  { pattern: /chinatown/i, name: 'Montreal Chinatown', country: 'Canada', country_code: 'CA', latitude: 45.50735, longitude: -73.56027, manualId: 'manual:montreal:chinatown' },
+  { pattern: /little italy/i, name: 'Little Italy', country: 'Canada', country_code: 'CA', latitude: 45.53543, longitude: -73.61457, manualId: 'manual:montreal:little-italy' },
+  { pattern: /parc la fontaine|park la fontaine/i, name: 'Parc La Fontaine', country: 'Canada', country_code: 'CA', latitude: 45.52664, longitude: -73.56994, manualId: 'manual:montreal:parc-la-fontaine' },
+  { pattern: /boulevard saint-laurent|boulevard st-laurent|saint-laurent/i, name: 'Boulevard Saint-Laurent', country: 'Canada', country_code: 'CA', latitude: 45.51776, longitude: -73.57787, manualId: 'manual:montreal:saint-laurent' },
   { pattern: /nonna betta/i, name: 'Nonna Betta', country: 'Italy', country_code: 'IT', latitude: 41.89244, longitude: 12.47562, manualId: 'manual:rome:nonna-betta' },
   { pattern: /da enzo al 29/i, name: 'Da Enzo al 29', country: 'Italy', country_code: 'IT', latitude: 41.88798, longitude: 12.46947, manualId: 'manual:rome:da-enzo-al-29' },
   { pattern: /armando al pantheon/i, name: 'Armando al Pantheon', country: 'Italy', country_code: 'IT', latitude: 41.89861, longitude: 12.47679, manualId: 'manual:rome:armando-al-pantheon' },
@@ -59,7 +82,7 @@ function extractTripContext(title: string | null | undefined) {
   const monthPattern = '(January|February|March|April|May|June|July|August|September|October|November|December)'
 
   const patterns = [
-    new RegExp(`^\\d+\\s+Days?\\s+in\\s+(.+)$`, 'i'),
+    new RegExp(`^\\d+\\s+Days?\\s+in\\s+(.+?)(?=\\s+\\b(?:for|with|on|around|near|from)\\b|[,.!?]|$)`, 'i'),
     new RegExp(`^(.+?)\\s+in\\s+${monthPattern}\\b`, 'i'),
     /^(.+?)\s+in\s+\d+\s+Days?$/i,           // "Rome in 3 Days"
     /^(.+?)\s+in\s+\d+\s+Nights?$/i,         // "Paris in 5 Nights"

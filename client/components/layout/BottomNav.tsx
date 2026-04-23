@@ -2,15 +2,48 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Globe2, Map, Compass, MessageCircle, Calendar } from 'lucide-react'
+import { Map, MessageCircle, Calendar, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { href: '/globe', icon: Globe2, label: 'Globe' },
-  { href: '/explore', icon: Compass, label: 'Explore' },
-  { href: '/chat', icon: MessageCircle, label: 'Chat' },
-  { href: '/trips', icon: Calendar, label: 'Trips' },
-  { href: '/map', icon: Map, label: 'Map' },
+  {
+    href: '/chat',
+    icon: MessageCircle,
+    label: 'Planner',
+    matches: (pathname: string) =>
+      pathname === '/chat' ||
+      pathname === '/explore' ||
+      pathname === '/globe',
+  },
+  {
+    href: '/trips',
+    icon: Calendar,
+    label: 'Trips',
+    matches: (pathname: string) =>
+      pathname === '/trips' ||
+      pathname === '/trips/new' ||
+      pathname.startsWith('/trips/'),
+  },
+  {
+    href: '/saved',
+    icon: Map,
+    label: 'Saved',
+    matches: (pathname: string) =>
+      pathname === '/saved' ||
+      pathname === '/map' ||
+      pathname === '/bucket-list' ||
+      pathname === '/journal',
+  },
+  {
+    href: '/account',
+    icon: User,
+    label: 'Account',
+    matches: (pathname: string) =>
+      pathname === '/account' ||
+      pathname === '/settings' ||
+      pathname === '/profile' ||
+      pathname === '/pricing',
+  },
 ]
 
 export function BottomNav() {
@@ -20,7 +53,7 @@ export function BottomNav() {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-t border-white/10">
       <div className="flex items-center justify-around py-2 px-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href
+          const isActive = pathname ? item.matches(pathname) : false
           return (
             <Link
               key={item.href}

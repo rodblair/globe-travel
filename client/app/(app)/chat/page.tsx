@@ -1,11 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
-import { Compass, Sparkles, MapPinned, ExternalLink, Users, Wallet, CalendarDays } from 'lucide-react'
+import { Compass, Sparkles, MapPinned, ExternalLink, Users, Wallet, CalendarDays, TrendingUp, BookOpen } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -22,6 +22,78 @@ type ChatMapStop = {
 
 const CHAT_MAP_STORAGE_KEY = 'globe-travel:chat:explore:map-stops'
 const CHAT_ACTIVE_TRIP_KEY = 'globe-travel:chat:active-trip-id'
+
+const TRENDING_DESTINATIONS = [
+  {
+    name: 'Tokyo',
+    country: 'Japan',
+    emoji: '🇯🇵',
+    description: 'Neon-lit streets meet ancient temples',
+    query: 'Tell me about Tokyo, Japan — what makes it special and what are the best things to see and do there?',
+  },
+  {
+    name: 'Lisbon',
+    country: 'Portugal',
+    emoji: '🇵🇹',
+    description: 'Pastel tiles, great food, easy pace',
+    query: 'Tell me about Lisbon, Portugal — what makes it charming and what are the best things to experience there?',
+  },
+  {
+    name: 'Marrakech',
+    country: 'Morocco',
+    emoji: '🇲🇦',
+    description: 'Spice markets and bold group energy',
+    query: 'Tell me about Marrakech, Morocco — what makes it unique and what should I see there?',
+  },
+] as const
+
+const SEASONAL_PICKS = [
+  {
+    season: 'Spring',
+    emoji: '🌸',
+    destinations: 'Cherry blossoms and first-sun weekends',
+    query: 'Where should I travel in spring to see cherry blossoms and enjoy the best spring weather?',
+  },
+  {
+    season: 'Summer',
+    emoji: '☀️',
+    destinations: 'Coasts, terraces, and long evenings',
+    query: 'What are the best summer travel destinations for beach lovers and outdoor explorers?',
+  },
+  {
+    season: 'Autumn',
+    emoji: '🍁',
+    destinations: 'Leafy cities and shoulder-season value',
+    query: 'Where should I travel in autumn to see the most beautiful fall foliage and scenery?',
+  },
+  {
+    season: 'Winter',
+    emoji: '❄️',
+    destinations: 'Markets, ski towns, and cozy escapes',
+    query: 'What are the best winter travel destinations for festive markets, skiing, and cozy vibes?',
+  },
+] as const
+
+const CURATED_COLLECTIONS = [
+  {
+    name: 'Best food cities',
+    count: 15,
+    emoji: '🍜',
+    query: 'What are the best cities in the world for food lovers? Give me the top picks',
+  },
+  {
+    name: 'Budget-friendly Europe',
+    count: 14,
+    emoji: '💰',
+    query: 'What are the best budget-friendly European destinations that are beautiful but affordable?',
+  },
+  {
+    name: 'Adventure weekends',
+    count: 10,
+    emoji: '🏔️',
+    query: 'What are the best adventure travel destinations for thrill-seekers and outdoor lovers?',
+  },
+] as const
 
 type TripPayload = {
   trip: {
@@ -46,7 +118,7 @@ function mergeStop(stops: ChatMapStop[], nextStop: Omit<ChatMapStop, 'index'>) {
   return merged.map((stop, index) => ({ ...stop, index: index + 1 }))
 }
 
-export default function ChatPage() {
+function ChatPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialQueryRef = useRef<string | null>(searchParams.get('q'))
@@ -118,17 +190,18 @@ export default function ChatPage() {
   }, [])
 
   const extractDraftDays = useCallback((text: string) => {
-    const match = text.match(/\b(\d+)\s+days?\b/i)
+    const match = text.match(/\b(\d+)(?:\s*-\s*|\s+)days?\b/i)
     if (!match) return 4
     const parsed = Number(match[1])
     return Number.isFinite(parsed) ? Math.min(14, Math.max(1, parsed)) : 4
   }, [])
 
   const extractDraftTitle = useCallback((text: string) => {
-    const inMatch = text.match(/\b(?:in|to)\s+([A-Z][A-Za-z\s'’-]{1,40})/i)
-    if (inMatch?.[1]) {
+    const inMatch = text.match(/\b(?:in|to)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|on|around|near|from)\b|[,.!?]|$)/i)
+    const destination = inMatch?.[1]?.trim()
+    if (destination) {
       const days = extractDraftDays(text)
-      return `${days} Days in ${inMatch[1].trim()}`
+      return `${days} Days in ${destination}`
     }
     return 'Trip Draft'
   }, [extractDraftDays])
@@ -282,8 +355,8 @@ export default function ChatPage() {
                 <Compass className="w-5 h-5 text-amber-400" />
               </motion.div>
               <div>
-                <h1 className="font-serif text-xl text-white">AI Travel Advisor</h1>
-                <p className="text-xs text-white/40">Plan short city breaks with friends</p>
+                <h1 className="font-serif text-xl text-white">Planner</h1>
+                <p className="text-xs text-white/40">Discover, compare, and build short city breaks</p>
               </div>
             </div>
 
@@ -356,6 +429,83 @@ export default function ChatPage() {
                           <p className="text-xs text-white/30 mt-0.5">{item.sub}</p>
                         </motion.button>
                       ))}
+                    </div>
+
+                    <div className="mt-8 space-y-6">
+                      <div>
+                        <div className="mb-3 flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4 text-amber-400/80" />
+                          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Popular starts</h3>
+                        </div>
+                        <div className="grid gap-2 sm:grid-cols-3">
+                          {TRENDING_DESTINATIONS.map((item) => (
+                            <motion.button
+                              key={item.name}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() => sendMessage(item.query)}
+                              className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-left transition-all duration-200 hover:border-amber-500/25 hover:bg-amber-500/[0.05]"
+                            >
+                              <div className="flex items-start gap-3">
+                                <span className="text-2xl">{item.emoji}</span>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium text-white/82">{item.name}</p>
+                                  <p className="text-xs text-white/32">{item.country}</p>
+                                  <p className="mt-2 text-xs leading-relaxed text-white/38">{item.description}</p>
+                                </div>
+                              </div>
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="mb-3 flex items-center gap-2">
+                          <CalendarDays className="h-4 w-4 text-amber-400/80" />
+                          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Browse by season</h3>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                          {SEASONAL_PICKS.map((item) => (
+                            <motion.button
+                              key={item.season}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() => sendMessage(item.query)}
+                              className="rounded-2xl border border-white/8 bg-white/[0.03] p-3 text-left transition-all duration-200 hover:border-amber-500/25 hover:bg-amber-500/[0.05]"
+                            >
+                              <div className="text-xl">{item.emoji}</div>
+                              <p className="mt-2 text-sm font-medium text-white/82">{item.season}</p>
+                              <p className="mt-1 text-[11px] leading-relaxed text-white/34">{item.destinations}</p>
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="mb-3 flex items-center gap-2">
+                          <BookOpen className="h-4 w-4 text-cyan-400/80" />
+                          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Curated collections</h3>
+                        </div>
+                        <div className="grid gap-2 sm:grid-cols-3">
+                          {CURATED_COLLECTIONS.map((item) => (
+                            <motion.button
+                              key={item.name}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() => sendMessage(item.query)}
+                              className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-left transition-all duration-200 hover:border-cyan-500/25 hover:bg-cyan-500/[0.05]"
+                            >
+                              <div className="flex items-center gap-3">
+                                <span className="text-xl">{item.emoji}</span>
+                                <div className="min-w-0">
+                                  <p className="truncate text-sm font-medium text-white/82">{item.name}</p>
+                                  <p className="text-[11px] text-white/32">{item.count} ideas</p>
+                                </div>
+                              </div>
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 </div>
@@ -501,5 +651,13 @@ export default function ChatPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#050510]" />}>
+      <ChatPageContent />
+    </Suspense>
   )
 }

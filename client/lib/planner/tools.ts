@@ -1,4 +1,4 @@
-import { pruneMessages, type UIMessage } from 'ai'
+import type { UIMessage } from 'ai'
 import type { PlanIntent } from '@/lib/planner/types'
 
 export const PLANNER_TOOL_GROUPS = {
@@ -84,19 +84,5 @@ export function buildPlanStepMessages(
   messages: UIMessage[],
   stepNumber: number
 ) {
-  if (stepNumber === 0) {
-    return pruneMessages({
-      messages,
-      reasoning: 'none',
-      toolCalls: 'none',
-      emptyMessages: 'remove',
-    })
-  }
-
-  return pruneMessages({
-    messages: messages.slice(-8),
-    reasoning: 'none',
-    toolCalls: 'before-last-message',
-    emptyMessages: 'remove',
-  })
+  return stepNumber === 0 ? messages : messages.slice(-8)
 }

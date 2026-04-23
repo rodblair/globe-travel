@@ -16,7 +16,7 @@ export function extractDestinationFromTitle(title: string | null | undefined): s
   if (!title) return ''
   const cleaned = title.trim()
   const patterns = [
-    /^\d+\s+Days?\s+in\s+(.+)$/i,
+    /^\d+\s+Days?\s+in\s+(.+?)(?=\s+\b(?:for|with|on|around|near|from)\b|[,.!?]|$)/i,
     /^(.+?)\s+in\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b/i,
     /^(.+?)\s+in\s+\d+\s+Days?$/i,
     /^(.+?)\s+in\s+\d+\s+Nights?$/i,

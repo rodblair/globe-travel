@@ -1,26 +1,27 @@
-import { createClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/globe'
-
-  if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host')
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
+export function GET() {
+  return new NextResponse(
+    `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Confirming account...</title>
+  </head>
+  <body style="margin:0;background:#000;color:#fff;font-family:system-ui,sans-serif">
+    <div style="min-height:100vh;display:grid;place-items:center;padding:24px">
+      <p>Confirming your account...</p>
+    </div>
+    <script>
+      window.location.replace('/auth/callback-client' + window.location.search + window.location.hash);
+    </script>
+  </body>
+</html>`,
+    {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+      },
     }
-  }
-
-  return NextResponse.redirect(`${origin}/login?error=auth_error`)
+  )
 }

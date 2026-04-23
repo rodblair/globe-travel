@@ -163,7 +163,7 @@ export function JournalEditor({
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Rome, Italy"
+                      placeholder="City, country"
                       className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-amber-500/40 transition-colors"
                     />
                   </div>

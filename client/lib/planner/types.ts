@@ -68,7 +68,7 @@ export type PlannerSession = {
 export type PlannerPolicyHookResult = {
   systemAppendix: string
   requiresClarification?: boolean
-  preferredToolChoice?: 'required' | 'none' | { type: 'tool'; toolName: string }
+  preferredToolChoice?: 'required' | 'none'
 }
 
 export type PlannerWorkflowType = 'decision_memo' | 'generate_variants' | 'feedback_refresh'

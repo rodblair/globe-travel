@@ -4,15 +4,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  Globe,
   Map,
-  Compass,
   MessageCircle,
   Calendar,
-  Star,
-  BookOpen,
   User,
-  Settings,
   LogOut,
   Zap,
 } from 'lucide-react'
@@ -20,13 +15,44 @@ import { useSubscription } from '@/hooks/useSubscription'
 import { useAuth } from '@/components/providers/AuthProvider'
 
 const navItems = [
-  { href: '/globe', label: 'Globe', icon: Globe },
-  { href: '/map', label: 'Map', icon: Map },
-  { href: '/explore', label: 'Explore', icon: Compass },
-  { href: '/chat', label: 'Group Planner', icon: MessageCircle },
-  { href: '/trips', label: 'City Breaks', icon: Calendar },
-  { href: '/bucket-list', label: 'Bucket List', icon: Star },
-  { href: '/journal', label: 'Journal', icon: BookOpen },
+  {
+    href: '/chat',
+    label: 'Planner',
+    icon: MessageCircle,
+    matches: (pathname: string) =>
+      pathname === '/chat' ||
+      pathname === '/explore' ||
+      pathname === '/globe',
+  },
+  {
+    href: '/trips',
+    label: 'Trips',
+    icon: Calendar,
+    matches: (pathname: string) =>
+      pathname === '/trips' ||
+      pathname === '/trips/new' ||
+      pathname.startsWith('/trips/'),
+  },
+  {
+    href: '/saved',
+    label: 'Saved',
+    icon: Map,
+    matches: (pathname: string) =>
+      pathname === '/saved' ||
+      pathname === '/map' ||
+      pathname === '/bucket-list' ||
+      pathname === '/journal',
+  },
+  {
+    href: '/account',
+    label: 'Account',
+    icon: User,
+    matches: (pathname: string) =>
+      pathname === '/account' ||
+      pathname === '/settings' ||
+      pathname === '/profile' ||
+      pathname === '/pricing',
+  },
 ]
 
 export function Sidebar() {
@@ -44,7 +70,7 @@ export function Sidebar() {
     <aside className="hidden md:flex w-64 flex-col bg-black/80 backdrop-blur-xl border-r border-white/10 h-full">
       {/* Logo */}
       <div className="p-6 pb-4">
-        <Link href="/globe" className="flex items-center gap-2.5">
+        <Link href="/chat" className="flex items-center gap-2.5">
           <span className="text-xl">🌍</span>
           <span className="text-lg font-serif font-semibold tracking-tight text-white">
             Globe Travel
@@ -55,7 +81,7 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/')
+          const isActive = pathname ? item.matches(pathname) : false
           const Icon = item.icon
 
           return (
@@ -79,7 +105,7 @@ export function Sidebar() {
       {!isPro && (
         <div className="px-3 pb-3">
           <Link
-            href="/pricing"
+            href="/account?tab=billing"
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/15 transition-all duration-200 group"
           >
             <Zap className="w-4 h-4 text-amber-400 shrink-0" />
@@ -94,7 +120,7 @@ export function Sidebar() {
       {/* User Section */}
       <div className="p-3 border-t border-white/10">
         <div className="flex items-center gap-2 px-2 py-2">
-          <Link href="/profile" className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-amber-500/40 transition-all">
+          <Link href="/account" className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-amber-500/40 transition-all">
             {profile?.avatar_url ? (
               <Image
                 src={profile.avatar_url}
@@ -115,13 +141,6 @@ export function Sidebar() {
               {profile?.username ? `@${profile.username}` : 'Set up profile'}
             </p>
           </div>
-          <Link
-            href="/settings"
-            className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-all duration-200"
-            title="Settings"
-          >
-            <Settings className="w-4 h-4" />
-          </Link>
           <button
             onClick={handleSignOut}
             className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-all duration-200"

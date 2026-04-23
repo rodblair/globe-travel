@@ -2,14 +2,9 @@
 
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowRight, Users, Map, Sparkles, MessageSquare } from "lucide-react";
-
-const LandingGlobe = dynamic(() => import("@/components/globes/LandingGlobe"), {
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />,
-});
+import LandingGlobe from "@/components/globes/LandingGlobe";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },

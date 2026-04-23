@@ -1,11 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence, useDragControls } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3 } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -98,19 +98,20 @@ function coerceCoordinate(value: unknown) {
   return null
 }
 
-export default function TripStudioPage() {
+function TripStudioPageContent() {
   const params = useParams<{ tripId: string }>()
   const searchParams = useSearchParams()
   const tripId = params.tripId
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
-  const [chatOpen, setChatOpen] = useState(true)
+  const [chatOpen, setChatOpen] = useState(false)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
   const [pageOrigin, setPageOrigin] = useState('')
   const [groupBrief, setGroupBrief] = useState<GroupBrief | null>(null)
   const [creatingWorkflow, setCreatingWorkflow] = useState<string | null>(null)
+  const [workflowError, setWorkflowError] = useState<string | null>(null)
 
   // Capture window.location.origin after mount to avoid SSR ↔ client mismatch
   useEffect(() => { setPageOrigin(window.location.origin) }, [])
@@ -373,14 +374,18 @@ export default function TripStudioPage() {
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
+    setWorkflowError(null)
     setCreatingWorkflow(type)
     try {
-      await fetch(`/api/trips/${tripId}/planner-jobs`, {
+      const res = await fetch(`/api/trips/${tripId}/planner-jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),
       })
+      if (!res.ok) throw new Error('Planner workflow could not start')
       await refetchWorkflowJobs()
+    } catch {
+      setWorkflowError('Could not start that trip option. Please try again.')
     } finally {
       setCreatingWorkflow(null)
     }
@@ -392,7 +397,7 @@ export default function TripStudioPage() {
       <div className="absolute inset-0">
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.09),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(56,189,248,0.08),transparent_26%),linear-gradient(180deg,rgba(5,5,16,0.98),rgba(3,4,10,1))]" />
         <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
-        <div className="absolute right-4 top-4 z-10 rounded-[28px] border border-white/12 bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl">
+        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-white/12 bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:block">
           <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Trip Map Status</p>
           <p className="mt-1 text-sm font-medium text-white">{tripDestination || trip?.title || 'Trip Studio'}</p>
           <p className="mt-2 text-xs text-white/62">
@@ -423,6 +428,18 @@ export default function TripStudioPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setChatOpen((current) => !current)}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
+                chatOpen
+                  ? 'border-amber-400/25 bg-amber-400/12 text-amber-200'
+                  : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+              )}
+            >
+              <MessageSquareQuote className="h-4 w-4" />
+              {chatOpen ? 'Hide chat' : 'Planner chat'}
+            </button>
             <button
               onClick={() => handleOptimize()}
               disabled={isOptimizing}
@@ -478,9 +495,9 @@ export default function TripStudioPage() {
       </div>
 
       {/* Invite + feedback */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-30 w-[min(920px,calc(100%-2rem))] pointer-events-none">
-        <div className="grid gap-3 pointer-events-auto md:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+      <div className="pointer-events-none absolute top-24 left-1/2 z-30 hidden w-[min(920px,calc(100%-2rem))] -translate-x-1/2 2xl:block">
+        <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
+          <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Group review</p>
@@ -493,7 +510,7 @@ export default function TripStudioPage() {
                 <button
                   onClick={togglePublic}
                   className={cn(
-                    'rounded-full border px-3 py-2 text-xs font-medium transition-colors',
+                    'pointer-events-auto rounded-full border px-3 py-2 text-xs font-medium transition-colors',
                     trip?.is_public
                       ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200'
                       : 'border-white/15 bg-white/8 text-white/78 hover:bg-white/12'
@@ -511,14 +528,14 @@ export default function TripStudioPage() {
                 </div>
                 <button
                   onClick={copyInviteLink}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
                 >
                   <Copy className="w-4 h-4" />
                   Copy link
                 </button>
                 <button
                   onClick={shareInvite}
-                  className="inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-400/12 px-3 py-2 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/18"
+                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-400/12 px-3 py-2 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/18"
                 >
                   <Send className="w-4 h-4" />
                   Share invite
@@ -532,7 +549,7 @@ export default function TripStudioPage() {
           </div>
 
           <div className="grid gap-3">
-            <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Crew brief</p>
@@ -565,7 +582,7 @@ export default function TripStudioPage() {
               </div>
             </div>
 
-            <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Friend feedback</p>
@@ -597,7 +614,7 @@ export default function TripStudioPage() {
               </div>
             </div>
 
-            <div className="rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Planner workflows</p>
@@ -610,28 +627,34 @@ export default function TripStudioPage() {
                 <button
                   onClick={() => startWorkflow('decision_memo')}
                   disabled={Boolean(creatingWorkflow)}
-                  className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
                 >
-                  <span>Generate decision memo</span>
-                  <Scale3 className="w-4 h-4 text-amber-300" />
+                  <span>{creatingWorkflow === 'decision_memo' ? 'Starting decision memo...' : 'Generate decision memo'}</span>
+                  <Scale3d className="w-4 h-4 text-amber-300" />
                 </button>
                 <button
                   onClick={() => startWorkflow('generate_variants')}
                   disabled={Boolean(creatingWorkflow)}
-                  className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
                 >
-                  <span>Create cheap / balanced / premium variants</span>
+                  <span>{creatingWorkflow === 'generate_variants' ? 'Starting variants...' : 'Create cheap / balanced / premium variants'}</span>
                   <Wand2 className="w-4 h-4 text-sky-300" />
                 </button>
                 <button
                   onClick={() => startWorkflow('feedback_refresh')}
                   disabled={Boolean(creatingWorkflow)}
-                  className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
                 >
-                  <span>Refresh plan from feedback</span>
+                  <span>{creatingWorkflow === 'feedback_refresh' ? 'Starting refresh...' : 'Refresh plan from feedback'}</span>
                   <RefreshCcw className="w-4 h-4 text-emerald-300" />
                 </button>
               </div>
+
+              {workflowError && (
+                <p className="mt-3 rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-[11px] text-red-300">
+                  {workflowError}
+                </p>
+              )}
 
               <div className="mt-4 rounded-2xl border border-white/12 bg-white/8 p-3">
                 {latestWorkflowJob ? (
@@ -677,7 +700,7 @@ export default function TripStudioPage() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="absolute top-[214px] md:top-44 left-4 bottom-4 w-[calc(100%-2rem)] md:w-[360px] z-20 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.82)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl"
+            className="fixed inset-x-3 bottom-3 top-24 z-40 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.94)] shadow-[0_28px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-20 xl:w-[360px] xl:bg-[rgba(7,7,12,0.82)]"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}
@@ -689,7 +712,7 @@ export default function TripStudioPage() {
                   <p className="text-sm font-medium text-white">Guide the crew itinerary</p>
                 </div>
                 <span
-                  className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55"
+                  className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55"
                   title="Drag chat window"
                 >
                   <GripHorizontal className="h-3.5 w-3.5" />
@@ -735,13 +758,13 @@ export default function TripStudioPage() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="absolute top-[214px] md:top-44 right-4 bottom-4 w-[calc(100%-2rem)] md:w-[460px] z-20 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.82)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl"
+        className="absolute inset-x-3 bottom-3 top-28 z-20 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.88)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:inset-x-auto xl:bottom-4 xl:right-4 xl:top-44 xl:w-[520px] xl:bg-[rgba(7,7,12,0.82)]"
       >
-        <div
-          onPointerDown={(event) => itineraryDragControls.start(event)}
-          className="flex min-h-0 flex-1 flex-col"
-        >
-          <div className="absolute right-4 top-4 z-30 hidden md:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55 cursor-grab active:cursor-grabbing">
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div
+            onPointerDown={(event) => itineraryDragControls.start(event)}
+            className="absolute right-4 top-4 z-30 hidden xl:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55 cursor-grab active:cursor-grabbing"
+          >
             <GripHorizontal className="h-3.5 w-3.5" />
             Move
           </div>
@@ -767,5 +790,13 @@ export default function TripStudioPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function TripStudioPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#050510]" />}>
+      <TripStudioPageContent />
+    </Suspense>
   )
 }

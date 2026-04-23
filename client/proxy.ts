@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Public routes that don't require auth
-  const publicPaths = ['/', '/login', '/signup', '/callback', '/auth', '/t']
+  const publicPaths = ['/', '/login', '/signup', '/reset-password', '/callback', '/auth', '/t']
   const pathname = request.nextUrl.pathname
   const isPublicPath = publicPaths.some((path) => {
     if (path === '/auth') return pathname.startsWith('/auth')
@@ -65,7 +65,7 @@ export async function middleware(request: NextRequest) {
   // Redirect logged-in users away from login/signup
   if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/globe'
+    url.pathname = '/chat'
     return NextResponse.redirect(url)
   }
 

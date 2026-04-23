@@ -1,17 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { motion } from 'motion/react'
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
-
-const LandingGlobe = dynamic(() => import('@/components/globes/LandingGlobe'), {
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />,
-})
+import LandingGlobe from '@/components/globes/LandingGlobe'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -19,10 +14,26 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isMagicLink, setIsMagicLink] = useState(false)
+  const [isResettingPassword, setIsResettingPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+  const authRedirectTo = typeof window === 'undefined'
+    ? '/callback'
+    : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback`
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const authError = params.get('error_description') || params.get('error')
+    if (!authError) return
+
+    setError(
+      authError === 'auth_error'
+        ? 'That confirmation link is expired or invalid. Please request a new one.'
+        : authError
+    )
+  }, [])
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +44,7 @@ export default function LoginPage() {
     if (isMagicLink) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: `${window.location.origin}/callback` },
+        options: { emailRedirectTo: authRedirectTo },
       })
       if (error) {
         setError(error.message)
@@ -45,7 +56,7 @@ export default function LoginPage() {
       if (error) {
         setError(error.message)
       } else {
-        router.push('/globe')
+        router.push('/chat')
         router.refresh()
       }
     }
@@ -55,8 +66,32 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/callback` },
+      options: { redirectTo: authRedirectTo },
     })
+  }
+
+  const handlePasswordReset = async () => {
+    setError(null)
+    setMessage(null)
+
+    if (!email) {
+      setError('Enter your email address first, then we can send a reset link.')
+      return
+    }
+
+    setIsResettingPassword(true)
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: authRedirectTo,
+    })
+
+    if (error) {
+      setError(error.message)
+    } else {
+      setMessage(`Password reset link sent to ${email}.`)
+    }
+
+    setIsResettingPassword(false)
   }
 
   return (
@@ -174,6 +209,17 @@ export default function LoginPage() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </motion.div>
+            )}
+
+            {!isMagicLink && (
+              <button
+                type="button"
+                onClick={handlePasswordReset}
+                disabled={isResettingPassword || isLoading}
+                className="text-left text-xs font-medium text-amber-400/80 hover:text-amber-300 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isResettingPassword ? 'Sending reset link...' : 'Forgot your password?'}
+              </button>
             )}
 
             {error && (
