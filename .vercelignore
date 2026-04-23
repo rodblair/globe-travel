@@ -1,0 +1,6 @@
+.vercel/output
+.next
+client/.next
+client/tmp
+node_modules
+client/node_modules
