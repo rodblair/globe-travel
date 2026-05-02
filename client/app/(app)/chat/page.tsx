@@ -51,16 +51,19 @@ const PLANNING_STEPS = [
     icon: Users,
     label: 'Start with the crew',
     value: 'Tell us who is going, the pace, budget, and what each person cares about.',
+    q: 'Ask me the right questions about my group, budget, dates, pace, and travel style before recommending where we should go.',
   },
   {
     icon: Wallet,
     label: 'Compare the tradeoffs',
     value: 'See which cities fit the group before committing to a full itinerary.',
+    q: 'Compare possible city-break destinations for my group by budget, food, nightlife, walkability, and ease of travel.',
   },
   {
     icon: CalendarDays,
     label: 'Open Trip Studio',
     value: 'When the idea is real, we create a trip you can refine, map, and share.',
+    q: 'Plan a balanced 3-day city break for 4 friends with food, sightseeing, relaxed pacing, and one memorable night out.',
   },
 ] as const
 
@@ -362,17 +365,23 @@ function ChatPageContent() {
                       </p>
                     </div>
 
-                    <div className="mb-5 flex flex-wrap gap-2">
+                    <div className="mb-4 flex flex-wrap gap-2">
                       {PLANNING_STEPS.map((item, index) => {
                         const Icon = item.icon
                         return (
-                          <div key={item.label} className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.04] px-3 py-2">
+                          <motion.button
+                            key={item.label}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => sendMessage(item.q)}
+                            className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.04] px-3 py-2 text-left transition-all duration-200 hover:border-amber-500/25 hover:bg-amber-500/[0.06]"
+                          >
                             <Icon className="w-3.5 h-3.5 text-amber-400/80" />
                             <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/30">
                               {index + 1}
                             </span>
                             <span className="text-xs font-medium text-white/72">{item.label}</span>
-                          </div>
+                          </motion.button>
                         )
                       })}
                     </div>
@@ -381,17 +390,17 @@ function ChatPageContent() {
                       <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Choose a starting point</h3>
                       <span className="hidden text-xs text-white/26 sm:inline">Or type your own idea below</span>
                     </div>
-                    <div className="grid gap-2.5 sm:grid-cols-2">
+                    <div className="grid gap-2.5 sm:grid-cols-2 md:grid-cols-4">
                       {STARTER_PROMPTS.map((item) => (
                         <motion.button
                           key={item.label}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => sendMessage(item.q)}
-                          className="group min-h-20 text-left p-3.5 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
+                          className="group min-h-16 text-left p-3 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
                         >
                           <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{item.label}</p>
-                          <p className="mt-2 text-xs leading-relaxed text-white/34">{item.sub}</p>
+                          <p className="mt-1 text-xs leading-relaxed text-white/34 md:hidden lg:block">{item.sub}</p>
                         </motion.button>
                       ))}
                     </div>
