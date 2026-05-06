@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase-server'
+import { devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
 
 export function randomSlug(length = 10) {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -16,5 +17,5 @@ export const TripBudgetSchema = z.enum(['budget', 'mid', 'luxury']).optional()
 export async function requireUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  return { supabase, user: user || null }
+  return { supabase, user: user || (isDevAuthBypassEnabled ? devUser : null) }
 }

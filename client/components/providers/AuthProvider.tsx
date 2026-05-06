@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase-browser'
+import { devProfile, devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
 import type { User } from '@supabase/supabase-js'
 
 type Profile = {
@@ -34,12 +35,17 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(isDevAuthBypassEnabled ? devUser : null)
+  const [profile, setProfile] = useState<Profile | null>(isDevAuthBypassEnabled ? devProfile : null)
+  const [isLoading, setIsLoading] = useState(!isDevAuthBypassEnabled)
   const supabase = createClient()
 
   const fetchProfile = useCallback(async (userId: string) => {
+    if (isDevAuthBypassEnabled) {
+      setProfile(devProfile)
+      return
+    }
+
     const { data } = await supabase
       .from('profiles')
       .select('*')
@@ -49,10 +55,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase])
 
   const refreshProfile = useCallback(async () => {
+    if (isDevAuthBypassEnabled) {
+      setProfile(devProfile)
+      return
+    }
     if (user) await fetchProfile(user.id)
   }, [user, fetchProfile])
 
   useEffect(() => {
+    if (isDevAuthBypassEnabled) {
+      return
+    }
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
@@ -78,6 +92,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase, fetchProfile])
 
   const signOut = async () => {
+    if (isDevAuthBypassEnabled) {
+      setUser(null)
+      setProfile(null)
+      return
+    }
+
     await supabase.auth.signOut()
     setUser(null)
     setProfile(null)

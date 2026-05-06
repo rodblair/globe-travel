@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { X, Check, Zap, Crown, Sparkles } from 'lucide-react'
-import { PLANS, type Plan } from '@/lib/plans'
+import { X, Check, Zap, Crown } from 'lucide-react'
+import { PLANS } from '@/lib/plans'
 import { startCheckout } from '@/hooks/useSubscription'
 import { cn } from '@/lib/utils'
 

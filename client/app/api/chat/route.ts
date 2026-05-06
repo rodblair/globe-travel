@@ -9,6 +9,7 @@ import {
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase-service'
+import { devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
 import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
@@ -98,7 +99,8 @@ async function computeAndStoreDayRoute(
 export async function POST(req: Request) {
   try {
     const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    const user = authUser || (isDevAuthBypassEnabled ? devUser : null)
     // Service client bypasses RLS — used for all DB operations so inserts aren't blocked by policy subqueries
     const db = await createServiceClient()
 

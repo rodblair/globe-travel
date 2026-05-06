@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const isDevAuthBypass = process.env.NODE_ENV === 'development'
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -40,6 +41,10 @@ export async function proxy(request: NextRequest) {
     return pathname === path
   })
   const isApiPath = request.nextUrl.pathname.startsWith('/api')
+
+  if (isDevAuthBypass && !isApiPath) {
+    return supabaseResponse
+  }
 
   if (!user && !isPublicPath && !isApiPath) {
     const url = request.nextUrl.clone()

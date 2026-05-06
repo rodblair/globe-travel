@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { motion } from 'motion/react'
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import LandingGlobe from '@/components/globes/LandingGlobe'
+import { isDevAuthBypassEnabled } from '@/lib/dev-auth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -15,25 +16,21 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isMagicLink, setIsMagicLink] = useState(false)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    const params = new URLSearchParams(window.location.search)
+    const authError = params.get('error_description') || params.get('error')
+    if (!authError) return null
+    return authError === 'auth_error'
+      ? 'That confirmation link is expired or invalid. Please request a new one.'
+      : authError
+  })
   const [message, setMessage] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
   const authRedirectTo = typeof window === 'undefined'
     ? '/callback'
     : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback`
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const authError = params.get('error_description') || params.get('error')
-    if (!authError) return
-
-    setError(
-      authError === 'auth_error'
-        ? 'That confirmation link is expired or invalid. Please request a new one.'
-        : authError
-    )
-  }, [])
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -137,6 +134,16 @@ export default function LoginPage() {
             <h1 className="text-3xl font-serif font-semibold mb-2">Welcome back</h1>
             <p className="text-white/50">Sign in to keep planning your next city break</p>
           </div>
+
+          {isDevAuthBypassEnabled && (
+            <Link
+              href="/chat"
+              className="mb-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 text-sm font-semibold text-emerald-100 transition-all duration-300 hover:bg-emerald-400/15"
+            >
+              Continue as dev user
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
 
           {/* Google OAuth */}
           <button

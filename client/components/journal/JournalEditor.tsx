@@ -33,7 +33,6 @@ export function JournalEditor({
   isOpen,
   onClose,
   onSave,
-  userPlaces = [],
   trips = [],
   initialData,
   isSaving = false,

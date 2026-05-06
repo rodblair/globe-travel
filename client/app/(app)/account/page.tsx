@@ -5,7 +5,6 @@ import { Suspense, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { motion } from 'motion/react'
 import {
   ArrowRight,
   BookOpen,

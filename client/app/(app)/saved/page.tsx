@@ -230,11 +230,6 @@ function SavedPageContent() {
       }))
   }, [userPlaces])
 
-  const visitedCount = useMemo(
-    () => userPlaces.filter((place) => place.status === 'visited').length,
-    [userPlaces]
-  )
-
   const switchTab = (tab: SavedTab) => {
     const next = new URLSearchParams(searchParams.toString())
     if (tab === 'map') {
@@ -372,11 +367,7 @@ function SavedPageContent() {
             </div>
 
             {mapPlaces.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-white/8 bg-white/[0.03] px-6 py-16 text-center"
-              >
+              <div className="flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-white/8 bg-white/[0.03] px-6 py-16 text-center">
                 <div className="mb-6 rounded-full bg-amber-500/10 p-6">
                   <MapPin className="h-8 w-8 text-amber-400" />
                 </div>
@@ -391,7 +382,7 @@ function SavedPageContent() {
                   <Sparkles className="h-4 w-4" />
                   Open Planner
                 </Link>
-              </motion.div>
+              </div>
             ) : (
               <div className="relative overflow-hidden rounded-[28px] border border-white/8 bg-white/[0.03]">
                 <div className="relative h-[60vh] min-h-[420px]">
@@ -424,11 +415,7 @@ function SavedPageContent() {
             </div>
 
             {bucketPlaces.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center rounded-[28px] border border-white/8 bg-white/[0.03] px-6 py-24 text-center"
-              >
+              <div className="flex flex-col items-center justify-center rounded-[28px] border border-white/8 bg-white/[0.03] px-6 py-24 text-center">
                 <div className="mb-6 text-5xl">🌏</div>
                 <h2 className="text-2xl font-serif font-semibold text-white">Your dream list awaits</h2>
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/45">
@@ -441,7 +428,7 @@ function SavedPageContent() {
                   <Sparkles className="h-4 w-4" />
                   Tell the planner your dream destinations
                 </Link>
-              </motion.div>
+              </div>
             ) : (
               <PlaceGrid
                 places={bucketPlaces}
@@ -515,11 +502,7 @@ function SavedPageContent() {
                 ))}
               </div>
             ) : entries.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center rounded-[28px] border border-white/8 bg-white/[0.03] px-6 py-28 text-center"
-              >
+              <div className="flex flex-col items-center justify-center rounded-[28px] border border-white/8 bg-white/[0.03] px-6 py-28 text-center">
                 <div className="mb-6 rounded-full bg-amber-500/10 p-6">
                   <Feather className="h-8 w-8 text-amber-400" />
                 </div>
@@ -534,7 +517,7 @@ function SavedPageContent() {
                   <Feather className="h-4 w-4" />
                   Write your first entry
                 </button>
-              </motion.div>
+              </div>
             ) : (
               <div className="space-y-3">
                 {entries.map((entry, index) => (

@@ -1,11 +1,10 @@
 'use client'
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
-import { Compass, Sparkles, MapPinned, ExternalLink, Users, Wallet, CalendarDays } from 'lucide-react'
+import { Compass, Sparkles, Users, Wallet, CalendarDays } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -21,7 +20,6 @@ type ChatMapStop = {
 }
 
 const CHAT_MAP_STORAGE_KEY = 'globe-travel:chat:explore:map-stops'
-const CHAT_ACTIVE_TRIP_KEY = 'globe-travel:chat:active-trip-id'
 
 const STARTER_PROMPTS = [
   {
@@ -95,10 +93,7 @@ function ChatPageContent() {
   const searchParams = useSearchParams()
   const initialQueryRef = useRef<string | null>(searchParams.get('q'))
   const sentInitialRef = useRef(false)
-  const [activeTripId, setActiveTripId] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
-    return localStorage.getItem(CHAT_ACTIVE_TRIP_KEY)
-  })
+  const [activeTripId, setActiveTripId] = useState<string | null>(null)
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [mapStops, setMapStops] = useState<ChatMapStop[]>(() => {
     if (typeof window === 'undefined') return []
@@ -194,7 +189,6 @@ function ChatPageContent() {
     if (!res.ok) throw new Error('Failed to create trip draft')
     const json = await res.json() as { tripId: string }
     setActiveTripId(json.tripId)
-    localStorage.setItem(CHAT_ACTIVE_TRIP_KEY, json.tripId)
     return json.tripId
   }, [extractDraftDays, extractDraftTitle])
 
@@ -215,9 +209,6 @@ function ChatPageContent() {
       setPlanningError(null)
       setPlanningInProgress(true)
       try {
-        if (tripPreviewFailed && typeof window !== 'undefined') {
-          localStorage.removeItem(CHAT_ACTIVE_TRIP_KEY)
-        }
         const tripId = resolvedActiveTripId || await createDraftTrip(trimmed)
         const target = `/trips/${tripId}?prompt=${encodeURIComponent(trimmed)}`
         if (typeof window !== 'undefined') {
@@ -233,7 +224,7 @@ function ChatPageContent() {
     }
 
     exploreChat.sendMessage(trimmed)
-  }, [createDraftTrip, exploreChat, isPlanningPrompt, resolvedActiveTripId, router, tripPreviewFailed])
+  }, [createDraftTrip, exploreChat, isPlanningPrompt, resolvedActiveTripId, router])
 
   // Auto-send initial query from URL ?q= param (e.g. from Explore page)
   useEffect(() => {
@@ -250,14 +241,6 @@ function ChatPageContent() {
   useEffect(() => {
     localStorage.setItem(CHAT_MAP_STORAGE_KEY, JSON.stringify(mapStops))
   }, [mapStops])
-
-  useEffect(() => {
-    if (resolvedActiveTripId) {
-      localStorage.setItem(CHAT_ACTIVE_TRIP_KEY, resolvedActiveTripId)
-    } else {
-      localStorage.removeItem(CHAT_ACTIVE_TRIP_KEY)
-    }
-  }, [resolvedActiveTripId])
 
   const tripDays = useMemo(() => tripPayload?.days || [], [tripPayload?.days])
   const resolvedSelectedDayIndex = useMemo(() => {
@@ -307,16 +290,16 @@ function ChatPageContent() {
   )
 
   return (
-    <div className="relative h-full bg-black flex flex-col overflow-hidden">
+    <div className="relative flex h-full flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.08),transparent_32%),linear-gradient(180deg,#050505,#020202)]">
       {/* Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.03)_0%,transparent_50%)]" />
       </div>
 
       {/* Header */}
-      <div className="relative z-10 flex-shrink-0 border-b border-white/5">
+      <div className="relative z-10 flex-shrink-0 border-b border-white/8">
         <div className="px-6 py-4">
-          <div className="flex items-center justify-between max-w-3xl mx-auto">
+          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <motion.div
                 initial={{ rotate: 0 }}
@@ -332,9 +315,9 @@ function ChatPageContent() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 sm:flex">
               <Sparkles className="w-4 h-4 text-amber-400/40" />
-              <span className="text-xs text-white/30">Powered by OpenAI GPT-5.4</span>
+              <span className="text-xs text-white/42">AI trip planner</span>
             </div>
           </div>
         </div>
@@ -342,15 +325,11 @@ function ChatPageContent() {
 
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 xl:overflow-hidden">
         <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-28 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_360px] xl:pb-0">
-          <div className="min-h-[560px] overflow-y-auto rounded-3xl border border-white/10 bg-white/[0.03] xl:min-h-0">
+          <div className="flex min-h-[560px] flex-col overflow-y-auto rounded-[30px] border border-white/10 bg-white/[0.035] shadow-[0_24px_90px_rgba(0,0,0,0.24)] xl:min-h-0">
             {activeMessages.length === 0 ? (
-              <div className="flex h-full flex-col">
-                <div className="flex-1 flex items-start justify-center px-6 py-8 md:px-8">
-                  <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-3xl"
-                  >
+              <div className="flex min-h-[560px] flex-col">
+                <div className="flex flex-1 items-start justify-center px-6 py-8 md:px-8">
+                  <div className="w-full max-w-3xl">
                     <div className="mb-5 max-w-xl">
                       <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-200">
                         <Sparkles className="h-3.5 w-3.5" />
@@ -404,7 +383,7 @@ function ChatPageContent() {
                         </motion.button>
                       ))}
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -425,7 +404,7 @@ function ChatPageContent() {
             )}
           </div>
 
-          <div className="flex min-h-[360px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] xl:min-h-[280px]">
+          <div className="flex min-h-[360px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.035] shadow-[0_24px_90px_rgba(0,0,0,0.24)] xl:min-h-[280px]">
             <div className="border-b border-white/10 px-4 py-3">
               <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
                 {tripPayload ? 'Itinerary Maps' : 'Map Preview'}
@@ -434,21 +413,6 @@ function ChatPageContent() {
                 {tripPayload ? tripPayload.trip.title : 'Places from this chat'}
               </h2>
               <p className="mt-1 text-xs text-white/40">{mapSubtitle}</p>
-              {resolvedActiveTripId && (
-                <div className="mt-3 flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-emerald-200">
-                    <MapPinned className="h-3.5 w-3.5" />
-                    Trip linked
-                  </span>
-                  <Link
-                    href={`/trips/${resolvedActiveTripId}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-white/70 hover:bg-white/10"
-                  >
-                    Open Trip Studio
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              )}
             </div>
             <div className="flex-1 overflow-y-auto p-3">
               {previewDays.length > 0 ? (

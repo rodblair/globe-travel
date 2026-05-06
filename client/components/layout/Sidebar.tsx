@@ -67,19 +67,20 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex w-64 flex-col bg-black/80 backdrop-blur-xl border-r border-white/10 h-full">
-      {/* Logo */}
-      <div className="p-6 pb-4">
+    <aside className="hidden md:flex h-full w-64 flex-col border-r border-white/10 bg-[linear-gradient(180deg,rgba(9,9,9,0.98),rgba(2,2,2,0.98))]">
+      <div className="p-6 pb-5">
         <Link href="/chat" className="flex items-center gap-2.5">
-          <span className="text-xl">🌍</span>
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-amber-400/20 bg-amber-400/10 text-lg">🌍</span>
           <span className="text-lg font-serif font-semibold tracking-tight text-white">
             Globe Travel
           </span>
         </Link>
+        <p className="mt-4 text-[11px] leading-relaxed text-white/34">
+          One calm place to turn group travel ideas into a plan friends can react to.
+        </p>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
         {navItems.map((item) => {
           const isActive = pathname ? item.matches(pathname) : false
           const Icon = item.icon
@@ -90,8 +91,8 @@ export function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? 'bg-amber-500/10 text-amber-500'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'bg-amber-500/12 text-amber-300 shadow-[inset_0_0_0_1px_rgba(245,158,11,0.16)]'
+                  : 'text-white/55 hover:text-white hover:bg-white/6'
               }`}
             >
               <Icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2.5 : 1.5} />
@@ -101,12 +102,11 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Upgrade CTA */}
       {!isPro && (
         <div className="px-3 pb-3">
           <Link
             href="/account?tab=billing"
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/15 transition-all duration-200 group"
+            className="group flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-3 py-3 transition-all duration-200 hover:bg-amber-500/15"
           >
             <Zap className="w-4 h-4 text-amber-400 shrink-0" />
             <div className="min-w-0">
@@ -117,9 +117,8 @@ export function Sidebar() {
         </div>
       )}
 
-      {/* User Section */}
-      <div className="p-3 border-t border-white/10">
-        <div className="flex items-center gap-2 px-2 py-2">
+      <div className="border-t border-white/10 p-3">
+        <div className="flex items-center gap-2 rounded-2xl bg-white/[0.025] px-2 py-2">
           <Link href="/account" className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-amber-500/40 transition-all">
             {profile?.avatar_url ? (
               <Image

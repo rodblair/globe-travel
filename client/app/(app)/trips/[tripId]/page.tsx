@@ -391,6 +391,51 @@ function TripStudioPageContent() {
     }
   }, [tripId, creatingWorkflow, refetchWorkflowJobs])
 
+  if (isLoading && !resolvedPayload) {
+    return (
+      <div
+        ref={studioRef}
+        className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.16),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.12),transparent_30%),linear-gradient(180deg,#050510,#020208)] px-5 py-10"
+      >
+        <div className="absolute inset-x-0 top-0 h-px bg-white/15" />
+        <div className="mx-auto w-full max-w-4xl rounded-[36px] border border-white/12 bg-white/[0.045] p-6 shadow-[0_30px_110px_rgba(0,0,0,0.42)] backdrop-blur-2xl md:p-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/22 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-200">
+            <Calendar className="h-3.5 w-3.5" />
+            Trip Studio
+          </div>
+          <h1 className="mt-5 max-w-2xl font-serif text-4xl leading-[1] text-white md:text-6xl">
+            Loading your itinerary.
+          </h1>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/55 md:text-base">
+            Gathering trip days, routed stops, and group planning tools into one clean workspace.
+          </p>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
+            <div className="rounded-[28px] border border-white/10 bg-black/18 p-5">
+              <div className="mb-4 h-3 w-28 animate-pulse rounded-full bg-white/14" />
+              <div className="space-y-3">
+                {[0, 1, 2].map((item) => (
+                  <div key={item} className="h-14 animate-pulse rounded-2xl bg-white/8" />
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[28px] border border-white/10 bg-black/18 p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div className="h-3 w-32 animate-pulse rounded-full bg-white/14" />
+                <div className="h-8 w-20 animate-pulse rounded-full bg-amber-300/15" />
+              </div>
+              <div className="space-y-3">
+                {[0, 1, 2, 3].map((item) => (
+                  <div key={item} className="h-16 animate-pulse rounded-2xl bg-white/8" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div ref={studioRef} className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
       {/* Globe */}
@@ -398,7 +443,7 @@ function TripStudioPageContent() {
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.09),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(56,189,248,0.08),transparent_26%),linear-gradient(180deg,rgba(5,5,16,0.98),rgba(3,4,10,1))]" />
         <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
         <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-white/12 bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:block">
-          <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Trip Map Status</p>
+          <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Map readiness</p>
           <p className="mt-1 text-sm font-medium text-white">{tripDestination || trip?.title || 'Trip Studio'}</p>
           <p className="mt-2 text-xs text-white/62">
             {tripStops.length > 0
@@ -421,8 +466,10 @@ function TripStudioPageContent() {
                 <Calendar className="h-4 w-4 text-amber-300" />
               </span>
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">{tripDestination ? `${tripDestination} Trip Studio` : 'Trip Studio'}</p>
-                <p className="truncate text-sm font-medium text-white">{trip?.title || 'Trip Studio'}</p>
+                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">
+                  {tripDestination ? `${tripDestination} itinerary` : 'Group itinerary'}
+                </p>
+                <p className="truncate text-sm font-medium text-white">{trip?.title || 'Trip workspace'}</p>
               </div>
             </div>
           </div>
@@ -782,13 +829,6 @@ function TripStudioPageContent() {
           />
         </div>
       </motion.div>
-
-      {/* Loading overlay if trip payload is empty */}
-      {isLoading && !resolvedPayload && (
-        <div className="absolute inset-0 z-40 bg-black/40 flex items-center justify-center">
-          <div className="text-sm text-white/50">Loading trip…</div>
-        </div>
-      )}
     </div>
   )
 }
