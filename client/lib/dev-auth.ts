@@ -28,7 +28,7 @@ export function createGuestUser(guestId: string) {
 export function createGuestProfile(guestId: string) {
   return {
     id: guestId,
-    username: 'guest-traveler',
+    username: `guest-${guestId.slice(0, 8)}`,
     display_name: 'Guest Traveler',
     avatar_url: null,
     bio: 'Guest session for trying Globe Travel.',

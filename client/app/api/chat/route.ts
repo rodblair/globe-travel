@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase-service'
 import { createGuestUser, devUser, getGuestIdFromCookieHeader, isDevAuthBypassEnabled } from '@/lib/dev-auth'
+import { ensureGuestAccount } from '@/lib/guest-server'
 import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
@@ -101,9 +102,12 @@ export async function POST(req: Request) {
     const supabase = await createClient()
     const { data: { user: authUser } } = await supabase.auth.getUser()
     const guestId = getGuestIdFromCookieHeader(req.headers.get('cookie'))
-    const user = authUser || (guestId ? createGuestUser(guestId) : null) || (isDevAuthBypassEnabled ? devUser : null)
     // Service client bypasses RLS — used for all DB operations so inserts aren't blocked by policy subqueries
     const db = await createServiceClient()
+    if (guestId && !authUser) {
+      await ensureGuestAccount(guestId, db)
+    }
+    const user = authUser || (guestId ? createGuestUser(guestId) : null) || (isDevAuthBypassEnabled ? devUser : null)
 
     if (!user) {
       return new Response('Unauthorized', { status: 401 })
