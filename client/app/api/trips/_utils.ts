@@ -1,6 +1,8 @@
 import { z } from 'zod'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase-server'
-import { devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
+import { createServiceClient } from '@/lib/supabase-service'
+import { GUEST_SESSION_COOKIE, createGuestUser, devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
 
 export function randomSlug(length = 10) {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -17,5 +19,13 @@ export const TripBudgetSchema = z.enum(['budget', 'mid', 'luxury']).optional()
 export async function requireUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  return { supabase, user: user || (isDevAuthBypassEnabled ? devUser : null) }
+  if (user) return { supabase, user }
+
+  const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value
+  if (guestId) {
+    const serviceSupabase = await createServiceClient()
+    return { supabase: serviceSupabase, user: createGuestUser(guestId) }
+  }
+
+  return { supabase, user: isDevAuthBypassEnabled ? devUser : null }
 }

@@ -7,7 +7,6 @@ import { motion } from 'motion/react'
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import LandingGlobe from '@/components/globes/LandingGlobe'
-import { isDevAuthBypassEnabled } from '@/lib/dev-auth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -135,15 +134,13 @@ export default function LoginPage() {
             <p className="text-white/50">Sign in to keep planning your next city break</p>
           </div>
 
-          {isDevAuthBypassEnabled && (
-            <Link
-              href="/chat"
-              className="mb-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 text-sm font-semibold text-emerald-100 transition-all duration-300 hover:bg-emerald-400/15"
-            >
-              Continue as dev user
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          )}
+          <Link
+            href="/api/guest/start"
+            className="mb-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 text-sm font-semibold text-emerald-100 transition-all duration-300 hover:bg-emerald-400/15"
+          >
+            Continue as guest
+            <ArrowRight className="h-4 w-4" />
+          </Link>
 
           {/* Google OAuth */}
           <button

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { GUEST_SESSION_COOKIE } from '@/lib/dev-auth'
 
 export async function proxy(request: NextRequest) {
   const isDevAuthBypass = process.env.NODE_ENV === 'development'
@@ -41,19 +42,20 @@ export async function proxy(request: NextRequest) {
     return pathname === path
   })
   const isApiPath = request.nextUrl.pathname.startsWith('/api')
+  const hasGuestSession = Boolean(request.cookies.get(GUEST_SESSION_COOKIE)?.value)
 
   if (isDevAuthBypass && !isApiPath) {
     return supabaseResponse
   }
 
-  if (!user && !isPublicPath && !isApiPath) {
+  if (!user && !hasGuestSession && !isPublicPath && !isApiPath) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
   // If logged in, check onboarding
-  if (user && !isPublicPath && !isApiPath && !request.nextUrl.pathname.startsWith('/onboarding')) {
+  if (user && !hasGuestSession && !isPublicPath && !isApiPath && !request.nextUrl.pathname.startsWith('/onboarding')) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('onboarding_completed')

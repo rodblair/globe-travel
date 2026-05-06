@@ -2,7 +2,15 @@
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase-browser'
-import { devProfile, devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
+import {
+  GUEST_SESSION_COOKIE,
+  createGuestProfile,
+  createGuestUser,
+  devProfile,
+  devUser,
+  getGuestIdFromCookieHeader,
+  isDevAuthBypassEnabled,
+} from '@/lib/dev-auth'
 import type { User } from '@supabase/supabase-js'
 
 type Profile = {
@@ -34,15 +42,30 @@ const AuthContext = createContext<AuthContextType>({
   refreshProfile: async () => {},
 })
 
+function getBrowserGuestId() {
+  if (typeof document === 'undefined') return null
+  return getGuestIdFromCookieHeader(document.cookie)
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(isDevAuthBypassEnabled ? devUser : null)
-  const [profile, setProfile] = useState<Profile | null>(isDevAuthBypassEnabled ? devProfile : null)
-  const [isLoading, setIsLoading] = useState(!isDevAuthBypassEnabled)
+  const initialGuestId = getBrowserGuestId()
+  const [user, setUser] = useState<User | null>(
+    isDevAuthBypassEnabled ? devUser : initialGuestId ? createGuestUser(initialGuestId) : null
+  )
+  const [profile, setProfile] = useState<Profile | null>(
+    isDevAuthBypassEnabled ? devProfile : initialGuestId ? createGuestProfile(initialGuestId) : null
+  )
+  const [isLoading, setIsLoading] = useState(!isDevAuthBypassEnabled && !initialGuestId)
   const supabase = createClient()
 
   const fetchProfile = useCallback(async (userId: string) => {
     if (isDevAuthBypassEnabled) {
       setProfile(devProfile)
+      return
+    }
+    const guestId = getBrowserGuestId()
+    if (guestId) {
+      setProfile(createGuestProfile(guestId))
       return
     }
 
@@ -59,11 +82,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(devProfile)
       return
     }
+    const guestId = getBrowserGuestId()
+    if (guestId) {
+      setProfile(createGuestProfile(guestId))
+      return
+    }
     if (user) await fetchProfile(user.id)
   }, [user, fetchProfile])
 
   useEffect(() => {
     if (isDevAuthBypassEnabled) {
+      return
+    }
+
+    if (getBrowserGuestId()) {
       return
     }
 
@@ -93,6 +125,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     if (isDevAuthBypassEnabled) {
+      setUser(null)
+      setProfile(null)
+      return
+    }
+    if (getBrowserGuestId()) {
+      document.cookie = `${GUEST_SESSION_COOKIE}=; path=/; max-age=0`
       setUser(null)
       setProfile(null)
       return
