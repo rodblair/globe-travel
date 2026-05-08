@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState, type KeyboardEvent } from 'react'
+import { useRef, useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Send, Sparkles, Square } from 'lucide-react'
 import type { Message } from '@/hooks/useChat'
@@ -32,6 +32,27 @@ export default function ChatInterface({
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const visibleSuggestions = useMemo(() => {
+    const askedPrompts = new Set(
+      messages
+        .filter((message) => message.role === 'user')
+        .map((message) => message.content.trim().toLowerCase())
+    )
+    const seen = new Set<string>()
+
+    return suggestions
+      .map((suggestion) => suggestion.trim())
+      .filter((suggestion) => {
+        if (!suggestion) return false
+        const key = suggestion.toLowerCase()
+        if (seen.has(key) || askedPrompts.has(key)) return false
+        seen.add(key)
+        return true
+      })
+      .slice(0, 3)
+  }, [messages, suggestions])
+  const hasUserMessage = messages.some((message) => message.role === 'user')
+  const showSuggestions = visibleSuggestions.length > 0 && !hasUserMessage && !isLoading
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -97,9 +118,9 @@ export default function ChatInterface({
         className="flex-shrink-0 border-t border-white/10 bg-black/80 px-4 pt-3 shadow-[0_-20px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-6"
         style={{ paddingBottom: 'max(0.9rem, env(safe-area-inset-bottom))' }}
       >
-        {suggestions.length > 0 && (
+        {showSuggestions && (
           <div className="max-w-3xl mx-auto mb-2 flex gap-2 overflow-x-auto pb-1">
-            {suggestions.slice(0, 6).map((s) => (
+            {visibleSuggestions.map((s) => (
               <motion.button
                 key={s}
                 whileHover={{ scale: 1.02 }}

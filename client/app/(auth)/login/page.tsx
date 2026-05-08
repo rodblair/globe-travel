@@ -134,13 +134,31 @@ export default function LoginPage() {
             <p className="text-white/50">Sign in to keep planning your next city break</p>
           </div>
 
-          <Link
-            href="/api/guest/start"
-            className="mb-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 text-sm font-semibold text-emerald-100 transition-all duration-300 hover:bg-emerald-400/15"
-          >
-            Continue as guest
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mb-6 rounded-3xl border border-emerald-300/25 bg-emerald-300/10 p-4 shadow-[0_24px_80px_rgba(16,185,129,0.12)]">
+            <div className="mb-3 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200/70">
+                  Quick preview
+                </p>
+                <h2 className="mt-1 text-lg font-serif font-semibold text-white">
+                  Try Globe Travel without an account
+                </h2>
+              </div>
+              <span className="rounded-full border border-emerald-200/20 bg-emerald-200/10 px-3 py-1 text-[11px] font-semibold text-emerald-100">
+                Guest mode
+              </span>
+            </div>
+            <p className="mb-4 text-sm leading-6 text-emerald-50/70">
+              Use this if you are testing the app or sharing it with friends before full authentication is finished.
+            </p>
+            <Link
+              href="/api/guest/start"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-300 text-sm font-bold text-emerald-950 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-200"
+            >
+              Continue as guest
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
 
           {/* Google OAuth */}
           <button
