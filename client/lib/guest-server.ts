@@ -1,26 +1,37 @@
 import 'server-only'
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { createGuestProfile, createGuestUser } from '@/lib/dev-auth'
+import { createGuestProfile, createGuestUser, devProfile, devUser } from '@/lib/dev-auth'
 
-export async function ensureGuestAccount(guestId: string, supabase: SupabaseClient) {
-  const user = createGuestUser(guestId)
-  const profile = createGuestProfile(guestId)
-
-  const { data: existingUser, error: lookupError } = await supabase.auth.admin.getUserById(guestId)
+async function ensureProfileBackedAccount({
+  supabase,
+  id,
+  email,
+  displayName,
+  isGuest,
+  profile,
+}: {
+  supabase: SupabaseClient
+  id: string
+  email: string
+  displayName: string
+  isGuest: boolean
+  profile: ReturnType<typeof createGuestProfile>
+}) {
+  const { data: existingUser, error: lookupError } = await supabase.auth.admin.getUserById(id)
   if (lookupError && !lookupError.message.toLowerCase().includes('not found')) {
     throw new Error(lookupError.message)
   }
 
   if (!existingUser.user) {
     const { error } = await supabase.auth.admin.createUser({
-      id: guestId,
-      email: user.email,
+      id,
+      email,
       email_confirm: true,
       password: crypto.randomUUID(),
       user_metadata: {
-        full_name: profile.display_name,
-        is_guest: true,
+        full_name: displayName,
+        is_guest: isGuest,
       },
     })
 
@@ -48,5 +59,30 @@ export async function ensureGuestAccount(guestId: string, supabase: SupabaseClie
     throw new Error(profileError.message)
   }
 
+  return profile
+}
+
+export async function ensureGuestAccount(guestId: string, supabase: SupabaseClient) {
+  const user = createGuestUser(guestId)
+  await ensureProfileBackedAccount({
+    supabase,
+    id: user.id,
+    email: user.email || `guest-${guestId.slice(0, 8)}@globe-travel.local`,
+    displayName: 'Guest Traveler',
+    isGuest: true,
+    profile: createGuestProfile(guestId),
+  })
   return user
+}
+
+export async function ensureDevAccount(supabase: SupabaseClient) {
+  await ensureProfileBackedAccount({
+    supabase,
+    id: devUser.id,
+    email: devUser.email || 'dev@globe-travel.local',
+    displayName: 'Dev Traveler',
+    isGuest: false,
+    profile: devProfile,
+  })
+  return devUser
 }

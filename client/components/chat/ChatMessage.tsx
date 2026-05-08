@@ -3,58 +3,56 @@
 import { motion } from 'motion/react'
 import type { Message } from '@/hooks/useChat'
 
+function renderInlineMarkdown(text: string) {
+  const boldParts = text.split(/\*\*(.*?)\*\*/g)
+
+  return boldParts.map((part, index) => {
+    if (index % 2 === 1) {
+      return (
+        <strong key={index} className="font-semibold text-white">
+          {part}
+        </strong>
+      )
+    }
+
+    if (!part.includes('*')) return part
+
+    return part.split(/\*(.*?)\*/g).map((italicPart, italicIndex) =>
+      italicIndex % 2 === 1 ? (
+        <em key={`${index}-${italicIndex}`} className="italic">
+          {italicPart}
+        </em>
+      ) : (
+        italicPart
+      )
+    )
+  })
+}
+
 function renderContent(content: string) {
   // Simple markdown-like rendering
   const lines = content.split('\n')
   const elements: React.ReactNode[] = []
 
   lines.forEach((line, i) => {
-    let processed: React.ReactNode = line
-
-    // Bold
-    if (line.includes('**')) {
-      const parts = line.split(/\*\*(.*?)\*\*/g)
-      processed = parts.map((part, j) =>
-        j % 2 === 1 ? (
-          <strong key={j} className="font-semibold text-white">
-            {part}
-          </strong>
-        ) : (
-          part
-        )
-      )
-    }
-
-    // Italic
-    if (typeof processed === 'string' && processed.includes('*')) {
-      const parts = processed.split(/\*(.*?)\*/g)
-      processed = parts.map((part, j) =>
-        j % 2 === 1 ? (
-          <em key={j} className="italic">
-            {part}
-          </em>
-        ) : (
-          part
-        )
-      )
-    }
+    const processed = renderInlineMarkdown(line)
 
     // Bullet lists
     if (line.startsWith('- ') || line.startsWith('* ')) {
       elements.push(
         <li key={i} className="ml-4 list-disc">
-          {typeof processed === 'string' ? processed.slice(2) : processed}
+          {renderInlineMarkdown(line.slice(2))}
         </li>
       )
       return
     }
 
     // Numbered lists
-    const numberedMatch = line.match(/^(\d+)\.\s(.*)/)
+    const numberedMatch = line.match(/^(\d+)[.)]\s(.*)/)
     if (numberedMatch) {
       elements.push(
         <li key={i} className="ml-4 list-decimal">
-          {numberedMatch[2]}
+          {renderInlineMarkdown(numberedMatch[2])}
         </li>
       )
       return

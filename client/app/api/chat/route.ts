@@ -10,7 +10,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase-service'
 import { createGuestUser, devUser, getGuestIdFromCookieHeader, isDevAuthBypassEnabled } from '@/lib/dev-auth'
-import { ensureGuestAccount } from '@/lib/guest-server'
+import { ensureDevAccount, ensureGuestAccount } from '@/lib/guest-server'
 import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
@@ -106,6 +106,8 @@ export async function POST(req: Request) {
     const db = await createServiceClient()
     if (guestId && !authUser) {
       await ensureGuestAccount(guestId, db)
+    } else if (!authUser && isDevAuthBypassEnabled) {
+      await ensureDevAccount(db)
     }
     const user = authUser || (guestId ? createGuestUser(guestId) : null) || (isDevAuthBypassEnabled ? devUser : null)
 

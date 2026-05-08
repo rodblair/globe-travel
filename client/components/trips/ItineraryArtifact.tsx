@@ -143,6 +143,11 @@ export default function ItineraryArtifact({
     }
   }, [dayMapCards, selectedDay])
 
+  const selectedDayCard = useMemo(
+    () => dayMapCards.find(({ day }) => day.day_index === selectedDay?.day_index) || null,
+    [dayMapCards, selectedDay]
+  )
+
   const handleDragStart = (item: TripItem, fromDayIndex: number, e: React.DragEvent) => {
     e.dataTransfer.setData('application/json', JSON.stringify({
       kind: 'trip_item',
@@ -344,8 +349,8 @@ export default function ItineraryArtifact({
           </div>
         )}
         <AnimatePresence mode="popLayout">
-          {dayMapCards.map(({ day, sortedItems, stops, routeGeojson, routeSummary, subtitle, stopPreview, displayStops }) => {
-            const isSelectedDay = day.day_index === selectedDay.day_index
+          {selectedDayCard && (() => {
+            const { day, sortedItems, subtitle, displayStops } = selectedDayCard
 
             return (
               <motion.section
@@ -355,14 +360,14 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className={cn('rounded-[28px] border p-4.5', isSelectedDay ? 'border-amber-400/28 bg-amber-400/[0.055]' : 'border-white/12 bg-white/[0.035]')}
+                className="rounded-[28px] border border-amber-400/28 bg-amber-400/[0.055] p-4.5"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <button onClick={() => setSelectedDayIndex(day.day_index)} className="min-w-0 text-left">
+                  <div className="min-w-0 text-left">
                     <p className="text-[11px] uppercase tracking-[0.22em] text-white/42">Day {day.day_index}</p>
                     <h3 className="mt-1 text-sm font-medium text-white">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
                     <p className="mt-1 text-xs text-white/62">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
-                  </button>
+                  </div>
                   <button
                     onClick={() => onRegenerateDay?.(day.day_index)}
                     className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
@@ -372,60 +377,6 @@ export default function ItineraryArtifact({
                   </button>
                 </div>
 
-                <div className="mt-4">
-                  <TripDayMap
-                    stops={stops}
-                    routeGeojson={routeGeojson}
-                    title={`Day ${day.day_index}`}
-                    subtitle={day.title}
-                    routeSummary={routeSummary}
-                    stopPreview={stopPreview}
-                    showDetails={false}
-                    active={isSelectedDay}
-                    mapHeightClassName={isSelectedDay ? 'h-56' : 'h-44'}
-                    className="min-w-0 overflow-hidden"
-                    onClick={() => setSelectedDayIndex(day.day_index)}
-                  />
-                </div>
-
-                {displayStops.length > 0 && (
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    {displayStops.map((stop, index) => (
-                      <button
-                        key={stop.id}
-                        onClick={() => onSelectItem?.(stop.item)}
-                        className={cn(
-                          'flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
-                          stop.mapped
-                            ? 'border-white/12 bg-white/[0.05] hover:border-white/22 hover:bg-white/[0.07]'
-                            : 'border-amber-500/20 bg-amber-500/[0.06] hover:bg-amber-500/[0.1]'
-                        )}
-                      >
-                        <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-400/90 text-[11px] font-semibold text-black">
-                          {index + 1}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] uppercase tracking-[0.16em] text-white/38">
-                            Stop {index + 1}
-                          </p>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-xs font-medium text-white">{stop.title}</p>
-                            {stop.timeLabel && (
-                              <span className="rounded-full border border-white/12 bg-white/8 px-2 py-0.5 text-[10px] text-white/62">
-                                {stop.timeLabel}
-                              </span>
-                            )}
-                          </div>
-                          <p className="mt-1 text-[11px] text-white/62 truncate">
-                            {stop.placeName || 'No pinned place yet'}
-                            {stop.country ? ` • ${stop.country}` : ''}
-                          </p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
                 <div className="mt-4 space-y-2">
                   <div
                     onDragOver={(e) => e.preventDefault()}
@@ -433,7 +384,12 @@ export default function ItineraryArtifact({
                     className="h-2 rounded-lg"
                   />
 
-                  {sortedItems.map((item, index) => (
+                  {sortedItems.map((item, index) => {
+                    const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped)
+                    const locationLabel = mappedStop?.placeName || item.place?.name || null
+                    const countryLabel = mappedStop?.country || item.place?.country || null
+
+                    return (
                     <div key={item.id}>
                       <div
                         draggable
@@ -489,9 +445,9 @@ export default function ItineraryArtifact({
                                   {item.title}
                                 </p>
                               )}
-                              {item.place?.country && (
+                              {(locationLabel || countryLabel) && (
                                 <p className="mt-0.5 truncate text-xs text-white/55">
-                                  {item.place.country}
+                                  {[locationLabel, countryLabel].filter(Boolean).join(' • ')}
                                 </p>
                               )}
                               {item.notes && (
@@ -534,7 +490,7 @@ export default function ItineraryArtifact({
                         className="h-2 rounded-lg"
                       />
                     </div>
-                  ))}
+                  )})}
                 </div>
 
                 {!isLoading && sortedItems.length === 0 && (
@@ -547,7 +503,7 @@ export default function ItineraryArtifact({
                 )}
               </motion.section>
             )
-          })}
+          })()}
         </AnimatePresence>
       </div>
     </div>

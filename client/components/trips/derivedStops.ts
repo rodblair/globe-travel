@@ -46,6 +46,14 @@ export function coerceCoordinate(value: unknown) {
 export function getDestinationFallback(title: string | null | undefined) {
   const normalized = title?.trim().toLowerCase() || ''
 
+  if (/\blisbon\b|\blisboa\b/.test(normalized)) {
+    return {
+      title: 'Lisbon',
+      latitude: 38.7223,
+      longitude: -9.1393,
+    }
+  }
+
   if (/\brome\b/.test(normalized)) {
     return {
       title: 'Rome',
@@ -66,6 +74,45 @@ export function getDestinationFallback(title: string | null | undefined) {
 }
 
 const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
+  { pattern: /praça do comércio|praca do comercio|commerce square/i, stops: [{ title: 'Praça do Comércio', latitude: 38.70775, longitude: -9.13659, country: 'Portugal' }] },
+  { pattern: /pastel de nata breakfast|nata breakfast|breakfast stop/i, stops: [{ title: 'Manteigaria Chiado', latitude: 38.71089, longitude: -9.14327, country: 'Portugal' }] },
+  {
+    pattern: /santa justa.*chiado|chiado.*santa justa/i,
+    stops: [
+      { title: 'Santa Justa Lift', latitude: 38.71211, longitude: -9.13947, country: 'Portugal' },
+      { title: 'Chiado', latitude: 38.71067, longitude: -9.14389, country: 'Portugal' },
+    ],
+  },
+  { pattern: /seafood lunch/i, stops: [{ title: 'Cervejaria Ramiro', latitude: 38.72178, longitude: -9.13543, country: 'Portugal' }] },
+  {
+    pattern: /alfama.*cathedral|cathedral.*alfama/i,
+    stops: [
+      { title: 'Lisbon Cathedral', latitude: 38.70975, longitude: -9.13349, country: 'Portugal' },
+      { title: 'Alfama', latitude: 38.71391, longitude: -9.12963, country: 'Portugal' },
+    ],
+  },
+  { pattern: /sunset viewpoint/i, stops: [{ title: 'Miradouro de Santa Luzia', latitude: 38.71237, longitude: -9.13086, country: 'Portugal' }] },
+  { pattern: /fado dinner/i, stops: [{ title: 'Clube de Fado', latitude: 38.71017, longitude: -9.13253, country: 'Portugal' }] },
+  { pattern: /jerónimos monastery|jeronimos monastery/i, stops: [{ title: 'Jerónimos Monastery', latitude: 38.6979, longitude: -9.20673, country: 'Portugal' }] },
+  { pattern: /pastry break/i, stops: [{ title: 'Pastéis de Belém', latitude: 38.69748, longitude: -9.20322, country: 'Portugal' }] },
+  { pattern: /belém tower|belem tower/i, stops: [{ title: 'Belém Tower', latitude: 38.69158, longitude: -9.21604, country: 'Portugal' }] },
+  { pattern: /\bmaat\b/i, stops: [{ title: 'MAAT', latitude: 38.69578, longitude: -9.19468, country: 'Portugal' }] },
+  { pattern: /lunch by the river|riverside lunch/i, stops: [{ title: 'Doca de Santo Amaro', latitude: 38.7015, longitude: -9.17377, country: 'Portugal' }] },
+  { pattern: /monument area/i, stops: [{ title: 'Padrão dos Descobrimentos', latitude: 38.69361, longitude: -9.20571, country: 'Portugal' }] },
+  { pattern: /alcântara|alcantara/i, stops: [{ title: 'LX Factory', latitude: 38.70334, longitude: -9.17839, country: 'Portugal' }] },
+  { pattern: /príncipe real|principe real/i, stops: [{ title: 'Jardim do Príncipe Real', latitude: 38.71672, longitude: -9.14859, country: 'Portugal' }] },
+  { pattern: /^scenic stop$/i, stops: [{ title: 'Miradouro de São Pedro de Alcântara', latitude: 38.71508, longitude: -9.14443, country: 'Portugal' }] },
+  { pattern: /classic lunch/i, stops: [{ title: 'Bairro do Avillez', latitude: 38.71097, longitude: -9.14223, country: 'Portugal' }] },
+  { pattern: /market browsing|casual food stop|time out market/i, stops: [{ title: 'Time Out Market Lisboa', latitude: 38.70697, longitude: -9.14562, country: 'Portugal' }] },
+  { pattern: /tram viewpoint|viewpoint ride/i, stops: [{ title: 'Elevador da Bica', latitude: 38.70912, longitude: -9.14625, country: 'Portugal' }] },
+  { pattern: /group dinner/i, stops: [{ title: 'Bairro Alto', latitude: 38.7131, longitude: -9.14456, country: 'Portugal' }] },
+  { pattern: /drinks with a view/i, stops: [{ title: 'Park Bar Lisboa', latitude: 38.71058, longitude: -9.1453, country: 'Portugal' }] },
+  { pattern: /castle visit/i, stops: [{ title: 'Castelo de São Jorge', latitude: 38.71391, longitude: -9.13348, country: 'Portugal' }] },
+  { pattern: /viewpoint walk/i, stops: [{ title: 'Miradouro da Graça', latitude: 38.71634, longitude: -9.13085, country: 'Portugal' }] },
+  { pattern: /traditional lunch/i, stops: [{ title: 'Zé da Mouraria', latitude: 38.71699, longitude: -9.13504, country: 'Portugal' }] },
+  { pattern: /slow afternoon in graça|slow afternoon in graca/i, stops: [{ title: 'Graça', latitude: 38.71742, longitude: -9.12958, country: 'Portugal' }] },
+  { pattern: /final scenic stop/i, stops: [{ title: 'Miradouro da Senhora do Monte', latitude: 38.71912, longitude: -9.13274, country: 'Portugal' }] },
+  { pattern: /farewell dinner/i, stops: [{ title: 'Taberna da Rua das Flores', latitude: 38.70947, longitude: -9.1441, country: 'Portugal' }] },
   {
     pattern: /acropolis.*parthenon|parthenon.*acropolis/i,
     stops: [
@@ -144,7 +191,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
           index: displayStops.length + 1,
           item,
           placeName: stop.title,
-          country: item.place?.country || stop.country || 'Italy',
+          country: stop.country || item.place?.country || null,
           timeLabel,
           mapped: true,
         })
@@ -157,7 +204,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
 
     displayStops.push({
       id: item.id,
-      title: item.place?.name || item.title,
+      title: item.title || item.place?.name || 'Untitled stop',
       latitude: latitude || 0,
       longitude: longitude || 0,
       index: displayStops.length + 1,

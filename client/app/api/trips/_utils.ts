@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase-service'
 import { GUEST_SESSION_COOKIE, createGuestUser, devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
-import { ensureGuestAccount } from '@/lib/guest-server'
+import { ensureDevAccount, ensureGuestAccount } from '@/lib/guest-server'
 
 export function randomSlug(length = 10) {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -29,5 +29,11 @@ export async function requireUser() {
     return { supabase: serviceSupabase, user: createGuestUser(guestId) }
   }
 
-  return { supabase, user: isDevAuthBypassEnabled ? devUser : null }
+  if (isDevAuthBypassEnabled) {
+    const serviceSupabase = await createServiceClient()
+    await ensureDevAccount(serviceSupabase)
+    return { supabase: serviceSupabase, user: devUser }
+  }
+
+  return { supabase, user: null }
 }
