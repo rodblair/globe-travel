@@ -3,13 +3,16 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { motion } from 'motion/react'
 import { Compass, Sparkles, Users, Wallet, CalendarDays } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay, TripItem } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops, getDestinationFallback } from '@/components/trips/derivedStops'
+import { CompassRose } from '@/components/atmosphere/CompassRose'
+import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 type ChatMapStop = {
   id: string
@@ -66,10 +69,7 @@ const PLANNING_STEPS = [
 ] as const
 
 type TripPayload = {
-  trip: {
-    id: string
-    title: string
-  }
+  trip: { id: string; title: string }
   days: TripDay[]
 }
 
@@ -197,7 +197,6 @@ function ChatPageContent() {
   const activeError = exploreChat.error
   const activeStop = exploreChat.stop
 
-
   const [planningError, setPlanningError] = useState<string | null>(null)
   const [planningInProgress, setPlanningInProgress] = useState(false)
 
@@ -226,12 +225,10 @@ function ChatPageContent() {
     exploreChat.sendMessage(trimmed)
   }, [createDraftTrip, exploreChat, isPlanningPrompt, resolvedActiveTripId, router])
 
-  // Auto-send initial query from URL ?q= param (e.g. from Explore page)
   useEffect(() => {
     const q = initialQueryRef.current
     if (!q || sentInitialRef.current) return
     sentInitialRef.current = true
-    // Small delay to ensure the chat transport is initialized
     const timer = setTimeout(() => {
       sendMessage(q)
     }, 120)
@@ -290,34 +287,26 @@ function ChatPageContent() {
   )
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.08),transparent_32%),linear-gradient(180deg,#050505,#020202)]">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.03)_0%,transparent_50%)]" />
-      </div>
+    <div className="relative flex h-full flex-col overflow-hidden bg-paper text-foreground">
+      <div className="paper-grain absolute inset-0 pointer-events-none" />
 
       {/* Header */}
-      <div className="relative z-10 flex-shrink-0 border-b border-white/8">
+      <div className="relative z-10 flex-shrink-0 border-b border-rule bg-paper/80 backdrop-blur-md">
         <div className="px-6 py-4">
-          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <motion.div
-                initial={{ rotate: 0 }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/20 flex items-center justify-center"
-              >
-                <Compass className="w-5 h-5 text-amber-400" />
-              </motion.div>
+              <CompassRose size={36} showLabels={false} />
               <div>
-                <h1 className="font-serif text-xl text-white">Planner</h1>
-                <p className="text-xs text-white/40">Discover, compare, and build short city breaks</p>
+                <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
+                  CHAT · DISCOVER
+                </p>
+                <h1 className="h2-app text-foreground leading-tight">Planner</h1>
               </div>
             </div>
 
-            <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 sm:flex">
-              <Sparkles className="w-4 h-4 text-amber-400/40" />
-              <span className="text-xs text-white/42">AI trip planner</span>
+            <div className="hidden items-center gap-2 t-mono text-[0.6875rem] tracking-[0.16em] uppercase text-ink-3 sm:flex">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--brass)]" strokeWidth={1.5} />
+              AI TRIP PLANNER
             </div>
           </div>
         </div>
@@ -325,62 +314,81 @@ function ChatPageContent() {
 
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 xl:overflow-hidden">
         <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-28 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_360px] xl:pb-0">
-          <div className="flex min-h-[560px] flex-col overflow-y-auto rounded-[30px] border border-white/10 bg-white/[0.035] shadow-[0_24px_90px_rgba(0,0,0,0.24)] xl:min-h-0">
+          <div className="flex min-h-[560px] flex-col overflow-hidden rounded-lg border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-0">
             {activeMessages.length === 0 ? (
-              <div className="flex min-h-[560px] flex-col">
-                <div className="flex flex-1 items-start justify-center px-6 py-8 md:px-8">
-                  <div className="w-full max-w-3xl">
-                    <div className="mb-5 max-w-xl">
-                      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-200">
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Start here
-                      </div>
-                      <h2 className="font-serif text-3xl md:text-4xl text-white leading-[1.02] mb-3">
-                        Plan the trip your friends will actually say yes to.
+              <div className="flex min-h-[560px] flex-col overflow-y-auto">
+                <div className="relative flex flex-1 items-start justify-center px-6 py-10 md:px-10">
+                  <div className="absolute inset-0 -z-0 opacity-40">
+                    <ContourOverlay density="sparse" />
+                  </div>
+                  <div className="relative w-full max-w-3xl">
+                    <div className="mb-7 max-w-xl">
+                      <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-[var(--brass)] mb-3">
+                        § START HERE
+                      </p>
+                      <h2 className="h-display text-foreground leading-[1.1] mb-3 max-w-[20ch]">
+                        Plan the trip your friends will{' '}
+                        <span className="t-italic text-ink-2">actually say yes to.</span>
                       </h2>
-                      <p className="text-sm text-white/46 leading-relaxed">
-                        Describe the group, the vibe, and the constraints. Globe Travel will help choose
-                        the city, shape the itinerary, and move the plan into Trip Studio when it is ready.
+                      <p className="text-body text-ink-2 leading-relaxed">
+                        Describe the group, the vibe, and the constraints. Globe will help choose
+                        the city, shape the itinerary, and move it into Trip Studio when ready.
                       </p>
                     </div>
 
-                    <div className="mb-4 flex flex-wrap gap-2">
+                    <div className="mb-5 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       {PLANNING_STEPS.map((item, index) => {
                         const Icon = item.icon
                         return (
-                          <motion.button
+                          <button
                             key={item.label}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.97 }}
                             onClick={() => sendMessage(item.q)}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.04] px-3 py-2 text-left transition-all duration-200 hover:border-amber-500/25 hover:bg-amber-500/[0.06]"
+                            className={cn(
+                              'group relative text-left rounded-md border border-rule px-3 py-3',
+                              'bg-paper hover:bg-paper-hover transition-colors',
+                            )}
                           >
-                            <Icon className="w-3.5 h-3.5 text-amber-400/80" />
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/30">
-                              {index + 1}
-                            </span>
-                            <span className="text-xs font-medium text-white/72">{item.label}</span>
-                          </motion.button>
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <Icon className="w-3.5 h-3.5 text-[var(--brass)]" strokeWidth={1.4} />
+                              <span className="t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
+                                STEP {String(index + 1).padStart(2, '0')}
+                              </span>
+                            </div>
+                            <p className="text-[0.8125rem] font-medium text-foreground leading-snug">
+                              {item.label}
+                            </p>
+                            <p className="text-caption text-ink-3 mt-1 leading-snug">
+                              {item.value}
+                            </p>
+                          </button>
                         )
                       })}
                     </div>
 
-                    <div className="mb-4 flex items-center justify-between gap-4">
-                      <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-white/45">Choose a starting point</h3>
-                      <span className="hidden text-xs text-white/26 sm:inline">Or type your own idea below</span>
+                    <div className="mb-3 flex items-center justify-between gap-4">
+                      <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
+                        OR PICK A STARTING POINT
+                      </p>
+                      <span className="hidden text-caption text-ink-3 sm:inline">
+                        type your own below
+                      </span>
                     </div>
                     <div className="grid gap-2.5 sm:grid-cols-2 md:grid-cols-4">
                       {STARTER_PROMPTS.map((item) => (
-                        <motion.button
+                        <button
                           key={item.label}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.97 }}
                           onClick={() => sendMessage(item.q)}
-                          className="group min-h-16 text-left p-3 rounded-2xl bg-white/[0.04] border border-white/8 hover:border-amber-500/25 hover:bg-amber-500/[0.06] transition-all duration-200"
+                          className={cn(
+                            'group min-h-16 text-left p-3 rounded-md border border-rule bg-paper hover:bg-paper-hover transition-colors',
+                          )}
                         >
-                          <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{item.label}</p>
-                          <p className="mt-1 text-xs leading-relaxed text-white/34 md:hidden lg:block">{item.sub}</p>
-                        </motion.button>
+                          <p className="text-[0.8125rem] font-medium text-foreground group-hover:text-foreground transition-colors">
+                            {item.label}
+                          </p>
+                          <p className="mt-1 text-caption text-ink-3 leading-relaxed md:hidden lg:block">
+                            {item.sub}
+                          </p>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -404,21 +412,21 @@ function ChatPageContent() {
             )}
           </div>
 
-          <div className="flex min-h-[360px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.035] shadow-[0_24px_90px_rgba(0,0,0,0.24)] xl:min-h-[280px]">
-            <div className="border-b border-white/10 px-4 py-3">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
-                {tripPayload ? 'Itinerary Maps' : 'Map Preview'}
+          <aside className="flex min-h-[360px] flex-col overflow-hidden rounded-lg border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-[280px]">
+            <div className="border-b border-rule px-4 py-3">
+              <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
+                {tripPayload ? 'ITINERARY MAPS' : 'MAP PREVIEW'}
               </p>
-              <h2 className="mt-1 text-sm font-medium text-white/80">
+              <h2 className="t-h3 text-foreground leading-tight mt-1">
                 {tripPayload ? tripPayload.trip.title : 'Places from this chat'}
               </h2>
-              <p className="mt-1 text-xs text-white/40">{mapSubtitle}</p>
+              <p className="text-caption text-ink-3 mt-1">{mapSubtitle}</p>
             </div>
             <div className="flex-1 overflow-y-auto p-3">
               {previewDays.length > 0 ? (
                 <div className="space-y-3">
                   {previewDays.map(({ day, stops, routeGeojson, routeSummary, items }) => (
-                    <div key={day.id} className="rounded-[24px] border border-white/10 bg-black/30 overflow-hidden">
+                    <div key={day.id} className="rounded-md border border-rule bg-paper overflow-hidden">
                       <TripDayMap
                         stops={stops}
                         routeGeojson={routeGeojson}
@@ -431,21 +439,25 @@ function ChatPageContent() {
                         className="min-w-0 border-0 rounded-none"
                       />
                       {items.length > 0 && (
-                        <div className="border-t border-white/8 px-3 py-2.5 space-y-1.5">
+                        <div className="border-t border-rule px-3 py-2.5 space-y-1.5">
                           {items.map((item: TripItem, idx: number) => (
                             <div key={item.id} className="flex items-start gap-2.5">
-                              <span className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/8 text-[9px] font-bold text-white/60">
+                              <span className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
                                 {idx + 1}
                               </span>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-medium text-white/85 truncate leading-snug">{item.title}</p>
-                                <div className="flex items-center gap-1.5 mt-0.5">
+                                <p className="text-[0.8125rem] font-medium text-foreground truncate leading-snug">{item.title}</p>
+                                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                                   {item.start_time && (
-                                    <span className="text-[10px] text-white/38 tabular-nums">{item.start_time.slice(0,5)}</span>
+                                    <span className="t-mono text-[0.625rem] text-ink-3 tabular-nums">
+                                      {item.start_time.slice(0, 5)}
+                                    </span>
                                   )}
-                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 border border-white/8 text-white/35 capitalize">{item.type}</span>
+                                  <span className="t-mono text-[0.625rem] px-1.5 py-0.5 rounded-full bg-[var(--paper-recessed)] text-ink-3 capitalize">
+                                    {item.type}
+                                  </span>
                                   {item.place?.name && (
-                                    <span className="text-[10px] text-white/32 truncate">{item.place.name}</span>
+                                    <span className="text-caption text-ink-3 truncate">{item.place.name}</span>
                                   )}
                                 </div>
                               </div>
@@ -482,24 +494,27 @@ function ChatPageContent() {
                 />
               )}
             </div>
-          </div>
+          </aside>
         </div>
       </div>
 
-      {/* Input when no messages (overlaid at bottom) */}
       {activeMessages.length === 0 && (
-        <div className="relative z-10 flex-shrink-0 border-t border-white/8 bg-black/60 backdrop-blur-xl px-4 py-4">
+        <div className="relative z-10 flex-shrink-0 border-t border-rule bg-paper-raised/85 backdrop-blur-md px-4 py-4">
           {planningError && (
-            <div className="max-w-2xl mx-auto mb-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300">
+            <div className="max-w-2xl mx-auto mb-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] px-4 py-2 text-body-sm text-[var(--terracotta)]">
               {planningError}
             </div>
           )}
-          <div className="flex items-center gap-3 max-w-2xl mx-auto bg-white/[0.05] border border-white/10 rounded-2xl px-4 py-2 focus-within:border-amber-500/30 focus-within:ring-1 focus-within:ring-amber-500/10 transition-all">
+          <div className={cn(
+            'flex items-center gap-3 max-w-2xl mx-auto',
+            'border border-rule bg-[var(--paper-recessed)]/60 rounded-md px-4 py-1.5',
+            'focus-within:border-[var(--brass)] focus-within:ring-2 focus-within:ring-[var(--brass-glow)] transition-all'
+          )}>
             <input
               type="text"
               placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Try: “Best 3-day city break for 4 friends leaving from Toronto?”'}
               disabled={planningInProgress}
-              className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none disabled:opacity-50"
+              className="flex-1 bg-transparent py-2 text-body text-foreground placeholder:text-ink-3 focus:outline-none disabled:opacity-50"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   sendMessage(e.currentTarget.value.trim())
@@ -507,7 +522,7 @@ function ChatPageContent() {
                 }
               }}
             />
-            <div className="text-[10px] text-white/20 flex-shrink-0">↵ send</div>
+            <span className="t-mono text-[0.625rem] tracking-[0.16em] text-ink-3 flex-shrink-0">↵ SEND</span>
           </div>
         </div>
       )}
@@ -517,7 +532,7 @@ function ChatPageContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050510]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
       <ChatPageContent />
     </Suspense>
   )

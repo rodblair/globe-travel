@@ -33,7 +33,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
       whileHover={{ scale: 1.02, y: -2 }}
       transition={{ duration: 0.2 }}
       onClick={onClick}
-      className="group relative rounded-2xl overflow-hidden bg-white/5 backdrop-blur-sm border border-white/10 cursor-pointer"
+      className="group relative rounded-2xl overflow-hidden bg-paper-recessed backdrop-blur-sm border border-rule cursor-pointer"
     >
       {/* Image */}
       <div className="relative h-40 overflow-hidden">
@@ -46,7 +46,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/[0.02] flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-paper-recessed to-white/[0.02] flex items-center justify-center">
             <span className="text-4xl">{getFlagEmoji(country)}</span>
           </div>
         )}
@@ -57,9 +57,9 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
           <span
             className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
               status === 'visited'
-                ? 'bg-amber-500/30 text-amber-300'
+                ? 'bg-[var(--brass-subtle)] text-foreground'
                 : status === 'bucket_list'
-                ? 'bg-cyan-500/30 text-cyan-300'
+                ? 'bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]'
                 : 'bg-purple-500/30 text-purple-300'
             }`}
           >
@@ -75,12 +75,12 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
 
       {/* Content */}
       <div className="p-4 space-y-2">
-        <h3 className="text-lg font-serif font-semibold text-white group-hover:text-amber-300 transition-colors">
+        <h3 className="text-lg font-serif font-semibold text-foreground group-hover:text-[var(--brass)] transition-colors">
           {name}
         </h3>
         <div className="flex items-center gap-1.5">
-          <MapPin className="w-3.5 h-3.5 text-white/40" />
-          <span className="text-sm text-white/50">
+          <MapPin className="w-3.5 h-3.5 text-foreground/40" />
+          <span className="text-sm text-foreground/50">
             {getFlagEmoji(country)} {country}
           </span>
         </div>
@@ -90,14 +90,14 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                className={`w-3.5 h-3.5 ${i <= rating ? 'text-amber-400 fill-amber-400' : 'text-white/20'}`}
+                className={`w-3.5 h-3.5 ${i <= rating ? 'text-[var(--brass)] fill-amber-400' : 'text-foreground/20'}`}
               />
             ))}
           </div>
         )}
 
         {reason && (
-          <p className="text-sm text-white/40 line-clamp-2">{reason}</p>
+          <p className="text-sm text-foreground/40 line-clamp-2">{reason}</p>
         )}
 
         {status === 'bucket_list' && onPlanTrip && (
@@ -106,7 +106,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
               e.stopPropagation()
               onPlanTrip()
             }}
-            className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/25 text-cyan-300 text-xs font-medium hover:bg-cyan-500/25 transition-colors"
+            className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[color:var(--pillar-coastal-wash)] border border-cyan-500/25 text-[var(--horizon)] text-xs font-medium hover:bg-[color:var(--pillar-coastal-wash)] transition-colors"
             title="Plan a trip here"
           >
             <CalendarPlus className="w-4 h-4" />

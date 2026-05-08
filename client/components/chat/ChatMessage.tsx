@@ -9,7 +9,7 @@ function renderInlineMarkdown(text: string) {
   return boldParts.map((part, index) => {
     if (index % 2 === 1) {
       return (
-        <strong key={index} className="font-semibold text-white">
+        <strong key={index} className="font-semibold text-foreground">
           {part}
         </strong>
       )
@@ -86,22 +86,23 @@ export default function ChatMessage({ message, index }: { message: Message; inde
       className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center text-sm">
-          <span role="img" aria-label="globe">
-            {'\uD83C\uDF0D'}
-          </span>
+        <div className="flex-shrink-0 w-8 h-8 rounded-full border border-rule bg-[var(--brass-subtle)] flex items-center justify-center">
+          <svg width="14" height="14" viewBox="-50 -50 100 100" aria-hidden>
+            <circle cx="0" cy="0" r="42" fill="none" stroke="currentColor" strokeWidth="1" className="text-[var(--brass)]" opacity="0.6" />
+            <polygon points="0,-36 -3,0 0,2 3,0" fill="currentColor" className="text-[var(--brass)]" />
+          </svg>
         </div>
       )}
 
       <div
-        className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+        className={`max-w-[80%] px-4 py-3 rounded-md text-sm leading-relaxed ${
           isUser
-            ? 'bg-amber-500/20 backdrop-blur-sm border border-amber-500/20 text-amber-50'
-            : 'bg-white/10 backdrop-blur-sm border border-white/10 text-white/90'
+            ? 'bg-[var(--brass-subtle)] border border-rule text-foreground'
+            : 'bg-paper-raised border border-rule text-foreground'
         }`}
       >
         {message.content ? renderContent(message.content) : (
-          <span className="text-white/40">...</span>
+          <span className="text-ink-3">\u2026</span>
         )}
       </div>
     </motion.div>

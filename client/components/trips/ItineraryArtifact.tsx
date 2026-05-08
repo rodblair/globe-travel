@@ -58,8 +58,8 @@ function timeChip(start: string | null, end: string | null) {
   if (!start && !end) return null
   const label = [start, end].filter(Boolean).join('–')
   return (
-    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-white/5 border border-white/10 text-white/60">
-      <Clock className="w-3 h-3 text-white/30" />
+    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-paper-recessed border border-rule text-foreground/60">
+      <Clock className="w-3 h-3 text-foreground/30" />
       {label}
     </span>
   )
@@ -201,7 +201,7 @@ export default function ItineraryArtifact({
 
   if (!selectedDay) {
     return (
-      <div className="h-full flex items-center justify-center text-white/40 text-sm">
+      <div className="h-full flex items-center justify-center text-foreground/40 text-sm">
         Create a trip to start planning.
       </div>
     )
@@ -209,11 +209,11 @@ export default function ItineraryArtifact({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-shrink-0 border-b border-white/12 px-5 py-4">
+      <div className="flex-shrink-0 border-b border-rule px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Itinerary</p>
-            <h2 className="truncate text-base font-medium text-white">{tripTitle}</h2>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Itinerary</p>
+            <h2 className="truncate text-base font-medium text-foreground">{tripTitle}</h2>
           </div>
           <div className="flex items-center gap-2">
             {onOptimize && (
@@ -223,22 +223,22 @@ export default function ItineraryArtifact({
                 className={cn(
                   'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
                   optimizeDone
-                    ? 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300'
-                    : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+                    ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                    : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
                 )}
                 title="Optimize stop order to minimize walking"
               >
                 {optimizeDone ? (
                   <Check className="w-3.5 h-3.5" />
                 ) : (
-                  <ArrowLeftRight className={cn('w-3.5 h-3.5 text-amber-300', isOptimizing && 'animate-pulse')} />
+                  <ArrowLeftRight className={cn('w-3.5 h-3.5 text-[var(--brass)]', isOptimizing && 'animate-pulse')} />
                 )}
                 {isOptimizing ? 'Optimizing…' : optimizeDone ? 'Optimized!' : 'Optimize'}
               </button>
             )}
             <button
               onClick={() => onRegenerateDay?.(selectedDay.day_index)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+              className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
               title="Regenerate this day"
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -255,8 +255,8 @@ export default function ItineraryArtifact({
               className={cn(
                 'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
                 d.day_index === selectedDay.day_index
-                  ? 'bg-amber-500/15 border-amber-500/25 text-amber-300'
-                  : 'bg-black/40 border-white/10 text-white/40 hover:text-white/70 hover:bg-white/5'
+                  ? 'bg-[var(--brass)] border-[color:var(--brass)]/30 text-[var(--brass)]'
+                  : 'bg-paper-raised/85 border-rule text-foreground/40 hover:text-foreground/70 hover:bg-paper-recessed'
               )}
             >
               Day {d.day_index}
@@ -267,21 +267,21 @@ export default function ItineraryArtifact({
 
       <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
         {selectedDayMap && (
-          <div className="rounded-[26px] border border-white/12 bg-white/[0.05] p-3.5">
+          <div className="rounded-[26px] border border-rule bg-paper-recessed/60 p-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Selected route</p>
-                <p className="mt-1 truncate text-sm font-medium text-white">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/40">Selected route</p>
+                <p className="mt-1 truncate text-sm font-medium text-foreground">
                   Day {selectedDay.day_index} map
                 </p>
-                <p className="mt-1 text-[11px] leading-relaxed text-white/66 truncate">
+                <p className="mt-1 text-[11px] leading-relaxed text-foreground/66 truncate">
                   {selectedDayMap.routeSummary ||
                     `${selectedDayMap.mappedStops.length} mapped stop${selectedDayMap.mappedStops.length === 1 ? '' : 's'}`}
                 </p>
               </div>
               <button
                 onClick={() => setMapExpanded((current) => !current)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+                className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
               >
                 {mapExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
                 {mapExpanded ? 'Shrink' : 'Enlarge'}
@@ -310,26 +310,26 @@ export default function ItineraryArtifact({
                   className={cn(
                     'flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
                     stop.mapped
-                      ? 'border-white/12 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.06]'
-                      : 'border-amber-500/20 bg-amber-500/[0.06] hover:bg-amber-500/[0.1]'
+                      ? 'border-rule bg-paper-recessed/60 hover:border-rule hover:bg-paper-recessed/60'
+                      : 'border-[color:var(--brass)]/30 bg-[var(--brass)]] hover:bg-[var(--brass)]]'
                   )}
                 >
-                  <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-400/90 text-[11px] font-semibold text-black">
+                  <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brass)] text-[11px] font-semibold text-black">
                     {index + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/38">
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-foreground/38">
                       Stop {index + 1}
                     </p>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-xs font-medium text-white">{stop.title}</p>
+                      <p className="text-xs font-medium text-foreground">{stop.title}</p>
                       {stop.timeLabel && (
-                        <span className="rounded-full border border-white/12 bg-white/8 px-2 py-0.5 text-[10px] text-white/62">
+                        <span className="rounded-full border border-rule bg-paper-recessed px-2 py-0.5 text-[10px] text-foreground/62">
                           {stop.timeLabel}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-[11px] text-white/62 truncate">
+                    <p className="mt-1 text-[11px] text-foreground/62 truncate">
                       {stop.placeName || 'No pinned place yet'}
                       {stop.country ? ` • ${stop.country}` : ''}
                     </p>
@@ -337,8 +337,8 @@ export default function ItineraryArtifact({
                   <span className={cn(
                     'inline-flex flex-shrink-0 items-center gap-1 rounded-full border px-2 py-1 text-[10px]',
                     stop.mapped
-                      ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
-                      : 'border-amber-500/20 bg-amber-500/10 text-amber-300'
+                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                      : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground'
                   )}>
                     <MapPin className="h-3 w-3" />
                     {stop.mapped ? 'Pinned' : 'Needs map data'}
@@ -360,17 +360,17 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className="rounded-[28px] border border-amber-400/28 bg-amber-400/[0.055] p-4.5"
+                className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[var(--brass)]] p-4.5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 text-left">
-                    <p className="text-[11px] uppercase tracking-[0.22em] text-white/42">Day {day.day_index}</p>
-                    <h3 className="mt-1 text-sm font-medium text-white">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
-                    <p className="mt-1 text-xs text-white/62">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-foreground/42">Day {day.day_index}</p>
+                    <h3 className="mt-1 text-sm font-medium text-foreground">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
+                    <p className="mt-1 text-xs text-foreground/62">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
                   </div>
                   <button
                     onClick={() => onRegenerateDay?.(day.day_index)}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Regenerate day
@@ -405,11 +405,11 @@ export default function ItineraryArtifact({
                         onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index, e)}
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
-                          dragOverItemId === item.id ? 'border-amber-400/35 bg-amber-400/[0.08]' : 'border-white/12 bg-white/8 hover:border-white/22'
+                          dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass)]]' : 'border-rule bg-paper-recessed hover:border-rule'
                         )}
                       >
                         <div className="flex items-start gap-3">
-                          <div className="mt-0.5 text-white/20 group-hover:text-white/35 transition-colors">
+                          <div className="mt-0.5 text-foreground/20 group-hover:text-foreground/35 transition-colors">
                             <GripVertical className="w-4 h-4" />
                           </div>
 
@@ -422,7 +422,7 @@ export default function ItineraryArtifact({
                           >
                             <div className="flex items-center gap-2 flex-wrap">
                               {timeChip(item.start_time, item.end_time)}
-                              <span className="text-[10px] px-2 py-1 rounded-full bg-black/40 border border-white/10 text-white/40">
+                              <span className="text-[10px] px-2 py-1 rounded-full bg-paper-raised/85 border border-rule text-foreground/40">
                                 {item.type}
                               </span>
                             </div>
@@ -438,20 +438,20 @@ export default function ItineraryArtifact({
                                     if (e.key === 'Enter') commitEditing()
                                     if (e.key === 'Escape') setEditingItemId(null)
                                   }}
-                                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-500/40"
+                                  className="w-full bg-paper-recessed border border-rule rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-[color:var(--brass)]/30"
                                 />
                               ) : (
-                                <p className="truncate text-sm font-medium text-white">
+                                <p className="truncate text-sm font-medium text-foreground">
                                   {item.title}
                                 </p>
                               )}
                               {(locationLabel || countryLabel) && (
-                                <p className="mt-0.5 truncate text-xs text-white/55">
+                                <p className="mt-0.5 truncate text-xs text-foreground/55">
                                   {[locationLabel, countryLabel].filter(Boolean).join(' • ')}
                                 </p>
                               )}
                               {item.notes && (
-                                <p className="mt-2 line-clamp-2 text-xs text-white/62">
+                                <p className="mt-2 line-clamp-2 text-xs text-foreground/62">
                                   {item.notes}
                                 </p>
                               )}
@@ -461,21 +461,21 @@ export default function ItineraryArtifact({
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                               onClick={() => startEditing(item)}
-                              className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
+                              className="w-8 h-8 rounded-xl bg-paper-recessed hover:bg-paper-recessed border border-rule flex items-center justify-center text-foreground/40 hover:text-foreground/70 transition-colors"
                               title="Edit title"
                             >
                               <Pencil className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => onSwapItem?.(item)}
-                              className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
+                              className="w-8 h-8 rounded-xl bg-paper-recessed hover:bg-paper-recessed border border-rule flex items-center justify-center text-foreground/40 hover:text-foreground/70 transition-colors"
                               title="Swap this activity"
                             >
                               <Sparkles className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => deleteItem(item.id)}
-                              className="w-8 h-8 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 flex items-center justify-center text-red-300 transition-colors"
+                              className="w-8 h-8 rounded-xl bg-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] border border-[color:var(--pillar-desert-wash)] flex items-center justify-center text-[var(--terracotta)] transition-colors"
                               title="Delete"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -494,9 +494,9 @@ export default function ItineraryArtifact({
                 </div>
 
                 {!isLoading && sortedItems.length === 0 && (
-                  <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-black/20 px-4 py-5 text-center">
-                    <p className="text-sm text-white/40">Ask the AI to build this day.</p>
-                    <p className="mt-2 text-xs text-white/25">
+                  <div className="mt-6 rounded-2xl border border-dashed border-rule bg-paper-raised/85 px-4 py-5 text-center">
+                    <p className="text-sm text-foreground/40">Ask the AI to build this day.</p>
+                    <p className="mt-2 text-xs text-foreground/25">
                       Example: “Plan Day {day.day_index} around great food and neighborhoods.”
                     </p>
                   </div>

@@ -4,32 +4,35 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  Map,
-  MessageCircle,
+  Compass,
+  Map as MapIcon,
+  Bookmark,
   User,
   LogOut,
-  Zap,
+  Sparkles,
 } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAuth } from '@/components/providers/AuthProvider'
+import { CompassRose } from '@/components/atmosphere/CompassRose'
+import { cn } from '@/lib/utils'
 
 const navItems = [
   {
     href: '/chat',
-    label: 'Planner',
-    icon: MessageCircle,
+    label: 'Plan',
+    sub: 'Conversations & ideas',
+    icon: Compass,
     matches: (pathname: string) =>
-      pathname === '/chat' ||
-      pathname === '/explore' ||
-      pathname === '/globe',
+      pathname === '/chat' || pathname === '/explore' || pathname === '/globe',
   },
   {
     href: '/saved',
     label: 'Trips',
-    icon: Map,
+    sub: 'Itineraries & places',
+    icon: MapIcon,
     matches: (pathname: string) =>
       pathname === '/saved' ||
-      pathname.startsWith('/trips/') ||
+      pathname.startsWith('/trips') ||
       pathname === '/map' ||
       pathname === '/bucket-list' ||
       pathname === '/journal',
@@ -37,6 +40,7 @@ const navItems = [
   {
     href: '/account',
     label: 'Account',
+    sub: 'Profile & settings',
     icon: User,
     matches: (pathname: string) =>
       pathname === '/account' ||
@@ -58,20 +62,39 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex h-full w-64 flex-col border-r border-white/10 bg-[linear-gradient(180deg,rgba(9,9,9,0.98),rgba(2,2,2,0.98))]">
-      <div className="p-6 pb-5">
-        <Link href="/chat" className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-amber-400/20 bg-amber-400/10 text-lg">🌍</span>
-          <span className="text-lg font-serif font-semibold tracking-tight text-white">
-            Globe Travel
+    <aside
+      className={cn(
+        'hidden md:flex h-full w-64 flex-col',
+        'border-r border-rule bg-[var(--sidebar-bg)] text-foreground',
+        'relative',
+      )}
+    >
+      {/* paper grain */}
+      <div className="paper-grain absolute inset-0 pointer-events-none" />
+
+      {/* Brand */}
+      <div className="relative px-6 pt-6 pb-5">
+        <Link href="/chat" className="flex items-center gap-3 group">
+          <span className="grid h-9 w-9 place-items-center">
+            <CompassRose size={36} showLabels={false} />
+          </span>
+          <span className="t-serif text-[1.0625rem] leading-none tracking-[-0.005em] text-foreground">
+            Globe<span className="text-ink-3">.travel</span>
           </span>
         </Link>
-        <p className="mt-4 text-[11px] leading-relaxed text-white/34">
-          One calm place to turn group travel ideas into a plan friends can react to.
+      </div>
+
+      {/* Coordinate stamp — subtle place identifier */}
+      <div className="relative px-6 pb-4">
+        <p className="t-mono t-num text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
+          43°39′N · 79°23′W
         </p>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+      <div className="hairline mx-3" />
+
+      {/* Nav */}
+      <nav className="relative flex-1 space-y-0.5 overflow-y-auto px-2 py-3">
         {navItems.map((item) => {
           const isActive = pathname ? item.matches(pathname) : false
           const Icon = item.icon
@@ -80,37 +103,77 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={cn(
+                'group relative flex items-center gap-3 rounded-md px-3 py-2.5',
+                'transition-colors duration-200',
                 isActive
-                  ? 'bg-amber-500/12 text-amber-300 shadow-[inset_0_0_0_1px_rgba(245,158,11,0.16)]'
-                  : 'text-white/55 hover:text-white hover:bg-white/6'
-              }`}
+                  ? 'bg-[var(--sidebar-accent)] text-foreground'
+                  : 'text-ink-2 hover:bg-[var(--sidebar-hover)] hover:text-foreground',
+              )}
             >
-              <Icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2.5 : 1.5} />
-              <span>{item.label}</span>
+              {/* active brass left rule */}
+              {isActive && (
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-2 bottom-2 w-[2px] rounded-r-sm bg-[var(--brass)]"
+                />
+              )}
+              <Icon
+                className="h-[18px] w-[18px] shrink-0"
+                strokeWidth={isActive ? 1.6 : 1.25}
+              />
+              <span className="flex-1 min-w-0">
+                <span
+                  className={cn(
+                    'block text-[0.875rem] font-medium leading-tight',
+                  )}
+                >
+                  {item.label}
+                </span>
+                <span className="block text-[0.6875rem] text-ink-3 leading-tight mt-0.5">
+                  {item.sub}
+                </span>
+              </span>
             </Link>
           )
         })}
       </nav>
 
       {!isPro && (
-        <div className="px-3 pb-3">
+        <div className="relative px-3 pb-3">
           <Link
-            href="/account?tab=billing"
-            className="group flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-3 py-3 transition-all duration-200 hover:bg-amber-500/15"
+            href="/pricing"
+            className={cn(
+              'group flex items-center gap-2.5 rounded-md',
+              'border border-rule px-3 py-2.5',
+              'bg-[var(--brass-subtle)] hover:bg-[color-mix(in_oklch,var(--brass),transparent_82%)]',
+              'transition-colors',
+            )}
           >
-            <Zap className="w-4 h-4 text-amber-400 shrink-0" />
+            <Sparkles className="w-4 h-4 text-[var(--brass)] shrink-0" strokeWidth={1.5} />
             <div className="min-w-0">
-              <p className="text-xs font-semibold text-amber-300 leading-tight">Upgrade to Pro</p>
-              <p className="text-[10px] text-amber-500/60 leading-tight">7-day free trial</p>
+              <p className="text-[0.8125rem] font-medium text-foreground leading-tight">
+                Globe Pro
+              </p>
+              <p className="t-mono text-[0.625rem] tracking-[0.08em] text-ink-3 leading-tight mt-0.5">
+                7-DAY FREE TRIAL
+              </p>
             </div>
           </Link>
         </div>
       )}
 
-      <div className="border-t border-white/10 p-3">
-        <div className="flex items-center gap-2 rounded-2xl bg-white/[0.025] px-2 py-2">
-          <Link href="/account" className="relative w-8 h-8 rounded-full bg-white/10 overflow-hidden flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-amber-500/40 transition-all">
+      {/* Account row */}
+      <div className="relative border-t border-rule p-3">
+        <div className="flex items-center gap-2.5 rounded-md px-2 py-1.5 hover:bg-[var(--sidebar-hover)] transition-colors">
+          <Link
+            href="/account"
+            className={cn(
+              'relative w-8 h-8 rounded-full overflow-hidden flex items-center justify-center shrink-0',
+              'border border-rule bg-[var(--paper-recessed)]',
+              'hover:ring-2 hover:ring-[var(--brass-glow)] transition-all',
+            )}
+          >
             {profile?.avatar_url ? (
               <Image
                 src={profile.avatar_url}
@@ -120,23 +183,24 @@ export function Sidebar() {
                 className="object-cover"
               />
             ) : (
-              <User className="w-4 h-4 text-white/40" />
+              <User className="w-4 h-4 text-ink-3" strokeWidth={1.5} />
             )}
           </Link>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">
+            <p className="text-[0.8125rem] font-medium text-foreground truncate leading-tight">
               {profile?.display_name || 'Traveler'}
             </p>
-            <p className="text-xs text-white/40 truncate">
-              {profile?.username ? `@${profile.username}` : 'Set up profile'}
+            <p className="t-mono text-[0.625rem] text-ink-3 truncate leading-tight mt-0.5">
+              {profile?.username ? `@${profile.username}` : 'no callsign'}
             </p>
           </div>
           <button
             onClick={handleSignOut}
-            className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-all duration-200"
+            className="p-1.5 rounded-md text-ink-3 hover:text-foreground hover:bg-[var(--paper-hover)] transition-colors"
             title="Sign out"
+            aria-label="Sign out"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4" strokeWidth={1.5} />
           </button>
         </div>
       </div>

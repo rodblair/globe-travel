@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <QueryProvider>
       <AuthProvider>
-        <div className="flex h-screen bg-black text-white">
+        <div className="flex h-screen bg-background text-foreground">
           <Sidebar />
           <main className="flex-1 min-h-0 overflow-auto pb-16 md:pb-0">
             {children}

@@ -2,26 +2,24 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Map, MessageCircle, User } from 'lucide-react'
+import { Compass, Map as MapIcon, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   {
     href: '/chat',
-    icon: MessageCircle,
-    label: 'Planner',
+    icon: Compass,
+    label: 'Plan',
     matches: (pathname: string) =>
-      pathname === '/chat' ||
-      pathname === '/explore' ||
-      pathname === '/globe',
+      pathname === '/chat' || pathname === '/explore' || pathname === '/globe',
   },
   {
     href: '/saved',
-    icon: Map,
+    icon: MapIcon,
     label: 'Trips',
     matches: (pathname: string) =>
       pathname === '/saved' ||
-      pathname.startsWith('/trips/') ||
+      pathname.startsWith('/trips') ||
       pathname === '/map' ||
       pathname === '/bucket-list' ||
       pathname === '/journal',
@@ -42,23 +40,40 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[rgba(4,4,5,0.86)] shadow-[0_-18px_60px_rgba(0,0,0,0.32)] backdrop-blur-2xl md:hidden">
-      <div className="mx-auto flex max-w-md items-center justify-around px-2 py-2">
+    <nav
+      className={cn(
+        'fixed bottom-0 left-0 right-0 z-50 md:hidden',
+        'border-t border-rule bg-paper-raised/95 backdrop-blur-md',
+        'shadow-[0_-2px_8px_rgba(12,31,51,0.05)]',
+      )}
+    >
+      <div className="mx-auto flex max-w-md items-stretch justify-around px-1 py-1.5">
         {navItems.map((item) => {
           const isActive = pathname ? item.matches(pathname) : false
+          const Icon = item.icon
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                'flex min-w-[58px] flex-col items-center gap-1 rounded-2xl px-3 py-2 text-[10px] font-semibold transition-all duration-200',
+                'group relative flex min-w-[64px] flex-col items-center justify-center gap-1 rounded-md px-3 py-1.5',
+                'transition-colors duration-150',
                 isActive
-                  ? 'bg-amber-400/12 text-amber-200 shadow-[inset_0_0_0_1px_rgba(251,191,36,0.16)]'
-                  : 'text-white/42 hover:bg-white/6 hover:text-white/70'
+                  ? 'text-foreground'
+                  : 'text-ink-3 hover:text-foreground',
               )}
             >
-              <item.icon className="h-5 w-5" strokeWidth={isActive ? 2.5 : 1.7} />
-              <span>{item.label}</span>
+              {/* active brass dot */}
+              {isActive && (
+                <span
+                  aria-hidden
+                  className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--brass)]"
+                />
+              )}
+              <Icon className="h-5 w-5" strokeWidth={isActive ? 1.6 : 1.3} />
+              <span className="text-[0.625rem] font-medium tracking-[0.04em] uppercase">
+                {item.label}
+              </span>
             </Link>
           )
         })}

@@ -41,19 +41,19 @@ export function JournalCard({
     <motion.div
       whileHover={{ y: -1 }}
       transition={{ duration: 0.18 }}
-      className="group relative bg-white/[0.04] border border-white/8 rounded-2xl overflow-hidden hover:border-white/15 hover:bg-white/[0.06] transition-all duration-200"
+      className="group relative bg-paper-recessed/60 border border-rule rounded-2xl overflow-hidden hover:border-rule hover:bg-paper-recessed/60 transition-all duration-200"
     >
       <button className="w-full text-left p-5" onClick={onClick}>
         {/* Date + place row */}
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex items-center gap-1.5 text-white/35">
+          <div className="flex items-center gap-1.5 text-foreground/35">
             <Calendar className="w-3 h-3 shrink-0" />
             <span className="text-[11px]">{displayDate}</span>
           </div>
           {displayLocation && (
             <>
-              <span className="text-white/15 text-[10px]">·</span>
-              <div className="flex items-center gap-1 text-white/35 min-w-0">
+              <span className="text-foreground/15 text-[10px]">·</span>
+              <div className="flex items-center gap-1 text-foreground/35 min-w-0">
                 <MapPin className="w-3 h-3 shrink-0" />
                 <span className="text-[11px] truncate">{displayLocation}</span>
               </div>
@@ -61,20 +61,20 @@ export function JournalCard({
           )}
           {tripTitle && (
             <>
-              <span className="text-white/15 text-[10px]">·</span>
-              <span className="text-[11px] text-amber-400/60 truncate">{tripTitle}</span>
+              <span className="text-foreground/15 text-[10px]">·</span>
+              <span className="text-[11px] text-[var(--brass)] truncate">{tripTitle}</span>
             </>
           )}
         </div>
 
         {/* Title */}
-        <h3 className="font-serif text-lg font-semibold text-white group-hover:text-amber-300/90 transition-colors leading-snug mb-2">
+        <h3 className="font-serif text-lg font-semibold text-foreground group-hover:text-[var(--brass)] transition-colors leading-snug mb-2">
           {mood && <span className="mr-2 not-italic">{mood}</span>}
           {title}
         </h3>
 
         {/* Excerpt */}
-        <p className="text-sm text-white/45 line-clamp-3 leading-relaxed">
+        <p className="text-sm text-foreground/45 line-clamp-3 leading-relaxed">
           {content}
         </p>
       </button>
@@ -84,7 +84,7 @@ export function JournalCard({
         {onEdit && (
           <button
             onClick={(e) => { e.stopPropagation(); onEdit() }}
-            className="p-1.5 rounded-lg bg-white/8 hover:bg-white/15 text-white/40 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-paper-recessed hover:bg-paper-recessed text-foreground/40 hover:text-foreground transition-colors"
             title="Edit entry"
           >
             <Pencil className="w-3.5 h-3.5" />
@@ -93,7 +93,7 @@ export function JournalCard({
         {onDelete && (
           <button
             onClick={(e) => { e.stopPropagation(); onDelete() }}
-            className="p-1.5 rounded-lg bg-white/8 hover:bg-red-500/20 text-white/40 hover:text-red-400 transition-colors"
+            className="p-1.5 rounded-lg bg-paper-recessed hover:bg-[color:var(--pillar-desert-wash)] text-foreground/40 hover:text-[var(--terracotta)] transition-colors"
             title="Delete entry"
           >
             <Trash2 className="w-3.5 h-3.5" />

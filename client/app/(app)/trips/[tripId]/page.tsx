@@ -64,9 +64,9 @@ const sentimentLabel: Record<TripFeedback['sentiment'], string> = {
 }
 
 const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
-  love_it: 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300',
-  curious: 'border-sky-500/25 bg-sky-500/10 text-sky-300',
-  practical: 'border-amber-500/25 bg-amber-500/10 text-amber-300',
+  love_it: 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
+  curious: 'border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]',
+  practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
 }
 
 function extractDestinationLabel(title: string | null | undefined) {
@@ -454,36 +454,36 @@ function TripStudioPageContent() {
         ref={studioRef}
         className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.16),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.12),transparent_30%),linear-gradient(180deg,#050510,#020208)] px-5 py-10"
       >
-        <div className="absolute inset-x-0 top-0 h-px bg-white/15" />
-        <div className="mx-auto w-full max-w-4xl rounded-[36px] border border-white/12 bg-white/[0.045] p-6 shadow-[0_30px_110px_rgba(0,0,0,0.42)] backdrop-blur-2xl md:p-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/22 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-200">
+        <div className="absolute inset-x-0 top-0 h-px bg-paper-recessed" />
+        <div className="mx-auto w-full max-w-4xl rounded-[36px] border border-rule bg-paper-recessed/60 p-6 shadow-[0_30px_110px_rgba(0,0,0,0.42)] backdrop-blur-2xl md:p-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brass)]">
             <Calendar className="h-3.5 w-3.5" />
             Trip Studio
           </div>
-          <h1 className="mt-5 max-w-2xl font-serif text-4xl leading-[1] text-white md:text-6xl">
+          <h1 className="mt-5 max-w-2xl font-serif text-4xl leading-[1] text-foreground md:text-6xl">
             Loading your itinerary.
           </h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/55 md:text-base">
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-foreground/55 md:text-base">
             Gathering trip days, routed stops, and group planning tools into one clean workspace.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
-            <div className="rounded-[28px] border border-white/10 bg-black/18 p-5">
-              <div className="mb-4 h-3 w-28 animate-pulse rounded-full bg-white/14" />
+            <div className="rounded-[28px] border border-rule bg-paper/18 p-5">
+              <div className="mb-4 h-3 w-28 animate-pulse rounded-full bg-paper-recessed" />
               <div className="space-y-3">
                 {[0, 1, 2].map((item) => (
-                  <div key={item} className="h-14 animate-pulse rounded-2xl bg-white/8" />
+                  <div key={item} className="h-14 animate-pulse rounded-2xl bg-paper-recessed" />
                 ))}
               </div>
             </div>
-            <div className="rounded-[28px] border border-white/10 bg-black/18 p-5">
+            <div className="rounded-[28px] border border-rule bg-paper/18 p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <div className="h-3 w-32 animate-pulse rounded-full bg-white/14" />
-                <div className="h-8 w-20 animate-pulse rounded-full bg-amber-300/15" />
+                <div className="h-3 w-32 animate-pulse rounded-full bg-paper-recessed" />
+                <div className="h-8 w-20 animate-pulse rounded-full bg-[var(--brass)]" />
               </div>
               <div className="space-y-3">
                 {[0, 1, 2, 3].map((item) => (
-                  <div key={item} className="h-16 animate-pulse rounded-2xl bg-white/8" />
+                  <div key={item} className="h-16 animate-pulse rounded-2xl bg-paper-recessed" />
                 ))}
               </div>
             </div>
@@ -494,15 +494,15 @@ function TripStudioPageContent() {
   }
 
   return (
-    <div ref={studioRef} className="relative w-full h-full min-h-screen bg-[#050510] overflow-hidden">
+    <div ref={studioRef} className="relative w-full h-full min-h-screen bg-paper overflow-hidden">
       {/* Globe */}
       <div className="absolute inset-0">
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.09),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(56,189,248,0.08),transparent_26%),linear-gradient(180deg,rgba(5,5,16,0.98),rgba(3,4,10,1))]" />
         <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
-        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-white/12 bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:block">
-          <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Map readiness</p>
-          <p className="mt-1 text-sm font-medium text-white">{tripDestination || trip?.title || 'Trip Studio'}</p>
-          <p className="mt-2 text-xs text-white/62">
+        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-rule bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:block">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Map readiness</p>
+          <p className="mt-1 text-sm font-medium text-foreground">{tripDestination || trip?.title || 'Trip Studio'}</p>
+          <p className="mt-2 text-xs text-foreground/62">
             {tripStops.length > 0
               ? `${tripStops.length} routed stops across ${days.length} day${days.length === 1 ? '' : 's'}`
               : 'Using itinerary-first map previews for stability'}
@@ -515,18 +515,18 @@ function TripStudioPageContent() {
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-white/15 bg-[rgba(9,9,15,0.78)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur-2xl"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-rule bg-[rgba(9,9,15,0.78)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur-2xl"
         >
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-amber-400/25 bg-amber-400/12">
-                <Calendar className="h-4 w-4 text-amber-300" />
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)]">
+                <Calendar className="h-4 w-4 text-[var(--brass)]" />
               </span>
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/45">
                   {tripDestination ? `${tripDestination} itinerary` : 'Group itinerary'}
                 </p>
-                <p className="truncate text-sm font-medium text-white">{trip?.title || 'Trip workspace'}</p>
+                <p className="truncate text-sm font-medium text-foreground">{trip?.title || 'Trip workspace'}</p>
               </div>
             </div>
           </div>
@@ -538,8 +538,8 @@ function TripStudioPageContent() {
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
                 saveDone
-                  ? 'border-emerald-300/35 bg-emerald-400/18 text-emerald-100'
-                  : 'border-amber-300/35 bg-amber-400 text-black hover:bg-amber-300'
+                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                  : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass)]'
               )}
               title="Save the latest trip plan"
             >
@@ -551,8 +551,8 @@ function TripStudioPageContent() {
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
                 chatOpen
-                  ? 'border-amber-400/25 bg-amber-400/12 text-amber-200'
-                  : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+                  ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground'
+                  : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
               )}
             >
               <MessageSquareQuote className="h-4 w-4" />
@@ -564,25 +564,25 @@ function TripStudioPageContent() {
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
                 optimizeDone
-                  ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200'
-                  : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                  : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
               )}
               title="Optimize the order for this day"
             >
               {optimizeDone ? (
-                <Check className="h-4 w-4 text-emerald-300" />
+                <Check className="h-4 w-4 text-[var(--moss)]" />
               ) : (
-                <ArrowLeftRight className={cn('h-4 w-4 text-amber-300', isOptimizing && 'animate-pulse')} />
+                <ArrowLeftRight className={cn('h-4 w-4 text-[var(--brass)]', isOptimizing && 'animate-pulse')} />
               )}
               {isOptimizing ? 'Optimizing…' : optimizeDone ? 'Optimized!' : 'Optimize day'}
             </button>
             <button
               onClick={hydrateMaps}
               disabled={isHydratingMaps}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
               title="Repair or rebuild day map locations and routes"
             >
-              <Route className="h-4 w-4 text-sky-300" />
+              <Route className="h-4 w-4 text-[var(--horizon)]" />
               {isHydratingMaps ? 'Building maps…' : 'Build maps'}
             </button>
             <button
@@ -591,8 +591,8 @@ function TripStudioPageContent() {
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
                 shareDone
-                  ? 'border-emerald-400/30 bg-emerald-400/14 text-emerald-100'
-                  : 'border-amber-300/30 bg-amber-400/14 text-amber-100 hover:bg-amber-400/20'
+                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                  : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground hover:bg-[var(--brass)]'
               )}
               title="Create a friend review link and share it"
             >
@@ -602,7 +602,7 @@ function TripStudioPageContent() {
             {trip?.is_public && shareUrl && (
               <Link
                 href={`/t/${trip.share_slug}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-400/12 px-3 py-2 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/18"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass)] transition-colors hover:bg-[var(--brass)]"
                 title="Open public share link"
               >
                 <LinkIcon className="h-4 w-4" />
@@ -616,12 +616,12 @@ function TripStudioPageContent() {
       {/* Invite + feedback */}
       <div className="pointer-events-none absolute top-24 left-1/2 z-30 hidden w-[min(920px,calc(100%-2rem))] -translate-x-1/2 2xl:block">
         <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+          <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Group review</p>
-                <p className="mt-1 text-sm font-medium text-white">Invite friends to react to this {tripDestination || 'trip'} plan.</p>
-                <p className="mt-1 text-xs leading-relaxed text-white/62">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Group review</p>
+                <p className="mt-1 text-sm font-medium text-foreground">Invite friends to react to this {tripDestination || 'trip'} plan.</p>
+                <p className="mt-1 text-xs leading-relaxed text-foreground/62">
                   Keep the planning flow social without burying the itinerary in extra controls.
                 </p>
               </div>
@@ -631,8 +631,8 @@ function TripStudioPageContent() {
                   className={cn(
                     'pointer-events-auto rounded-full border px-3 py-2 text-xs font-medium transition-colors',
                     trip?.is_public
-                      ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200'
-                      : 'border-white/15 bg-white/8 text-white/78 hover:bg-white/12'
+                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                      : 'border-rule bg-paper-recessed text-foreground/78 hover:bg-paper-recessed'
                   )}
                 >
                   {trip?.is_public ? 'Public link on' : 'Enable public link'}
@@ -642,160 +642,160 @@ function TripStudioPageContent() {
 
             {trip?.is_public && shareUrl ? (
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <div className="min-w-0 flex-1 rounded-2xl border border-white/12 bg-white/7 px-3 py-2 text-xs text-white/72 truncate">
+                <div className="min-w-0 flex-1 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72 truncate">
                   {shareUrl}
                 </div>
                 <button
                   onClick={copyInviteLink}
-                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-medium text-white/82 transition-colors hover:bg-white/12"
+                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                 >
                   <Copy className="w-4 h-4" />
                   Copy link
                 </button>
                 <button
                   onClick={shareInvite}
-                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-400/12 px-3 py-2 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/18"
+                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass)] transition-colors hover:bg-[var(--brass)]"
                 >
                   <Send className="w-4 h-4" />
                   Share invite
                 </button>
               </div>
             ) : (
-              <p className="mt-4 text-xs text-white/58">
+              <p className="mt-4 text-xs text-foreground/58">
                 Reviews open automatically once the trip is public.
               </p>
             )}
           </div>
 
           <div className="grid gap-3">
-            <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Crew brief</p>
-                  <p className="mt-1 text-sm font-medium text-white">
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Crew brief</p>
+                  <p className="mt-1 text-sm font-medium text-foreground">
                     {groupBrief?.groupSize ? `${groupBrief.groupSize} travelers` : 'Add crew context in chat'}
                   </p>
                 </div>
-                <Sparkles className="w-5 h-5 text-amber-300/60" />
+                <Sparkles className="w-5 h-5 text-[var(--brass)]" />
               </div>
 
               <div className="mt-4 grid gap-2">
-                <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
-                  <Users className="w-4 h-4 text-amber-300" />
+                <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
+                  <Users className="w-4 h-4 text-[var(--brass)]" />
                   <span>{groupBrief?.groupSize ? `${groupBrief.groupSize} friends` : 'Crew size not set yet'}</span>
                 </div>
-                <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
-                  <Wallet className="w-4 h-4 text-emerald-300" />
+                <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
+                  <Wallet className="w-4 h-4 text-[var(--moss)]" />
                   <span>{groupBrief?.budget ? `Budget: ${groupBrief.budget}` : 'Budget still flexible'}</span>
                 </div>
-                <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
-                  <Plane className="w-4 h-4 text-sky-300" />
+                <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
+                  <Plane className="w-4 h-4 text-[var(--horizon)]" />
                   <span>{groupBrief?.originCity ? `Leaving from ${groupBrief.originCity}` : 'Origin city not set'}</span>
                 </div>
-                <div className="rounded-2xl border border-white/12 bg-white/8 px-3 py-2 text-xs text-white/72">
+                <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
                   Vibe: {groupBrief?.vibe || 'Balanced weekend with broad appeal'}
                 </div>
-                <div className="rounded-2xl border border-amber-400/18 bg-amber-400/10 px-3 py-2 text-xs text-amber-100/90">
+                <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs text-[var(--brass)]">
                   Trip readiness: {readinessCount}/4 — {trip?.is_public ? 'shareable' : 'turn on sharing'}, {feedback.length > 0 ? 'crew reacting' : 'needs reactions'}.
                 </div>
               </div>
             </div>
 
-            <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Friend feedback</p>
-                  <p className="mt-1 text-sm font-medium text-white">
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Friend feedback</p>
+                  <p className="mt-1 text-sm font-medium text-foreground">
                     {feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}
                   </p>
                 </div>
-                <MessageSquareQuote className="w-5 h-5 text-white/25" />
+                <MessageSquareQuote className="w-5 h-5 text-foreground/25" />
               </div>
 
               <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
                 {feedback.length === 0 ? (
-                  <p className="text-xs leading-relaxed text-white/58">
+                  <p className="text-xs leading-relaxed text-foreground/58">
                     No reviews yet. Invite a few friends and ask them where the itinerary feels too busy, expensive, or worth keeping.
                   </p>
                 ) : (
                   feedback.slice(0, 3).map((entry) => (
-                    <div key={entry.id} className="rounded-2xl border border-white/12 bg-white/8 p-3">
+                    <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="truncate text-xs font-medium text-white">{entry.author_name}</p>
+                        <p className="truncate text-xs font-medium text-foreground">{entry.author_name}</p>
                         <span className={cn('px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
                           {sentimentLabel[entry.sentiment]}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs leading-relaxed text-white/72 line-clamp-3">{entry.comment}</p>
+                      <p className="mt-2 text-xs leading-relaxed text-foreground/72 line-clamp-3">{entry.comment}</p>
                     </div>
                   ))
                 )}
               </div>
             </div>
 
-            <div className="pointer-events-none rounded-[26px] border border-white/12 bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-white/38">Planner workflows</p>
-                  <p className="mt-1 text-sm font-medium text-white">Run async planning jobs</p>
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Planner workflows</p>
+                  <p className="mt-1 text-sm font-medium text-foreground">Run async planning jobs</p>
                 </div>
-                <Wand2 className="w-5 h-5 text-white/25" />
+                <Wand2 className="w-5 h-5 text-foreground/25" />
               </div>
 
               <div className="mt-4 grid gap-2">
                 <button
                   onClick={() => startWorkflow('decision_memo')}
                   disabled={Boolean(creatingWorkflow)}
-                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
                 >
                   <span>{creatingWorkflow === 'decision_memo' ? 'Starting decision memo...' : 'Generate decision memo'}</span>
-                  <Scale3d className="w-4 h-4 text-amber-300" />
+                  <Scale3d className="w-4 h-4 text-[var(--brass)]" />
                 </button>
                 <button
                   onClick={() => startWorkflow('generate_variants')}
                   disabled={Boolean(creatingWorkflow)}
-                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
                 >
                   <span>{creatingWorkflow === 'generate_variants' ? 'Starting variants...' : 'Create cheap / balanced / premium variants'}</span>
-                  <Wand2 className="w-4 h-4 text-sky-300" />
+                  <Wand2 className="w-4 h-4 text-[var(--horizon)]" />
                 </button>
                 <button
                   onClick={() => startWorkflow('feedback_refresh')}
                   disabled={Boolean(creatingWorkflow)}
-                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-white/12 bg-white/8 px-3 py-3 text-left text-xs text-white/78 transition-colors hover:bg-white/12 disabled:opacity-50"
+                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
                 >
                   <span>{creatingWorkflow === 'feedback_refresh' ? 'Starting refresh...' : 'Refresh plan from feedback'}</span>
-                  <RefreshCcw className="w-4 h-4 text-emerald-300" />
+                  <RefreshCcw className="w-4 h-4 text-[var(--moss)]" />
                 </button>
               </div>
 
               {workflowError && (
-                <p className="mt-3 rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-[11px] text-red-300">
+                <p className="mt-3 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-[11px] text-[var(--terracotta)]">
                   {workflowError}
                 </p>
               )}
 
-              <div className="mt-4 rounded-2xl border border-white/12 bg-white/8 p-3">
+              <div className="mt-4 rounded-2xl border border-rule bg-paper-recessed p-3">
                 {latestWorkflowJob ? (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-medium text-white capitalize">{latestWorkflowJob.type.replace(/_/g, ' ')}</p>
-                      <span className="text-[10px] uppercase tracking-[0.16em] text-white/40">{latestWorkflowJob.status}</span>
+                      <p className="text-xs font-medium text-foreground capitalize">{latestWorkflowJob.type.replace(/_/g, ' ')}</p>
+                      <span className="text-[10px] uppercase tracking-[0.16em] text-foreground/40">{latestWorkflowJob.status}</span>
                     </div>
                     {latestWorkflowJob.status === 'completed' && latestWorkflowJob.result && (
-                      <pre className="whitespace-pre-wrap text-[11px] leading-relaxed text-white/70">
+                      <pre className="whitespace-pre-wrap text-[11px] leading-relaxed text-foreground/70">
                         {JSON.stringify(latestWorkflowJob.result, null, 2)}
                       </pre>
                     )}
                     {latestWorkflowJob.status === 'failed' && (
-                      <p className="text-[11px] text-red-300">{latestWorkflowJob.error || 'Workflow failed'}</p>
+                      <p className="text-[11px] text-[var(--terracotta)]">{latestWorkflowJob.error || 'Workflow failed'}</p>
                     )}
                     {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && (
-                      <p className="text-[11px] text-white/55">Working through the planner job…</p>
+                      <p className="text-[11px] text-foreground/55">Working through the planner job…</p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-[11px] leading-relaxed text-white/55">
+                  <p className="text-[11px] leading-relaxed text-foreground/55">
                     No workflow runs yet. Use these to generate decision support, itinerary variants, or feedback-driven refresh ideas.
                   </p>
                 )}
@@ -819,19 +819,19 @@ function TripStudioPageContent() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="fixed inset-x-3 bottom-3 top-24 z-40 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.94)] shadow-[0_28px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-20 xl:w-[360px] xl:bg-[rgba(7,7,12,0.82)]"
+            className="fixed inset-x-3 bottom-3 top-24 z-40 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-[rgba(7,7,12,0.94)] shadow-[0_28px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-20 xl:w-[360px] xl:bg-[rgba(7,7,12,0.82)]"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}
-              className="flex flex-shrink-0 items-center justify-between border-b border-white/12 px-5 py-4 cursor-grab active:cursor-grabbing"
+              className="flex flex-shrink-0 items-center justify-between border-b border-rule px-5 py-4 cursor-grab active:cursor-grabbing"
             >
               <div className="flex items-center gap-2">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-white/38">Planner chat</p>
-                  <p className="text-sm font-medium text-white">Guide the crew itinerary</p>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
+                  <p className="text-sm font-medium text-foreground">Guide the crew itinerary</p>
                 </div>
                 <span
-                  className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55"
+                  className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] text-foreground/55"
                   title="Drag chat window"
                 >
                   <GripHorizontal className="h-3.5 w-3.5" />
@@ -841,7 +841,7 @@ function TripStudioPageContent() {
               <button
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => setChatOpen(false)}
-                className="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-white/30 hover:text-white/60 transition-colors"
+                className="w-7 h-7 rounded-lg hover:bg-paper-recessed flex items-center justify-center text-foreground/30 hover:text-foreground/60 transition-colors"
               >
                 ×
               </button>
@@ -877,12 +877,12 @@ function TripStudioPageContent() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="absolute inset-x-3 bottom-3 top-28 z-20 mx-auto flex max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.9)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:inset-x-0 xl:bottom-4 xl:top-44 xl:w-[min(760px,calc(100%-3rem))] xl:bg-[rgba(7,7,12,0.84)]"
+        className="absolute inset-x-3 bottom-3 top-28 z-20 mx-auto flex max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-[rgba(7,7,12,0.9)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:inset-x-0 xl:bottom-4 xl:top-44 xl:w-[min(760px,calc(100%-3rem))] xl:bg-[rgba(7,7,12,0.84)]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div
             onPointerDown={(event) => itineraryDragControls.start(event)}
-            className="absolute right-4 top-4 z-30 hidden xl:inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] text-white/55 cursor-grab active:cursor-grabbing"
+            className="absolute right-4 top-4 z-30 hidden xl:inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] text-foreground/55 cursor-grab active:cursor-grabbing"
           >
             <GripHorizontal className="h-3.5 w-3.5" />
             Move
@@ -907,7 +907,7 @@ function TripStudioPageContent() {
 
 export default function TripStudioPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050510]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
       <TripStudioPageContent />
     </Suspense>
   )

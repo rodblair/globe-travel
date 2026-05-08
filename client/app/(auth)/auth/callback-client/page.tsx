@@ -97,9 +97,9 @@ function CallbackClientContent() {
   }, [router, searchParams, supabase])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-      <div className="max-w-sm rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-center">
-        <p className="text-sm text-white/70">{message}</p>
+    <div className="flex min-h-screen items-center justify-center bg-paper px-6 text-foreground">
+      <div className="max-w-sm rounded-2xl border border-rule bg-paper-recessed/60 p-6 text-center">
+        <p className="text-sm text-foreground/70">{message}</p>
       </div>
     </div>
   )
@@ -107,7 +107,7 @@ function CallbackClientContent() {
 
 export default function CallbackClientPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
       <CallbackClientContent />
     </Suspense>
   )

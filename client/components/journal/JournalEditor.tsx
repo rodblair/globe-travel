@@ -89,7 +89,7 @@ export function JournalEditor({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-paper-raised/85 backdrop-blur-sm z-40"
             onClick={onClose}
           />
 
@@ -101,20 +101,20 @@ export function JournalEditor({
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
             className="fixed inset-x-0 bottom-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl z-50 flex flex-col max-h-[92dvh] md:max-h-[88vh]"
           >
-            <div className="flex flex-col bg-[#0e0f1a] border border-white/10 rounded-t-3xl md:rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
+            <div className="flex flex-col bg-[#0e0f1a] border border-rule rounded-t-3xl md:rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
               {/* Drag handle (mobile) */}
               <div className="md:hidden flex justify-center pt-3 pb-1">
-                <div className="w-10 h-1 rounded-full bg-white/15" />
+                <div className="w-10 h-1 rounded-full bg-paper-recessed" />
               </div>
 
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
-                <h2 className="text-lg font-serif font-semibold text-white">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-rule">
+                <h2 className="text-lg font-serif font-semibold text-foreground">
                   {initialData?.id ? 'Edit Entry' : 'New Journal Entry'}
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white"
+                  className="p-2 rounded-xl bg-paper-recessed hover:bg-paper-recessed transition-colors text-foreground/50 hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -131,31 +131,31 @@ export function JournalEditor({
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Entry title…"
                     autoFocus
-                    className="w-full bg-transparent text-xl font-serif font-semibold text-white placeholder:text-white/25 focus:outline-none border-b border-white/10 pb-2"
+                    className="w-full bg-transparent text-xl font-serif font-semibold text-foreground placeholder:text-foreground/25 focus:outline-none border-b border-rule pb-2"
                   />
                 </div>
 
                 {/* Mood */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-white/35 mb-2 block">Mood</label>
+                  <label className="text-xs uppercase tracking-widest text-foreground/35 mb-2 block">Mood</label>
                   <MoodPicker selected={mood} onChange={setMood} />
                 </div>
 
                 {/* Meta row: date + location */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-white/35 mb-1.5 block flex items-center gap-1">
+                    <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
                       <CalendarDays className="w-3 h-3" /> Date visited
                     </label>
                     <input
                       type="date"
                       value={visitedDate}
                       onChange={(e) => setVisitedDate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-500/40 transition-colors [color-scheme:dark]"
+                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors [color-scheme:dark]"
                     />
                   </div>
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-white/35 mb-1.5 block flex items-center gap-1">
+                    <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
                       <MapPin className="w-3 h-3" /> Location
                     </label>
                     <input
@@ -163,7 +163,7 @@ export function JournalEditor({
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       placeholder="City, country"
-                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-amber-500/40 transition-colors"
+                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground placeholder:text-foreground/25 text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors"
                     />
                   </div>
                 </div>
@@ -171,13 +171,13 @@ export function JournalEditor({
                 {/* Trip linkage */}
                 {trips.length > 0 && (
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-white/35 mb-1.5 block flex items-center gap-1">
+                    <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
                       <Briefcase className="w-3 h-3" /> Link to trip
                     </label>
                     <select
                       value={selectedTrip}
                       onChange={(e) => setSelectedTrip(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-500/40 transition-colors"
+                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors"
                     >
                       <option value="">No trip linked</option>
                       {trips.map((t) => (
@@ -189,36 +189,36 @@ export function JournalEditor({
 
                 {/* Content */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-white/35 mb-1.5 block">Your story</label>
+                  <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block">Your story</label>
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Write about your experience — what you saw, felt, tasted, discovered…"
                     rows={9}
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder:text-white/25 text-sm resize-none focus:outline-none focus:border-amber-500/40 transition-colors leading-relaxed"
+                    className="w-full px-4 py-3 rounded-xl bg-paper-recessed/60 border border-rule text-foreground placeholder:text-foreground/25 text-sm resize-none focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors leading-relaxed"
                   />
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-white/8 bg-[#0e0f1a]">
+              <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-rule bg-[#0e0f1a]">
                 <p className={cn(
                   'text-xs transition-colors',
-                  canSave ? 'text-white/30' : 'text-amber-500/70'
+                  canSave ? 'text-foreground/30' : 'text-[var(--brass)]'
                 )}>
                   {!title.trim() ? 'Add a title to save' : !content.trim() ? 'Add your story to save' : `${content.trim().split(/\s+/).length} words`}
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 rounded-xl text-sm font-medium text-white/50 hover:text-white bg-white/5 hover:bg-white/10 transition-colors"
+                    className="px-4 py-2 rounded-xl text-sm font-medium text-foreground/50 hover:text-foreground bg-paper-recessed hover:bg-paper-recessed transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={!canSave || saving || isSaving}
-                    className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--brass)] hover:bg-[var(--brass)] text-[var(--brass-text)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Save className="w-4 h-4" />
                     {saving ? 'Saving…' : 'Save Entry'}
