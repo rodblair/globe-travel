@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Suspense, useMemo, useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
@@ -11,14 +11,9 @@ import {
   Calendar,
   Check,
   Crown,
-  Flame,
-  Globe2,
   LogOut,
-  MapPin,
   Save,
   Settings,
-  Share2,
-  Trophy,
   User,
   Zap,
 } from 'lucide-react'
@@ -29,13 +24,6 @@ import { openBillingPortal, startCheckout, useSubscription } from '@/hooks/useSu
 import { cn } from '@/lib/utils'
 
 type AccountTab = 'profile' | 'billing'
-
-type UserPlaceRow = {
-  status: 'visited' | 'bucket_list' | 'planning'
-  place?: {
-    country?: string | null
-  } | null
-}
 
 type JournalEntry = {
   id: string
@@ -67,20 +55,9 @@ function AccountPageContent() {
   const [bio, setBio] = useState(profile?.bio || '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [interval, setInterval] = useState<'month' | 'year'>('month')
   const [billingLoading, setBillingLoading] = useState(false)
   const [billingError, setBillingError] = useState<string | null>(null)
-
-  const { data: userPlaces = [] } = useQuery<UserPlaceRow[]>({
-    queryKey: ['account-user-places'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('user_places')
-        .select('status, place:places(country)')
-      return (data || []) as UserPlaceRow[]
-    },
-  })
 
   const { data: recentEntries = [] } = useQuery<JournalEntry[]>({
     queryKey: ['journal-entries', 'recent'],
@@ -93,21 +70,6 @@ function AccountPageContent() {
       return (data || []) as JournalEntry[]
     },
   })
-
-  const visitedCount = useMemo(
-    () => userPlaces.filter((place) => place.status === 'visited').length,
-    [userPlaces]
-  )
-
-  const countriesCount = useMemo(
-    () =>
-      new Set(
-        userPlaces
-          .filter((place) => place.status === 'visited' && place.place?.country)
-          .map((place) => place.place?.country)
-      ).size,
-    [userPlaces]
-  )
 
   const switchTab = (tab: AccountTab) => {
     const next = new URLSearchParams(searchParams.toString())
@@ -144,23 +106,6 @@ function AccountPageContent() {
   const handleSignOut = async () => {
     await signOut()
     router.push('/login')
-  }
-
-  const handleShare = async () => {
-    const shareUrl =
-      typeof window !== 'undefined'
-        ? window.location.origin + (profile?.username ? `/u/${profile.username}` : '/chat')
-        : '/chat'
-
-    try {
-      await navigator.clipboard.writeText(shareUrl)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
-    } catch {
-      if (typeof navigator.share === 'function') {
-        await navigator.share({ title: 'Globe Travel', url: shareUrl }).catch(() => {})
-      }
-    }
   }
 
   const handleUpgrade = async () => {
@@ -204,20 +149,6 @@ function AccountPageContent() {
                 <p className="mt-1 text-sm text-white/45">
                   Manage your profile, sharing, and subscription in one place.
                 </p>
-              </div>
-              <div className="grid grid-cols-3 gap-2 sm:w-auto">
-                <div className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">Countries</p>
-                  <p className="mt-1 text-lg font-semibold text-white">{countriesCount}</p>
-                </div>
-                <div className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">Places</p>
-                  <p className="mt-1 text-lg font-semibold text-white">{visitedCount}</p>
-                </div>
-                <div className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">Stories</p>
-                  <p className="mt-1 text-lg font-semibold text-white">{recentEntries.length}</p>
-                </div>
               </div>
             </div>
 
@@ -336,14 +267,6 @@ function AccountPageContent() {
                       <Save className="h-4 w-4" />
                       {saved ? 'Saved' : saving ? 'Saving…' : 'Save changes'}
                     </button>
-
-                    <button
-                      onClick={handleShare}
-                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
-                    >
-                      <Share2 className="h-4 w-4" />
-                      {copied ? 'Link copied' : 'Share profile'}
-                    </button>
                   </div>
                 </div>
               </div>
@@ -392,30 +315,6 @@ function AccountPageContent() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-[28px] border border-white/8 bg-white/[0.03] p-6">
-                <div className="mb-4 flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-purple-400" />
-                  <h2 className="text-lg font-serif font-semibold text-white">Travel snapshot</h2>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { icon: Globe2, label: 'Countries', value: countriesCount, color: 'text-amber-400' },
-                    { icon: MapPin, label: 'Places', value: visitedCount, color: 'text-emerald-400' },
-                    { icon: Flame, label: 'Streak', value: profile?.streak_days ?? 0, color: 'text-orange-400' },
-                    { icon: BookOpen, label: 'Stories', value: recentEntries.length, color: 'text-cyan-400' },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-center"
-                    >
-                      <item.icon className={cn('mx-auto mb-1.5 h-5 w-5', item.color)} />
-                      <p className="text-xl font-serif font-bold text-white">{item.value}</p>
-                      <p className="mt-0.5 text-xs text-white/40">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               <div className="rounded-[28px] border border-white/8 bg-white/[0.03] p-6">
                 <h2 className="text-lg font-serif font-semibold text-white">Session</h2>
                 <p className="mt-1 text-sm text-white/40">Signed in and ready to pick up where you left off.</p>
@@ -488,7 +387,7 @@ function AccountPageContent() {
                     <p className="mt-1 text-sm text-white/40">
                       {isPro
                         ? 'Open Stripe billing portal to manage payment details and billing.'
-                        : 'Unlock unlimited planning, saved places, and journal entries.'}
+                        : 'Unlock unlimited trip planning and journal entries.'}
                     </p>
                   </div>
                   {!isPro && (
@@ -562,7 +461,6 @@ function AccountPageContent() {
                     ['Journal entries', '3', 'Unlimited'],
                     ['Saved trips', '2', 'Unlimited'],
                     ['AI messages / day', '10', 'Unlimited'],
-                    ['Saved places', '10', 'Unlimited'],
                     ['Trip sharing', '—', 'Included'],
                   ].map(([feature, free, pro]) => (
                     <div key={feature} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">

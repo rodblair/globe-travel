@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Map, MessageCircle, Calendar, User } from 'lucide-react'
+import { Map, MessageCircle, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -16,20 +16,12 @@ const navItems = [
       pathname === '/globe',
   },
   {
-    href: '/trips',
-    icon: Calendar,
-    label: 'Trips',
-    matches: (pathname: string) =>
-      pathname === '/trips' ||
-      pathname === '/trips/new' ||
-      pathname.startsWith('/trips/'),
-  },
-  {
     href: '/saved',
     icon: Map,
-    label: 'Saved',
+    label: 'Trips',
     matches: (pathname: string) =>
       pathname === '/saved' ||
+      pathname.startsWith('/trips/') ||
       pathname === '/map' ||
       pathname === '/bucket-list' ||
       pathname === '/journal',

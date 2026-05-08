@@ -132,3 +132,18 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true, id: data.id })
 }
+
+export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const { id } = await ctx.params
+  const { supabase, user } = await requireUser()
+  if (!user) return new NextResponse('Unauthorized', { status: 401 })
+
+  const { error } = await supabase
+    .from('trips')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ ok: true, id })
+}

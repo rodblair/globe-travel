@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   Map,
   MessageCircle,
-  Calendar,
   User,
   LogOut,
   Zap,
@@ -25,20 +24,12 @@ const navItems = [
       pathname === '/globe',
   },
   {
-    href: '/trips',
-    label: 'Trips',
-    icon: Calendar,
-    matches: (pathname: string) =>
-      pathname === '/trips' ||
-      pathname === '/trips/new' ||
-      pathname.startsWith('/trips/'),
-  },
-  {
     href: '/saved',
-    label: 'Saved',
+    label: 'Trips',
     icon: Map,
     matches: (pathname: string) =>
       pathname === '/saved' ||
+      pathname.startsWith('/trips/') ||
       pathname === '/map' ||
       pathname === '/bucket-list' ||
       pathname === '/journal',

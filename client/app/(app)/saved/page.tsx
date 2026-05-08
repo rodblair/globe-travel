@@ -98,6 +98,7 @@ function SavedPageContent() {
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null)
   const [readingEntry, setReadingEntry] = useState<JournalEntry | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmingTripId, setConfirmingTripId] = useState<string | null>(null)
   const [upgradeOpen, setUpgradeOpen] = useState(false)
 
   const queryClient = useQueryClient()
@@ -165,6 +166,17 @@ function SavedPageContent() {
     },
   })
 
+  const deleteTrip = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/trips/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error(await res.text())
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['saved-trips'] })
+      setConfirmingTripId(null)
+    },
+  })
+
   const switchTab = (tab: SavedTab) => {
     const next = new URLSearchParams(searchParams.toString())
     if (tab === 'trips') {
@@ -220,10 +232,10 @@ function SavedPageContent() {
               <div>
                 <h1 className="flex items-center gap-3 text-3xl font-serif font-semibold text-white">
                   <Calendar className="h-7 w-7 text-amber-400" />
-                  Saved
+                  Trips
                 </h1>
                 <p className="mt-1 text-sm text-white/45">
-                  Saved trips and travel notes in one calm workspace.
+                  Saved itineraries and trip notes in one calm workspace.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 sm:w-auto">
@@ -267,7 +279,7 @@ function SavedPageContent() {
           <div className="space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-serif font-semibold text-white">Saved Trips</h2>
+                <h2 className="text-xl font-serif font-semibold text-white">Your itineraries</h2>
                 <p className="mt-1 text-sm text-white/40">
                   {trips.length} {trips.length === 1 ? 'itinerary' : 'itineraries'} ready to reopen, refine, or share.
                 </p>
@@ -315,10 +327,12 @@ function SavedPageContent() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.035 }}
                     >
-                      <Link
-                        href={`/trips/${trip.id}`}
-                        className="group block min-h-56 overflow-hidden rounded-[30px] border border-amber-400/16 bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.14),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-300/30 hover:bg-white/[0.065]"
-                      >
+                      <div className="group relative min-h-56 overflow-hidden rounded-[30px] border border-amber-400/16 bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.14),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-300/30 hover:bg-white/[0.065]">
+                        <Link
+                          href={`/trips/${trip.id}`}
+                          className="absolute inset-0"
+                          aria-label={`Open ${trip.title}`}
+                        />
                         <div className="flex h-full flex-col justify-between gap-8">
                           <div className="flex items-start justify-between gap-4">
                             <div className="min-w-0">
@@ -370,7 +384,31 @@ function SavedPageContent() {
                             </p>
                           </div>
                         </div>
-                      </Link>
+                        <button
+                          onClick={() => {
+                            if (confirmingTripId === trip.id) {
+                              deleteTrip.mutate(trip.id)
+                              return
+                            }
+                            setConfirmingTripId(trip.id)
+                          }}
+                          disabled={deleteTrip.isPending}
+                          className={cn(
+                            'absolute bottom-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                            confirmingTripId === trip.id
+                              ? 'border-red-400/30 bg-red-500/18 text-red-200 hover:bg-red-500/24'
+                              : 'border-white/10 bg-black/28 text-white/70 hover:border-red-400/30 hover:bg-red-500/12 hover:text-red-200'
+                          )}
+                          title={confirmingTripId === trip.id ? 'Click again to delete this trip' : 'Delete this saved trip'}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          {deleteTrip.isPending && confirmingTripId === trip.id
+                            ? 'Deleting...'
+                            : confirmingTripId === trip.id
+                              ? 'Confirm delete'
+                              : 'Delete'}
+                        </button>
+                      </div>
                     </motion.div>
                   )
                 })}
