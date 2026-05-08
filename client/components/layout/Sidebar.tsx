@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   Compass,
   Map as MapIcon,
-  Bookmark,
   User,
   LogOut,
   Sparkles,

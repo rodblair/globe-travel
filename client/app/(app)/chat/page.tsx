@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { Compass, Sparkles, Users, Wallet, CalendarDays } from 'lucide-react'
+import { Sparkles, Users, Wallet, CalendarDays } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -11,7 +11,6 @@ import type { TripDay, TripItem } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops, getDestinationFallback } from '@/components/trips/derivedStops'
 import { CompassRose } from '@/components/atmosphere/CompassRose'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 type ChatMapStop = {

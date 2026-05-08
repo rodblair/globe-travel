@@ -21,9 +21,9 @@ export function ItineraryThread({
   height: number;
   animate?: boolean;
 }) {
-  if (points.length < 2) return null;
-
   const path = React.useMemo(() => buildSmoothPath(points), [points]);
+
+  if (points.length < 2) return null;
 
   return (
     <svg

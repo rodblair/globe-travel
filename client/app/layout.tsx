@@ -24,7 +24,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://tiles.mapbox.com" />
         <link rel="preconnect" href="https://events.mapbox.com" />
       </head>
-      <body className="antialiased bg-background text-foreground">
+      <body className="antialiased bg-background text-foreground [color-scheme:light]">
         <Script
           id="google-tag-manager"
           strategy="afterInteractive"

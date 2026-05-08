@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
         </p>
         <h1 className="h-detail text-foreground mb-2">Set a new password.</h1>
         <p className="text-body text-ink-2 mb-7">
-          Pick a fresh password, then we'll bring you back to your planner.
+          Pick a fresh password, then we&apos;ll bring you back to your planner.
         </p>
 
         <form onSubmit={handleResetPassword} className="space-y-4">

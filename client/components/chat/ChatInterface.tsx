@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useMemo, useState, type KeyboardEvent } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import { AnimatePresence } from 'motion/react'
 import { Send, Sparkles, Square } from 'lucide-react'
 import type { Message } from '@/hooks/useChat'
 import ChatMessage from './ChatMessage'

@@ -116,7 +116,7 @@ export default function LoginPage() {
           </div>
         </div>
         <p className="text-body-sm text-ink-2 mb-4">
-          Use this if you're testing the app or sharing it with friends before
+          Use this if you&apos;re testing the app or sharing it with friends before
           full sign-in is ready.
         </p>
         <Button asChild variant="action" className="w-full">
