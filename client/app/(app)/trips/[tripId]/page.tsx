@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence, useDragControls } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d, Save } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -107,6 +107,10 @@ function TripStudioPageContent() {
   const [chatOpen, setChatOpen] = useState(false)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
+  const [isSavingTrip, setIsSavingTrip] = useState(false)
+  const [isSharingTrip, setIsSharingTrip] = useState(false)
+  const [saveDone, setSaveDone] = useState(false)
+  const [shareDone, setShareDone] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
   const [pageOrigin, setPageOrigin] = useState('')
   const [groupBrief, setGroupBrief] = useState<GroupBrief | null>(null)
@@ -352,6 +356,25 @@ function TripStudioPageContent() {
     await refetch()
   }, [tripId, trip, refetch])
 
+  const saveTrip = useCallback(async () => {
+    if (!trip || isSavingTrip) return
+
+    setIsSavingTrip(true)
+    setSaveDone(false)
+    try {
+      await fetch(`/api/trips/${tripId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: trip.title || 'Trip workspace' }),
+      })
+      await refetch()
+      setSaveDone(true)
+      setTimeout(() => setSaveDone(false), 2600)
+    } finally {
+      setIsSavingTrip(false)
+    }
+  }, [tripId, trip, refetch, isSavingTrip])
+
   const copyInviteLink = useCallback(async () => {
     if (!shareUrl) return
     await navigator.clipboard.writeText(shareUrl)
@@ -369,6 +392,40 @@ function TripStudioPageContent() {
     }
     await navigator.clipboard.writeText(inviteMessage)
   }, [shareUrl, inviteMessage, trip?.title])
+
+  const shareWithFriends = useCallback(async () => {
+    if (!trip || isSharingTrip) return
+
+    setIsSharingTrip(true)
+    setShareDone(false)
+    try {
+      if (!trip.is_public) {
+        await fetch(`/api/trips/${tripId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_public: true }),
+        })
+        await refetch()
+      }
+
+      if (!shareUrl) return
+
+      if (navigator.share) {
+        await navigator.share({
+          title: trip.title || 'Trip ideas',
+          text: inviteMessage || `Review my trip ideas: ${shareUrl}`,
+          url: shareUrl,
+        })
+      } else {
+        await navigator.clipboard.writeText(inviteMessage || shareUrl)
+      }
+
+      setShareDone(true)
+      setTimeout(() => setShareDone(false), 2800)
+    } finally {
+      setIsSharingTrip(false)
+    }
+  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage])
 
   const latestWorkflowJob = workflowJobs[0]
 
@@ -476,6 +533,20 @@ function TripStudioPageContent() {
 
           <div className="flex flex-wrap items-center gap-2">
             <button
+              onClick={saveTrip}
+              disabled={isSavingTrip || !trip}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
+                saveDone
+                  ? 'border-emerald-300/35 bg-emerald-400/18 text-emerald-100'
+                  : 'border-amber-300/35 bg-amber-400 text-black hover:bg-amber-300'
+              )}
+              title="Save the latest trip plan"
+            >
+              {saveDone ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+              {isSavingTrip ? 'Saving…' : saveDone ? 'Saved' : 'Save trip'}
+            </button>
+            <button
               onClick={() => setChatOpen((current) => !current)}
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
@@ -515,17 +586,18 @@ function TripStudioPageContent() {
               {isHydratingMaps ? 'Building maps…' : 'Build maps'}
             </button>
             <button
-              onClick={togglePublic}
+              onClick={shareWithFriends}
+              disabled={isSharingTrip || !trip || !shareUrl}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
-                trip?.is_public
-                  ? 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200 hover:bg-emerald-400/16'
-                  : 'border-white/15 bg-white/8 text-white/82 hover:bg-white/12'
+                'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                shareDone
+                  ? 'border-emerald-400/30 bg-emerald-400/14 text-emerald-100'
+                  : 'border-amber-300/30 bg-amber-400/14 text-amber-100 hover:bg-amber-400/20'
               )}
-              title="Toggle public sharing"
+              title="Create a friend review link and share it"
             >
-              <Share2 className="h-4 w-4" />
-              {trip?.is_public ? 'Public review on' : 'Enable review link'}
+              {shareDone ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+              {isSharingTrip ? 'Sharing…' : shareDone ? 'Link copied' : 'Share with friends'}
             </button>
             {trip?.is_public && shareUrl && (
               <Link
@@ -805,7 +877,7 @@ function TripStudioPageContent() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="absolute inset-x-3 bottom-3 top-28 z-20 flex flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.88)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:inset-x-auto xl:bottom-4 xl:right-4 xl:top-44 xl:w-[520px] xl:bg-[rgba(7,7,12,0.82)]"
+        className="absolute inset-x-3 bottom-3 top-28 z-20 mx-auto flex max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-white/12 bg-[rgba(7,7,12,0.9)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:inset-x-0 xl:bottom-4 xl:top-44 xl:w-[min(760px,calc(100%-3rem))] xl:bg-[rgba(7,7,12,0.84)]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div

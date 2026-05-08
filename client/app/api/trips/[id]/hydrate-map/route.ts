@@ -14,6 +14,14 @@ type CanonicalPlaceOverride = {
 }
 
 const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
+  { pattern: /ferry from piraeus to aegina|return ferry to piraeus/i, name: 'Port of Piraeus', country: 'Greece', country_code: 'GR', latitude: 37.94486, longitude: 23.64082, manualId: 'manual:athens:piraeus-port' },
+  { pattern: /aegina harbor|aegina port|aegina town|pistachio market/i, name: 'Aegina Town', country: 'Greece', country_code: 'GR', latitude: 37.74679, longitude: 23.42775, manualId: 'manual:aegina:town' },
+  { pattern: /temple of aphaia/i, name: 'Temple of Aphaia', country: 'Greece', country_code: 'GR', latitude: 37.75448, longitude: 23.53313, manualId: 'manual:aegina:temple-of-aphaia' },
+  { pattern: /agia marina|afternoon swim and beach time/i, name: 'Agia Marina, Aegina', country: 'Greece', country_code: 'GR', latitude: 37.74417, longitude: 23.53374, manualId: 'manual:aegina:agia-marina' },
+  { pattern: /island breakfast by aegina/i, name: 'Aegina Harbor', country: 'Greece', country_code: 'GR', latitude: 37.74679, longitude: 23.42775, manualId: 'manual:aegina:harbor' },
+  { pattern: /mikrolimano/i, name: 'Mikrolimano', country: 'Greece', country_code: 'GR', latitude: 37.94073, longitude: 23.66403, manualId: 'manual:athens:mikrolimano' },
+  { pattern: /stavros niarchos/i, name: 'Stavros Niarchos Foundation Cultural Center', country: 'Greece', country_code: 'GR', latitude: 37.93952, longitude: 23.69165, manualId: 'manual:athens:stavros-niarchos' },
+  { pattern: /flisvos marina/i, name: 'Flisvos Marina', country: 'Greece', country_code: 'GR', latitude: 37.93183, longitude: 23.68647, manualId: 'manual:athens:flisvos-marina' },
   { pattern: /acropolis.*parthenon|parthenon.*acropolis/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
   { pattern: /long lunch in plaka|lunch.*plaka/i, name: 'Plaka', country: 'Greece', country_code: 'GR', latitude: 37.97308, longitude: 23.73051, manualId: 'manual:athens:plaka' },

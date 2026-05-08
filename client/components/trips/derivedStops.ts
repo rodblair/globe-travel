@@ -74,6 +74,14 @@ export function getDestinationFallback(title: string | null | undefined) {
 }
 
 const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
+  { pattern: /ferry from piraeus to aegina|return ferry to piraeus/i, stops: [{ title: 'Port of Piraeus', latitude: 37.94486, longitude: 23.64082, country: 'Greece' }] },
+  { pattern: /aegina harbor|aegina port|aegina town|pistachio market/i, stops: [{ title: 'Aegina Town', latitude: 37.74679, longitude: 23.42775, country: 'Greece' }] },
+  { pattern: /temple of aphaia/i, stops: [{ title: 'Temple of Aphaia', latitude: 37.75448, longitude: 23.53313, country: 'Greece' }] },
+  { pattern: /agia marina|afternoon swim and beach time/i, stops: [{ title: 'Agia Marina, Aegina', latitude: 37.74417, longitude: 23.53374, country: 'Greece' }] },
+  { pattern: /island breakfast by aegina/i, stops: [{ title: 'Aegina Harbor', latitude: 37.74679, longitude: 23.42775, country: 'Greece' }] },
+  { pattern: /mikrolimano/i, stops: [{ title: 'Mikrolimano', latitude: 37.94073, longitude: 23.66403, country: 'Greece' }] },
+  { pattern: /stavros niarchos/i, stops: [{ title: 'Stavros Niarchos Foundation Cultural Center', latitude: 37.93952, longitude: 23.69165, country: 'Greece' }] },
+  { pattern: /flisvos marina/i, stops: [{ title: 'Flisvos Marina', latitude: 37.93183, longitude: 23.68647, country: 'Greece' }] },
   { pattern: /praça do comércio|praca do comercio|commerce square/i, stops: [{ title: 'Praça do Comércio', latitude: 38.70775, longitude: -9.13659, country: 'Portugal' }] },
   { pattern: /pastel de nata breakfast|nata breakfast|breakfast stop/i, stops: [{ title: 'Manteigaria Chiado', latitude: 38.71089, longitude: -9.14327, country: 'Portugal' }] },
   {
@@ -83,7 +91,7 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
       { title: 'Chiado', latitude: 38.71067, longitude: -9.14389, country: 'Portugal' },
     ],
   },
-  { pattern: /seafood lunch/i, stops: [{ title: 'Cervejaria Ramiro', latitude: 38.72178, longitude: -9.13543, country: 'Portugal' }] },
+  { pattern: /cervejaria ramiro|seafood lunch in lisbon/i, stops: [{ title: 'Cervejaria Ramiro', latitude: 38.72178, longitude: -9.13543, country: 'Portugal' }] },
   {
     pattern: /alfama.*cathedral|cathedral.*alfama/i,
     stops: [
