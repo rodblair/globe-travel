@@ -90,7 +90,7 @@ export default function OnboardingPage() {
               </motion.div>
               <h2 className="font-serif text-2xl text-foreground mb-1.5">You&apos;re all set!</h2>
               <p className="text-foreground/40 text-sm">
-                {globePins.length} places mapped
+                {globePins.length} itinerary idea{globePins.length === 1 ? '' : 's'} captured
               </p>
             </motion.div>
           </motion.div>
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
                   exit={{ opacity: 0, y: -10 }}
                   className="text-foreground/30 text-sm"
                 >
-                  Your pins will appear here as you chat
+                  Your group trip ideas will appear here as you chat
                 </motion.p>
               ) : (
                 <motion.div
@@ -128,7 +128,7 @@ export default function OnboardingPage() {
                 >
                   <div className="w-2 h-2 rounded-full bg-[var(--brass)] animate-pulse" />
                   <span className="text-foreground/60 text-sm">
-                    {globePins.length} place{globePins.length !== 1 ? 's' : ''} on your globe
+                    {globePins.length} idea{globePins.length !== 1 ? 's' : ''} ready to plan
                   </span>
                 </motion.div>
               )}
@@ -146,8 +146,8 @@ export default function OnboardingPage() {
                   <Globe className="w-4 h-4 text-foreground/40" />
                 </div>
                 <div>
-                  <h2 className="font-serif text-lg text-foreground">Build Your Travel Map</h2>
-                  <p className="text-xs text-foreground/40">Share your travel stories with our AI</p>
+                  <h2 className="font-serif text-lg text-foreground">Start your group trip</h2>
+                  <p className="text-xs text-foreground/40">Tell Globe.travel where your group wants to go</p>
                 </div>
               </div>
 

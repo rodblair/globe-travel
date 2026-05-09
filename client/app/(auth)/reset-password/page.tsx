@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { ArrowRight, Eye, EyeOff, Lock, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
-import { CompassRose } from '@/components/atmosphere/CompassRose'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
+import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -52,11 +52,8 @@ export default function ResetPasswordPage() {
       <div className="paper-grain absolute inset-0 -z-0" />
 
       <div className="relative w-full max-w-md card-paper p-8 shadow-[var(--shadow-md)]">
-        <Link href="/" className="mb-7 inline-flex items-center gap-2.5">
-          <CompassRose size={28} showLabels={false} />
-          <span className="t-serif text-[1rem] tracking-[-0.005em] text-foreground">
-            Globe<span className="text-ink-3">.travel</span>
-          </span>
+        <Link href="/" className="mb-7 inline-flex">
+          <AlbatrossBrand textClassName="text-[1rem]" compact />
         </Link>
 
         <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-ink-3 mb-3">

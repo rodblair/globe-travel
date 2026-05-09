@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase-browser'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { AuthCanvas } from '@/components/atmosphere/AuthCanvas'
+import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -86,15 +87,13 @@ export default function LoginPage() {
   return (
     <AuthCanvas
       side="left"
-      panelKicker="§ RETURN — A FAMILIAR PORT"
+      panelKicker="RETURN / FAMILIAR PORT"
       panelTitle="Welcome back to the journey."
       panelSubtitle="Pick up the itinerary, rejoin the conversation, keep the trip moving forward."
     >
       {/* Branding for mobile */}
       <div className="lg:hidden mb-10 flex items-center gap-2.5">
-        <span className="t-serif text-[1.125rem] text-foreground">
-          Globe<span className="text-ink-3">.travel</span>
-        </span>
+        <AlbatrossBrand textClassName="text-[1.125rem]" compact />
       </div>
 
       <div className="mb-8">

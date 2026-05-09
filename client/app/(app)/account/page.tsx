@@ -4,11 +4,8 @@ import Image from 'next/image'
 import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
 import {
   ArrowRight,
-  BookOpen,
-  Calendar,
   Check,
   Crown,
   LogOut,
@@ -24,14 +21,6 @@ import { openBillingPortal, startCheckout, useSubscription } from '@/hooks/useSu
 import { cn } from '@/lib/utils'
 
 type AccountTab = 'profile' | 'billing'
-
-type JournalEntry = {
-  id: string
-  title: string
-  content: string
-  mood?: string
-  created_at: string
-}
 
 const tabs: { key: AccountTab; label: string; icon: typeof User }[] = [
   { key: 'profile', label: 'Profile', icon: User },
@@ -58,18 +47,6 @@ function AccountPageContent() {
   const [interval, setInterval] = useState<'month' | 'year'>('month')
   const [billingLoading, setBillingLoading] = useState(false)
   const [billingError, setBillingError] = useState<string | null>(null)
-
-  const { data: recentEntries = [] } = useQuery<JournalEntry[]>({
-    queryKey: ['journal-entries', 'recent'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('journal_entries')
-        .select('id, title, content, mood, created_at')
-        .order('created_at', { ascending: false })
-        .limit(3)
-      return (data || []) as JournalEntry[]
-    },
-  })
 
   const switchTab = (tab: AccountTab) => {
     const next = new URLSearchParams(searchParams.toString())
@@ -138,8 +115,8 @@ function AccountPageContent() {
   return (
     <div className="min-h-screen bg-paper">
       <div className="sticky top-0 z-10 border-b border-rule bg-paper/80 backdrop-blur-xl">
-        <div className="mx-auto max-w-5xl px-6 py-6">
-          <div className="flex flex-col gap-5">
+        <div className="mx-auto max-w-5xl px-5 py-5 md:px-6">
+          <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
                 <h1 className="flex items-center gap-3 text-3xl font-serif font-semibold text-foreground">
@@ -147,7 +124,7 @@ function AccountPageContent() {
                   Account
                 </h1>
                 <p className="mt-1 text-sm text-foreground/45">
-                  Manage your profile, sharing, and subscription in one place.
+                  Manage your identity, guest handoff, and subscription for shared trip planning.
                 </p>
               </div>
             </div>
@@ -176,9 +153,9 @@ function AccountPageContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="mx-auto max-w-5xl px-5 py-6 md:px-6 md:py-8">
         {activeTab === 'profile' && (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_320px]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_320px] lg:gap-7">
             <div className="space-y-6">
               <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
                 <div className="mb-6 flex items-center gap-4">
@@ -247,7 +224,7 @@ function AccountPageContent() {
                     <textarea
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
-                      placeholder="Tell the world about your travels..."
+                      placeholder="A short note friends will recognize when you share itinerary feedback."
                       rows={4}
                       className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                     />
@@ -272,45 +249,18 @@ function AccountPageContent() {
               </div>
 
               <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <div className="mb-4 flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-[var(--brass)]" />
-                  <h2 className="text-lg font-serif font-semibold text-foreground">Recent journal entries</h2>
+                <h2 className="text-lg font-serif font-semibold text-foreground">Sharing profile</h2>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/55">
+                  This is the lightweight identity friends see around itinerary feedback and shared planning links.
+                </p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  {['Name visible on feedback', 'Guest mode stays available', 'Share links remain view-only'].map((label) => (
+                    <div key={label} className="rounded-2xl border border-rule bg-paper px-3 py-3 text-sm text-foreground/70">
+                      <Check className="mb-2 h-4 w-4 text-[var(--brass)]" />
+                      {label}
+                    </div>
+                  ))}
                 </div>
-                {recentEntries.length > 0 ? (
-                  <div className="space-y-3">
-                    {recentEntries.map((entry) => (
-                      <div
-                        key={entry.id}
-                        className="rounded-2xl border border-rule bg-paper-recessed/60 p-4"
-                      >
-                        <div className="mb-2 flex items-center gap-2">
-                          {entry.mood && <span>{entry.mood}</span>}
-                          <h3 className="font-medium text-foreground">{entry.title}</h3>
-                        </div>
-                        <p className="line-clamp-2 text-sm text-foreground/45">{entry.content}</p>
-                        <div className="mt-2 flex items-center gap-2 text-xs text-foreground/30">
-                          <Calendar className="h-3 w-3" />
-                          {new Date(entry.created_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                    <Link
-                      href="/saved?tab=journal"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-[var(--brass)] transition-colors hover:text-[var(--brass)]"
-                    >
-                      Open full journal
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-rule bg-paper-recessed/60 p-5 text-sm text-foreground/40">
-                    No journal entries yet. Your recent travel notes will show up here.
-                  </div>
-                )}
               </div>
             </div>
 
@@ -387,7 +337,7 @@ function AccountPageContent() {
                     <p className="mt-1 text-sm text-foreground/40">
                       {isPro
                         ? 'Open Stripe billing portal to manage payment details and billing.'
-                        : 'Unlock unlimited trip planning and journal entries.'}
+                        : 'Unlock unlimited trip planning and richer sharing tools.'}
                     </p>
                   </div>
                   {!isPro && (
@@ -409,7 +359,7 @@ function AccountPageContent() {
                 </div>
 
                 {!isPro && (
-                  <div className="mb-5 rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)]] p-5">
+                  <div className="mb-5 rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] p-5">
                     <div className="flex items-baseline gap-2">
                       <span className="text-4xl font-bold text-foreground">${monthlyCost}</span>
                       <span className="text-sm text-foreground/40">/ month</span>
@@ -458,7 +408,7 @@ function AccountPageContent() {
                 <h2 className="text-lg font-serif font-semibold text-foreground">Plan comparison</h2>
                 <div className="mt-4 space-y-3">
                   {[
-                    ['Journal entries', '3', 'Unlimited'],
+                    ['Globe.travel maps', '2', 'Unlimited'],
                     ['Saved trips', '2', 'Unlimited'],
                     ['AI messages / day', '10', 'Unlimited'],
                     ['Trip sharing', '—', 'Included'],
@@ -475,15 +425,15 @@ function AccountPageContent() {
               </div>
 
               <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <h2 className="text-lg font-serif font-semibold text-foreground">Need more detail?</h2>
+                <h2 className="text-lg font-serif font-semibold text-foreground">Built for small groups</h2>
                 <p className="mt-1 text-sm text-foreground/40">
-                  The old pricing route still works if you want the full feature table and FAQ.
+                  Keep planning simple: create a city itinerary, share the Globe.travel map link, and collect feedback before anyone books.
                 </p>
                 <Link
-                  href="/pricing"
+                  href="/chat"
                   className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brass)] transition-colors hover:text-[var(--brass)]"
                 >
-                  Open detailed pricing
+                  Start a group trip
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -497,7 +447,7 @@ function AccountPageContent() {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050510]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
       <AccountPageContent />
     </Suspense>
   )

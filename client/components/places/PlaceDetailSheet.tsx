@@ -110,13 +110,13 @@ export function PlaceDetailSheet({ place, isOpen, onClose }: PlaceDetailSheetPro
                         ? 'bg-[var(--brass-subtle)] text-foreground'
                         : place.status === 'bucket_list'
                         ? 'bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]'
-                        : 'bg-purple-500/20 text-purple-400'
+                        : 'bg-[var(--brass-subtle)] text-foreground'
                     }`}
                   >
                     {place.status === 'visited'
                       ? 'Visited'
                       : place.status === 'bucket_list'
-                      ? 'Bucket List'
+                      ? 'Saved idea'
                       : 'Planning'}
                   </span>
                 </div>
@@ -163,7 +163,7 @@ export function PlaceDetailSheet({ place, isOpen, onClose }: PlaceDetailSheetPro
                   </button>
                   <button className="flex-1 flex items-center justify-center gap-2 bg-paper-recessed hover:bg-paper-recessed border border-rule rounded-xl py-3 text-sm font-medium text-foreground transition-colors">
                     <BookOpen className="w-4 h-4" />
-                    View Journal
+                    View trip notes
                   </button>
                 </div>
               </div>

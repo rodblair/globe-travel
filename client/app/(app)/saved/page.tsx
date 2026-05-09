@@ -23,6 +23,7 @@ import {
 import { JournalCard } from '@/components/journal/JournalCard'
 import { JournalEditor, type JournalEntryFields } from '@/components/journal/JournalEditor'
 import { UpgradeModal } from '@/components/billing/UpgradeModal'
+import { ArtifactFrame, getTripKeepsakeMeta } from '@/components/trips/KeepsakeArtifacts'
 import { useSubscription } from '@/hooks/useSubscription'
 import { PLANS } from '@/lib/plans'
 import { cn } from '@/lib/utils'
@@ -58,36 +59,12 @@ type JournalTripOption = { id: string; title: string }
 
 const tabs: { key: SavedTab; label: string; icon: typeof Calendar }[] = [
   { key: 'trips', label: 'Trips', icon: Calendar },
-  { key: 'journal', label: 'Journal', icon: BookOpen },
+  { key: 'journal', label: 'Trip notes', icon: BookOpen },
 ]
 
 function normalizeTab(value: string | null): SavedTab {
   if (value === 'journal') return value
   return 'trips'
-}
-
-function extractTripInfo(title: string) {
-  const dayMatch = title.match(/(\d+)[-\s]?[Dd]ay/)
-  const days = dayMatch ? parseInt(dayMatch[1]) : null
-
-  const destPatterns = [
-    /^\d+\s+Days?\s+in\s+(.+?)(?:\s*[-–—].*)?$/i,
-    /^(.+?)\s+in\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b/i,
-    /^(.+?)\s+\d+[-\s]?[Dd]ay\s+Trip$/i,
-    /^Trip to\s+(.+)$/i,
-    /^(.+?)\s+(?:Food\s+)?Trip$/i,
-  ]
-
-  let destination: string | null = null
-  for (const pattern of destPatterns) {
-    const match = title.match(pattern)
-    if (match?.[1]) {
-      destination = match[1].trim()
-      break
-    }
-  }
-
-  return { days, destination: destination || title }
 }
 
 function SavedPageContent() {
@@ -226,8 +203,8 @@ function SavedPageContent() {
   return (
     <div className="min-h-screen bg-paper">
       <div className="sticky top-0 z-10 border-b border-rule bg-paper/80 backdrop-blur-xl">
-        <div className="mx-auto max-w-6xl px-6 py-6">
-          <div className="flex flex-col gap-5">
+        <div className="mx-auto max-w-6xl px-5 py-5 md:px-6">
+          <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
                 <h1 className="flex items-center gap-3 text-3xl font-serif font-semibold text-foreground">
@@ -244,7 +221,7 @@ function SavedPageContent() {
                   <p className="mt-1 text-lg font-semibold text-foreground">{trips.length}</p>
                 </div>
                 <div className="rounded-2xl border border-rule bg-paper-recessed/60 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-foreground/30">Stories</p>
+                  <p className="text-[11px] uppercase tracking-[0.16em] text-foreground/30">Notes</p>
                   <p className="mt-1 text-lg font-semibold text-foreground">{entries.length}</p>
                 </div>
               </div>
@@ -274,9 +251,9 @@ function SavedPageContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 py-8">
+      <div className="mx-auto max-w-6xl px-5 py-6 md:px-6 md:py-8">
         {activeTab === 'trips' && (
-          <div className="space-y-5">
+          <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-serif font-semibold text-foreground">Your itineraries</h2>
@@ -294,14 +271,14 @@ function SavedPageContent() {
             </div>
 
             {tripsLoading ? (
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 {[...Array(2)].map((_, index) => (
                   <div key={index} className="h-52 animate-pulse rounded-[28px] bg-paper-recessed" />
                 ))}
               </div>
             ) : trips.length === 0 ? (
               <div className="flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-16 text-center">
-                <div className="mb-6 rounded-full bg-[var(--brass)] p-6">
+                <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
                   <Calendar className="h-8 w-8 text-[var(--brass)]" />
                 </div>
                 <h2 className="text-2xl font-serif font-semibold text-foreground">No saved trips yet</h2>
@@ -319,7 +296,7 @@ function SavedPageContent() {
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
                 {trips.map((trip, index) => {
-                  const { days, destination } = extractTripInfo(trip.title)
+                  const { days, destination } = getTripKeepsakeMeta(trip.title)
                   return (
                     <motion.div
                       key={trip.id}
@@ -327,27 +304,25 @@ function SavedPageContent() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.035 }}
                     >
-                      <div className="group relative min-h-56 overflow-hidden rounded-[30px] border border-[color:var(--brass)]/30 bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.14),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--brass)]/30 hover:bg-paper-recessed/60">
+                      <ArtifactFrame className="group relative min-h-64 transition-all duration-200 hover:-translate-y-0.5" ribbon={trip.is_public}>
                         <Link
                           href={`/trips/${trip.id}`}
                           className="absolute inset-0"
                           aria-label={`Open ${trip.title}`}
                         />
-                        <div className="flex h-full flex-col justify-between gap-8">
+                        <div className="flex h-full min-h-64 flex-col justify-between gap-7 p-5 md:p-6">
                           <div className="flex items-start justify-between gap-4">
                             <div className="min-w-0">
                               <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
-                                Saved itinerary
+                                Globe.travel map
                               </p>
-                              <h3 className="font-serif text-3xl font-semibold leading-tight text-foreground transition-colors group-hover:text-[var(--brass)]">
-                                {trip.title}
+                              <h3 className="font-serif text-3xl font-semibold uppercase leading-[0.98] tracking-[0.08em] text-foreground transition-colors group-hover:text-[var(--brass)]">
+                                {destination}
                               </h3>
-                              {destination !== trip.title && (
-                                <div className="mt-4 flex items-center gap-1.5">
-                                  <MapPin className="h-4 w-4 text-foreground/36" />
-                                  <span className="text-sm text-foreground/50">{destination}</span>
-                                </div>
-                              )}
+                              <div className="mt-4 flex items-center gap-1.5">
+                                <MapPin className="h-4 w-4 text-ink-3" />
+                                <span className="truncate text-sm text-ink-2">{trip.title}</span>
+                              </div>
                             </div>
                             <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-paper-recessed text-[var(--brass)] transition-transform group-hover:translate-x-0.5">
                               <ArrowRight className="h-4 w-4" />
@@ -362,9 +337,9 @@ function SavedPageContent() {
                                   {days} {days === 1 ? 'day' : 'days'}
                                 </span>
                               )}
-                              <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-recessed px-3 py-1.5 text-xs text-foreground/58">
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-recessed px-3 py-1.5 text-xs text-ink-2">
                                 <Users className="h-3 w-3" />
-                                Crew plan
+                                Friend-ready
                               </span>
                               <span className={cn(
                                 'rounded-full border px-2.5 py-1 text-xs',
@@ -408,7 +383,7 @@ function SavedPageContent() {
                               ? 'Confirm delete'
                               : 'Delete'}
                         </button>
-                      </div>
+                      </ArtifactFrame>
                     </motion.div>
                   )
                 })}
@@ -421,8 +396,10 @@ function SavedPageContent() {
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-serif font-semibold text-foreground">Journal</h2>
-                <p className="mt-1 text-sm text-foreground/40">Your travel stories and memories</p>
+                <h2 className="text-xl font-serif font-semibold text-foreground">Trip notes</h2>
+                <p className="mt-1 text-sm text-foreground/40">
+                  Private reminders, decisions, and memories tied to your itineraries.
+                </p>
               </div>
               {entries.length > 0 && (
                 <button
@@ -430,7 +407,7 @@ function SavedPageContent() {
                   className="inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"
                 >
                   <Plus className="h-4 w-4" />
-                  Write entry
+                  Add note
                 </button>
               )}
             </div>
@@ -438,7 +415,7 @@ function SavedPageContent() {
             {!isPro && !journalLoading && entries.length > 0 && (
               <div className="rounded-2xl border border-rule bg-paper-recessed/60 p-4">
                 <div className="mb-1.5 flex items-center justify-between text-xs text-foreground/40">
-                  <span>{entries.length} of {FREE_LIMIT} free entries used</span>
+                  <span>{entries.length} of {FREE_LIMIT} free notes used</span>
                   <button
                     onClick={() => setUpgradeOpen(true)}
                     className="flex items-center gap-1 font-medium text-[var(--brass)] hover:text-[var(--brass)]"
@@ -464,19 +441,19 @@ function SavedPageContent() {
               </div>
             ) : entries.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-28 text-center">
-                <div className="mb-6 rounded-full bg-[var(--brass)] p-6">
+                <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
                   <Feather className="h-8 w-8 text-[var(--brass)]" />
                 </div>
-                <h2 className="text-2xl font-serif font-semibold text-foreground">Start writing your story</h2>
+                <h2 className="text-2xl font-serif font-semibold text-foreground">Add a trip note</h2>
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-foreground/45">
-                  Capture the moments, emotions, and discoveries from your travels. Every trip deserves a story.
+                  Capture decisions, reminders, and memories for the itineraries you are building with friends.
                 </p>
                 <button
                   onClick={openNewEntry}
                   className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"
                 >
                   <Feather className="h-4 w-4" />
-                  Write your first entry
+                  Add first note
                 </button>
               </div>
             ) : (
@@ -527,7 +504,7 @@ function SavedPageContent() {
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               className="fixed inset-x-0 bottom-0 z-50 flex max-h-[90dvh] flex-col md:inset-auto md:top-1/2 md:left-1/2 md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2 md:max-h-[85vh]"
             >
-              <div className="flex h-full flex-col overflow-hidden rounded-t-3xl border border-rule bg-[#0e0f1a] shadow-2xl shadow-black/60 md:rounded-2xl">
+              <div className="flex h-full flex-col overflow-hidden rounded-t-3xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)] md:rounded-2xl">
                 <div className="flex justify-center pt-3 pb-1 md:hidden">
                   <div className="h-1 w-10 rounded-full bg-paper-recessed" />
                 </div>
@@ -610,8 +587,8 @@ function SavedPageContent() {
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed inset-x-4 bottom-4 z-50 md:inset-auto md:top-1/2 md:left-1/2 md:w-80 md:-translate-x-1/2 md:-translate-y-1/2"
             >
-              <div className="rounded-2xl border border-rule bg-[#0e0f1a] p-5 shadow-2xl">
-                <h3 className="mb-1 font-semibold text-foreground">Delete entry?</h3>
+              <div className="rounded-2xl border border-rule bg-paper-raised p-5 shadow-[var(--shadow-lg)]">
+                <h3 className="mb-1 font-semibold text-foreground">Delete note?</h3>
                 <p className="mb-4 text-sm text-foreground/50">This can&apos;t be undone.</p>
                 <div className="flex gap-2">
                   <button
@@ -658,7 +635,7 @@ function SavedPageContent() {
       <UpgradeModal
         isOpen={upgradeOpen}
         onClose={() => setUpgradeOpen(false)}
-        reason={`You've used all ${FREE_LIMIT} free journal entries. Upgrade for unlimited.`}
+        reason={`You've used all ${FREE_LIMIT} free trip notes. Upgrade for unlimited.`}
       />
     </div>
   )
@@ -666,7 +643,7 @@ function SavedPageContent() {
 
 export default function SavedPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050510]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
       <SavedPageContent />
     </Suspense>
   )

@@ -452,11 +452,11 @@ function TripStudioPageContent() {
     return (
       <div
         ref={studioRef}
-        className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(245,158,11,0.16),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.12),transparent_30%),linear-gradient(180deg,#050510,#020208)] px-5 py-10"
+        className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--brass),transparent_82%),transparent_32%),linear-gradient(180deg,var(--paper),var(--paper-recessed))] px-5 py-10"
       >
         <div className="absolute inset-x-0 top-0 h-px bg-paper-recessed" />
-        <div className="mx-auto w-full max-w-4xl rounded-[36px] border border-rule bg-paper-recessed/60 p-6 shadow-[0_30px_110px_rgba(0,0,0,0.42)] backdrop-blur-2xl md:p-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brass)]">
+        <div className="mx-auto w-full max-w-4xl rounded-[36px] border border-rule bg-paper-raised/85 p-6 shadow-[var(--shadow-lg)] backdrop-blur-2xl md:p-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brass-text)]">
             <Calendar className="h-3.5 w-3.5" />
             Trip Studio
           </div>
@@ -497,9 +497,10 @@ function TripStudioPageContent() {
     <div ref={studioRef} className="relative w-full h-full min-h-screen bg-paper overflow-hidden">
       {/* Globe */}
       <div className="absolute inset-0">
-        <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.09),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(56,189,248,0.08),transparent_26%),linear-gradient(180deg,rgba(5,5,16,0.98),rgba(3,4,10,1))]" />
-        <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
-        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-rule bg-[rgba(8,8,14,0.72)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:block">
+        <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--brass),transparent_88%),transparent_38%),radial-gradient(circle_at_80%_20%,color-mix(in_oklch,var(--horizon),transparent_88%),transparent_26%),linear-gradient(180deg,var(--paper),var(--paper-recessed))]" />
+        <div className="paper-grain absolute inset-0 pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--paper-raised),transparent_10%),transparent)]" />
+        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-rule bg-paper-raised/80 px-4 py-3 shadow-[var(--shadow-md)] backdrop-blur-2xl xl:block">
           <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Map readiness</p>
           <p className="mt-1 text-sm font-medium text-foreground">{tripDestination || trip?.title || 'Trip Studio'}</p>
           <p className="mt-2 text-xs text-foreground/62">
@@ -511,16 +512,16 @@ function TripStudioPageContent() {
       </div>
 
       {/* Top bar */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[min(960px,calc(100%-2rem))]">
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[min(960px,calc(100%-1rem))] md:top-4 md:w-[min(960px,calc(100%-2rem))]">
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-rule bg-[rgba(9,9,15,0.78)] px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur-2xl"
+          className="flex flex-col items-start justify-between gap-3 rounded-[24px] border border-rule bg-paper-raised/95 px-3 py-3 shadow-[var(--shadow-md)] backdrop-blur-2xl lg:flex-row lg:items-center lg:rounded-[28px] lg:px-4"
         >
-          <div className="min-w-0">
+          <div className="min-w-0 w-full lg:w-auto">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)]">
-                <Calendar className="h-4 w-4 text-[var(--brass)]" />
+                <Calendar className="h-4 w-4 text-[var(--brass-text)]" />
               </span>
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/45">
@@ -531,12 +532,12 @@ function TripStudioPageContent() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="-mx-1 flex w-full flex-nowrap items-center gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:w-auto lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0">
             <button
               onClick={saveTrip}
               disabled={isSavingTrip || !trip}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
+                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
                 saveDone
                   ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                   : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass)]'
@@ -549,7 +550,7 @@ function TripStudioPageContent() {
             <button
               onClick={() => setChatOpen((current) => !current)}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
+                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
                 chatOpen
                   ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground'
                   : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
@@ -562,7 +563,7 @@ function TripStudioPageContent() {
               onClick={() => handleOptimize()}
               disabled={isOptimizing}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
+                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
                 optimizeDone
                   ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                   : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
@@ -579,7 +580,7 @@ function TripStudioPageContent() {
             <button
               onClick={hydrateMaps}
               disabled={isHydratingMaps}
-              className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+              className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
               title="Repair or rebuild day map locations and routes"
             >
               <Route className="h-4 w-4 text-[var(--horizon)]" />
@@ -589,7 +590,7 @@ function TripStudioPageContent() {
               onClick={shareWithFriends}
               disabled={isSharingTrip || !trip || !shareUrl}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
                 shareDone
                   ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                   : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground hover:bg-[var(--brass)]'
@@ -602,7 +603,7 @@ function TripStudioPageContent() {
             {trip?.is_public && shareUrl && (
               <Link
                 href={`/t/${trip.share_slug}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass)] transition-colors hover:bg-[var(--brass)]"
+                className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 title="Open public share link"
               >
                 <LinkIcon className="h-4 w-4" />
@@ -616,7 +617,7 @@ function TripStudioPageContent() {
       {/* Invite + feedback */}
       <div className="pointer-events-none absolute top-24 left-1/2 z-30 hidden w-[min(920px,calc(100%-2rem))] -translate-x-1/2 2xl:block">
         <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+          <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Group review</p>
@@ -654,7 +655,7 @@ function TripStudioPageContent() {
                 </button>
                 <button
                   onClick={shareInvite}
-                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass)] transition-colors hover:bg-[var(--brass)]"
+                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 >
                   <Send className="w-4 h-4" />
                   Share invite
@@ -668,7 +669,7 @@ function TripStudioPageContent() {
           </div>
 
           <div className="grid gap-3">
-            <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Crew brief</p>
@@ -693,15 +694,15 @@ function TripStudioPageContent() {
                   <span>{groupBrief?.originCity ? `Leaving from ${groupBrief.originCity}` : 'Origin city not set'}</span>
                 </div>
                 <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
-                  Vibe: {groupBrief?.vibe || 'Balanced weekend with broad appeal'}
+                  Vibe: {groupBrief?.vibe || 'Balanced trip with broad appeal'}
                 </div>
-                <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs text-[var(--brass)]">
+                <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs text-[var(--brass-text)]">
                   Trip readiness: {readinessCount}/4 — {trip?.is_public ? 'shareable' : 'turn on sharing'}, {feedback.length > 0 ? 'crew reacting' : 'needs reactions'}.
                 </div>
               </div>
             </div>
 
-            <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Friend feedback</p>
@@ -733,7 +734,7 @@ function TripStudioPageContent() {
               </div>
             </div>
 
-            <div className="pointer-events-none rounded-[26px] border border-rule bg-[rgba(8,8,14,0.7)] px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+            <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Planner workflows</p>
@@ -819,7 +820,7 @@ function TripStudioPageContent() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="fixed inset-x-3 bottom-3 top-24 z-40 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-[rgba(7,7,12,0.94)] shadow-[0_28px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-20 xl:w-[360px] xl:bg-[rgba(7,7,12,0.82)]"
+            className="fixed inset-x-3 bottom-3 top-24 z-40 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-20 xl:w-[360px]"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}
@@ -857,7 +858,7 @@ function TripStudioPageContent() {
                 storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
                 suggestions={[
                   `Make Day ${ensureSelectedDayExists} work for ${groupBrief?.groupSize || 4} friends with mixed energy`,
-                  `Keep this weekend walkable and group-friendly`,
+                  `Keep this trip walkable and group-friendly`,
                   `Add one standout dinner and one easy late-night stop`,
                 ]}
               />
@@ -877,7 +878,7 @@ function TripStudioPageContent() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="absolute inset-x-3 bottom-3 top-28 z-20 mx-auto flex max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-[rgba(7,7,12,0.9)] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl xl:inset-x-0 xl:bottom-4 xl:top-44 xl:w-[min(760px,calc(100%-3rem))] xl:bg-[rgba(7,7,12,0.84)]"
+        className="absolute inset-x-3 bottom-3 top-40 z-20 mx-auto flex max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:top-28 xl:inset-x-0 xl:bottom-4 xl:top-44 xl:w-[min(760px,calc(100%-3rem))]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div

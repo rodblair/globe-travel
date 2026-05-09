@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAuth } from '@/components/providers/AuthProvider'
-import { CompassRose } from '@/components/atmosphere/CompassRose'
+import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -27,7 +27,7 @@ const navItems = [
   {
     href: '/saved',
     label: 'Trips',
-    sub: 'Itineraries & places',
+    sub: 'Itineraries & notes',
     icon: MapIcon,
     matches: (pathname: string) =>
       pathname === '/saved' ||
@@ -73,21 +73,9 @@ export function Sidebar() {
 
       {/* Brand */}
       <div className="relative px-6 pt-6 pb-5">
-        <Link href="/chat" className="flex items-center gap-3 group">
-          <span className="grid h-9 w-9 place-items-center">
-            <CompassRose size={36} showLabels={false} />
-          </span>
-          <span className="t-serif text-[1.0625rem] leading-none tracking-[-0.005em] text-foreground">
-            Globe<span className="text-ink-3">.travel</span>
-          </span>
+        <Link href="/chat" className="inline-flex group">
+          <AlbatrossBrand compact />
         </Link>
-      </div>
-
-      {/* Coordinate stamp — subtle place identifier */}
-      <div className="relative px-6 pb-4">
-        <p className="t-mono t-num text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
-          43°39′N · 79°23′W
-        </p>
       </div>
 
       <div className="hairline mx-3" />

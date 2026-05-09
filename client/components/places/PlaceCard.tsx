@@ -60,7 +60,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
                 ? 'bg-[var(--brass-subtle)] text-foreground'
                 : status === 'bucket_list'
                 ? 'bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]'
-                : 'bg-purple-500/30 text-purple-300'
+                : 'bg-[var(--brass-subtle)] text-foreground'
             }`}
           >
             {status === 'visited' ? (
@@ -68,7 +68,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
             ) : (
               <Heart className="w-3 h-3" />
             )}
-            {status === 'visited' ? 'Visited' : status === 'bucket_list' ? 'Bucket List' : 'Planning'}
+            {status === 'visited' ? 'Visited' : status === 'bucket_list' ? 'Saved idea' : 'Planning'}
           </span>
         </div>
       </div>

@@ -50,7 +50,7 @@ export function UpgradeModal({ isOpen, onClose, reason }: UpgradeModalProps) {
             transition={{ type: 'spring', damping: 30, stiffness: 350 }}
             className="fixed inset-x-4 bottom-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-50"
           >
-            <div className="relative bg-[#0a0b14] border border-rule rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
+            <div className="relative overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)]">
               {/* Glow */}
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.08)_0%,transparent_60%)] pointer-events-none" />
 

@@ -235,7 +235,7 @@ export default function TripDayMap({
     try {
       map = new mapboxgl.Map({
         container: containerRef.current,
-        style: 'mapbox://styles/mapbox/dark-v11',
+        style: 'mapbox://styles/mapbox/light-v11',
         center: [0, 20],
         zoom: 1.25,
         attributionControl: false,
@@ -277,7 +277,7 @@ export default function TripDayMap({
         source: 'day-route',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': 'rgba(125,211,252,0.85)',
+          'line-color': 'rgba(159,105,32,0.88)',
           'line-width': 2.75,
           'line-blur': 0.3,
         },
@@ -291,7 +291,7 @@ export default function TripDayMap({
           'circle-radius': interactive ? 18 : 12,
           'circle-color': 'rgba(125,211,252,0.12)',
           'circle-stroke-width': interactive ? 2 : 1.5,
-          'circle-stroke-color': 'rgba(125,211,252,0.75)',
+          'circle-stroke-color': 'rgba(159,105,32,0.72)',
         },
       })
 
@@ -301,9 +301,9 @@ export default function TripDayMap({
         source: 'day-stops',
         paint: {
           'circle-radius': interactive ? 6 : 4,
-          'circle-color': 'rgba(125,211,252,0.92)',
+          'circle-color': 'rgba(159,105,32,0.9)',
           'circle-stroke-width': 1,
-          'circle-stroke-color': 'rgba(5,5,16,0.9)',
+          'circle-stroke-color': 'rgba(255,252,244,0.94)',
         },
       })
 
@@ -319,8 +319,8 @@ export default function TripDayMap({
           visibility: 'visible',
         },
         paint: {
-          'text-color': 'rgba(255,255,255,0.82)',
-          'text-halo-color': 'rgba(5,5,16,0.92)',
+          'text-color': 'rgba(28,42,55,0.86)',
+          'text-halo-color': 'rgba(255,252,244,0.96)',
           'text-halo-width': 1.1,
         },
       })
@@ -348,7 +348,7 @@ export default function TripDayMap({
       map.setPaintProperty(
         'day-route-line',
         'line-color',
-        active ? 'rgba(251,191,36,0.95)' : 'rgba(125,211,252,0.85)'
+        active ? 'rgba(159,105,32,0.95)' : 'rgba(44,117,134,0.82)'
       )
       map.setPaintProperty('day-route-line', 'line-width', active ? 3.5 : 2.75)
     }
@@ -381,12 +381,12 @@ export default function TripDayMap({
       map.setPaintProperty(
         'day-stop-outline',
         'circle-color',
-        active ? 'rgba(251,191,36,0.1)' : 'rgba(125,211,252,0.12)'
+        active ? 'rgba(159,105,32,0.13)' : 'rgba(44,117,134,0.12)'
       )
       map.setPaintProperty(
         'day-stop-outline',
         'circle-stroke-color',
-        active ? 'rgba(251,191,36,0.78)' : 'rgba(125,211,252,0.75)'
+        active ? 'rgba(159,105,32,0.78)' : 'rgba(44,117,134,0.72)'
       )
       map.setPaintProperty('day-stop-outline', 'circle-radius', interactive ? 18 : 12)
     }
@@ -395,7 +395,7 @@ export default function TripDayMap({
       map.setPaintProperty(
         'day-stop-fill',
         'circle-color',
-        active ? 'rgba(251,191,36,0.92)' : 'rgba(125,211,252,0.92)'
+        active ? 'rgba(159,105,32,0.92)' : 'rgba(44,117,134,0.86)'
       )
       map.setPaintProperty('day-stop-fill', 'circle-radius', interactive ? 6 : 4)
     }
@@ -418,13 +418,13 @@ export default function TripDayMap({
           height:${interactive ? 24 : 20}px;
           border-radius:999px;
           background:${colors.fill};
-          color:#050510;
+          color:#1c2a37;
           display:flex;
           align-items:center;
           justify-content:center;
           font-size:${interactive ? 11 : 10}px;
           font-weight:700;
-          box-shadow:0 0 0 2px rgba(5,5,16,0.8);
+          box-shadow:0 0 0 2px rgba(255,252,244,0.92),0 8px 18px rgba(28,42,55,0.18);
         ">${stop.index}</div>
       `
 
@@ -454,26 +454,26 @@ export default function TripDayMap({
     <div
       onClick={onClick}
       className={cn(
-        'group min-w-[220px] overflow-hidden rounded-[24px] border bg-paper-raised/85 text-left transition-colors shadow-[0_18px_60px_rgba(0,0,0,0.28)]',
+        'group min-w-[220px] overflow-hidden rounded-[24px] border bg-paper-raised/85 text-left transition-colors shadow-[var(--panel-shadow)]',
         active
-          ? 'border-[color:var(--brass)]/30 bg-[var(--brass)]]'
+          ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]'
           : 'border-rule hover:border-rule hover:bg-paper-recessed/60',
         onClick ? 'cursor-pointer' : '',
         className
       )}
     >
-      <div className={cn('relative w-full overflow-hidden border-b border-rule bg-[#060814]', mapHeightClassName)}>
+      <div className={cn('relative w-full overflow-hidden border-b border-rule bg-[var(--paper-recessed)]', mapHeightClassName)}>
         <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex items-center justify-between gap-2">
-          <span className="rounded-full border border-rule bg-[rgba(8,10,18,0.78)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/78 shadow-[0_10px_20px_rgba(0,0,0,0.22)]">
+          <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/78 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
             Walking Map
           </span>
-          <span className="rounded-full border border-rule bg-[rgba(8,10,18,0.78)] px-2.5 py-1 text-[10px] font-medium tabular-nums text-foreground/76 shadow-[0_10px_20px_rgba(0,0,0,0.22)]">
+          <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium tabular-nums text-foreground/76 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
             {validStops.length} stop{validStops.length === 1 ? '' : 's'}
           </span>
         </div>
         {routeSummary && (
           <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10">
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-rule bg-[rgba(8,10,18,0.8)] px-3 py-1.5 shadow-[0_10px_20px_rgba(0,0,0,0.24)]">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-rule bg-paper-raised/90 px-3 py-1.5 shadow-[0_10px_20px_rgba(28,42,55,0.1)]">
               <span className={cn('h-2 w-2 rounded-full', active ? 'bg-[var(--brass)]' : 'bg-[var(--horizon)]')} />
               <span className="truncate text-[11px] font-medium tracking-[0.01em] text-foreground/84">{routeSummary}</span>
             </div>
@@ -481,11 +481,11 @@ export default function TripDayMap({
         )}
         {validStops.length > 1 && (
           <div className="pointer-events-none absolute left-3 top-12 z-10 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--pillar-nature-wash)] bg-[rgba(8,10,18,0.76)] px-2.5 py-1 text-[10px] font-medium text-[var(--moss)]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--pillar-nature-wash)] bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium text-[var(--moss)]">
               <span className="h-2 w-2 rounded-full bg-[var(--moss)]" />
               Start: {startStop?.title}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[rgba(8,10,18,0.76)] px-2.5 py-1 text-[10px] font-medium text-[var(--brass)]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium text-[var(--brass)]">
               <span className="h-2 w-2 rounded-full bg-[var(--brass)]" />
               Finish: {endStop?.title}
             </span>
@@ -494,15 +494,15 @@ export default function TripDayMap({
         {shouldRenderMap ? (
           <div ref={containerRef} className="h-full w-full" />
         ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.14),transparent_58%),linear-gradient(180deg,rgba(9,12,24,0.96),rgba(4,5,12,0.98))]">
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:28px_28px] opacity-35" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--horizon),transparent_82%),transparent_58%),linear-gradient(180deg,var(--paper-raised),var(--paper-recessed))]">
+            <div className="absolute inset-0 bg-[linear-gradient(color-mix(in_oklch,var(--ink-3),transparent_88%)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_oklch,var(--ink-3),transparent_88%)_1px,transparent_1px)] bg-[size:28px_28px] opacity-45" />
             {(previewGeometry || stopOnlyPreview) && (
               <svg viewBox="0 0 100 100" className="h-full w-full">
                 {(previewGeometry || stopOnlyPreview)?.linePoints && (
                   <polyline
                     points={(previewGeometry || stopOnlyPreview)!.linePoints}
                     fill="none"
-                    stroke={active ? 'rgba(251,191,36,0.95)' : 'rgba(125,211,252,0.92)'}
+                    stroke={active ? 'rgba(159,105,32,0.95)' : 'rgba(44,117,134,0.86)'}
                     strokeWidth="2.75"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -533,7 +533,7 @@ export default function TripDayMap({
                       textAnchor="middle"
                       fontSize="3.5"
                       fontWeight="700"
-                      fill="rgba(5,5,16,0.95)"
+                        fill="rgba(255,252,244,0.95)"
                     >
                       {point.index}
                     </text>
@@ -545,7 +545,7 @@ export default function TripDayMap({
                         fontSize="3.25"
                         fontWeight="600"
                         letterSpacing="0.02em"
-                        fill="rgba(255,255,255,0.9)"
+                        fill="rgba(28,42,55,0.84)"
                       >
                         {point.title.slice(0, 18)}
                       </text>
@@ -606,7 +606,7 @@ export default function TripDayMap({
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--moss)]">Start</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{startStop.title}</p>
               </div>
-              <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)]] px-3 py-2">
+              <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-3 py-2">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--brass)]">Finish</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{endStop.title}</p>
               </div>

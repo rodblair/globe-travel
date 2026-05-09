@@ -25,23 +25,18 @@ const CHAT_MAP_STORAGE_KEY = 'globe-travel:chat:explore:map-stops'
 
 const STARTER_PROMPTS = [
   {
-    label: 'Build a trip',
-    sub: 'Turn a rough idea into a day-by-day plan',
-    q: 'Plan a detailed 3-day city break for 4 friends who want food, cocktails, and one cultural highlight',
+    label: 'City escape',
+    sub: 'Food, culture, and one memorable night',
+    q: 'Plan a beautiful 3-day city break for 4 friends who want food, culture, and one memorable night out',
   },
   {
-    label: 'Pick the city',
-    sub: 'Compare options for the group',
+    label: 'Choose the city',
+    sub: 'Compare the strongest options',
     q: 'Compare Lisbon, Copenhagen, and Barcelona for a 3-day city break for friends in their early 30s',
   },
   {
-    label: 'Easy weekend',
-    sub: 'Low-friction ideas from home',
-    q: 'Suggest 5 short city breaks for 4 friends leaving from Toronto, with good food and a walkable centre',
-  },
-  {
-    label: 'Best value',
-    sub: 'Keep cost and energy realistic',
+    label: 'Keep it realistic',
+    sub: 'Budget and pace checks',
     q: 'Where should a group of friends go for a budget-friendly city break with great food and nightlife?',
   },
 ] as const
@@ -61,8 +56,8 @@ const PLANNING_STEPS = [
   },
   {
     icon: CalendarDays,
-    label: 'Open Trip Studio',
-    value: 'When the idea is real, we create a trip you can refine, map, and share.',
+    label: 'Create the Globe.travel map',
+    value: 'Move the plan into a shareable itinerary map your friends can react to.',
     q: 'Plan a balanced 3-day city break for 4 friends with food, sightseeing, relaxed pacing, and one memorable night out.',
   },
 ] as const
@@ -181,7 +176,7 @@ function ChatPageContent() {
         travelers_count: 4,
         pace: 'balanced',
         budget_level: 'mid',
-        constraints: { days: extractDraftDays(prompt), group_vibe: 'Balanced weekend with friends' },
+        constraints: { days: extractDraftDays(prompt), group_vibe: 'Balanced group trip with friends' },
       }),
     })
 
@@ -198,6 +193,7 @@ function ChatPageContent() {
 
   const [planningError, setPlanningError] = useState<string | null>(null)
   const [planningInProgress, setPlanningInProgress] = useState(false)
+  const [draftInput, setDraftInput] = useState('')
 
   const sendMessage = useCallback(async (content: string) => {
     const trimmed = content.trim()
@@ -223,6 +219,13 @@ function ChatPageContent() {
 
     exploreChat.sendMessage(trimmed)
   }, [createDraftTrip, exploreChat, isPlanningPrompt, resolvedActiveTripId, router])
+
+  const submitDraftInput = useCallback(() => {
+    const next = draftInput.trim()
+    if (!next || planningInProgress) return
+    setDraftInput('')
+    sendMessage(next)
+  }, [draftInput, planningInProgress, sendMessage])
 
   useEffect(() => {
     const q = initialQueryRef.current
@@ -291,8 +294,8 @@ function ChatPageContent() {
 
       {/* Header */}
       <div className="relative z-10 flex-shrink-0 border-b border-rule bg-paper/80 backdrop-blur-md">
-        <div className="px-6 py-4">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div className="px-5 py-4 md:px-6">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-5">
             <div className="flex items-center gap-3">
               <CompassRose size={36} showLabels={false} />
               <div>
@@ -311,9 +314,9 @@ function ChatPageContent() {
         </div>
       </div>
 
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 xl:overflow-hidden">
-        <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-28 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_360px] xl:pb-0">
-          <div className="flex min-h-[560px] flex-col overflow-hidden rounded-lg border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-0">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-5 md:px-6 xl:overflow-hidden">
+        <div className="mx-auto grid min-h-full max-w-7xl gap-5 pb-28 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
+          <div className="flex min-h-[560px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-0">
             {activeMessages.length === 0 ? (
               <div className="flex min-h-[560px] flex-col overflow-y-auto">
                 <div className="relative flex flex-1 items-start justify-center px-6 py-10 md:px-10">
@@ -323,7 +326,7 @@ function ChatPageContent() {
                   <div className="relative w-full max-w-3xl">
                     <div className="mb-7 max-w-xl">
                       <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-[var(--brass)] mb-3">
-                        § START HERE
+                        START HERE
                       </p>
                       <h2 className="h-display text-foreground leading-[1.1] mb-3 max-w-[20ch]">
                         Plan the trip your friends will{' '}
@@ -400,10 +403,10 @@ function ChatPageContent() {
                 error={activeError}
                 onSendMessage={sendMessage}
                 onStop={activeStop}
-                placeholder={resolvedActiveTripId ? 'Refine this group itinerary, adjust the pace, or rebalance it for the crew...' : 'Ask about city breaks, friend-group destinations, or weekend itineraries...'}
+                placeholder={resolvedActiveTripId ? 'Refine this group itinerary, adjust the pace, or rebalance it for the crew...' : 'Ask about city trips, friend-group destinations, or multi-day itineraries...'}
                 storageKey={resolvedActiveTripId ? `globe-travel:chat-input:plan:${resolvedActiveTripId}` : 'globe-travel:chat-input:explore'}
                 suggestions={[
-                  'Suggest 3 easy city breaks for 4 friends this month',
+                  'Suggest 3 easy city trips for 4 friends this month',
                   'Compare two cities for food, walkability, and nightlife',
                   'Plan a balanced 3-day break for mixed travel styles',
                 ]}
@@ -411,13 +414,13 @@ function ChatPageContent() {
             )}
           </div>
 
-          <aside className="flex min-h-[360px] flex-col overflow-hidden rounded-lg border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-[280px]">
+          <aside className="flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-[280px]">
             <div className="border-b border-rule px-4 py-3">
               <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
-                {tripPayload ? 'ITINERARY MAPS' : 'MAP PREVIEW'}
+                {tripPayload ? 'ITINERARY MAPS' : 'PLAN PREVIEW'}
               </p>
               <h2 className="t-h3 text-foreground leading-tight mt-1">
-                {tripPayload ? tripPayload.trip.title : 'Places from this chat'}
+                {tripPayload ? tripPayload.trip.title : 'Keepsake preview'}
               </h2>
               <p className="text-caption text-ink-3 mt-1">{mapSubtitle}</p>
             </div>
@@ -483,14 +486,28 @@ function ChatPageContent() {
                   className="h-full min-h-[220px] min-w-0"
                 />
               ) : (
-                <TripDayMap
-                  stops={mapStops}
-                  title="Chat Map"
-                  subtitle={mapSubtitle}
-                  showDetails={false}
-                  mapHeightClassName="h-full min-h-[220px]"
-                  className="h-full min-h-[220px] min-w-0"
-                />
+                <div className="flex h-full min-h-[260px] flex-col justify-between rounded-md border border-rule bg-paper px-4 py-4">
+                  <div>
+                    <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brass-subtle)] text-[var(--brass)]">
+                      <Sparkles className="h-4 w-4" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="t-h3 text-foreground">Start with the trip idea.</h3>
+                    <p className="mt-2 text-body-sm leading-relaxed text-ink-2">
+                      Your shareable map appears after Globe has real stops to plot. First,
+                      describe the crew, city choices, or the kind of trip you want.
+                    </p>
+                  </div>
+                  <div className="mt-6 space-y-2 border-t border-rule pt-4">
+                    {['Choose the city fit', 'Draft the itinerary', 'Share the Globe.travel map'].map((step, index) => (
+                      <div key={step} className="flex items-center gap-2 text-caption text-ink-2">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--paper-recessed)] t-mono text-[0.625rem] text-[var(--brass)]">
+                          {index + 1}
+                        </span>
+                        {step}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           </aside>
@@ -513,15 +530,23 @@ function ChatPageContent() {
               type="text"
               placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Try: “Best 3-day city break for 4 friends leaving from Toronto?”'}
               disabled={planningInProgress}
+              value={draftInput}
+              onChange={(event) => setDraftInput(event.target.value)}
               className="flex-1 bg-transparent py-2 text-body text-foreground placeholder:text-ink-3 focus:outline-none disabled:opacity-50"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                  sendMessage(e.currentTarget.value.trim())
-                  e.currentTarget.value = ''
+                  submitDraftInput()
                 }
               }}
             />
-            <span className="t-mono text-[0.625rem] tracking-[0.16em] text-ink-3 flex-shrink-0">↵ SEND</span>
+            <button
+              type="button"
+              onClick={submitDraftInput}
+              disabled={!draftInput.trim() || planningInProgress}
+              className="rounded-sm bg-[var(--action)] px-3 py-2 t-mono text-[0.625rem] tracking-[0.14em] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Send
+            </button>
           </div>
         </div>
       )}

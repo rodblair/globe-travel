@@ -7,6 +7,7 @@ import { ArrowRight, Sparkles, Users, MessageSquare } from "lucide-react";
 import { HorizonHero } from "@/components/atmosphere/HorizonHero";
 import { ContourOverlay } from "@/components/atmosphere/ContourOverlay";
 import { CompassRose } from "@/components/atmosphere/CompassRose";
+import { AlbatrossBrand } from "@/components/atmosphere/AlbatrossBrand";
 import { ItineraryThread } from "@/components/atmosphere/ItineraryThread";
 import { DestinationPin } from "@/components/atmosphere/DestinationPin";
 import { MeridianFrame } from "@/components/atmosphere/MeridianFrame";
@@ -32,57 +33,46 @@ export default function Home() {
       {/* ─────────────── HERO ─────────────── */}
       <div ref={heroRef}>
         <HorizonHero
-          coordinate="35°00′N · 135°46′E · KYOTO"
-          variant="dawn"
+          variant="noon"
           className="min-h-[88vh] flex flex-col"
         >
           {/* Top bar */}
-          <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-6">
-            <Link href="/" className="flex items-center gap-3">
-              <CompassRose size={32} showLabels={false} />
-              <span className="t-serif text-[1.0625rem] tracking-[-0.005em] text-paper">
-                Globe<span className="text-paper/65">.travel</span>
-              </span>
+          <header className="relative z-10 mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-5 pt-5 md:items-center md:px-6 md:pt-6">
+            <Link href="/" className="justify-self-start">
+              <AlbatrossBrand />
             </Link>
-            <nav className="hidden md:flex items-center gap-7 t-mono text-[0.6875rem] tracking-[0.16em] uppercase text-paper/75">
-              <Link href="#how" className="hover:text-paper transition-colors">
+            <nav className="hidden items-center gap-7 pt-1 t-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-2 md:flex">
+              <Link href="#how" className="hover:text-foreground transition-colors">
                 How it works
               </Link>
-              <Link href="#crew" className="hover:text-paper transition-colors">
+              <Link href="#crew" className="hover:text-foreground transition-colors">
                 For groups
               </Link>
-              <Link href="/login" className="hover:text-paper transition-colors">
+              <Link href="/login" className="hover:text-foreground transition-colors">
                 Sign in
               </Link>
             </nav>
-            <Link
-              href="/signup"
-              className="t-mono text-[0.6875rem] tracking-[0.16em] uppercase rounded-full border border-paper/35 px-4 py-2 text-paper hover:border-paper/60 hover:bg-paper/10 transition"
-            >
-              Begin
-            </Link>
           </header>
 
           {/* Hero copy */}
           <motion.div
             style={{ y: driftY }}
-            className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center"
+            className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 py-14 text-center md:px-6 md:py-10"
           >
-            <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-paper/80 mb-6">
-              An atmospheric weekend planner
+            <p className="mb-4 t-mono text-[0.6875rem] uppercase tracking-[0.18em] text-[var(--brass)]">
+              Globe.travel maps for group trips
             </p>
-            <h1 className="h-hero text-paper max-w-[20ch] mx-auto mb-6 [&>em]:not-italic [&>em]:text-paper/70">
-              The city break your group <em>will actually book.</em>
+            <h1 className="h-hero mx-auto mb-5 max-w-[17ch] text-foreground [&>em]:not-italic [&>em]:text-ink-2">
+              Plan the trip everyone <em>can say yes to.</em>
             </h1>
-            <p className="text-body-lg text-paper/75 max-w-xl mx-auto leading-relaxed mb-10">
-              A quiet workspace where friends pick a city, line up dates,
-              balance budgets, and arrive with a 48-hour plan everyone is
-              excited to share.
+            <p className="mx-auto mb-8 max-w-[54ch] text-body-lg leading-relaxed text-ink-2">
+              AI itineraries, friend feedback, and shareable route snapshots in one calm workspace
+              for small groups planning city trips.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="flex flex-col items-center gap-3 sm:flex-row">
               <Button asChild size="xl" className="rounded-full px-7">
                 <Link href="/signup">
-                  Begin a weekend
+                  Start planning
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
@@ -90,45 +80,43 @@ export default function Home() {
                 asChild
                 variant="ghost"
                 size="xl"
-                className="rounded-full px-7 text-paper hover:bg-paper/10"
+                className="rounded-full px-7 text-foreground hover:bg-paper-raised"
               >
-                <Link href="/chat">
-                  Open the planner
+                <Link href="#crew">
+                  See the Globe.travel map
                 </Link>
               </Button>
             </div>
           </motion.div>
 
           {/* horizon ledger */}
-          <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-8">
-            <div className="flex items-end justify-between gap-6 t-mono text-[0.6875rem] tracking-[0.18em] uppercase text-paper/75">
-              <span>EST. 2024 · TORONTO</span>
-              <span className="hidden sm:inline">SCROLL · 03 SECTIONS</span>
-              <span className="text-right">
-                FOR FRIENDS WHO TRAVEL TOGETHER
-              </span>
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-6 md:px-6 md:pb-8">
+            <div className="flex items-end justify-between gap-6 t-mono text-[0.65625rem] uppercase tracking-[0.16em] text-ink-2">
+              <span>PLANNED TOGETHER</span>
+              <span className="hidden sm:inline">CITY PLANS · FRIEND FEEDBACK</span>
+              <span className="text-right">MADE TO SHARE</span>
             </div>
           </div>
         </HorizonHero>
       </div>
 
       {/* ─────────────── STANZA — opening line ─────────────── */}
-      <section className="relative py-32 px-6 overflow-hidden">
+      <section className="relative overflow-hidden px-5 py-20 md:px-6 md:py-24">
         <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-rule" />
         <div className="paper-grain absolute inset-0 pointer-events-none" />
         <motion.div
           {...fade}
-          className="relative max-w-3xl mx-auto text-center"
+          className="relative mx-auto max-w-[760px] text-center"
         >
-          <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-ink-3 mb-6">
-            § ONE — A QUIET PREMISE
+          <p className="mb-5 t-mono text-[0.6875rem] uppercase tracking-[0.2em] text-ink-2">
+            Why it works
           </p>
-          <p className="h-display leading-[1.18] text-foreground">
-            A weekend with friends is short.{" "}
+          <p className="h-display leading-[1.14] text-foreground">
+            A group trip is easier to book when the plan feels clear.{" "}
             <span className="text-ink-3 t-italic">
-              The plan should be short, too —
+              Globe turns the messy chat into one calm itinerary
             </span>{" "}
-            a single legible page everyone can read on the train.
+            with a map people want to share.
           </p>
         </motion.div>
       </section>
@@ -136,30 +124,30 @@ export default function Home() {
       {/* ─────────────── HOW IT WORKS — three paper cards ─────────────── */}
       <section
         id="how"
-        className="relative px-6 py-24 bg-[var(--paper-recessed)]"
+        className="relative bg-[var(--paper-recessed)] px-5 py-20 md:px-6 md:py-24"
       >
         <div aria-hidden className="absolute inset-0 -z-0">
           <ContourOverlay density="sparse" />
         </div>
         <div className="paper-grain absolute inset-0 pointer-events-none" />
-        <div className="relative max-w-6xl mx-auto">
-          <motion.div {...fade} className="mb-16 max-w-2xl">
-            <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-ink-3 mb-4">
-              § TWO — HOW IT WORKS
+        <div className="relative mx-auto max-w-6xl">
+          <motion.div {...fade} className="mb-10 max-w-2xl md:mb-12">
+            <p className="mb-4 t-mono text-[0.6875rem] uppercase tracking-[0.2em] text-ink-2">
+              How it works
             </p>
             <h2 className="h-display leading-[1.1] text-foreground">
               Three steps from group chat to{" "}
-              <span className="t-italic text-ink-2">go-bag.</span>
+              <span className="t-italic text-ink-2">shared itinerary.</span>
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
             {[
               {
                 num: "01",
                 kicker: "ORIENT",
                 title: "Set the crew",
-                body: "Tell Globe who is going, how each person likes to travel, and the rough shape of the weekend you want.",
+                body: "Tell Globe who is going, how each person likes to travel, and the rough shape of the trip you want.",
                 icon: Users,
               },
               {
@@ -184,7 +172,7 @@ export default function Home() {
                   ...fade.transition,
                   delay: i * 0.08,
                 }}
-                className="card-paper relative p-7 shadow-[var(--panel-shadow)] hover:shadow-[var(--panel-shadow-hover)] transition-shadow"
+                className="card-paper relative p-6 shadow-[var(--panel-shadow)] transition-shadow hover:shadow-[var(--panel-shadow-hover)] md:p-7"
               >
                 <MeridianFrame inset={6} length={10} color="var(--rule-strong)" opacity={0.7} />
                 <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-[var(--brass)] mb-3">
@@ -202,18 +190,18 @@ export default function Home() {
       {/* ─────────────── ITINERARY THREAD DEMO ─────────────── */}
       <section
         id="crew"
-        className="relative px-6 py-28 overflow-hidden bg-paper"
+        className="relative overflow-hidden bg-paper px-5 py-20 md:px-6 md:py-24"
       >
         <div className="paper-grain absolute inset-0 pointer-events-none" />
-        <div className="relative max-w-6xl mx-auto grid lg:grid-cols-[1fr_1.05fr] gap-14 items-center">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
           <motion.div {...fade}>
-            <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-ink-3 mb-4">
-              § THREE — THE THREAD
+            <p className="mb-4 t-mono text-[0.6875rem] uppercase tracking-[0.2em] text-ink-2">
+              The Globe.travel map
             </p>
-            <h2 className="h-display leading-[1.1] text-foreground mb-6 max-w-[18ch]">
+            <h2 className="mb-5 max-w-[18ch] h-display leading-[1.1] text-foreground">
               A brass thread connects the day.
             </h2>
-            <p className="text-body-lg text-ink-2 max-w-md mb-7">
+            <p className="mb-6 max-w-md text-body-lg text-ink-2">
               Each stop becomes a star — earlier, later, where you sleep, where
               you eat. A walking sequence you can read at a glance. Move a stop
               and the thread re-draws.
@@ -222,7 +210,7 @@ export default function Home() {
               {[
                 "Drag a place; the route smooths.",
                 "Friends react inline — Globe folds it in.",
-                "Print it. It looks like a keepsake.",
+                "Share it. It feels unmistakably Globe.travel.",
               ].map((line, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <span
@@ -270,7 +258,7 @@ export default function Home() {
       </section>
 
       {/* ─────────────── CTA ─────────────── */}
-      <section className="relative px-6 py-32 bg-[var(--paper-recessed)] overflow-hidden">
+      <section className="relative overflow-hidden bg-[var(--paper-recessed)] px-5 py-20 md:px-6 md:py-24">
         <div aria-hidden className="absolute inset-0 -z-0 opacity-80">
           <ContourOverlay density="sparse" />
         </div>
@@ -280,33 +268,28 @@ export default function Home() {
         />
         <motion.div
           {...fade}
-          className="relative max-w-3xl mx-auto text-center"
+          className="relative mx-auto max-w-3xl text-center"
         >
-          <CompassRose size={56} showLabels={false} className="mb-8 mx-auto" />
-          <h2 className="h-display leading-[1.1] text-foreground mb-5">
-            Your next short city break{" "}
+          <CompassRose size={48} showLabels={false} className="mx-auto mb-6" />
+          <h2 className="mb-5 h-display leading-[1.1] text-foreground">
+            Your next group trip{" "}
             <span className="t-italic text-ink-3">begins here.</span>
           </h2>
-          <p className="text-body-lg text-ink-2 max-w-md mx-auto mb-10">
+          <p className="mx-auto mb-9 max-w-md text-body-lg text-ink-2">
             Free to start. Faster than a spreadsheet. Quieter than the chat.
           </p>
           <Button asChild size="xl" className="rounded-full px-8">
             <Link href="/signup">
-              Plan your first weekend
+              Plan your first trip
               <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>
         </motion.div>
       </section>
 
-      <footer className="relative px-6 py-10 border-t border-rule bg-paper">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <CompassRose size={20} showLabels={false} />
-            <span className="t-serif text-[0.9375rem] text-foreground">
-              Globe<span className="text-ink-3">.travel</span>
-            </span>
-          </div>
+      <footer className="relative border-t border-rule bg-paper px-5 py-8 md:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
+          <AlbatrossBrand textClassName="text-[0.9375rem]" />
           <p className="t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
             © 2026 · BUILT FOR FRIENDS
           </p>

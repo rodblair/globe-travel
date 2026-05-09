@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase-browser'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { AuthCanvas } from '@/components/atmosphere/AuthCanvas'
+import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -98,14 +99,12 @@ export default function SignupPage() {
   return (
     <AuthCanvas
       side="left"
-      panelKicker="§ DEPARTURE — A NEW JOURNEY"
-      panelTitle="Pack the crew, pick the city."
-      panelSubtitle="Bring your friends, line up the vibe, and turn a loose idea into a booked weekend you all remember."
+      panelKicker="DEPARTURE / NEW JOURNEY"
+      panelTitle="Pick the crew, pick the city."
+      panelSubtitle="Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember."
     >
       <div className="lg:hidden mb-10 flex items-center gap-2.5">
-        <span className="t-serif text-[1.125rem] text-foreground">
-          Globe<span className="text-ink-3">.travel</span>
-        </span>
+        <AlbatrossBrand textClassName="text-[1.125rem]" compact />
       </div>
 
       <div className="mb-8">
@@ -114,8 +113,26 @@ export default function SignupPage() {
         </p>
         <h1 className="h-detail text-foreground mb-2">Create your account.</h1>
         <p className="text-body text-ink-2">
-          Coordinate short city breaks with friends.
+          Coordinate city trips with friends.
         </p>
+      </div>
+
+      <div className="mb-7 card-paper p-5 border-[color:var(--pillar-nature-wash)]">
+        <div className="mb-3">
+          <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-[var(--pillar-nature)] mb-1">
+            QUICK PREVIEW
+          </p>
+          <h2 className="t-h3 text-foreground">Start as a guest first</h2>
+        </div>
+        <p className="text-body-sm text-ink-2 mb-4">
+          Share the app with friends now, then create an account when full sign-in is ready.
+        </p>
+        <Button asChild variant="action" className="w-full">
+          <Link href="/api/guest/start">
+            Continue as guest
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </Button>
       </div>
 
       <Button

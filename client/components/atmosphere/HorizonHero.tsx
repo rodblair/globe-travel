@@ -10,12 +10,10 @@ import { cn } from "@/lib/utils";
 export function HorizonHero({
   className,
   children,
-  coordinate,
   variant = "dawn",
 }: {
   className?: string;
   children?: React.ReactNode;
-  coordinate?: string;
   variant?: "dawn" | "dusk" | "noon";
 }) {
   const gradient =
@@ -49,12 +47,6 @@ export function HorizonHero({
       </div>
       {/* paper grain */}
       <div aria-hidden className="paper-grain absolute inset-0 z-[1] pointer-events-none" />
-
-      {coordinate && (
-        <div className="pointer-events-none absolute right-6 top-6 z-[2] t-mono t-num text-[0.6875rem] tracking-[0.16em] text-paper/85">
-          {coordinate}
-        </div>
-      )}
 
       <div className="relative z-[2] flex flex-col w-full h-full min-h-inherit">
         {children}

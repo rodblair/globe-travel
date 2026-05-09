@@ -4,9 +4,9 @@ import { inter, sourceSerif, jetbrainsMono } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Globe Travel — Coordinate weekends with friends",
+  title: "Globe.travel — Plan the trip everyone can say yes to",
   description:
-    "Plan short city breaks with the people you actually want to travel with. Atmospheric trip planning, shared itineraries, and a journal you'll keep.",
+    "Plan group city trips, collect friend feedback, and share a polished itinerary map everyone can react to.",
 };
 
 export default function RootLayout({

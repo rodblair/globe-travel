@@ -255,7 +255,7 @@ export default function ItineraryArtifact({
               className={cn(
                 'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
                 d.day_index === selectedDay.day_index
-                  ? 'bg-[var(--brass)] border-[color:var(--brass)]/30 text-[var(--brass)]'
+                  ? 'bg-[var(--brass)] border-[color:var(--brass)]/30 text-[var(--brass-text)] shadow-[0_8px_20px_rgba(190,132,49,0.18)]'
                   : 'bg-paper-raised/85 border-rule text-foreground/40 hover:text-foreground/70 hover:bg-paper-recessed'
               )}
             >
@@ -311,7 +311,7 @@ export default function ItineraryArtifact({
                     'flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
                     stop.mapped
                       ? 'border-rule bg-paper-recessed/60 hover:border-rule hover:bg-paper-recessed/60'
-                      : 'border-[color:var(--brass)]/30 bg-[var(--brass)]] hover:bg-[var(--brass)]]'
+                      : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] hover:bg-[var(--brass-subtle)]'
                   )}
                 >
                   <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brass)] text-[11px] font-semibold text-black">
@@ -360,7 +360,7 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[var(--brass)]] p-4.5"
+                className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] p-4.5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 text-left">
@@ -405,7 +405,7 @@ export default function ItineraryArtifact({
                         onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index, e)}
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
-                          dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass)]]' : 'border-rule bg-paper-recessed hover:border-rule'
+                          dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]' : 'border-rule bg-paper-recessed hover:border-rule'
                         )}
                       >
                         <div className="flex items-start gap-3">

@@ -162,7 +162,7 @@ export async function POST(req: Request) {
         },
       }),
       addBucketListPlace: tool({
-        description: 'Add a place to the user bucket list',
+        description: 'Save a destination idea for a future group trip',
         inputSchema: z.object({
           name: z.string().describe('Name of the place or city'),
           country: z.string().describe('Country name'),

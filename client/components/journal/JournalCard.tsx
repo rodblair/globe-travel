@@ -85,7 +85,7 @@ export function JournalCard({
           <button
             onClick={(e) => { e.stopPropagation(); onEdit() }}
             className="p-1.5 rounded-lg bg-paper-recessed hover:bg-paper-recessed text-foreground/40 hover:text-foreground transition-colors"
-            title="Edit entry"
+            title="Edit note"
           >
             <Pencil className="w-3.5 h-3.5" />
           </button>
@@ -94,7 +94,7 @@ export function JournalCard({
           <button
             onClick={(e) => { e.stopPropagation(); onDelete() }}
             className="p-1.5 rounded-lg bg-paper-recessed hover:bg-[color:var(--pillar-desert-wash)] text-foreground/40 hover:text-[var(--terracotta)] transition-colors"
-            title="Delete entry"
+            title="Delete note"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>

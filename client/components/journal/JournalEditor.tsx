@@ -46,7 +46,7 @@ export function JournalEditor({
   const [selectedTrip, setSelectedTrip] = useState('')
   const [saving, setSaving] = useState(false)
 
-  // Reset form when entry changes or dialog opens
+  // Reset form when the note changes or dialog opens.
   useEffect(() => {
     if (isOpen) {
       setTitle(initialData?.title || '')
@@ -101,7 +101,7 @@ export function JournalEditor({
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
             className="fixed inset-x-0 bottom-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl z-50 flex flex-col max-h-[92dvh] md:max-h-[88vh]"
           >
-            <div className="flex flex-col bg-[#0e0f1a] border border-rule rounded-t-3xl md:rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
+            <div className="flex flex-col overflow-hidden rounded-t-3xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)] md:rounded-2xl">
               {/* Drag handle (mobile) */}
               <div className="md:hidden flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 rounded-full bg-paper-recessed" />
@@ -110,7 +110,7 @@ export function JournalEditor({
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-rule">
                 <h2 className="text-lg font-serif font-semibold text-foreground">
-                  {initialData?.id ? 'Edit Entry' : 'New Journal Entry'}
+                  {initialData?.id ? 'Edit trip note' : 'New trip note'}
                 </h2>
                 <button
                   onClick={onClose}
@@ -129,7 +129,7 @@ export function JournalEditor({
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Entry title…"
+                    placeholder="Note title..."
                     autoFocus
                     className="w-full bg-transparent text-xl font-serif font-semibold text-foreground placeholder:text-foreground/25 focus:outline-none border-b border-rule pb-2"
                   />
@@ -145,13 +145,13 @@ export function JournalEditor({
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
-                      <CalendarDays className="w-3 h-3" /> Date visited
+                      <CalendarDays className="w-3 h-3" /> Trip date
                     </label>
                     <input
                       type="date"
                       value={visitedDate}
                       onChange={(e) => setVisitedDate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors [color-scheme:dark]"
+                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors [color-scheme:light]"
                     />
                   </div>
                   <div>
@@ -189,11 +189,11 @@ export function JournalEditor({
 
                 {/* Content */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block">Your story</label>
+                  <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block">Trip note</label>
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Write about your experience — what you saw, felt, tasted, discovered…"
+                    placeholder="Capture a decision, reminder, or memory from this trip..."
                     rows={9}
                     className="w-full px-4 py-3 rounded-xl bg-paper-recessed/60 border border-rule text-foreground placeholder:text-foreground/25 text-sm resize-none focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors leading-relaxed"
                   />
@@ -201,12 +201,12 @@ export function JournalEditor({
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-rule bg-[#0e0f1a]">
+              <div className="flex items-center justify-between gap-3 border-t border-rule bg-paper-raised px-5 py-4">
                 <p className={cn(
                   'text-xs transition-colors',
                   canSave ? 'text-foreground/30' : 'text-[var(--brass)]'
                 )}>
-                  {!title.trim() ? 'Add a title to save' : !content.trim() ? 'Add your story to save' : `${content.trim().split(/\s+/).length} words`}
+                  {!title.trim() ? 'Add a title to save' : !content.trim() ? 'Add a note to save' : `${content.trim().split(/\s+/).length} words`}
                 </p>
                 <div className="flex gap-2">
                   <button
@@ -221,7 +221,7 @@ export function JournalEditor({
                     className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--brass)] hover:bg-[var(--brass)] text-[var(--brass-text)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Save className="w-4 h-4" />
-                    {saving ? 'Saving…' : 'Save Entry'}
+                    {saving ? 'Saving...' : 'Save note'}
                   </button>
                 </div>
               </div>
