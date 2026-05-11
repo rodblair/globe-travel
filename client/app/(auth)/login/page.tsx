@@ -115,8 +115,7 @@ export default function LoginPage() {
           </div>
         </div>
         <p className="text-body-sm text-ink-2 mb-4">
-          Use this if you&apos;re testing the app or sharing it with friends before
-          full sign-in is ready.
+          Plan a trip, create a share link, and let friends react before you commit to an account.
         </p>
         <Button asChild variant="action" className="w-full">
           <Link href="/api/guest/start">

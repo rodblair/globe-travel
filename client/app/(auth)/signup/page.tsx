@@ -125,7 +125,7 @@ export default function SignupPage() {
           <h2 className="t-h3 text-foreground">Start as a guest first</h2>
         </div>
         <p className="text-body-sm text-ink-2 mb-4">
-          Share the app with friends now, then create an account when full sign-in is ready.
+          Plan a trip now, share it with friends, then create an account when you want to keep it.
         </p>
         <Button asChild variant="action" className="w-full">
           <Link href="/api/guest/start">

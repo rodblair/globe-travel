@@ -27,17 +27,17 @@ const STARTER_PROMPTS = [
   {
     label: 'City escape',
     sub: 'Food, culture, and one memorable night',
-    q: 'Plan a beautiful 3-day city break for 4 friends who want food, culture, and one memorable night out',
+    q: 'Plan a beautiful 3-day city trip for 4 friends who want food, culture, and one memorable night out',
   },
   {
     label: 'Choose the city',
     sub: 'Compare the strongest options',
-    q: 'Compare Lisbon, Copenhagen, and Barcelona for a 3-day city break for friends in their early 30s',
+    q: 'Compare Lisbon, Copenhagen, and Barcelona for a 3-day city trip for friends in their early 30s',
   },
   {
     label: 'Keep it realistic',
     sub: 'Budget and pace checks',
-    q: 'Where should a group of friends go for a budget-friendly city break with great food and nightlife?',
+    q: 'Where should a group of friends go for a budget-friendly city trip with great food and nightlife?',
   },
 ] as const
 
@@ -52,13 +52,13 @@ const PLANNING_STEPS = [
     icon: Wallet,
     label: 'Compare the tradeoffs',
     value: 'See which cities fit the group before committing to a full itinerary.',
-    q: 'Compare possible city-break destinations for my group by budget, food, nightlife, walkability, and ease of travel.',
+    q: 'Compare possible city trip destinations for my group by budget, food, nightlife, walkability, and ease of travel.',
   },
   {
     icon: CalendarDays,
     label: 'Create the Globe.travel map',
     value: 'Move the plan into a shareable itinerary map your friends can react to.',
-    q: 'Plan a balanced 3-day city break for 4 friends with food, sightseeing, relaxed pacing, and one memorable night out.',
+    q: 'Plan a balanced 3-day city trip for 4 friends with food, sightseeing, relaxed pacing, and one memorable night out.',
   },
 ] as const
 
@@ -420,7 +420,7 @@ function ChatPageContent() {
                 {tripPayload ? 'ITINERARY MAPS' : 'PLAN PREVIEW'}
               </p>
               <h2 className="t-h3 text-foreground leading-tight mt-1">
-                {tripPayload ? tripPayload.trip.title : 'Keepsake preview'}
+                {tripPayload ? tripPayload.trip.title : 'Globe.travel map preview'}
               </h2>
               <p className="text-caption text-ink-3 mt-1">{mapSubtitle}</p>
             </div>
@@ -493,12 +493,12 @@ function ChatPageContent() {
                     </div>
                     <h3 className="t-h3 text-foreground">Start with the trip idea.</h3>
                     <p className="mt-2 text-body-sm leading-relaxed text-ink-2">
-                      Your shareable map appears after Globe has real stops to plot. First,
+                      Your shareable Globe.travel map appears after Globe has real stops to plot. First,
                       describe the crew, city choices, or the kind of trip you want.
                     </p>
                   </div>
                   <div className="mt-6 space-y-2 border-t border-rule pt-4">
-                    {['Choose the city fit', 'Draft the itinerary', 'Share the Globe.travel map'].map((step, index) => (
+                    {['Choose the city fit', 'Draft the itinerary', 'Send one link to friends'].map((step, index) => (
                       <div key={step} className="flex items-center gap-2 text-caption text-ink-2">
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--paper-recessed)] t-mono text-[0.625rem] text-[var(--brass)]">
                           {index + 1}
@@ -528,7 +528,7 @@ function ChatPageContent() {
           )}>
             <input
               type="text"
-              placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Try: “Best 3-day city break for 4 friends leaving from Toronto?”'}
+              placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Try: “Best 3-day city trip for 4 friends leaving from Toronto?”'}
               disabled={planningInProgress}
               value={draftInput}
               onChange={(event) => setDraftInput(event.target.value)}
