@@ -3,6 +3,7 @@
 export type TripItemLike = {
   id: string
   title: string
+  type?: string | null
   start_time?: string | null
   end_time?: string | null
   order_index: number
@@ -70,7 +71,83 @@ export function getDestinationFallback(title: string | null | undefined) {
     }
   }
 
+  if (/\bathens\b|\bathina\b/.test(normalized)) {
+    return {
+      title: 'Athens',
+      latitude: 37.9838,
+      longitude: 23.7275,
+    }
+  }
+
+  if (/\baegina\b/.test(normalized)) {
+    return {
+      title: 'Aegina',
+      latitude: 37.7468,
+      longitude: 23.4278,
+    }
+  }
+
   return null
+}
+
+function timeToMinutes(value: string | null | undefined) {
+  const match = value?.match(/^(\d{1,2}):(\d{2})/)
+  if (!match) return null
+
+  const hours = Number(match[1])
+  const minutes = Number(match[2])
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null
+  if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null
+  return hours * 60 + minutes
+}
+
+function sortByOrderIndex<T extends TripItemLike>(items: T[]) {
+  return [...items].sort((a, b) => a.order_index - b.order_index)
+}
+
+export function sortTripItemsForDisplay<T extends TripItemLike>(items: T[]) {
+  return sortByOrderIndex(items).sort((a, b) => {
+    const aMinutes = timeToMinutes(a.start_time)
+    const bMinutes = timeToMinutes(b.start_time)
+
+    if (aMinutes != null && bMinutes != null && aMinutes !== bMinutes) {
+      return aMinutes - bMinutes
+    }
+
+    if (aMinutes != null && bMinutes == null) return -1
+    if (aMinutes == null && bMinutes != null) return 1
+    return a.order_index - b.order_index
+  })
+}
+
+export function hasScheduleOrderConflict<T extends TripItemLike>(items: T[]) {
+  const orderedIds = sortByOrderIndex(items).map((item) => item.id)
+  const scheduledIds = sortTripItemsForDisplay(items).map((item) => item.id)
+
+  return orderedIds.some((id, index) => id !== scheduledIds[index])
+}
+
+export function hasTransitRouteCue<T extends TripItemLike>(items: T[]) {
+  return items.some((item) => {
+    const title = item.title || ''
+    return item.type === 'transit' || /\bferry\b|\bflight\b|\btrain\b|\bbus\b|\btransfer\b|\bshuttle\b|\bairport\b/i.test(title)
+  })
+}
+
+export function shouldUseSavedRoute<T extends TripItemLike>(
+  items: T[],
+  route: { distance_m?: number | null } | null | undefined,
+  usesDerivedStops: boolean
+) {
+  if (!route || usesDerivedStops) return false
+  if (hasScheduleOrderConflict(items)) return false
+  if (hasTransitRouteCue(items)) return false
+
+  // Saved walk lines become misleading on island/transit days and can also
+  // distort the map if old geometry was generated before itinerary edits.
+  if (route.distance_m != null && route.distance_m > 25000) return false
+
+  return true
 }
 
 const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
@@ -150,10 +227,16 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
     ],
   },
   { pattern: /koukaki/i, stops: [{ title: 'Koukaki', latitude: 37.96393, longitude: 23.72141, country: 'Greece' }] },
+  { pattern: /ancient agora/i, stops: [{ title: 'Ancient Agora of Athens', latitude: 37.97569, longitude: 23.72247, country: 'Greece' }] },
+  { pattern: /panathenaic stadium/i, stops: [{ title: 'Panathenaic Stadium', latitude: 37.96833, longitude: 23.74114, country: 'Greece' }] },
   { pattern: /brunch in kolonaki|\bkolonaki\b/i, stops: [{ title: 'Kolonaki', latitude: 37.97798, longitude: 23.74132, country: 'Greece' }] },
   { pattern: /museum stop|boutique browsing/i, stops: [{ title: 'Benaki Museum', latitude: 37.97595, longitude: 23.74029, country: 'Greece' }] },
   { pattern: /pangrati/i, stops: [{ title: 'Pangrati', latitude: 37.96991, longitude: 23.74531, country: 'Greece' }] },
   { pattern: /lycabettus/i, stops: [{ title: 'Lycabettus Hill', latitude: 37.98178, longitude: 23.74306, country: 'Greece' }] },
+  { pattern: /cape sounion|temple of poseidon/i, stops: [{ title: 'Temple of Poseidon, Cape Sounion', latitude: 37.65062, longitude: 24.0246, country: 'Greece' }] },
+  { pattern: /vouliagmeni|athens riviera/i, stops: [{ title: 'Lake Vouliagmeni', latitude: 37.80789, longitude: 23.78598, country: 'Greece' }] },
+  { pattern: /\bglyfada\b/i, stops: [{ title: 'Glyfada', latitude: 37.86289, longitude: 23.7551, country: 'Greece' }] },
+  { pattern: /\bpiraeus\b/i, stops: [{ title: 'Port of Piraeus', latitude: 37.94486, longitude: 23.64082, country: 'Greece' }] },
   {
     pattern: /colosseum.*roman forum|roman forum.*colosseum/i,
     stops: [
@@ -182,14 +265,16 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
 ]
 
 export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
-  const sortedItems = [...items].sort((a, b) => a.order_index - b.order_index)
+  const sortedItems = sortTripItemsForDisplay(items)
   const displayStops: DisplayStop<T>[] = []
 
   for (const item of sortedItems) {
     const timeLabel = [item.start_time, item.end_time].filter(Boolean).join('–') || null
     const derivedStops = DERIVED_STOP_RULES.find((entry) => entry.pattern.test(item.title))?.stops || null
+    const latitude = coerceCoordinate(item.place?.latitude)
+    const longitude = coerceCoordinate(item.place?.longitude)
 
-    if (derivedStops) {
+    if (derivedStops && (derivedStops.length > 1 || latitude == null || longitude == null)) {
       for (const stop of derivedStops) {
         displayStops.push({
           id: `${item.id}:${stop.title}`,
@@ -206,9 +291,6 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
       }
       continue
     }
-
-    const latitude = coerceCoordinate(item.place?.latitude)
-    const longitude = coerceCoordinate(item.place?.longitude)
 
     displayStops.push({
       id: item.id,

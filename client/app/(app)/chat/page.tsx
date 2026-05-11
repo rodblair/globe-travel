@@ -8,7 +8,12 @@ import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay, TripItem } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops, getDestinationFallback } from '@/components/trips/derivedStops'
+import {
+  buildDisplayStops,
+  getDestinationFallback,
+  shouldUseSavedRoute,
+  sortTripItemsForDisplay,
+} from '@/components/trips/derivedStops'
 import { CompassRose } from '@/components/atmosphere/CompassRose'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { cn } from '@/lib/utils'
@@ -260,7 +265,12 @@ function ChatPageContent() {
 
   const previewDays = useMemo(() => {
     return tripDays.map((day) => {
-      const stops = buildDisplayStops((day.items || []) as any)
+      const dayItems = (day.items || []) as TripItem[]
+      const displayStops = buildDisplayStops(dayItems)
+      const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
+      const savedRoute = day.routes?.find((route) => route.mode === 'walk') || day.routes?.[0]
+      const useSavedRoute = shouldUseSavedRoute(dayItems, savedRoute, usesDerivedStops)
+      const stops = displayStops
         .filter((stop) => stop.mapped)
         .map((stop) => ({
           id: stop.id,
@@ -273,12 +283,12 @@ function ChatPageContent() {
       return {
         day,
         stops,
-        routeGeojson: day.routes?.find((route) => route.mode === 'walk')?.geojson || day.routes?.[0]?.geojson || null,
+        routeGeojson: useSavedRoute ? savedRoute?.geojson || null : null,
         routeSummary:
-          day.routes?.[0]?.distance_m && day.routes?.[0]?.duration_s
-            ? `${Math.round(day.routes[0].distance_m / 100) / 10} km • ${Math.round(day.routes[0].duration_s / 60)} min walk`
+          useSavedRoute && savedRoute?.distance_m && savedRoute?.duration_s
+            ? `${Math.round(savedRoute.distance_m / 100) / 10} km • ${Math.round(savedRoute.duration_s / 60)} min walk`
             : null,
-        items: (day.items || []) as TripItem[],
+        items: sortTripItemsForDisplay(dayItems),
       }
     })
   }, [tripDays])

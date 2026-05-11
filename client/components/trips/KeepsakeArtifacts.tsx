@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react'
 import { CalendarDays, Check, Copy, Heart, MessageCircleQuestion, Route, Share2, Users } from 'lucide-react'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops } from '@/components/trips/derivedStops'
+import { buildDisplayStops, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
 
 type KeepsakeTrip = {
@@ -91,8 +91,10 @@ export function KeepsakeRouteCard({
   active?: boolean
   compact?: boolean
 }) {
-  const sortedItems = [...(day.items || [])].sort((a, b) => a.order_index - b.order_index)
+  const dayItems = day.items || []
+  const sortedItems = sortTripItemsForDisplay(dayItems)
   const displayStops = buildDisplayStops(sortedItems)
+  const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
   const stops = displayStops
     .filter((stop) => stop.mapped)
     .map((stop) => ({
@@ -102,7 +104,8 @@ export function KeepsakeRouteCard({
       longitude: stop.longitude,
       index: stop.index,
     }))
-  const route = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
+  const savedRoute = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
+  const route = shouldUseSavedRoute(dayItems, savedRoute, usesDerivedStops) ? savedRoute : null
   const routeSummary = route?.distance_m && route?.duration_s
     ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
     : `${sortedItems.length} planned stop${sortedItems.length === 1 ? '' : 's'}`
@@ -133,7 +136,7 @@ export function KeepsakeRouteCard({
           </span>
         </div>
         <div className="space-y-1.5">
-          {sortedItems.slice(0, compact ? 3 : 5).map((item, index) => (
+          {sortedItems.slice(0, compact ? 3 : sortedItems.length).map((item, index) => (
             <div key={item.id} className="flex items-start gap-2.5 rounded-2xl bg-paper-recessed/70 px-3 py-2">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
                 {index + 1}
