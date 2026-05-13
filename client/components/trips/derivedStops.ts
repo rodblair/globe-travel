@@ -130,7 +130,7 @@ export function hasScheduleOrderConflict<T extends TripItemLike>(items: T[]) {
 export function hasTransitRouteCue<T extends TripItemLike>(items: T[]) {
   return items.some((item) => {
     const title = item.title || ''
-    return item.type === 'transit' || /\bferry\b|\bflight\b|\btrain\b|\bbus\b|\btransfer\b|\bshuttle\b|\bairport\b/i.test(title)
+    return item.type === 'transit' || item.type === 'transport' || /\bferry\b|\bflight\b|\btrain\b|\bbus\b|\btransfer\b|\bshuttle\b|\bairport\b/i.test(title)
   })
 }
 
@@ -215,6 +215,17 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
     ],
   },
   { pattern: /rooftop dinner.*acropolis|acropolis views/i, stops: [{ title: 'A for Athens Rooftop', latitude: 37.97615, longitude: 23.72566, country: 'Greece' }] },
+  { pattern: /a for athens rooftop/i, stops: [{ title: 'A for Athens Rooftop', latitude: 37.97615, longitude: 23.72566, country: 'Greece' }] },
+  { pattern: /\blotte\b/i, stops: [{ title: 'Lotte Cafe-Bistrot', latitude: 37.97075, longitude: 23.72794, country: 'Greece' }] },
+  { pattern: /\bman[iy] mani\b/i, stops: [{ title: 'Mani Mani', latitude: 37.96758, longitude: 23.72739, country: 'Greece' }] },
+  { pattern: /\bbrettos\b/i, stops: [{ title: 'Brettos', latitude: 37.97347, longitude: 23.73064, country: 'Greece' }] },
+  { pattern: /point a bar/i, stops: [{ title: 'Point a Bar and Restaurant', latitude: 37.96856, longitude: 23.72819, country: 'Greece' }] },
+  { pattern: /karamanlidika/i, stops: [{ title: 'Karamanlidika', latitude: 37.98005, longitude: 23.72563, country: 'Greece' }] },
+  { pattern: /queen bee/i, stops: [{ title: 'Queen Bee', latitude: 37.97842, longitude: 23.74174, country: 'Greece' }] },
+  { pattern: /\bdiporto\b/i, stops: [{ title: 'Diporto', latitude: 37.97993, longitude: 23.72628, country: 'Greece' }] },
+  { pattern: /\batlantikos\b/i, stops: [{ title: 'Atlantikos', latitude: 37.97873, longitude: 23.72301, country: 'Greece' }] },
+  { pattern: /varoulko seaside/i, stops: [{ title: 'Varoulko Seaside', latitude: 37.93988, longitude: 23.66447, country: 'Greece' }] },
+  { pattern: /kalamaki bar/i, stops: [{ title: 'Kalamaki Bar', latitude: 37.96411, longitude: 23.72164, country: 'Greece' }] },
   { pattern: /coffee.*monastiraki|walk through monastiraki/i, stops: [{ title: 'Monastiraki Square', latitude: 37.97608, longitude: 23.72557, country: 'Greece' }] },
   { pattern: /central market|food stroll/i, stops: [{ title: 'Athens Central Market', latitude: 37.98005, longitude: 23.72672, country: 'Greece' }] },
   { pattern: /lunch in psiri|\bpsiri\b|\bpsyri\b/i, stops: [{ title: 'Psiri', latitude: 37.97855, longitude: 23.72328, country: 'Greece' }] },

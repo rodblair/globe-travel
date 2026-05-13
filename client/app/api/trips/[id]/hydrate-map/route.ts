@@ -23,10 +23,24 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /stavros niarchos/i, name: 'Stavros Niarchos Foundation Cultural Center', country: 'Greece', country_code: 'GR', latitude: 37.93952, longitude: 23.69165, manualId: 'manual:athens:stavros-niarchos' },
   { pattern: /flisvos marina/i, name: 'Flisvos Marina', country: 'Greece', country_code: 'GR', latitude: 37.93183, longitude: 23.68647, manualId: 'manual:athens:flisvos-marina' },
   { pattern: /acropolis.*parthenon|parthenon.*acropolis/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
+  { pattern: /^acropolis of athens$/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
   { pattern: /long lunch in plaka|lunch.*plaka/i, name: 'Plaka', country: 'Greece', country_code: 'GR', latitude: 37.97308, longitude: 23.73051, manualId: 'manual:athens:plaka' },
   { pattern: /plaka.*anafiotika|anafiotika.*plaka/i, name: 'Anafiotika', country: 'Greece', country_code: 'GR', latitude: 37.97233, longitude: 23.72786, manualId: 'manual:athens:anafiotika' },
+  { pattern: /^anafiotika$/i, name: 'Anafiotika', country: 'Greece', country_code: 'GR', latitude: 37.97233, longitude: 23.72786, manualId: 'manual:athens:anafiotika' },
   { pattern: /rooftop dinner.*acropolis|acropolis views/i, name: 'A for Athens Rooftop', country: 'Greece', country_code: 'GR', latitude: 37.97615, longitude: 23.72566, manualId: 'manual:athens:a-for-athens-rooftop' },
+  { pattern: /a for athens rooftop/i, name: 'A for Athens Rooftop', country: 'Greece', country_code: 'GR', latitude: 37.97615, longitude: 23.72566, manualId: 'manual:athens:a-for-athens-rooftop' },
+  { pattern: /\blotte\b/i, name: 'Lotte Cafe-Bistrot', country: 'Greece', country_code: 'GR', latitude: 37.97075, longitude: 23.72794, manualId: 'manual:athens:lotte-cafe-bistrot' },
+  { pattern: /\bman[iy] mani\b/i, name: 'Mani Mani', country: 'Greece', country_code: 'GR', latitude: 37.96758, longitude: 23.72739, manualId: 'manual:athens:mani-mani' },
+  { pattern: /\bbrettos\b/i, name: 'Brettos', country: 'Greece', country_code: 'GR', latitude: 37.97347, longitude: 23.73064, manualId: 'manual:athens:brettos' },
+  { pattern: /akrogialia/i, name: 'Akrogialia', country: 'Greece', country_code: 'GR', latitude: 37.74293, longitude: 23.53753, manualId: 'manual:aegina:akrogialia' },
+  { pattern: /skotadis/i, name: 'Skotadis', country: 'Greece', country_code: 'GR', latitude: 37.74668, longitude: 23.42758, manualId: 'manual:aegina:skotadis' },
+  { pattern: /inn on the beach/i, name: 'Inn on the Beach', country: 'Greece', country_code: 'GR', latitude: 37.74512, longitude: 23.53383, manualId: 'manual:aegina:inn-on-the-beach' },
+  { pattern: /varoulko seaside/i, name: 'Varoulko Seaside', country: 'Greece', country_code: 'GR', latitude: 37.93988, longitude: 23.66447, manualId: 'manual:athens:varoulko-seaside' },
+  { pattern: /kalamaki bar/i, name: 'Kalamaki Bar', country: 'Greece', country_code: 'GR', latitude: 37.96411, longitude: 23.72164, manualId: 'manual:athens:kalamaki-bar' },
+  { pattern: /queen bee/i, name: 'Queen Bee', country: 'Greece', country_code: 'GR', latitude: 37.97842, longitude: 23.74174, manualId: 'manual:athens:queen-bee' },
+  { pattern: /\bdiporto\b/i, name: 'Diporto', country: 'Greece', country_code: 'GR', latitude: 37.97993, longitude: 23.72628, manualId: 'manual:athens:diporto' },
+  { pattern: /\batlantikos\b/i, name: 'Atlantikos', country: 'Greece', country_code: 'GR', latitude: 37.97873, longitude: 23.72301, manualId: 'manual:athens:atlantikos' },
   { pattern: /coffee.*monastiraki|walk through monastiraki/i, name: 'Monastiraki Square', country: 'Greece', country_code: 'GR', latitude: 37.97608, longitude: 23.72557, manualId: 'manual:athens:monastiraki-square' },
   { pattern: /central market|food stroll/i, name: 'Athens Central Market', country: 'Greece', country_code: 'GR', latitude: 37.98005, longitude: 23.72672, manualId: 'manual:athens:central-market' },
   { pattern: /lunch in psiri|\bpsiri\b|\bpsyri\b/i, name: 'Psiri', country: 'Greece', country_code: 'GR', latitude: 37.97855, longitude: 23.72328, manualId: 'manual:athens:psiri' },
@@ -281,7 +295,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
     if (itemsErr) return NextResponse.json({ error: itemsErr.message }, { status: 500 })
 
     for (const item of items || []) {
-      if (!['activity', 'meal', 'lodging'].includes(item.type)) continue
+      if (!['activity', 'meal', 'lodging', 'transport', 'transit'].includes(item.type)) continue
       const canonicalOverride = CANONICAL_PLACE_OVERRIDES.find((entry) => entry.pattern.test(item.title))
 
       const currentPlace = Array.isArray(item.place) ? item.place[0] : item.place

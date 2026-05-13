@@ -8,7 +8,7 @@ import { motion, AnimatePresence, useDragControls } from 'motion/react'
 import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d, Save } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
-import ItineraryArtifact, { type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
+import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
 
@@ -16,6 +16,7 @@ type Trip = {
   id: string
   title: string
   is_public: boolean
+  is_owner?: boolean
   share_slug: string | null
 }
 
@@ -112,6 +113,7 @@ function TripStudioPageContent() {
   const [saveDone, setSaveDone] = useState(false)
   const [shareDone, setShareDone] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
+  const [actionError, setActionError] = useState<string | null>(null)
   const [pageOrigin, setPageOrigin] = useState('')
   const [groupBrief, setGroupBrief] = useState<GroupBrief | null>(null)
   const [creatingWorkflow, setCreatingWorkflow] = useState<string | null>(null)
@@ -160,6 +162,7 @@ function TripStudioPageContent() {
   const resolvedPayload = data
   const trip = resolvedPayload?.trip
   const days = resolvedPayload?.days ?? EMPTY_DAYS
+  const canEditTrip = trip?.is_owner !== false
 
   const { data: feedback = [] } = useQuery({
     queryKey: ['trip-feedback', tripId],
@@ -293,15 +296,38 @@ function TripStudioPageContent() {
   }, [searchParams, sendMessage, tripId, chatReady])
 
   const handleRegenerateDay = useCallback((dayIndex: number) => {
-    sendMessage(`Regenerate Day ${dayIndex} with a better flow. Keep it realistic with timing and neighborhoods.`)
+    sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; do not use generic meal labels.`)
   }, [sendMessage])
 
-  const handleSwapItem = useCallback((item: TripItem) => {
-    sendMessage(`Swap this activity for something better:\nDay ${ensureSelectedDayExists}\nCurrent: ${item.title}\nPreference: similar vibe, nearby, and fits the day's flow.`)
-  }, [sendMessage, ensureSelectedDayExists])
+  const handleSwapItem = useCallback(async (item: TripItem, preference: string): Promise<SwapCandidate[]> => {
+    const response = await fetch(`/api/trips/${tripId}/items/${item.id}/swap`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ preference }),
+    })
+
+    if (!response.ok) throw new Error('Could not find swap options')
+    const payload = await response.json()
+    return payload.options || []
+  }, [tripId])
+
+  const handleApplySwapItem = useCallback(async (item: TripItem, choiceId: string) => {
+    const response = await fetch(`/api/trips/${tripId}/items/${item.id}/swap`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ preference: 'apply selected replacement', choiceId }),
+    })
+
+    if (!response.ok) throw new Error('Could not apply swap')
+    await refetch()
+  }, [tripId, refetch])
 
   const handleOptimize = useCallback(async (dayIndex?: number) => {
-    if (isOptimizing) return
+    if (isOptimizing || !canEditTrip) return
     const targetDay = dayIndex ?? ensureSelectedDayExists
     setIsOptimizing(true)
     setOptimizeDone(false)
@@ -313,18 +339,22 @@ function TripStudioPageContent() {
     } finally {
       setIsOptimizing(false)
     }
-  }, [tripId, ensureSelectedDayExists, refetch, isOptimizing])
+  }, [tripId, ensureSelectedDayExists, refetch, isOptimizing, canEditTrip])
 
   const hydrateMaps = useCallback(async () => {
-    if (isHydratingMaps) return
+    if (isHydratingMaps || !canEditTrip) return
+    setActionError(null)
     setIsHydratingMaps(true)
     try {
-      await fetch(`/api/trips/${tripId}/hydrate-map`, { method: 'POST' })
+      const response = await fetch(`/api/trips/${tripId}/hydrate-map`, { method: 'POST' })
+      if (!response.ok) throw new Error('Map rebuild failed')
       await refetch()
+    } catch {
+      setActionError('Could not rebuild the maps. Try again, or refresh the page if the trip changed.')
     } finally {
       setIsHydratingMaps(false)
     }
-  }, [tripId, refetch, isHydratingMaps])
+  }, [tripId, refetch, isHydratingMaps, canEditTrip])
 
   useEffect(() => {
     hydrationAttemptedRef.current = null
@@ -347,33 +377,47 @@ function TripStudioPageContent() {
   const readinessCount = Number(Boolean(trip?.is_public)) + Math.min(feedback.length, 2) + Number(Boolean(groupBrief?.groupSize))
 
   const togglePublic = useCallback(async () => {
-    if (!trip) return
-    await fetch(`/api/trips/${tripId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_public: !trip.is_public }),
-    })
-    await refetch()
-  }, [tripId, trip, refetch])
+    if (!trip || !canEditTrip) return
+    setActionError(null)
+    try {
+      const response = await fetch(`/api/trips/${tripId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_public: !trip.is_public }),
+      })
+      if (!response.ok) throw new Error('Share setting failed')
+      await refetch()
+    } catch {
+      setActionError('Could not update sharing for this trip. Make sure you are using the account or guest session that created it.')
+    }
+  }, [tripId, trip, refetch, canEditTrip])
 
   const saveTrip = useCallback(async () => {
     if (!trip || isSavingTrip) return
+    if (!canEditTrip) {
+      setActionError('This is a shared trip preview. Start your own trip to save an editable copy.')
+      return
+    }
 
     setIsSavingTrip(true)
     setSaveDone(false)
+    setActionError(null)
     try {
-      await fetch(`/api/trips/${tripId}`, {
+      const response = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: trip.title || 'Trip workspace' }),
       })
+      if (!response.ok) throw new Error('Save failed')
       await refetch()
       setSaveDone(true)
       setTimeout(() => setSaveDone(false), 2600)
+    } catch {
+      setActionError('Could not save this trip. If this is a shared itinerary, start your own copy first.')
     } finally {
       setIsSavingTrip(false)
     }
-  }, [tripId, trip, refetch, isSavingTrip])
+  }, [tripId, trip, refetch, isSavingTrip, canEditTrip])
 
   const copyInviteLink = useCallback(async () => {
     if (!shareUrl) return
@@ -395,16 +439,22 @@ function TripStudioPageContent() {
 
   const shareWithFriends = useCallback(async () => {
     if (!trip || isSharingTrip) return
+    if (!canEditTrip) {
+      setActionError('This is a shared trip preview. Use the public share page to send this itinerary to friends.')
+      return
+    }
 
     setIsSharingTrip(true)
     setShareDone(false)
+    setActionError(null)
     try {
       if (!trip.is_public) {
-        await fetch(`/api/trips/${tripId}`, {
+        const response = await fetch(`/api/trips/${tripId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ is_public: true }),
         })
+        if (!response.ok) throw new Error('Share failed')
         await refetch()
       }
 
@@ -422,10 +472,12 @@ function TripStudioPageContent() {
 
       setShareDone(true)
       setTimeout(() => setShareDone(false), 2800)
+    } catch {
+      setActionError('Could not create a share link for this trip. Make sure you are using the account or guest session that created it.')
     } finally {
       setIsSharingTrip(false)
     }
-  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage])
+  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip])
 
   const latestWorkflowJob = workflowJobs[0]
 
@@ -561,7 +613,7 @@ function TripStudioPageContent() {
             </button>
             <button
               onClick={() => handleOptimize()}
-              disabled={isOptimizing}
+              disabled={isOptimizing || !canEditTrip}
               className={cn(
                 'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
                 optimizeDone
@@ -579,7 +631,7 @@ function TripStudioPageContent() {
             </button>
             <button
               onClick={hydrateMaps}
-              disabled={isHydratingMaps}
+              disabled={isHydratingMaps || !canEditTrip}
               className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
               title="Repair or rebuild day map locations and routes"
             >
@@ -611,6 +663,15 @@ function TripStudioPageContent() {
               </Link>
             )}
           </div>
+          {actionError ? (
+            <p className="w-full rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-xs text-[var(--terracotta)] lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
+              {actionError}
+            </p>
+          ) : !canEditTrip ? (
+            <p className="w-full rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62 lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
+              Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save.
+            </p>
+          ) : null}
         </motion.div>
       </div>
 
@@ -820,7 +881,7 @@ function TripStudioPageContent() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="fixed inset-x-3 bottom-3 top-24 z-40 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-20 xl:w-[360px]"
+            className="fixed inset-x-3 bottom-3 top-24 z-50 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-50 xl:w-[360px]"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}
@@ -897,8 +958,10 @@ function TripStudioPageContent() {
             onBulkOps={onBulkOps}
             onRegenerateDay={handleRegenerateDay}
             onSwapItem={handleSwapItem}
+            onApplySwapItem={handleApplySwapItem}
             onOptimize={handleOptimize}
             isLoading={isLoading}
+            readOnly={!canEditTrip}
           />
         </div>
       </motion.div>

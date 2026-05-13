@@ -48,24 +48,19 @@ function getBrowserGuestId() {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const initialGuestId = getBrowserGuestId()
-  const [user, setUser] = useState<User | null>(
-    isDevAuthBypassEnabled ? devUser : initialGuestId ? createGuestUser(initialGuestId) : null
-  )
-  const [profile, setProfile] = useState<Profile | null>(
-    isDevAuthBypassEnabled ? devProfile : initialGuestId ? createGuestProfile(initialGuestId) : null
-  )
-  const [isLoading, setIsLoading] = useState(!isDevAuthBypassEnabled && !initialGuestId)
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const supabase = createClient()
 
   const fetchProfile = useCallback(async (userId: string) => {
-    if (isDevAuthBypassEnabled) {
-      setProfile(devProfile)
-      return
-    }
     const guestId = getBrowserGuestId()
     if (guestId) {
       setProfile(createGuestProfile(guestId))
+      return
+    }
+    if (isDevAuthBypassEnabled) {
+      setProfile(devProfile)
       return
     }
 
@@ -78,29 +73,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase])
 
   const refreshProfile = useCallback(async () => {
-    if (isDevAuthBypassEnabled) {
-      setProfile(devProfile)
-      return
-    }
     const guestId = getBrowserGuestId()
     if (guestId) {
       setProfile(createGuestProfile(guestId))
+      return
+    }
+    if (isDevAuthBypassEnabled) {
+      setProfile(devProfile)
       return
     }
     if (user) await fetchProfile(user.id)
   }, [user, fetchProfile])
 
   useEffect(() => {
-    if (isDevAuthBypassEnabled) {
-      return
-    }
-
-    if (getBrowserGuestId()) {
-      return
-    }
+    let cancelled = false
 
     const getUser = async () => {
+      const guestId = getBrowserGuestId()
+      if (guestId) {
+        if (!cancelled) {
+          setUser(createGuestUser(guestId))
+          setProfile(createGuestProfile(guestId))
+          setIsLoading(false)
+        }
+        return
+      }
+
+      if (isDevAuthBypassEnabled) {
+        if (!cancelled) {
+          setUser(devUser)
+          setProfile(devProfile)
+          setIsLoading(false)
+        }
+        return
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
+      if (cancelled) return
       setUser(user)
       if (user) await fetchProfile(user.id)
       setIsLoading(false)
@@ -120,17 +129,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      cancelled = true
+      subscription.unsubscribe()
+    }
   }, [supabase, fetchProfile])
 
   const signOut = async () => {
-    if (isDevAuthBypassEnabled) {
+    if (getBrowserGuestId()) {
+      document.cookie = `${GUEST_SESSION_COOKIE}=; path=/; max-age=0`
       setUser(null)
       setProfile(null)
       return
     }
-    if (getBrowserGuestId()) {
-      document.cookie = `${GUEST_SESSION_COOKIE}=; path=/; max-age=0`
+    if (isDevAuthBypassEnabled) {
       setUser(null)
       setProfile(null)
       return

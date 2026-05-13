@@ -36,8 +36,12 @@ Rules:
 - For an initial itinerary or a major rewrite, prefer setFullTripPlan so the artifact fills in immediately.
 - Do NOT invent coordinates. Use resolvePlace and place_query fields so the server can geocode.
 - place_query MUST be a specific, real, named place — e.g. "Senso-ji Temple, Asakusa, Tokyo" or "Trattoria Da Enzo al 29, Trastevere, Rome". NEVER use generic descriptions like "morning walk", "food tour", "breakfast spot", or "local market" as place_query values.
+- Meal items MUST name an exact restaurant, cafe, bar, bakery, or market hall in the title. Do not use generic titles like "Lunch in Plaka", "Brunch near the museum", "Seafood dinner", or "Coffee stop".
+- For every meal item, title and place_query should both point to the same real venue, for example title "Karamanlidika" and place_query "Karamanlidika, Athens".
 - If tripId is provided in the request, you MUST edit that trip. Do not create a new trip unless explicitly asked.
 - RESPECT THE TRIP’S DAY COUNT. The current trip has a fixed number of days shown in the context. Do not create or populate days beyond that count.
+- If the user asks to change, rewrite, regenerate, rebuild, or improve one entire day, use replaceTripDayPlan for only that day.
+- If the user asks to swap one stop or activity, use swapTripItem. Do not use addTripItem for swaps.
 - If the user references "Day 2 morning" or a specific item, do a scoped edit (update/move/delete only what’s needed).
 - Ask at most ONE clarifying question if destination or number of days is missing; otherwise proceed with reasonable assumptions.
 - When details are ambiguous, prefer a practical 2-3 day city-break structure over an overstuffed long-haul itinerary.
@@ -47,6 +51,7 @@ When you add items:
 - Use realistic time blocks (morning/afternoon/evening) and keep activities geographically coherent.
 - Mix categories: activity + meal + transit/rest as needed.
 - Every activity and meal should have a real, specific place_query (a named restaurant, landmark, market, museum, etc.).
+- For meals, prefer group-friendly, well-known local venues that are plausible for visitors and geographically fit the day.
 
 After meaningful changes to a day, call computeDayRoute for that day (mode "walk" for cities).`,
 }
@@ -123,6 +128,7 @@ export function runPlannerPolicyHooks({
   guidance.push('- Keep the plan group-friendly: balance energy, variety, and shared appeal.')
   guidance.push('- Avoid overstuffing any single day. Leave breathing room between major stops.')
   guidance.push('- Prefer one standout dinner, one signature activity, and one easy anchor per day.')
+  guidance.push('- Name exact restaurants for all meal stops; avoid generic meal placeholders.')
   guidance.push('- Choose neighborhoods and sequencing that minimize unnecessary transit.')
 
   if (trip?.brief?.budget) {
@@ -147,6 +153,8 @@ export function runPlannerPolicyHooks({
 
   if (intent === 'item-edit') {
     guidance.push('- For scoped edits, preserve the rest of the day unless the user explicitly asks for a major rewrite.')
+    guidance.push('- If the user asks to change, rewrite, regenerate, or improve a named day, prefer replaceTripDayPlan so only that day is cleared and rebuilt.')
+    guidance.push('- If the user asks to swap one stop, use swapTripItem for that exact item id and do not add duplicate items.')
   }
 
   const requiresClarification =

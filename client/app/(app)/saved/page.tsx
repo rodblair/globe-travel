@@ -285,6 +285,9 @@ function SavedPageContent() {
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-foreground/45">
                   Build an itinerary in Planner, then use Save trip to keep it here for later.
                 </p>
+                <p className="mt-3 max-w-md text-xs leading-relaxed text-foreground/45">
+                  If you opened a friend&apos;s shared link, that trip stays on its public review page until you create or save your own version.
+                </p>
                 <Link
                   href="/chat"
                   className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"

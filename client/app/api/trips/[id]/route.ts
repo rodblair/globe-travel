@@ -51,6 +51,10 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
 
   if (tripErr) return NextResponse.json({ error: tripErr.message }, { status: 500 })
   if (!trip) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const isOwner = trip.user_id === user.id
+  if (!isOwner && !trip.is_public) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
 
   const { data: days, error: daysErr } = await supabase
     .from('trip_days')
@@ -108,7 +112,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
     routes: byDayRoutes.get(d.id) || [],
   }))
 
-  return NextResponse.json({ trip, days: resultDays })
+  return NextResponse.json({ trip: { ...trip, is_owner: isOwner }, days: resultDays })
 }
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
@@ -126,10 +130,12 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     .from('trips')
     .update({ ...parsed.data, updated_at: new Date().toISOString() })
     .eq('id', id)
+    .eq('user_id', user.id)
     .select('id')
-    .single()
+    .maybeSingle()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json({ ok: true, id: data.id })
 }
 

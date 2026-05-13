@@ -51,6 +51,78 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
+async function resolvePlannerPlace({
+  db,
+  token,
+  placeQuery,
+  destinationLabel,
+  destinationAnchor,
+}: {
+  db: any
+  token: string
+  placeQuery?: string
+  destinationLabel?: string | null
+  destinationAnchor?: { latitude: number; longitude: number } | null
+}) {
+  if (!placeQuery) return null
+
+  const queryCandidates = Array.from(
+    new Set(
+      [
+        destinationLabel &&
+        !placeQuery.toLowerCase().includes(destinationLabel.toLowerCase())
+          ? `${placeQuery}, ${destinationLabel}`
+          : '',
+        placeQuery,
+      ].filter(Boolean)
+    )
+  )
+
+  for (const query of queryCandidates) {
+    const result = await geocodePlace(query, token)
+    if (!result) continue
+
+    const tooFar = destinationAnchor != null &&
+      haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > 120
+
+    if (tooFar) continue
+
+    const { data: place, error } = await db
+      .from('places')
+      .upsert(
+        {
+          name: result.name,
+          country: result.country,
+          country_code: result.country_code || null,
+          latitude: result.latitude,
+          longitude: result.longitude,
+          mapbox_id: result.mapbox_place_id,
+        },
+        { onConflict: 'mapbox_id' }
+      )
+      .select('id,name')
+      .single()
+
+    if (!error && place?.id) return place as { id: string; name: string }
+    if (error) console.error('[resolvePlannerPlace] places upsert error (continuing without place)', error.message)
+  }
+
+  return null
+}
+
+function shouldUseResolvedPlaceTitle(type: string, title: string, placeName?: string | null) {
+  if (type !== 'meal' || !placeName) return false
+  if (title.toLowerCase().includes(placeName.toLowerCase())) return false
+
+  return /\b(breakfast|brunch|lunch|dinner|drinks?|coffee|cafe|café|meal|food|seafood|rooftop|taverna|restaurant|bar)\b/i.test(title)
+}
+
+function normalizeTripItemType(type?: string | null) {
+  if (type === 'transit') return 'transport'
+  if (type === 'note') return 'activity'
+  return type || 'activity'
+}
+
 
 async function computeAndStoreDayRoute(
   supabase: any,
@@ -342,7 +414,7 @@ export async function POST(req: Request) {
         inputSchema: z.object({
           trip_id: z.string().uuid().optional(),
           day_index: z.number().int().min(1),
-          type: z.enum(['activity', 'meal', 'lodging', 'transit', 'note']),
+          type: z.enum(['activity', 'meal', 'lodging', 'transport', 'transit', 'note']),
           title: z.string(),
           place_query: z.string().optional().describe('Optional place query to geocode and attach'),
           start_time: z.string().optional().describe('HH:MM'),
@@ -356,30 +428,14 @@ export async function POST(req: Request) {
           const dayId = await ensureTripDay(db, tid, day_index)
           const token = mapboxToken
 
-          let placeId: string | null = null
-          if (place_query) {
-            if (token) {
-              const result = await geocodePlace(place_query, token)
-              if (result) {
-                const { data: place } = await db
-                  .from('places')
-                  .upsert(
-                    {
-                      name: result.name,
-                      country: result.country,
-                      country_code: result.country_code || null,
-                      latitude: result.latitude,
-                      longitude: result.longitude,
-                      mapbox_id: result.mapbox_place_id,
-                    },
-                    { onConflict: 'mapbox_id' }
-                  )
-                  .select('id')
-                  .single()
-                if (place?.id) placeId = place.id
-              }
-            }
-          }
+          const { data: trip } = await db.from('trips').select('title').eq('id', tid).maybeSingle()
+          const destinationLabel = extractDestinationFromTitle(trip?.title)
+          const destinationAnchor = token && destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const place = token
+            ? await resolvePlannerPlace({ db, token, placeQuery: place_query, destinationLabel, destinationAnchor })
+            : null
+          const normalizedType = normalizeTripItemType(type)
+          const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, title, place?.name) ? place!.name : title
 
           const { data: existing, error: maxErr } = await db
             .from('trip_items')
@@ -395,9 +451,9 @@ export async function POST(req: Request) {
             .from('trip_items')
             .insert({
               trip_day_id: dayId,
-              type,
-              title,
-              place_id: placeId,
+              type: normalizedType,
+              title: itemTitle,
+              place_id: place?.id || null,
               start_time: start_time ?? null,
               end_time: end_time ?? null,
               duration_minutes: duration_minutes ?? null,
@@ -430,7 +486,7 @@ export async function POST(req: Request) {
             date: z.string().optional(),
             notes: z.string().optional(),
             items: z.array(z.object({
-              type: z.enum(['activity', 'meal', 'lodging', 'transit', 'note']),
+              type: z.enum(['activity', 'meal', 'lodging', 'transport', 'transit', 'note']),
               title: z.string(),
               place_query: z.string().optional(),
               start_time: z.string().optional(),
@@ -469,6 +525,10 @@ export async function POST(req: Request) {
 
           for (const day of days) {
             const tripDayId = await ensureTripDay(db, tid, day.day_index)
+            const { count: existingItemCount } = await db
+              .from('trip_items')
+              .select('id', { count: 'exact', head: true })
+              .eq('trip_day_id', tripDayId)
 
             const { error: dayErr } = await db
               .from('trip_days')
@@ -480,6 +540,11 @@ export async function POST(req: Request) {
               .eq('id', tripDayId)
             if (dayErr) return JSON.stringify({ kind: 'error', message: dayErr.message })
 
+            if (day.items.length === 0 && (existingItemCount || 0) > 0) {
+              console.warn('[setFullTripPlan] skipped clearing populated day with empty items payload', JSON.stringify({ tripId: tid, day_index: day.day_index }))
+              continue
+            }
+
             if (clear_existing) {
               await db.from('trip_items').delete().eq('trip_day_id', tripDayId)
               await db.from('trip_routes').delete().eq('trip_day_id', tripDayId)
@@ -488,62 +553,23 @@ export async function POST(req: Request) {
             console.log('[setFullTripPlan] day', day.day_index, 'items count:', day.items.length)
             for (let index = 0; index < day.items.length; index++) {
               const item = day.items[index]
-              let placeId: string | null = null
-
-              if (item.place_query) {
-                const queryCandidates = Array.from(
-                  new Set(
-                    [
-                      destinationLabel &&
-                      !item.place_query.toLowerCase().includes(destinationLabel.toLowerCase())
-                        ? `${item.place_query}, ${destinationLabel}`
-                        : '',
-                      item.place_query,
-                    ].filter(Boolean)
-                  )
-                )
-
-                for (const query of queryCandidates) {
-                  const result = await geocodePlace(query, token)
-                  if (!result) continue
-
-                  // Reject geocode results that are > 120 km from the trip's destination anchor
-                  const tooFar = destinationAnchor != null &&
-                    haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > 120
-
-                  if (tooFar) continue
-
-                  const { data: place, error: placeErr } = await db
-                    .from('places')
-                    .upsert(
-                      {
-                        name: result.name,
-                        country: result.country,
-                        country_code: result.country_code || null,
-                        latitude: result.latitude,
-                        longitude: result.longitude,
-                        mapbox_id: result.mapbox_place_id,
-                      },
-                      { onConflict: 'mapbox_id' }
-                    )
-                    .select('id')
-                    .single()
-                  if (placeErr) {
-                    console.error('[setFullTripPlan] places upsert error (continuing without place)', placeErr.message)
-                  } else {
-                    placeId = place?.id || null
-                    break
-                  }
-                }
-              }
+              const place = await resolvePlannerPlace({
+                db,
+                token,
+                placeQuery: item.place_query,
+                destinationLabel,
+                destinationAnchor,
+              })
+              const normalizedType = normalizeTripItemType(item.type)
+              const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
 
               const { error: itemErr } = await db
                 .from('trip_items')
                 .insert({
                   trip_day_id: tripDayId,
-                  type: item.type,
-                  title: item.title,
-                  place_id: placeId,
+                  type: normalizedType,
+                  title: itemTitle,
+                  place_id: place?.id || null,
                   start_time: item.start_time ?? null,
                   end_time: item.end_time ?? null,
                   duration_minutes: item.duration_minutes ?? null,
@@ -560,6 +586,171 @@ export async function POST(req: Request) {
             await computeAndStoreDayRoute(db, tripDayId, token, 'walk')
           }
 
+          return tripPatch(tid)
+        },
+      }),
+
+      replaceTripDayPlan: tool({
+        description: 'Replace the itinerary for one existing day only. Use this when the user asks to change, rewrite, regenerate, rebuild, or improve a named day such as "change Day 1". This clears only that day, inserts the revised items, recomputes that day route, and leaves all other days untouched.',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          day_index: z.number().int().min(1),
+          title: z.string().optional(),
+          date: z.string().optional(),
+          notes: z.string().optional(),
+          items: z.array(z.object({
+            type: z.enum(['activity', 'meal', 'lodging', 'transport', 'transit', 'note']),
+            title: z.string(),
+            place_query: z.string().optional(),
+            start_time: z.string().optional(),
+            end_time: z.string().optional(),
+            duration_minutes: z.number().int().min(0).max(1440).optional(),
+            notes: z.string().optional(),
+          })).min(1),
+        }),
+        execute: async ({ trip_id, day_index, title, date, notes, items }) => {
+          const tid = tripId || trip_id
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+
+          const token = mapboxToken
+          if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
+
+          const [{ data: existingTrip }, { data: existingDay, error: dayLookupErr }] = await Promise.all([
+            db.from('trips').select('title').eq('id', tid).maybeSingle(),
+            db
+              .from('trip_days')
+              .select('id,day_index')
+              .eq('trip_id', tid)
+              .eq('day_index', day_index)
+              .maybeSingle(),
+          ])
+
+          if (dayLookupErr) return JSON.stringify({ kind: 'error', message: dayLookupErr.message })
+          if (!existingDay?.id) {
+            return JSON.stringify({
+              kind: 'error',
+              message: `Day ${day_index} does not exist on this trip. Do not create extra days unless the user explicitly changes the trip length.`,
+            })
+          }
+
+          const destinationLabel = extractDestinationFromTitle(existingTrip?.title)
+          const destinationAnchor = destinationLabel ? await geocodePlace(destinationLabel, token) : null
+
+          const { error: dayErr } = await db
+            .from('trip_days')
+            .update({
+              title: title ?? null,
+              date: date ?? null,
+              notes: notes ?? null,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', existingDay.id)
+          if (dayErr) return JSON.stringify({ kind: 'error', message: dayErr.message })
+
+          await db.from('trip_items').delete().eq('trip_day_id', existingDay.id)
+          await db.from('trip_routes').delete().eq('trip_day_id', existingDay.id)
+
+          for (let index = 0; index < items.length; index++) {
+            const item = items[index]
+            const place = await resolvePlannerPlace({
+              db,
+              token,
+              placeQuery: item.place_query,
+              destinationLabel,
+              destinationAnchor,
+            })
+            const normalizedType = normalizeTripItemType(item.type)
+            const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
+
+            const { error: itemErr } = await db
+              .from('trip_items')
+              .insert({
+                trip_day_id: existingDay.id,
+                type: normalizedType,
+                title: itemTitle,
+                place_id: place?.id || null,
+                start_time: item.start_time ?? null,
+                end_time: item.end_time ?? null,
+                duration_minutes: item.duration_minutes ?? null,
+                notes: item.notes ?? null,
+                order_index: index,
+              })
+            if (itemErr) {
+              console.error('[replaceTripDayPlan] item insert error:', itemErr.message, JSON.stringify({ trip_day_id: existingDay.id, type: item.type, title: item.title }))
+              return JSON.stringify({ kind: 'error', message: itemErr.message })
+            }
+          }
+
+          await computeAndStoreDayRoute(db, existingDay.id, token, 'walk')
+          return tripPatch(tid)
+        },
+      }),
+
+      swapTripItem: tool({
+        description: 'Swap one existing itinerary item for one better replacement. This updates exactly one item by id, requires a specific real place_query, recomputes that day route, and must not add duplicate items.',
+        inputSchema: z.object({
+          trip_id: z.string().uuid().optional(),
+          item_id: z.string().uuid(),
+          title: z.string().describe('Exact visible title for the replacement. For meals, this must be the real restaurant/cafe/bar/bakery/market hall name.'),
+          place_query: z.string().describe('Specific real place query to geocode and attach, e.g. "Karamanlidika, Athens"'),
+          notes: z.string().optional(),
+          start_time: z.string().optional(),
+          end_time: z.string().optional(),
+          duration_minutes: z.number().int().min(0).max(1440).optional(),
+          type: z.enum(['activity', 'meal', 'lodging', 'transport', 'transit', 'note']).optional(),
+        }),
+        execute: async ({ trip_id, item_id, title, place_query, notes, start_time, end_time, duration_minutes, type }) => {
+          const tid = tripId || trip_id
+          if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
+          const token = mapboxToken
+          if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
+
+          const { data: currentItem, error: currentErr } = await db
+            .from('trip_items')
+            .select('trip_day_id,type,title,trip_day:trip_days(trip_id,trip:trips(title))')
+            .eq('id', item_id)
+            .maybeSingle()
+          if (currentErr) return JSON.stringify({ kind: 'error', message: currentErr.message })
+          if (!currentItem?.trip_day_id) return JSON.stringify({ kind: 'error', message: 'Item not found' })
+
+          const currentItemRecord = currentItem as any
+          const destinationTitle = Array.isArray(currentItemRecord?.trip_day)
+            ? currentItemRecord.trip_day[0]?.trip?.title
+            : currentItemRecord?.trip_day?.trip?.title
+          const destinationLabel = extractDestinationFromTitle(destinationTitle)
+          const destinationAnchor = destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const resolvedPlace = await resolvePlannerPlace({
+            db,
+            token,
+            placeQuery: place_query,
+            destinationLabel,
+            destinationAnchor,
+          })
+          if (!resolvedPlace?.id) {
+            return JSON.stringify({ kind: 'error', message: `Could not resolve replacement place: ${place_query}` })
+          }
+
+          const resolvedType = normalizeTripItemType(type || currentItem.type)
+          const resolvedTitle = shouldUseResolvedPlaceTitle(resolvedType, title, resolvedPlace.name)
+            ? resolvedPlace.name
+            : title
+          const updateFields = {
+            title: resolvedTitle,
+            place_id: resolvedPlace.id,
+            ...(notes != null ? { notes } : {}),
+            ...(start_time != null ? { start_time } : {}),
+            ...(end_time != null ? { end_time } : {}),
+            ...(duration_minutes != null ? { duration_minutes } : {}),
+            type: resolvedType,
+            updated_at: new Date().toISOString(),
+          }
+          const { error } = await db
+            .from('trip_items')
+            .update(updateFields)
+            .eq('id', item_id)
+          if (error) return JSON.stringify({ kind: 'error', message: error.message })
+
+          await computeAndStoreDayRoute(db, currentItem.trip_day_id, token, 'walk')
           return tripPatch(tid)
         },
       }),
@@ -599,30 +790,60 @@ export async function POST(req: Request) {
       }),
 
       updateTripItem: tool({
-        description: 'Update fields on an existing itinerary item.',
+        description: 'Update fields on an existing itinerary item. Include place_query when swapping to a different real venue or attraction so the item can be geocoded and pinned.',
         inputSchema: z.object({
           trip_id: z.string().uuid().optional(),
           item_id: z.string().uuid(),
           title: z.string().optional(),
+          place_query: z.string().optional().describe('Specific real place query to geocode and attach, e.g. "Karamanlidika, Athens"'),
           notes: z.string().optional(),
           start_time: z.string().optional(),
           end_time: z.string().optional(),
           duration_minutes: z.number().int().min(0).max(1440).optional(),
-          type: z.enum(['activity', 'meal', 'lodging', 'transit', 'note']).optional(),
+          type: z.enum(['activity', 'meal', 'lodging', 'transport', 'transit', 'note']).optional(),
         }),
-        execute: async ({ trip_id, item_id, ...fields }) => {
+        execute: async ({ trip_id, item_id, place_query, ...fields }) => {
           const tid = tripId || trip_id
           if (!tid) return JSON.stringify({ kind: 'error', message: 'Missing trip id' })
           const token = mapboxToken
           const { data: currentItem, error: currentErr } = await db
             .from('trip_items')
-            .select('trip_day_id')
+            .select('trip_day_id,type,title,trip_day:trip_days(trip_id,trip:trips(title))')
             .eq('id', item_id)
             .maybeSingle()
           if (currentErr) return JSON.stringify({ kind: 'error', message: currentErr.message })
+          const currentItemRecord = currentItem as any
+          const destinationTitle = Array.isArray(currentItemRecord?.trip_day)
+            ? currentItemRecord.trip_day[0]?.trip?.title
+            : currentItemRecord?.trip_day?.trip?.title
+          const destinationLabel = extractDestinationFromTitle(destinationTitle)
+          const destinationAnchor = token && destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const resolvedPlace = token && place_query
+            ? await resolvePlannerPlace({
+                db,
+                token,
+                placeQuery: place_query,
+                destinationLabel,
+                destinationAnchor,
+              })
+            : null
+          const resolvedType = normalizeTripItemType(fields.type || currentItem?.type)
+          const resolvedTitle =
+            shouldUseResolvedPlaceTitle(resolvedType, fields.title || currentItem?.title || '', resolvedPlace?.name)
+              ? resolvedPlace!.name
+              : fields.title
+          const safeFields = { ...fields }
+          delete safeFields.type
+          const updateFields = {
+            ...safeFields,
+            type: resolvedType,
+            ...(resolvedTitle ? { title: resolvedTitle } : {}),
+            ...(resolvedPlace?.id ? { place_id: resolvedPlace.id } : {}),
+            updated_at: new Date().toISOString(),
+          }
           const { error } = await db
             .from('trip_items')
-            .update({ ...fields, updated_at: new Date().toISOString() })
+            .update(updateFields)
             .eq('id', item_id)
           if (error) return JSON.stringify({ kind: 'error', message: error.message })
           if (token && currentItem?.trip_day_id) {

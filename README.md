@@ -21,6 +21,9 @@ Next.js 15, React Three Fiber, Mapbox GL, Supabase, FastAPI
 # client
 cd client && npm i && npm run dev
 
+# mobile
+cd mobile && npm i && npm run ios
+
 # server
 cd server && pip install -r requirements.txt && python server.py
 ```

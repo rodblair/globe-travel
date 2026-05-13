@@ -25,7 +25,7 @@ export type TripDay = {
 export type TripItem = {
   id: string
   trip_day_id: string
-  type: 'activity' | 'meal' | 'lodging' | 'transit' | 'note'
+  type: 'activity' | 'meal' | 'lodging' | 'transport' | 'transit' | 'note'
   title: string
   start_time: string | null
   end_time: string | null
@@ -41,6 +41,13 @@ export type TripItem = {
   } | null
 }
 
+export type SwapCandidate = {
+  id: string
+  title: string
+  notes: string
+  type: 'activity' | 'meal' | 'lodging' | 'transport'
+}
+
 type ItineraryArtifactProps = {
   tripTitle: string
   days: TripDay[]
@@ -49,10 +56,19 @@ type ItineraryArtifactProps = {
   onSelectItem?: (item: TripItem) => void
   onBulkOps: (ops: any[]) => Promise<void>
   onRegenerateDay?: (dayIndex: number) => void
-  onSwapItem?: (item: TripItem) => void
+  onSwapItem?: (item: TripItem, preference: string) => Promise<SwapCandidate[]> | SwapCandidate[]
+  onApplySwapItem?: (item: TripItem, choiceId: string) => Promise<void> | void
   onOptimize?: (dayIndex: number) => Promise<void>
   isLoading?: boolean
+  readOnly?: boolean
 }
+
+const SWAP_OPTIONS = [
+  { label: 'Similar nearby', value: 'similar nearby option with the same general vibe and less friction' },
+  { label: 'More relaxed', value: 'more relaxed option with less walking and more breathing room' },
+  { label: 'More iconic', value: 'more iconic, memorable, must-see option that still fits the day' },
+  { label: 'Better food', value: 'better food or drink option nearby, group-friendly and realistic' },
+] as const
 
 function timeChip(start: string | null, end: string | null) {
   if (!start && !end) return null
@@ -74,8 +90,10 @@ export default function ItineraryArtifact({
   onBulkOps,
   onRegenerateDay,
   onSwapItem,
+  onApplySwapItem,
   onOptimize,
   isLoading,
+  readOnly = false,
 }: ItineraryArtifactProps) {
   const selectedDay = useMemo(
     () => days.find((d) => d.day_index === selectedDayIndex) || days[0],
@@ -85,12 +103,92 @@ export default function ItineraryArtifact({
   const [dragOverItemId, setDragOverItemId] = useState<string | null>(null)
   const [editingItemId, setEditingItemId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState<string>('')
+  const [swapMenuItemId, setSwapMenuItemId] = useState<string | null>(null)
+  const [swappingItemId, setSwappingItemId] = useState<string | null>(null)
+  const [swapOptionsByItemId, setSwapOptionsByItemId] = useState<Record<string, SwapCandidate[]>>({})
+  const [swapErrorByItemId, setSwapErrorByItemId] = useState<Record<string, string>>({})
+  const [swapSuccessByItemId, setSwapSuccessByItemId] = useState<Record<string, string>>({})
+  const [swapNotice, setSwapNotice] = useState<string | null>(null)
+  const [applyingSwapId, setApplyingSwapId] = useState<string | null>(null)
   const [mapExpanded, setMapExpanded] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
 
+  const handleSwapChoice = async (item: TripItem, preference: string) => {
+    if (!onSwapItem || swappingItemId) return
+    setSwappingItemId(item.id)
+    setSwapMenuItemId(null)
+    setSwapErrorByItemId((current) => ({ ...current, [item.id]: '' }))
+    setSwapSuccessByItemId((current) => ({ ...current, [item.id]: '' }))
+    setSwapNotice('Finding similar places...')
+    try {
+      const options = await onSwapItem(item, preference)
+      setSwapOptionsByItemId((current) => ({ ...current, [item.id]: options }))
+      setSwapNotice(options.length ? 'Choose one of the replacements below.' : 'No replacements found yet.')
+    } catch {
+      setSwapNotice('Could not find swap ideas.')
+      setSwapErrorByItemId((current) => ({
+        ...current,
+        [item.id]: 'Could not find swap ideas. Try the planner chat for a custom request.',
+      }))
+    } finally {
+      setSwappingItemId((current) => (current === item.id ? null : current))
+    }
+  }
+
+  const applySwapChoice = async (item: TripItem, choiceId: string) => {
+    if (!onApplySwapItem || applyingSwapId) return
+    const selectedOption = swapOptionsByItemId[item.id]?.find((option) => option.id === choiceId)
+    setApplyingSwapId(`${item.id}:${choiceId}`)
+    setSwapErrorByItemId((current) => ({ ...current, [item.id]: '' }))
+    setSwapOptionsByItemId((current) => {
+      const next = { ...current }
+      delete next[item.id]
+      return next
+    })
+    if (selectedOption) {
+      setSwapNotice(`Swapping to ${selectedOption.title}...`)
+      setSwapSuccessByItemId((current) => ({
+        ...current,
+        [item.id]: `Swapping to ${selectedOption.title}...`,
+      }))
+    }
+    try {
+      await onApplySwapItem(item, choiceId)
+      if (selectedOption) {
+        setSwapNotice(`Swapped to ${selectedOption.title}`)
+        setSwapSuccessByItemId((current) => ({
+          ...current,
+          [item.id]: `Swapped to ${selectedOption.title}`,
+        }))
+        setTimeout(() => {
+          setSwapNotice((current) => (current === `Swapped to ${selectedOption.title}` ? null : current))
+          setSwapSuccessByItemId((current) => {
+            if (current[item.id] !== `Swapped to ${selectedOption.title}`) return current
+            const next = { ...current }
+            delete next[item.id]
+            return next
+          })
+        }, 4500)
+      }
+    } catch {
+      setSwapNotice('Could not apply that swap.')
+      setSwapSuccessByItemId((current) => {
+        const next = { ...current }
+        delete next[item.id]
+        return next
+      })
+      setSwapErrorByItemId((current) => ({
+        ...current,
+        [item.id]: 'Could not apply that swap. Please try another option.',
+      }))
+    } finally {
+      setApplyingSwapId(null)
+    }
+  }
+
   const handleOptimize = async () => {
-    if (!selectedDay || !onOptimize || isOptimizing) return
+    if (readOnly || !selectedDay || !onOptimize || isOptimizing) return
     setIsOptimizing(true)
     setOptimizeDone(false)
     try {
@@ -217,7 +315,7 @@ export default function ItineraryArtifact({
             <h2 className="truncate text-base font-medium text-foreground">{tripTitle}</h2>
           </div>
           <div className="flex items-center gap-2">
-            {onOptimize && (
+            {!readOnly && onOptimize && (
               <button
                 onClick={handleOptimize}
                 disabled={isOptimizing}
@@ -237,14 +335,16 @@ export default function ItineraryArtifact({
                 {isOptimizing ? 'Optimizing…' : optimizeDone ? 'Optimized!' : 'Optimize'}
               </button>
             )}
-            <button
-              onClick={() => onRegenerateDay?.(selectedDay.day_index)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
-              title="Regenerate this day"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              Regen
-            </button>
+            {!readOnly && onRegenerateDay && (
+              <button
+                onClick={() => onRegenerateDay(selectedDay.day_index)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                title="Rewrite this day only, leaving the rest of the trip unchanged"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Rewrite day
+              </button>
+            )}
           </div>
         </div>
 
@@ -267,6 +367,15 @@ export default function ItineraryArtifact({
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
+        {swapNotice && (
+          <div className="rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)]/70 px-4 py-3 text-sm font-semibold text-[var(--moss)] shadow-[var(--panel-shadow)]">
+            <span className="inline-flex items-center gap-2">
+              <Check className="h-4 w-4" />
+              {swapNotice}
+            </span>
+          </div>
+        )}
+
         {selectedDayMap && (
           <div className="rounded-[26px] border border-rule bg-paper-recessed/60 p-3.5">
             <div className="flex items-center justify-between gap-3">
@@ -369,19 +478,26 @@ export default function ItineraryArtifact({
                     <h3 className="mt-1 text-sm font-medium text-foreground">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
                     <p className="mt-1 text-xs text-foreground/62">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
                   </div>
-                  <button
-                    onClick={() => onRegenerateDay?.(day.day_index)}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Regenerate day
-                  </button>
+                  {!readOnly && onRegenerateDay && (
+                    <button
+                      onClick={() => onRegenerateDay(day.day_index)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                      title="Rewrite this day only, leaving the rest of the trip unchanged"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Rewrite this day
+                    </button>
+                  )}
                 </div>
 
                 <div className="mt-4 space-y-2">
                   <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => handleDropOnList(day.day_index, sortedItems, 0, e)}
+                    onDragOver={(e) => {
+                      if (!readOnly) e.preventDefault()
+                    }}
+                    onDrop={(e) => {
+                      if (!readOnly) handleDropOnList(day.day_index, sortedItems, 0, e)
+                    }}
                     className="h-2 rounded-lg"
                   />
 
@@ -393,9 +509,10 @@ export default function ItineraryArtifact({
                     return (
                     <div key={item.id}>
                       <div
-                        draggable
+                        draggable={!readOnly}
                         onDragStart={(e) => handleDragStart(item, day.day_index, e)}
                         onDragOver={(e) => {
+                          if (readOnly) return
                           e.preventDefault()
                           setSelectedDayIndex(day.day_index)
                           setDragOverItemId(item.id)
@@ -403,16 +520,20 @@ export default function ItineraryArtifact({
                         onDragLeave={() => {
                           setDragOverItemId((prev) => (prev === item.id ? null : prev))
                         }}
-                        onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index, e)}
+                        onDrop={(e) => {
+                          if (!readOnly) handleDropOnList(day.day_index, sortedItems, index, e)
+                        }}
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
                           dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]' : 'border-rule bg-paper-recessed hover:border-rule'
                         )}
                       >
                         <div className="flex items-start gap-3">
-                          <div className="mt-0.5 text-foreground/20 group-hover:text-foreground/35 transition-colors">
-                            <GripVertical className="w-4 h-4" />
-                          </div>
+                          {!readOnly && (
+                            <div className="mt-0.5 text-foreground/20 group-hover:text-foreground/35 transition-colors">
+                              <GripVertical className="w-4 h-4" />
+                            </div>
+                          )}
 
                           <button
                             onClick={() => {
@@ -459,33 +580,137 @@ export default function ItineraryArtifact({
                             </div>
                           </button>
 
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {!readOnly && (
+                          <div className="flex flex-shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                             <button
                               onClick={() => startEditing(item)}
-                              className="w-8 h-8 rounded-xl bg-paper-recessed hover:bg-paper-recessed border border-rule flex items-center justify-center text-foreground/40 hover:text-foreground/70 transition-colors"
+                              className="flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:bg-paper-recessed hover:text-foreground/80"
                               title="Edit title"
+                              aria-label={`Edit ${item.title}`}
                             >
                               <Pencil className="w-4 h-4" />
                             </button>
-                            <button
-                              onClick={() => onSwapItem?.(item)}
-                              className="w-8 h-8 rounded-xl bg-paper-recessed hover:bg-paper-recessed border border-rule flex items-center justify-center text-foreground/40 hover:text-foreground/70 transition-colors"
-                              title="Swap this activity"
-                            >
-                              <Sparkles className="w-4 h-4" />
-                            </button>
+                            <div className="relative">
+                              <button
+                                onClick={() => setSwapMenuItemId((current) => (current === item.id ? null : item.id))}
+                                className={cn(
+                                  'inline-flex h-8 items-center gap-1.5 rounded-xl border px-2.5 text-[11px] font-medium transition-colors',
+                                  swappingItemId === item.id
+                                    ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                                    : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground hover:bg-[var(--brass)] hover:text-[var(--brass-text)]'
+                                )}
+                                title="Choose how to swap this exact activity"
+                                aria-label={`Swap ${item.title}`}
+                                aria-expanded={swapMenuItemId === item.id}
+                              >
+                                {swappingItemId === item.id ? <Check className="h-3.5 w-3.5" /> : <Sparkles className="h-3.5 w-3.5" />}
+                                {swappingItemId === item.id ? 'Sent' : 'Swap'}
+                              </button>
+                              <AnimatePresence>
+                                {swapMenuItemId === item.id && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                                    transition={{ duration: 0.14 }}
+                                    className="absolute right-0 top-10 z-40 w-44 overflow-hidden rounded-2xl border border-rule bg-paper-raised p-1.5 shadow-[var(--shadow-lg)]"
+                                  >
+                                    <p className="px-2.5 pb-1.5 pt-1 text-[10px] uppercase tracking-[0.18em] text-foreground/45">
+                                      Swap for
+                                    </p>
+                                    {SWAP_OPTIONS.map((option) => (
+                                      <button
+                                        key={option.label}
+                                        type="button"
+                                        onClick={() => handleSwapChoice(item, option.value)}
+                                        className="block w-full rounded-xl px-2.5 py-2 text-left text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed hover:text-foreground"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
                             <button
                               onClick={() => deleteItem(item.id)}
-                              className="w-8 h-8 rounded-xl bg-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] border border-[color:var(--pillar-desert-wash)] flex items-center justify-center text-[var(--terracotta)] transition-colors"
+                              className="flex h-8 w-8 items-center justify-center rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)]"
                               title="Delete"
+                              aria-label={`Delete ${item.title}`}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
-                        </div>
-                      </div>
+                          )}
+	                        </div>
+	                      </div>
 
-                      <div
+	                      {(swapOptionsByItemId[item.id]?.length || swapErrorByItemId[item.id] || swapSuccessByItemId[item.id]) && (
+	                        <div
+	                          className={cn(
+	                            'mt-2 rounded-2xl border p-3',
+	                            swapSuccessByItemId[item.id]
+	                              ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)]/70'
+	                              : 'border-[color:var(--brass)]/25 bg-[var(--brass-subtle)]/70'
+	                          )}
+	                        >
+	                          {swapOptionsByItemId[item.id]?.length ? (
+	                            <>
+	                              <div className="mb-2 flex items-center justify-between gap-3">
+	                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/55">
+	                                  Pick a replacement
+	                                </p>
+	                                <button
+	                                  type="button"
+	                                  onClick={() =>
+	                                    setSwapOptionsByItemId((current) => {
+	                                      const next = { ...current }
+	                                      delete next[item.id]
+	                                      return next
+	                                    })
+	                                  }
+	                                  className="text-[11px] font-medium text-foreground/55 hover:text-foreground"
+	                                >
+	                                  Dismiss
+	                                </button>
+	                              </div>
+	                              <div className="grid gap-2">
+	                                {swapOptionsByItemId[item.id].map((option) => {
+	                                  const applyId = `${item.id}:${option.id}`
+	                                  return (
+	                                    <button
+	                                      key={option.id}
+	                                      type="button"
+	                                      onClick={() => applySwapChoice(item, option.id)}
+	                                      disabled={applyingSwapId != null}
+	                                      className="rounded-xl border border-rule bg-paper-raised px-3 py-2 text-left transition-colors hover:border-[color:var(--brass)]/35 hover:bg-paper disabled:cursor-wait disabled:opacity-60"
+	                                    >
+	                                      <span className="flex items-start justify-between gap-3">
+	                                        <span>
+	                                          <span className="block text-sm font-semibold text-foreground">{option.title}</span>
+	                                          <span className="mt-1 block text-xs leading-relaxed text-foreground/62">{option.notes}</span>
+	                                        </span>
+	                                        <span className="mt-0.5 rounded-full bg-paper-recessed px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/50">
+	                                          {applyingSwapId === applyId ? 'Applying' : option.type}
+	                                        </span>
+	                                      </span>
+	                                    </button>
+	                                  )
+	                                })}
+	                              </div>
+	                            </>
+	                          ) : swapSuccessByItemId[item.id] ? (
+	                            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--moss)]">
+	                              <Check className="h-4 w-4" />
+	                              {swapSuccessByItemId[item.id]}
+	                            </div>
+	                          ) : (
+	                            <p className="text-xs font-medium text-[var(--terracotta)]">{swapErrorByItemId[item.id]}</p>
+	                          )}
+	                        </div>
+	                      )}
+
+	                      <div
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index + 1, e)}
                         className="h-2 rounded-lg"

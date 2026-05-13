@@ -4,7 +4,7 @@ import type { PlanIntent } from '@/lib/planner/types'
 export const PLANNER_TOOL_GROUPS = {
   profile: ['addVisitedPlace', 'addBucketListPlace', 'navigateToPlace', 'setTravelPreferences'],
   planningCore: ['resolvePlace', 'createTrip', 'setTripDays', 'setFullTripPlan'],
-  planningEdits: ['addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem'],
+  planningEdits: ['swapTripItem', 'replaceTripDayPlan', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem'],
   routing: ['computeDayRoute'],
 } as const
 
@@ -67,8 +67,8 @@ export function getPlanToolSelection(intent: PlanIntent, hasTripId: boolean) {
   }
 
   return hasTripId
-    ? [...baseSelection, 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem']
-    : [...baseSelection, 'createTrip', 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem']
+    ? [...baseSelection, 'setTripDays', 'swapTripItem', 'replaceTripDayPlan', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem']
+    : [...baseSelection, 'createTrip', 'setTripDays', 'swapTripItem', 'replaceTripDayPlan', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem']
 }
 
 export function getPlanToolChoice(stepNumber: number, intent: PlanIntent) {
