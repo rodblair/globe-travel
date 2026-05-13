@@ -24,12 +24,41 @@ export function extractDestinationFromTitle(title: string | null | undefined): s
     /^(.+?)\s+Day\s+Trip$/i,
     /^Trip to\s+(.+)$/i,
     /^(.+?)\s+Trip$/i,
+    /^(.+?)\s+with\s+Friends?$/i,
+    /^(.+?)\s+for\s+Friends?$/i,
+    /^(.+?)\s+Itinerary$/i,
+    /^(.+?)\s+City\s+Break$/i,
   ]
   for (const pattern of patterns) {
     const match = cleaned.match(pattern)
     if (match?.[1]) return match[1].trim()
   }
   return cleaned
+}
+
+export function extractDestinationFromPrompt(text: string | null | undefined): string {
+  if (!text) return ''
+  const cleaned = text.trim()
+  const patterns = [
+    /\b(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|from|on|around|near|and|that|who|leaving|including)\b|[,.!?]|$)/i,
+    /\b\d+\s*[- ]?\s*days?\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
+    /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
+    /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+itinerary\b/i,
+  ]
+
+  for (const pattern of patterns) {
+    const match = cleaned.match(pattern)
+    const candidate = match?.[1]?.trim()
+    if (!candidate) continue
+    const normalized = extractDestinationFromTitle(candidate)
+      .replace(/\s+(?:trip|itinerary|city break|with friends|for friends)$/i, '')
+      .trim()
+    if (normalized && !/\b(realistic|balanced|beautiful|budget|friendly|group|city|short|weekend)\b/i.test(normalized)) {
+      return normalized
+    }
+  }
+
+  return ''
 }
 
 function coerceDays(value: unknown) {

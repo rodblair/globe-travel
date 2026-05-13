@@ -15,7 +15,7 @@ import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
 import { getPlanToolChoice, getPlanToolSelection, inferPlanIntent } from '@/lib/planner/tools'
-import { extractDestinationFromTitle } from '@/lib/planner/runtime'
+import { extractDestinationFromPrompt, extractDestinationFromTitle } from '@/lib/planner/runtime'
 import { loadPlannerSession } from '@/lib/planner/session'
 import { compareDestinations, listScoredDestinations } from '@/lib/planner/scoring'
 
@@ -62,7 +62,7 @@ async function resolvePlannerPlace({
   token: string
   placeQuery?: string
   destinationLabel?: string | null
-  destinationAnchor?: { latitude: number; longitude: number } | null
+  destinationAnchor?: { latitude: number; longitude: number; country_code?: string | null } | null
 }) {
   if (!placeQuery) return null
 
@@ -79,11 +79,14 @@ async function resolvePlannerPlace({
   )
 
   for (const query of queryCandidates) {
-    const result = await geocodePlace(query, token)
+    const result = await geocodePlace(query, token, {
+      proximity: destinationAnchor,
+      countryCode: destinationAnchor?.country_code,
+    })
     if (!result) continue
 
     const tooFar = destinationAnchor != null &&
-      haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > 120
+      haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > 35
 
     if (tooFar) continue
 
@@ -504,11 +507,17 @@ export async function POST(req: Request) {
           if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
 
           // Fetch current trip title for destination sanity-checking
-          const { data: existingTrip } = await db.from('trips').select('title').eq('id', tid).maybeSingle()
-          const destinationLabel = extractDestinationFromTitle(title || existingTrip?.title)
+          const { data: existingTrip } = await db.from('trips').select('title,constraints').eq('id', tid).maybeSingle()
+          const destinationLabel =
+            (typeof existingTrip?.constraints?.destination_query === 'string' && existingTrip.constraints.destination_query.trim()) ||
+            extractDestinationFromTitle(title || existingTrip?.title) ||
+            extractDestinationFromPrompt(latestUserText)
           const destinationAnchor = destinationLabel ? await geocodePlace(destinationLabel, token) : null
 
           if (title || start_date || end_date || pace || budget_level) {
+            const nextConstraints = destinationLabel
+              ? { ...(existingTrip?.constraints || {}), destination_query: destinationLabel }
+              : existingTrip?.constraints
             const { error: tripErr } = await db
               .from('trips')
               .update({
@@ -517,6 +526,7 @@ export async function POST(req: Request) {
                 ...(end_date ? { end_date } : {}),
                 ...(pace ? { pace } : {}),
                 ...(budget_level ? { budget_level } : {}),
+                ...(nextConstraints ? { constraints: nextConstraints } : {}),
                 updated_at: new Date().toISOString(),
               })
               .eq('id', tid)

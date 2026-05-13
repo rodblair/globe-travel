@@ -254,42 +254,220 @@ const ATHENS_SWAP_OPTIONS: Array<{
   },
 ]
 
-function getOptionsForTitle(title: string) {
-  return ATHENS_SWAP_OPTIONS.find((entry) => entry.pattern.test(title))?.options || [
-    {
-      id: 'ancient-agora-fallback',
-      title: 'Ancient Agora of Athens',
-      placeQuery: 'Ancient Agora of Athens',
-      type: 'activity',
-      latitude: 37.97569,
-      longitude: 23.72247,
-      country: 'Greece',
-      countryCode: 'GR',
-      notes: 'A dependable central Athens swap that keeps the day walkable.',
-    },
-    {
-      id: 'monastiraki-square-fallback',
-      title: 'Monastiraki Square',
-      placeQuery: 'Monastiraki Square, Athens',
-      type: 'activity',
-      latitude: 37.97608,
-      longitude: 23.72557,
-      country: 'Greece',
-      countryCode: 'GR',
-      notes: 'An easy central fallback with food, shops, and transit nearby.',
-    },
-    {
-      id: 'national-garden-fallback',
-      title: 'National Garden',
-      placeQuery: 'National Garden, Athens',
-      type: 'activity',
-      latitude: 37.97393,
-      longitude: 23.73624,
-      country: 'Greece',
-      countryCode: 'GR',
-      notes: 'A calmer swap when the group needs a softer pace.',
-    },
-  ]
+const PORTO_SWAP_OPTIONS: Array<{
+  pattern: RegExp
+  options: SwapOption[]
+}> = [
+  {
+    pattern: /cafe|café|breakfast|brunch|meal|restaurant|dinner|lunch/i,
+    options: [
+      {
+        id: 'porto-manteigaria',
+        title: 'Manteigaria',
+        placeQuery: 'Manteigaria, Porto',
+        type: 'meal',
+        latitude: 41.14562,
+        longitude: -8.61105,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'A quick, central pastel de nata stop that keeps the route easy.',
+      },
+      {
+        id: 'porto-casa-guedes',
+        title: 'Casa Guedes',
+        placeQuery: 'Casa Guedes, Porto',
+        type: 'meal',
+        latitude: 41.14539,
+        longitude: -8.60444,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Casual local sandwich stop that works well for groups.',
+      },
+      {
+        id: 'porto-nicolau',
+        title: 'Nicolau Porto',
+        placeQuery: 'Nicolau Porto',
+        type: 'meal',
+        latitude: 41.14623,
+        longitude: -8.61395,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Easy brunch-style swap near the center with broad appeal.',
+      },
+    ],
+  },
+  {
+    pattern: /bar|night|drinks|cocktail|base|plano/i,
+    options: [
+      {
+        id: 'porto-royal-cocktail-club',
+        title: 'The Royal Cocktail Club',
+        placeQuery: 'The Royal Cocktail Club, Porto',
+        type: 'activity',
+        latitude: 41.14763,
+        longitude: -8.61399,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'A polished cocktail option for a more memorable night out.',
+      },
+      {
+        id: 'porto-base',
+        title: 'Base Porto',
+        placeQuery: 'Base Porto',
+        type: 'activity',
+        latitude: 41.14694,
+        longitude: -8.61538,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Outdoor drinks near Clérigos when the group wants something low-pressure.',
+      },
+      {
+        id: 'porto-ferro-bar',
+        title: 'Ferro Bar',
+        placeQuery: 'Ferro Bar, Porto',
+        type: 'activity',
+        latitude: 41.14594,
+        longitude: -8.61261,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Compact central bar with an easy late-night feel.',
+      },
+    ],
+  },
+  {
+    pattern: /.*/i,
+    options: [
+      {
+        id: 'porto-palacio-bolsa',
+        title: 'Palácio da Bolsa',
+        placeQuery: 'Palácio da Bolsa, Porto',
+        type: 'activity',
+        latitude: 41.14162,
+        longitude: -8.61588,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'A central, weather-safe cultural swap close to Ribeira.',
+      },
+      {
+        id: 'porto-igreja-carmo',
+        title: 'Igreja do Carmo',
+        placeQuery: 'Igreja do Carmo, Porto',
+        type: 'activity',
+        latitude: 41.14673,
+        longitude: -8.61578,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Short, photogenic stop near Clérigos and Livraria Lello.',
+      },
+      {
+        id: 'porto-miradouro-vitoria',
+        title: 'Miradouro da Vitória',
+        placeQuery: 'Miradouro da Vitória, Porto',
+        type: 'activity',
+        latitude: 41.14342,
+        longitude: -8.61524,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Simple viewpoint swap with a strong payoff and little overhead.',
+      },
+    ],
+  },
+]
+
+const LISBON_SWAP_OPTIONS: Array<{
+  pattern: RegExp
+  options: SwapOption[]
+}> = [
+  {
+    pattern: /cafe|café|breakfast|brunch|meal|restaurant|dinner|lunch/i,
+    options: [
+      {
+        id: 'lisbon-time-out-market',
+        title: 'Time Out Market Lisboa',
+        placeQuery: 'Time Out Market Lisboa',
+        type: 'meal',
+        latitude: 38.70678,
+        longitude: -9.14544,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Easy group-friendly food hall when tastes are split.',
+      },
+      {
+        id: 'lisbon-zapata',
+        title: 'Zapata',
+        placeQuery: 'Zapata, Lisbon',
+        type: 'meal',
+        latitude: 38.71031,
+        longitude: -9.15134,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Casual Portuguese dinner option that keeps the evening flexible.',
+      },
+      {
+        id: 'lisbon-comoba',
+        title: 'Comoba',
+        placeQuery: 'Comoba, Lisbon',
+        type: 'meal',
+        latitude: 38.71022,
+        longitude: -9.14682,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Light cafe swap near the center for an easier pace.',
+      },
+    ],
+  },
+  {
+    pattern: /.*/i,
+    options: [
+      {
+        id: 'lisbon-miradouro-graca',
+        title: 'Miradouro da Graça',
+        placeQuery: 'Miradouro da Graça, Lisbon',
+        type: 'activity',
+        latitude: 38.71692,
+        longitude: -9.13158,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Great viewpoint swap with a calmer feel than the busiest lookouts.',
+      },
+      {
+        id: 'lisbon-maat',
+        title: 'MAAT',
+        placeQuery: 'MAAT, Lisbon',
+        type: 'activity',
+        latitude: 38.69578,
+        longitude: -9.19468,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Modern riverside cultural stop that pairs well with Belém.',
+      },
+      {
+        id: 'lisbon-jardim-estrela',
+        title: 'Jardim da Estrela',
+        placeQuery: 'Jardim da Estrela, Lisbon',
+        type: 'activity',
+        latitude: 38.71395,
+        longitude: -9.16045,
+        country: 'Portugal',
+        countryCode: 'PT',
+        notes: 'Soft reset option when the group needs a slower hour.',
+      },
+    ],
+  },
+]
+
+function optionsForDestination(destination: string | null | undefined) {
+  if (/porto/i.test(destination || '')) return PORTO_SWAP_OPTIONS
+  if (/lisbon|lisboa/i.test(destination || '')) return LISBON_SWAP_OPTIONS
+  if (/athens|greece/i.test(destination || '')) return ATHENS_SWAP_OPTIONS
+  return []
+}
+
+function getOptionsForTitle(title: string, destination: string | null | undefined) {
+  const optionSet = optionsForDestination(destination)
+  if (optionSet.length === 0) return []
+
+  return optionSet.find((entry) => entry.pattern.test(title))?.options || []
 }
 
 export async function POST(req: Request, ctx: { params: Promise<{ id: string; itemId: string }> }) {
@@ -299,7 +477,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string; it
 
   const { data: trip, error: tripErr } = await accessSupabase
     .from('trips')
-    .select('id,user_id')
+    .select('id,user_id,title,constraints')
     .eq('id', tripId)
     .maybeSingle()
 
@@ -325,7 +503,10 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string; it
   if (itemErr) return NextResponse.json({ error: itemErr.message }, { status: 500 })
   if (!item) return NextResponse.json({ error: 'Item not found' }, { status: 404 })
 
-  const options = getOptionsForTitle(item.title)
+  const destination =
+    (typeof trip.constraints?.destination_query === 'string' && trip.constraints.destination_query.trim()) ||
+    trip.title
+  const options = getOptionsForTitle(item.title, destination)
   if (!parsed.data.choiceId) {
     return NextResponse.json({ options })
   }

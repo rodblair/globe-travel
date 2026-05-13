@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { directionsGeojson, geocodePlace } from '@/app/api/trips/_mapbox'
 import { requireUser } from '@/app/api/trips/_utils'
+import { extractDestinationFromTitle } from '@/lib/planner/runtime'
 
 type CanonicalPlaceOverride = {
   pattern: RegExp
@@ -99,29 +100,7 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
 ]
 
 function extractTripContext(title: string | null | undefined) {
-  if (!title) return ''
-  const cleaned = title.trim()
-  const monthPattern = '(January|February|March|April|May|June|July|August|September|October|November|December)'
-
-  const patterns = [
-    new RegExp(`^\\d+\\s+Days?\\s+in\\s+(.+?)(?=\\s+\\b(?:for|with|on|around|near|from)\\b|[,.!?]|$)`, 'i'),
-    new RegExp(`^(.+?)\\s+in\\s+${monthPattern}\\b`, 'i'),
-    /^(.+?)\s+in\s+\d+\s+Days?$/i,           // "Rome in 3 Days"
-    /^(.+?)\s+in\s+\d+\s+Nights?$/i,         // "Paris in 5 Nights"
-    /^(.+?)\s+Weekend\s+Getaway$/i,           // "Tokyo Weekend Getaway"
-    /^(.+?)\s+Day\s+Trip$/i,
-    /^Trip to\s+(.+)$/i,
-    /^(.+?)\s+Trip$/i,
-  ]
-
-  for (const pattern of patterns) {
-    const match = cleaned.match(pattern)
-    if (match?.[1]) {
-      return match[1].trim()
-    }
-  }
-
-  return cleaned
+  return extractDestinationFromTitle(title)
 }
 
 function haversineKm(
@@ -256,7 +235,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
   const { data: trip, error: tripErr } = await supabase
     .from('trips')
-    .select('id,title,user_id')
+    .select('id,title,user_id,constraints')
     .eq('id', id)
     .eq('user_id', user.id)
     .maybeSingle()
@@ -272,10 +251,16 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
   if (daysErr) return NextResponse.json({ error: daysErr.message }, { status: 500 })
 
-  const destinationContext = extractTripContext(trip.title)
+  const destinationContext =
+    (typeof trip.constraints?.destination_query === 'string' && trip.constraints.destination_query.trim()) ||
+    extractTripContext(trip.title)
   const destinationPlace = destinationContext
     ? await geocodePlace(destinationContext, token)
     : null
+  const geocodeOptions = {
+    proximity: destinationPlace,
+    countryCode: destinationPlace?.country_code,
+  }
 
   let geocodedItems = 0
   let routeDays = 0
@@ -283,7 +268,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
   for (const day of tripDays || []) {
     const dayFallbackPlace =
       destinationContext && day.title
-        ? await geocodePlace(`${day.title}, ${destinationContext}`, token)
+        ? await geocodePlace(`${day.title}, ${destinationContext}`, token, geocodeOptions)
         : null
 
     const { data: items, error: itemsErr } = await supabase
@@ -325,7 +310,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
       for (const query of buildQueries(item.title, day.title, destinationContext)) {
         if (resolvedPlace) break
-        const result = await geocodePlace(query, token)
+        const result = await geocodePlace(query, token, geocodeOptions)
         if (!result) continue
 
         if (

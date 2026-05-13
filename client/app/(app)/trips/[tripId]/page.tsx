@@ -216,12 +216,17 @@ function TripStudioPageContent() {
       0
     )
     const routeDayCount = days.filter((day) => (day.routes?.length || 0) > 0).length
+    const routeEligibleDayCount = days.filter((day) => {
+      const mappedStops = day.items.filter((item) => coerceCoordinate(item.place?.latitude) != null && coerceCoordinate(item.place?.longitude) != null).length
+      return mappedStops >= 2
+    }).length
 
     return {
       itemCount,
       mappedItemCount,
       routeDayCount,
-      needsHydration: itemCount > 0,
+      routeEligibleDayCount,
+      needsHydration: itemCount > 0 && (mappedItemCount < itemCount || routeDayCount < routeEligibleDayCount),
     }
   }, [days])
 

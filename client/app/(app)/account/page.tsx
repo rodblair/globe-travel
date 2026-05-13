@@ -411,7 +411,7 @@ function AccountPageContent() {
                     ['Globe.travel maps', '2', 'Unlimited'],
                     ['Saved trips', '2', 'Unlimited'],
                     ['AI messages / day', '10', 'Unlimited'],
-                    ['Trip sharing', '—', 'Included'],
+                    ['Trip sharing', 'Basic links', 'Advanced feedback'],
                   ].map(([feature, free, pro]) => (
                     <div key={feature} className="rounded-2xl border border-rule bg-paper-recessed/60 p-4">
                       <p className="text-sm font-medium text-foreground">{feature}</p>

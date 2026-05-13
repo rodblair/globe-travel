@@ -71,8 +71,7 @@ export function useChat(options: {
           tripId: options.tripId,
         },
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [] // intentionally stable — options changes handled via optionsRef
+    [options.type, options.conversationId, options.tripId]
   )
 
   const {

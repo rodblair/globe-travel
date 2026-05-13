@@ -8,12 +8,14 @@ import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay, TripItem } from '@/components/trips/ItineraryArtifact'
+import { useAuth } from '@/components/providers/AuthProvider'
 import {
   buildDisplayStops,
   getDestinationFallback,
   shouldUseSavedRoute,
   sortTripItemsForDisplay,
 } from '@/components/trips/derivedStops'
+import { extractDestinationFromPrompt } from '@/lib/planner/runtime'
 import { CompassRose } from '@/components/atmosphere/CompassRose'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { cn } from '@/lib/utils'
@@ -26,7 +28,7 @@ type ChatMapStop = {
   index: number
 }
 
-const CHAT_MAP_STORAGE_KEY = 'globe-travel:chat:explore:map-stops'
+const CHAT_MAP_STORAGE_PREFIX = 'globe-travel:chat:explore:map-stops:'
 
 const STARTER_PROMPTS = [
   {
@@ -87,22 +89,45 @@ function mergeStop(stops: ChatMapStop[], nextStop: Omit<ChatMapStop, 'index'>) {
   return merged.map((stop, index) => ({ ...stop, index: index + 1 }))
 }
 
+function readStoredMapStops(key: string) {
+  if (typeof window === 'undefined') return []
+  try {
+    const saved = localStorage.getItem(key)
+    return saved ? (JSON.parse(saved) as ChatMapStop[]) : []
+  } catch {
+    return []
+  }
+}
+
 function ChatPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user } = useAuth()
   const initialQueryRef = useRef<string | null>(searchParams.get('q'))
   const sentInitialRef = useRef(false)
   const [activeTripId, setActiveTripId] = useState<string | null>(null)
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
-  const [mapStops, setMapStops] = useState<ChatMapStop[]>(() => {
-    if (typeof window === 'undefined') return []
-    try {
-      const saved = localStorage.getItem(CHAT_MAP_STORAGE_KEY)
-      return saved ? (JSON.parse(saved) as ChatMapStop[]) : []
-    } catch {
-      return []
-    }
-  })
+  const [mapStopsByKey, setMapStopsByKey] = useState<Record<string, ChatMapStop[]>>({})
+  const mapStorageKey = useMemo(
+    () => `${CHAT_MAP_STORAGE_PREFIX}${user?.id || 'browser'}`,
+    [user?.id]
+  )
+  const mapStops = useMemo(
+    () => mapStopsByKey[mapStorageKey] ?? readStoredMapStops(mapStorageKey),
+    [mapStopsByKey, mapStorageKey]
+  )
+  const setMapStops = useCallback(
+    (updater: (current: ChatMapStop[]) => ChatMapStop[]) => {
+      setMapStopsByKey((currentByKey) => {
+        const currentStops = currentByKey[mapStorageKey] ?? readStoredMapStops(mapStorageKey)
+        return {
+          ...currentByKey,
+          [mapStorageKey]: updater(currentStops),
+        }
+      })
+    },
+    [mapStorageKey]
+  )
 
   const handlePlaceAdded = useCallback((event: PlaceEvent) => {
     setMapStops((current) =>
@@ -113,7 +138,7 @@ function ChatPageContent() {
         longitude: event.place.longitude,
       })
     )
-  }, [])
+  }, [setMapStops])
 
   const handleNavigate = useCallback((event: NavigateEvent) => {
     if (!event.latitude || !event.longitude) return
@@ -126,7 +151,7 @@ function ChatPageContent() {
         longitude: event.longitude,
       })
     )
-  }, [])
+  }, [setMapStops])
 
   const exploreChat = useChat({
     type: 'explore',
@@ -163,8 +188,7 @@ function ChatPageContent() {
   }, [])
 
   const extractDraftTitle = useCallback((text: string) => {
-    const inMatch = text.match(/\b(?:in|to)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|on|around|near|from)\b|[,.!?]|$)/i)
-    const destination = inMatch?.[1]?.trim()
+    const destination = extractDestinationFromPrompt(text)
     if (destination) {
       const days = extractDraftDays(text)
       return `${days} Days in ${destination}`
@@ -181,7 +205,11 @@ function ChatPageContent() {
         travelers_count: 4,
         pace: 'balanced',
         budget_level: 'mid',
-        constraints: { days: extractDraftDays(prompt), group_vibe: 'Balanced group trip with friends' },
+        constraints: {
+          days: extractDraftDays(prompt),
+          destination_query: extractDestinationFromPrompt(prompt) || undefined,
+          group_vibe: 'Balanced group trip with friends',
+        },
       }),
     })
 
@@ -243,8 +271,8 @@ function ChatPageContent() {
   }, [sendMessage])
 
   useEffect(() => {
-    localStorage.setItem(CHAT_MAP_STORAGE_KEY, JSON.stringify(mapStops))
-  }, [mapStops])
+    localStorage.setItem(mapStorageKey, JSON.stringify(mapStops))
+  }, [mapStorageKey, mapStops])
 
   const tripDays = useMemo(() => tripPayload?.days || [], [tripPayload?.days])
   const resolvedSelectedDayIndex = useMemo(() => {

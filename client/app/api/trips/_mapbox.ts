@@ -8,8 +8,26 @@ type GeocodeResult = {
   country_code?: string
 }
 
-export async function geocodePlace(query: string, token: string): Promise<GeocodeResult | null> {
-  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${token}&types=place,locality,neighborhood,address,poi&limit=1`
+export async function geocodePlace(
+  query: string,
+  token: string,
+  options: {
+    proximity?: { latitude: number; longitude: number } | null
+    countryCode?: string | null
+  } = {}
+): Promise<GeocodeResult | null> {
+  const params = new URLSearchParams({
+    access_token: token,
+    types: 'place,locality,neighborhood,address,poi',
+    limit: '1',
+  })
+  if (options.proximity) {
+    params.set('proximity', `${options.proximity.longitude},${options.proximity.latitude}`)
+  }
+  if (options.countryCode) {
+    params.set('country', options.countryCode.toLowerCase())
+  }
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?${params.toString()}`
   const res = await fetch(url)
   if (!res.ok) return null
   const data = await res.json()
@@ -59,4 +77,3 @@ export async function directionsGeojson(coords: Array<{ latitude: number; longit
     duration_s: typeof route.duration === 'number' ? Math.round(route.duration) : null,
   }
 }
-
