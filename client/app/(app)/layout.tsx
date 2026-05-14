@@ -9,9 +9,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <QueryProvider>
       <AuthProvider>
-        <div className="flex h-screen bg-background text-foreground">
+        <div className="app-shell flex bg-background text-foreground">
           <Sidebar />
-          <main className="flex-1 min-h-0 overflow-auto pb-16 md:pb-0">
+          <main className="app-main flex-1">
             {children}
           </main>
           <BottomNav />

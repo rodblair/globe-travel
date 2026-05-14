@@ -202,8 +202,8 @@ function SavedPageContent() {
 
   return (
     <div className="min-h-screen bg-paper">
-      <div className="sticky top-0 z-10 border-b border-rule bg-paper/80 backdrop-blur-xl">
-        <div className="mx-auto max-w-6xl px-5 py-5 md:px-6">
+      <div className="app-sticky-header">
+        <div className="app-container py-4 md:py-5">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
@@ -215,7 +215,7 @@ function SavedPageContent() {
                   Saved itineraries and trip notes in one calm workspace.
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:w-auto">
+              <div className="grid w-full grid-cols-2 gap-2 sm:w-auto">
                 <div className="rounded-2xl border border-rule bg-paper-recessed/60 px-4 py-3">
                   <p className="text-[11px] uppercase tracking-[0.16em] text-foreground/30">Trips</p>
                   <p className="mt-1 text-lg font-semibold text-foreground">{trips.length}</p>
@@ -227,7 +227,7 @@ function SavedPageContent() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-rule bg-paper-recessed/60 p-2">
+            <div className="hide-scrollbar flex items-center gap-2 overflow-x-auto rounded-2xl border border-rule bg-paper-recessed/60 p-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
@@ -235,7 +235,7 @@ function SavedPageContent() {
                     key={tab.key}
                     onClick={() => switchTab(tab.key)}
                     className={cn(
-                      'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
+                      'touch-target inline-flex flex-shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
                       activeTab === tab.key
                         ? 'bg-[var(--brass-subtle)] text-foreground'
                         : 'text-foreground/45 hover:bg-paper-recessed/60 hover:text-foreground/75'
@@ -251,7 +251,7 @@ function SavedPageContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-5 py-6 md:px-6 md:py-8">
+      <div className="app-container py-6 md:py-8">
         {activeTab === 'trips' && (
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -263,7 +263,7 @@ function SavedPageContent() {
               </div>
               <Link
                 href="/chat"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"
+                className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
               >
                 <Plus className="h-4 w-4" />
                 Plan another trip
@@ -290,7 +290,7 @@ function SavedPageContent() {
                 </p>
                 <Link
                   href="/chat"
-                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"
+                  className="touch-target mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
                 >
                   <Sparkles className="h-4 w-4" />
                   Open Planner
@@ -313,13 +313,13 @@ function SavedPageContent() {
                           className="absolute inset-0"
                           aria-label={`Open ${trip.title}`}
                         />
-                        <div className="flex h-full min-h-64 flex-col justify-between gap-7 p-5 md:p-6">
+                        <div className="flex h-full min-h-64 flex-col justify-between gap-7 p-5 pb-20 md:p-6 md:pb-20">
                           <div className="flex items-start justify-between gap-4">
                             <div className="min-w-0">
                               <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
                                 Globe.travel map
                               </p>
-                              <h3 className="font-serif text-3xl font-semibold uppercase leading-[0.98] tracking-[0.08em] text-foreground transition-colors group-hover:text-[var(--brass)]">
+                              <h3 className="line-clamp-2 break-words font-serif text-3xl font-semibold uppercase leading-[0.98] tracking-[0.08em] text-foreground transition-colors group-hover:text-[var(--brass)]">
                                 {destination}
                               </h3>
                               <div className="mt-4 flex items-center gap-1.5">
@@ -371,8 +371,8 @@ function SavedPageContent() {
                             setConfirmingTripId(trip.id)
                           }}
                           disabled={deleteTrip.isPending}
-                          className={cn(
-                            'absolute bottom-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                            className={cn(
+                              'touch-target absolute bottom-5 right-5 z-10 inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
                             confirmingTripId === trip.id
                               ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] hover:bg-[color:var(--pillar-desert-wash)]'
                               : 'border-rule bg-paper/28 text-foreground/70 hover:border-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]'
@@ -407,7 +407,7 @@ function SavedPageContent() {
               {entries.length > 0 && (
                 <button
                   onClick={openNewEntry}
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"
+                  className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
                 >
                   <Plus className="h-4 w-4" />
                   Add note
@@ -453,7 +453,7 @@ function SavedPageContent() {
                 </p>
                 <button
                   onClick={openNewEntry}
-                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-black transition-all duration-200 hover:scale-105 hover:bg-[var(--brass)]"
+                  className="touch-target mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
                 >
                   <Feather className="h-4 w-4" />
                   Add first note

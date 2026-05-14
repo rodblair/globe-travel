@@ -42,12 +42,13 @@ export function BottomNav() {
   return (
     <nav
       className={cn(
-        'fixed bottom-0 left-0 right-0 z-50 md:hidden',
+        'fixed bottom-0 left-0 right-0 z-40 md:hidden',
         'border-t border-rule bg-paper-raised/95 backdrop-blur-md',
         'shadow-[0_-2px_8px_rgba(12,31,51,0.05)]',
       )}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <div className="mx-auto flex max-w-md items-stretch justify-around px-1 py-1.5">
+      <div className="mx-auto grid max-w-md grid-cols-3 px-1 py-2">
         {navItems.map((item) => {
           const isActive = pathname ? item.matches(pathname) : false
           const Icon = item.icon
@@ -56,7 +57,7 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group relative flex min-w-[64px] flex-col items-center justify-center gap-1 rounded-md px-3 py-1.5',
+                'group relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-md px-3 py-1.5',
                 'transition-colors duration-150',
                 isActive
                   ? 'text-foreground'

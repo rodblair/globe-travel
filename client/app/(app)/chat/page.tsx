@@ -327,13 +327,13 @@ function ChatPageContent() {
   )
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-paper text-foreground">
+    <div className="relative flex min-h-full flex-col overflow-hidden bg-paper text-foreground">
       <div className="paper-grain absolute inset-0 pointer-events-none" />
 
       {/* Header */}
       <div className="relative z-10 flex-shrink-0 border-b border-rule bg-paper/80 backdrop-blur-md">
         <div className="px-5 py-4 md:px-6">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-5">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <CompassRose size={36} showLabels={false} />
               <div>
@@ -353,7 +353,7 @@ function ChatPageContent() {
       </div>
 
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-5 md:px-6 xl:overflow-hidden">
-        <div className="mx-auto grid min-h-full max-w-7xl gap-5 pb-28 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
+        <div className="mx-auto grid min-h-full max-w-7xl gap-5 pb-24 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
           <div className="flex min-h-[560px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-0">
             {activeMessages.length === 0 ? (
               <div className="flex min-h-[560px] flex-col overflow-y-auto">
@@ -383,8 +383,8 @@ function ChatPageContent() {
                           <button
                             key={item.label}
                             onClick={() => sendMessage(item.q)}
-                            className={cn(
-                              'group relative text-left rounded-md border border-rule px-3 py-3',
+                          className={cn(
+                            'touch-target group relative rounded-md border border-rule px-3 py-3 text-left',
                               'bg-paper hover:bg-paper-hover transition-colors',
                             )}
                           >
@@ -419,7 +419,7 @@ function ChatPageContent() {
                           key={item.label}
                           onClick={() => sendMessage(item.q)}
                           className={cn(
-                            'group min-h-16 text-left p-3 rounded-md border border-rule bg-paper hover:bg-paper-hover transition-colors',
+                            'touch-target group min-h-16 rounded-md border border-rule bg-paper p-3 text-left transition-colors hover:bg-paper-hover',
                           )}
                         >
                           <p className="text-[0.8125rem] font-medium text-foreground group-hover:text-foreground transition-colors">
@@ -577,12 +577,12 @@ function ChatPageContent() {
                 }
               }}
             />
-            <button
-              type="button"
-              onClick={submitDraftInput}
-              disabled={!draftInput.trim() || planningInProgress}
-              className="rounded-sm bg-[var(--action)] px-3 py-2 t-mono text-[0.625rem] tracking-[0.14em] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
-            >
+              <button
+                type="button"
+                onClick={submitDraftInput}
+                disabled={!draftInput.trim() || planningInProgress}
+                className="touch-target rounded-sm bg-[var(--action)] px-3 py-2 t-mono text-[0.625rem] tracking-[0.14em] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+              >
               Send
             </button>
           </div>

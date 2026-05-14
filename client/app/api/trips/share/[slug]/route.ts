@@ -26,6 +26,10 @@ function normalizeTripItem(item: any) {
   }
 }
 
+function isUsableWalkingRoute(route: { distance_m?: number | null }) {
+  return route.distance_m != null && route.distance_m > 0 && route.distance_m <= 25000
+}
+
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params
   const supabase = await createClient()
@@ -76,6 +80,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }
 
   const byDayRoutes = new Map<string, any[]>()
   for (const r of routes || []) {
+    if (!isUsableWalkingRoute(r)) continue
     if (!byDayRoutes.has(r.trip_day_id)) byDayRoutes.set(r.trip_day_id, [])
     byDayRoutes.get(r.trip_day_id)!.push(r)
   }

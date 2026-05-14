@@ -68,6 +68,7 @@ function SharedTripPageInner() {
       if (!res.ok) throw new Error('Not found')
       return res.json() as Promise<TripPayload>
     },
+    retry: false,
   })
 
   const { data: feedback = [], refetch: refetchFeedback } = useQuery({
@@ -77,6 +78,8 @@ function SharedTripPageInner() {
       if (!res.ok) return [] as TripFeedback[]
       return res.json() as Promise<TripFeedback[]>
     },
+    enabled: Boolean(data?.trip),
+    retry: false,
   })
 
   const trip = data?.trip
@@ -118,20 +121,20 @@ function SharedTripPageInner() {
       <div className="paper-grain absolute inset-0 pointer-events-none" />
       <div className="absolute inset-x-0 top-0 h-64 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--brass),transparent_86%),transparent)]" />
 
-      <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-5 md:px-6 md:py-6">
+      <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 md:px-6 md:py-6">
         <Link href="/" className="inline-flex">
           <AlbatrossBrand compact />
         </Link>
         <Link
           href="/chat"
-          className="inline-flex items-center gap-2 rounded-full border border-rule bg-paper-raised px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover"
+          className="touch-target inline-flex items-center justify-center gap-2 rounded-full border border-rule bg-paper-raised px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover"
         >
           Start your own trip
           <ArrowRight className="h-4 w-4" />
         </Link>
       </header>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-5 pb-16 pt-5 md:px-6 md:pt-7">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-5 md:px-6 md:pt-7">
         {isLoading ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div className="h-[680px] animate-pulse rounded-[34px] bg-paper-recessed" />
@@ -163,7 +166,7 @@ function SharedTripPageInner() {
                   <p className="t-mono text-[0.6875rem] uppercase tracking-[0.24em] text-[var(--brass)]">
                     Shared Globe.travel map
                   </p>
-                  <h1 className="mt-3 font-serif text-4xl font-semibold leading-[1.02] text-foreground md:text-6xl">
+                  <h1 className="mt-3 break-words font-serif text-4xl font-semibold leading-[1.02] text-foreground md:text-6xl">
                     {trip.title}
                   </h1>
                   <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-2">
@@ -227,8 +230,8 @@ function SharedTripPageInner() {
                       <button
                         key={option.value}
                         onClick={() => setSentiment(option.value)}
-                        className={cn(
-                          'rounded-2xl border px-4 py-3 text-left transition-colors',
+                    className={cn(
+                      'touch-target rounded-2xl border px-4 py-3 text-left transition-colors',
                           sentiment === option.value
                             ? sentimentClasses[option.value]
                             : 'border-rule bg-paper-recessed text-ink-2 hover:text-foreground'
@@ -249,7 +252,7 @@ function SharedTripPageInner() {
                   <button
                     onClick={submitFeedback}
                     disabled={!canSubmit}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+                    className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-not-allowed disabled:opacity-45"
                   >
                     <Send className="h-4 w-4" />
                     {submitting ? 'Sending...' : submitted ? 'Feedback sent' : 'Send feedback'}
@@ -272,7 +275,7 @@ function SharedTripPageInner() {
                 </p>
                 <Link
                   href="/chat"
-                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+                  className="touch-target mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 >
                   Start your own trip
                   <ArrowRight className="h-4 w-4" />

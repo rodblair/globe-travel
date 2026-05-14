@@ -308,19 +308,19 @@ export default function ItineraryArtifact({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-shrink-0 border-b border-rule px-5 py-4">
-        <div className="flex items-center justify-between gap-3">
+      <div className="flex-shrink-0 border-b border-rule px-4 py-4 sm:px-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Itinerary</p>
             <h2 className="truncate text-base font-medium text-foreground">{tripTitle}</h2>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {!readOnly && onOptimize && (
               <button
                 onClick={handleOptimize}
                 disabled={isOptimizing}
                 className={cn(
-                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
+                  'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
                   optimizeDone
                     ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                     : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
@@ -338,7 +338,7 @@ export default function ItineraryArtifact({
             {!readOnly && onRegenerateDay && (
               <button
                 onClick={() => onRegenerateDay(selectedDay.day_index)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                 title="Rewrite this day only, leaving the rest of the trip unchanged"
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -348,13 +348,13 @@ export default function ItineraryArtifact({
           </div>
         </div>
 
-        <div className="mt-3 flex items-center gap-2 overflow-x-auto">
+        <div className="hide-scrollbar mt-3 flex items-center gap-2 overflow-x-auto">
           {days.map((d) => (
             <button
               key={d.id}
               onClick={() => setSelectedDayIndex(d.day_index)}
               className={cn(
-                'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                'touch-target flex-shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
                 d.day_index === selectedDay.day_index
                   ? 'bg-[var(--brass)] border-[color:var(--brass)]/30 text-[var(--brass-text)] shadow-[0_8px_20px_rgba(190,132,49,0.18)]'
                   : 'bg-paper-raised/85 border-rule text-foreground/40 hover:text-foreground/70 hover:bg-paper-recessed'
@@ -366,7 +366,7 @@ export default function ItineraryArtifact({
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
+      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 sm:p-5">
         {swapNotice && (
           <div className="rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)]/70 px-4 py-3 text-sm font-semibold text-[var(--moss)] shadow-[var(--panel-shadow)]">
             <span className="inline-flex items-center gap-2">
@@ -391,7 +391,7 @@ export default function ItineraryArtifact({
               </div>
               <button
                 onClick={() => setMapExpanded((current) => !current)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
               >
                 {mapExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
                 {mapExpanded ? 'Shrink' : 'Enlarge'}
@@ -418,7 +418,7 @@ export default function ItineraryArtifact({
                   key={stop.id}
                   onClick={() => onSelectItem?.(stop.item)}
                   className={cn(
-                    'flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
+                    'touch-target flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
                     stop.mapped
                       ? 'border-rule bg-paper-recessed/60 hover:border-rule hover:bg-paper-recessed/60'
                       : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] hover:bg-[var(--brass-subtle)]'
@@ -470,9 +470,9 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] p-4.5"
+                className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] p-4"
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0 text-left">
                     <p className="text-[11px] uppercase tracking-[0.22em] text-foreground/42">Day {day.day_index}</p>
                     <h3 className="mt-1 text-sm font-medium text-foreground">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
@@ -481,7 +481,7 @@ export default function ItineraryArtifact({
                   {!readOnly && onRegenerateDay && (
                     <button
                       onClick={() => onRegenerateDay(day.day_index)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                       title="Rewrite this day only, leaving the rest of the trip unchanged"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
@@ -528,7 +528,7 @@ export default function ItineraryArtifact({
                           dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]' : 'border-rule bg-paper-recessed hover:border-rule'
                         )}
                       >
-                        <div className="flex items-start gap-3">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                           {!readOnly && (
                             <div className="mt-0.5 text-foreground/20 group-hover:text-foreground/35 transition-colors">
                               <GripVertical className="w-4 h-4" />
@@ -540,7 +540,7 @@ export default function ItineraryArtifact({
                               setSelectedDayIndex(day.day_index)
                               onSelectItem?.(item)
                             }}
-                            className="flex-1 min-w-0 text-left"
+                            className="min-w-0 flex-1 text-left"
                           >
                             <div className="flex items-center gap-2 flex-wrap">
                               {timeChip(item.start_time, item.end_time)}
@@ -581,10 +581,10 @@ export default function ItineraryArtifact({
                           </button>
 
                           {!readOnly && (
-                          <div className="flex flex-shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                          <div className="flex flex-shrink-0 flex-wrap items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                             <button
                               onClick={() => startEditing(item)}
-                              className="flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:bg-paper-recessed hover:text-foreground/80"
+                              className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:bg-paper-recessed hover:text-foreground/80"
                               title="Edit title"
                               aria-label={`Edit ${item.title}`}
                             >
@@ -594,7 +594,7 @@ export default function ItineraryArtifact({
                               <button
                                 onClick={() => setSwapMenuItemId((current) => (current === item.id ? null : item.id))}
                                 className={cn(
-                                  'inline-flex h-8 items-center gap-1.5 rounded-xl border px-2.5 text-[11px] font-medium transition-colors',
+                                  'touch-target inline-flex h-8 items-center justify-center gap-1.5 rounded-xl border px-2.5 text-[11px] font-medium transition-colors',
                                   swappingItemId === item.id
                                     ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                                     : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground hover:bg-[var(--brass)] hover:text-[var(--brass-text)]'
@@ -623,7 +623,7 @@ export default function ItineraryArtifact({
                                         key={option.label}
                                         type="button"
                                         onClick={() => handleSwapChoice(item, option.value)}
-                                        className="block w-full rounded-xl px-2.5 py-2 text-left text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed hover:text-foreground"
+                                        className="touch-target block w-full rounded-xl px-2.5 py-2 text-left text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed hover:text-foreground"
                                       >
                                         {option.label}
                                       </button>
@@ -634,7 +634,7 @@ export default function ItineraryArtifact({
                             </div>
                             <button
                               onClick={() => deleteItem(item.id)}
-                              className="flex h-8 w-8 items-center justify-center rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)]"
+                              className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)]"
                               title="Delete"
                               aria-label={`Delete ${item.title}`}
                             >

@@ -37,7 +37,7 @@ export default function Home() {
           className="min-h-[88vh] flex flex-col"
         >
           {/* Top bar */}
-          <header className="relative z-10 mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-5 pt-5 md:items-center md:px-6 md:pt-6">
+          <header className="relative z-10 mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-4 pt-5 md:items-center md:px-6 md:pt-6">
             <Link href="/" className="justify-self-start">
               <AlbatrossBrand />
             </Link>
@@ -57,7 +57,7 @@ export default function Home() {
           {/* Hero copy */}
           <motion.div
             style={{ y: driftY }}
-            className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 py-14 text-center md:px-6 md:py-10"
+            className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-14 text-center md:px-6 md:py-10"
           >
             <p className="mb-4 t-mono text-[0.6875rem] uppercase tracking-[0.18em] text-[var(--brass)]">
               Globe.travel maps for group trips
@@ -69,9 +69,9 @@ export default function Home() {
               AI itineraries, friend feedback, and shareable route snapshots in one calm workspace
               for small groups planning city trips.
             </p>
-            <div className="flex flex-col items-center gap-3 sm:flex-row">
+            <div className="flex w-full max-w-md flex-col items-stretch justify-center gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
               <Button asChild size="xl" className="rounded-full px-7">
-                <Link href="/signup">
+                <Link href="/signup" className="touch-target">
                   Start planning
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
@@ -82,7 +82,7 @@ export default function Home() {
                 size="xl"
                 className="rounded-full px-7 text-foreground hover:bg-paper-raised"
               >
-                <Link href="#crew">
+                <Link href="#crew" className="touch-target">
                   See the Globe.travel map
                 </Link>
               </Button>
@@ -90,7 +90,7 @@ export default function Home() {
           </motion.div>
 
           {/* horizon ledger */}
-          <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-6 md:px-6 md:pb-8">
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-6 md:px-6 md:pb-8">
             <div className="flex items-end justify-between gap-6 t-mono text-[0.65625rem] uppercase tracking-[0.16em] text-ink-2">
               <span>PLANNED TOGETHER</span>
               <span className="hidden sm:inline">CITY PLANS · FRIEND FEEDBACK</span>
@@ -101,7 +101,7 @@ export default function Home() {
       </div>
 
       {/* ─────────────── STANZA — opening line ─────────────── */}
-      <section className="relative overflow-hidden px-5 py-20 md:px-6 md:py-24">
+	      <section className="relative overflow-hidden px-4 py-20 md:px-6 md:py-24">
         <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-rule" />
         <div className="paper-grain absolute inset-0 pointer-events-none" />
         <motion.div
@@ -124,7 +124,7 @@ export default function Home() {
       {/* ─────────────── HOW IT WORKS — three paper cards ─────────────── */}
       <section
         id="how"
-        className="relative bg-[var(--paper-recessed)] px-5 py-20 md:px-6 md:py-24"
+	        className="relative bg-[var(--paper-recessed)] px-4 py-20 md:px-6 md:py-24"
       >
         <div aria-hidden className="absolute inset-0 -z-0">
           <ContourOverlay density="sparse" />
@@ -190,7 +190,7 @@ export default function Home() {
       {/* ─────────────── ITINERARY THREAD DEMO ─────────────── */}
       <section
         id="crew"
-        className="relative overflow-hidden bg-paper px-5 py-20 md:px-6 md:py-24"
+	        className="relative overflow-hidden bg-paper px-4 py-20 md:px-6 md:py-24"
       >
         <div className="paper-grain absolute inset-0 pointer-events-none" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
@@ -258,7 +258,7 @@ export default function Home() {
       </section>
 
       {/* ─────────────── CTA ─────────────── */}
-      <section className="relative overflow-hidden bg-[var(--paper-recessed)] px-5 py-20 md:px-6 md:py-24">
+	      <section className="relative overflow-hidden bg-[var(--paper-recessed)] px-4 py-20 md:px-6 md:py-24">
         <div aria-hidden className="absolute inset-0 -z-0 opacity-80">
           <ContourOverlay density="sparse" />
         </div>
@@ -279,7 +279,7 @@ export default function Home() {
             Free to start. Faster than a spreadsheet. Quieter than the chat.
           </p>
           <Button asChild size="xl" className="rounded-full px-8">
-            <Link href="/signup">
+            <Link href="/signup" className="touch-target">
               Plan your first trip
               <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
@@ -287,7 +287,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <footer className="relative border-t border-rule bg-paper px-5 py-8 md:px-6">
+      <footer className="relative border-t border-rule bg-paper px-4 py-8 md:px-6">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
           <AlbatrossBrand textClassName="text-[0.9375rem]" />
           <p className="t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">

@@ -551,7 +551,7 @@ function TripStudioPageContent() {
   }
 
   return (
-    <div ref={studioRef} className="relative w-full h-full min-h-screen bg-paper overflow-hidden">
+    <div ref={studioRef} className="relative min-h-full w-full overflow-y-auto bg-paper pb-[calc(5rem+env(safe-area-inset-bottom))] xl:h-full xl:overflow-hidden xl:pb-0">
       {/* Globe */}
       <div className="absolute inset-0">
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--brass),transparent_88%),transparent_38%),radial-gradient(circle_at_80%_20%,color-mix(in_oklch,var(--horizon),transparent_88%),transparent_26%),linear-gradient(180deg,var(--paper),var(--paper-recessed))]" />
@@ -569,7 +569,7 @@ function TripStudioPageContent() {
       </div>
 
       {/* Top bar */}
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[min(960px,calc(100%-1rem))] md:top-4 md:w-[min(960px,calc(100%-2rem))]">
+      <div className="relative z-30 mx-auto w-[min(960px,calc(100%-1rem))] pt-3 md:w-[min(960px,calc(100%-2rem))] xl:absolute xl:left-1/2 xl:top-4 xl:-translate-x-1/2 xl:pt-0">
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -589,12 +589,12 @@ function TripStudioPageContent() {
             </div>
           </div>
 
-          <div className="-mx-1 flex w-full flex-nowrap items-center gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:w-auto lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center lg:w-auto">
             <button
               onClick={saveTrip}
               disabled={isSavingTrip || !trip}
               className={cn(
-                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
+                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
                 saveDone
                   ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                   : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass)]'
@@ -607,7 +607,7 @@ function TripStudioPageContent() {
             <button
               onClick={() => setChatOpen((current) => !current)}
               className={cn(
-                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
+                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
                 chatOpen
                   ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground'
                   : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
@@ -620,7 +620,7 @@ function TripStudioPageContent() {
               onClick={() => handleOptimize()}
               disabled={isOptimizing || !canEditTrip}
               className={cn(
-                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
+                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
                 optimizeDone
                   ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                   : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
@@ -637,7 +637,7 @@ function TripStudioPageContent() {
             <button
               onClick={hydrateMaps}
               disabled={isHydratingMaps || !canEditTrip}
-              className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+              className="touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
               title="Repair or rebuild day map locations and routes"
             >
               <Route className="h-4 w-4 text-[var(--horizon)]" />
@@ -647,7 +647,7 @@ function TripStudioPageContent() {
               onClick={shareWithFriends}
               disabled={isSharingTrip || !trip || !shareUrl}
               className={cn(
-                'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
                 shareDone
                   ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                   : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground hover:bg-[var(--brass)]'
@@ -660,7 +660,7 @@ function TripStudioPageContent() {
             {trip?.is_public && shareUrl && (
               <Link
                 href={`/t/${trip.share_slug}`}
-                className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+                className="touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 title="Open public share link"
               >
                 <LinkIcon className="h-4 w-4" />
@@ -681,7 +681,7 @@ function TripStudioPageContent() {
       </div>
 
       {/* Invite + feedback */}
-      <div className="pointer-events-none absolute top-24 left-1/2 z-30 hidden w-[min(920px,calc(100%-2rem))] -translate-x-1/2 2xl:block">
+      <div className="pointer-events-none hidden">
         <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
           <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
@@ -886,7 +886,7 @@ function TripStudioPageContent() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="fixed inset-x-3 bottom-3 top-24 z-50 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-50 xl:w-[360px]"
+            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-32 z-50 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-50 xl:w-[360px]"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}
@@ -908,7 +908,7 @@ function TripStudioPageContent() {
               <button
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => setChatOpen(false)}
-                className="w-7 h-7 rounded-lg hover:bg-paper-recessed flex items-center justify-center text-foreground/30 hover:text-foreground/60 transition-colors"
+                className="touch-target flex h-7 w-7 items-center justify-center rounded-lg text-foreground/30 transition-colors hover:bg-paper-recessed hover:text-foreground/60"
               >
                 ×
               </button>
@@ -944,7 +944,7 @@ function TripStudioPageContent() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="absolute inset-x-3 bottom-3 top-40 z-20 mx-auto flex max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:top-28 xl:inset-x-0 xl:bottom-4 xl:top-44 xl:w-[min(760px,calc(100%-3rem))]"
+        className="relative z-20 mx-3 mb-6 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:inset-x-0 xl:bottom-4 xl:top-44 xl:mx-auto xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-3rem))]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div

@@ -15,6 +15,30 @@ type CanonicalPlaceOverride = {
 }
 
 const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
+  { pattern: /dear breakfast/i, name: 'Dear Breakfast Chiado', country: 'Portugal', country_code: 'PT', latitude: 38.71082, longitude: -9.14363, manualId: 'manual:lisbon:dear-breakfast-chiado' },
+  { pattern: /praça do comércio|praca do comercio|commerce square/i, name: 'Praça do Comércio', country: 'Portugal', country_code: 'PT', latitude: 38.70775, longitude: -9.13659, manualId: 'manual:lisbon:praca-do-comercio' },
+  { pattern: /lisbon cathedral|sé de lisboa|se de lisboa/i, name: 'Lisbon Cathedral', country: 'Portugal', country_code: 'PT', latitude: 38.70975, longitude: -9.13349, manualId: 'manual:lisbon:cathedral' },
+  { pattern: /castelo de são jorge|castelo de sao jorge|castle of são jorge|castle of sao jorge/i, name: 'Castelo de São Jorge', country: 'Portugal', country_code: 'PT', latitude: 38.71391, longitude: -9.13348, manualId: 'manual:lisbon:castelo-sao-jorge' },
+  { pattern: /taberna sal grosso/i, name: 'Taberna Sal Grosso', country: 'Portugal', country_code: 'PT', latitude: 38.71468, longitude: -9.1245, manualId: 'manual:lisbon:taberna-sal-grosso' },
+  { pattern: /miradouro de santa luzia|sunset viewpoint/i, name: 'Miradouro de Santa Luzia', country: 'Portugal', country_code: 'PT', latitude: 38.71237, longitude: -9.13086, manualId: 'manual:lisbon:miradouro-santa-luzia' },
+  { pattern: /tram 28e|tram 28/i, name: 'Praça Martim Moniz', country: 'Portugal', country_code: 'PT', latitude: 38.71691, longitude: -9.13664, manualId: 'manual:lisbon:tram-28-martim-moniz' },
+  { pattern: /miradouro da senhora do monte|final scenic stop/i, name: 'Miradouro da Senhora do Monte', country: 'Portugal', country_code: 'PT', latitude: 38.71912, longitude: -9.13274, manualId: 'manual:lisbon:miradouro-senhora-do-monte' },
+  { pattern: /\bramiro\b|cervejaria ramiro/i, name: 'Cervejaria Ramiro', country: 'Portugal', country_code: 'PT', latitude: 38.72178, longitude: -9.13543, manualId: 'manual:lisbon:cervejaria-ramiro' },
+  { pattern: /pensão amor|pensao amor/i, name: 'Pensão Amor', country: 'Portugal', country_code: 'PT', latitude: 38.70708, longitude: -9.14321, manualId: 'manual:lisbon:pensao-amor' },
+  { pattern: /pastéis de belém|pasteis de belem/i, name: 'Pastéis de Belém', country: 'Portugal', country_code: 'PT', latitude: 38.69748, longitude: -9.20322, manualId: 'manual:lisbon:pasteis-de-belem' },
+  { pattern: /jerónimos monastery|jeronimos monastery/i, name: 'Jerónimos Monastery', country: 'Portugal', country_code: 'PT', latitude: 38.6979, longitude: -9.20673, manualId: 'manual:lisbon:jeronimos-monastery' },
+  { pattern: /belém tower|belem tower/i, name: 'Belém Tower', country: 'Portugal', country_code: 'PT', latitude: 38.69158, longitude: -9.21604, manualId: 'manual:lisbon:belem-tower' },
+  { pattern: /\bmaat\b/i, name: 'MAAT', country: 'Portugal', country_code: 'PT', latitude: 38.69578, longitude: -9.19468, manualId: 'manual:lisbon:maat' },
+  { pattern: /ponto final/i, name: 'Ponto Final', country: 'Portugal', country_code: 'PT', latitude: 38.68495, longitude: -9.14718, manualId: 'manual:almada:ponto-final' },
+  { pattern: /time out market/i, name: 'Time Out Market Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.70697, longitude: -9.14562, manualId: 'manual:lisbon:time-out-market' },
+  { pattern: /by the wine/i, name: 'By The Wine', country: 'Portugal', country_code: 'PT', latitude: 38.71047, longitude: -9.14355, manualId: 'manual:lisbon:by-the-wine' },
+  { pattern: /pink street|rua nova do carvalho/i, name: 'Pink Street', country: 'Portugal', country_code: 'PT', latitude: 38.70728, longitude: -9.14323, manualId: 'manual:lisbon:pink-street' },
+  { pattern: /hello,?\s*kristof/i, name: 'Hello, Kristof', country: 'Portugal', country_code: 'PT', latitude: 38.71007, longitude: -9.15159, manualId: 'manual:lisbon:hello-kristof' },
+  { pattern: /cascais historic center|cascais historic centre/i, name: 'Cascais Historic Center', country: 'Portugal', country_code: 'PT', latitude: 38.69792, longitude: -9.42149, manualId: 'manual:cascais:historic-center' },
+  { pattern: /mar do inferno/i, name: 'Mar do Inferno', country: 'Portugal', country_code: 'PT', latitude: 38.69322, longitude: -9.42918, manualId: 'manual:cascais:mar-do-inferno' },
+  { pattern: /praia da rainha/i, name: 'Praia da Rainha', country: 'Portugal', country_code: 'PT', latitude: 38.69986, longitude: -9.41819, manualId: 'manual:cascais:praia-da-rainha' },
+  { pattern: /boca do inferno/i, name: 'Boca do Inferno', country: 'Portugal', country_code: 'PT', latitude: 38.69161, longitude: -9.43134, manualId: 'manual:cascais:boca-do-inferno' },
+  { pattern: /taberna da rua das flores|farewell dinner/i, name: 'Taberna da Rua das Flores', country: 'Portugal', country_code: 'PT', latitude: 38.70947, longitude: -9.1441, manualId: 'manual:lisbon:taberna-rua-das-flores' },
   { pattern: /ferry from piraeus to aegina|return ferry to piraeus/i, name: 'Port of Piraeus', country: 'Greece', country_code: 'GR', latitude: 37.94486, longitude: 23.64082, manualId: 'manual:athens:piraeus-port' },
   { pattern: /aegina harbor|aegina port|aegina town|pistachio market/i, name: 'Aegina Town', country: 'Greece', country_code: 'GR', latitude: 37.74679, longitude: 23.42775, manualId: 'manual:aegina:town' },
   { pattern: /temple of aphaia/i, name: 'Temple of Aphaia', country: 'Greece', country_code: 'GR', latitude: 37.75448, longitude: 23.53313, manualId: 'manual:aegina:temple-of-aphaia' },
@@ -203,7 +227,15 @@ async function computeAndStoreDayRoute(
   }
 
   const route = await directionsGeojson(coords, token, mode)
-  if (!route) return false
+  if (!route) {
+    await supabase.from('trip_routes').delete().eq('trip_day_id', tripDayId).eq('mode', mode)
+    return false
+  }
+
+  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > 25000) {
+    await supabase.from('trip_routes').delete().eq('trip_day_id', tripDayId).eq('mode', mode)
+    return false
+  }
 
   const { error: routeErr } = await supabase
     .from('trip_routes')

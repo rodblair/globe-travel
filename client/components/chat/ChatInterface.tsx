@@ -93,7 +93,7 @@ export default function ChatInterface({
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Messages area */}
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 py-6 sm:px-6">
+      <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
         <AnimatePresence mode="popLayout">
           {messages
             .filter((m) => m.content || m.role === 'user')
@@ -119,12 +119,12 @@ export default function ChatInterface({
         style={{ paddingBottom: 'max(0.9rem, env(safe-area-inset-bottom))' }}
       >
         {showSuggestions && (
-          <div className="max-w-3xl mx-auto mb-2 flex gap-2 overflow-x-auto pb-1">
+          <div className="hide-scrollbar mx-auto mb-2 flex max-w-3xl gap-2 overflow-x-auto pb-1">
             {visibleSuggestions.map((s) => (
               <button
                 key={s}
                 onClick={() => onSendMessage(s)}
-                className="flex-shrink-0 px-3 py-1.5 rounded-full border border-rule bg-paper text-caption text-ink-2 hover:bg-paper-hover hover:text-foreground transition-colors"
+                className="touch-target flex-shrink-0 rounded-full border border-rule bg-paper px-3 py-1.5 text-caption text-ink-2 transition-colors hover:bg-paper-hover hover:text-foreground"
               >
                 {s}
               </button>
@@ -149,7 +149,7 @@ export default function ChatInterface({
           {isLoading ? (
             <button
               onClick={onStop}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)]/15"
+              className="touch-target flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)]/15"
               aria-label="Stop"
             >
               <Square className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function ChatInterface({
             <button
               onClick={handleSend}
               disabled={!input.trim()}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--brass)] text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-default disabled:bg-[var(--paper-recessed)] disabled:text-ink-4 disabled:opacity-60"
+              className="touch-target flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--brass)] text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-default disabled:bg-[var(--paper-recessed)] disabled:text-ink-4 disabled:opacity-60"
               aria-label="Send"
             >
               <Send className="w-4 h-4" />

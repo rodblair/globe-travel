@@ -63,7 +63,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex h-full w-64 flex-col',
+        'hidden h-dvh w-64 flex-shrink-0 md:flex flex-col',
         'border-r border-rule bg-[var(--sidebar-bg)] text-foreground',
         'relative',
       )}
@@ -91,7 +91,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group relative flex items-center gap-3 rounded-md px-3 py-2.5',
+                'group relative flex min-h-12 items-center gap-3 rounded-md px-3 py-2.5',
                 'transition-colors duration-200',
                 isActive
                   ? 'bg-[var(--sidebar-accent)] text-foreground'
@@ -131,7 +131,7 @@ export function Sidebar() {
           <Link
             href="/pricing"
             className={cn(
-              'group flex items-center gap-2.5 rounded-md',
+              'group flex min-h-12 items-center gap-2.5 rounded-md',
               'border border-rule px-3 py-2.5',
               'bg-[var(--brass-subtle)] hover:bg-[color-mix(in_oklch,var(--brass),transparent_82%)]',
               'transition-colors',
@@ -152,7 +152,7 @@ export function Sidebar() {
 
       {/* Account row */}
       <div className="relative border-t border-rule p-3">
-        <div className="flex items-center gap-2.5 rounded-md px-2 py-1.5 hover:bg-[var(--sidebar-hover)] transition-colors">
+        <div className="flex min-h-12 items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors hover:bg-[var(--sidebar-hover)]">
           <Link
             href="/account"
             className={cn(
@@ -183,7 +183,7 @@ export function Sidebar() {
           </div>
           <button
             onClick={handleSignOut}
-            className="p-1.5 rounded-md text-ink-3 hover:text-foreground hover:bg-[var(--paper-hover)] transition-colors"
+            className="touch-target inline-flex rounded-md p-1.5 text-ink-3 transition-colors hover:bg-[var(--paper-hover)] hover:text-foreground"
             title="Sign out"
             aria-label="Sign out"
           >

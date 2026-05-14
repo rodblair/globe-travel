@@ -480,8 +480,11 @@
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--background);
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
   body {
+    min-height: 100dvh;
+    overflow-x: hidden;
     overscroll-behavior: none;
     font-family: var(--font-sans);
     font-optical-sizing: auto;
@@ -490,6 +493,10 @@
     background-color: var(--background);
     color: var(--foreground);
     @apply bg-background text-foreground;
+  }
+
+  img, video, canvas, svg {
+    max-width: 100%;
   }
 
   h1, h2, h3, h4 {
@@ -517,6 +524,10 @@
     cursor: pointer;
   }
   button:disabled { cursor: default; }
+
+  button, a, input, textarea, select {
+    touch-action: manipulation;
+  }
 
   :focus { outline: none; }
 
@@ -730,6 +741,54 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 10px;
+  }
+
+  .app-shell {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-main {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 768px) {
+    .app-main {
+      padding-bottom: 0;
+    }
+  }
+
+  .app-container {
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 2.5vw, 1.5rem);
+  }
+
+  .app-sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--rule);
+    background: color-mix(in oklch, var(--paper), transparent 6%);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
   .hairline { border-top: 1px solid var(--rule-faint); }
   .hairline-strong { border-top: 1px solid var(--rule); }

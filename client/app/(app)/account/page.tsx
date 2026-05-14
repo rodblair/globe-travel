@@ -114,8 +114,8 @@ function AccountPageContent() {
 
   return (
     <div className="min-h-screen bg-paper">
-      <div className="sticky top-0 z-10 border-b border-rule bg-paper/80 backdrop-blur-xl">
-        <div className="mx-auto max-w-5xl px-5 py-5 md:px-6">
+      <div className="app-sticky-header">
+        <div className="mx-auto w-full max-w-5xl px-4 py-4 md:px-6 md:py-5">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
@@ -129,7 +129,7 @@ function AccountPageContent() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-rule bg-paper-recessed/60 p-2">
+            <div className="hide-scrollbar flex items-center gap-2 overflow-x-auto rounded-2xl border border-rule bg-paper-recessed/60 p-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
@@ -137,7 +137,7 @@ function AccountPageContent() {
                     key={tab.key}
                     onClick={() => switchTab(tab.key)}
                     className={cn(
-                      'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
+                      'touch-target inline-flex flex-shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
                       activeTab === tab.key
                         ? 'bg-[var(--brass-subtle)] text-foreground'
                         : 'text-foreground/45 hover:bg-paper-recessed/60 hover:text-foreground/75'
@@ -153,7 +153,7 @@ function AccountPageContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-5 py-6 md:px-6 md:py-8">
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 md:px-6 md:py-8">
         {activeTab === 'profile' && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_320px] lg:gap-7">
             <div className="space-y-6">
@@ -235,10 +235,10 @@ function AccountPageContent() {
                       onClick={handleSave}
                       disabled={saving}
                       className={cn(
-                        'inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all',
+                        'touch-target inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-colors',
                         saved
                           ? 'border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                          : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass)] disabled:opacity-40'
+                          : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)] disabled:opacity-40'
                       )}
                     >
                       <Save className="h-4 w-4" />
@@ -270,7 +270,7 @@ function AccountPageContent() {
                 <p className="mt-1 text-sm text-foreground/40">Signed in and ready to pick up where you left off.</p>
                 <button
                   onClick={handleSignOut}
-                  className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[color:var(--pillar-desert-wash)] px-4 py-2.5 text-sm font-medium text-[var(--terracotta)] transition-all hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
+                  className="touch-target mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-[color:var(--pillar-desert-wash)] px-4 py-2.5 text-sm font-medium text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
                 >
                   <LogOut className="h-4 w-4" />
                   Sign out
@@ -329,7 +329,7 @@ function AccountPageContent() {
               </div>
 
               <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <div className="mb-4 flex items-center justify-between gap-3">
+                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="text-lg font-serif font-semibold text-foreground">
                       {isPro ? 'Manage subscription' : 'Upgrade to Adventurer'}
@@ -347,7 +347,7 @@ function AccountPageContent() {
                           key={value}
                           onClick={() => setInterval(value)}
                           className={cn(
-                            'rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200',
+                            'touch-target rounded-lg px-3 py-1.5 text-xs font-medium transition-colors duration-200',
                             interval === value ? 'bg-[var(--brass)] text-[var(--brass-text)]' : 'text-foreground/45 hover:text-foreground'
                           )}
                         >
@@ -382,10 +382,10 @@ function AccountPageContent() {
                   onClick={isPro ? handleManage : handleUpgrade}
                   disabled={billingLoading}
                   className={cn(
-                    'inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition-all duration-200 disabled:opacity-60',
+                    'touch-target inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors duration-200 disabled:opacity-60',
                     isPro
                       ? 'bg-paper-recessed text-foreground hover:bg-paper-recessed'
-                      : 'bg-[var(--brass)] text-[var(--brass-text)] hover:scale-[1.01] hover:bg-[var(--brass)]'
+                      : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)]'
                   )}
                 >
                   {isPro ? (
@@ -415,9 +415,9 @@ function AccountPageContent() {
                   ].map(([feature, free, pro]) => (
                     <div key={feature} className="rounded-2xl border border-rule bg-paper-recessed/60 p-4">
                       <p className="text-sm font-medium text-foreground">{feature}</p>
-                      <div className="mt-2 flex items-center justify-between text-xs">
+                      <div className="mt-2 grid gap-1 text-xs sm:grid-cols-2">
                         <span className="text-foreground/40">Explorer: {free}</span>
-                        <span className="text-[var(--brass)]">Adventurer: {pro}</span>
+                        <span className="text-[var(--brass)] sm:text-right">Adventurer: {pro}</span>
                       </div>
                     </div>
                   ))}

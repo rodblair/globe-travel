@@ -104,7 +104,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string; d
 
     const coords = orderedCoords.map((p: any) => ({ latitude: p.latitude, longitude: p.longitude }))
     const route = await directionsGeojson(coords, token, 'walk')
-    if (route) {
+    if (route && route.distance_m != null && route.distance_m > 0 && route.distance_m <= 25000) {
       const { error: routeErr } = await supabase
         .from('trip_routes')
         .upsert(
@@ -119,6 +119,8 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string; d
           { onConflict: 'trip_day_id,mode' }
         )
       if (routeErr) throw new Error(routeErr.message)
+    } else {
+      await supabase.from('trip_routes').delete().eq('trip_day_id', tripDayId).eq('mode', 'walk')
     }
 
     return NextResponse.json({ ok: true, ordered_item_ids: orderedIds })
@@ -126,4 +128,3 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string; d
     return NextResponse.json({ error: e?.message || 'Failed to optimize' }, { status: 500 })
   }
 }
-

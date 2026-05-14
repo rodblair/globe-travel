@@ -145,12 +145,27 @@ export function shouldUseSavedRoute<T extends TripItemLike>(
 
   // Saved walk lines become misleading on island/transit days and can also
   // distort the map if old geometry was generated before itinerary edits.
-  if (route.distance_m != null && route.distance_m > 25000) return false
+  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > 25000) return false
 
   return true
 }
 
 const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
+  { pattern: /dear breakfast/i, stops: [{ title: 'Dear Breakfast Chiado', latitude: 38.71082, longitude: -9.14363, country: 'Portugal' }] },
+  { pattern: /lisbon cathedral|sé de lisboa|se de lisboa/i, stops: [{ title: 'Lisbon Cathedral', latitude: 38.70975, longitude: -9.13349, country: 'Portugal' }] },
+  { pattern: /castelo de são jorge|castelo de sao jorge|castle of são jorge|castle of sao jorge/i, stops: [{ title: 'Castelo de São Jorge', latitude: 38.71391, longitude: -9.13348, country: 'Portugal' }] },
+  { pattern: /taberna sal grosso/i, stops: [{ title: 'Taberna Sal Grosso', latitude: 38.71468, longitude: -9.1245, country: 'Portugal' }] },
+  { pattern: /tram 28e|tram 28/i, stops: [{ title: 'Praça Martim Moniz', latitude: 38.71691, longitude: -9.13664, country: 'Portugal' }] },
+  { pattern: /\bramiro\b|cervejaria ramiro/i, stops: [{ title: 'Cervejaria Ramiro', latitude: 38.72178, longitude: -9.13543, country: 'Portugal' }] },
+  { pattern: /pensão amor|pensao amor/i, stops: [{ title: 'Pensão Amor', latitude: 38.70708, longitude: -9.14321, country: 'Portugal' }] },
+  { pattern: /ponto final/i, stops: [{ title: 'Ponto Final', latitude: 38.68495, longitude: -9.14718, country: 'Portugal' }] },
+  { pattern: /by the wine/i, stops: [{ title: 'By The Wine', latitude: 38.71047, longitude: -9.14355, country: 'Portugal' }] },
+  { pattern: /pink street|rua nova do carvalho/i, stops: [{ title: 'Pink Street', latitude: 38.70728, longitude: -9.14323, country: 'Portugal' }] },
+  { pattern: /hello,?\s*kristof/i, stops: [{ title: 'Hello, Kristof', latitude: 38.71007, longitude: -9.15159, country: 'Portugal' }] },
+  { pattern: /cascais historic center|cascais historic centre/i, stops: [{ title: 'Cascais Historic Center', latitude: 38.69792, longitude: -9.42149, country: 'Portugal' }] },
+  { pattern: /mar do inferno/i, stops: [{ title: 'Mar do Inferno', latitude: 38.69322, longitude: -9.42918, country: 'Portugal' }] },
+  { pattern: /praia da rainha/i, stops: [{ title: 'Praia da Rainha', latitude: 38.69986, longitude: -9.41819, country: 'Portugal' }] },
+  { pattern: /boca do inferno/i, stops: [{ title: 'Boca do Inferno', latitude: 38.69161, longitude: -9.43134, country: 'Portugal' }] },
   { pattern: /ferry from piraeus to aegina|return ferry to piraeus/i, stops: [{ title: 'Port of Piraeus', latitude: 37.94486, longitude: 23.64082, country: 'Greece' }] },
   { pattern: /aegina harbor|aegina port|aegina town|pistachio market/i, stops: [{ title: 'Aegina Town', latitude: 37.74679, longitude: 23.42775, country: 'Greece' }] },
   { pattern: /temple of aphaia/i, stops: [{ title: 'Temple of Aphaia', latitude: 37.75448, longitude: 23.53313, country: 'Greece' }] },
