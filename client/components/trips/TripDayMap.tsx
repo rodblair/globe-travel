@@ -199,6 +199,7 @@ export default function TripDayMap({
   const stopOnlyPreview = useMemo(() => buildStopPath(validStops), [validStops])
   const startStop = validStops[0] || null
   const endStop = validStops.length > 1 ? validStops[validStops.length - 1] : validStops[0] || null
+  const mapLabel = routeGeojson && routeSummary?.includes('min walk') ? 'Walking Map' : 'Trip Map'
 
   const fitMapToStops = useCallback((map: mapboxgl.Map) => {
     if (validStops.length === 0) {
@@ -465,7 +466,7 @@ export default function TripDayMap({
       <div className={cn('relative w-full overflow-hidden border-b border-rule bg-[var(--paper-recessed)]', mapHeightClassName)}>
         <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex items-center justify-between gap-2">
           <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/78 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
-            Walking Map
+            {mapLabel}
           </span>
           <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium tabular-nums text-foreground/76 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
             {validStops.length} stop{validStops.length === 1 ? '' : 's'}

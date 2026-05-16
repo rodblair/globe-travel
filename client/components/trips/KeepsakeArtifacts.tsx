@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react'
 import { CalendarDays, Check, Copy, Heart, MessageCircleQuestion, Route, Share2, Users } from 'lucide-react'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
 
 type KeepsakeTrip = {
@@ -108,7 +108,7 @@ export function KeepsakeRouteCard({
   const route = shouldUseSavedRoute(dayItems, savedRoute, usesDerivedStops) ? savedRoute : null
   const routeSummary = route?.distance_m && route?.duration_s
     ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
-    : `${sortedItems.length} planned stop${sortedItems.length === 1 ? '' : 's'}`
+    : getRouteFallbackLabel(dayItems, savedRoute, usesDerivedStops)
 
   return (
     <article className={cn('overflow-hidden rounded-[22px] border border-rule bg-paper-raised', active && 'border-[color:var(--brass)]/40')}>

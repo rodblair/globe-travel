@@ -14,6 +14,8 @@ type CanonicalPlaceOverride = {
   manualId?: string
 }
 
+const WALK_ROUTE_MAX_METERS = 8500
+
 const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /dear breakfast/i, name: 'Dear Breakfast Chiado', country: 'Portugal', country_code: 'PT', latitude: 38.71082, longitude: -9.14363, manualId: 'manual:lisbon:dear-breakfast-chiado' },
   { pattern: /praça do comércio|praca do comercio|commerce square/i, name: 'Praça do Comércio', country: 'Portugal', country_code: 'PT', latitude: 38.70775, longitude: -9.13659, manualId: 'manual:lisbon:praca-do-comercio' },
@@ -106,6 +108,8 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /vatican museums|sistine chapel/i, name: 'Vatican Museums', country: 'Vatican City', country_code: 'VA', latitude: 41.90649, longitude: 12.45362, manualId: 'manual:vatican:museums' },
   { pattern: /st\.?\s*peter'?s (basilica|square)|piazza san pietro|\bvatican\b/i, name: "St. Peter's Square", country: 'Vatican City', country_code: 'VA', latitude: 41.90217, longitude: 12.45394, manualId: 'manual:vatican:st-peters' },
   { pattern: /villa borghese/i, name: 'Villa Borghese Gardens', country: 'Italy', country_code: 'IT', latitude: 41.9142, longitude: 12.49232, manualId: 'manual:rome:villa-borghese' },
+  { pattern: /galleria borghese/i, name: 'Galleria Borghese', country: 'Italy', country_code: 'IT', latitude: 41.91421, longitude: 12.49217, manualId: 'manual:rome:galleria-borghese' },
+  { pattern: /via del corso/i, name: 'Via del Corso', country: 'Italy', country_code: 'IT', latitude: 41.90263, longitude: 12.47918, manualId: 'manual:rome:via-del-corso' },
   { pattern: /piazza navona/i, name: 'Piazza Navona', country: 'Italy', country_code: 'IT', latitude: 41.89893, longitude: 12.47307, manualId: 'manual:rome:piazza-navona' },
   { pattern: /pantheon/i, name: 'Pantheon', country: 'Italy', country_code: 'IT', latitude: 41.89861, longitude: 12.47687, manualId: 'manual:rome:pantheon' },
   { pattern: /trevi fountain/i, name: 'Trevi Fountain', country: 'Italy', country_code: 'IT', latitude: 41.90093, longitude: 12.48331, manualId: 'manual:rome:trevi-fountain' },
@@ -118,9 +122,34 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /vittoriano|altare della patria|piazza venezia/i, name: 'Vittoriano', country: 'Italy', country_code: 'IT', latitude: 41.89492, longitude: 12.48278, manualId: 'manual:rome:vittoriano' },
   { pattern: /piazza del popolo/i, name: 'Piazza del Popolo', country: 'Italy', country_code: 'IT', latitude: 41.91102, longitude: 12.47625, manualId: 'manual:rome:piazza-del-popolo' },
   { pattern: /piazza di spagna/i, name: 'Piazza di Spagna', country: 'Italy', country_code: 'IT', latitude: 41.90599, longitude: 12.48278, manualId: 'manual:rome:piazza-di-spagna' },
+  { pattern: /passeggiata del gianicolo|gianicolo/i, name: 'Passeggiata del Gianicolo', country: 'Italy', country_code: 'IT', latitude: 41.89137, longitude: 12.46143, manualId: 'manual:rome:gianicolo' },
+  { pattern: /tonnarello/i, name: 'Tonnarello', country: 'Italy', country_code: 'IT', latitude: 41.88934, longitude: 12.47103, manualId: 'manual:rome:tonnarello' },
+  { pattern: /jerry thomas/i, name: 'Jerry Thomas Speakeasy', country: 'Italy', country_code: 'IT', latitude: 41.89543, longitude: 12.47445, manualId: 'manual:rome:jerry-thomas' },
+  { pattern: /freni e frizioni/i, name: 'Freni e Frizioni', country: 'Italy', country_code: 'IT', latitude: 41.88908, longitude: 12.47014, manualId: 'manual:rome:freni-e-frizioni' },
   { pattern: /\bmonti\b/i, name: 'Monti', country: 'Italy', country_code: 'IT', latitude: 41.89472, longitude: 12.49556, manualId: 'manual:rome:monti' },
   { pattern: /\bprati\b/i, name: 'Prati', country: 'Italy', country_code: 'IT', latitude: 41.90580, longitude: 12.46073, manualId: 'manual:rome:prati' },
   { pattern: /\borganic market\b/i, name: 'Testaccio Market', country: 'Italy', country_code: 'IT', latitude: 41.87416, longitude: 12.47543, manualId: 'manual:rome:testaccio-market' },
+  { pattern: /senso-ji|sensō-ji|sensoji/i, name: 'Senso-ji Temple', country: 'Japan', country_code: 'JP', latitude: 35.71476, longitude: 139.79666, manualId: 'manual:tokyo:senso-ji' },
+  { pattern: /nakamise/i, name: 'Nakamise-dori', country: 'Japan', country_code: 'JP', latitude: 35.71184, longitude: 139.79642, manualId: 'manual:tokyo:nakamise-dori' },
+  { pattern: /daikokuya/i, name: 'Daikokuya Tempura', country: 'Japan', country_code: 'JP', latitude: 35.71195, longitude: 139.79469, manualId: 'manual:tokyo:daikokuya-tempura' },
+  { pattern: /tokyo national museum/i, name: 'Tokyo National Museum', country: 'Japan', country_code: 'JP', latitude: 35.71884, longitude: 139.77652, manualId: 'manual:tokyo:national-museum' },
+  { pattern: /izakaya toyo/i, name: 'Izakaya Toyo', country: 'Japan', country_code: 'JP', latitude: 35.67513, longitude: 139.77316, manualId: 'manual:tokyo:izakaya-toyo' },
+  { pattern: /meiji jingu/i, name: 'Meiji Jingu', country: 'Japan', country_code: 'JP', latitude: 35.6764, longitude: 139.69933, manualId: 'manual:tokyo:meiji-jingu' },
+  { pattern: /afuri harajuku/i, name: 'AFURI Harajuku', country: 'Japan', country_code: 'JP', latitude: 35.67091, longitude: 139.70375, manualId: 'manual:tokyo:afuri-harajuku' },
+  { pattern: /shibuya sky/i, name: 'Shibuya Sky', country: 'Japan', country_code: 'JP', latitude: 35.65854, longitude: 139.70208, manualId: 'manual:tokyo:shibuya-sky' },
+  { pattern: /teamlab/i, name: 'teamLab Planets TOKYO', country: 'Japan', country_code: 'JP', latitude: 35.64915, longitude: 139.78975, manualId: 'manual:tokyo:teamlab-planets' },
+  { pattern: /uobei/i, name: 'Uobei Shibuya Dogenzaka', country: 'Japan', country_code: 'JP', latitude: 35.66064, longitude: 139.69775, manualId: 'manual:tokyo:uobei-shibuya' },
+  { pattern: /tsukiji/i, name: 'Tsukiji Outer Market', country: 'Japan', country_code: 'JP', latitude: 35.66549, longitude: 139.77074, manualId: 'manual:tokyo:tsukiji-outer-market' },
+  { pattern: /sushi daiwa|daiwa sushi/i, name: 'Daiwa Sushi', country: 'Japan', country_code: 'JP', latitude: 35.64344, longitude: 139.7821, manualId: 'manual:tokyo:daiwa-sushi' },
+  { pattern: /nezu museum/i, name: 'Nezu Museum', country: 'Japan', country_code: 'JP', latitude: 35.66229, longitude: 139.71693, manualId: 'manual:tokyo:nezu-museum' },
+  { pattern: /omotesando/i, name: 'Omotesando', country: 'Japan', country_code: 'JP', latitude: 35.66525, longitude: 139.71232, manualId: 'manual:tokyo:omotesando' },
+  { pattern: /maisen aoyama/i, name: 'Maisen Aoyama', country: 'Japan', country_code: 'JP', latitude: 35.66863, longitude: 139.71172, manualId: 'manual:tokyo:maisen-aoyama' },
+  { pattern: /ginza/i, name: 'Ginza', country: 'Japan', country_code: 'JP', latitude: 35.67175, longitude: 139.76502, manualId: 'manual:tokyo:ginza' },
+  { pattern: /imperial palace/i, name: 'Imperial Palace East Gardens', country: 'Japan', country_code: 'JP', latitude: 35.68518, longitude: 139.75445, manualId: 'manual:tokyo:imperial-palace-east-gardens' },
+  { pattern: /ramen street/i, name: 'Tokyo Ramen Street', country: 'Japan', country_code: 'JP', latitude: 35.68159, longitude: 139.7673, manualId: 'manual:tokyo:ramen-street' },
+  { pattern: /golden gai/i, name: 'Shinjuku Golden Gai', country: 'Japan', country_code: 'JP', latitude: 35.69412, longitude: 139.70464, manualId: 'manual:tokyo:golden-gai' },
+  { pattern: /easy evening stroll/i, name: 'Sumida Park', country: 'Japan', country_code: 'JP', latitude: 35.71013, longitude: 139.80336, manualId: 'manual:tokyo:sumida-park' },
+  { pattern: /^day$/i, name: 'Shinjuku Golden Gai', country: 'Japan', country_code: 'JP', latitude: 35.69412, longitude: 139.70464, manualId: 'manual:tokyo:generic-evening' },
 ]
 
 function extractTripContext(title: string | null | undefined) {
@@ -232,7 +261,7 @@ async function computeAndStoreDayRoute(
     return false
   }
 
-  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > 25000) {
+  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > WALK_ROUTE_MAX_METERS) {
     await supabase.from('trip_routes').delete().eq('trip_day_id', tripDayId).eq('mode', mode)
     return false
   }

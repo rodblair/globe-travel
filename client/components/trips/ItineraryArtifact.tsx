@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
-import { buildDisplayStops, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 
 export type TripDay = {
   id: string
@@ -214,7 +214,7 @@ export default function ItineraryArtifact({
       const route = useSavedRoute ? savedRoute : null
       const routeSummary = route?.distance_m && route?.duration_s
         ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
-        : null
+        : getRouteFallbackLabel(dayItems, savedRoute, usesDerivedStops)
       const subtitleParts = [day.date, `${stops.length} stop${stops.length === 1 ? '' : 's'}`].filter(Boolean)
 
       return {

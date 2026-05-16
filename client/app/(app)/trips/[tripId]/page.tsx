@@ -9,7 +9,7 @@ import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, Message
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops } from '@/components/trips/derivedStops'
+import { buildDisplayStops, hasTransitRouteCue, shouldUseSavedRoute } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
 
 type Trip = {
@@ -211,15 +211,25 @@ function TripStudioPageContent() {
 
   const mappingSummary = useMemo(() => {
     const itemCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
-    const mappedItemCount = days.reduce(
-      (sum, day) => sum + day.items.filter((item) => coerceCoordinate(item.place?.latitude) != null && coerceCoordinate(item.place?.longitude) != null).length,
-      0
-    )
-    const routeDayCount = days.filter((day) => (day.routes?.length || 0) > 0).length
-    const routeEligibleDayCount = days.filter((day) => {
-      const mappedStops = day.items.filter((item) => coerceCoordinate(item.place?.latitude) != null && coerceCoordinate(item.place?.longitude) != null).length
-      return mappedStops >= 2
-    }).length
+    let mappedItemCount = 0
+    let routeDayCount = 0
+    let routeEligibleDayCount = 0
+
+    for (const day of days) {
+      const displayStops = buildDisplayStops((day.items || []) as any)
+      const mappedStops = displayStops.filter((stop) => stop.mapped)
+      const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
+      const savedRoute = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
+
+      mappedItemCount += mappedStops.length
+
+      if (mappedStops.length >= 2 && !usesDerivedStops && !hasTransitRouteCue(day.items || [])) {
+        routeEligibleDayCount += 1
+        if (shouldUseSavedRoute(day.items || [], savedRoute, usesDerivedStops)) {
+          routeDayCount += 1
+        }
+      }
+    }
 
     return {
       itemCount,

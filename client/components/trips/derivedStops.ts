@@ -35,6 +35,8 @@ type DerivedStop = {
   country?: string
 }
 
+export const WALK_ROUTE_MAX_METERS = 8500
+
 export function coerceCoordinate(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : null
   if (typeof value === 'string' && value.trim().length > 0) {
@@ -134,6 +136,17 @@ export function hasTransitRouteCue<T extends TripItemLike>(items: T[]) {
   })
 }
 
+export function getRouteFallbackLabel<T extends TripItemLike>(
+  items: T[],
+  route: { distance_m?: number | null } | null | undefined,
+  usesDerivedStops: boolean
+) {
+  if (hasTransitRouteCue(items)) return 'Transit or split route recommended'
+  if (route?.distance_m != null && route.distance_m > WALK_ROUTE_MAX_METERS) return 'Split route recommended'
+  if (usesDerivedStops) return 'Verified stop sequence'
+  return 'Mapped stops ready'
+}
+
 export function shouldUseSavedRoute<T extends TripItemLike>(
   items: T[],
   route: { distance_m?: number | null } | null | undefined,
@@ -145,7 +158,7 @@ export function shouldUseSavedRoute<T extends TripItemLike>(
 
   // Saved walk lines become misleading on island/transit days and can also
   // distort the map if old geometry was generated before itinerary edits.
-  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > 25000) return false
+  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > WALK_ROUTE_MAX_METERS) return false
 
   return true
 }
@@ -266,28 +279,56 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
   {
     pattern: /colosseum.*roman forum|roman forum.*colosseum/i,
     stops: [
-      { title: 'Colosseum', latitude: 41.89021, longitude: 12.49223 },
-      { title: 'Roman Forum', latitude: 41.89246, longitude: 12.48533 },
+      { title: 'Colosseum', latitude: 41.89021, longitude: 12.49223, country: 'Italy' },
+      { title: 'Roman Forum', latitude: 41.89246, longitude: 12.48533, country: 'Italy' },
     ],
   },
   {
     pattern: /vatican museums.*sistine chapel|sistine chapel.*vatican museums/i,
     stops: [
-      { title: 'Vatican Museums', latitude: 41.90649, longitude: 12.45362 },
-      { title: 'Sistine Chapel', latitude: 41.90293, longitude: 12.45486 },
+      { title: 'Vatican Museums', latitude: 41.90649, longitude: 12.45362, country: 'Vatican City' },
+      { title: 'Sistine Chapel', latitude: 41.90293, longitude: 12.45486, country: 'Vatican City' },
     ],
   },
-  { pattern: /la taverna dei fori imperiali/i, stops: [{ title: 'La Taverna dei Fori Imperiali', latitude: 41.89303, longitude: 12.48923 }] },
-  { pattern: /piazza navona/i, stops: [{ title: 'Piazza Navona', latitude: 41.89893, longitude: 12.47307 }] },
-  { pattern: /pizzarium bonci|bonci/i, stops: [{ title: 'Pizzarium Bonci', latitude: 41.90708, longitude: 12.44645 }] },
-  { pattern: /st\.?\s*peter'?s basilica/i, stops: [{ title: "St. Peter's Basilica", latitude: 41.90217, longitude: 12.45394 }] },
-  { pattern: /pantheon/i, stops: [{ title: 'Pantheon', latitude: 41.89861, longitude: 12.47687 }] },
-  { pattern: /panino divino/i, stops: [{ title: 'Panino Divino', latitude: 41.90623, longitude: 12.45742 }] },
-  { pattern: /trevi fountain/i, stops: [{ title: 'Trevi Fountain', latitude: 41.90093, longitude: 12.48331 }] },
-  { pattern: /spanish steps/i, stops: [{ title: 'Spanish Steps', latitude: 41.90599, longitude: 12.48278 }] },
-  { pattern: /villa borghese/i, stops: [{ title: 'Villa Borghese Gardens', latitude: 41.9142, longitude: 12.49232 }] },
-  { pattern: /casina valadier/i, stops: [{ title: 'Casina Valadier', latitude: 41.91398, longitude: 12.48617 }] },
-  { pattern: /trastevere/i, stops: [{ title: 'Trastevere', latitude: 41.88802, longitude: 12.46984 }] },
+  { pattern: /la taverna dei fori imperiali/i, stops: [{ title: 'La Taverna dei Fori Imperiali', latitude: 41.89303, longitude: 12.48923, country: 'Italy' }] },
+  { pattern: /piazza navona/i, stops: [{ title: 'Piazza Navona', latitude: 41.89893, longitude: 12.47307, country: 'Italy' }] },
+  { pattern: /pizzarium bonci|bonci/i, stops: [{ title: 'Pizzarium Bonci', latitude: 41.90708, longitude: 12.44645, country: 'Italy' }] },
+  { pattern: /st\.?\s*peter'?s basilica/i, stops: [{ title: "St. Peter's Basilica", latitude: 41.90217, longitude: 12.45394, country: 'Vatican City' }] },
+  { pattern: /pantheon/i, stops: [{ title: 'Pantheon', latitude: 41.89861, longitude: 12.47687, country: 'Italy' }] },
+  { pattern: /panino divino/i, stops: [{ title: 'Panino Divino', latitude: 41.90623, longitude: 12.45742, country: 'Italy' }] },
+  { pattern: /trevi fountain/i, stops: [{ title: 'Trevi Fountain', latitude: 41.90093, longitude: 12.48331, country: 'Italy' }] },
+  { pattern: /spanish steps/i, stops: [{ title: 'Spanish Steps', latitude: 41.90599, longitude: 12.48278, country: 'Italy' }] },
+  { pattern: /villa borghese/i, stops: [{ title: 'Villa Borghese Gardens', latitude: 41.9142, longitude: 12.49232, country: 'Italy' }] },
+  { pattern: /casina valadier/i, stops: [{ title: 'Casina Valadier', latitude: 41.91398, longitude: 12.48617, country: 'Italy' }] },
+  { pattern: /galleria borghese/i, stops: [{ title: 'Galleria Borghese', latitude: 41.91421, longitude: 12.49217, country: 'Italy' }] },
+  { pattern: /via del corso/i, stops: [{ title: 'Via del Corso', latitude: 41.90263, longitude: 12.47918, country: 'Italy' }] },
+  { pattern: /passeggiata del gianicolo|gianicolo/i, stops: [{ title: 'Passeggiata del Gianicolo', latitude: 41.89137, longitude: 12.46143, country: 'Italy' }] },
+  { pattern: /tonnarello/i, stops: [{ title: 'Tonnarello', latitude: 41.88934, longitude: 12.47103, country: 'Italy' }] },
+  { pattern: /jerry thomas/i, stops: [{ title: 'Jerry Thomas Speakeasy', latitude: 41.89543, longitude: 12.47445, country: 'Italy' }] },
+  { pattern: /freni e frizioni/i, stops: [{ title: 'Freni e Frizioni', latitude: 41.88908, longitude: 12.47014, country: 'Italy' }] },
+  { pattern: /roscioli salumeria|roscioli/i, stops: [{ title: 'Roscioli Salumeria con Cucina', latitude: 41.89553, longitude: 12.47225, country: 'Italy' }] },
+  { pattern: /trastevere/i, stops: [{ title: 'Trastevere', latitude: 41.88802, longitude: 12.46984, country: 'Italy' }] },
+  { pattern: /senso-ji|sensō-ji|sensoji/i, stops: [{ title: 'Senso-ji Temple', latitude: 35.71476, longitude: 139.79666, country: 'Japan' }] },
+  { pattern: /nakamise/i, stops: [{ title: 'Nakamise-dori', latitude: 35.71184, longitude: 139.79642, country: 'Japan' }] },
+  { pattern: /daikokuya/i, stops: [{ title: 'Daikokuya Tempura', latitude: 35.71195, longitude: 139.79469, country: 'Japan' }] },
+  { pattern: /tokyo national museum/i, stops: [{ title: 'Tokyo National Museum', latitude: 35.71884, longitude: 139.77652, country: 'Japan' }] },
+  { pattern: /izakaya toyo/i, stops: [{ title: 'Izakaya Toyo', latitude: 35.67513, longitude: 139.77316, country: 'Japan' }] },
+  { pattern: /meiji jingu/i, stops: [{ title: 'Meiji Jingu', latitude: 35.6764, longitude: 139.69933, country: 'Japan' }] },
+  { pattern: /afuri harajuku/i, stops: [{ title: 'AFURI Harajuku', latitude: 35.67091, longitude: 139.70375, country: 'Japan' }] },
+  { pattern: /shibuya sky/i, stops: [{ title: 'Shibuya Sky', latitude: 35.65854, longitude: 139.70208, country: 'Japan' }] },
+  { pattern: /teamlab/i, stops: [{ title: 'teamLab Planets TOKYO', latitude: 35.64915, longitude: 139.78975, country: 'Japan' }] },
+  { pattern: /uobei/i, stops: [{ title: 'Uobei Shibuya Dogenzaka', latitude: 35.66064, longitude: 139.69775, country: 'Japan' }] },
+  { pattern: /tsukiji/i, stops: [{ title: 'Tsukiji Outer Market', latitude: 35.66549, longitude: 139.77074, country: 'Japan' }] },
+  { pattern: /sushi daiwa|daiwa sushi/i, stops: [{ title: 'Daiwa Sushi', latitude: 35.64344, longitude: 139.7821, country: 'Japan' }] },
+  { pattern: /nezu museum/i, stops: [{ title: 'Nezu Museum', latitude: 35.66229, longitude: 139.71693, country: 'Japan' }] },
+  { pattern: /omotesando/i, stops: [{ title: 'Omotesando', latitude: 35.66525, longitude: 139.71232, country: 'Japan' }] },
+  { pattern: /maisen aoyama/i, stops: [{ title: 'Maisen Aoyama', latitude: 35.66863, longitude: 139.71172, country: 'Japan' }] },
+  { pattern: /ginza/i, stops: [{ title: 'Ginza', latitude: 35.67175, longitude: 139.76502, country: 'Japan' }] },
+  { pattern: /imperial palace/i, stops: [{ title: 'Imperial Palace East Gardens', latitude: 35.68518, longitude: 139.75445, country: 'Japan' }] },
+  { pattern: /ramen street/i, stops: [{ title: 'Tokyo Ramen Street', latitude: 35.68159, longitude: 139.7673, country: 'Japan' }] },
+  { pattern: /golden gai/i, stops: [{ title: 'Shinjuku Golden Gai', latitude: 35.69412, longitude: 139.70464, country: 'Japan' }] },
+  { pattern: /easy evening stroll/i, stops: [{ title: 'Sumida Park', latitude: 35.71013, longitude: 139.80336, country: 'Japan' }] },
+  { pattern: /^day$/i, stops: [{ title: 'Shinjuku Golden Gai', latitude: 35.69412, longitude: 139.70464, country: 'Japan' }] },
 ]
 
 export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
@@ -300,7 +341,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
     const latitude = coerceCoordinate(item.place?.latitude)
     const longitude = coerceCoordinate(item.place?.longitude)
 
-    if (derivedStops && (derivedStops.length > 1 || latitude == null || longitude == null)) {
+    if (derivedStops) {
       for (const stop of derivedStops) {
         displayStops.push({
           id: `${item.id}:${stop.title}`,
