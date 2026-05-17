@@ -114,7 +114,8 @@ export function JournalEditor({
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-xl bg-paper-recessed hover:bg-paper-recessed transition-colors text-foreground/50 hover:text-foreground"
+                  aria-label="Close note editor"
+                  className="touch-target min-h-12 min-w-12 rounded-xl bg-paper-recessed p-2 text-foreground/50 transition-colors hover:bg-paper-recessed hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -126,6 +127,8 @@ export function JournalEditor({
                 {/* Title */}
                 <div>
                   <input
+                    id="journal-title"
+                    aria-label="Note title"
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -144,10 +147,11 @@ export function JournalEditor({
                 {/* Meta row: date + location */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
+                    <label htmlFor="journal-date" className="mb-1.5 flex items-center gap-1 text-xs uppercase tracking-widest text-foreground/35">
                       <CalendarDays className="w-3 h-3" /> Trip date
                     </label>
                     <input
+                      id="journal-date"
                       type="date"
                       value={visitedDate}
                       onChange={(e) => setVisitedDate(e.target.value)}
@@ -155,10 +159,11 @@ export function JournalEditor({
                     />
                   </div>
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
+                    <label htmlFor="journal-location" className="mb-1.5 flex items-center gap-1 text-xs uppercase tracking-widest text-foreground/35">
                       <MapPin className="w-3 h-3" /> Location
                     </label>
                     <input
+                      id="journal-location"
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
@@ -171,10 +176,11 @@ export function JournalEditor({
                 {/* Trip linkage */}
                 {trips.length > 0 && (
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block flex items-center gap-1">
+                    <label htmlFor="journal-trip" className="mb-1.5 flex items-center gap-1 text-xs uppercase tracking-widest text-foreground/35">
                       <Briefcase className="w-3 h-3" /> Link to trip
                     </label>
                     <select
+                      id="journal-trip"
                       value={selectedTrip}
                       onChange={(e) => setSelectedTrip(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors"
@@ -189,8 +195,9 @@ export function JournalEditor({
 
                 {/* Content */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-foreground/35 mb-1.5 block">Trip note</label>
+                  <label htmlFor="journal-content" className="mb-1.5 block text-xs uppercase tracking-widest text-foreground/35">Trip note</label>
                   <textarea
+                    id="journal-content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Capture a decision, reminder, or memory from this trip..."
@@ -211,14 +218,14 @@ export function JournalEditor({
                 <div className="flex gap-2">
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 rounded-xl text-sm font-medium text-foreground/50 hover:text-foreground bg-paper-recessed hover:bg-paper-recessed transition-colors"
+                    className="touch-target min-h-12 rounded-xl bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground/50 transition-colors hover:bg-paper-recessed hover:text-foreground"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={!canSave || saving || isSaving}
-                    className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--brass)] hover:bg-[var(--brass)] text-[var(--brass-text)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="touch-target flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-[var(--brass)] px-5 py-2 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <Save className="w-4 h-4" />
                     {saving ? 'Saving...' : 'Save note'}

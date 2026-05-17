@@ -1,6 +1,18 @@
 import type { UIMessage } from 'ai'
 import type { PlannerGroupBrief, PlannerRuntimeContext, PlannerTripContext, PlannerTripDaySummary } from '@/lib/planner/types'
 
+const DESTINATION_TRAILING_THEME_PATTERN =
+  /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|shopping|markets?)\b.*$/i
+
+function cleanDestinationCandidate(candidate: string) {
+  return candidate
+    .replace(/[“”"']/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(DESTINATION_TRAILING_THEME_PATTERN, '')
+    .replace(/\s+(?:trip|itinerary|city break|escape|weekend|getaway|with friends|for friends)$/i, '')
+    .trim()
+}
+
 export function extractLatestUserMessage(messages: UIMessage[]) {
   const latestUserMessage = [...messages].reverse().find((message) => message.role === 'user')
   if (!latestUserMessage) return ''
@@ -31,9 +43,9 @@ export function extractDestinationFromTitle(title: string | null | undefined): s
   ]
   for (const pattern of patterns) {
     const match = cleaned.match(pattern)
-    if (match?.[1]) return match[1].trim()
+    if (match?.[1]) return cleanDestinationCandidate(match[1])
   }
-  return cleaned
+  return cleanDestinationCandidate(cleaned)
 }
 
 export function extractDestinationFromPrompt(text: string | null | undefined): string {
@@ -50,9 +62,7 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
     const match = cleaned.match(pattern)
     const candidate = match?.[1]?.trim()
     if (!candidate) continue
-    const normalized = extractDestinationFromTitle(candidate)
-      .replace(/\s+(?:trip|itinerary|city break|with friends|for friends)$/i, '')
-      .trim()
+    const normalized = cleanDestinationCandidate(extractDestinationFromTitle(candidate))
     if (normalized && !/\b(realistic|balanced|beautiful|budget|friendly|group|city|short|weekend)\b/i.test(normalized)) {
       return normalized
     }

@@ -140,6 +140,7 @@ export default function ChatInterface({
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
+            aria-label="Trip planning message"
             placeholder={placeholder}
             rows={1}
             className="min-h-9 flex-1 resize-none bg-transparent px-1 py-2 text-base leading-5 text-foreground placeholder:text-ink-4 focus:outline-none sm:text-sm"

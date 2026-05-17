@@ -258,7 +258,9 @@ function SavedPageContent() {
               <div>
                 <h2 className="text-xl font-serif font-semibold text-foreground">Your itineraries</h2>
                 <p className="mt-1 text-sm text-foreground/40">
-                  {trips.length} {trips.length === 1 ? 'itinerary' : 'itineraries'} ready to reopen, refine, or share.
+                  {trips.length === 0
+                    ? 'Start a trip to keep itinerary maps, notes, and friend-ready plans here.'
+                    : `${trips.length} ${trips.length === 1 ? 'itinerary' : 'itineraries'} ready to reopen, refine, or share.`}
                 </p>
               </div>
               <Link

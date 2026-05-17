@@ -15,7 +15,7 @@ const INITIAL_GREETING: Message = {
   id: 'greeting',
   role: 'assistant',
   content:
-    "Welcome to Globe Travel! Let’s set you up for city trips with friends. Tell me a few places you’ve already loved visiting, and I’ll start mapping your travel style.",
+    "Welcome to Globe.travel! Let’s set you up for city trips with friends. Tell me a few places you’ve already loved visiting, and I’ll start mapping your travel style.",
 }
 
 export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedProp }: OnboardingChatProps) {

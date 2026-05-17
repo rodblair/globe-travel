@@ -191,7 +191,7 @@ function ChatPageContent() {
     const destination = extractDestinationFromPrompt(text)
     if (destination) {
       const days = extractDraftDays(text)
-      return `${days} Days in ${destination}`
+      return `${days} ${days === 1 ? 'Day' : 'Days'} in ${destination}`
     }
     return 'Trip Draft'
   }, [extractDraftDays])
@@ -566,6 +566,7 @@ function ChatPageContent() {
           )}>
             <input
               type="text"
+              aria-label="Describe your trip idea"
               placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Try: “Best 3-day city trip for 4 friends leaving from Toronto?”'}
               disabled={planningInProgress}
               value={draftInput}

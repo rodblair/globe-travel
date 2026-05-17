@@ -31,7 +31,7 @@ export function createGuestProfile(guestId: string) {
     username: `guest-${guestId.slice(0, 8)}`,
     display_name: 'Guest Traveler',
     avatar_url: null,
-    bio: 'Guest session for trying Globe Travel.',
+    bio: 'Guest session for trying Globe.travel.',
     travel_style: 'group city breaks',
     onboarding_completed: true,
     countries_count: 0,

@@ -127,7 +127,7 @@ export default function SignupPage() {
         <p className="text-body-sm text-ink-2 mb-4">
           Plan a trip now, share it with friends, then create an account when you want to keep it.
         </p>
-        <Button asChild variant="action" className="w-full">
+        <Button asChild variant="action" size="lg" className="w-full">
           <Link href="/api/guest/start">
             Continue as guest
             <ArrowRight className="ml-1 h-4 w-4" />
@@ -204,7 +204,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-3 hover:text-foreground transition-colors"
+              className="touch-target absolute right-0 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md text-ink-3 transition-colors hover:text-foreground"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -250,7 +250,7 @@ export default function SignupPage() {
         Already booked?{' '}
         <Link
           href="/login"
-          className="text-[var(--brass)] hover:text-[var(--brass-hover)] font-medium transition-colors"
+          className="touch-target inline-flex items-center justify-center rounded-md px-1 text-[var(--brass)] font-medium transition-colors hover:text-[var(--brass-hover)]"
         >
           Sign in
         </Link>

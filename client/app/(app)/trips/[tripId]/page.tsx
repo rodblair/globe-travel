@@ -594,7 +594,7 @@ function TripStudioPageContent() {
                 <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/45">
                   {tripDestination ? `${tripDestination} itinerary` : 'Group itinerary'}
                 </p>
-                <p className="truncate text-sm font-medium text-foreground">{trip?.title || 'Trip workspace'}</p>
+                <h1 className="truncate text-sm font-medium text-foreground">{trip?.title || 'Trip workspace'}</h1>
               </div>
             </div>
           </div>
@@ -896,7 +896,7 @@ function TripStudioPageContent() {
             dragConstraints={studioRef}
             dragMomentum={false}
             dragElastic={0.08}
-            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-32 z-50 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-50 xl:w-[360px]"
+            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-60 z-50 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl sm:top-32 xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-50 xl:w-[360px]"
           >
             <div
               onPointerDown={(event) => chatDragControls.start(event)}

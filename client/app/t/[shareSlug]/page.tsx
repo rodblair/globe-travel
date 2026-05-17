@@ -122,7 +122,7 @@ function SharedTripPageInner() {
       <div className="absolute inset-x-0 top-0 h-64 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--brass),transparent_86%),transparent)]" />
 
       <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 md:px-6 md:py-6">
-        <Link href="/" className="inline-flex">
+        <Link href="/" className="touch-target inline-flex items-center">
           <AlbatrossBrand compact />
         </Link>
         <Link
@@ -214,12 +214,14 @@ function SharedTripPageInner() {
 
                 <div className="mt-5 space-y-3">
                   <input
+                    aria-label="Your name"
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
                     placeholder="Your name"
                     className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
                   />
                   <input
+                    aria-label="Email optional"
                     value={authorEmail}
                     onChange={(e) => setAuthorEmail(e.target.value)}
                     placeholder="Email (optional)"
@@ -243,6 +245,7 @@ function SharedTripPageInner() {
                     ))}
                   </div>
                   <textarea
+                    aria-label="Trip feedback"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     rows={5}

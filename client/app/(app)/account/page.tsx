@@ -187,10 +187,11 @@ function AccountPageContent() {
 
                 <div className="space-y-5">
                   <div>
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
+                    <label htmlFor="profile-display-name" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
                       Display name
                     </label>
                     <input
+                      id="profile-display-name"
                       type="text"
                       value={displayName}
                       onChange={(event) => setDisplayName(event.target.value)}
@@ -200,7 +201,7 @@ function AccountPageContent() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
+                    <label htmlFor="profile-username" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
                       Username
                     </label>
                     <div className="relative">
@@ -208,6 +209,7 @@ function AccountPageContent() {
                         @
                       </span>
                       <input
+                        id="profile-username"
                         type="text"
                         value={username}
                         onChange={(event) => setUsername(event.target.value)}
@@ -218,10 +220,11 @@ function AccountPageContent() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
+                    <label htmlFor="profile-bio" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
                       Bio
                     </label>
                     <textarea
+                      id="profile-bio"
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
                       placeholder="A short note friends will recognize when you share itinerary feedback."
@@ -431,7 +434,7 @@ function AccountPageContent() {
                 </p>
                 <Link
                   href="/chat"
-                  className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brass)] transition-colors hover:text-[var(--brass)]"
+                  className="touch-target mt-4 inline-flex items-center justify-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-4 py-2 text-sm font-medium text-[var(--brass)] transition-colors hover:bg-[var(--brass)] hover:text-[var(--brass-text)]"
                 >
                   Start a group trip
                   <ArrowRight className="h-4 w-4" />

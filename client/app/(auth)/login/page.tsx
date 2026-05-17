@@ -117,7 +117,7 @@ export default function LoginPage() {
         <p className="text-body-sm text-ink-2 mb-4">
           Plan a trip, create a share link, and let friends react before you commit to an account.
         </p>
-        <Button asChild variant="action" className="w-full">
+        <Button asChild variant="action" size="lg" className="w-full">
           <Link href="/api/guest/start">
             Continue as guest
             <ArrowRight className="ml-1 h-4 w-4" />
@@ -191,7 +191,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handlePasswordReset}
                 disabled={isResettingPassword || isLoading}
-                className="t-mono text-[0.6875rem] tracking-[0.08em] text-[var(--brass)] hover:text-[var(--brass-hover)] transition-colors disabled:opacity-50"
+                className="touch-target inline-flex items-center justify-center rounded-md px-2 t-mono text-[0.6875rem] tracking-[0.08em] text-[var(--brass)] transition-colors hover:text-[var(--brass-hover)] disabled:opacity-50"
               >
                 {isResettingPassword ? 'Sending…' : 'Forgot?'}
               </button>
@@ -213,7 +213,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-3 hover:text-foreground transition-colors"
+                className="touch-target absolute right-0 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md text-ink-3 transition-colors hover:text-foreground"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -247,7 +247,7 @@ export default function LoginPage() {
           setError(null)
           setMessage(null)
         }}
-        className="w-full text-center text-body-sm text-ink-3 hover:text-foreground mt-5 transition-colors"
+        className="touch-target mt-5 inline-flex w-full items-center justify-center text-center text-body-sm text-ink-3 transition-colors hover:text-foreground"
       >
         {isMagicLink
           ? 'Sign in with password instead'
@@ -258,7 +258,7 @@ export default function LoginPage() {
         New to Globe?{' '}
         <Link
           href="/signup"
-          className="text-[var(--brass)] hover:text-[var(--brass-hover)] font-medium transition-colors"
+          className="touch-target inline-flex items-center justify-center rounded-md px-1 text-[var(--brass)] font-medium transition-colors hover:text-[var(--brass-hover)]"
         >
           Begin a journey
         </Link>

@@ -341,7 +341,7 @@ export function ShareLinkCard({
           type="button"
           onClick={copyLink}
           disabled={!shareUrl}
-          className="inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover disabled:cursor-not-allowed disabled:opacity-45"
+          className="touch-target inline-flex items-center justify-center gap-2 rounded-full border border-rule bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover disabled:cursor-not-allowed disabled:opacity-45"
         >
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           {copied ? 'Copied' : 'Copy link'}
@@ -350,7 +350,7 @@ export function ShareLinkCard({
           type="button"
           onClick={nativeShare}
           disabled={!shareUrl}
-          className="inline-flex items-center gap-2 rounded-full bg-[var(--brass)] px-4 py-2 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+          className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-2 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-not-allowed disabled:opacity-45"
         >
           <Share2 className="h-4 w-4" />
           Share

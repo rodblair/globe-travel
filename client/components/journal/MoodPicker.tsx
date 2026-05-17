@@ -26,7 +26,7 @@ export function MoodPicker({ selected, onChange }: MoodPickerProps) {
           type="button"
           onClick={() => onChange(selected === mood.emoji ? '' : mood.emoji)}
           className={cn(
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all duration-200',
+            'touch-target flex min-h-12 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-all duration-200',
             selected === mood.emoji
               ? 'bg-[var(--brass)] ring-1 ring-[color:var(--brass)]/40 text-[var(--brass)] scale-105'
               : 'bg-paper-recessed hover:bg-paper-recessed text-foreground/60 hover:text-foreground/80'
