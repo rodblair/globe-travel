@@ -53,14 +53,34 @@ function dayIntegrity(day) {
     route.distance_m > 0 &&
     route.distance_m <= 25000
   ))
+  const mappedStopKeys = mappedItems.map((item) => {
+    const lat = Number(item.place.latitude).toFixed(5)
+    const lng = Number(item.place.longitude).toFixed(5)
+    return `${lat},${lng}`
+  })
+  const seenStopKeys = new Set()
+  const duplicateMappedStops = mappedItems
+    .filter((item, index) => {
+      const key = mappedStopKeys[index]
+      if (seenStopKeys.has(key)) return true
+      seenStopKeys.add(key)
+      return false
+    })
+    .map((item) => ({
+      title: item.title,
+      placeName: item.place?.name || null,
+    }))
 
   return {
     dayIndex: day.day_index,
     title: day.title,
     itemCount: items.length,
     mappedItemCount: mappedItems.length,
+    uniqueMappedStopCount: seenStopKeys.size,
+    duplicateMappedStops,
     countries,
     usableRouteCount: usableRoutes.length,
+    routeDistanceMeters: usableRoutes.map((route) => route.distance_m),
   }
 }
 

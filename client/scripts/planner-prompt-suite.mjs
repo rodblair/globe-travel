@@ -51,21 +51,34 @@ function validateActualOutput(fixture, actual) {
 
   const expected = fixture.expected
   const days = Array.isArray(actual.days) ? actual.days : []
+  const expectedDayIndexes = Array.from({ length: expected.days }, (_, index) => index + 1)
+  const actualDayIndexes = days.map((day) => day.dayIndex)
+  const dayIndexesOk =
+    days.length === expected.days &&
+    expectedDayIndexes.every((dayIndex, index) => actualDayIndexes[index] === dayIndex)
+  const titleDestinationOk = normalize(actual.tripTitle).includes(normalize(expected.destination))
   const badDays = days.filter((day) => (
     !Number.isInteger(day.dayIndex) ||
     day.itemCount <= 0 ||
     day.mappedItemCount !== day.itemCount ||
+    (Array.isArray(day.duplicateMappedStops) && day.duplicateMappedStops.length > 0) ||
     !Array.isArray(day.countries) ||
     day.countries.length !== 1 ||
     normalize(day.countries[0]) !== normalize(expected.country) ||
     day.usableRouteCount <= 0
   ))
-  const ok = days.length === expected.days && badDays.length === 0
+  const ok = days.length === expected.days && dayIndexesOk && titleDestinationOk && badDays.length === 0
 
   if (!ok) {
     recordFailure(fixture.id, 'actual generated output failed map trust checks', {
       expectedDays: expected.days,
       actualDays: days.length,
+      expectedDestination: expected.destination,
+      tripTitle: actual.tripTitle,
+      titleDestinationOk,
+      expectedDayIndexes,
+      actualDayIndexes,
+      dayIndexesOk,
       badDays,
     })
   }
@@ -73,6 +86,8 @@ function validateActualOutput(fixture, actual) {
   return {
     hasActual: true,
     actualDayCount: days.length,
+    titleDestinationOk,
+    dayIndexesOk,
     badDays,
     ok,
   }

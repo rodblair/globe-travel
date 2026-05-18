@@ -19,6 +19,24 @@ import { extractDestinationFromPrompt, extractDestinationFromTitle } from '@/lib
 import { loadPlannerSession } from '@/lib/planner/session'
 import { compareDestinations, listScoredDestinations } from '@/lib/planner/scoring'
 
+type PlannerPlaceOverride = {
+  pattern: RegExp
+  name: string
+  country: string
+  country_code: string
+  latitude: number
+  longitude: number
+  manualId: string
+}
+
+const PLANNER_PLACE_OVERRIDES: PlannerPlaceOverride[] = [
+  { pattern: /acropolis archaeological site|acropolis.*parthenon|parthenon.*acropolis|^acropolis of athens$/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
+  { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
+  { pattern: /\bstrofi\b/i, name: 'Strofi', country: 'Greece', country_code: 'GR', latitude: 37.96801, longitude: 23.72453, manualId: 'manual:athens:strofi' },
+  { pattern: /monastiraki square|flea market.*monastiraki|monastiraki.*flea market/i, name: 'Monastiraki Square', country: 'Greece', country_code: 'GR', latitude: 37.97608, longitude: 23.72557, manualId: 'manual:athens:monastiraki-square' },
+  { pattern: /ancient agora/i, name: 'Ancient Agora of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97569, longitude: 23.72247, manualId: 'manual:athens:ancient-agora' },
+]
+
 async function ensureTripDay(supabase: any, tripId: string, dayIndex: number) {
   const { data: existing, error } = await supabase
     .from('trip_days')
@@ -65,6 +83,28 @@ async function resolvePlannerPlace({
   destinationAnchor?: { latitude: number; longitude: number; country_code?: string | null } | null
 }) {
   if (!placeQuery) return null
+
+  const canonicalOverride = PLANNER_PLACE_OVERRIDES.find((entry) => entry.pattern.test(placeQuery))
+  if (canonicalOverride) {
+    const { data: place, error } = await db
+      .from('places')
+      .upsert(
+        {
+          name: canonicalOverride.name,
+          country: canonicalOverride.country,
+          country_code: canonicalOverride.country_code,
+          latitude: canonicalOverride.latitude,
+          longitude: canonicalOverride.longitude,
+          mapbox_id: canonicalOverride.manualId,
+        },
+        { onConflict: 'mapbox_id' }
+      )
+      .select('id,name')
+      .single()
+
+    if (!error && place?.id) return place as { id: string; name: string }
+    if (error) console.error('[resolvePlannerPlace] canonical places upsert error (falling back to geocode)', error.message)
+  }
 
   const queryCandidates = Array.from(
     new Set(

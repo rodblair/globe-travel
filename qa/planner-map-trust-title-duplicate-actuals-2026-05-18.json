@@ -1,0 +1,84 @@
+[
+  {
+    "id": "athens-5-day-couples-rest",
+    "shareSlug": "x3m2c8cnws",
+    "tripTitle": "5 Days in Athens Greece in mid september",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Plaka arrival",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "uniqueMappedStopCount": 2,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          711
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Acropolis essentials",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1397
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Museums & hill views",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3449
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Coastal culture",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9883
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Central Athens finale",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5018
+        ]
+      }
+    ]
+  }
+]
