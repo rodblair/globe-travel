@@ -24,6 +24,8 @@ npm run qa:ops
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
 # or validate several public itinerary links at once:
 QA_SHARE_SLUGS=x3m2c8cnws,<next-share-slug> npm run qa:share
+QA_PROMPT_SUITE_SHARE_MAP=athens-5-day-couples-rest=x3m2c8cnws QA_PROMPT_SUITE_ACTUALS_OUT=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-actuals
+QA_PROMPT_SUITE_ACTUALS=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-suite
 npm run lint
 npm run build
 ```
@@ -37,6 +39,8 @@ QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
 # or:
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUGS=x3m2c8cnws,<next-share-slug> npm run qa:share
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_PROMPT_SUITE_SHARE_MAP=athens-5-day-couples-rest=x3m2c8cnws QA_PROMPT_SUITE_ACTUALS_OUT=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-actuals
+QA_PROMPT_SUITE_ACTUALS=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-suite
 ```
 
 ## Health Status
