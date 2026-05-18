@@ -239,3 +239,4 @@ Use this section as work progresses.
 - 2026-05-17: Final mobile Browser sweep passed for `/`, `/chat`, `/saved`, `/saved?tab=journal`, `/account`, `/account?tab=billing`, `/login`, `/signup`, the five-day Athens Trip Studio page, and the Athens public share page: no app-owned overflow, missing labels, stale branding, or undersized app-owned touch targets remained.
 - 2026-05-17: `npm run lint` passed.
 - 2026-05-17: `npm run build` passed.
+- 2026-05-17: Added `PLATFORM_READINESS_ROADMAP.md` for the six-month platform QA, visual QA, subscription, viral loop, and release operations plan. Added `npm run qa:smoke` and validated it against production, including expected unauthenticated redirects to `/login`.
