@@ -526,7 +526,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -610,7 +610,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 17,
-              "y": 538,
+              "y": 462,
               "width": 356,
               "height": 306
             }
@@ -624,7 +624,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 270,
-              "y": 778,
+              "y": 702,
               "width": 83,
               "height": 46
             }
@@ -972,7 +972,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 46,
-              "y": 776,
+              "y": 361,
               "width": 71,
               "height": 46
             }
@@ -986,7 +986,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 121,
-              "y": 776,
+              "y": 361,
               "width": 60,
               "height": 46
             }
@@ -1000,7 +1000,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 41,
-              "y": 398,
+              "y": 578,
               "width": 308,
               "height": 48
             }
@@ -1652,7 +1652,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 8,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -2045,7 +2045,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 5,
+              "y": 4,
               "width": 150,
               "height": 44
             }
@@ -2121,7 +2121,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -2323,7 +2323,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -3449,7 +3449,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": 8,
               "width": 150,
               "height": 44
             }

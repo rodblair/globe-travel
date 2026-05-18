@@ -110,10 +110,10 @@ async function loadDotEnv() {
 
 function markdownTable(rows) {
   return [
-    '| Route | Viewport | Width | Overflow | Small App Targets | Small Map Controls | Visual Diff | Screenshot | Result |',
-    '| --- | --- | ---: | --- | ---: | ---: | ---: | --- | --- |',
+    '| Route | Viewport | Width | Overflow | Small App Targets | Small Map Controls | Clipped Text | Overlaps | Visual Diff | Screenshot | Result |',
+    '| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |',
     ...rows.map((row) => (
-      `| ${row.routeId} | ${row.viewportId} | ${row.metrics.clientWidth} | ${row.metrics.horizontalOverflow ? 'Yes' : 'No'} | ${row.metrics.smallAppTargets.length} | ${row.metrics.smallMapControlTargets.length} | ${row.comparison.enabled ? `${(row.comparison.diffRatio * 100).toFixed(3)}%` : 'n/a'} | ${row.screenshot.ok ? row.screenshot.relativePath : row.screenshot.error || 'failed'} | ${row.ok ? 'Pass' : 'Fail'} |`
+      `| ${row.routeId} | ${row.viewportId} | ${row.metrics.clientWidth} | ${row.metrics.horizontalOverflow ? 'Yes' : 'No'} | ${row.metrics.smallAppTargets.length} | ${row.metrics.smallMapControlTargets.length} | ${row.metrics.clippedText.length} | ${row.metrics.overlappingAppTargets.length} | ${row.comparison.enabled ? `${(row.comparison.diffRatio * 100).toFixed(3)}%` : 'n/a'} | ${row.screenshot.ok ? row.screenshot.relativePath : row.screenshot.error || 'failed'} | ${row.ok ? 'Pass' : 'Fail'} |`
     )),
   ].join('\n')
 }
@@ -328,32 +328,115 @@ async function collectPageMetrics(page, route, viewport) {
       ).trim().replace(/\s+/g, ' ').slice(0, 96)
     }
 
+    function roundedRect(rect) {
+      return {
+        x: Math.round(rect.x),
+        y: Math.round(rect.y),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      }
+    }
+
+    function isInViewport(rect) {
+      return (
+        rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.top < viewportHeight &&
+        rect.left < viewportWidth
+      )
+    }
+
+    function isHitTestVisible(el, rect) {
+      if (!isInViewport(rect)) return false
+      const left = Math.max(0, rect.left)
+      const right = Math.min(viewportWidth - 1, rect.right)
+      const top = Math.max(0, rect.top)
+      const bottom = Math.min(viewportHeight - 1, rect.bottom)
+      if (right <= left || bottom <= top) return false
+
+      const samplePoints = [
+        [(left + right) / 2, (top + bottom) / 2],
+        [left + Math.min(8, (right - left) / 2), top + Math.min(8, (bottom - top) / 2)],
+        [right - Math.min(8, (right - left) / 2), top + Math.min(8, (bottom - top) / 2)],
+        [left + Math.min(8, (right - left) / 2), bottom - Math.min(8, (bottom - top) / 2)],
+        [right - Math.min(8, (right - left) / 2), bottom - Math.min(8, (bottom - top) / 2)],
+      ]
+
+      return samplePoints.some(([x, y]) => {
+        const hit = document.elementFromPoint(x, y)
+        return hit === el || Boolean(hit && el.contains(hit))
+      })
+    }
+
+    function intersectionArea(a, b) {
+      const width = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left))
+      const height = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top))
+      return width * height
+    }
+
+    function isIntentionalInputAdornmentPair(first, second) {
+      const pair = [first, second]
+      const input = pair.find((control) => ['input', 'textarea'].includes(control.tag))
+      const button = pair.find((control) => control.tag === 'button')
+      if (!input || !button) return false
+
+      const buttonLabel = button.label.toLowerCase()
+      const passwordToggle = buttonLabel.includes('show password') || buttonLabel.includes('hide password')
+      const verticallyAligned =
+        button.rect.top <= input.rect.bottom + 4 &&
+        button.rect.bottom >= input.rect.top - 4
+      const anchoredToInputEdge =
+        button.rect.left >= input.rect.left &&
+        button.rect.right <= input.rect.right + 4
+
+      return passwordToggle && verticallyAligned && anchoredToInputEdge
+    }
+
+    function isTextClipped(el) {
+      const style = window.getComputedStyle(el)
+      const clipsX = ['hidden', 'clip'].includes(style.overflowX)
+      const clipsY = ['hidden', 'clip'].includes(style.overflowY)
+      return (
+        (clipsX && el.scrollWidth > el.clientWidth + 4) ||
+        (clipsY && el.scrollHeight > el.clientHeight + 4)
+      )
+    }
+
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
     const interactiveSelector = 'button,a,input,textarea,select,[role="button"],[role="link"],[tabindex]:not([tabindex="-1"])'
-    const controls = Array.from(document.querySelectorAll(interactiveSelector))
+    const controlEntries = Array.from(document.querySelectorAll(interactiveSelector))
       .filter((el) => isVisible(el))
       .map((el) => {
         const rect = el.getBoundingClientRect()
         return {
+          el,
+          rect,
           tag: el.tagName.toLowerCase(),
           label: labelFor(el),
-          x: Math.round(rect.x),
-          y: Math.round(rect.y),
-          width: Math.round(rect.width),
-          height: Math.round(rect.height),
-          inViewport:
-            rect.bottom > 0 &&
-            rect.right > 0 &&
-            rect.top < viewportHeight &&
-            rect.left < viewportWidth,
+          ...roundedRect(rect),
+          inViewport: isInViewport(rect),
+          hitTestable: isHitTestVisible(el, rect),
           disabled: Boolean(el.disabled || el.getAttribute('aria-disabled') === 'true'),
           thirdParty: isThirdPartyControl(el),
           attribution: isMapLegalControl(el),
         }
       })
+    const controls = controlEntries.map((control) => ({
+      tag: control.tag,
+      label: control.label,
+      x: control.x,
+      y: control.y,
+      width: control.width,
+      height: control.height,
+      inViewport: control.inViewport,
+      hitTestable: control.hitTestable,
+      disabled: control.disabled,
+      thirdParty: control.thirdParty,
+      attribution: control.attribution,
+    }))
 
-    const appControls = controls.filter((control) => !control.thirdParty && control.inViewport && !control.disabled)
+    const appControls = controls.filter((control) => !control.thirdParty && control.hitTestable && !control.disabled)
     const smallAppTargets = appControls
       .filter((control) => control.width < 44 || control.height < 44)
       .filter((control) => control.width >= 18 && control.height >= 18)
@@ -365,12 +448,61 @@ async function collectPageMetrics(page, route, viewport) {
 
     const smallMapControlTargets = controls
       .filter((control) => (
-        control.thirdParty &&
-        !control.attribution &&
-        control.inViewport &&
-        (control.width < 44 || control.height < 44)
-      ))
+      control.thirdParty &&
+      !control.attribution &&
+      control.hitTestable &&
+      (control.width < 44 || control.height < 44)
+    ))
       .slice(0, 8)
+
+    const appControlEntries = controlEntries.filter((control) => (
+      !control.thirdParty &&
+      control.hitTestable &&
+      !control.disabled &&
+      control.width >= 18 &&
+      control.height >= 18
+    ))
+    const overlappingAppTargets = []
+    for (let index = 0; index < appControlEntries.length; index += 1) {
+      for (let otherIndex = index + 1; otherIndex < appControlEntries.length; otherIndex += 1) {
+        const first = appControlEntries[index]
+        const second = appControlEntries[otherIndex]
+        if (first.el.contains(second.el) || second.el.contains(first.el)) continue
+        if (isIntentionalInputAdornmentPair(first, second)) continue
+        const area = intersectionArea(first.rect, second.rect)
+        if (area < 64) continue
+        const firstArea = first.rect.width * first.rect.height
+        const secondArea = second.rect.width * second.rect.height
+        const overlapRatio = area / Math.min(firstArea, secondArea)
+        if (overlapRatio < 0.25) continue
+        overlappingAppTargets.push({
+          first: { tag: first.tag, label: first.label, ...roundedRect(first.rect) },
+          second: { tag: second.tag, label: second.label, ...roundedRect(second.rect) },
+          overlapRatio: Number(overlapRatio.toFixed(3)),
+        })
+        if (overlappingAppTargets.length >= 8) break
+      }
+      if (overlappingAppTargets.length >= 8) break
+    }
+
+    const clippedTextSelector = 'button,a,label,[role="button"],[role="link"],h1,h2,h3,h4'
+    const clippedText = Array.from(document.querySelectorAll(clippedTextSelector))
+      .filter((el) => isVisible(el) && !isThirdPartyControl(el))
+      .map((el) => {
+        const rect = el.getBoundingClientRect()
+        return { el, rect }
+      })
+      .filter(({ el, rect }) => isHitTestVisible(el, rect) && rect.width >= 24 && rect.height >= 12 && isTextClipped(el))
+      .slice(0, 12)
+      .map(({ el, rect }) => ({
+        tag: el.tagName.toLowerCase(),
+        label: labelFor(el),
+        ...roundedRect(rect),
+        scrollWidth: Math.round(el.scrollWidth),
+        clientWidth: Math.round(el.clientWidth),
+        scrollHeight: Math.round(el.scrollHeight),
+        clientHeight: Math.round(el.clientHeight),
+      }))
 
     return {
       url: location.href,
@@ -390,6 +522,8 @@ async function collectPageMetrics(page, route, viewport) {
       smallAppTargets,
       smallMapControlTargets,
       thirdPartySmallTargets,
+      clippedText,
+      overlappingAppTargets,
       visibleControlCount: controls.filter((control) => control.inViewport).length,
       bodyPreview: text.slice(0, 500).replace(/\s+/g, ' '),
     }
@@ -418,6 +552,8 @@ async function collectPageMetrics(page, route, viewport) {
     !metrics.horizontalOverflow &&
     metrics.smallAppTargets.length === 0 &&
     metrics.smallMapControlTargets.length === 0 &&
+    metrics.clippedText.length === 0 &&
+    metrics.overlappingAppTargets.length === 0 &&
     screenshot.ok &&
     comparison.ok
 
@@ -547,6 +683,8 @@ const summary = {
     horizontalOverflow: failure.metrics.horizontalOverflow,
     smallAppTargets: failure.metrics.smallAppTargets,
     smallMapControlTargets: failure.metrics.smallMapControlTargets,
+    clippedText: failure.metrics.clippedText,
+    overlappingAppTargets: failure.metrics.overlappingAppTargets,
     screenshot: failure.screenshot,
     comparison: failure.comparison,
   })),
@@ -588,6 +726,8 @@ ${failures.length === 0 ? 'No failures.' : failures.map((failure) => `### ${fail
 - Horizontal overflow: ${failure.metrics.horizontalOverflow ? 'yes' : 'no'}
 - Small app targets: ${failure.metrics.smallAppTargets.length ? JSON.stringify(failure.metrics.smallAppTargets, null, 2) : 'none'}
 - Small map controls: ${failure.metrics.smallMapControlTargets.length ? JSON.stringify(failure.metrics.smallMapControlTargets, null, 2) : 'none'}
+- Clipped text: ${failure.metrics.clippedText.length ? JSON.stringify(failure.metrics.clippedText, null, 2) : 'none'}
+- Overlapping app targets: ${failure.metrics.overlappingAppTargets.length ? JSON.stringify(failure.metrics.overlappingAppTargets, null, 2) : 'none'}
 - Visual diff: ${failure.comparison.enabled ? `${(failure.comparison.diffRatio * 100).toFixed(3)}% (${failure.comparison.error || 'no error'})` : 'not enabled'}
 - Screenshot: ${failure.screenshot.ok ? failure.screenshot.relativePath : failure.screenshot.error}
 `).join('\n')}
@@ -596,6 +736,7 @@ ${failures.length === 0 ? 'No failures.' : failures.map((failure) => `### ${fail
 
 - This runner uses installed Chrome through \`playwright-core\` so viewport sizing is controlled outside the in-app Browser screenshot path that has timed out on Mapbox-heavy pages.
 - Mapbox navigation controls are measured separately from attribution/legal links; app-owned controls below \`44px\` fail this gate.
+- App-owned overlapping controls and clipped action/heading text fail this gate because those are high-signal layout regressions before launch.
 - Screenshots are viewport captures, not full-page captures, to keep Mapbox-heavy pages reliable.
 - When \`QA_VISUAL_BASELINE_DIR\` is set, screenshots are compared with \`pixelmatch\`; only diffs above the configured threshold fail the gate.
 - By default, pixel comparison applies only to stable shell routes. Dynamic user-data routes still receive screenshot, marker, overflow, and touch-target checks; set \`QA_VISUAL_DIFF_ROUTES\` to override.
