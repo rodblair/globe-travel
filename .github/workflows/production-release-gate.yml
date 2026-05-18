@@ -35,6 +35,14 @@ on:
           - "1"
           - "0"
         default: "1"
+      include_production_viral:
+        description: Run public share viral-loop affordance checks.
+        required: false
+        type: choice
+        options:
+          - "1"
+          - "0"
+        default: "1"
   schedule:
     - cron: "23 */6 * * *"
 
@@ -59,6 +67,7 @@ jobs:
       QA_INCLUDE_PROMPT_ACTUALS: ${{ github.event.inputs.include_prompt_actuals || '1' }}
       QA_INCLUDE_FEEDBACK_MUTATION: ${{ github.event.inputs.include_feedback_mutation || '0' }}
       QA_INCLUDE_PRODUCTION_VISUAL: ${{ github.event.inputs.include_production_visual || '1' }}
+      QA_INCLUDE_PRODUCTION_VIRAL: ${{ github.event.inputs.include_production_viral || '1' }}
       QA_PRODUCTION_VISUAL_ARTIFACT_NAME: production-release-visual-${{ github.run_id }}
 
     steps:

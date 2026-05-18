@@ -9,6 +9,7 @@ const shareMap = process.env.QA_PROMPT_SUITE_SHARE_MAP || `athens-5-day-couples-
 const includePromptActuals = process.env.QA_INCLUDE_PROMPT_ACTUALS !== '0'
 const includeFeedbackMutation = process.env.QA_INCLUDE_FEEDBACK_MUTATION === '1'
 const includeProductionVisual = process.env.QA_INCLUDE_PRODUCTION_VISUAL !== '0'
+const includeProductionViral = process.env.QA_INCLUDE_PRODUCTION_VIRAL !== '0'
 const visualArtifactName =
   process.env.QA_PRODUCTION_VISUAL_ARTIFACT_NAME ||
   `visual-baseline-production-release-${new Date().toISOString().slice(0, 10)}`
@@ -134,6 +135,18 @@ const tasks = [
   },
 ]
 
+if (includeProductionViral) {
+  tasks.push({
+    name: 'production public share viral loop',
+    args: ['scripts/platform-share-viral-smoke.mjs'],
+    env: {
+      QA_BASE_URL: baseUrl,
+      QA_SHARE_SLUG: shareSlug,
+    },
+    echoOutput: false,
+  })
+}
+
 if (includeProductionVisual) {
   tasks.push({
     name: 'production public visual gate',
@@ -213,6 +226,7 @@ const summary = {
   includePromptActuals,
   includeFeedbackMutation,
   includeProductionVisual,
+  includeProductionViral,
   visualArtifactName: includeProductionVisual ? visualArtifactName : null,
   visualBaselineDir: includeProductionVisual ? visualBaselineDir : null,
   visualRoutes: includeProductionVisual ? visualRoutes.split(',').map((route) => route.trim()).filter(Boolean) : [],

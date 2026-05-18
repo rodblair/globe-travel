@@ -213,6 +213,7 @@ Recently completed:
 - Six saved itineraries were retested locally.
 - `npm run lint` and `npm run build` passed.
 - Commit `a59fb4a` was deployed to Vercel production.
+- Production release verification now includes public share viral-loop checks. The stable Athens public share passed remote affordance, copy-link, native-share payload, recipient CTA, visual, share integrity, and prompt-suite gates in the integrated `qa:release-production` run.
 
 Remaining release work:
 

@@ -16,6 +16,7 @@ The new command runs the read-only production release gates together:
 - production auth and guest access Browser smoke
 - production commercial safety checks
 - production public share integrity and social-preview metadata
+- production public share viral-loop affordances
 - production public visual QA for landing, login, signup, and public share
 - pixel-diff comparison for stable public shell routes
 - production prompt actual export for the stable Athens public share
@@ -23,6 +24,7 @@ The new command runs the read-only production release gates together:
 
 Production feedback insertion remains opt-in with `QA_INCLUDE_FEEDBACK_MUTATION=1`.
 Production visual QA is enabled by default and can be disabled only with `QA_INCLUDE_PRODUCTION_VISUAL=0`.
+Production viral-loop QA is enabled by default and can be disabled only with `QA_INCLUDE_PRODUCTION_VIRAL=0`.
 
 ## Verification
 
@@ -32,6 +34,7 @@ npm run qa:release-production
 
 Original command result: passed `7/7`.
 Latest integrated visual release-gate result: passed `8/8`.
+Latest integrated visual plus viral release-gate result: passed `9/9`.
 
 Summary:
 
@@ -40,6 +43,7 @@ Summary:
 - production auth and guest access: passed
 - production commercial: passed
 - production share: passed
+- production public share viral loop: passed `5/5`
 - production public visual gate: passed `20/20`
 - production prompt actuals export: passed
 - prompt suite with production actuals: passed
@@ -70,6 +74,16 @@ Public share evidence:
 - Share-card image returned `image/png`.
 - Share-card image byte length: `81579`.
 
+Viral-loop evidence:
+
+- Phone and desktop share affordances were visible without horizontal overflow.
+- Public share title rendered as `5 Days in Athens Greece in mid september | Globe.travel`.
+- Two Start your own trip links were present.
+- Recipient planner prompt preserved the shared trip intent: `Plan a 5-day trip to Athens Greece in mid september with a shareable itinerary map for my group.`
+- Copy link wrote `https://globe-travel-two.vercel.app/t/x3m2c8cnws` and showed `Copied`.
+- Native share payload was trip-specific with title `5 Days in Athens Greece in mid september`.
+- Remote guest-start mutation remained skipped by default.
+
 Auth and guest access evidence:
 
 - Logged-out login/signup expose guest access.
@@ -89,4 +103,4 @@ QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run
 
 This reduces the chance of skipping the exact production check that previously caught the missing share-card route.
 
-The command now also reduces the chance of shipping a visually broken acquisition, auth, or public-share surface after production deploys.
+The command now also reduces the chance of shipping a visually broken acquisition, auth, or public-share surface after production deploys, and it verifies that a recipient can copy, share, and start from the public Athens itinerary without turning the production smoke test into a mutating guest-session run.

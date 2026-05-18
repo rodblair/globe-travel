@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 production visual release-gate checkpoint
+Updated: 2026-05-18 production visual and viral release-gate checkpoint
 
 ## Active Goal
 
@@ -15,9 +15,9 @@ This goal stays active until the full platform is proven launch-ready with evide
 
 The active goal is pinned and remains open. The previous full release-candidate blocker is closed: saved trip open/delete hit targets are separated, long Trip Studio titles wrap cleanly, the full local predeploy gate passed `23/23`, production deployed, and the production release gate passed.
 
-The current reliability upgrade is that public production visual QA is now part of the one-command production release gate. `npm run qa:release-production` checks public production layout for landing, login, signup, and public share, pixel-compares stable shell routes against the production visual baseline, and still runs production ops, smoke, auth/guest, commercial, public share/social preview, prompt actuals, and prompt-suite checks.
+The current reliability upgrade is that public production visual QA and public share viral-loop QA are now part of the one-command production release gate. `npm run qa:release-production` checks public production layout for landing, login, signup, and public share, verifies recipient share/copy/start-own-trip affordances on the stable Athens public itinerary, pixel-compares stable shell routes against the production visual baseline, and still runs production ops, smoke, auth/guest, commercial, public share/social preview, prompt actuals, and prompt-suite checks.
 
-Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
+Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
 ## Product Quality Bar
 
@@ -63,7 +63,7 @@ This is the near-term working plan for turning the active goal into shippable pr
 | 8 | Accessibility and keyboard depth | Keyboard and assistive-tech user | Planner, Trip Studio, public share, account, billing, modals/drawers | Fix focus traps, weak labels, focus order, contrast, and unreachable controls | `qa:a11y`, keyboard Browser notes, focused fixes |
 | 9 | Visual regression and responsive polish | User on phone, tablet, laptop, desktop, wide desktop | All primary routes at 390, 768, 1280, 1440, 1728 widths | Remove overlap, clipped text, awkward wrapping, generic panels, and inconsistent spacing | `qa:visual` baseline/diff evidence, screenshots, polish notes |
 | 10 | Production release rehearsal | Owner preparing a real deploy | Local release-candidate gate, Vercel preview/prod smoke, production share, production auth access | Tighten release scripts, evidence capture, rollback notes, monitoring workflow | Release-candidate report, production release gate report |
-| 11 | Viral and profitability refinement | Friend group sharing and reusing the product | Share to feedback to owner refresh to new trip start; upgrade moments after value | Strengthen recipient CTA, owner feedback loop, free-to-paid upgrade context | Share-loop Browser evidence, commercial QA, product notes |
+| 11 | Viral and profitability refinement | Friend group sharing and reusing the product | Share to feedback to owner refresh to new trip start; upgrade moments after value | Strengthen recipient CTA, owner feedback loop, free-to-paid upgrade context | Share-loop Browser evidence, `qa:share-viral`, commercial QA, product notes |
 | 12 | Launch-candidate decision | Product owner reviewing evidence | Full clean-browser matrix across guest, owner, recipient, paid candidate, and recovery user | Final P0/P1 closure, P2 triage, final copy and visual QA | Launch signoff packet, release memo, deploy verification |
 
 Weekly rule: if a P0/P1 appears, that week pauses thematic polish and shifts to repair, retest, and regression coverage until the issue is closed.
