@@ -235,6 +235,7 @@ Before any production deploy:
 - `npm run build` passes.
 - `npm run qa:smoke` passes against local or preview URL.
 - `npm run qa:commercial` passes against local or preview URL.
+- `npm run qa:ops` passes against local or preview URL.
 - `QA_SHARE_SLUG=<known-public-slug> npm run qa:share` passes against local or preview URL.
 - Browser mobile route sweep passes for `/`, `/chat`, `/saved`, `/account`, `/login`, `/signup`.
 - At least one known Trip Studio URL opens and maps correctly.
