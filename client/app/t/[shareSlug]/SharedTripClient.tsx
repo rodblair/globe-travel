@@ -75,6 +75,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const qaForceFeedbackFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaFeedbackFailure') === '1'
+  const qaForceMapFallback = process.env.NODE_ENV === 'development' && searchParams.get('qaMapFallback') === '1'
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['trip-share', shareSlug],
@@ -212,7 +213,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     Review the route, react to the day plan, and help the group turn this {meta.destination} idea into the trip everyone can say yes to.
                   </p>
                 </div>
-                <TripPosterPreview trip={trip} days={days} />
+                <TripPosterPreview trip={trip} days={days} forceStaticMap={qaForceMapFallback} />
               </motion.section>
 
               <section className="rounded-[30px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6 lg:p-7">
@@ -227,7 +228,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                 </div>
                 <div className="grid gap-5 xl:grid-cols-2">
                   {days.map((day, index) => (
-                    <KeepsakeRouteCard key={day.id} day={day} active={index === 0} />
+                    <KeepsakeRouteCard key={day.id} day={day} active={index === 0} forceStaticMap={qaForceMapFallback} />
                   ))}
                   {days.length === 0 && (
                     <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-4 py-8 text-center text-sm text-ink-2">

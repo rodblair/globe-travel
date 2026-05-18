@@ -34,6 +34,7 @@ type TripDayMapProps = {
   showDetails?: boolean
   active?: boolean
   onClick?: () => void
+  forceStatic?: boolean
   className?: string
 }
 
@@ -112,6 +113,7 @@ export default function TripDayMap({
   showDetails = true,
   active = false,
   onClick,
+  forceStatic = false,
   className,
 }: TripDayMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -120,7 +122,7 @@ export default function TripDayMap({
   const [mapReady, setMapReady] = useState(false)
   const [mapFailed, setMapFailed] = useState(false)
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-  const shouldRenderMap = Boolean(mapboxToken) && !mapFailed
+  const shouldRenderMap = Boolean(mapboxToken) && !mapFailed && !forceStatic
 
   const validStops = useMemo(
     () =>
@@ -199,7 +201,12 @@ export default function TripDayMap({
   const stopOnlyPreview = useMemo(() => buildStopPath(validStops), [validStops])
   const startStop = validStops[0] || null
   const endStop = validStops.length > 1 ? validStops[validStops.length - 1] : validStops[0] || null
-  const mapLabel = routeGeojson && routeSummary?.includes('min walk') ? 'Walking Map' : 'Trip Map'
+  const usingStaticFallback = !shouldRenderMap && validStops.length > 0
+  const mapLabel = usingStaticFallback
+    ? 'Static Route'
+    : routeGeojson && routeSummary?.includes('min walk')
+      ? 'Walking Map'
+      : 'Trip Map'
 
   const fitMapToStops = useCallback((map: mapboxgl.Map) => {
     if (validStops.length === 0) {
@@ -228,7 +235,7 @@ export default function TripDayMap({
 
   useEffect(() => {
     if (!containerRef.current) return
-    if (!mapboxToken) return
+    if (!mapboxToken || forceStatic) return
 
     mapboxgl.accessToken = mapboxToken
 
@@ -334,7 +341,7 @@ export default function TripDayMap({
       map.remove()
       mapRef.current = null
     }
-  }, [interactive, mapboxToken])
+  }, [interactive, mapboxToken, forceStatic])
 
   useEffect(() => {
     const map = mapRef.current
@@ -571,9 +578,9 @@ export default function TripDayMap({
             </p>
           </div>
         )}
-        {interactive && !shouldRenderMap && validStops.length > 0 && (
+        {usingStaticFallback && (
           <div className="pointer-events-none absolute bottom-3 right-3 rounded-full border border-[color:var(--brass)]/30 bg-[rgba(8,10,18,0.82)] px-2.5 py-1 text-[10px] font-medium text-[var(--brass)]">
-            Static map fallback
+            Static route preview
           </div>
         )}
       </div>

@@ -237,6 +237,7 @@ try {
   await runNodeTask('public share and social preview smoke', 'scripts/platform-share-smoke.mjs')
   await runNodeTask('public share recovery smoke', 'scripts/platform-public-share-recovery-smoke.mjs')
   await runNodeTask('public share viral loop smoke', 'scripts/platform-share-viral-smoke.mjs', {}, { mutatesLocal: isLocalBaseUrl })
+  await runNodeTask('public share map fallback smoke', 'scripts/platform-map-fallback-smoke.mjs')
 
   if (includeShareFixtureSweep) {
     await runNodeTask(

@@ -86,10 +86,12 @@ export function KeepsakeRouteCard({
   day,
   active = false,
   compact = false,
+  forceStaticMap = false,
 }: {
   day: TripDay
   active?: boolean
   compact?: boolean
+  forceStaticMap?: boolean
 }) {
   const dayItems = day.items || []
   const sortedItems = sortTripItemsForDisplay(dayItems)
@@ -122,6 +124,7 @@ export function KeepsakeRouteCard({
         mapHeightClassName={compact ? 'h-40' : 'h-56'}
         className="min-w-0 rounded-none border-0 shadow-none"
         active={active}
+        forceStatic={forceStaticMap}
       />
       <div className="space-y-3 px-4 py-4">
         <div className="flex items-start justify-between gap-3">
@@ -162,11 +165,13 @@ export function TripPosterPreview({
   days,
   href,
   className,
+  forceStaticMap = false,
 }: {
   trip: KeepsakeTrip
   days: TripDay[]
   href?: string
   className?: string
+  forceStaticMap?: boolean
 }) {
   const meta = getTripKeepsakeMeta(trip.title)
   const firstDay = days[0]
@@ -200,7 +205,7 @@ export function TripPosterPreview({
         </div>
         <div className="space-y-4 md:space-y-5">
           {firstDay ? (
-            <KeepsakeRouteCard day={firstDay} active compact />
+            <KeepsakeRouteCard day={firstDay} active compact forceStaticMap={forceStaticMap} />
           ) : (
             <div className="flex h-72 items-center justify-center rounded-[24px] border border-dashed border-rule bg-paper-recessed text-sm text-ink-3">
               The route snapshot appears once the itinerary has stops.
