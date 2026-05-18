@@ -9,6 +9,7 @@ const keepFixture = process.env.QA_KEEP_FIXTURE === '1'
 const allowRemote = process.env.QA_ALLOW_REMOTE_MUTATION === '1'
 const cleanupTripId = process.env.QA_CLEANUP_TRIP_ID
 const cleanupRunId = process.env.QA_CLEANUP_RUN_ID
+const cleanupGuestId = process.env.QA_CLEANUP_GUEST_ID
 const authMode = process.env.QA_AUTH_MODE === 'dev' ? 'dev' : 'guest'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const runId = randomUUID().slice(0, 8)
@@ -20,6 +21,8 @@ const cleanup = {
   attempted: false,
   tripDeleted: false,
   placesDeleted: false,
+  guestProfileDeleted: false,
+  guestUserDeleted: false,
   error: null,
 }
 let createdTripId = null
@@ -54,7 +57,8 @@ async function loadDotEnv() {
 await loadDotEnv()
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabaseKey = serviceRoleKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required for qa:studio-actions.')
@@ -65,13 +69,51 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: { persistSession: false },
 })
 
-if (cleanupTripId || cleanupRunId) {
+async function cleanupGuestAccount(id, cleanupResult = null) {
+  if (!id) return { profileDeleted: false, userDeleted: false, errors: [] }
+  const errors = []
+
+  if (!serviceRoleKey) {
+    errors.push('SUPABASE_SERVICE_ROLE_KEY is required to clean up disposable guest accounts.')
+    return { profileDeleted: false, userDeleted: false, errors }
+  }
+
+  const serviceSupabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false },
+  })
+
+  const { error: profileError } = await serviceSupabase
+    .from('profiles')
+    .delete()
+    .eq('id', id)
+  const { error: userError } = await serviceSupabase.auth.admin.deleteUser(id)
+
+  if (profileError) errors.push(profileError.message)
+  if (userError) errors.push(userError.message)
+
+  if (cleanupResult) {
+    cleanupResult.guestId = id
+    cleanupResult.guestProfileDeleted = !profileError
+    cleanupResult.guestUserDeleted = !userError
+  }
+
+  return {
+    profileDeleted: !profileError,
+    userDeleted: !userError,
+    errors,
+  }
+}
+
+if (cleanupTripId || cleanupRunId || cleanupGuestId) {
   const cleanupResult = {
     mode: 'cleanup',
     tripId: cleanupTripId || null,
     runId: cleanupRunId || null,
+    guestId: cleanupGuestId || null,
     tripDeleted: false,
     placesDeleted: false,
+    guestProfileDeleted: false,
+    guestUserDeleted: false,
     ok: true,
     errors: [],
   }
@@ -94,6 +136,11 @@ if (cleanupTripId || cleanupRunId) {
 
     cleanupResult.placesDeleted = !error
     if (error) cleanupResult.errors.push(error.message)
+  }
+
+  if (cleanupGuestId) {
+    const guestCleanup = await cleanupGuestAccount(cleanupGuestId, cleanupResult)
+    cleanupResult.errors.push(...guestCleanup.errors)
   }
 
   cleanupResult.ok = cleanupResult.errors.length === 0
@@ -479,6 +526,13 @@ async function cleanupFixture(fixture) {
 
     if (placesError) throw new Error(placesError.message)
     cleanup.placesDeleted = true
+  }
+
+  if (guestId) {
+    const guestCleanup = await cleanupGuestAccount(guestId)
+    cleanup.guestProfileDeleted = guestCleanup.profileDeleted
+    cleanup.guestUserDeleted = guestCleanup.userDeleted
+    if (guestCleanup.errors.length) throw new Error(guestCleanup.errors.join('; '))
   }
 }
 

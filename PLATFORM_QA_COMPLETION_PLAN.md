@@ -535,7 +535,8 @@ These are the next focused passes to run before another release candidate decisi
 - Production release result: `npm run qa:release-production` now bundles the read-only post-deploy ops, smoke, commercial, share, production prompt-actuals, and prompt-suite-with-actuals checks.
 - Production monitoring result: `.github/workflows/production-release-gate.yml` now runs the production release gate every 6 hours and supports manual dispatch with configurable base URL/share slug.
 - Production visual monitoring result: `.github/workflows/production-visual-gate.yml` now runs daily/manual production visual checks for public routes, pixel-compares stable public shells, and uploads screenshot/diff artifacts.
-- Remaining follow-up: extend visual automation to authenticated preview fixtures and keep expanding slow-network recovery.
+- Authenticated visual result: `npm run qa:visual` now supports guest-authenticated protected-route sweeps with generated or caller-provided guest IDs. Focused evidence passed `8/8` for saved/account guest surfaces, `6/6` for saved/account/Trip Studio owner fixture surfaces, and a focused release-candidate run passed `18/18` with protected owner visual QA included. Evidence: `qa/authenticated-visual-qa-2026-05-18.md`.
+- Remaining follow-up: keep expanding slow-network recovery.
 
 ### Sprint 3: Planner And Map Trust Expansion
 
@@ -564,6 +565,8 @@ These are the next focused passes to run before another release candidate decisi
 - Result: `QA_STRIPE_RUN_HOSTED_CHECKOUT=1 npm run qa:stripe-checkout-browser` completes hosted Stripe Checkout with a test card, verifies return to account billing, verifies the Stripe session/subscription state, and cleans up the test subscription/customer.
 - Local release-candidate evidence: `qa/release-candidate-gate-2026-05-18.md`.
 - Result: `npm run qa:release-candidate` now bundles lint, build, ops, smoke, commercial, a11y, public share/social preview, public share recovery, feedback mutation cleanup, planner handoff cleanup, billing recovery, Trip Studio action/recovery checks on one kept disposable fixture, owner feedback readback on that fixture, Stripe readiness, prompt contract suite, full responsive visual QA, and fixture cleanup. The full visual run completed `18/18` top-level tasks with visual QA `50/50` and writes `qa/release-candidate-2026-05-18/summary.json`; the focused owner-feedback integration run passed `18/18` with visual screenshots disabled and writes `qa/release-candidate-owner-feedback-2026-05-18/summary.json`.
+- Authenticated visual evidence: `qa/authenticated-visual-qa-2026-05-18.md`.
+- Result: release-candidate visual QA now passes the kept fixture guest ID into `npm run qa:visual`, so saved/account/Trip Studio owner visual sweeps are authenticated without relying on dev-auth fallback. The focused authenticated visual release-candidate run passed `18/18` with responsive visual QA `6/6`; disposable trip, places, guest profile, and guest auth user cleanup are now covered.
 - Auth/guest access evidence: `qa/auth-guest-access-2026-05-18.md`.
 - Result: `npm run qa:auth-access` verifies logged-out login/signup/public-share/saved/account/pricing behavior, guest-start-to-planner, guest saved/account access, local guest trip-list API access, and disposable guest cleanup. Local passed `11/11`; production non-mutating passed `10/10`.
 - Production release gate update: `npm run qa:release-production` now includes production auth/guest access and passes `7/7`; `.github/workflows/production-release-gate.yml` locates Chrome for that Browser-backed check.

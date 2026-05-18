@@ -49,7 +49,20 @@ function summarizeParsed(parsed) {
     baseUrl: parsed.baseUrl,
     shareSlug: parsed.shareSlug,
     tripId: parsed.tripId || parsed.fixture?.tripId,
+    guestId: parsed.guestId || parsed.auth?.guestId,
     runId: parsed.runId,
+    tripDeleted: parsed.tripDeleted,
+    placesDeleted: parsed.placesDeleted,
+    guestProfileDeleted: parsed.guestProfileDeleted,
+    guestUserDeleted: parsed.guestUserDeleted,
+    auth: parsed.auth
+      ? {
+        mode: parsed.auth.mode,
+        protectedRoutes: parsed.auth.protectedRoutes,
+        externalGuestId: parsed.auth.externalGuestId,
+        cleanup: parsed.auth.cleanup,
+      }
+      : undefined,
     cleanup: parsed.cleanup,
   }
 }
@@ -132,6 +145,7 @@ async function cleanupStudioFixture() {
     {
       QA_CLEANUP_TRIP_ID: studioFixture.tripId || '',
       QA_CLEANUP_RUN_ID: studioFixture.runId || '',
+      QA_CLEANUP_GUEST_ID: studioFixture.guestId || '',
     },
     { mutatesLocal: true }
   )
@@ -291,6 +305,8 @@ try {
     await runNodeTask('responsive visual QA', 'scripts/platform-visual-baseline.mjs', {
       QA_VISUAL_RUN_ID: visualRunId,
       QA_TRIP_ID: studioFixture?.tripId || process.env.QA_TRIP_ID || '',
+      QA_GUEST_ID: studioFixture?.guestId || process.env.QA_GUEST_ID || '',
+      QA_VISUAL_AUTH_MODE: studioFixture?.guestId ? 'guest' : (process.env.QA_VISUAL_AUTH_MODE || 'auto'),
       QA_VISUAL_SETTLE_MS: process.env.QA_VISUAL_SETTLE_MS || '1200',
     })
   }

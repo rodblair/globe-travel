@@ -1,0 +1,411 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-18",
+  "runId": null,
+  "shareSlug": "6rl69n3xgr",
+  "tripId": "b629a572-49a5-498d-931c-e50abfef9710",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 1600,
+  "auth": {
+    "requestedMode": "guest",
+    "mode": "guest",
+    "guestId": "c2c31b5e-ce27-4439-8b58-3ea4f9f60f0e",
+    "protectedRoutes": [
+      "saved-trips",
+      "account-billing",
+      "trip-studio"
+    ],
+    "externalGuestId": true,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "c2c31b5e-ce27-4439-8b58-3ea4f9f60f0e",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "guest",
+        "guestId": "c2c31b5e-ce27-4439-8b58-3ea4f9f60f0e",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "external guest id provided; owner cleanup remains with the caller",
+      "guestId": "c2c31b5e-ce27-4439-8b58-3ea4f9f60f0e",
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "routes": [
+    "saved-trips",
+    "account-billing",
+    "trip-studio"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    }
+  ],
+  "results": [
+    {
+      "routeId": "saved-trips",
+      "path": "/saved",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/saved",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Trips",
+          "Your itineraries",
+          "QA Trip Studio Actions ea2c2a36 Saved"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Your itineraries 1 itinerary ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS EA2C2A36 SAVED QA Trip Studio Actions ea2c2a36 Saved Friend-ready Public Saved May 18, 2026 Delete PLAN TRIPS ACCOUNT"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/saved-trips-phone-390x844.png",
+        "relativePath": "qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/saved-trips-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 8,
+        "bodyPreview": "Skip to content Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventurer Unlock unlimited trip planning and richer sharing tools. Monthly Yearly $4.99 / month 7-DAY FREE TRIAL Billed monthly Start free trial Plan"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/account-billing-phone-390x844.png",
+        "relativePath": "qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/account-billing-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/b629a572-49a5-498d-931c-e50abfef9710",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/b629a572-49a5-498d-931c-e50abfef9710",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Trip Studio Actions ea2c2a36 Saved",
+          "QA Trip Studio Actions ea2c2a36 Saved",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content QA TRIP STUDIO ACTIONS EA2C2A36 SAVED ITINERARY QA Trip Studio Actions ea2c2a36 Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Invite friends to react to this QA Trip Studio Actions ea2c2a36 Saved plan. Keep the planning flow social without burying the itinerary in extra controls. Public link on http://localhost:3000/t/6rl69n3xgr Copy link Share invite CREW BRIEF Add crew context in chat Crew size not set yet Budget still "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/trip-studio-phone-390x844.png",
+        "relativePath": "qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/trip-studio-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "saved-trips",
+      "path": "/saved",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/saved",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Trips",
+          "Your itineraries",
+          "QA Trip Studio Actions ea2c2a36 Saved"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Your itineraries 1 itinerary ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS EA2C2A36 SAVED QA Trip Studio Actions ea2c2a36 Saved Friend-ready Public Saved May 18, 2026 Delete"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/saved-trips-laptop-1280x800.png",
+        "relativePath": "qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/saved-trips-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/account-billing-laptop-1280x800.png",
+        "relativePath": "qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/account-billing-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/b629a572-49a5-498d-931c-e50abfef9710",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/b629a572-49a5-498d-931c-e50abfef9710",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Trip Studio Actions ea2c2a36 Saved",
+          "QA Trip Studio Actions ea2c2a36 Saved",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 387,
+            "y": 617,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 28,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions ea2c2a36 Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS EA2C2A36 SAVED ITINERARY QA Trip Studio Actions ea2c2a36 Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Invite friends to react to this QA Trip Studio Actions ea2c2a36 Saved plan."
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/trip-studio-laptop-1280x800.png",
+        "relativePath": "qa/visual-authenticated-owner-fixture-2026-05-18/screenshots/trip-studio-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

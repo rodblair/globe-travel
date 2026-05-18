@@ -1,9 +1,13 @@
+import { randomUUID } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright-core'
 import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
+import { createClient } from '@supabase/supabase-js'
+
+const GUEST_SESSION_COOKIE = 'globe_travel_guest'
 
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
@@ -24,6 +28,11 @@ const settleMs = Number(process.env.QA_VISUAL_SETTLE_MS || '900')
 const showProgress = process.env.QA_VISUAL_PROGRESS !== '0'
 const routeFilter = (process.env.QA_VISUAL_ROUTES || '').split(',').map((entry) => entry.trim()).filter(Boolean)
 const viewportFilter = (process.env.QA_VISUAL_VIEWPORTS || '').split(',').map((entry) => entry.trim()).filter(Boolean)
+const requestedAuthMode = process.env.QA_VISUAL_AUTH_MODE || 'auto'
+const providedGuestId = process.env.QA_VISUAL_GUEST_ID || process.env.QA_GUEST_ID || ''
+const visualGuestId = providedGuestId || randomUUID()
+const allowRemoteGuestAuth = process.env.QA_VISUAL_ALLOW_REMOTE_GUEST === '1'
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const defaultDiffRoutes = ['landing', 'planner', 'account-profile', 'account-billing', 'login', 'signup']
 const diffRouteFilter = (process.env.QA_VISUAL_DIFF_ROUTES || defaultDiffRoutes.join(','))
   .split(',')
@@ -64,6 +73,40 @@ const viewports = viewportFilter.length
 const routes = routeFilter.length
   ? allRoutes.filter((route) => routeFilter.includes(route.id))
   : allRoutes
+const protectedRouteIds = new Set(['planner', 'saved-trips', 'saved-journal', 'account-profile', 'account-billing', 'trip-studio'])
+const protectedRoutes = routes.filter((route) => protectedRouteIds.has(route.id)).map((route) => route.id)
+const useGuestAuth = requestedAuthMode === 'guest' || (requestedAuthMode === 'auto' && isLocalBaseUrl && protectedRoutes.length > 0)
+let guestCleanup = {
+  attempted: false,
+  reason: useGuestAuth
+    ? (providedGuestId ? 'external guest id provided; owner cleanup remains with the caller' : 'not run yet')
+    : 'guest visual auth not used',
+  guestId: useGuestAuth ? visualGuestId : null,
+  profileDeleted: false,
+  userDeleted: false,
+  error: null,
+}
+
+async function loadDotEnv() {
+  const envPath = resolve(process.cwd(), '.env.local')
+  let text = ''
+
+  try {
+    text = await readFile(envPath, 'utf8')
+  } catch {
+    return
+  }
+
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/)
+    if (!match) continue
+    const [, key, rawValue] = match
+    if (process.env[key]) continue
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '')
+  }
+}
 
 function markdownTable(rows) {
   return [
@@ -73,6 +116,78 @@ function markdownTable(rows) {
       `| ${row.routeId} | ${row.viewportId} | ${row.metrics.clientWidth} | ${row.metrics.horizontalOverflow ? 'Yes' : 'No'} | ${row.metrics.smallAppTargets.length} | ${row.metrics.smallMapControlTargets.length} | ${row.comparison.enabled ? `${(row.comparison.diffRatio * 100).toFixed(3)}%` : 'n/a'} | ${row.screenshot.ok ? row.screenshot.relativePath : row.screenshot.error || 'failed'} | ${row.ok ? 'Pass' : 'Fail'} |`
     )),
   ].join('\n')
+}
+
+async function authenticateVisualContext(context) {
+  if (!useGuestAuth) return { mode: 'none', guestId: null, cookieSet: false }
+
+  const parsedBaseUrl = new URL(baseUrl)
+  await context.addCookies([
+    {
+      name: GUEST_SESSION_COOKIE,
+      value: visualGuestId,
+      domain: parsedBaseUrl.hostname,
+      path: '/',
+      httpOnly: false,
+      secure: baseUrl.startsWith('https://'),
+      sameSite: 'Lax',
+      expires: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+    },
+  ])
+
+  const cookies = await context.cookies(baseUrl)
+  const guestCookie = cookies.find((cookie) => cookie.name === GUEST_SESSION_COOKIE)
+
+  return {
+    mode: 'guest',
+    guestId: visualGuestId,
+    cookieSet: guestCookie?.value === visualGuestId,
+  }
+}
+
+async function cleanupGeneratedGuest() {
+  if (!useGuestAuth || providedGuestId) return
+
+  if (!isLocalBaseUrl && !allowRemoteGuestAuth) {
+    guestCleanup = {
+      ...guestCleanup,
+      attempted: false,
+      reason: 'remote guest visual auth cleanup skipped',
+    }
+    return
+  }
+
+  await loadDotEnv()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    guestCleanup = {
+      ...guestCleanup,
+      attempted: false,
+      reason: 'missing Supabase service role cleanup credentials',
+    }
+    return
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false },
+  })
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', visualGuestId)
+  const { error: userError } = await supabase.auth.admin.deleteUser(visualGuestId)
+
+  guestCleanup = {
+    attempted: true,
+    reason: null,
+    guestId: visualGuestId,
+    profileDeleted: !profileError,
+    userDeleted: !userError,
+    error: profileError?.message || userError?.message || null,
+  }
 }
 
 async function compareScreenshot({ routeId, screenshotName, screenshotPath }) {
@@ -352,6 +467,16 @@ if (diffRouteFilter.length) {
   }
 }
 
+if (!['auto', 'none', 'guest'].includes(requestedAuthMode)) {
+  console.error('QA_VISUAL_AUTH_MODE must be one of: auto, none, guest.')
+  process.exit(1)
+}
+
+if (useGuestAuth && !isLocalBaseUrl && !allowRemoteGuestAuth) {
+  console.error('Guest-auth visual QA on remote URLs can create remote guest state. Set QA_VISUAL_ALLOW_REMOTE_GUEST=1 to allow it intentionally.')
+  process.exit(1)
+}
+
 await mkdir(screenshotDir, { recursive: true })
 
 const browser = await chromium.launch({
@@ -362,12 +487,15 @@ const browser = await chromium.launch({
 
 const results = []
 const failures = []
+const authContexts = []
 
 for (const viewport of viewports) {
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
     deviceScaleFactor: 1,
   })
+  const authContext = await authenticateVisualContext(context)
+  authContexts.push({ viewportId: viewport.id, ...authContext })
   const page = await context.newPage()
 
   for (const route of routes) {
@@ -379,6 +507,8 @@ for (const viewport of viewports) {
 
   await context.close()
 }
+
+await cleanupGeneratedGuest()
 
 const summary = {
   baseUrl,
@@ -392,6 +522,16 @@ const summary = {
   diffFailureThreshold,
   pixelmatchThreshold,
   settleMs,
+  auth: {
+    requestedMode: requestedAuthMode,
+    mode: useGuestAuth ? 'guest' : 'none',
+    guestId: useGuestAuth ? visualGuestId : null,
+    protectedRoutes,
+    externalGuestId: Boolean(providedGuestId),
+    allowRemoteGuestAuth,
+    contexts: authContexts,
+    cleanup: guestCleanup,
+  },
   checked: results.length,
   passed: results.filter((result) => result.ok).length,
   failed: failures.length,
@@ -421,6 +561,7 @@ Date: ${date}
 Environment: ${baseUrl}
 Public share slug: ${shareSlug}
 Trip Studio fixture: ${tripId || 'not included'}
+Auth mode: ${useGuestAuth ? `guest (${providedGuestId ? 'external' : 'generated'} guest id)` : 'none'}
 Baseline comparison: ${baselineDir || 'not enabled'}
 Pixel-compared routes: ${baselineDir ? diffRouteFilter.join(', ') : 'none'}
 Diff threshold: ${(diffFailureThreshold * 100).toFixed(2)}%
@@ -432,6 +573,8 @@ Diff threshold: ${(diffFailureThreshold * 100).toFixed(2)}%
 - Failed: ${summary.failed}
 - Artifact JSON: \`qa/${artifactName}/summary.json\`
 - Artifact directory: \`qa/${artifactName}\`
+- Protected routes: ${protectedRoutes.length ? protectedRoutes.join(', ') : 'none'}
+- Guest cleanup: ${guestCleanup.attempted ? `attempted (${guestCleanup.error || 'ok'})` : guestCleanup.reason}
 
 ${markdownTable(results)}
 
@@ -466,6 +609,12 @@ console.log(JSON.stringify({
   checked: summary.checked,
   passed: summary.passed,
   failed: summary.failed,
+  auth: {
+    mode: summary.auth.mode,
+    protectedRoutes: summary.auth.protectedRoutes,
+    guestId: summary.auth.guestId,
+    cleanup: summary.auth.cleanup,
+  },
   artifactDir,
   summaryPath: jsonPath,
   reportPath: mdPath,
