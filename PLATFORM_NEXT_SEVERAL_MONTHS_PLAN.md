@@ -33,6 +33,8 @@ The newest planner-start checkpoint closes a natural-language duration gap: Brow
 
 The newest auth/guest checkpoint preserves work across the auth boundary: protected routes now redirect to login with a safe `next`, login/signup/guest actions preserve the destination, guest start can carry planner prompts through to Trip Studio, and `npm run qa:auth-access` covers the handoff.
 
+The newest planner/map checkpoint adds a live generated-actuals gate. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. The wider Mexico City/Tokyo discovery run is recorded as Month 2 follow-up for stronger place-resolution scoring and larger multi-city launch coverage.
+
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
 ## Product Quality Bar

@@ -1,0 +1,169 @@
+[
+  {
+    "id": "lisbon-3-day-friends-nightlife",
+    "shareSlug": "c6ihd7sc5r",
+    "tripId": "98253eee-139e-4800-8533-6bd1aef07071",
+    "tripTitle": "3 Days in Lisbon",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Alfama Views & Fado-Flavored Evening",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Castelo de São Jorge",
+            "type": "activity",
+            "placeName": "Castelo de São Jorge",
+            "latitude": 38.71391,
+            "longitude": -9.13348
+          },
+          {
+            "title": "Cervejaria Ramiro",
+            "type": "meal",
+            "placeName": "Cervejaria Ramiro",
+            "latitude": 38.72175,
+            "longitude": -9.1354
+          },
+          {
+            "title": "Miradouro de Santa Luzia",
+            "type": "activity",
+            "placeName": "Miradouro de Santa Luzia",
+            "latitude": 38.71183,
+            "longitude": -9.13075
+          },
+          {
+            "title": "Bairro do Avillez",
+            "type": "meal",
+            "placeName": "Bairro do Avillez",
+            "latitude": 38.71097,
+            "longitude": -9.14223
+          },
+          {
+            "title": "Pensão Amor",
+            "type": "activity",
+            "placeName": "Pensão Amor",
+            "latitude": 38.70747,
+            "longitude": -9.14354
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4929
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Belém Classics & Bairro Alto Night",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Mosteiro dos Jerónimos",
+            "type": "activity",
+            "placeName": "Jerónimos Monastery",
+            "latitude": 38.6979,
+            "longitude": -9.20673
+          },
+          {
+            "title": "Pastéis de Belém",
+            "type": "meal",
+            "placeName": "Pastéis de Belém",
+            "latitude": 38.69748,
+            "longitude": -9.20322
+          },
+          {
+            "title": "MAAT",
+            "type": "activity",
+            "placeName": "MAAT",
+            "latitude": 38.69578,
+            "longitude": -9.19468
+          },
+          {
+            "title": "Taberna da Rua das Flores",
+            "type": "meal",
+            "placeName": "Taberna da Rua das Flores",
+            "latitude": 38.71026,
+            "longitude": -9.14352
+          },
+          {
+            "title": "Park Bar",
+            "type": "activity",
+            "placeName": "Park Rooftop",
+            "latitude": 38.71014,
+            "longitude": -9.14784
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7560
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Chiado Cafés, Big Viewpoint & Final Night",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Livraria Bertrand Chiado",
+            "type": "activity",
+            "placeName": "Livraria Bertrand Chiado",
+            "latitude": 38.71049,
+            "longitude": -9.14369
+          },
+          {
+            "title": "A Brasileira",
+            "type": "meal",
+            "placeName": "A Brasileira",
+            "latitude": 38.71055,
+            "longitude": -9.14246
+          },
+          {
+            "title": "Miradouro da Senhora do Monte",
+            "type": "activity",
+            "placeName": "Miradouro da Senhora do Monte",
+            "latitude": 38.71912,
+            "longitude": -9.13265
+          },
+          {
+            "title": "Time Out Market Lisboa",
+            "type": "meal",
+            "placeName": "Time Out Market Lisboa",
+            "latitude": 38.70697,
+            "longitude": -9.14562
+          },
+          {
+            "title": "Cinco Lounge",
+            "type": "activity",
+            "placeName": "Cinco Lounge",
+            "latitude": 38.71669,
+            "longitude": -9.15004
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6359
+        ]
+      }
+    ]
+  }
+]

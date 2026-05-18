@@ -29,12 +29,136 @@ type PlannerPlaceOverride = {
   manualId: string
 }
 
+type PlannerDestinationOverride = {
+  pattern: RegExp
+  latitude: number
+  longitude: number
+  country_code: string
+}
+
+const PLANNER_DESTINATION_OVERRIDES: PlannerDestinationOverride[] = [
+  { pattern: /^athens(?:,\s*greece)?$/i, latitude: 37.98381, longitude: 23.72754, country_code: 'GR' },
+  { pattern: /^lisbon(?:,\s*portugal)?$/i, latitude: 38.72225, longitude: -9.13934, country_code: 'PT' },
+  { pattern: /^(mexico city|cdmx|ciudad de m[eé]xico)(?:,\s*mexico)?$/i, latitude: 19.43261, longitude: -99.13321, country_code: 'MX' },
+  { pattern: /^tokyo(?:,\s*japan)?$/i, latitude: 35.67642, longitude: 139.65003, country_code: 'JP' },
+]
+
 const PLANNER_PLACE_OVERRIDES: PlannerPlaceOverride[] = [
   { pattern: /acropolis archaeological site|acropolis.*parthenon|parthenon.*acropolis|^acropolis of athens$/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
   { pattern: /\bstrofi\b/i, name: 'Strofi', country: 'Greece', country_code: 'GR', latitude: 37.96801, longitude: 23.72453, manualId: 'manual:athens:strofi' },
   { pattern: /monastiraki square|flea market.*monastiraki|monastiraki.*flea market/i, name: 'Monastiraki Square', country: 'Greece', country_code: 'GR', latitude: 37.97608, longitude: 23.72557, manualId: 'manual:athens:monastiraki-square' },
   { pattern: /ancient agora/i, name: 'Ancient Agora of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97569, longitude: 23.72247, manualId: 'manual:athens:ancient-agora' },
+  { pattern: /lisbon cathedral|sé de lisboa|se de lisboa/i, name: 'Lisbon Cathedral', country: 'Portugal', country_code: 'PT', latitude: 38.70975, longitude: -9.13349, manualId: 'manual:lisbon:cathedral' },
+  { pattern: /praça do comércio|praca do comercio|commerce square/i, name: 'Praça do Comércio', country: 'Portugal', country_code: 'PT', latitude: 38.70775, longitude: -9.13642, manualId: 'manual:lisbon:praca-do-comercio' },
+  { pattern: /santa justa lift|elevador de santa justa/i, name: 'Santa Justa Lift', country: 'Portugal', country_code: 'PT', latitude: 38.71214, longitude: -9.13939, manualId: 'manual:lisbon:santa-justa-lift' },
+  { pattern: /castelo de s(?:[aã]o|\.?)\s*jorge|s[aã]o jorge castle|st\.?\s*george castle/i, name: 'Castelo de São Jorge', country: 'Portugal', country_code: 'PT', latitude: 38.71391, longitude: -9.13348, manualId: 'manual:lisbon:castelo-sao-jorge' },
+  { pattern: /miradouro de santa luzia|santa luzia viewpoint/i, name: 'Miradouro de Santa Luzia', country: 'Portugal', country_code: 'PT', latitude: 38.71183, longitude: -9.13075, manualId: 'manual:lisbon:santa-luzia' },
+  { pattern: /miradouro da senhora do monte|senhora do monte/i, name: 'Miradouro da Senhora do Monte', country: 'Portugal', country_code: 'PT', latitude: 38.71912, longitude: -9.13265, manualId: 'manual:lisbon:senhora-do-monte' },
+  { pattern: /miradouro da graça|miradouro da graca/i, name: 'Miradouro da Graça', country: 'Portugal', country_code: 'PT', latitude: 38.71696, longitude: -9.13059, manualId: 'manual:lisbon:miradouro-graca' },
+  { pattern: /miradouro de s[aã]o pedro de alc[aâ]ntara|s[aã]o pedro de alc[aâ]ntara/i, name: 'Miradouro de São Pedro de Alcântara', country: 'Portugal', country_code: 'PT', latitude: 38.7151, longitude: -9.14442, manualId: 'manual:lisbon:sao-pedro-alcantara' },
+  { pattern: /miradouro de santa catarina|santa catarina viewpoint/i, name: 'Miradouro de Santa Catarina', country: 'Portugal', country_code: 'PT', latitude: 38.7102, longitude: -9.14791, manualId: 'manual:lisbon:santa-catarina' },
+  { pattern: /pastéis de belém|pasteis de belem/i, name: 'Pastéis de Belém', country: 'Portugal', country_code: 'PT', latitude: 38.69748, longitude: -9.20322, manualId: 'manual:lisbon:pasteis-de-belem' },
+  { pattern: /jer[óo]nimos monastery|mosteiro dos jer[óo]nimos/i, name: 'Jerónimos Monastery', country: 'Portugal', country_code: 'PT', latitude: 38.6979, longitude: -9.20673, manualId: 'manual:lisbon:jeronimos-monastery' },
+  { pattern: /belém tower|belem tower/i, name: 'Belém Tower', country: 'Portugal', country_code: 'PT', latitude: 38.69158, longitude: -9.21604, manualId: 'manual:lisbon:belem-tower' },
+  { pattern: /\bmaat\b/i, name: 'MAAT', country: 'Portugal', country_code: 'PT', latitude: 38.69578, longitude: -9.19468, manualId: 'manual:lisbon:maat' },
+  { pattern: /lx factory/i, name: 'LX Factory', country: 'Portugal', country_code: 'PT', latitude: 38.70333, longitude: -9.17844, manualId: 'manual:lisbon:lx-factory' },
+  { pattern: /time out market|mercado da ribeira/i, name: 'Time Out Market Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.70697, longitude: -9.14562, manualId: 'manual:lisbon:time-out-market' },
+  { pattern: /carmo convent|convento do carmo/i, name: 'Carmo Convent', country: 'Portugal', country_code: 'PT', latitude: 38.71207, longitude: -9.14071, manualId: 'manual:lisbon:carmo-convent' },
+  { pattern: /manteigaria/i, name: 'Manteigaria', country: 'Portugal', country_code: 'PT', latitude: 38.71084, longitude: -9.14307, manualId: 'manual:lisbon:manteigaria' },
+  { pattern: /pois caf[eé]/i, name: 'Pois Café', country: 'Portugal', country_code: 'PT', latitude: 38.71015, longitude: -9.13174, manualId: 'manual:lisbon:pois-cafe' },
+  { pattern: /taberna sal grosso/i, name: 'Taberna Sal Grosso', country: 'Portugal', country_code: 'PT', latitude: 38.71431, longitude: -9.12695, manualId: 'manual:lisbon:taberna-sal-grosso' },
+  { pattern: /taberna da rua das flores/i, name: 'Taberna da Rua das Flores', country: 'Portugal', country_code: 'PT', latitude: 38.71026, longitude: -9.14352, manualId: 'manual:lisbon:taberna-rua-das-flores' },
+  { pattern: /cervejaria ramiro/i, name: 'Cervejaria Ramiro', country: 'Portugal', country_code: 'PT', latitude: 38.72175, longitude: -9.1354, manualId: 'manual:lisbon:cervejaria-ramiro' },
+  { pattern: /pavilh[aã]o chin[eê]s/i, name: 'Pavilhão Chinês', country: 'Portugal', country_code: 'PT', latitude: 38.71528, longitude: -9.14829, manualId: 'manual:lisbon:pavilhao-chines' },
+  { pattern: /rio maravilha/i, name: 'Rio Maravilha', country: 'Portugal', country_code: 'PT', latitude: 38.70345, longitude: -9.17839, manualId: 'manual:lisbon:rio-maravilha' },
+  { pattern: /ponto final/i, name: 'Ponto Final', country: 'Portugal', country_code: 'PT', latitude: 38.68697, longitude: -9.15172, manualId: 'manual:lisbon:ponto-final' },
+  { pattern: /atalho real/i, name: 'Atalho Real', country: 'Portugal', country_code: 'PT', latitude: 38.71639, longitude: -9.14922, manualId: 'manual:lisbon:atalho-real' },
+  { pattern: /park rooftop|park bar/i, name: 'Park Rooftop', country: 'Portugal', country_code: 'PT', latitude: 38.71014, longitude: -9.14784, manualId: 'manual:lisbon:park-rooftop' },
+  { pattern: /hello,?\s*kristof/i, name: 'Hello, Kristof', country: 'Portugal', country_code: 'PT', latitude: 38.71361, longitude: -9.15038, manualId: 'manual:lisbon:hello-kristof' },
+  { pattern: /livraria bertrand/i, name: 'Livraria Bertrand Chiado', country: 'Portugal', country_code: 'PT', latitude: 38.71049, longitude: -9.14369, manualId: 'manual:lisbon:livraria-bertrand' },
+  { pattern: /a brasileira/i, name: 'A Brasileira', country: 'Portugal', country_code: 'PT', latitude: 38.71055, longitude: -9.14246, manualId: 'manual:lisbon:a-brasileira' },
+  { pattern: /jardim do pr[ií]ncipe real|praça do pr[ií]ncipe real|pr[ií]ncipe real garden/i, name: 'Jardim do Príncipe Real', country: 'Portugal', country_code: 'PT', latitude: 38.71664, longitude: -9.14867, manualId: 'manual:lisbon:jardim-principe-real' },
+  { pattern: /jardim bot[aâ]nico de lisboa|lisbon botanical garden/i, name: 'Jardim Botânico de Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.71722, longitude: -9.14833, manualId: 'manual:lisbon:botanical-garden' },
+  { pattern: /mercado de campo de ourique/i, name: 'Mercado de Campo de Ourique', country: 'Portugal', country_code: 'PT', latitude: 38.71704, longitude: -9.16613, manualId: 'manual:lisbon:mercado-campo-ourique' },
+  { pattern: /national tile museum|museu nacional do azulejo/i, name: 'National Tile Museum', country: 'Portugal', country_code: 'PT', latitude: 38.72465, longitude: -9.11385, manualId: 'manual:lisbon:national-tile-museum' },
+  { pattern: /bairro do avillez/i, name: 'Bairro do Avillez', country: 'Portugal', country_code: 'PT', latitude: 38.71097, longitude: -9.14223, manualId: 'manual:lisbon:bairro-do-avillez' },
+  { pattern: /pensão amor|pensao amor/i, name: 'Pensão Amor', country: 'Portugal', country_code: 'PT', latitude: 38.70747, longitude: -9.14354, manualId: 'manual:lisbon:pensao-amor' },
+  { pattern: /clube de fado/i, name: 'Clube de Fado', country: 'Portugal', country_code: 'PT', latitude: 38.71036, longitude: -9.13111, manualId: 'manual:lisbon:clube-de-fado' },
+  { pattern: /\bfoxtrot\b/i, name: 'Foxtrot', country: 'Portugal', country_code: 'PT', latitude: 38.71951, longitude: -9.15343, manualId: 'manual:lisbon:foxtrot' },
+  { pattern: /red frog/i, name: 'Red Frog', country: 'Portugal', country_code: 'PT', latitude: 38.71998, longitude: -9.14596, manualId: 'manual:lisbon:red-frog' },
+  { pattern: /pink street|rua cor-de-rosa/i, name: 'Pink Street', country: 'Portugal', country_code: 'PT', latitude: 38.70755, longitude: -9.14376, manualId: 'manual:lisbon:pink-street' },
+  { pattern: /bairro alto/i, name: 'Bairro Alto', country: 'Portugal', country_code: 'PT', latitude: 38.7131, longitude: -9.14456, manualId: 'manual:lisbon:bairro-alto' },
+  { pattern: /\balfama\b/i, name: 'Alfama', country: 'Portugal', country_code: 'PT', latitude: 38.71391, longitude: -9.12963, manualId: 'manual:lisbon:alfama' },
+  { pattern: /\bchiado\b/i, name: 'Chiado', country: 'Portugal', country_code: 'PT', latitude: 38.71073, longitude: -9.14224, manualId: 'manual:lisbon:chiado' },
+  { pattern: /caf[eé] da garagem/i, name: 'Café da Garagem', country: 'Portugal', country_code: 'PT', latitude: 38.71384, longitude: -9.13248, manualId: 'manual:lisbon:cafe-da-garagem' },
+  { pattern: /cervejaria trindade/i, name: 'Cervejaria Trindade', country: 'Portugal', country_code: 'PT', latitude: 38.71196, longitude: -9.142, manualId: 'manual:lisbon:cervejaria-trindade' },
+  { pattern: /by the wine/i, name: 'By The Wine', country: 'Portugal', country_code: 'PT', latitude: 38.71021, longitude: -9.14397, manualId: 'manual:lisbon:by-the-wine' },
+  { pattern: /museu nacional de arte antiga|national museum of ancient art/i, name: 'Museu Nacional de Arte Antiga', country: 'Portugal', country_code: 'PT', latitude: 38.70408, longitude: -9.16063, manualId: 'manual:lisbon:mnarte-antiga' },
+  { pattern: /cinco lounge/i, name: 'Cinco Lounge', country: 'Portugal', country_code: 'PT', latitude: 38.71669, longitude: -9.15004, manualId: 'manual:lisbon:cinco-lounge' },
+  { pattern: /da prata 52/i, name: 'da Prata 52', country: 'Portugal', country_code: 'PT', latitude: 38.71028, longitude: -9.1363, manualId: 'manual:lisbon:da-prata-52' },
+  { pattern: /darwin'?s caf[eé]/i, name: "Darwin's Café", country: 'Portugal', country_code: 'PT', latitude: 38.6945, longitude: -9.2219, manualId: 'manual:lisbon:darwins-cafe' },
+  { pattern: /sol e pesca/i, name: 'Sol e Pesca', country: 'Portugal', country_code: 'PT', latitude: 38.70745, longitude: -9.14365, manualId: 'manual:lisbon:sol-e-pesca' },
+  { pattern: /pal[aá]cio de bellas artes|palace of fine arts/i, name: 'Palacio de Bellas Artes', country: 'Mexico', country_code: 'MX', latitude: 19.4352, longitude: -99.1412, manualId: 'manual:mexico-city:palacio-bellas-artes' },
+  { pattern: /museo del templo mayor|templo mayor/i, name: 'Museo del Templo Mayor', country: 'Mexico', country_code: 'MX', latitude: 19.4347, longitude: -99.1312, manualId: 'manual:mexico-city:templo-mayor' },
+  { pattern: /azul hist[oó]rico/i, name: 'Azul Histórico', country: 'Mexico', country_code: 'MX', latitude: 19.4338, longitude: -99.1377, manualId: 'manual:mexico-city:azul-historico' },
+  { pattern: /el cardenal/i, name: 'El Cardenal', country: 'Mexico', country_code: 'MX', latitude: 19.4337, longitude: -99.1391, manualId: 'manual:mexico-city:el-cardenal' },
+  { pattern: /caf[eé] de tacuba/i, name: 'Café de Tacuba', country: 'Mexico', country_code: 'MX', latitude: 19.4357, longitude: -99.1398, manualId: 'manual:mexico-city:cafe-de-tacuba' },
+  { pattern: /caf[eé] el popular/i, name: 'Café El Popular', country: 'Mexico', country_code: 'MX', latitude: 19.4333, longitude: -99.1365, manualId: 'manual:mexico-city:cafe-el-popular' },
+  { pattern: /terraza catedral/i, name: 'Terraza Catedral', country: 'Mexico', country_code: 'MX', latitude: 19.4341, longitude: -99.1335, manualId: 'manual:mexico-city:terraza-catedral' },
+  { pattern: /museo nacional de antropolog[ií]a|national museum of anthropology/i, name: 'Museo Nacional de Antropología', country: 'Mexico', country_code: 'MX', latitude: 19.426, longitude: -99.1863, manualId: 'manual:mexico-city:anthropology-museum' },
+  { pattern: /\bel lago\b/i, name: 'El Lago', country: 'Mexico', country_code: 'MX', latitude: 19.4214, longitude: -99.1954, manualId: 'manual:mexico-city:el-lago' },
+  { pattern: /castillo de chapultepec|chapultepec castle/i, name: 'Castillo de Chapultepec', country: 'Mexico', country_code: 'MX', latitude: 19.4204, longitude: -99.1819, manualId: 'manual:mexico-city:chapultepec-castle' },
+  { pattern: /ticuchi/i, name: 'Ticuchi', country: 'Mexico', country_code: 'MX', latitude: 19.4318, longitude: -99.1939, manualId: 'manual:mexico-city:ticuchi' },
+  { pattern: /museo frida kahlo|frida kahlo museum|casa azul/i, name: 'Museo Frida Kahlo', country: 'Mexico', country_code: 'MX', latitude: 19.3552, longitude: -99.1626, manualId: 'manual:mexico-city:frida-kahlo' },
+  { pattern: /caf[eé] avellaneda/i, name: 'Café Avellaneda', country: 'Mexico', country_code: 'MX', latitude: 19.3496, longitude: -99.1626, manualId: 'manual:mexico-city:cafe-avellaneda' },
+  { pattern: /los danzantes/i, name: 'Los Danzantes', country: 'Mexico', country_code: 'MX', latitude: 19.3495, longitude: -99.1625, manualId: 'manual:mexico-city:los-danzantes' },
+  { pattern: /mercado de coyoac[aá]n/i, name: 'Mercado de Coyoacán', country: 'Mexico', country_code: 'MX', latitude: 19.3491, longitude: -99.1603, manualId: 'manual:mexico-city:mercado-coyoacan' },
+  { pattern: /museo anahuacalli|anahuacalli/i, name: 'Museo Anahuacalli', country: 'Mexico', country_code: 'MX', latitude: 19.3231, longitude: -99.1436, manualId: 'manual:mexico-city:anahuacalli' },
+  { pattern: /museo casa estudio diego rivera|casa estudio diego rivera/i, name: 'Museo Casa Estudio Diego Rivera y Frida Kahlo', country: 'Mexico', country_code: 'MX', latitude: 19.3495, longitude: -99.1903, manualId: 'manual:mexico-city:casa-estudio-diego-frida' },
+  { pattern: /contramar/i, name: 'Contramar', country: 'Mexico', country_code: 'MX', latitude: 19.4191, longitude: -99.1694, manualId: 'manual:mexico-city:contramar' },
+  { pattern: /\brosetta\b/i, name: 'Rosetta', country: 'Mexico', country_code: 'MX', latitude: 19.4199, longitude: -99.1605, manualId: 'manual:mexico-city:rosetta' },
+  { pattern: /licorer[ií]a limantour/i, name: 'Licorería Limantour', country: 'Mexico', country_code: 'MX', latitude: 19.414, longitude: -99.1713, manualId: 'manual:mexico-city:limantour' },
+  { pattern: /museo tamayo/i, name: 'Museo Tamayo Arte Contemporáneo', country: 'Mexico', country_code: 'MX', latitude: 19.4257, longitude: -99.1817, manualId: 'manual:mexico-city:museo-tamayo' },
+  { pattern: /museo del objeto del objeto|\bmodo\b/i, name: 'Museo del Objeto del Objeto', country: 'Mexico', country_code: 'MX', latitude: 19.4195, longitude: -99.1628, manualId: 'manual:mexico-city:modo' },
+  { pattern: /\blardo\b/i, name: 'Lardo', country: 'Mexico', country_code: 'MX', latitude: 19.4128, longitude: -99.1727, manualId: 'manual:mexico-city:lardo' },
+  { pattern: /^lalo!?|\blalo!?\b/i, name: 'Lalo!', country: 'Mexico', country_code: 'MX', latitude: 19.4148, longitude: -99.1644, manualId: 'manual:mexico-city:lalo' },
+  { pattern: /museo de arte moderno/i, name: 'Museo de Arte Moderno', country: 'Mexico', country_code: 'MX', latitude: 19.4231, longitude: -99.1815, manualId: 'manual:mexico-city:museo-arte-moderno' },
+  { pattern: /m[aá]ximo/i, name: 'Máximo', country: 'Mexico', country_code: 'MX', latitude: 19.4164, longitude: -99.1669, manualId: 'manual:mexico-city:maximo' },
+  { pattern: /parque m[eé]xico/i, name: 'Parque México', country: 'Mexico', country_code: 'MX', latitude: 19.4113, longitude: -99.1695, manualId: 'manual:mexico-city:parque-mexico' },
+  { pattern: /museo casa de le[oó]n trotsky|le[oó]n trotsky/i, name: 'Museo Casa de León Trotsky', country: 'Mexico', country_code: 'MX', latitude: 19.3561, longitude: -99.1585, manualId: 'manual:mexico-city:leon-trotsky-museum' },
+  { pattern: /museo nacional de culturas populares|culturas populares/i, name: 'Museo Nacional de Culturas Populares', country: 'Mexico', country_code: 'MX', latitude: 19.3481, longitude: -99.1623, manualId: 'manual:mexico-city:culturas-populares' },
+  { pattern: /\bdepartamento\b/i, name: 'Departamento', country: 'Mexico', country_code: 'MX', latitude: 19.417, longitude: -99.1612, manualId: 'manual:mexico-city:departamento' },
+  { pattern: /merotoro/i, name: 'Merotoro', country: 'Mexico', country_code: 'MX', latitude: 19.4124, longitude: -99.1742, manualId: 'manual:mexico-city:merotoro' },
+  { pattern: /taquer[ií]a orinoco|taqueria orinoco/i, name: 'Taquería Orinoco', country: 'Mexico', country_code: 'MX', latitude: 19.4168, longitude: -99.1661, manualId: 'manual:mexico-city:taqueria-orinoco' },
+  { pattern: /senso-?ji|sensō-ji|sensoji/i, name: 'Senso-ji Temple', country: 'Japan', country_code: 'JP', latitude: 35.7148, longitude: 139.7967, manualId: 'manual:tokyo:sensoji' },
+  { pattern: /asakusa imahan/i, name: 'Asakusa Imahan Honten', country: 'Japan', country_code: 'JP', latitude: 35.7112, longitude: 139.7945, manualId: 'manual:tokyo:asakusa-imahan' },
+  { pattern: /suzukien/i, name: 'Suzukien Asakusa', country: 'Japan', country_code: 'JP', latitude: 35.7158, longitude: 139.8002, manualId: 'manual:tokyo:suzukien' },
+  { pattern: /tokyo national museum/i, name: 'Tokyo National Museum', country: 'Japan', country_code: 'JP', latitude: 35.7188, longitude: 139.7765, manualId: 'manual:tokyo:national-museum' },
+  { pattern: /ueno park/i, name: 'Ueno Park', country: 'Japan', country_code: 'JP', latitude: 35.7156, longitude: 139.7745, manualId: 'manual:tokyo:ueno-park' },
+  { pattern: /inshotei/i, name: 'Inshotei', country: 'Japan', country_code: 'JP', latitude: 35.7169, longitude: 139.7721, manualId: 'manual:tokyo:inshotei' },
+  { pattern: /ameya-?yokocho|ameyoko/i, name: 'Ameya-Yokocho', country: 'Japan', country_code: 'JP', latitude: 35.71, longitude: 139.7746, manualId: 'manual:tokyo:ameya-yokocho' },
+  { pattern: /meiji jingu|meiji shrine/i, name: 'Meiji Jingu', country: 'Japan', country_code: 'JP', latitude: 35.6764, longitude: 139.6993, manualId: 'manual:tokyo:meiji-jingu' },
+  { pattern: /afuri harajuku/i, name: 'Afuri Harajuku', country: 'Japan', country_code: 'JP', latitude: 35.669, longitude: 139.7055, manualId: 'manual:tokyo:afuri-harajuku' },
+  { pattern: /a happy pancake/i, name: 'A Happy Pancake Omotesando', country: 'Japan', country_code: 'JP', latitude: 35.6673, longitude: 139.7089, manualId: 'manual:tokyo:happy-pancake-omotesando' },
+  { pattern: /fuglen tokyo/i, name: 'Fuglen Tokyo', country: 'Japan', country_code: 'JP', latitude: 35.665, longitude: 139.6958, manualId: 'manual:tokyo:fuglen-tokyo' },
+  { pattern: /bills omotesando/i, name: 'Bills Omotesando', country: 'Japan', country_code: 'JP', latitude: 35.6665, longitude: 139.7104, manualId: 'manual:tokyo:bills-omotesando' },
+  { pattern: /omotesando hills/i, name: 'Omotesando Hills', country: 'Japan', country_code: 'JP', latitude: 35.6673, longitude: 139.7086, manualId: 'manual:tokyo:omotesando-hills' },
+  { pattern: /shibuya scramble crossing|shibuya crossing/i, name: 'Shibuya Scramble Crossing', country: 'Japan', country_code: 'JP', latitude: 35.6595, longitude: 139.7005, manualId: 'manual:tokyo:shibuya-crossing' },
+  { pattern: /shibuya sky/i, name: 'Shibuya Sky', country: 'Japan', country_code: 'JP', latitude: 35.6584, longitude: 139.702, manualId: 'manual:tokyo:shibuya-sky' },
+  { pattern: /uobei/i, name: 'Uobei Shibuya Dogenzaka', country: 'Japan', country_code: 'JP', latitude: 35.6581, longitude: 139.6973, manualId: 'manual:tokyo:uobei-shibuya' },
+  { pattern: /t\.?y\.?\s*harbor|ty harbor/i, name: 'T.Y. HARBOR', country: 'Japan', country_code: 'JP', latitude: 35.6229, longitude: 139.7496, manualId: 'manual:tokyo:ty-harbor' },
+  { pattern: /tsukiji outer market/i, name: 'Tsukiji Outer Market', country: 'Japan', country_code: 'JP', latitude: 35.6655, longitude: 139.7707, manualId: 'manual:tokyo:tsukiji-outer-market' },
+  { pattern: /tsukiji sushi daiwa|sushi daiwa/i, name: 'Tsukiji Sushi Daiwa', country: 'Japan', country_code: 'JP', latitude: 35.6652, longitude: 139.7702, manualId: 'manual:tokyo:tsukiji-sushi-daiwa' },
+  { pattern: /sushizanmai/i, name: 'Tsukiji Sushizanmai Honten', country: 'Japan', country_code: 'JP', latitude: 35.6657, longitude: 139.7707, manualId: 'manual:tokyo:sushizanmai-honten' },
+  { pattern: /teamlab planets/i, name: 'teamLab Planets TOKYO DMM', country: 'Japan', country_code: 'JP', latitude: 35.6491, longitude: 139.7904, manualId: 'manual:tokyo:teamlab-planets' },
+  { pattern: /hamarikyu gardens|hama-rikyu/i, name: 'Hamarikyu Gardens', country: 'Japan', country_code: 'JP', latitude: 35.6595, longitude: 139.7634, manualId: 'manual:tokyo:hamarikyu-gardens' },
+  { pattern: /tokyo station|marunouchi building/i, name: 'Tokyo Station Marunouchi Building', country: 'Japan', country_code: 'JP', latitude: 35.68124, longitude: 139.76713, manualId: 'manual:tokyo:tokyo-station' },
+  { pattern: /imperial palace east gardens/i, name: 'Imperial Palace East Gardens', country: 'Japan', country_code: 'JP', latitude: 35.68518, longitude: 139.75963, manualId: 'manual:tokyo:imperial-palace-east-gardens' },
+  { pattern: /tsujihan|zeitaku don/i, name: 'Tsujihan ZEITAKU DON Marunouchi', country: 'Japan', country_code: 'JP', latitude: 35.68074, longitude: 139.76749, manualId: 'manual:tokyo:tsujihan-marunouchi' },
+  { pattern: /art aquarium/i, name: 'Art Aquarium Museum Ginza', country: 'Japan', country_code: 'JP', latitude: 35.67125, longitude: 139.765, manualId: 'manual:tokyo:art-aquarium-ginza' },
+  { pattern: /ginza six/i, name: 'Ginza Six', country: 'Japan', country_code: 'JP', latitude: 35.6696, longitude: 139.7649, manualId: 'manual:tokyo:ginza-six' },
+  { pattern: /ginza kagari/i, name: 'Ginza Kagari Main Branch', country: 'Japan', country_code: 'JP', latitude: 35.6712, longitude: 139.7638, manualId: 'manual:tokyo:ginza-kagari' },
 ]
 
 async function ensureTripDay(supabase: any, tripId: string, dayIndex: number) {
@@ -67,6 +191,15 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   const dLng = toRad(lng2 - lng1)
   const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+async function resolveDestinationAnchor(destinationLabel: string | null | undefined, token: string | undefined) {
+  if (!destinationLabel || !token) return null
+
+  const canonicalDestination = PLANNER_DESTINATION_OVERRIDES.find((entry) => entry.pattern.test(destinationLabel.trim()))
+  if (canonicalDestination) return canonicalDestination
+
+  return geocodePlace(destinationLabel, token)
 }
 
 async function resolvePlannerPlace({
@@ -191,7 +324,8 @@ async function computeAndStoreDayRoute(
       return
     }
 
-    const route = await directionsGeojson(coords, token, mode)
+    const mappedRoute = await directionsGeojson(coords, token, mode)
+    const route = isUsableStoredRoute(mappedRoute) ? mappedRoute : buildStraightLineRoute(coords)
     if (!route) return
 
     await supabase
@@ -209,6 +343,50 @@ async function computeAndStoreDayRoute(
       )
   } catch {
     // Route computation is non-critical — items are already saved, silently skip
+  }
+}
+
+function isUsableStoredRoute(route: Awaited<ReturnType<typeof directionsGeojson>> | null) {
+  return (
+    route != null &&
+    typeof route.distance_m === 'number' &&
+    route.distance_m > 0 &&
+    route.distance_m <= 25000
+  )
+}
+
+function buildStraightLineRoute(coords: Array<{ latitude: number; longitude: number }>) {
+  if (coords.length < 2) return null
+
+  let distance_m = 0
+  for (let index = 1; index < coords.length; index++) {
+    distance_m += haversineKm(
+      coords[index - 1].latitude,
+      coords[index - 1].longitude,
+      coords[index].latitude,
+      coords[index].longitude,
+    ) * 1000
+  }
+
+  const roundedDistance = Math.round(distance_m)
+  if (roundedDistance <= 0 || roundedDistance > 25000) return null
+
+  return {
+    geojson: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: { fallback: true, source: 'straight-line' },
+          geometry: {
+            type: 'LineString',
+            coordinates: coords.map((coord) => [coord.longitude, coord.latitude]),
+          },
+        },
+      ],
+    },
+    distance_m: roundedDistance,
+    duration_s: Math.round(roundedDistance / 1.25),
   }
 }
 
@@ -473,7 +651,7 @@ export async function POST(req: Request) {
 
           const { data: trip } = await db.from('trips').select('title').eq('id', tid).maybeSingle()
           const destinationLabel = extractDestinationFromTitle(trip?.title)
-          const destinationAnchor = token && destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
           const place = token
             ? await resolvePlannerPlace({ db, token, placeQuery: place_query, destinationLabel, destinationAnchor })
             : null
@@ -552,7 +730,7 @@ export async function POST(req: Request) {
             (typeof existingTrip?.constraints?.destination_query === 'string' && existingTrip.constraints.destination_query.trim()) ||
             extractDestinationFromTitle(title || existingTrip?.title) ||
             extractDestinationFromPrompt(latestUserText)
-          const destinationAnchor = destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
 
           if (title || start_date || end_date || pace || budget_level) {
             const nextConstraints = destinationLabel
@@ -684,7 +862,7 @@ export async function POST(req: Request) {
           }
 
           const destinationLabel = extractDestinationFromTitle(existingTrip?.title)
-          const destinationAnchor = destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
 
           const { error: dayErr } = await db
             .from('trip_days')
@@ -768,7 +946,7 @@ export async function POST(req: Request) {
             ? currentItemRecord.trip_day[0]?.trip?.title
             : currentItemRecord?.trip_day?.trip?.title
           const destinationLabel = extractDestinationFromTitle(destinationTitle)
-          const destinationAnchor = destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
           const resolvedPlace = await resolvePlannerPlace({
             db,
             token,
@@ -867,7 +1045,7 @@ export async function POST(req: Request) {
             ? currentItemRecord.trip_day[0]?.trip?.title
             : currentItemRecord?.trip_day?.trip?.title
           const destinationLabel = extractDestinationFromTitle(destinationTitle)
-          const destinationAnchor = token && destinationLabel ? await geocodePlace(destinationLabel, token) : null
+          const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
           const resolvedPlace = token && place_query
             ? await resolvePlannerPlace({
                 db,

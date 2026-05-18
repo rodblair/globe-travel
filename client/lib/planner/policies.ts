@@ -46,11 +46,16 @@ Rules:
 - Ask at most ONE clarifying question if destination or number of days is missing; otherwise proceed with reasonable assumptions.
 - When details are ambiguous, prefer a practical 2-3 day city-break structure over an overstuffed long-haul itinerary.
 - When group preferences conflict, aim for balanced pacing and broad appeal.
+- For initial full-plan generation, keep each day to 3-5 mapped itinerary items total. Fewer excellent, routeable stops are better than many fragile pins.
+- Do not create separate generic transit, rest, hotel, or neighborhood-note items unless they have a real named place_query. Put pacing notes in day notes instead.
+- Do not use district-only items such as "Ginza", "Roma", "Asakusa", or "Bairro Alto" as meals or activities. Choose a specific venue or attraction inside the district.
 
 When you add items:
 - Use realistic time blocks (morning/afternoon/evening) and keep activities geographically coherent.
+- Each day should usually have one morning anchor, one lunch or cafe, one afternoon anchor, and one dinner or evening stop.
 - Mix categories: activity + meal + transit/rest as needed.
 - Every activity and meal should have a real, specific place_query (a named restaurant, landmark, market, museum, etc.).
+- Item titles and place_query values must refer to unique mapped stops within the same day; do not repeat the same pin for two itinerary items.
 - For meals, prefer group-friendly, well-known local venues that are plausible for visitors and geographically fit the day.
 
 After meaningful changes to a day, call computeDayRoute for that day (mode "walk" for cities).`,
@@ -128,7 +133,9 @@ export function runPlannerPolicyHooks({
   guidance.push('- Keep the plan group-friendly: balance energy, variety, and shared appeal.')
   guidance.push('- Avoid overstuffing any single day. Leave breathing room between major stops.')
   guidance.push('- Prefer one standout dinner, one signature activity, and one easy anchor per day.')
+  guidance.push('- Keep full-plan days to 3-5 mapped items so routes remain believable and usable.')
   guidance.push('- Name exact restaurants for all meal stops; avoid generic meal placeholders.')
+  guidance.push('- Avoid neighborhood-only stop names; every map item should be a unique specific place.')
   guidance.push('- Choose neighborhoods and sequencing that minimize unnecessary transit.')
 
   if (trip?.brief?.budget) {
