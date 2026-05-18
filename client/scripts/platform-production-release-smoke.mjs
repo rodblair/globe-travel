@@ -58,7 +58,9 @@ function runNodeTask({ name, args, env = {}, mutatesProduction = false, echoOutp
           failed: parsed.failed,
           exported: parsed.exported,
           actualsChecked: parsed.actualsChecked,
+          shareSlug: parsed.shareSlug,
           ids: parsed.ids,
+          cleanup: parsed.cleanup,
           missingCoverage: parsed.missingCoverage,
         }, null, 2))
       } else if (!echoOutput && stdout.trim()) {
@@ -93,6 +95,15 @@ const tasks = [
       QA_BASE_URL: baseUrl,
       QA_SHARE_SLUG: shareSlug,
     },
+  },
+  {
+    name: 'production auth and guest access',
+    args: ['scripts/platform-auth-access-smoke.mjs'],
+    env: {
+      QA_BASE_URL: baseUrl,
+      QA_SHARE_SLUG: shareSlug,
+    },
+    echoOutput: false,
   },
   {
     name: 'production commercial',

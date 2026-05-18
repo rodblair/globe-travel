@@ -13,6 +13,7 @@ The new command runs the read-only production release gates together:
 
 - production operations health with deployment metadata
 - production route smoke
+- production auth and guest access Browser smoke
 - production commercial safety checks
 - production public share integrity and social-preview metadata
 - production prompt actual export for the stable Athens public share
@@ -26,12 +27,13 @@ Production feedback insertion remains opt-in with `QA_INCLUDE_FEEDBACK_MUTATION=
 npm run qa:release-production
 ```
 
-Result: passed `6/6`.
+Result: passed `7/7`.
 
 Summary:
 
 - production ops: passed
 - production smoke: passed
+- production auth and guest access: passed
 - production commercial: passed
 - production share: passed
 - production prompt actuals export: passed
@@ -53,6 +55,15 @@ Public share evidence:
 - Share metadata was present.
 - Share-card image returned `image/png`.
 - Share-card image byte length: `81579`.
+
+Auth and guest access evidence:
+
+- Logged-out login/signup expose guest access.
+- Logged-out public share remains readable.
+- Saved/account/pricing resolve safely.
+- Guest start opens `/chat` with a guest cookie.
+- Guest saved/account surfaces render without overflow or app errors.
+- Production guest API mutation is skipped by default.
 
 ## Release Impact
 

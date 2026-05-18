@@ -566,6 +566,7 @@ These are the next focused passes to run before another release candidate decisi
 - Result: `npm run qa:release-candidate` now bundles lint, build, ops, smoke, commercial, a11y, public share/social preview, public share recovery, feedback mutation cleanup, planner handoff cleanup, billing recovery, Trip Studio action/recovery checks on one kept disposable fixture, Stripe readiness, prompt contract suite, full responsive visual QA, and fixture cleanup. The first passing run completed `17/17` top-level tasks with visual QA `50/50` and writes `qa/release-candidate-2026-05-18/summary.json`.
 - Auth/guest access evidence: `qa/auth-guest-access-2026-05-18.md`.
 - Result: `npm run qa:auth-access` verifies logged-out login/signup/public-share/saved/account/pricing behavior, guest-start-to-planner, guest saved/account access, local guest trip-list API access, and disposable guest cleanup. Local passed `11/11`; production non-mutating passed `10/10`.
+- Production release gate update: `npm run qa:release-production` now includes production auth/guest access and passes `7/7`; `.github/workflows/production-release-gate.yml` locates Chrome for that Browser-backed check.
 - Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
 - Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
 - Finish public share social preview evidence integration and keep share-card image rendering in the release gate.

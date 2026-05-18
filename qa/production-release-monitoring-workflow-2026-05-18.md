@@ -19,6 +19,7 @@ It covers:
 
 - production operations health and deployment metadata
 - production route smoke
+- production auth and guest access Browser smoke
 - production commercial safety checks
 - production public share, map integrity, metadata, and share-card image rendering
 - production prompt actual export for the stable Athens itinerary
@@ -34,6 +35,8 @@ It covers:
   - prompt actuals inclusion
   - production feedback mutation inclusion
 
+The workflow locates Chrome and sets `QA_CHROME_PATH` before running the release gate so Browser-backed auth/guest access checks can run on GitHub-hosted runners.
+
 ## Safety
 
 The workflow is read-only by default.
@@ -44,7 +47,7 @@ Production feedback insertion is disabled unless `include_feedback_mutation` is 
 
 Local validation after adding the workflow:
 
-- `npm run qa:release-production` passed `6/6`.
+- `npm run qa:release-production` passed `7/7`.
 - `node --check scripts/platform-production-release-smoke.mjs` passed.
 - `npm run lint` passed.
 - `npm run build` passed.

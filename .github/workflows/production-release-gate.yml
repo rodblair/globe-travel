@@ -65,6 +65,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Locate Chrome
+        run: |
+          CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME_PATH" ]; then
+            echo "Chrome executable not found on runner." >&2
+            exit 1
+          fi
+          echo "QA_CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+
       - name: Run production release gate
         run: |
           set -o pipefail
