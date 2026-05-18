@@ -235,6 +235,22 @@ try {
     entryCount: entries.length,
   })
 
+  const invalidProfilePatch = await fetchJson('/api/profile', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      username: 'bad username!',
+      bio: 'x'.repeat(260),
+    }),
+  })
+  record('account profile API rejects invalid sharing identity updates', (
+    invalidProfilePatch.response.status === 400 &&
+    typeof invalidProfilePatch.json?.error === 'string' &&
+    invalidProfilePatch.json.error.includes('username')
+  ), {
+    status: invalidProfilePatch.response.status,
+    error: invalidProfilePatch.json?.error || invalidProfilePatch.text.slice(0, 120),
+  })
+
   const profilePatch = await fetchJson('/api/profile', {
     method: 'PATCH',
     body: JSON.stringify({

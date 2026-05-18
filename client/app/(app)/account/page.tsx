@@ -110,6 +110,14 @@ function AccountPageContent() {
   const qaForcePortalFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaPortalFailure') === '1'
 
   useEffect(() => {
+    setDisplayName(profile?.display_name || '')
+    setUsername(profile?.username || '')
+    setBio(profile?.bio || '')
+    setProfileError(null)
+    setSaved(false)
+  }, [profile?.bio, profile?.display_name, profile?.id, profile?.username])
+
+  useEffect(() => {
     if (activeTab !== 'billing') return
 
     if (searchParams.get('checkout') === 'cancelled') {
@@ -152,12 +160,15 @@ function AccountPageContent() {
         }),
       })
 
-      if (!response.ok) throw new Error(await response.text())
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null)
+        throw new Error(payload?.error || 'Could not save your profile.')
+      }
       await refreshProfile()
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch {
-      setProfileError('Could not save your profile. Check your connection and try again.')
+    } catch (error) {
+      setProfileError(error instanceof Error ? error.message : 'Could not save your profile. Check your connection and try again.')
     } finally {
       setSaving(false)
     }
@@ -283,8 +294,10 @@ function AccountPageContent() {
                       value={displayName}
                       onChange={(event) => setDisplayName(event.target.value)}
                       placeholder="Your name"
+                      maxLength={80}
                       className="w-full rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                     />
+                    <p className="mt-1 text-xs text-foreground/35">{displayName.length}/80 characters</p>
                   </div>
 
                   <div>
@@ -301,9 +314,14 @@ function AccountPageContent() {
                         value={username}
                         onChange={(event) => setUsername(event.target.value)}
                         placeholder="yourusername"
+                        maxLength={30}
+                        aria-describedby="profile-username-help"
                         className="w-full rounded-xl border border-rule bg-paper/40 py-3 pl-8 pr-4 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                       />
                     </div>
+                    <p id="profile-username-help" className="mt-1 text-xs text-foreground/35">
+                      3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private.
+                    </p>
                   </div>
 
                   <div>
@@ -316,8 +334,10 @@ function AccountPageContent() {
                       onChange={(event) => setBio(event.target.value)}
                       placeholder="A short note friends will recognize when you share itinerary feedback."
                       rows={4}
+                      maxLength={240}
                       className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                     />
+                    <p className="mt-1 text-xs text-foreground/35">{bio.length}/240 characters</p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3">
@@ -335,7 +355,7 @@ function AccountPageContent() {
                       {saved ? 'Saved' : saving ? 'Saving…' : 'Save changes'}
                     </button>
                     {profileError && (
-                      <p className="text-sm text-[var(--terracotta)]">{profileError}</p>
+                      <p role="alert" className="text-sm text-[var(--terracotta)]">{profileError}</p>
                     )}
                   </div>
                 </div>

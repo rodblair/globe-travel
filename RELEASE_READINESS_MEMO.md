@@ -209,6 +209,7 @@ The paid path should be credible:
 
 Recently completed:
 
+- Account profile identity validation was hardened. `PATCH /api/profile` now rejects invalid and overlong public identity updates, the account form shows field limits and clear username rules, profile fields sync after async load/refresh, and Browser verified invalid-error recovery plus a valid guest profile save without overflow. Evidence: `qa/account-profile-identity-validation-2026-05-18.md`; automated gate: `npm run qa:saved-account` passed `13/13`.
 - Itinerary map stop verification was repaired.
 - Six saved itineraries were retested locally.
 - `npm run lint` and `npm run build` passed.
