@@ -58,24 +58,24 @@ async function checkJsonPost({ name, path, body, expectedStatuses }) {
   return result
 }
 
-async function checkRedirect({ name, path, expectedPathname, expectedSearch }) {
+async function checkRedirect({ name, path, expectedDestinations }) {
   const response = await fetch(`${baseUrl}${path}`, {
     redirect: 'follow',
     headers: { 'user-agent': 'globe-travel-commercial-smoke/1.0' },
   })
   const finalUrl = new URL(response.url)
-  const ok =
-    response.ok &&
-    finalUrl.pathname === expectedPathname &&
-    (!expectedSearch || finalUrl.search === expectedSearch)
+  const matchedDestination = expectedDestinations.find((destination) => (
+    finalUrl.pathname === destination.pathname &&
+    (!destination.search || finalUrl.search === destination.search)
+  ))
+  const ok = response.ok && Boolean(matchedDestination)
   const result = {
     name,
     path,
     status: response.status,
     ok,
     finalUrl: response.url,
-    expectedPathname,
-    expectedSearch,
+    expectedDestinations,
   }
 
   if (!ok) recordFailure(name, result)
@@ -85,10 +85,12 @@ async function checkRedirect({ name, path, expectedPathname, expectedSearch }) {
 const results = []
 
 results.push(await checkRedirect({
-  name: 'pricing redirects to billing tab',
+  name: 'pricing resolves to billing or protected login',
   path: '/pricing',
-  expectedPathname: '/account',
-  expectedSearch: '?tab=billing',
+  expectedDestinations: [
+    { pathname: '/account', search: '?tab=billing' },
+    { pathname: '/login' },
+  ],
 }))
 
 results.push(await checkJsonPost({

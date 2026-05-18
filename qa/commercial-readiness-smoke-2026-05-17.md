@@ -31,7 +31,7 @@ Checks added:
 
 | Check | Result | Proof |
 | --- | --- | --- |
-| Pricing redirect | Pass | `/pricing` resolves to `/account?tab=billing` |
+| Pricing redirect | Pass | `/pricing` resolves to `/account?tab=billing` for an active local guest session, or protected `/login` when unauthenticated in production |
 | Checkout safe failure | Pass | `401 Unauthorized` JSON response when unauthenticated |
 | Billing portal safe failure | Pass | `401 Unauthorized` JSON response when unauthenticated |
 | Public feedback validation | Pass | Invalid payload returns `400 Invalid feedback` JSON response |
