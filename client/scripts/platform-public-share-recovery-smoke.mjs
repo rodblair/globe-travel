@@ -54,6 +54,21 @@ try {
   )
 
   await page.getByLabel('Your name').fill('QA Friend')
+  await page.getByLabel('Email optional').fill('not-an-email')
+  await page.getByLabel('Trip feedback').fill('This plan looks good, but please leave room before dinner.')
+  const invalidEmailText = await text()
+  const sendButtonWithInvalidEmail = page.getByRole('button', { name: /Send feedback/i })
+  record(
+    'invalid optional email is blocked before submission',
+    invalidEmailText.includes('Use a valid email address or leave it blank.') &&
+      !(await sendButtonWithInvalidEmail.isEnabled()),
+    {
+      sendEnabled: await sendButtonWithInvalidEmail.isEnabled(),
+    }
+  )
+
+  await page.getByLabel('Email optional').fill('')
+  await page.getByLabel('Your name').fill('QA Friend')
   await page.getByLabel('Trip feedback').fill('This plan looks good, but please leave room before dinner.')
   await page.getByRole('button', { name: /Send feedback/i }).click({ timeout: 8000 })
   await page.waitForTimeout(700)
@@ -74,7 +89,10 @@ try {
   record('public share recovery smoke crashed', false, { error: error instanceof Error ? error.message : String(error) })
 } finally {
   await context.close().catch(() => {})
-  await browser.close().catch(() => {})
+  await Promise.race([
+    browser.close().catch(() => {}),
+    new Promise((resolve) => setTimeout(resolve, 5000)),
+  ])
 }
 
 const summary = {
@@ -92,3 +110,5 @@ console.log(JSON.stringify(summary, null, 2))
 if (failures.length > 0) {
   process.exitCode = 1
 }
+
+process.exit(failures.length > 0 ? 1 : 0)

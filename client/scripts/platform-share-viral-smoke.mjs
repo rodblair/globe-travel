@@ -154,14 +154,15 @@ async function cleanupGuestAccount(guestId) {
     .delete()
     .eq('id', guestId)
   const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+  const userAlreadyAbsent = Boolean(userError?.message?.toLowerCase().includes('not found'))
 
   cleanup = {
     attempted: true,
     reason: null,
     guestId,
     profileDeleted: !profileError,
-    userDeleted: !userError,
-    error: profileError?.message || userError?.message || null,
+    userDeleted: !userError || userAlreadyAbsent,
+    error: profileError?.message || (userAlreadyAbsent ? null : userError?.message) || null,
   }
 }
 
@@ -313,3 +314,5 @@ console.log(JSON.stringify(summary, null, 2))
 if (failures.length > 0) {
   process.exitCode = 1
 }
+
+process.exit(failures.length > 0 ? 1 : 0)

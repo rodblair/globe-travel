@@ -51,6 +51,12 @@ const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
   practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
 }
 
+function isValidOptionalEmail(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return true
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
+}
+
 function buildStarterPrompt(meta: { days: number | null; destination: string }, title: string) {
   const destination = meta.destination || title
   if (meta.days) {
@@ -100,7 +106,14 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   )
   const starterHref = `/api/guest/start?q=${encodeURIComponent(starterPrompt)}`
   const shareUrl = typeof window !== 'undefined' ? window.location.href : null
-  const canSubmit = authorName.trim().length > 1 && comment.trim().length >= 8 && !submitting
+  const emailIsValid = isValidOptionalEmail(authorEmail)
+  const trimmedCommentLength = comment.trim().length
+  const canSubmit = authorName.trim().length > 1 && trimmedCommentLength >= 8 && trimmedCommentLength <= 600 && emailIsValid && !submitting
+  const feedbackHelperText = !emailIsValid
+    ? 'Use a valid email address or leave it blank.'
+    : canSubmit
+      ? 'Ready to send'
+      : 'Add your name and at least 8 characters.'
 
   const submitFeedback = async () => {
     if (!canSubmit) return
@@ -248,11 +261,18 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                   />
                   <input
                     aria-label="Email optional"
+                    aria-invalid={!emailIsValid}
+                    aria-describedby={!emailIsValid ? 'public-feedback-email-error' : undefined}
                     value={authorEmail}
                     onChange={(e) => setAuthorEmail(e.target.value)}
                     placeholder="Email (optional)"
                     className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
                   />
+                  {!emailIsValid && (
+                    <p id="public-feedback-email-error" className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
+                      Use a valid email address or leave it blank.
+                    </p>
+                  )}
                   <div className="grid gap-2">
                     {sentimentOptions.map((option) => (
                       <button
@@ -282,13 +302,14 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     aria-label="Trip feedback"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
+                    maxLength={600}
                     rows={5}
                     placeholder="Example: Day 2 looks perfect, but can we leave more space before dinner?"
                     className="w-full resize-none rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
                   />
                   <div className="flex items-center justify-between gap-3 text-xs text-ink-3">
-                    <span>{canSubmit ? 'Ready to send' : 'Add your name and at least 8 characters.'}</span>
-                    <span>{comment.trim().length}/600</span>
+                    <span>{feedbackHelperText}</span>
+                    <span>{trimmedCommentLength}/600</span>
                   </div>
                   <button
                     onClick={submitFeedback}
