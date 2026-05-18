@@ -324,7 +324,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -581,10 +581,38 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 17,
-              "y": 443,
-              "width": 356,
-              "height": 306
+              "x": 37,
+              "y": 463,
+              "width": 254,
+              "height": 138
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open QA Trip Studio Actions a621295b Saved",
+            "role": "",
+            "href": "/trips/13de71f2-9e04-44c3-8b72-ee419645184f",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 307,
+              "y": 463,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open QA Trip Studio Actions a621295b Saved",
+            "role": "",
+            "href": "/trips/13de71f2-9e04-44c3-8b72-ee419645184f",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 701,
+              "width": 100,
+              "height": 46
             }
           },
           {
@@ -596,7 +624,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 270,
-              "y": 683,
+              "y": 722,
               "width": 83,
               "height": 46
             }
@@ -609,10 +637,38 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 17,
-              "y": 462,
-              "width": 356,
-              "height": 306
+              "x": 37,
+              "y": 379,
+              "width": 254,
+              "height": 138
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open 4 Days in Athens with an Island Overnight",
+            "role": "",
+            "href": "/trips/bc1031dc-0df5-4c0d-9902-2aaaa7193ae0",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 307,
+              "y": 379,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open 4 Days in Athens with an Island Overnight",
+            "role": "",
+            "href": "/trips/bc1031dc-0df5-4c0d-9902-2aaaa7193ae0",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 617,
+              "width": 100,
+              "height": 46
             }
           },
           {
@@ -624,65 +680,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 270,
-              "y": 702,
+              "y": 677,
               "width": 83,
               "height": 46
-            }
-          },
-          {
-            "tag": "a",
-            "label": "Plan",
-            "role": "",
-            "href": "/chat",
-            "visible": true,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 4,
-              "y": 780,
-              "width": 127,
-              "height": 56
-            }
-          },
-          {
-            "tag": "a",
-            "label": "Trips",
-            "role": "",
-            "href": "/saved",
-            "visible": true,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 131,
-              "y": 780,
-              "width": 127,
-              "height": 56
-            }
-          },
-          {
-            "tag": "a",
-            "label": "Account",
-            "role": "",
-            "href": "/account",
-            "visible": true,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 259,
-              "y": 780,
-              "width": 127,
-              "height": 56
-            }
-          },
-          {
-            "tag": "nextjs-portal",
-            "label": "NEXTJS-PORTAL",
-            "role": "",
-            "href": "",
-            "visible": false,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 0,
-              "y": 844,
-              "width": 0,
-              "height": 0
             }
           }
         ],
@@ -2045,7 +2045,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -3,
+              "y": -2,
               "width": 150,
               "height": 44
             }
@@ -2121,7 +2121,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -2476,10 +2476,10 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 297,
-              "y": 305,
-              "width": 542,
-              "height": 310
+              "x": 321,
+              "y": 329,
+              "width": 432,
+              "height": 125
             }
           }
         ],

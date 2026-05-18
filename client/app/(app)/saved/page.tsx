@@ -310,28 +310,32 @@ function SavedPageContent() {
                       transition={{ delay: index * 0.035 }}
                     >
                       <ArtifactFrame className="group relative min-h-64 transition-all duration-200 hover:-translate-y-0.5" ribbon={trip.is_public}>
-                        <Link
-                          href={`/trips/${trip.id}`}
-                          className="absolute inset-0"
-                          aria-label={`Open ${trip.title}`}
-                        />
                         <div className="flex h-full min-h-64 flex-col justify-between gap-7 p-5 pb-20 md:p-6 md:pb-20">
                           <div className="flex items-start justify-between gap-4">
-                            <div className="min-w-0">
+                            <Link
+                              href={`/trips/${trip.id}`}
+                              className="min-w-0 rounded-2xl outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-4 focus-visible:ring-offset-paper-raised"
+                              aria-label={`Open ${trip.title}`}
+                            >
                               <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
                                 Globe.travel map
                               </p>
-                              <h3 className="line-clamp-2 break-words font-serif text-3xl font-semibold uppercase leading-[0.98] tracking-[0.08em] text-foreground transition-colors group-hover:text-[var(--brass)]">
+                              <h3 className="break-words font-serif text-2xl font-semibold uppercase leading-[1.04] tracking-[0.08em] text-foreground transition-colors group-hover:text-[var(--brass)] sm:text-3xl">
                                 {destination}
                               </h3>
                               <div className="mt-4 flex items-center gap-1.5">
                                 <MapPin className="h-4 w-4 text-ink-3" />
                                 <span className="truncate text-sm text-ink-2">{trip.title}</span>
                               </div>
-                            </div>
-                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-paper-recessed text-[var(--brass)] transition-transform group-hover:translate-x-0.5">
+                            </Link>
+                            <Link
+                              href={`/trips/${trip.id}`}
+                              className="touch-target inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-paper-recessed text-[var(--brass)] transition-transform hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised"
+                              aria-label={`Open ${trip.title}`}
+                              title={`Open ${trip.title}`}
+                            >
                               <ArrowRight className="h-4 w-4" />
-                            </span>
+                            </Link>
                           </div>
 
                           <div>
@@ -362,6 +366,14 @@ function SavedPageContent() {
                                 year: 'numeric',
                               })}
                             </p>
+                            <Link
+                              href={`/trips/${trip.id}`}
+                              className="touch-target mt-4 inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-semibold text-foreground/78 transition-colors hover:border-[color:var(--brass)]/30 hover:bg-[var(--brass-subtle)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised"
+                              aria-label={`Open ${trip.title}`}
+                            >
+                              Open trip
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </Link>
                           </div>
                         </div>
                         <button

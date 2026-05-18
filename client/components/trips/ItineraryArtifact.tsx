@@ -407,7 +407,7 @@ export default function ItineraryArtifact({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Itinerary</p>
-            <h2 className="truncate text-base font-medium text-foreground">{tripTitle}</h2>
+            <h2 className="max-w-full break-words text-base font-medium leading-snug text-foreground">{tripTitle}</h2>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {!readOnly && onOptimize && (

@@ -3,13 +3,68 @@
   "date": "2026-05-18",
   "runId": "release-candidate-2026-05-18",
   "shareSlug": "x3m2c8cnws",
-  "tripId": "e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+  "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707",
   "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-release-candidate-2026-05-18",
   "baselineDir": null,
   "diffRoutes": [],
   "diffFailureThreshold": 0.015,
   "pixelmatchThreshold": 0.12,
   "settleMs": 1200,
+  "auth": {
+    "requestedMode": "guest",
+    "mode": "guest",
+    "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+    "protectedRoutes": [
+      "planner",
+      "saved-trips",
+      "saved-journal",
+      "account-profile",
+      "account-billing",
+      "trip-studio"
+    ],
+    "externalGuestId": true,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "tablet",
+        "mode": "guest",
+        "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "guest",
+        "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "wide",
+        "mode": "guest",
+        "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "external guest id provided; owner cleanup remains with the caller",
+      "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
   "checked": 50,
   "passed": 50,
   "failed": 0,
@@ -88,6 +143,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 4,
         "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary with a map people want to share. HOW IT WORKS Three steps "
       },
@@ -143,6 +200,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 11,
         "bodyPreview": "Skip to content CHAT · DISCOVER Planner START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each person cares about. STEP 02 Compare the tradeoffs See which cities fit the group before committing to a full itinerary. STEP 03 Create the Globe.travel map"
       },
@@ -191,15 +250,15 @@
         "appErrors": [],
         "headings": [
           "Trips",
-          "Your itineraries",
-          "QA Trip Studio Actions a621295b Saved",
-          "Athens with an Island Overnight"
+          "Your itineraries"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
-        "visibleControlCount": 10,
-        "bodyPreview": "Skip to content Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Your itineraries 2 itineraries ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS A621295B SAVED QA Trip Studio Actions a621295b Saved Friend-ready Public Saved May 17, 2026 Delete GLOBE.TRAVEL MAP ATHENS WITH AN ISLAND OVERNIGHT 4 Days in Athens with an Island Overnight 4 days Friend-ready Public Saved May 12, 2026 Delete PLAN T"
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 7,
+        "bodyPreview": "Skip to content Trips Saved itineraries and trip notes in one calm workspace. TRIPS 0 NOTES 0 Trips Trip notes Your itineraries Start a trip to keep itinerary maps, notes, and friend-ready plans here. Plan another trip PLAN TRIPS ACCOUNT"
       },
       "screenshot": {
         "ok": true,
@@ -251,8 +310,10 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 6,
-        "bodyPreview": "Skip to content Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. PLAN TRIPS ACCOUNT"
+        "bodyPreview": "Skip to content Trips Saved itineraries and trip notes in one calm workspace. TRIPS 0 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. PLAN TRIPS ACCOUNT"
       },
       "screenshot": {
         "ok": true,
@@ -305,6 +366,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 10,
         "bodyPreview": "Skip to content Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME USERNAME @ BIO Save changes Sharing profile This is the lightweight identity friends see around itinerary feedback and shared planning links. Name visible on feedback Guest mode stays available Share links remain view-only Session Signed in and ready to pick up where you left off. Sign out PLAN TRIPS ACCOUNT"
       },
@@ -361,6 +424,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 8,
         "bodyPreview": "Skip to content Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventurer Unlock unlimited trip planning and richer sharing tools. Monthly Yearly $4.99 / month 7-DAY FREE TRIAL Billed monthly Start free trial Plan"
       },
@@ -415,6 +480,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 9,
         "bodyPreview": "Skip to content Globe.travel SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begin a journey"
       },
@@ -469,6 +536,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 8,
         "bodyPreview": "Skip to content Globe.travel BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agree to our Terms of Service and Privacy Policy. Already booked? Sign in"
       },
@@ -528,6 +597,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 3,
         "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
       },
@@ -553,7 +624,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+      "path": "/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
       "viewportId": "phone",
       "requestedViewport": {
         "id": "phone",
@@ -563,7 +634,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+        "url": "http://localhost:3000/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 390,
         "innerHeight": 844,
@@ -575,15 +646,31 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions b3b3524f Saved",
-          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
-        "thirdPartySmallTargets": [],
-        "visibleControlCount": 13,
-        "bodyPreview": "Skip to content QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save. GROUP REVIEW Invite friends to react to this QA Trip Studio Actions b3b3524f Saved plan. Keep the planning flow social without burying the itinerary in extra controls. Public link on http://localhost:3000/t/iijni03"
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 51,
+            "y": 752,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 20,
+        "bodyPreview": "Skip to content QA TRIP STUDIO ACTIONS E84D2F1E SAVED ITINERARY QA Trip Studio Actions e84d2f1e Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Share this QA Trip Studio Actions e84d2f1e Saved plan when it is ready for friend review. Public link on http://localhost:3000/t/hdoavdlpit Copy link Share invite CREW BRIEF Add crew context in chat Crew size not set yet Budget still flexible Origin city not set Vibe: Balanced trip with broad appeal"
       },
       "screenshot": {
         "ok": true,
@@ -640,6 +727,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 7,
         "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
       },
@@ -695,6 +784,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 16,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each"
       },
@@ -744,14 +835,15 @@
         "headings": [
           "Trips",
           "Your itineraries",
-          "QA Trip Studio Actions a621295b Saved",
-          "Athens with an Island Overnight"
+          "QA Trip Studio Actions e84d2f1e Saved"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Your itineraries 2 itineraries ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS A621295B SAVED QA Trip Studio Actions a621295b Saved Friend-ready Public Saved May 17, 2026 Delete GLOBE.T"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Your itineraries 1 itinerary ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS E84D2F1E SAVED QA Trip Studio Actions e84d2f1e Saved Friend-ready Public Saved May 18, 2026 Open trip Delete"
       },
       "screenshot": {
         "ok": true,
@@ -798,13 +890,16 @@
         "appErrors": [],
         "headings": [
           "Trips",
-          "Trip notes"
+          "Trip notes",
+          "Add a trip note"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
-        "visibleControlCount": 10,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries."
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. Add a trip note Capture decisions, reminders, and memories for the itineraries you are building with friends. Add first note"
       },
       "screenshot": {
         "ok": true,
@@ -857,6 +952,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 14,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME USERNAME @ BIO Save changes Sharing profile This is the lightweight identity friends see around itinerary feedback and shared planning links. Name visible on feedback Guest mode stays a"
       },
@@ -913,6 +1010,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 13,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
       },
@@ -967,6 +1066,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 10,
         "bodyPreview": "Skip to content Globe.travel SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begin a journey"
       },
@@ -1021,6 +1122,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 9,
         "bodyPreview": "Skip to content Globe.travel BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agree to our Terms of Service and Privacy Policy. Already booked? Sign in"
       },
@@ -1088,11 +1191,14 @@
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 6,
         "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
       },
@@ -1118,7 +1224,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+      "path": "/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
       "viewportId": "tablet",
       "requestedViewport": {
         "id": "tablet",
@@ -1128,7 +1234,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+        "url": "http://localhost:3000/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 768,
         "innerHeight": 1024,
@@ -1140,15 +1246,31 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions b3b3524f Saved",
-          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
-        "thirdPartySmallTargets": [],
-        "visibleControlCount": 18,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save. GROUP REVIEW Invite friends to react to this QA Trip Studio Actions b3b"
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 311,
+            "y": 692,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 26,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign QA TRIP STUDIO ACTIONS E84D2F1E SAVED ITINERARY QA Trip Studio Actions e84d2f1e Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Share this QA Trip Studio Actions e84d2f1e Saved plan when it is ready for friend review. Public link on http://localhost:3000/t/hdoavdlpit Copy link Share in"
       },
       "screenshot": {
         "ok": true,
@@ -1205,6 +1327,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 7,
         "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
       },
@@ -1260,6 +1384,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 16,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each"
       },
@@ -1309,14 +1435,15 @@
         "headings": [
           "Trips",
           "Your itineraries",
-          "QA Trip Studio Actions a621295b Saved",
-          "Athens with an Island Overnight"
+          "QA Trip Studio Actions e84d2f1e Saved"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Your itineraries 2 itineraries ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS A621295B SAVED QA Trip Studio Actions a621295b Saved Friend-ready Public Saved May 17, 2026 Delete GLOBE.T"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Your itineraries 1 itinerary ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS E84D2F1E SAVED QA Trip Studio Actions e84d2f1e Saved Friend-ready Public Saved May 18, 2026 Open trip Delete"
       },
       "screenshot": {
         "ok": true,
@@ -1363,13 +1490,16 @@
         "appErrors": [],
         "headings": [
           "Trips",
-          "Trip notes"
+          "Trip notes",
+          "Add a trip note"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
-        "visibleControlCount": 10,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries."
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. Add a trip note Capture decisions, reminders, and memories for the itineraries you are building with friends. Add first note"
       },
       "screenshot": {
         "ok": true,
@@ -1422,6 +1552,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME USERNAME @ BIO Save changes Sharing profile This is the lightweight identity friends see around itinerary feedback and shared planning links. Name visible on feedback Guest mode stays a"
       },
@@ -1478,6 +1610,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 13,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
       },
@@ -1532,6 +1666,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 10,
         "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
       },
@@ -1586,6 +1722,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 9,
         "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
       },
@@ -1653,11 +1791,14 @@
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 13,
         "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
       },
@@ -1683,7 +1824,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+      "path": "/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
       "viewportId": "laptop",
       "requestedViewport": {
         "id": "laptop",
@@ -1693,7 +1834,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+        "url": "http://localhost:3000/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 1280,
         "innerHeight": 800,
@@ -1705,8 +1846,8 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions b3b3524f Saved",
-          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
@@ -1716,17 +1857,20 @@
             "tag": "a",
             "label": "Mapbox homepage",
             "x": 387,
-            "y": 610,
+            "y": 617,
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
-        "visibleControlCount": 26,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions b3b3524f Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 28,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions e84d2f1e Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS E84D2F1E SAVED ITINERARY QA Trip Studio Actions e84d2f1e Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Share this QA Trip Studio Actions e84d2f1e Saved plan when it is ready for "
       },
       "screenshot": {
         "ok": true,
@@ -1783,6 +1927,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 7,
         "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
       },
@@ -1838,6 +1984,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 16,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each"
       },
@@ -1887,14 +2035,15 @@
         "headings": [
           "Trips",
           "Your itineraries",
-          "QA Trip Studio Actions a621295b Saved",
-          "Athens with an Island Overnight"
+          "QA Trip Studio Actions e84d2f1e Saved"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Your itineraries 2 itineraries ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS A621295B SAVED QA Trip Studio Actions a621295b Saved Friend-ready Public Saved May 17, 2026 Delete GLOBE.T"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Your itineraries 1 itinerary ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS E84D2F1E SAVED QA Trip Studio Actions e84d2f1e Saved Friend-ready Public Saved May 18, 2026 Open trip Delete"
       },
       "screenshot": {
         "ok": true,
@@ -1941,13 +2090,16 @@
         "appErrors": [],
         "headings": [
           "Trips",
-          "Trip notes"
+          "Trip notes",
+          "Add a trip note"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
-        "visibleControlCount": 10,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries."
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. Add a trip note Capture decisions, reminders, and memories for the itineraries you are building with friends. Add first note"
       },
       "screenshot": {
         "ok": true,
@@ -2000,6 +2152,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME USERNAME @ BIO Save changes Sharing profile This is the lightweight identity friends see around itinerary feedback and shared planning links. Name visible on feedback Guest mode stays a"
       },
@@ -2056,6 +2210,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 14,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
       },
@@ -2110,6 +2266,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 11,
         "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
       },
@@ -2164,6 +2322,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 10,
         "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
       },
@@ -2231,11 +2391,14 @@
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 13,
         "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
       },
@@ -2261,7 +2424,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+      "path": "/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
       "viewportId": "desktop",
       "requestedViewport": {
         "id": "desktop",
@@ -2271,7 +2434,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+        "url": "http://localhost:3000/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 1440,
         "innerHeight": 950,
@@ -2283,8 +2446,8 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions b3b3524f Saved",
-          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
@@ -2294,17 +2457,20 @@
             "tag": "a",
             "label": "Mapbox homepage",
             "x": 387,
-            "y": 610,
+            "y": 617,
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
-        "visibleControlCount": 26,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions b3b3524f Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 30,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions e84d2f1e Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS E84D2F1E SAVED ITINERARY QA Trip Studio Actions e84d2f1e Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Share this QA Trip Studio Actions e84d2f1e Saved plan when it is ready for "
       },
       "screenshot": {
         "ok": true,
@@ -2361,6 +2527,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 7,
         "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
       },
@@ -2416,6 +2584,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 16,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each"
       },
@@ -2465,14 +2635,15 @@
         "headings": [
           "Trips",
           "Your itineraries",
-          "QA Trip Studio Actions a621295b Saved",
-          "Athens with an Island Overnight"
+          "QA Trip Studio Actions e84d2f1e Saved"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Your itineraries 2 itineraries ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS A621295B SAVED QA Trip Studio Actions a621295b Saved Friend-ready Public Saved May 17, 2026 Delete GLOBE.T"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Your itineraries 1 itinerary ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS E84D2F1E SAVED QA Trip Studio Actions e84d2f1e Saved Friend-ready Public Saved May 18, 2026 Open trip Delete"
       },
       "screenshot": {
         "ok": true,
@@ -2519,13 +2690,16 @@
         "appErrors": [],
         "headings": [
           "Trips",
-          "Trip notes"
+          "Trip notes",
+          "Add a trip note"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
-        "visibleControlCount": 10,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries."
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 1 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. Add a trip note Capture decisions, reminders, and memories for the itineraries you are building with friends. Add first note"
       },
       "screenshot": {
         "ok": true,
@@ -2578,6 +2752,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 15,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME USERNAME @ BIO Save changes Sharing profile This is the lightweight identity friends see around itinerary feedback and shared planning links. Name visible on feedback Guest mode stays a"
       },
@@ -2634,6 +2810,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 14,
         "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
       },
@@ -2688,6 +2866,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 11,
         "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
       },
@@ -2742,6 +2922,8 @@
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 10,
         "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
       },
@@ -2809,11 +2991,14 @@
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
         "visibleControlCount": 13,
         "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
       },
@@ -2839,7 +3024,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+      "path": "/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
       "viewportId": "wide",
       "requestedViewport": {
         "id": "wide",
@@ -2849,7 +3034,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
+        "url": "http://localhost:3000/trips/655410b4-0f65-4389-a5c5-2f6380e32707",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 1728,
         "innerHeight": 1050,
@@ -2861,8 +3046,8 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions b3b3524f Saved",
-          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
+          "QA Trip Studio Actions e84d2f1e Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
@@ -2872,17 +3057,20 @@
             "tag": "a",
             "label": "Mapbox homepage",
             "x": 527,
-            "y": 610,
+            "y": 617,
             "width": 88,
             "height": 23,
             "inViewport": true,
+            "hitTestable": true,
             "disabled": false,
             "thirdParty": true,
             "attribution": true
           }
         ],
-        "visibleControlCount": 29,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions b3b3524f Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 37,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions e84d2f1e Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS E84D2F1E SAVED ITINERARY QA Trip Studio Actions e84d2f1e Saved Save trip Planner chat Optimize day Build maps Share with friends View share GROUP REVIEW Share this QA Trip Studio Actions e84d2f1e Saved plan when it is ready for "
       },
       "screenshot": {
         "ok": true,

@@ -3,12 +3,23 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
+Updated: 2026-05-18 current workspace checkpoint
 
 ## Active Goal
 
 Complete the next several months of Globe.travel platform readiness: full-platform functionality testing, Browser-driven user journey QA, visual QA across responsive surfaces, design-system polish, reliability hardening, production monitoring, viral sharing loops, subscription readiness, and release operations until the platform is commercially launch-ready at scale.
 
 This goal stays active until the full platform is proven launch-ready with evidence. It is not complete just because a feature works once, a build passes once, or a route looks good in one viewport.
+
+## Current Checkpoint
+
+The active goal is pinned and remains open. The current branch is ahead of `origin/main` with verified local release-readiness work, but the latest full local release-candidate attempt exposed a real responsive visual QA blocker that must be fixed before another push or Vercel production deploy:
+
+- Saved trips card: the full-card open link overlaps the Delete action across phone, tablet, laptop, desktop, and wide viewports.
+- Trip Studio tablet: long saved trip titles can clip inside an `h2` instead of wrapping cleanly.
+- Failed visual artifacts from that run should be replaced by a passing release-candidate artifact after the fix.
+
+Immediate release rule: do not push or deploy the current batch until the saved-card hit target and Trip Studio title wrapping are fixed, the focused visual sweep passes, and the full local release-candidate gate passes.
 
 ## Product Quality Bar
 
@@ -353,7 +364,24 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice should continue Week 2 of the 12-week board: planner start-to-trip confidence and map-trust expansion.
+The next execution slice is a release-candidate unblock, then the plan returns to Week 2 planner/map-trust expansion.
+
+1. Fix saved trip card interaction so opening the trip and deleting the trip are separate, non-overlapping hit targets.
+2. Fix Trip Studio saved-title typography so long trip titles wrap cleanly at tablet width without clipping.
+3. Create or reuse a disposable owner fixture and run focused visual QA for `saved-trips` and `trip-studio` at phone, tablet, laptop, desktop, and wide viewports.
+4. Run the saved/account and Trip Studio mutation gates that cover the touched surfaces:
+   - `npm run qa:saved-account`
+   - `npm run qa:studio-actions`
+   - `npm run qa:studio-recovery`
+5. Rerun the full local release-candidate gate:
+   - `QA_SHARE_SLUG=x3m2c8cnws QA_OWNER_USER_ID=b643aed0-e6d2-4f56-8836-0fed5a1e12ea QA_RELEASE_ARTIFACT_NAME=release-candidate-full-predeploy-2026-05-18 npm run qa:release-candidate`
+6. Replace failed visual artifacts with passing evidence and update `RELEASE_READINESS_MEMO.md` with the exact command results.
+7. Run `npm run lint` and `npm run build` before any commit.
+8. Commit the verified fixes and evidence.
+9. Push to `origin/main`, let Vercel build, then run production verification:
+   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
+
+After that release-candidate unblock is green, resume the Week 2 planner start-to-trip and map-trust work:
 
 1. Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
 2. Keep hardening slow and failed planner draft creation until users always see progress, preserved input, and a retry path.
@@ -365,9 +393,7 @@ The next execution slice should continue Week 2 of the 12-week board: planner st
    - `npm run qa:slow-network`
    - `npm run qa:prompt-suite`
    - `QA_VISUAL_ROUTES=planner QA_VISUAL_VIEWPORTS=phone,laptop,desktop npm run qa:visual`
-7. Run `npm run lint` and `npm run build` before any commit.
-8. Update `RELEASE_READINESS_MEMO.md` and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
-9. Commit, push, deploy to Vercel, and run `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production` only after the local gate is green.
+7. Update `RELEASE_READINESS_MEMO.md` and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
 
 ## Completion Definition
 

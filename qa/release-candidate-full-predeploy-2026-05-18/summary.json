@@ -1,0 +1,370 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "shareSlug": "x3m2c8cnws",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-full-predeploy-2026-05-18",
+  "summaryPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-full-predeploy-2026-05-18/summary.json",
+  "reportPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-full-predeploy-2026-05-18/README.md",
+  "checked": 23,
+  "passed": 23,
+  "failed": 0,
+  "includeVisual": true,
+  "includeStudioFixture": true,
+  "includeShareFeedback": true,
+  "includeShareFixtureSweep": true,
+  "includeOwnerFeedback": true,
+  "includeSlowNetwork": true,
+  "includeStripeCheckout": false,
+  "includePromptSuite": true,
+  "studioFixture": {
+    "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707",
+    "shareSlug": "hdoavdlpit",
+    "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+    "runId": "e84d2f1e"
+  },
+  "localOnly": true,
+  "results": [
+    {
+      "name": "lint",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 4464,
+      "mutatesLocal": false
+    },
+    {
+      "name": "production build",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 10850,
+      "mutatesLocal": false
+    },
+    {
+      "name": "local ops readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 89,
+      "mutatesLocal": false,
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "local route smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 550,
+      "mutatesLocal": false,
+      "checked": 8,
+      "passed": 8,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "auth and guest access smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 28063,
+      "mutatesLocal": true,
+      "checked": 11,
+      "passed": 11,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "guestId": "58d5754b-6d9b-43d4-aea8-ae278a0006ad",
+      "cleanup": {
+        "attempted": true,
+        "guestId": "58d5754b-6d9b-43d4-aea8-ae278a0006ad",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "profileError": null,
+        "userError": null
+      }
+    },
+    {
+      "name": "saved and account smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 12163,
+      "mutatesLocal": true,
+      "checked": 10,
+      "passed": 10,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "dc7c0cde-9de9-4914-a89c-d63941709c0c",
+      "guestId": "4599de80-c72c-4602-8d5a-17d3b84ce9a0",
+      "runId": "9e8dcc4f",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "journalDeleted": true,
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "local commercial smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 241,
+      "mutatesLocal": false,
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "local accessibility and keyboard smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 43204,
+      "mutatesLocal": false,
+      "checked": 16,
+      "passed": 16,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share and social preview smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 1405,
+      "mutatesLocal": false,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 12295,
+      "mutatesLocal": false,
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws"
+    },
+    {
+      "name": "public share viral loop smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 111713,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "cleanup": {
+        "attempted": true,
+        "reason": null,
+        "guestId": "9a06326f-1dc7-4366-8053-b0a3fd3d84e5",
+        "profileDeleted": true,
+        "userDeleted": false,
+        "error": "User not found"
+      }
+    },
+    {
+      "name": "public share fixture sweep",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 14994,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "cleanup": {
+        "mode": "cleanup",
+        "tripIds": [
+          "97ce925c-269b-4da5-9bfb-2bbc0f499d55",
+          "f948232b-7b21-487c-a12f-a0ba41b42b7d",
+          "14817899-ef00-4f66-be67-5b13653cfda0",
+          "35686687-6d03-4b76-80bc-fed6a4fc61c3",
+          "b9a7f91d-440a-465d-ac3a-32bfc7d1e950",
+          "12b5d245-957e-4d2a-9a75-85db7b2c28a8",
+          "41b98802-0022-4d8b-b932-a922ed563bb8",
+          "da60f321-8b08-43ba-b6b6-1d9240d31b75",
+          "85c2f722-bd47-4a9c-8326-3d5a29faf42d",
+          "3129252d-f8ea-4bc8-9fd7-5bb7c694c635"
+        ],
+        "runId": "4a6a9238",
+        "tripsDeleted": 10,
+        "placesDeleted": 62,
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "public share feedback mutation smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 699,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "runId": "2f04e619"
+    },
+    {
+      "name": "planner handoff smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 1104,
+      "mutatesLocal": true,
+      "checked": 13,
+      "passed": 13,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "87469ad3-a27e-4117-9e7d-6713b991a39f",
+      "runId": "32d5f36f",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "billing recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 18341,
+      "mutatesLocal": false,
+      "checked": 9,
+      "passed": 9,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "Trip Studio action smoke with kept fixture",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 6772,
+      "mutatesLocal": true,
+      "checked": 23,
+      "passed": 23,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707",
+      "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+      "runId": "e84d2f1e",
+      "cleanup": {
+        "attempted": false,
+        "tripDeleted": false,
+        "placesDeleted": false,
+        "guestProfileDeleted": false,
+        "guestUserDeleted": false,
+        "error": null
+      }
+    },
+    {
+      "name": "Trip Studio recovery smoke on kept fixture",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 10617,
+      "mutatesLocal": false,
+      "checked": 6,
+      "passed": 6,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707"
+    },
+    {
+      "name": "Trip Studio owner feedback readback smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 1172,
+      "mutatesLocal": true,
+      "checked": 6,
+      "passed": 6,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "hdoavdlpit",
+      "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707",
+      "runId": "ebe360e0"
+    },
+    {
+      "name": "slow-network recovery smoke on kept fixture",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 48731,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707"
+    },
+    {
+      "name": "Stripe test-mode readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 790,
+      "mutatesLocal": false,
+      "checked": 11,
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "name": "planner prompt contract suite",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 83,
+      "mutatesLocal": false,
+      "checked": 52,
+      "passed": 52,
+      "failed": 0
+    },
+    {
+      "name": "responsive visual QA",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 162052,
+      "mutatesLocal": false,
+      "checked": 50,
+      "passed": 50,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+      "auth": {
+        "mode": "guest",
+        "protectedRoutes": [
+          "planner",
+          "saved-trips",
+          "saved-journal",
+          "account-profile",
+          "account-billing",
+          "trip-studio"
+        ],
+        "cleanup": {
+          "attempted": false,
+          "reason": "external guest id provided; owner cleanup remains with the caller",
+          "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+          "profileDeleted": false,
+          "userDeleted": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "name": "cleanup release-candidate Trip Studio fixture",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 633,
+      "mutatesLocal": true,
+      "tripId": "655410b4-0f65-4389-a5c5-2f6380e32707",
+      "guestId": "fa38a5b0-8dad-450d-96ae-579258f78e35",
+      "runId": "e84d2f1e",
+      "tripDeleted": true,
+      "placesDeleted": true,
+      "guestProfileDeleted": true,
+      "guestUserDeleted": true
+    }
+  ],
+  "failures": []
+}
