@@ -38,6 +38,27 @@ Every work cycle follows this loop:
 7. Update the release evidence log.
 8. Commit, push, and deploy only after verification.
 
+## Next 12-Week Execution Board
+
+This is the near-term working plan for turning the active goal into shippable progress. Each week should produce evidence, fixes, and a clear pass/fail decision, not just observations.
+
+| Week | Theme | User Lens | Must Test In Browser | Must Improve | Exit Evidence |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Trip Studio density and owner confidence | Returning organizer editing a real trip | Athens five-day owner view, mobile day switching, edit/delete/reorder/swap/save/share, map-stop connection | Reduce operational density, simplify repeated panels, clarify owner next action, protect mobile controls from overlap | Focused Trip Studio visual QA, studio action/recovery gates, release memo entry |
+| 2 | Planner start-to-trip confidence | First-time guest with a natural trip idea | Landing to guest planner, `/chat?q=...`, slow planner, failed planner, generated trip handoff | Make planner progress and recovery calm, obvious, and reassuring | Planner handoff QA, slow-network QA, Browser route evidence |
+| 3 | Map trust and itinerary truth | User deciding whether the plan is believable | Athens, Lisbon, Porto, Mexico City, Tokyo actuals; all day tabs; public map view | Flag or repair missing/wrong-country stops, make partial route states honest | Prompt actuals report, share QA, map-trust evidence |
+| 4 | Saved/account usefulness | Returning user managing work | `/saved`, journal, empty states, reopen trip, delete safety, `/account`, `/account?tab=billing` | Reduce account/billing density, clarify saved/private/public states, improve empty and recovery copy | Saved/account visual sweep, commercial QA, billing recovery QA |
+| 5 | Public share as a growth surface | Logged-out friend receiving a link | Public share mobile and desktop, feedback submit, copy/native share, start-own-trip CTA | Make first viewport instantly understandable, make feedback feel social and low friction | Multi-slug share QA, feedback readback QA, social preview evidence |
+| 6 | Auth and guest edge cases | User moving between guest, signup, login, and saved state | Guest start, login, signup, protected routes, public routes, signout/reopen | Eliminate confusing redirects and preserve user work across auth transitions | Auth access QA, Browser auth notes, release memo entry |
+| 7 | Paid path and subscription states | User deciding whether to upgrade | Pricing, upgrade prompts, checkout start/return, portal, trialing, active, canceled, past-due, failures | Make paid value clear and helpful, ensure no billing dead ends erase work | Stripe readiness, hosted checkout evidence, billing recovery QA |
+| 8 | Accessibility and keyboard depth | Keyboard and assistive-tech user | Planner, Trip Studio, public share, account, billing, modals/drawers | Fix focus traps, weak labels, focus order, contrast, and unreachable controls | `qa:a11y`, keyboard Browser notes, focused fixes |
+| 9 | Visual regression and responsive polish | User on phone, tablet, laptop, desktop, wide desktop | All primary routes at 390, 768, 1280, 1440, 1728 widths | Remove overlap, clipped text, awkward wrapping, generic panels, and inconsistent spacing | `qa:visual` baseline/diff evidence, screenshots, polish notes |
+| 10 | Production release rehearsal | Owner preparing a real deploy | Local release-candidate gate, Vercel preview/prod smoke, production share, production auth access | Tighten release scripts, evidence capture, rollback notes, monitoring workflow | Release-candidate report, production release gate report |
+| 11 | Viral and profitability refinement | Friend group sharing and reusing the product | Share to feedback to owner refresh to new trip start; upgrade moments after value | Strengthen recipient CTA, owner feedback loop, free-to-paid upgrade context | Share-loop Browser evidence, commercial QA, product notes |
+| 12 | Launch-candidate decision | Product owner reviewing evidence | Full clean-browser matrix across guest, owner, recipient, paid candidate, and recovery user | Final P0/P1 closure, P2 triage, final copy and visual QA | Launch signoff packet, release memo, deploy verification |
+
+Weekly rule: if a P0/P1 appears, that week pauses thematic polish and shifts to repair, retest, and regression coverage until the issue is closed.
+
 ## Severity Rules
 
 - P0: blocks a core journey, corrupts user work, breaks production, or exposes sensitive data.
@@ -280,12 +301,36 @@ Exit gate:
 Every week during active build:
 
 - Pick one primary journey and one supporting surface.
-- Run Browser at phone and desktop widths before editing.
+- Run Browser at phone, laptop, and desktop widths before editing.
 - Fix P0/P1 findings immediately.
 - Convert one repeatable finding into a regression gate.
 - Run the relevant QA command set.
 - Update `RELEASE_READINESS_MEMO.md`.
 - Update screenshots or evidence in `qa/`.
+- Commit only verified changes, then push/deploy when the release gate is green.
+
+The weekly evidence note should include:
+
+- User type: first-time guest, returning owner, logged-out recipient, paid candidate, or recovery user.
+- Route and viewport.
+- Actions completed.
+- P0/P1/P2/P3 findings.
+- Fix commit, if a fix was made.
+- Retest result.
+- Commands run and pass/fail result.
+
+## Monthly Operating Reviews
+
+At the end of each month, run a scorecard review and decide whether the platform can move to the next month of readiness.
+
+| Review | Decision Question | Required Evidence |
+| --- | --- | --- |
+| Month 1 review | Is the current product stable enough for broader planner/map expansion? | Core Browser route sweep, visual QA, lint/build, smoke, commercial, ops, share, studio, auth access |
+| Month 2 review | Can users trust generated itineraries and maps? | Prompt actuals, map-trust reports, public-share QA, wrong-country guardrail evidence |
+| Month 3 review | Is Trip Studio launch-grade as the main product surface? | Owner action Browser evidence, mutation QA, recovery QA, responsive visual QA |
+| Month 4 review | Does sharing create a useful recipient loop? | Multi-slug public share QA, feedback states, owner readback, social preview cards |
+| Month 5 review | Is the paid path safe and understandable? | Stripe readiness, hosted checkout, billing recovery, account/billing visual QA |
+| Month 6 review | Can Globe.travel be released with confidence? | Full local release candidate, production release gate, rollback notes, no open P0/P1 |
 
 ## Monthly Score Targets
 
@@ -308,15 +353,20 @@ Every week during active build:
 
 ## Immediate Next Execution Slice
 
-The next execution slice should focus on commercial release-gate hardening:
+The next execution slice should focus on Week 1 of the 12-week board: Trip Studio density and owner confidence.
 
-1. Finish the share-card/social preview evidence integration.
-2. Re-run public share QA for Athens five-day.
-3. Run billing recovery, commercial, ops, planner-handoff, and studio recovery gates.
-4. Run lint and build.
-5. Run a Browser route sweep for public share, account billing, planner, and Trip Studio.
-6. Update `RELEASE_READINESS_MEMO.md` with exact command evidence.
-7. Only then decide whether to commit, push, and send to Vercel.
+1. Open the Athens five-day owner trip in Browser at phone, laptop, and desktop widths.
+2. Test day switching, itinerary item selection, edit, delete, reorder, swap, optimize, rewrite, build maps, save, share, and public-link handoff.
+3. Record every overlap, confusing label, repeated panel, weak hierarchy, hidden control, slow state, failure state, or map/itinerary mismatch.
+4. Fix the highest-impact P0/P1 first, then reduce P2 operational density in the readiness/workflow/account-adjacent panels.
+5. Retest the exact Browser paths that produced findings.
+6. Run the focused gates:
+   - `npm run qa:studio-actions`
+   - `npm run qa:studio-recovery`
+   - `QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=<known-public-slug> npm run qa:visual`
+7. Run `npm run lint` and `npm run build` before any commit.
+8. Update `RELEASE_READINESS_MEMO.md` and a focused `qa/` evidence file with fixes, commands, remaining risks, and retest results.
+9. Commit, push, deploy to Vercel, and run `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production` only after the local gate is green.
 
 ## Completion Definition
 

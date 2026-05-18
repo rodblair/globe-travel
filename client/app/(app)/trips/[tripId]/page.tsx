@@ -642,7 +642,7 @@ function TripStudioPageContent() {
   }
 
   return (
-    <div ref={studioRef} className="relative min-h-full w-full overflow-y-auto bg-paper pb-[calc(5rem+env(safe-area-inset-bottom))] xl:h-full xl:overflow-hidden xl:pb-0">
+    <div ref={studioRef} className="relative flex min-h-full w-full flex-col overflow-y-auto bg-paper pb-[calc(5rem+env(safe-area-inset-bottom))] xl:block xl:h-full xl:overflow-hidden xl:pb-0">
       {/* Globe */}
       <div className="absolute inset-0">
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--brass),transparent_88%),transparent_38%),radial-gradient(circle_at_80%_20%,color-mix(in_oklch,var(--horizon),transparent_88%),transparent_26%),linear-gradient(180deg,var(--paper),var(--paper-recessed))]" />
@@ -660,7 +660,7 @@ function TripStudioPageContent() {
       </div>
 
       {/* Top bar */}
-      <div className="relative z-30 mx-auto w-[min(960px,calc(100%-1rem))] pt-3 md:w-[min(960px,calc(100%-2rem))] xl:absolute xl:left-1/2 xl:top-4 xl:-translate-x-1/2 xl:pt-0">
+      <div className="relative z-30 order-1 mx-auto w-[min(960px,calc(100%-1rem))] pt-3 md:w-[min(960px,calc(100%-2rem))] xl:absolute xl:left-1/2 xl:top-4 xl:-translate-x-1/2 xl:pt-0">
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -781,16 +781,13 @@ function TripStudioPageContent() {
       </div>
 
       {/* Trip readiness */}
-      <aside className="relative z-20 mx-3 mt-3 max-w-[760px] space-y-3 pb-1 xl:absolute xl:right-4 xl:top-44 xl:mx-0 xl:mt-0 xl:max-h-[calc(100dvh-12rem)] xl:w-[340px] xl:overflow-y-auto xl:pb-0">
+      <aside className="relative z-20 order-3 mx-3 mt-3 max-w-[760px] space-y-3 pb-1 xl:absolute xl:right-4 xl:top-44 xl:order-none xl:mx-0 xl:mt-0 xl:max-h-[calc(100dvh-12rem)] xl:w-[340px] xl:overflow-y-auto xl:pb-0">
         <div className="grid gap-3">
           <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Group review</p>
-                <p className="mt-1 text-sm font-medium text-foreground">Invite friends to react to this {tripDestination || 'trip'} plan.</p>
-                <p className="mt-1 text-xs leading-relaxed text-foreground/62">
-                  Keep the planning flow social without burying the itinerary in extra controls.
-                </p>
+                <p className="mt-1 text-sm font-medium text-foreground">Share this {tripDestination || 'trip'} plan when it is ready for friend review.</p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
@@ -847,7 +844,7 @@ function TripStudioPageContent() {
                 <Sparkles className="w-5 h-5 text-[var(--brass)]" />
               </div>
 
-              <div className="mt-4 grid gap-2">
+              <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
                 <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
                   <Users className="w-4 h-4 text-[var(--brass)]" />
                   <span>{groupBrief?.groupSize ? `${groupBrief.groupSize} friends` : 'Crew size not set yet'}</span>
@@ -863,7 +860,7 @@ function TripStudioPageContent() {
                 <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
                   Vibe: {groupBrief?.vibe || 'Balanced trip with broad appeal'}
                 </div>
-                <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs text-[var(--brass-text)]">
+                <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs text-[var(--brass-text)] sm:col-span-2 xl:col-span-1">
                   Trip readiness: {readinessCount}/4 — {trip?.is_public ? 'shareable' : 'turn on sharing'}, {feedback.length > 0 ? 'crew reacting' : 'needs reactions'}.
                 </div>
               </div>
@@ -1045,7 +1042,7 @@ function TripStudioPageContent() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="relative z-20 mx-3 mb-6 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:bottom-4 xl:left-1/2 xl:right-auto xl:top-44 xl:mx-0 xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-27rem))] xl:-translate-x-[calc(50%+8rem)]"
+        className="relative z-20 order-2 mx-3 mb-3 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:bottom-4 xl:left-1/2 xl:right-auto xl:top-44 xl:order-none xl:mx-0 xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-27rem))] xl:-translate-x-[calc(50%+8rem)]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div
