@@ -13,7 +13,8 @@
     "qa:prompt-suite": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/planner-prompt-suite.mjs",
     "qa:share": "node scripts/platform-share-smoke.mjs",
     "qa:smoke": "node scripts/platform-smoke.mjs",
-    "qa:studio": "node scripts/platform-trip-studio-smoke.mjs"
+    "qa:studio": "node scripts/platform-trip-studio-smoke.mjs",
+    "qa:studio-actions": "node scripts/platform-trip-studio-actions.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.47",

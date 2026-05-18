@@ -20,6 +20,7 @@ Already established:
 - Operations runbook: `OPERATIONS_RUNBOOK.md`
 - Local QA commands: `npm run lint`, `npm run build`, `npm run qa:smoke`, `npm run qa:commercial`, `npm run qa:ops`, `npm run qa:share`
 - Trip Studio QA command: `QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=<public-share-slug> npm run qa:studio`
+- Mutation-safe Trip Studio action QA command: `npm run qa:studio-actions`
 - Browser route-sweep evidence for core local surfaces
 - Public-share QA for the Athens five-day itinerary
 - Local operations health endpoint and ops smoke test
@@ -410,7 +411,7 @@ A release candidate is eligible only when:
 2. Run production `qa:ops` once the live alias serves `/api/health`.
 3. Expand public-share QA from one Athens slug to multiple known itinerary slugs.
 4. Build the planner prompt-suite runner and include Athens five-day as a required fixture.
-5. Continue the Browser Trip Studio action audit. The first pass restored the hidden readiness dock, clarified read-only shared-preview controls, and added `npm run qa:studio`; the next pass should exercise edit/delete/reorder/swap/optimize/rewrite/save/share end to end.
+5. Continue the Browser Trip Studio action audit. The first passes restored the hidden readiness dock, clarified read-only shared-preview controls, added `npm run qa:studio`, and added disposable-fixture mutation coverage with `npm run qa:studio-actions`; the next pass should add true Browser click/type coverage for edit, day switching, copy/share link, and deterministic swap behavior.
 6. Run the first monthly critique and audit scorecard across landing, chat, Trip Studio, saved, public share, and account/billing.
 7. Prioritize fixes by P0/P1 first, then design-system consistency and commercial polish.
 
