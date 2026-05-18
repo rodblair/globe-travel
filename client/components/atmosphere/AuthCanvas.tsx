@@ -54,7 +54,7 @@ export function AuthCanvas({
       <div className="paper-grain absolute inset-0" />
 
       <div className="relative z-10 flex flex-col justify-between w-full p-12">
-        <Link href="/" className="inline-flex group">
+        <Link href="/" className="inline-flex min-h-11 items-center group">
           <AlbatrossBrand compact />
         </Link>
 

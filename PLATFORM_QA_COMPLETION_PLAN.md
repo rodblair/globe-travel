@@ -2,7 +2,7 @@
 
 Date: 2026-05-17
 Horizon: next several months
-Status: Active execution plan
+Status: Active execution plan, refreshed 2026-05-18
 Active goal: Complete full-platform functionality testing, Browser-driven user journey QA, visual QA, design-system polish, reliability hardening, viral sharing loops, subscription readiness, and release operations until Globe.travel is commercially launch-ready.
 
 ## Purpose
@@ -16,9 +16,10 @@ The release target is not just "the app builds." The target is that a first-time
 Already established:
 
 - Six-month roadmap: `PLATFORM_READINESS_ROADMAP.md`
+- Next several-month execution roadmap: `PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md`
 - Release evidence log: `RELEASE_READINESS_MEMO.md`
 - Operations runbook: `OPERATIONS_RUNBOOK.md`
-- Local QA commands: `npm run lint`, `npm run build`, `npm run qa:smoke`, `npm run qa:commercial`, `npm run qa:ops`, `npm run qa:share`
+- Local QA commands: `npm run lint`, `npm run build`, `npm run qa:smoke`, `npm run qa:a11y`, `npm run qa:commercial`, `npm run qa:ops`, `npm run qa:share`
 - Trip Studio QA command: `QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=<public-share-slug> npm run qa:studio`
 - Mutation-safe Trip Studio action QA command: `npm run qa:studio-actions`
 - Browser route-sweep evidence for core local surfaces
@@ -28,6 +29,88 @@ Already established:
 Known release blocker:
 
 - No current P0/P1 operations blocker. Production `/api/health` is live on `https://globe-travel-two.vercel.app`, reports `status: "ok"`, and currently has `summary.criticalMissing: 0` and `summary.warningMissing: 0`.
+
+## Active Goal Confirmation
+
+This is the active multi-month goal for the workstream. It stays open until Globe.travel has complete Browser evidence, functional QA, visual QA, map trust, sharing, account, billing, production, and release-operation evidence.
+
+The plan should be treated as an execution board, not a one-time memo:
+
+- Every Browser finding must either become a fix, an automated regression check, or a tracked deferred issue.
+- Every visual polish pass must be checked on real responsive routes, not only by component inspection.
+- Every production deployment must be verified with local gates, production smoke, production ops health, and a written release log.
+- The goal is not considered complete while any P0/P1 launch issue remains open.
+
+## Current Command Center
+
+This is the next several months of work expressed as a release program. It is intentionally sequenced so the product gets more usable every week while the testing system gets stronger with every real Browser finding.
+
+| Timeframe | Primary outcome | Product focus | QA focus | Release decision |
+| --- | --- | --- | --- | --- |
+| Month 1 | Baseline confidence | First-time planning, saved/account, public share, Trip Studio basics | Browser route sweeps, responsive baselines, lint/build, smoke/commercial/ops/share gates | Internal release candidate only if no P0/P1 remains |
+| Month 2 | Planner and map trust | Reliable trip generation, mapped stops, route truth, recovery paths | 50+ prompt suite, country checks, map-stop and route validation | Promote prompt/map gates into every release candidate |
+| Month 3 | Trip Studio completion | Edit, reorder, delete, swap, optimize, rewrite, build maps, save, share | Browser action coverage plus mutation-safe regression scripts | Trip Studio becomes launch-grade only when every owner action is verified |
+| Month 4 | Sharing and viral loop | Logged-out public pages, friend feedback, recipient CTA, social metadata | Multi-itinerary share fixtures, feedback API/page gates, mobile recipient sweeps | Public share becomes a growth surface, not just a read-only artifact |
+| Month 5 | Paid product readiness | Pricing, upgrade moments, Stripe checkout, portal, subscription states | Billing smoke, Stripe test-mode evidence, account/error-state Browser sweeps | Paid path is launchable only if users cannot lose work or hit confusing traps |
+| Month 6 | Launch candidate and scale | Production release, rollback readiness, monitoring, final polish | Full local plus production matrix, final accessibility/keyboard/copy pass | Owner can make a launch decision from evidence, not vibes |
+
+The near-term operating focus is:
+
+- Convert every repeatable Browser finding into an automated gate or tracked issue.
+- Keep the known Athens five-day itinerary as the stable production baseline while adding disposable Lisbon, Kyoto, and Mexico City fixture coverage locally.
+- Keep owner-side feedback refresh in the release gate. Public reactions now have an automated Trip Studio feed check and Browser evidence proving the owner feedback refresh workflow completes from submitted friend feedback.
+- Keep `npm run qa:visual` in the release-candidate path. The first Chrome-backed run produced screenshots and DOM geometry for 10 core routes across five viewports, including Mapbox-heavy Trip Studio and public-share pages; the follow-up compare run added pixel-diff thresholds for stable shell routes.
+- Keep `npm run qa:a11y` in the release-candidate path. The first accessibility/keyboard gate now covers landing, planner, saved, account, billing, auth, and public share at phone and desktop widths with serious/critical axe checks, skip-link/landmark checks, and early keyboard focus-path checks.
+- Reduce Trip Studio/account operational density without hiding important actions.
+- Broaden recovery-state hardening for planner, maps, share, billing, and auth failures.
+
+## Next 90-Day Focus
+
+### Days 1-14: Close Current Trip Studio And Visual QA Gaps
+
+- Finish true Browser click/type Trip Studio coverage for owner controls:
+  - Day switching
+  - Item edit
+  - Save state
+  - Share state
+  - Public-link handoff
+  - Read-only public behavior
+- Keep `npm run qa:studio-actions` as the mutation-safe API regression layer.
+- Add evidence for the Browser-owned fixture path and clean every disposable fixture after use.
+- Run a full responsive visual sweep on landing, chat, Trip Studio, saved, account, billing, auth, and public share at 390, 768, 1280, 1440, and 1728 widths.
+- Fix any overlap, clipped copy, unreadable controls, weak hierarchy, stale copy, missing labels, or broken loading/error states found in the sweep.
+
+### Days 15-30: Automate Regressions From Real Browser Findings
+
+- Promote repeated Browser findings into QA scripts or fixtures.
+- Expand stable itinerary coverage beyond Athens five-day:
+  - At least three public share slugs
+  - At least three private saved-trip fixtures
+  - At least one guest-created fixture
+  - At least one signed-in owner fixture
+- Add screenshot or DOM-summary baselines for the most fragile surfaces:
+  - Trip Studio mobile
+  - Public share mobile
+  - Account billing
+  - Planner loading and handoff
+- Re-run critique, audit, normalize, harden, and polish gates on the six core surfaces.
+
+### Days 31-60: Collaboration, Sharing, And Commercial Readiness
+
+- Make public share pages valuable enough for recipients who have never seen Globe.travel.
+- Browser-test friend feedback with empty, single, many, long-comment, duplicate-name, and failure states.
+- Verify copy link, native share, fallback share, and social metadata.
+- Connect friend feedback clearly to the owner planning workflow or explain it as review input.
+- Complete pricing, upgrade, checkout-start, billing portal, return URL, subscription-status, and billing-error QA.
+- Add Stripe test-mode evidence where credentials and environment allow it.
+
+### Days 61-90: Launch Candidate Discipline
+
+- Run the complete platform matrix against local, preview, and production where appropriate.
+- Freeze the release candidate only when lint, build, smoke, commercial, ops, share, prompt-suite, studio, and Browser route sweeps pass.
+- Perform final mobile/tablet/desktop visual QA and keyboard/accessibility pass.
+- Verify Vercel production deployment, aliases, health endpoint, rollback path, and release memo evidence.
+- Publish only when all P0/P1 issues are closed and every remaining P2 has an owner and target month.
 
 ## Operating Rhythm
 
@@ -45,6 +128,7 @@ Known release blocker:
   - `npm run lint`
   - `npm run build`
   - `npm run qa:smoke`
+  - `npm run qa:a11y`
   - `npm run qa:commercial`
   - `npm run qa:ops`
   - `QA_SHARE_SLUG=<known-public-slug> npm run qa:share`
@@ -396,6 +480,10 @@ A release candidate is eligible only when:
 - `npm run qa:smoke` passes.
 - `npm run qa:commercial` passes.
 - `npm run qa:ops` passes.
+- `npm run qa:planner-handoff` passes.
+- `QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=<known-public-slug> npm run qa:visual` passes.
+- `QA_VISUAL_BASELINE_DIR=<baseline-dir> QA_VISUAL_RUN_ID=<run-id> QA_SHARE_SLUG=<known-public-slug> npm run qa:visual` passes for stable visual-diff routes.
+- `QA_SHARE_SLUG=<known-public-slug> npm run qa:share-feedback` passes.
 - `QA_SHARE_SLUG=<known-public-slug> npm run qa:share` passes.
 - Browser route sweep passes for core routes.
 - At least one private Trip Studio URL is verified.
@@ -407,13 +495,68 @@ A release candidate is eligible only when:
 
 ## Immediate Next Moves
 
-1. Resolve or escalate the Vercel queued-deployment blocker so `/api/health` is live in production.
-2. Run production `qa:ops` once the live alias serves `/api/health`.
-3. Expand public-share QA from one Athens slug to multiple known itinerary slugs.
-4. Build the planner prompt-suite runner and include Athens five-day as a required fixture.
-5. Continue the Browser Trip Studio action audit. The first passes restored the hidden readiness dock, clarified read-only shared-preview controls, added `npm run qa:studio`, and added disposable-fixture mutation coverage with `npm run qa:studio-actions`; the next pass should add true Browser click/type coverage for edit, day switching, copy/share link, and deterministic swap behavior.
-6. Run the first monthly critique and audit scorecard across landing, chat, Trip Studio, saved, public share, and account/billing.
-7. Prioritize fixes by P0/P1 first, then design-system consistency and commercial polish.
+1. Continue the Browser Trip Studio action audit into broader mobile-width owner-control coverage and durable screenshot artifacts. Browser-level apply-swap, Build maps success/failure, Rewrite day success/unavailable, mobile explicit reorder controls, direct drag reorder, responsive geometry baselines, planner handoff geometry, and API-level deterministic swap/build-map coverage are now covered.
+2. Decide whether generated public-share fixture coverage belongs in every release candidate run or a scheduled weekly QA run. The stable Athens five-day slug is covered, and deterministic Lisbon, Kyoto, and Mexico City public-share fixtures now validate country consistency, day coverage, route coverage, metadata, feedback API, and mobile recipient CTA checks.
+3. Keep expanding durable visual regression. `npm run qa:visual` now captures Chrome screenshots and layout geometry for landing, planner, saved, account, auth, public share, and Trip Studio at `390`, `768`, `1280`, `1440`, and `1728` widths. Stable shell routes also support pixel-diff comparison against a saved baseline.
+4. Continue from the first monthly critique/audit scorecard. Month 1 targets are met (`16/20` audit health, `31/40` design health), the public feedback loop now has mutation-safe public and owner-side gates, durable responsive visual screenshots and stable-route visual diffs exist, and the remaining P2 work is deeper Trip Studio/account density, production scheduling for visual diffs, slow-network recovery hardening, and production release rehearsal. The Mapbox control policy is now implemented for actionable controls and verified by the focused map visual gate. Trip Studio owner recovery states now have a repeatable `npm run qa:studio-recovery` gate, billing recovery has `npm run qa:billing-recovery`, public-share recovery has `npm run qa:share-recovery`, and ops monitoring has a stronger `npm run qa:ops` contract.
+5. Promote repeated Browser visual findings into automated checks where practical.
+6. Prioritize fixes by P0/P1 first, then design-system consistency, then commercial polish.
+7. Use `PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md` as the month-by-month operating roadmap for the active goal.
+
+## Next Four Execution Sprints
+
+These are the next focused passes to run before another release candidate decision.
+
+### Sprint 1: Owner Feedback And Share Loop Closure
+
+- Status: completed for the local release-readiness path on 2026-05-18.
+- Evidence: `qa/owner-feedback-refresh-2026-05-18.md`.
+- Automated coverage: `QA_SHARE_SLUG=<slug> QA_TRIP_ID=<trip-id> QA_VERIFY_TRIP_FEEDBACK=1 npm run qa:share-feedback`.
+- Browser coverage: owner Trip Studio shows submitted friend feedback, readiness updates to `crew reacting`, and `Refresh plan from feedback` completes with a feedback-driven planner result.
+- Social preview evidence: `qa/public-share-social-preview-2026-05-18.md`.
+- Viral metadata coverage: `QA_SHARE_SLUG=<known-public-slug> npm run qa:share` checks itinerary API integrity, mapped stop/route integrity, public metadata, feedback API readability, and generated share-card image rendering.
+- Remaining follow-up: include this gate in release-candidate runs for disposable fixtures or a stable owned fixture.
+
+### Sprint 2: Visual Evidence And Responsive Polish
+
+- Status: completed for the first local baseline on 2026-05-18.
+- Evidence: `qa/visual-baseline-2026-05-18/README.md` and `qa/visual-baseline-2026-05-18/screenshots/`.
+- Automated coverage: `QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=<known-public-slug> npm run qa:visual`.
+- Coverage: landing, planner, saved trips, saved trip notes, account profile, account billing, login, signup, public share, and Trip Studio at `390`, `768`, `1280`, `1440`, and `1728` widths.
+- Result: first passing run checked `50/50` route-viewport combinations with no horizontal overflow, no app-owned small targets, required markers present, and screenshots captured.
+- Visual diff result: stable-route compare checked `45/45` route-viewport combinations against `qa/visual-baseline-2026-05-18`; `30` stable shell screenshots were pixel-compared under a `1.5%` threshold, while dynamic user-data routes retained layout and screenshot checks.
+- Fix made during the sprint: desktop auth-panel brand link now has a `44px` touch target.
+- Mapbox control policy follow-up: actionable Mapbox controls now use app-scale `46px` targets and are measured as `Small Map Controls` in `npm run qa:visual`; attribution/legal links remain compact and are excluded from the actionable-control gate.
+- Recovery-state result: `npm run qa:studio-recovery` now covers forced Trip Studio optimize/share/workflow failures, inline delete confirmation, owner controls, and horizontal overflow. The first gate passed `6/6`, and the follow-up Trip Studio visual sweep passed `5/5` viewports after fixing the laptop readiness-panel overlap.
+- Billing recovery result: `npm run qa:billing-recovery` now covers forced checkout failure recovery, checkout-cancel return, checkout-success return copy, billing visibility, and horizontal overflow. The first gate passed `5/5`, and the focused account-billing visual sweep passed `5/5` viewports.
+- Public-share recovery result: `npm run qa:share-recovery` now covers forced recipient feedback failure, recipient surface visibility, and mobile overflow. The first gate passed `3/3`, while `qa:share`, `qa:share-feedback`, and the focused public-share visual sweep passed `4/4`, `5/5`, and `5/5`.
+- Ops monitoring result: `npm run qa:ops` now verifies health readiness, no-store cache behavior, parseable `checkedAt`, expected check roster, and deployment metadata policy. The first strengthened gate passed `3/3`.
+- Remaining follow-up: schedule visual diff runs in release/preview automation and keep expanding slow-network recovery plus production release rehearsal.
+
+### Sprint 3: Planner And Map Trust Expansion
+
+- Status: completed for ten local public-itinerary actuals on 2026-05-18.
+- Evidence: `qa/planner-map-trust-expanded-2026-05-18.md`.
+- Actuals artifact: `qa/planner-map-trust-expanded-2026-05-18-actuals.json`.
+- Coverage: Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin prompt-suite IDs.
+- Automated coverage:
+  - `npm run qa:share-fixtures` now creates ten prompt-suite-mapped public itinerary fixtures and emits `promptSuiteShareMap`.
+  - `QA_SHARE_SLUGS=<ten-disposable-slugs> npm run qa:share` passed `40/40`.
+  - `QA_PROMPT_SUITE_SHARE_MAP=<ten-id-to-slug-map> npm run qa:prompt-actuals` exported ten actuals.
+  - `QA_PROMPT_SUITE_ACTUALS=../qa/planner-map-trust-expanded-2026-05-18-actuals.json npm run qa:prompt-suite` passed `52/52` with `actualsChecked: 10`.
+- Browser coverage: disposable Mexico City public share showed all four expected days, recipient CTA, no horizontal overflow, and `46 x 46` Mapbox zoom controls before cleanup.
+- Cleanup: ten disposable trips and sixty-two QA places were deleted.
+- Remaining follow-up: add live AI-generated sampling for more prompts once API budget/model behavior is stable; this pass proves the actuals path and public itinerary map-trust contract across ten launch-relevant outputs.
+
+### Sprint 4: Commercial And Release Gate Hardening
+
+- Status: next active execution slice.
+- Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
+- Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
+- Finish public share social preview evidence integration and keep share-card image rendering in the release gate.
+- Run `lint`, `build`, `qa:smoke`, `qa:commercial`, `qa:ops`, `qa:planner-handoff`, `qa:share-feedback`, and `qa:share`.
+- Deploy only after the release memo has exact command output, URLs, deployment ID, and remaining risk.
+- Evidence target: `qa/release-candidate-gate-YYYY-MM-DD.md`.
 
 ## Definition Of Full Completion
 

@@ -113,7 +113,11 @@ async function checkShareSlug(shareSlug) {
     ['meta description', /<meta\s+name=["']description["'][^>]+content=["'][^"']*Review the/i],
     ['og title', /<meta\s+property=["']og:title["'][^>]+content=["'][^"']*Globe\.travel/i],
     ['og description', /<meta\s+property=["']og:description["'][^>]+content=["'][^"']*Review the/i],
+    ['og image', new RegExp(`<meta\\s+property=["']og:image["'][^>]+content=["'][^"']*/api/share-card/${shareSlug}["']`, 'i')],
+    ['og image width', /<meta\s+property=["']og:image:width["'][^>]+content=["']1200["']/i],
+    ['og image height', /<meta\s+property=["']og:image:height["'][^>]+content=["']630["']/i],
     ['twitter card', /<meta\s+name=["']twitter:card["'][^>]+content=["']summary_large_image["']/i],
+    ['twitter image', new RegExp(`<meta\\s+name=["']twitter:image["'][^>]+content=["'][^"']*/api/share-card/${shareSlug}["']`, 'i')],
   ]
   const missingMeta = metaChecks
     .filter(([, matcher]) => !hasMeta(html, matcher))
@@ -127,6 +131,25 @@ async function checkShareSlug(shareSlug) {
   }
   if (!pageOk) fail(shareSlug, pageResult.name, pageResult)
   results.push(pageResult)
+
+  const imageResponse = await fetch(`${baseUrl}/api/share-card/${shareSlug}`, {
+    headers: { 'user-agent': 'globe-travel-share-smoke/1.0' },
+  })
+  const imageBuffer = await imageResponse.arrayBuffer()
+  const imageContentType = imageResponse.headers.get('content-type') || ''
+  const imageOk =
+    imageResponse.ok &&
+    imageContentType.toLowerCase().startsWith('image/png') &&
+    imageBuffer.byteLength > 1000
+  const imageResult = {
+    name: 'public share card image renders',
+    ok: imageOk,
+    status: imageResponse.status,
+    contentType: imageContentType,
+    byteLength: imageBuffer.byteLength,
+  }
+  if (!imageOk) fail(shareSlug, imageResult.name, imageResult)
+  results.push(imageResult)
 
   return {
     shareSlug,

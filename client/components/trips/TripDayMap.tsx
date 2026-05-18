@@ -480,7 +480,7 @@ export default function TripDayMap({
             </div>
           </div>
         )}
-        {validStops.length > 1 && (
+        {interactive && validStops.length > 1 && (
           <div className="pointer-events-none absolute left-3 top-12 z-10 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--pillar-nature-wash)] bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium text-[var(--moss)]">
               <span className="h-2 w-2 rounded-full bg-[var(--moss)]" />

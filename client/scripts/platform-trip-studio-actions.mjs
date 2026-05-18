@@ -9,10 +9,11 @@ const keepFixture = process.env.QA_KEEP_FIXTURE === '1'
 const allowRemote = process.env.QA_ALLOW_REMOTE_MUTATION === '1'
 const cleanupTripId = process.env.QA_CLEANUP_TRIP_ID
 const cleanupRunId = process.env.QA_CLEANUP_RUN_ID
+const authMode = process.env.QA_AUTH_MODE === 'dev' ? 'dev' : 'guest'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const runId = randomUUID().slice(0, 8)
-const guestId = randomUUID()
-const cookie = `globe_travel_guest=${guestId}`
+const guestId = authMode === 'guest' ? process.env.QA_GUEST_ID || randomUUID() : null
+const cookie = guestId ? `globe_travel_guest=${guestId}` : null
 const results = []
 const failures = []
 const cleanup = {
@@ -118,7 +119,7 @@ async function fetchJson(path, options = {}) {
     ...options,
     headers: {
       'user-agent': 'globe-travel-trip-studio-actions/1.0',
-      cookie,
+      ...(cookie ? { cookie } : {}),
       ...(options.body ? { 'content-type': 'application/json' } : {}),
       ...(options.headers || {}),
     },
@@ -143,7 +144,7 @@ async function createFixtureTrip() {
       travelers_count: 3,
       pace: 'balanced',
       budget_level: 'mid',
-      constraints: { days: 2, qa: true, runId },
+      constraints: { days: 2, qa: true, runId, destination_query: 'Athens, Greece' },
     }),
   })
 
@@ -313,6 +314,58 @@ async function runActions(fixture) {
   const afterUpdate = await readTrip(fixture.tripId)
   assertOk('updated item title persists', Boolean(findItem(afterUpdate, 'Updated')), { updatedTitle })
 
+  const swapOptions = await fetchJson(`/api/trips/${fixture.tripId}/items/${secondItem.id}/swap`, {
+    method: 'POST',
+    body: JSON.stringify({ preference: 'quieter cafe or neighborhood reset' }),
+  })
+  const firstSwapOption = swapOptions.json?.options?.[0]
+  assertOk('swap options return deterministic replacements', swapOptions.response.ok && firstSwapOption?.id, {
+    status: swapOptions.response.status,
+    optionCount: swapOptions.json?.options?.length || 0,
+    firstOptionTitle: firstSwapOption?.title,
+  })
+
+  const applySwap = await fetchJson(`/api/trips/${fixture.tripId}/items/${secondItem.id}/swap`, {
+    method: 'POST',
+    body: JSON.stringify({
+      preference: 'apply selected replacement',
+      choiceId: firstSwapOption.id,
+    }),
+  })
+  assertOk('apply selected swap replacement', applySwap.response.ok, {
+    status: applySwap.response.status,
+    choiceId: firstSwapOption.id,
+    appliedTitle: applySwap.json?.item?.title,
+  })
+
+  const afterSwap = await readTrip(fixture.tripId)
+  const swappedItem = afterSwap.days.flatMap((day) => day.items).find((item) => item.id === secondItem.id)
+  assertOk('applied swap persists with mapped place', swappedItem?.title === firstSwapOption.title && Boolean(swappedItem?.place?.latitude), {
+    expectedTitle: firstSwapOption.title,
+    actualTitle: swappedItem?.title,
+    mapped: Boolean(swappedItem?.place?.latitude && swappedItem?.place?.longitude),
+  })
+
+  const hydrate = await fetchJson(`/api/trips/${fixture.tripId}/hydrate-map`, { method: 'POST' })
+  const mapboxConfigured = Boolean(process.env.NEXT_PUBLIC_MAPBOX_TOKEN)
+  const hydrateOk = mapboxConfigured
+    ? hydrate.response.ok && Number.isFinite(hydrate.json?.routeDays)
+    : hydrate.response.ok || hydrate.json?.error === 'Mapbox token not configured'
+  assertOk('build maps completes or fails safely without Mapbox', hydrateOk, {
+    status: hydrate.response.status,
+    mapboxConfigured,
+    geocodedItems: hydrate.json?.geocodedItems,
+    routeDays: hydrate.json?.routeDays,
+    error: hydrate.json?.error,
+  })
+
+  const afterHydrate = await readTrip(fixture.tripId)
+  const routeCountAfterHydrate = afterHydrate.days.reduce((total, day) => total + (day.routes?.length || 0), 0)
+  assertOk('build maps persists at least one usable route when Mapbox is configured', !mapboxConfigured || routeCountAfterHydrate > 0, {
+    mapboxConfigured,
+    routeCountAfterHydrate,
+  })
+
   const reversedIds = [...initialDayOneIds].reverse()
   const reorder = await fetchJson(`/api/trips/${fixture.tripId}/items/bulk`, {
     method: 'POST',
@@ -357,7 +410,6 @@ async function runActions(fixture) {
   assertOk('deleted item is absent', !deletedStillPresent, { deletedItemId: secondItem.id })
 
   const optimize = await fetchJson(`/api/trips/${fixture.tripId}/days/1/optimize`, { method: 'POST' })
-  const mapboxConfigured = Boolean(process.env.NEXT_PUBLIC_MAPBOX_TOKEN)
   const optimizeOk = mapboxConfigured
     ? optimize.response.ok && Array.isArray(optimize.json?.ordered_item_ids)
     : optimize.response.ok || optimize.json?.error === 'Mapbox token not configured'
@@ -452,6 +504,8 @@ try {
 const summary = {
   baseUrl,
   runId,
+  authMode,
+  guestId,
   keepFixture,
   checked: results.length,
   passed: results.filter((result) => result.ok).length,

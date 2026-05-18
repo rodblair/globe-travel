@@ -38,17 +38,17 @@ export default function Home() {
         >
           {/* Top bar */}
           <header className="relative z-10 mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-4 pt-5 md:items-center md:px-6 md:pt-6">
-            <Link href="/" className="justify-self-start">
+            <Link href="/" className="flex min-h-11 items-center justify-self-start">
               <AlbatrossBrand />
             </Link>
             <nav className="hidden items-center gap-7 pt-1 t-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-2 md:flex">
-              <Link href="#how" className="hover:text-foreground transition-colors">
+              <Link href="#how" className="flex min-h-11 items-center hover:text-foreground transition-colors">
                 How it works
               </Link>
-              <Link href="#crew" className="hover:text-foreground transition-colors">
+              <Link href="#crew" className="flex min-h-11 items-center hover:text-foreground transition-colors">
                 For groups
               </Link>
-              <Link href="/login" className="hover:text-foreground transition-colors">
+              <Link href="/login" className="flex min-h-11 items-center hover:text-foreground transition-colors">
                 Sign in
               </Link>
             </nav>

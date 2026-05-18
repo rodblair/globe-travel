@@ -27,6 +27,19 @@ const results = []
 
 const health = await readJson('/api/health')
 const healthChecks = Array.isArray(health.json?.checks) ? health.json.checks : []
+const expectedChecks = [
+  'supabase_url',
+  'supabase_anon_key',
+  'supabase_service_role',
+  'mapbox_token',
+  'openai_api_key',
+  'stripe_secret_key',
+  'stripe_publishable_key',
+  'stripe_webhook_secret',
+  'stripe_monthly_price',
+  'stripe_yearly_price',
+  'site_url',
+]
 const criticalMissing = healthChecks.filter((check) => (
   check.severity === 'critical' && check.status !== 'ok'
 ))
@@ -47,6 +60,22 @@ const healthResult = {
 }
 if (!healthOk) fail(healthResult.name, healthResult)
 results.push(healthResult)
+
+const cacheHeader = health.response.headers.get('cache-control') || ''
+const healthContractOk =
+  cacheHeader.includes('no-store') &&
+  typeof health.json?.checkedAt === 'string' &&
+  !Number.isNaN(Date.parse(health.json.checkedAt)) &&
+  expectedChecks.every((name) => healthChecks.some((check) => check.name === name))
+const contractResult = {
+  name: 'health endpoint exposes no-store operational contract',
+  ok: healthContractOk,
+  cacheControl: cacheHeader,
+  hasCheckedAt: typeof health.json?.checkedAt === 'string',
+  missingChecks: expectedChecks.filter((name) => !healthChecks.some((check) => check.name === name)),
+}
+if (!healthContractOk) fail(contractResult.name, contractResult)
+results.push(contractResult)
 
 const metadata = health.json?.deployment || {}
 const metadataOk =

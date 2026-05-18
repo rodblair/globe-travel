@@ -1,8 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check } from 'lucide-react'
+import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
 import { buildDisplayStops, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
@@ -55,7 +55,10 @@ type ItineraryArtifactProps = {
   setSelectedDayIndex: (dayIndex: number) => void
   onSelectItem?: (item: TripItem) => void
   onBulkOps: (ops: any[]) => Promise<void>
-  onRegenerateDay?: (dayIndex: number) => void
+  onRegenerateDay?: (dayIndex: number) => Promise<void> | void
+  regeneratingDayIndex?: number | null
+  regenerateDoneDayIndex?: number | null
+  regenerateNotice?: string | null
   onSwapItem?: (item: TripItem, preference: string) => Promise<SwapCandidate[]> | SwapCandidate[]
   onApplySwapItem?: (item: TripItem, choiceId: string) => Promise<void> | void
   onOptimize?: (dayIndex: number) => Promise<void>
@@ -89,6 +92,9 @@ export default function ItineraryArtifact({
   onSelectItem,
   onBulkOps,
   onRegenerateDay,
+  regeneratingDayIndex,
+  regenerateDoneDayIndex,
+  regenerateNotice,
   onSwapItem,
   onApplySwapItem,
   onOptimize,
@@ -109,10 +115,18 @@ export default function ItineraryArtifact({
   const [swapErrorByItemId, setSwapErrorByItemId] = useState<Record<string, string>>({})
   const [swapSuccessByItemId, setSwapSuccessByItemId] = useState<Record<string, string>>({})
   const [swapNotice, setSwapNotice] = useState<string | null>(null)
+  const pointerDragRef = useRef<{
+    itemId: string
+    fromDayIndex: number
+    startX: number
+    startY: number
+  } | null>(null)
   const [applyingSwapId, setApplyingSwapId] = useState<string | null>(null)
   const [mapExpanded, setMapExpanded] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
+  const [pendingDeleteItemId, setPendingDeleteItemId] = useState<string | null>(null)
+  const [itemActionError, setItemActionError] = useState<string | null>(null)
 
   const handleSwapChoice = async (item: TripItem, preference: string) => {
     if (!onSwapItem || swappingItemId) return
@@ -191,10 +205,13 @@ export default function ItineraryArtifact({
     if (readOnly || !selectedDay || !onOptimize || isOptimizing) return
     setIsOptimizing(true)
     setOptimizeDone(false)
+    setItemActionError(null)
     try {
       await onOptimize(selectedDay.day_index)
       setOptimizeDone(true)
       setTimeout(() => setOptimizeDone(false), 2500)
+    } catch {
+      setItemActionError('Could not optimize this day. Try again after checking the mapped stops.')
     } finally {
       setIsOptimizing(false)
     }
@@ -247,13 +264,39 @@ export default function ItineraryArtifact({
     [dayMapCards, selectedDay]
   )
 
-  const handleDragStart = (item: TripItem, fromDayIndex: number, e: React.DragEvent) => {
-    e.dataTransfer.setData('application/json', JSON.stringify({
-      kind: 'trip_item',
-      item_id: item.id,
-      from_day_index: fromDayIndex,
-    }))
-    e.dataTransfer.effectAllowed = 'move'
+  const runDropOperation = async (itemId: string, fromDayIndex: number, dayIndex: number, sortedDayItems: TripItem[], toIndex: number) => {
+    if (fromDayIndex !== dayIndex) {
+      await onBulkOps([{ op: 'move', item_id: itemId, to_day_index: dayIndex, to_order_index: toIndex }])
+      return
+    }
+
+    const ids = sortedDayItems.map((it) => it.id).filter((id) => id !== itemId)
+    ids.splice(toIndex, 0, itemId)
+    await onBulkOps(buildSameDayReorderOps(dayIndex, sortedDayItems, ids))
+  }
+
+  const buildSameDayReorderOps = (dayIndex: number, sortedDayItems: TripItem[], orderedItemIds: string[]) => {
+    const itemById = new Map(sortedDayItems.map((item) => [item.id, item]))
+    const ops: any[] = [{ op: 'reorder', day_index: dayIndex, ordered_item_ids: orderedItemIds }]
+
+    orderedItemIds.forEach((itemId, index) => {
+      const item = itemById.get(itemId)
+      const timeSlot = sortedDayItems[index]
+      if (!item || !timeSlot) return
+
+      if (item.start_time !== timeSlot.start_time || item.end_time !== timeSlot.end_time) {
+        ops.push({
+          op: 'update',
+          item_id: item.id,
+          fields: {
+            start_time: timeSlot.start_time,
+            end_time: timeSlot.end_time,
+          },
+        })
+      }
+    })
+
+    return ops
   }
 
   const handleDropOnList = async (dayIndex: number, sortedDayItems: TripItem[], toIndex: number, e: React.DragEvent) => {
@@ -271,14 +314,60 @@ export default function ItineraryArtifact({
     const itemId = payload.item_id as string
     const fromDayIndex = payload.from_day_index as number
 
-    if (fromDayIndex !== dayIndex) {
-      await onBulkOps([{ op: 'move', item_id: itemId, to_day_index: dayIndex, to_order_index: toIndex }])
+    await runDropOperation(itemId, fromDayIndex, dayIndex, sortedDayItems, toIndex)
+  }
+
+  const handlePointerDragEnd = async (clientX: number, clientY: number) => {
+    const payload = pointerDragRef.current
+    pointerDragRef.current = null
+    if (!payload) return
+
+    const movedEnough = Math.hypot(clientX - payload.startX, clientY - payload.startY) > 12
+    if (!movedEnough) return
+
+    const dropElement = document
+      .elementFromPoint(clientX, clientY)
+      ?.closest<HTMLElement>('[data-trip-drop-day][data-trip-drop-index]')
+    if (!dropElement) return
+
+    const targetDayIndex = Number(dropElement.dataset.tripDropDay)
+    const toIndex = Number(dropElement.dataset.tripDropIndex)
+    const targetCard = dayMapCards.find(({ day }) => day.day_index === targetDayIndex)
+    if (!targetCard || !Number.isFinite(targetDayIndex) || !Number.isFinite(toIndex)) return
+
+    setSelectedDayIndex(targetDayIndex)
+    await runDropOperation(payload.itemId, payload.fromDayIndex, targetDayIndex, targetCard.sortedItems, toIndex)
+  }
+
+  const handlePointerDragMove = (clientX: number, clientY: number) => {
+    if (!pointerDragRef.current) return
+
+    const dropElement = document
+      .elementFromPoint(clientX, clientY)
+      ?.closest<HTMLElement>('[data-trip-drop-day][data-trip-drop-index]')
+    if (!dropElement) {
+      setDragOverItemId(null)
       return
     }
 
-    const ids = sortedDayItems.map((it) => it.id).filter((id) => id !== itemId)
-    ids.splice(toIndex, 0, itemId)
-    await onBulkOps([{ op: 'reorder', day_index: dayIndex, ordered_item_ids: ids }])
+    const targetDayIndex = Number(dropElement.dataset.tripDropDay)
+    const toIndex = Number(dropElement.dataset.tripDropIndex)
+    const targetCard = dayMapCards.find(({ day }) => day.day_index === targetDayIndex)
+    const targetItem = targetCard?.sortedItems[toIndex]
+    setDragOverItemId(targetItem?.id || null)
+  }
+
+  const moveItemWithinDay = async (dayIndex: number, sortedDayItems: TripItem[], itemId: string, direction: -1 | 1) => {
+    const currentIndex = sortedDayItems.findIndex((item) => item.id === itemId)
+    const nextIndex = currentIndex + direction
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= sortedDayItems.length) return
+
+    const ids = sortedDayItems.map((item) => item.id)
+    const [movedId] = ids.splice(currentIndex, 1)
+    ids.splice(nextIndex, 0, movedId)
+
+    setSelectedDayIndex(dayIndex)
+    await onBulkOps(buildSameDayReorderOps(dayIndex, sortedDayItems, ids))
   }
 
   const startEditing = (item: TripItem) => {
@@ -295,7 +384,13 @@ export default function ItineraryArtifact({
   }
 
   const deleteItem = async (itemId: string) => {
-    await onBulkOps([{ op: 'delete', item_id: itemId }])
+    setItemActionError(null)
+    try {
+      await onBulkOps([{ op: 'delete', item_id: itemId }])
+      setPendingDeleteItemId((current) => (current === itemId ? null : current))
+    } catch {
+      setItemActionError('Could not delete that item. Refresh the trip and try again.')
+    }
   }
 
   if (!selectedDay) {
@@ -338,11 +433,12 @@ export default function ItineraryArtifact({
             {!readOnly && onRegenerateDay && (
               <button
                 onClick={() => onRegenerateDay(selectedDay.day_index)}
+                disabled={regeneratingDayIndex != null}
                 className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                 title="Rewrite this day only, leaving the rest of the trip unchanged"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Rewrite day
+                {regenerateDoneDayIndex === selectedDay.day_index ? <Check className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {regeneratingDayIndex === selectedDay.day_index ? 'Requesting…' : regenerateDoneDayIndex === selectedDay.day_index ? 'Rewrite sent' : 'Rewrite day'}
               </button>
             )}
           </div>
@@ -373,6 +469,19 @@ export default function ItineraryArtifact({
               <Check className="h-4 w-4" />
               {swapNotice}
             </span>
+          </div>
+        )}
+        {regenerateNotice && (
+          <div className="rounded-2xl border border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)]/70 px-4 py-3 text-sm font-semibold text-[var(--horizon)] shadow-[var(--panel-shadow)]">
+            <span className="inline-flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              {regenerateNotice}
+            </span>
+          </div>
+        )}
+        {itemActionError && (
+          <div className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm font-semibold text-[var(--terracotta)] shadow-[var(--panel-shadow)]">
+            {itemActionError}
           </div>
         )}
 
@@ -481,17 +590,20 @@ export default function ItineraryArtifact({
                   {!readOnly && onRegenerateDay && (
                     <button
                       onClick={() => onRegenerateDay(day.day_index)}
+                      disabled={regeneratingDayIndex != null}
                       className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                       title="Rewrite this day only, leaving the rest of the trip unchanged"
                     >
-                      <Sparkles className="h-3.5 w-3.5" />
-                      Rewrite this day
+                      {regenerateDoneDayIndex === day.day_index ? <Check className="h-3.5 w-3.5" /> : <Sparkles className="h-3.5 w-3.5" />}
+                      {regeneratingDayIndex === day.day_index ? 'Requesting…' : regenerateDoneDayIndex === day.day_index ? 'Rewrite sent' : 'Rewrite this day'}
                     </button>
                   )}
                 </div>
 
                 <div className="mt-4 space-y-2">
                   <div
+                    data-trip-drop-day={day.day_index}
+                    data-trip-drop-index={0}
                     onDragOver={(e) => {
                       if (!readOnly) e.preventDefault()
                     }}
@@ -509,8 +621,8 @@ export default function ItineraryArtifact({
                     return (
                     <div key={item.id}>
                       <div
-                        draggable={!readOnly}
-                        onDragStart={(e) => handleDragStart(item, day.day_index, e)}
+                        data-trip-drop-day={day.day_index}
+                        data-trip-drop-index={index}
                         onDragOver={(e) => {
                           if (readOnly) return
                           e.preventDefault()
@@ -530,8 +642,57 @@ export default function ItineraryArtifact({
                       >
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                           {!readOnly && (
-                            <div className="mt-0.5 text-foreground/20 group-hover:text-foreground/35 transition-colors">
-                              <GripVertical className="w-4 h-4" />
+                            <div className="flex items-center gap-1 text-foreground/28 transition-colors group-hover:text-foreground/45 sm:mt-0.5 sm:block">
+                              <span
+                                onPointerDown={(e) => {
+                                  pointerDragRef.current = {
+                                    itemId: item.id,
+                                    fromDayIndex: day.day_index,
+                                    startX: e.clientX,
+                                    startY: e.clientY,
+                                  }
+                                  e.currentTarget.setPointerCapture?.(e.pointerId)
+                                }}
+                                onPointerMove={(e) => handlePointerDragMove(e.clientX, e.clientY)}
+                                onPointerUp={(e) => {
+                                  const { clientX, clientY } = e
+                                  e.currentTarget.releasePointerCapture?.(e.pointerId)
+                                  void handlePointerDragEnd(clientX, clientY)
+                                }}
+                                onPointerCancel={(e) => {
+                                  pointerDragRef.current = null
+                                  e.currentTarget.releasePointerCapture?.(e.pointerId)
+                                }}
+                                className="inline-flex h-8 w-8 cursor-grab items-center justify-center rounded-xl text-foreground/35 active:cursor-grabbing"
+                                title={`Drag ${item.title}`}
+                                aria-label={`Drag ${item.title}`}
+                              >
+                                <GripVertical className="h-4 w-4 flex-shrink-0" />
+                              </span>
+                              <div className="flex gap-1 sm:mt-2 sm:flex-col">
+                                <button
+                                  type="button"
+                                  draggable={false}
+                                  onClick={() => moveItemWithinDay(day.day_index, sortedItems, item.id, -1)}
+                                  disabled={index === 0}
+                                  className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
+                                  title="Move earlier"
+                                  aria-label={`Move ${item.title} earlier`}
+                                >
+                                  <ArrowUp className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  draggable={false}
+                                  onClick={() => moveItemWithinDay(day.day_index, sortedItems, item.id, 1)}
+                                  disabled={index === sortedItems.length - 1}
+                                  className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
+                                  title="Move later"
+                                  aria-label={`Move ${item.title} later`}
+                                >
+                                  <ArrowDown className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
                             </div>
                           )}
 
@@ -613,7 +774,7 @@ export default function ItineraryArtifact({
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                                     transition={{ duration: 0.14 }}
-                                    className="absolute right-0 top-10 z-40 w-44 overflow-hidden rounded-2xl border border-rule bg-paper-raised p-1.5 shadow-[var(--shadow-lg)]"
+                                    className="fixed inset-x-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-[70] max-h-[min(18rem,calc(100dvh-8rem))] overflow-y-auto rounded-2xl border border-rule bg-paper-raised p-1.5 shadow-[var(--shadow-lg)] sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-10 sm:z-40 sm:max-h-none sm:w-44 sm:overflow-hidden"
                                   >
                                     <p className="px-2.5 pb-1.5 pt-1 text-[10px] uppercase tracking-[0.18em] text-foreground/45">
                                       Swap for
@@ -633,7 +794,7 @@ export default function ItineraryArtifact({
                               </AnimatePresence>
                             </div>
                             <button
-                              onClick={() => deleteItem(item.id)}
+                              onClick={() => setPendingDeleteItemId((current) => (current === item.id ? null : item.id))}
                               className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)]"
                               title="Delete"
                               aria-label={`Delete ${item.title}`}
@@ -644,6 +805,32 @@ export default function ItineraryArtifact({
                           )}
 	                        </div>
 	                      </div>
+
+                        {pendingDeleteItemId === item.id && (
+                          <div className="mt-2 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)]/75 p-3">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                              <p className="text-xs leading-relaxed text-[var(--terracotta)]">
+                                Delete “{item.title}” from this day?
+                              </p>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setPendingDeleteItemId(null)}
+                                  className="touch-target rounded-full border border-rule bg-paper-raised px-3 py-2 text-xs font-medium text-foreground/72"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => deleteItem(item.id)}
+                                  className="touch-target rounded-full border border-[color:var(--terracotta)]/30 bg-[var(--terracotta)] px-3 py-2 text-xs font-semibold text-white"
+                                >
+                                  Delete item
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
 	                      {(swapOptionsByItemId[item.id]?.length || swapErrorByItemId[item.id] || swapSuccessByItemId[item.id]) && (
 	                        <div
@@ -711,6 +898,8 @@ export default function ItineraryArtifact({
 	                      )}
 
 	                      <div
+                        data-trip-drop-day={day.day_index}
+                        data-trip-drop-index={index + 1}
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index + 1, e)}
                         className="h-2 rounded-lg"

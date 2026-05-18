@@ -1,0 +1,376 @@
+import { existsSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { chromium } from 'playwright-core'
+
+const require = createRequire(import.meta.url)
+
+const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
+const tripId = process.env.QA_TRIP_ID || ''
+const date = process.env.QA_A11Y_DATE || new Date().toISOString().slice(0, 10)
+const runId = process.env.QA_A11Y_RUN_ID || ''
+const artifactName = process.env.QA_A11Y_ARTIFACT_NAME || `accessibility-keyboard-${date}${runId ? `-${runId}` : ''}`
+const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const root = resolve(process.cwd(), '..')
+const artifactDir = resolve(root, 'qa', artifactName)
+const axePath = require.resolve('axe-core/axe.min.js')
+const axeSource = await readFile(axePath, 'utf8')
+
+const routeFilter = (process.env.QA_A11Y_ROUTES || '').split(',').map((entry) => entry.trim()).filter(Boolean)
+const viewportFilter = (process.env.QA_A11Y_VIEWPORTS || '').split(',').map((entry) => entry.trim()).filter(Boolean)
+const tabLimit = Number(process.env.QA_A11Y_TAB_LIMIT || '12')
+
+const allViewports = [
+  { id: 'phone', width: 390, height: 844 },
+  { id: 'desktop', width: 1440, height: 950 },
+]
+
+const allRoutes = [
+  { id: 'landing', path: '/', markers: ['Globe.travel', 'Start planning'] },
+  { id: 'planner', path: '/chat', markers: ['Planner', 'Describe your trip idea'] },
+  { id: 'saved-trips', path: '/saved', markers: ['Trips'] },
+  { id: 'account-profile', path: '/account', markers: ['Account'] },
+  { id: 'account-billing', path: '/account?tab=billing', markers: ['Plan and billing'] },
+  { id: 'login', path: '/login', markers: ['Welcome back', 'Continue as guest'] },
+  { id: 'signup', path: '/signup', markers: ['Create your account', 'Continue as guest'] },
+  { id: 'public-share', path: `/t/${shareSlug}`, markers: ['Start your own trip', 'Friend feedback'] },
+]
+
+if (tripId) {
+  allRoutes.push({
+    id: 'trip-studio',
+    path: `/trips/${tripId}`,
+    markers: ['Itinerary', 'Save trip', 'Build maps'],
+  })
+}
+
+const viewports = viewportFilter.length
+  ? allViewports.filter((viewport) => viewportFilter.includes(viewport.id))
+  : allViewports
+const routes = routeFilter.length
+  ? allRoutes.filter((route) => routeFilter.includes(route.id))
+  : allRoutes
+
+function markdownTable(rows) {
+  return [
+    '| Route | Viewport | Axe Critical/Serious | Axe Moderate | Keyboard Issues | Missing Markers | Result |',
+    '| --- | --- | ---: | ---: | ---: | --- | --- |',
+    ...rows.map((row) => (
+      `| ${row.routeId} | ${row.viewportId} | ${row.axe.blockingViolations.length} | ${row.axe.warningViolations.length} | ${row.keyboard.issues.length} | ${row.missingMarkers.length ? row.missingMarkers.join(', ') : 'none'} | ${row.ok ? 'Pass' : 'Fail'} |`
+    )),
+  ].join('\n')
+}
+
+function compactViolation(violation) {
+  return {
+    id: violation.id,
+    impact: violation.impact,
+    help: violation.help,
+    nodes: violation.nodes.slice(0, 5).map((node) => ({
+      target: node.target,
+      failureSummary: node.failureSummary,
+    })),
+  }
+}
+
+async function collectA11y(page, route, viewport) {
+  await page.setViewportSize({ width: viewport.width, height: viewport.height })
+  const response = await page.goto(`${baseUrl}${route.path}`, {
+    waitUntil: 'domcontentloaded',
+    timeout: 30000,
+  })
+
+  await page.waitForLoadState('networkidle', { timeout: 1500 }).catch(() => {})
+  await page.waitForTimeout(700)
+  await page.addScriptTag({ content: axeSource })
+
+  const preflight = await page.evaluate(({ markers }) => {
+    const text = document.body?.innerText || ''
+    const accessibleText = [
+      text,
+      ...Array.from(document.querySelectorAll('[aria-label], input[placeholder], textarea[placeholder]')).map((el) => (
+        el.getAttribute('aria-label') ||
+        el.getAttribute('placeholder') ||
+        ''
+      )),
+    ].join('\n')
+    const target = document.querySelector('#main-content')
+    const mainLandmark = document.querySelector('main, [role="main"], #main-content')
+    const skipLink = document.querySelector('a.skip-link[href="#main-content"]')
+    const heading = document.querySelector('h1')
+
+    return {
+      title: document.title,
+      url: location.href,
+      hasSkipLink: Boolean(skipLink),
+      hasSkipTarget: Boolean(target),
+      hasMainLandmark: Boolean(mainLandmark),
+      hasH1: Boolean(heading),
+      missingMarkers: markers.filter((marker) => !accessibleText.toLowerCase().includes(marker.toLowerCase())),
+    }
+  }, { markers: route.markers })
+
+  const axe = await page.evaluate(async () => {
+    return window.axe.run(document, {
+      runOnly: {
+        type: 'tag',
+        values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'],
+      },
+      resultTypes: ['violations'],
+    })
+  })
+
+  const blockingViolations = axe.violations
+    .filter((violation) => violation.impact === 'critical' || violation.impact === 'serious')
+    .map(compactViolation)
+
+  const warningViolations = axe.violations
+    .filter((violation) => violation.impact === 'moderate')
+    .map(compactViolation)
+
+  const keyboard = await collectKeyboardPath(page, Math.max(4, tabLimit))
+
+  const structureIssues = []
+  if (!preflight.hasSkipLink) structureIssues.push('Missing skip link')
+  if (!preflight.hasSkipTarget) structureIssues.push('Missing skip target')
+  if (!preflight.hasMainLandmark) structureIssues.push('Missing main landmark')
+  if (!preflight.hasH1) structureIssues.push('Missing h1')
+
+  const ok =
+    response &&
+    response.status() >= 200 &&
+    response.status() < 400 &&
+    preflight.missingMarkers.length === 0 &&
+    blockingViolations.length === 0 &&
+    structureIssues.length === 0 &&
+    keyboard.issues.length === 0
+
+  return {
+    routeId: route.id,
+    path: route.path,
+    viewportId: viewport.id,
+    requestedViewport: viewport,
+    status: response?.status() || 0,
+    ok,
+    preflight,
+    missingMarkers: preflight.missingMarkers,
+    structureIssues,
+    axe: {
+      blockingViolations,
+      warningViolations,
+      rawViolationCount: axe.violations.length,
+    },
+    keyboard,
+  }
+}
+
+async function collectKeyboardPath(page, limit) {
+  const sequence = []
+
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
+  })
+
+  for (let index = 0; index < limit; index += 1) {
+    await page.keyboard.press('Tab')
+    sequence.push(await page.evaluate(() => {
+      function visibleText(el) {
+        return (
+          el.getAttribute('aria-label') ||
+          el.getAttribute('title') ||
+          el.getAttribute('placeholder') ||
+          el.textContent ||
+          el.getAttribute('href') ||
+          el.tagName
+        ).trim().replace(/\s+/g, ' ').slice(0, 120)
+      }
+
+      const active = document.activeElement
+      if (!(active instanceof HTMLElement)) {
+        return {
+          tag: 'none',
+          label: 'No active element',
+          visible: false,
+          hasAccessibleName: false,
+          rect: null,
+        }
+      }
+
+      const rect = active.getBoundingClientRect()
+      const style = window.getComputedStyle(active)
+      const label = visibleText(active)
+
+      return {
+        tag: active.tagName.toLowerCase(),
+        label,
+        role: active.getAttribute('role') || '',
+        href: active.getAttribute('href') || '',
+        visible:
+          rect.width > 0 &&
+          rect.height > 0 &&
+          style.display !== 'none' &&
+          style.visibility !== 'hidden',
+        hasAccessibleName: Boolean(label),
+        rect: {
+          x: Math.round(rect.x),
+          y: Math.round(rect.y),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        },
+      }
+    }))
+  }
+
+  const issues = []
+  const usableSequence = sequence.filter((entry) => (
+    entry.tag !== 'body' &&
+    entry.tag !== 'html' &&
+    entry.tag !== 'nextjs-portal'
+  ))
+  const uniqueLabels = new Set(usableSequence.map((entry) => `${entry.tag}:${entry.label}`))
+  const hiddenFocus = usableSequence.filter((entry) => !entry.visible)
+  const unnamedFocus = usableSequence.filter((entry) => !entry.hasAccessibleName)
+
+  if (usableSequence.length < 3) issues.push(`Only ${usableSequence.length} usable focus stops in first ${limit} tabs`)
+  if (uniqueLabels.size < 3) issues.push(`Only ${uniqueLabels.size} distinct focus targets in first ${limit} tabs`)
+  if (hiddenFocus.length > 0) issues.push(`${hiddenFocus.length} hidden or zero-size focus target(s)`)
+  if (unnamedFocus.length > 0) issues.push(`${unnamedFocus.length} focused control(s) without an accessible name`)
+
+  return { limit, sequence, issues }
+}
+
+if (!existsSync(chromePath)) {
+  console.error(`Chrome executable not found at ${chromePath}. Set QA_CHROME_PATH to a Chrome-compatible browser.`)
+  process.exit(1)
+}
+
+if (routeFilter.length && routes.length !== routeFilter.length) {
+  const found = new Set(routes.map((route) => route.id))
+  const missing = routeFilter.filter((routeId) => !found.has(routeId))
+  console.error(`Unknown QA_A11Y_ROUTES entries: ${missing.join(', ')}`)
+  process.exit(1)
+}
+
+if (viewportFilter.length && viewports.length !== viewportFilter.length) {
+  const found = new Set(viewports.map((viewport) => viewport.id))
+  const missing = viewportFilter.filter((viewportId) => !found.has(viewportId))
+  console.error(`Unknown QA_A11Y_VIEWPORTS entries: ${missing.join(', ')}`)
+  process.exit(1)
+}
+
+await mkdir(artifactDir, { recursive: true })
+
+const browser = await chromium.launch({
+  executablePath: chromePath,
+  headless: true,
+  args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
+})
+
+const results = []
+const failures = []
+
+for (const viewport of viewports) {
+  const context = await browser.newContext({
+    viewport: { width: viewport.width, height: viewport.height },
+    deviceScaleFactor: 1,
+  })
+  const page = await context.newPage()
+
+  for (const route of routes) {
+    console.error(`[qa:a11y] ${route.id} @ ${viewport.id}`)
+    const result = await collectA11y(page, route, viewport)
+    results.push(result)
+    if (!result.ok) failures.push(result)
+  }
+
+  await context.close()
+}
+
+const summary = {
+  baseUrl,
+  date,
+  runId: runId || null,
+  shareSlug,
+  tripId: tripId || null,
+  artifactDir,
+  checked: results.length,
+  passed: results.filter((result) => result.ok).length,
+  failed: failures.length,
+  routes: routes.map((route) => route.id),
+  viewports,
+  tabLimit,
+  results,
+  failures: failures.map((failure) => ({
+    routeId: failure.routeId,
+    viewportId: failure.viewportId,
+    status: failure.status,
+    missingMarkers: failure.missingMarkers,
+    structureIssues: failure.structureIssues,
+    blockingViolations: failure.axe.blockingViolations,
+    keyboardIssues: failure.keyboard.issues,
+    focusSequence: failure.keyboard.sequence,
+  })),
+}
+
+const jsonPath = resolve(artifactDir, 'summary.json')
+await writeFile(jsonPath, JSON.stringify(summary, null, 2))
+
+const md = `# Accessibility And Keyboard Smoke
+
+Date: ${date}
+Environment: ${baseUrl}
+Public share slug: ${shareSlug}
+Trip Studio fixture: ${tripId || 'not included'}
+
+## Result
+
+- Checked: ${summary.checked}
+- Passed: ${summary.passed}
+- Failed: ${summary.failed}
+- Artifact JSON: \`qa/${artifactName}/summary.json\`
+
+${markdownTable(results)}
+
+## Failure Detail
+
+${failures.length === 0 ? 'No failures.' : failures.map((failure) => `### ${failure.routeId} / ${failure.viewportId}
+
+- Status: ${failure.status}
+- Missing markers: ${failure.missingMarkers.length ? failure.missingMarkers.join(', ') : 'none'}
+- Structure issues: ${failure.structureIssues.length ? failure.structureIssues.join(', ') : 'none'}
+- Axe critical/serious violations: ${failure.axe.blockingViolations.length ? JSON.stringify(failure.axe.blockingViolations, null, 2) : 'none'}
+- Keyboard issues: ${failure.keyboard.issues.length ? failure.keyboard.issues.join('; ') : 'none'}
+- First focus stops: ${failure.keyboard.sequence.slice(0, 8).map((entry) => `${entry.tag}:${entry.label}`).join(' -> ')}
+`).join('\n')}
+
+## Notes
+
+- This gate injects \`axe-core\` into local Chrome and fails on critical/serious WCAG violations.
+- Moderate axe findings are recorded as warnings so they can be triaged without blocking unrelated release work.
+- The keyboard smoke tabs through the first ${tabLimit} focus stops and fails hidden, unnamed, or trapped/empty focus paths.
+- The release shell now includes a global skip link to \`#main-content\` so keyboard users can bypass repeated navigation.
+`
+
+const mdPath = resolve(artifactDir, 'README.md')
+await writeFile(mdPath, md)
+
+console.log(JSON.stringify({
+  baseUrl,
+  checked: summary.checked,
+  passed: summary.passed,
+  failed: summary.failed,
+  artifactDir,
+  summaryPath: jsonPath,
+  reportPath: mdPath,
+}, null, 2))
+
+await Promise.race([
+  browser.close(),
+  new Promise((resolve) => setTimeout(resolve, 5000)),
+])
+
+process.exit(failures.length > 0 ? 1 : 0)

@@ -6,6 +6,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const tripId = process.env.QA_TRIP_ID
 const shareSlug = process.env.QA_SHARE_SLUG
+const expectOwner = process.env.QA_EXPECT_OWNER !== '0'
 const failures = []
 
 function fail(name, details = {}) {
@@ -151,7 +152,7 @@ if (tripId) {
   const privateTripOk =
     tripApi.response.ok &&
     typeof trip?.title === 'string' &&
-    trip.is_owner !== false &&
+    (!expectOwner || trip.is_owner !== false) &&
     days.length > 0 &&
     hasItems &&
     hasMappedItems &&
@@ -163,6 +164,7 @@ if (tripId) {
     status: tripApi.response.status,
     tripTitle: trip?.title,
     isOwner: trip?.is_owner,
+    expectOwner,
     dayCount: days.length,
     dayIntegrity,
   }

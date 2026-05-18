@@ -26,6 +26,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://events.mapbox.com" />
       </head>
       <body className="antialiased bg-background text-foreground [color-scheme:light]">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <Script
           id="google-tag-manager"
           strategy="afterInteractive"
@@ -45,7 +48,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        {children}
+        <div id="main-content" tabIndex={-1}>
+          {children}
+        </div>
       </body>
     </html>
   );

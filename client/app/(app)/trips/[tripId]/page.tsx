@@ -107,17 +107,27 @@ function TripStudioPageContent() {
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [chatOpen, setChatOpen] = useState(false)
   const [isHydratingMaps, setIsHydratingMaps] = useState(false)
+  const [buildMapsDone, setBuildMapsDone] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
   const [isSavingTrip, setIsSavingTrip] = useState(false)
   const [isSharingTrip, setIsSharingTrip] = useState(false)
   const [saveDone, setSaveDone] = useState(false)
   const [shareDone, setShareDone] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
+  const [regeneratingDayIndex, setRegeneratingDayIndex] = useState<number | null>(null)
+  const [regenerateDoneDayIndex, setRegenerateDoneDayIndex] = useState<number | null>(null)
+  const [regenerateNotice, setRegenerateNotice] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [actionNotice, setActionNotice] = useState<string | null>(null)
   const [pageOrigin, setPageOrigin] = useState('')
   const [groupBrief, setGroupBrief] = useState<GroupBrief | null>(null)
   const [creatingWorkflow, setCreatingWorkflow] = useState<string | null>(null)
   const [workflowError, setWorkflowError] = useState<string | null>(null)
+  const qaForceRewriteUnavailable = process.env.NODE_ENV === 'development' && searchParams.get('qaRewriteUnavailable') === '1'
+  const qaForceBuildMapsFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaBuildMapsFailure') === '1'
+  const qaForceOptimizeFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaOptimizeFailure') === '1'
+  const qaForceShareFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaShareFailure') === '1'
+  const qaForceWorkflowFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaWorkflowFailure') === '1'
 
   // Capture window.location.origin after mount to avoid SSR ↔ client mismatch
   useEffect(() => { setPageOrigin(window.location.origin) }, [])
@@ -310,9 +320,40 @@ function TripStudioPageContent() {
     })
   }, [searchParams, sendMessage, tripId, chatReady])
 
-  const handleRegenerateDay = useCallback((dayIndex: number) => {
-    sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; do not use generic meal labels.`)
-  }, [sendMessage])
+  const handleRegenerateDay = useCallback(async (dayIndex: number) => {
+    if (!canEditTrip) {
+      setActionError('This is a shared trip preview. Start your own trip to rewrite an editable day.')
+      return
+    }
+
+    if (!chatReady || qaForceRewriteUnavailable) {
+      setActionError('Planner chat is still connecting. Try Rewrite day again in a moment.')
+      return
+    }
+
+    const pendingNotice = `Rewrite request for Day ${dayIndex} is opening in Planner chat.`
+    const notice = `Rewrite request sent for Day ${dayIndex}. Planner chat is open so you can watch the update.`
+
+    setActionError(null)
+    setRegenerateNotice(pendingNotice)
+    setRegenerateDoneDayIndex(null)
+    setRegeneratingDayIndex(dayIndex)
+    setChatOpen(true)
+
+    try {
+      await sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; do not use generic meal labels.`)
+      setRegenerateDoneDayIndex(dayIndex)
+      setRegenerateNotice(notice)
+      setTimeout(() => {
+        setRegenerateDoneDayIndex((current) => (current === dayIndex ? null : current))
+        setRegenerateNotice((current) => (current === notice ? null : current))
+      }, 4500)
+    } catch {
+      setActionError('Could not send the rewrite request. Try again, or use Planner chat directly.')
+    } finally {
+      setRegeneratingDayIndex((current) => (current === dayIndex ? null : current))
+    }
+  }, [canEditTrip, chatReady, qaForceRewriteUnavailable, sendMessage])
 
   const handleSwapItem = useCallback(async (item: TripItem, preference: string): Promise<SwapCandidate[]> => {
     const response = await fetch(`/api/trips/${tripId}/items/${item.id}/swap`, {
@@ -346,30 +387,52 @@ function TripStudioPageContent() {
     const targetDay = dayIndex ?? ensureSelectedDayExists
     setIsOptimizing(true)
     setOptimizeDone(false)
+    setActionError(null)
     try {
-      await fetch(`/api/trips/${tripId}/days/${targetDay}/optimize`, { method: 'POST' })
+      if (qaForceOptimizeFailure) throw new Error('Optimize failed')
+      const response = await fetch(`/api/trips/${tripId}/days/${targetDay}/optimize`, { method: 'POST' })
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null)
+        const message = typeof payload?.error === 'string' ? payload.error : 'Optimize failed'
+        throw new Error(message)
+      }
       await refetch()
       setOptimizeDone(true)
       setTimeout(() => setOptimizeDone(false), 2500)
+    } catch {
+      setActionError('Could not optimize this day. The itinerary is still saved; try again after checking the mapped stops.')
     } finally {
       setIsOptimizing(false)
     }
-  }, [tripId, ensureSelectedDayExists, refetch, isOptimizing, canEditTrip])
+  }, [tripId, ensureSelectedDayExists, refetch, isOptimizing, canEditTrip, qaForceOptimizeFailure])
 
   const hydrateMaps = useCallback(async () => {
     if (isHydratingMaps || !canEditTrip) return
     setActionError(null)
+    setBuildMapsDone(false)
     setIsHydratingMaps(true)
     try {
+      if (qaForceBuildMapsFailure) throw new Error('Map rebuild failed')
       const response = await fetch(`/api/trips/${tripId}/hydrate-map`, { method: 'POST' })
-      if (!response.ok) throw new Error('Map rebuild failed')
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null)
+        const message = typeof payload?.error === 'string' ? payload.error : 'Map rebuild failed'
+        throw new Error(message)
+      }
       await refetch()
-    } catch {
-      setActionError('Could not rebuild the maps. Try again, or refresh the page if the trip changed.')
+      setBuildMapsDone(true)
+      setTimeout(() => setBuildMapsDone(false), 2500)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : ''
+      setActionError(
+        message === 'Mapbox token not configured'
+          ? 'Map tools are temporarily unavailable. The itinerary is still saved; try rebuilding maps after the map service is configured.'
+          : 'Could not rebuild the maps. Try again, or refresh the page if the trip changed.'
+      )
     } finally {
       setIsHydratingMaps(false)
     }
-  }, [tripId, refetch, isHydratingMaps, canEditTrip])
+  }, [tripId, refetch, isHydratingMaps, canEditTrip, qaForceBuildMapsFailure])
 
   useEffect(() => {
     hydrationAttemptedRef.current = null
@@ -436,20 +499,36 @@ function TripStudioPageContent() {
 
   const copyInviteLink = useCallback(async () => {
     if (!shareUrl) return
-    await navigator.clipboard.writeText(shareUrl)
+    setActionError(null)
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setActionNotice('Invite link copied.')
+      setTimeout(() => setActionNotice((current) => (current === 'Invite link copied.' ? null : current)), 2400)
+    } catch {
+      setActionError('Could not copy the invite link automatically. Select the link and copy it manually.')
+    }
   }, [shareUrl])
 
   const shareInvite = useCallback(async () => {
     if (!shareUrl) return
-    if (navigator.share) {
-      await navigator.share({
-        title: trip?.title || 'Trip ideas',
-        text: inviteMessage,
-        url: shareUrl,
-      })
-      return
+    setActionError(null)
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: trip?.title || 'Trip ideas',
+          text: inviteMessage,
+          url: shareUrl,
+        })
+        setActionNotice('Share sheet opened.')
+        setTimeout(() => setActionNotice((current) => (current === 'Share sheet opened.' ? null : current)), 2400)
+        return
+      }
+      await navigator.clipboard.writeText(inviteMessage || shareUrl)
+      setActionNotice('Invite message copied.')
+      setTimeout(() => setActionNotice((current) => (current === 'Invite message copied.' ? null : current)), 2400)
+    } catch {
+      setActionError('Could not open sharing automatically. The public link is still available above.')
     }
-    await navigator.clipboard.writeText(inviteMessage)
   }, [shareUrl, inviteMessage, trip?.title])
 
   const shareWithFriends = useCallback(async () => {
@@ -463,6 +542,7 @@ function TripStudioPageContent() {
     setShareDone(false)
     setActionError(null)
     try {
+      if (qaForceShareFailure) throw new Error('Share failed')
       if (!trip.is_public) {
         const response = await fetch(`/api/trips/${tripId}`, {
           method: 'PATCH',
@@ -492,7 +572,7 @@ function TripStudioPageContent() {
     } finally {
       setIsSharingTrip(false)
     }
-  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip])
+  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip, qaForceShareFailure])
 
   const latestWorkflowJob = workflowJobs[0]
 
@@ -501,6 +581,7 @@ function TripStudioPageContent() {
     setWorkflowError(null)
     setCreatingWorkflow(type)
     try {
+      if (qaForceWorkflowFailure) throw new Error('Planner workflow could not start')
       const res = await fetch(`/api/trips/${tripId}/planner-jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -513,7 +594,7 @@ function TripStudioPageContent() {
     } finally {
       setCreatingWorkflow(null)
     }
-  }, [tripId, creatingWorkflow, refetchWorkflowJobs])
+  }, [tripId, creatingWorkflow, refetchWorkflowJobs, qaForceWorkflowFailure])
 
   if (isLoading && !resolvedPayload) {
     return (
@@ -647,11 +728,16 @@ function TripStudioPageContent() {
             <button
               onClick={hydrateMaps}
               disabled={isHydratingMaps || !canEditTrip}
-              className="touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+              className={cn(
+                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
+                buildMapsDone
+                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                  : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
+              )}
               title="Repair or rebuild day map locations and routes"
             >
-              <Route className="h-4 w-4 text-[var(--horizon)]" />
-              {isHydratingMaps ? 'Building maps…' : 'Build maps'}
+              {buildMapsDone ? <Check className="h-4 w-4" /> : <Route className="h-4 w-4 text-[var(--horizon)]" />}
+              {isHydratingMaps ? 'Building maps…' : buildMapsDone ? 'Maps built' : 'Build maps'}
             </button>
             <button
               onClick={shareWithFriends}
@@ -681,6 +767,10 @@ function TripStudioPageContent() {
           {actionError ? (
             <p className="w-full rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-xs text-[var(--terracotta)] lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
               {actionError}
+            </p>
+          ) : actionNotice ? (
+            <p className="w-full rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-3 py-2 text-xs text-[var(--moss)] lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
+              {actionNotice}
             </p>
           ) : !canEditTrip ? (
             <p className="w-full rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62 lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
@@ -955,7 +1045,7 @@ function TripStudioPageContent() {
         dragConstraints={studioRef}
         dragMomentum={false}
         dragElastic={0.08}
-        className="relative z-20 mx-3 mb-6 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:inset-x-0 xl:bottom-4 xl:top-44 xl:mx-auto xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-3rem))]"
+        className="relative z-20 mx-3 mb-6 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:bottom-4 xl:left-1/2 xl:right-auto xl:top-44 xl:mx-0 xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-27rem))] xl:-translate-x-[calc(50%+8rem)]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <div
@@ -973,6 +1063,9 @@ function TripStudioPageContent() {
             onSelectItem={onSelectItem}
             onBulkOps={onBulkOps}
             onRegenerateDay={handleRegenerateDay}
+            regeneratingDayIndex={regeneratingDayIndex}
+            regenerateDoneDayIndex={regenerateDoneDayIndex}
+            regenerateNotice={regenerateNotice}
             onSwapItem={handleSwapItem}
             onApplySwapItem={handleApplySwapItem}
             onOptimize={handleOptimize}

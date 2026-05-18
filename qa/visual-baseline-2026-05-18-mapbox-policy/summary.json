@@ -1,0 +1,705 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-18",
+  "runId": "mapbox-policy",
+  "shareSlug": "x3m2c8cnws",
+  "tripId": "f1239381-f38f-4ede-9e2c-9d5321c27a59",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "checked": 10,
+  "passed": 10,
+  "failed": 0,
+  "routes": [
+    "public-share",
+    "trip-studio"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    },
+    {
+      "id": "wide",
+      "width": 1728,
+      "height": 1050
+    }
+  ],
+  "results": [
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 5984,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 2,
+        "bodyPreview": "Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 stops Verified s"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Browser Studio cc52e60f",
+          "QA Browser Studio cc52e60f",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "QA BROWSER STUDIO CC52E60F ITINERARY QA Browser Studio cc52e60f Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Invite friends to react to this QA Browser Studio cc52e60f plan. Keep the planning flow social without burying the itinerary in extra controls. Enable public link Reviews open automatically once the trip is public. CREW BRIEF Add crew context in chat Crew size not set yet Budget still flexible Origin city not set Vibe: Balanced trip with broad ap"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 5375,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 348,
+            "y": 588,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 5,
+        "bodyPreview": "Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 stops Verified s"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Browser Studio cc52e60f",
+          "QA Browser Studio cc52e60f",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 16,
+        "bodyPreview": "Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign QA BROWSER STUDIO CC52E60F ITINERARY QA Browser Studio cc52e60f Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Invite friends to react to this QA Browser Studio cc52e60f plan. Keep the planning flow social without burying the itinerary in extra controls. Enable public link Reviews open automatically once the trip i"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 390,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 12,
+        "bodyPreview": "Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 stops Verified s"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Browser Studio cc52e60f",
+          "QA Browser Studio cc52e60f",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 431,
+            "y": 617,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 24,
+        "bodyPreview": "Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Browser Studio cc52e60f 4 routed stops across 2 days QA BROWSER STUDIO CC52E60F ITINERARY QA Browser Studio cc52e60f Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Invite friends to react to this QA Browser Studio cc52e60f plan. Keep the planning flow social without burying the itinerary in extra "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 470,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 12,
+        "bodyPreview": "Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 stops Verified s"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Browser Studio cc52e60f",
+          "QA Browser Studio cc52e60f",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 511,
+            "y": 617,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 26,
+        "bodyPreview": "Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Browser Studio cc52e60f 4 routed stops across 2 days QA BROWSER STUDIO CC52E60F ITINERARY QA Browser Studio cc52e60f Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Invite friends to react to this QA Browser Studio cc52e60f plan. Keep the planning flow social without burying the itinerary in extra "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 614,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 12,
+        "bodyPreview": "Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 stops Verified s"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/public-share-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/trips/f1239381-f38f-4ede-9e2c-9d5321c27a59",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 1050,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "QA Browser Studio cc52e60f",
+          "QA Browser Studio cc52e60f",
+          "Itinerary for Day 1"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 655,
+            "y": 617,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "visibleControlCount": 28,
+        "bodyPreview": "Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Browser Studio cc52e60f 4 routed stops across 2 days QA BROWSER STUDIO CC52E60F ITINERARY QA Browser Studio cc52e60f Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Invite friends to react to this QA Browser Studio cc52e60f plan. Keep the planning flow social without burying the itinerary in extra "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-mapbox-policy/screenshots/trip-studio-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

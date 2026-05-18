@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
 import { ArrowRight, Compass, Send, Sparkles } from 'lucide-react'
@@ -51,6 +52,7 @@ const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
 }
 
 function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
+  const searchParams = useSearchParams()
   const [authorName, setAuthorName] = useState('')
   const [authorEmail, setAuthorEmail] = useState('')
   const [sentiment, setSentiment] = useState<(typeof sentimentOptions)[number]['value']>('love_it')
@@ -58,6 +60,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const qaForceFeedbackFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaFeedbackFailure') === '1'
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['trip-share', shareSlug],
@@ -69,7 +72,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
     retry: false,
   })
 
-  const { data: feedback = [], refetch: refetchFeedback } = useQuery({
+  const { data: feedback = [], isError: feedbackError, refetch: refetchFeedback } = useQuery({
     queryKey: ['trip-share-feedback', shareSlug],
     queryFn: async () => {
       const res = await fetch(`/api/trips/share/${shareSlug}/feedback`, { cache: 'no-store' })
@@ -91,28 +94,36 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
     setSubmitting(true)
     setSubmitted(false)
     setSubmitError(null)
-    const res = await fetch(`/api/trips/share/${shareSlug}/feedback`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        author_name: authorName.trim(),
-        author_email: authorEmail.trim(),
-        sentiment,
-        comment: comment.trim(),
-      }),
-    })
+    try {
+      if (qaForceFeedbackFailure) throw new Error('Feedback is temporarily unavailable in QA mode.')
+      const res = await fetch(`/api/trips/share/${shareSlug}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          author_name: authorName.trim(),
+          author_email: authorEmail.trim(),
+          sentiment,
+          comment: comment.trim(),
+        }),
+      })
 
-    if (res.ok) {
-      setComment('')
-      setAuthorEmail('')
-      setSubmitted(true)
-      await refetchFeedback()
-      setTimeout(() => setSubmitted(false), 2600)
-    } else {
-      const payload = await res.json().catch(() => null)
-      setSubmitError(payload?.error || 'Could not send feedback. Please try again.')
+      if (res.ok) {
+        setComment('')
+        setAuthorEmail('')
+        setSubmitted(true)
+        await refetchFeedback()
+        setTimeout(() => setSubmitted(false), 2600)
+      } else {
+        const payload = await res.json().catch(() => null)
+        setSubmitError(payload?.error === 'Invalid feedback'
+          ? 'Add your name and a note of at least 8 characters before sending.'
+          : payload?.error || 'Could not send feedback. Please try again.')
+      }
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Could not send feedback. Please try again.')
+    } finally {
+      setSubmitting(false)
     }
-    setSubmitting(false)
   }
 
   return (
@@ -245,7 +256,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                         )}
                       >
                         <span className="block text-sm font-semibold">{option.label}</span>
-                        <span className="mt-0.5 block text-xs opacity-75">{option.helper}</span>
+                        <span className="mt-0.5 block text-xs">{option.helper}</span>
                       </button>
                     ))}
                   </div>
@@ -262,6 +273,10 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     placeholder="Example: Day 2 looks perfect, but can we leave more space before dinner?"
                     className="w-full resize-none rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
                   />
+                  <div className="flex items-center justify-between gap-3 text-xs text-ink-3">
+                    <span>{canSubmit ? 'Ready to send' : 'Add your name and at least 8 characters.'}</span>
+                    <span>{comment.trim().length}/600</span>
+                  </div>
                   <button
                     onClick={submitFeedback}
                     disabled={!canSubmit}
@@ -273,6 +288,21 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                 </div>
               </section>
 
+              {feedbackError && (
+                <section className="rounded-[26px] border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] p-5 text-sm text-[var(--terracotta)] shadow-[var(--panel-shadow)] md:p-6">
+                  <p className="font-semibold">Friend feedback could not load.</p>
+                  <p className="mt-1 leading-relaxed">
+                    The itinerary is still available. Try refreshing reactions in a moment.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => refetchFeedback()}
+                    className="touch-target mt-3 rounded-full border border-[color:var(--terracotta)]/30 bg-paper-raised px-4 py-2 text-xs font-semibold text-[var(--terracotta)]"
+                  >
+                    Retry feedback
+                  </button>
+                </section>
+              )}
               <FriendFeedbackPanel feedback={feedback} />
               <ShareLinkCard shareUrl={shareUrl} title={trip.title} />
 

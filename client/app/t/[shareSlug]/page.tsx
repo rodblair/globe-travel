@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: SharePageProps): Promise<Meta
   const title = `${trip.title} | Globe.travel`
   const description = `Review the ${trip.title} itinerary, react to the day plan, and help the group choose the trip everyone can say yes to.`
   const url = `/t/${shareSlug}`
+  const imageUrl = `/api/share-card/${shareSlug}`
 
   return {
     title,
@@ -43,11 +44,20 @@ export async function generateMetadata({ params }: SharePageProps): Promise<Meta
       url,
       siteName: 'Globe.travel',
       type: 'website',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${trip.title} Globe.travel itinerary map`,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images: [imageUrl],
     },
   }
 }

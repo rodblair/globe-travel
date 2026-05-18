@@ -28,6 +28,7 @@ export function DestinationPin({
 }) {
   return (
     <span
+      role={label ? "img" : undefined}
       className={cn(
         "pin-host relative inline-flex items-center justify-center",
         "transition-transform duration-200 ease-out",

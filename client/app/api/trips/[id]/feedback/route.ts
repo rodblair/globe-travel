@@ -6,6 +6,17 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   const { supabase, user } = await requireUser()
   if (!user) return new NextResponse('Unauthorized', { status: 401 })
 
+  const { data: trip, error: tripError } = await supabase
+    .from('trips')
+    .select('id,user_id,is_public')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (tripError) return NextResponse.json({ error: tripError.message }, { status: 500 })
+  if (!trip || (trip.user_id !== user.id && !trip.is_public)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
   const { data, error } = await supabase
     .from('trip_feedback')
     .select('id,author_name,author_email,sentiment,comment,created_at')
@@ -15,4 +26,3 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data || [])
 }
-

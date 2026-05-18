@@ -103,8 +103,8 @@ function ChatPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user } = useAuth()
-  const initialQueryRef = useRef<string | null>(searchParams.get('q'))
-  const sentInitialRef = useRef(false)
+  const sentQueryRef = useRef<string | null>(null)
+  const queryPrompt = searchParams.get('q')?.trim() || ''
   const [activeTripId, setActiveTripId] = useState<string | null>(null)
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [mapStopsByKey, setMapStopsByKey] = useState<Record<string, ChatMapStop[]>>({})
@@ -261,14 +261,13 @@ function ChatPageContent() {
   }, [draftInput, planningInProgress, sendMessage])
 
   useEffect(() => {
-    const q = initialQueryRef.current
-    if (!q || sentInitialRef.current) return
-    sentInitialRef.current = true
+    if (!queryPrompt || sentQueryRef.current === queryPrompt) return
     const timer = setTimeout(() => {
-      sendMessage(q)
+      sentQueryRef.current = queryPrompt
+      sendMessage(queryPrompt)
     }, 120)
     return () => clearTimeout(timer)
-  }, [sendMessage])
+  }, [queryPrompt, sendMessage])
 
   useEffect(() => {
     localStorage.setItem(mapStorageKey, JSON.stringify(mapStops))
@@ -327,7 +326,7 @@ function ChatPageContent() {
   )
 
   return (
-    <div className="relative flex min-h-full flex-col overflow-hidden bg-paper text-foreground">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-paper text-foreground">
       <div className="paper-grain absolute inset-0 pointer-events-none" />
 
       {/* Header */}
@@ -352,12 +351,12 @@ function ChatPageContent() {
         </div>
       </div>
 
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-5 md:px-6 xl:overflow-hidden">
-        <div className="mx-auto grid min-h-full max-w-7xl gap-5 pb-24 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
-          <div className="flex min-h-[560px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-0">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 md:py-5 xl:overflow-hidden">
+        <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-6 md:gap-5 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
+          <div className="flex min-h-[420px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[520px] xl:min-h-0">
             {activeMessages.length === 0 ? (
-              <div className="flex min-h-[560px] flex-col overflow-y-auto">
-                <div className="relative flex flex-1 items-start justify-center px-6 py-10 md:px-10">
+              <div className="flex min-h-[420px] flex-col overflow-y-auto sm:min-h-[520px]">
+                <div className="relative flex flex-1 items-start justify-center px-5 py-7 md:px-10 md:py-10">
                   <div className="absolute inset-0 -z-0 opacity-40">
                     <ContourOverlay density="sparse" />
                   </div>
@@ -452,7 +451,7 @@ function ChatPageContent() {
             )}
           </div>
 
-          <aside className="flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] xl:min-h-[280px]">
+          <aside className="flex min-h-[300px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[360px] xl:min-h-[280px]">
             <div className="border-b border-rule px-4 py-3">
               <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
                 {tripPayload ? 'ITINERARY MAPS' : 'PLAN PREVIEW'}
@@ -553,7 +552,10 @@ function ChatPageContent() {
       </div>
 
       {activeMessages.length === 0 && (
-        <div className="relative z-10 flex-shrink-0 border-t border-rule bg-paper-raised/85 backdrop-blur-md px-4 py-4">
+        <div
+          className="relative z-30 flex-shrink-0 border-t border-rule bg-paper-raised/92 px-4 py-3 shadow-[0_-8px_24px_rgba(12,31,51,0.06)] backdrop-blur-md md:py-4"
+          style={{ paddingBottom: 'max(0.85rem, env(safe-area-inset-bottom))' }}
+        >
           {planningError && (
             <div className="max-w-2xl mx-auto mb-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] px-4 py-2 text-body-sm text-[var(--terracotta)]">
               {planningError}
@@ -571,7 +573,7 @@ function ChatPageContent() {
               disabled={planningInProgress}
               value={draftInput}
               onChange={(event) => setDraftInput(event.target.value)}
-              className="flex-1 bg-transparent py-2 text-body text-foreground placeholder:text-ink-3 focus:outline-none disabled:opacity-50"
+              className="min-h-11 flex-1 bg-transparent py-2 text-body text-foreground placeholder:text-ink-3 focus:outline-none disabled:opacity-50"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   submitDraftInput()

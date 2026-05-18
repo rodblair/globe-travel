@@ -1,0 +1,352 @@
+[
+  {
+    "id": "lisbon-3-day-friends-nightlife",
+    "shareSlug": "qab1250de81",
+    "tripTitle": "QA 3 Days in Lisbon b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Alfama arrival",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Belém and riverfront",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Chiado finale",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "porto-1-day-food-viewpoints",
+    "shareSlug": "qab1250de82",
+    "tripTitle": "QA 1 Day in Porto b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Ribeira food and viewpoints",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "mexico-city-4-day-food-museums-nightlife",
+    "shareSlug": "qab1250de83",
+    "tripTitle": "QA 4 Days in Mexico City b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Roma and Condesa food",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Historic center",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Museums and Chapultepec",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 4,
+        "title": "Coyoacan and one big night",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "tokyo-3-day-calm-evening",
+    "shareSlug": "qab1250de84",
+    "tripTitle": "QA 3 Days in Tokyo b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "First-time west side",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Asakusa and river",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Calm evening finale",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "rome-weekend-classics-drinks",
+    "shareSlug": "qab1250de85",
+    "tripTitle": "QA Rome Weekend b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Classic Rome",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "countries": [
+          "Italy"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Piazzas and late drinks",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "countries": [
+          "Italy"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "barcelona-3-day-budget-beaches",
+    "shareSlug": "qab1250de86",
+    "tripTitle": "QA 3 Days in Barcelona b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Gaudi and tapas",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Gothic quarter budget day",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Beach afternoon",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "london-3-day-rain-safe",
+    "shareSlug": "qab1250de87",
+    "tripTitle": "QA 3 Days in London b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Rain-safe museums",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "United Kingdom"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Markets and South Bank",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "United Kingdom"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Mixed-energy finale",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "United Kingdom"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "paris-4-day-couples-premium",
+    "shareSlug": "qab1250de88",
+    "tripTitle": "QA 4 Days in Paris b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Left Bank arrival",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Art without the obvious",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Canal and neighborhoods",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 4,
+        "title": "Premium dinner night",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "copenhagen-2-day-design-food",
+    "shareSlug": "qab1250de89",
+    "tripTitle": "QA 2 Days in Copenhagen b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Design and bakeries",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Denmark"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Bike-friendly harbor",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Denmark"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  },
+  {
+    "id": "berlin-3-day-nightlife-culture",
+    "shareSlug": "qab1250de810",
+    "tripTitle": "QA 3 Days in Berlin b1250de8",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Museum Island culture",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Germany"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 2,
+        "title": "Neighborhood day",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Germany"
+        ],
+        "usableRouteCount": 1
+      },
+      {
+        "dayIndex": 3,
+        "title": "Serious nightlife",
+        "itemCount": 2,
+        "mappedItemCount": 2,
+        "countries": [
+          "Germany"
+        ],
+        "usableRouteCount": 1
+      }
+    ]
+  }
+]

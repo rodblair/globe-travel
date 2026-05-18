@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -44,9 +44,29 @@ function AccountPageContent() {
   const [bio, setBio] = useState(profile?.bio || '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [profileError, setProfileError] = useState<string | null>(null)
   const [interval, setInterval] = useState<'month' | 'year'>('month')
   const [billingLoading, setBillingLoading] = useState(false)
   const [billingError, setBillingError] = useState<string | null>(null)
+  const [billingNotice, setBillingNotice] = useState<string | null>(null)
+  const qaForceCheckoutFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaCheckoutFailure') === '1'
+  const qaForcePortalFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaPortalFailure') === '1'
+
+  useEffect(() => {
+    if (activeTab !== 'billing') return
+
+    if (searchParams.get('checkout') === 'cancelled') {
+      setBillingNotice('Checkout was cancelled. Your current plan is unchanged.')
+      return
+    }
+
+    if (searchParams.get('upgraded') === 'true') {
+      setBillingNotice('Checkout returned successfully. We are refreshing your subscription status.')
+      return
+    }
+
+    setBillingNotice(null)
+  }, [activeTab, searchParams])
 
   const switchTab = (tab: AccountTab) => {
     const next = new URLSearchParams(searchParams.toString())
@@ -62,8 +82,9 @@ function AccountPageContent() {
   const handleSave = async () => {
     if (!profile?.id) return
     setSaving(true)
+    setProfileError(null)
     try {
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({
           display_name: displayName.trim(),
@@ -72,9 +93,12 @@ function AccountPageContent() {
         })
         .eq('id', profile.id)
 
+      if (error) throw error
       await refreshProfile()
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
+    } catch {
+      setProfileError('Could not save your profile. Check your connection and try again.')
     } finally {
       setSaving(false)
     }
@@ -87,22 +111,26 @@ function AccountPageContent() {
 
   const handleUpgrade = async () => {
     setBillingError(null)
+    setBillingNotice(null)
     setBillingLoading(true)
     try {
+      if (qaForceCheckoutFailure) throw new Error('Checkout is temporarily unavailable in QA mode.')
       await startCheckout(interval)
     } catch (error: unknown) {
-      setBillingError(error instanceof Error ? error.message : 'Something went wrong')
+      setBillingError(error instanceof Error ? error.message : 'Checkout is temporarily unavailable. Please try again.')
       setBillingLoading(false)
     }
   }
 
   const handleManage = async () => {
     setBillingError(null)
+    setBillingNotice(null)
     setBillingLoading(true)
     try {
+      if (qaForcePortalFailure) throw new Error('Billing portal is temporarily unavailable in QA mode.')
       await openBillingPortal()
-    } catch {
-      setBillingError('Could not open billing portal')
+    } catch (error: unknown) {
+      setBillingError(error instanceof Error ? error.message : 'Could not open billing portal. Please try again.')
       setBillingLoading(false)
     }
   }
@@ -247,6 +275,9 @@ function AccountPageContent() {
                       <Save className="h-4 w-4" />
                       {saved ? 'Saved' : saving ? 'Saving…' : 'Save changes'}
                     </button>
+                    {profileError && (
+                      <p className="text-sm text-[var(--terracotta)]">{profileError}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -292,8 +323,8 @@ function AccountPageContent() {
                   <h2 className="text-lg font-serif font-semibold text-foreground">Plan and billing</h2>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl border border-rule bg-paper-recessed/60 p-5">
+                <div className="grid gap-5 md:grid-cols-[0.9fr_1.1fr] md:gap-6">
+                  <div className="min-w-0 border-b border-rule pb-5 md:border-b-0 md:border-r md:pb-0 md:pr-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/35">Current plan</p>
                     <p className="mt-2 text-2xl font-serif font-semibold text-foreground">
                       {isPro ? PLANS.pro.name : PLANS.free.name}
@@ -317,7 +348,7 @@ function AccountPageContent() {
                     )}
                   </div>
 
-                  <div className="rounded-2xl border border-rule bg-paper-recessed/60 p-5">
+                  <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/35">What you get</p>
                     <ul className="mt-3 space-y-2 text-sm text-foreground/55">
                       {(isPro ? PLANS.pro.features : PLANS.free.features).slice(0, 5).map((feature) => (
@@ -362,22 +393,41 @@ function AccountPageContent() {
                 </div>
 
                 {!isPro && (
-                  <div className="mb-5 rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] p-5">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-bold text-foreground">${monthlyCost}</span>
-                      <span className="text-sm text-foreground/40">/ month</span>
+                  <div className="mb-5 border-y border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] px-1 py-4 sm:px-0">
+                    <div className="flex flex-wrap items-end justify-between gap-3">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-bold text-foreground">${monthlyCost}</span>
+                        <span className="text-sm text-foreground/40">/ month</span>
+                      </div>
+                      <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--brass)]">
+                        7-day free trial
+                      </p>
                     </div>
                     <p className="mt-2 text-sm text-foreground/45">
                       {interval === 'year'
-                        ? `$${PLANS.pro.yearlyPrice} billed yearly · 7-day free trial`
-                        : 'Billed monthly · 7-day free trial'}
+                        ? `$${PLANS.pro.yearlyPrice} billed yearly`
+                        : 'Billed monthly'}
                     </p>
+                  </div>
+                )}
+
+                {billingNotice && (
+                  <div className="mb-4 rounded-xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-4 py-3 text-sm text-[var(--moss)]">
+                    {billingNotice}
                   </div>
                 )}
 
                 {billingError && (
                   <div className="mb-4 rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
-                    {billingError}
+                    <p>{billingError}</p>
+                    <button
+                      type="button"
+                      onClick={isPro ? handleManage : handleUpgrade}
+                      disabled={billingLoading}
+                      className="touch-target mt-3 inline-flex items-center justify-center rounded-full border border-[color:var(--terracotta)]/30 bg-paper-raised px-3 py-2 text-xs font-semibold text-[var(--terracotta)] disabled:opacity-60"
+                    >
+                      Try again
+                    </button>
                   </div>
                 )}
 
@@ -409,19 +459,17 @@ function AccountPageContent() {
             <div className="space-y-6">
               <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
                 <h2 className="text-lg font-serif font-semibold text-foreground">Plan comparison</h2>
-                <div className="mt-4 space-y-3">
+                <div className="mt-4 divide-y divide-rule border-y border-rule">
                   {[
                     ['Globe.travel maps', '2', 'Unlimited'],
                     ['Saved trips', '2', 'Unlimited'],
                     ['AI messages / day', '10', 'Unlimited'],
                     ['Trip sharing', 'Basic links', 'Advanced feedback'],
                   ].map(([feature, free, pro]) => (
-                    <div key={feature} className="rounded-2xl border border-rule bg-paper-recessed/60 p-4">
-                      <p className="text-sm font-medium text-foreground">{feature}</p>
-                      <div className="mt-2 grid gap-1 text-xs sm:grid-cols-2">
-                        <span className="text-foreground/40">Explorer: {free}</span>
-                        <span className="text-[var(--brass)] sm:text-right">Adventurer: {pro}</span>
-                      </div>
+                    <div key={feature} className="grid gap-2 py-3 text-sm sm:grid-cols-[minmax(0,1fr)_9rem_9rem] sm:items-center">
+                      <p className="font-medium text-foreground">{feature}</p>
+                      <span className="text-xs text-foreground/45 sm:text-right">Explorer: {free}</span>
+                      <span className="text-xs font-medium text-[var(--brass)] sm:text-right">Adventurer: {pro}</span>
                     </div>
                   ))}
                 </div>

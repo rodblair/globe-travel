@@ -73,7 +73,7 @@ export function Sidebar() {
 
       {/* Brand */}
       <div className="relative px-6 pt-6 pb-5">
-        <Link href="/chat" className="inline-flex group">
+        <Link href="/chat" className="inline-flex min-h-11 items-center group">
           <AlbatrossBrand compact />
         </Link>
       </div>
@@ -157,7 +157,7 @@ export function Sidebar() {
             href="/account"
             aria-label="Open account settings"
             className={cn(
-              'relative w-8 h-8 rounded-full overflow-hidden flex items-center justify-center shrink-0',
+              'relative w-11 h-11 rounded-full overflow-hidden flex items-center justify-center shrink-0',
               'border border-rule bg-[var(--paper-recessed)]',
               'hover:ring-2 hover:ring-[var(--brass-glow)] transition-all',
             )}
