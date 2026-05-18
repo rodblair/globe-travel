@@ -1,0 +1,262 @@
+[
+  {
+    "id": "athens-5-day-couples-rest",
+    "prompt": "Plan a 5-day Athens trip in mid September for two couples with one rest day.",
+    "expected": { "destination": "Athens", "country": "Greece", "days": 5, "themes": ["culture", "rest"], "requiresRestDay": true }
+  },
+  {
+    "id": "porto-1-day-food-viewpoints",
+    "prompt": "Plan a 1-day Porto food and viewpoints trip for 2 friends, walkable.",
+    "expected": { "destination": "Porto", "country": "Portugal", "days": 1, "themes": ["food", "viewpoints", "walkable"] }
+  },
+  {
+    "id": "lisbon-3-day-friends-nightlife",
+    "prompt": "Plan a 3-day Lisbon trip for friends who want food, viewpoints, and nightlife.",
+    "expected": { "destination": "Lisbon", "country": "Portugal", "days": 3, "themes": ["food", "viewpoints", "nightlife"] }
+  },
+  {
+    "id": "tokyo-3-day-calm-evening",
+    "prompt": "Plan a Tokyo 3-day first-time visit with one calm evening.",
+    "expected": { "destination": "Tokyo", "country": "Japan", "days": 3, "themes": ["first-time", "calm"] }
+  },
+  {
+    "id": "rome-weekend-classics-drinks",
+    "prompt": "Plan a Rome weekend for 4 friends with classic sights and late-night drinks.",
+    "expected": { "destination": "Rome", "country": "Italy", "days": 2, "themes": ["classic sights", "nightlife"] }
+  },
+  {
+    "id": "barcelona-3-day-budget-beaches",
+    "prompt": "Plan Barcelona for a budget group that wants beaches, Gaudi, and tapas over 3 days.",
+    "expected": { "destination": "Barcelona", "country": "Spain", "days": 3, "themes": ["budget", "beach", "culture", "food"] }
+  },
+  {
+    "id": "mexico-city-4-day-food-museums-nightlife",
+    "prompt": "Plan Mexico City for 4 days with food, museums, and one big night out.",
+    "expected": { "destination": "Mexico City", "country": "Mexico", "days": 4, "themes": ["food", "museums", "nightlife"] }
+  },
+  {
+    "id": "london-3-day-rain-safe",
+    "prompt": "Plan London for a mixed-energy group with rain-safe options across 3 days.",
+    "expected": { "destination": "London", "country": "United Kingdom", "days": 3, "themes": ["rain-safe", "mixed-energy"] }
+  },
+  {
+    "id": "paris-4-day-couples-premium",
+    "prompt": "Plan Paris for two couples, not too touristy, with a premium dinner over 4 days.",
+    "expected": { "destination": "Paris", "country": "France", "days": 4, "themes": ["premium", "couples", "food"] }
+  },
+  {
+    "id": "new-york-3-day-repeat-visitors",
+    "prompt": "Plan New York for friends who have already seen the obvious landmarks, 3 days.",
+    "expected": { "destination": "New York", "country": "United States", "days": 3, "themes": ["repeat visitors", "friends"] }
+  },
+  {
+    "id": "copenhagen-2-day-design-food",
+    "prompt": "Plan Copenhagen for 2 days with design shops, bakeries, and an easy bike-friendly pace.",
+    "expected": { "destination": "Copenhagen", "country": "Denmark", "days": 2, "themes": ["design", "food", "bike"] }
+  },
+  {
+    "id": "berlin-3-day-nightlife-culture",
+    "prompt": "Plan Berlin for 3 days with daytime culture and serious nightlife.",
+    "expected": { "destination": "Berlin", "country": "Germany", "days": 3, "themes": ["culture", "nightlife"] }
+  },
+  {
+    "id": "amsterdam-2-day-calm-canals",
+    "prompt": "Plan Amsterdam for 2 days with canals, museums, and a calm evening.",
+    "expected": { "destination": "Amsterdam", "country": "Netherlands", "days": 2, "themes": ["museums", "calm"] }
+  },
+  {
+    "id": "budapest-3-day-budget-thermal",
+    "prompt": "Plan a 3-day Budapest budget trip with thermal baths and ruin bars.",
+    "expected": { "destination": "Budapest", "country": "Hungary", "days": 3, "themes": ["budget", "baths", "nightlife"] }
+  },
+  {
+    "id": "florence-2-day-art-food",
+    "prompt": "Plan Florence for 2 days around art, aperitivo, and Tuscan food.",
+    "expected": { "destination": "Florence", "country": "Italy", "days": 2, "themes": ["art", "food"] }
+  },
+  {
+    "id": "istanbul-4-day-history-markets",
+    "prompt": "Plan Istanbul for 4 days with history, markets, ferries, and rooftop dinners.",
+    "expected": { "destination": "Istanbul", "country": "Turkey", "days": 4, "themes": ["history", "markets", "food"] }
+  },
+  {
+    "id": "seoul-5-day-food-shopping",
+    "prompt": "Plan Seoul for 5 days for friends who want food, shopping, and one relaxed spa day.",
+    "expected": { "destination": "Seoul", "country": "South Korea", "days": 5, "themes": ["food", "shopping", "relaxed"] }
+  },
+  {
+    "id": "bangkok-4-day-temples-street-food",
+    "prompt": "Plan Bangkok for 4 days with temples, street food, markets, and one late night.",
+    "expected": { "destination": "Bangkok", "country": "Thailand", "days": 4, "themes": ["temples", "food", "markets", "nightlife"] }
+  },
+  {
+    "id": "marrakech-3-day-markets-riads",
+    "prompt": "Plan Marrakech for 3 days with souks, gardens, riads, and calm pacing.",
+    "expected": { "destination": "Marrakech", "country": "Morocco", "days": 3, "themes": ["markets", "gardens", "calm"] }
+  },
+  {
+    "id": "cape-town-5-day-outdoors-food",
+    "prompt": "Plan Cape Town for 5 days with hikes, wine, beaches, and group-friendly dinners.",
+    "expected": { "destination": "Cape Town", "country": "South Africa", "days": 5, "themes": ["outdoors", "wine", "beach", "food"] }
+  },
+  {
+    "id": "sydney-4-day-beaches-neighborhoods",
+    "prompt": "Plan Sydney for 4 days with beaches, neighborhoods, ferry views, and seafood.",
+    "expected": { "destination": "Sydney", "country": "Australia", "days": 4, "themes": ["beach", "views", "food"] }
+  },
+  {
+    "id": "vancouver-3-day-outdoors-food",
+    "prompt": "Plan Vancouver for 3 days with easy outdoors, food, and waterfront walks.",
+    "expected": { "destination": "Vancouver", "country": "Canada", "days": 3, "themes": ["outdoors", "food", "walkable"] }
+  },
+  {
+    "id": "san-francisco-3-day-food-views",
+    "prompt": "Plan San Francisco for 3 days with food, views, and neighborhoods, not too packed.",
+    "expected": { "destination": "San Francisco", "country": "United States", "days": 3, "themes": ["food", "views", "balanced"] }
+  },
+  {
+    "id": "chicago-2-day-architecture-food",
+    "prompt": "Plan Chicago for 2 days with architecture, deep-dish, jazz, and lakefront walks.",
+    "expected": { "destination": "Chicago", "country": "United States", "days": 2, "themes": ["architecture", "food", "music"] }
+  },
+  {
+    "id": "montreal-3-day-food-music",
+    "prompt": "Plan Montreal for 3 days with food, music, markets, and one relaxed morning.",
+    "expected": { "destination": "Montreal", "country": "Canada", "days": 3, "themes": ["food", "music", "markets"] }
+  },
+  {
+    "id": "quebec-city-2-day-romantic",
+    "prompt": "Plan Quebec City for 2 days as a romantic winter weekend with cozy meals.",
+    "expected": { "destination": "Quebec City", "country": "Canada", "days": 2, "themes": ["romantic", "winter", "food"] }
+  },
+  {
+    "id": "dubrovnik-2-day-coast-history",
+    "prompt": "Plan Dubrovnik for 2 days with coastal views, history, and a slower evening.",
+    "expected": { "destination": "Dubrovnik", "country": "Croatia", "days": 2, "themes": ["coast", "history", "calm"] }
+  },
+  {
+    "id": "prague-3-day-beer-history",
+    "prompt": "Plan Prague for 3 days with beer halls, history, viewpoints, and walkable days.",
+    "expected": { "destination": "Prague", "country": "Czechia", "days": 3, "themes": ["food", "history", "viewpoints", "walkable"] }
+  },
+  {
+    "id": "vienna-3-day-music-cafes",
+    "prompt": "Plan Vienna for 3 days with music, cafes, museums, and one elegant dinner.",
+    "expected": { "destination": "Vienna", "country": "Austria", "days": 3, "themes": ["music", "cafes", "museums", "food"] }
+  },
+  {
+    "id": "buenos-aires-4-day-steak-tango",
+    "prompt": "Plan Buenos Aires for 4 days with steak, tango, neighborhoods, and late dinners.",
+    "expected": { "destination": "Buenos Aires", "country": "Argentina", "days": 4, "themes": ["food", "music", "nightlife"] }
+  },
+  {
+    "id": "rio-5-day-beach-nightlife",
+    "prompt": "Plan Rio de Janeiro for 5 days with beaches, viewpoints, music, and nightlife.",
+    "expected": { "destination": "Rio de Janeiro", "country": "Brazil", "days": 5, "themes": ["beach", "viewpoints", "music", "nightlife"] }
+  },
+  {
+    "id": "oaxaca-3-day-food-markets",
+    "prompt": "Plan Oaxaca for 3 days with markets, mezcal, food, and one nearby craft village.",
+    "expected": { "destination": "Oaxaca", "country": "Mexico", "days": 3, "themes": ["markets", "food", "culture"] }
+  },
+  {
+    "id": "lima-3-day-food-ocean",
+    "prompt": "Plan Lima for 3 days with food, ocean views, museums, and one special dinner.",
+    "expected": { "destination": "Lima", "country": "Peru", "days": 3, "themes": ["food", "views", "museums"] }
+  },
+  {
+    "id": "bogota-3-day-museums-food",
+    "prompt": "Plan Bogota for 3 days with museums, food, viewpoints, and coffee.",
+    "expected": { "destination": "Bogota", "country": "Colombia", "days": 3, "themes": ["museums", "food", "viewpoints"] }
+  },
+  {
+    "id": "cartagena-3-day-coast-history",
+    "prompt": "Plan Cartagena for 3 days with coastal history, music, seafood, and a beach afternoon.",
+    "expected": { "destination": "Cartagena", "country": "Colombia", "days": 3, "themes": ["coast", "history", "music", "food"] }
+  },
+  {
+    "id": "reykjavik-4-day-outdoors",
+    "prompt": "Plan Reykjavik for 4 days with outdoors, hot springs, food, and one weather-safe day.",
+    "expected": { "destination": "Reykjavik", "country": "Iceland", "days": 4, "themes": ["outdoors", "weather-safe", "food"] }
+  },
+  {
+    "id": "santorini-3-day-romantic",
+    "prompt": "Plan Santorini for 3 days as a romantic trip with sunsets, wine, and beaches.",
+    "expected": { "destination": "Santorini", "country": "Greece", "days": 3, "themes": ["romantic", "wine", "beach"] }
+  },
+  {
+    "id": "crete-5-day-family-beaches",
+    "prompt": "Plan Crete for 5 days for a family group with beaches, ruins, and relaxed meals.",
+    "expected": { "destination": "Crete", "country": "Greece", "days": 5, "themes": ["family", "beach", "history", "relaxed"] }
+  },
+  {
+    "id": "dublin-2-day-music-pubs",
+    "prompt": "Plan Dublin for 2 days with music, pubs, literary stops, and easy walking.",
+    "expected": { "destination": "Dublin", "country": "Ireland", "days": 2, "themes": ["music", "pubs", "walkable"] }
+  },
+  {
+    "id": "edinburgh-3-day-history-pubs",
+    "prompt": "Plan Edinburgh for 3 days with history, viewpoints, pubs, and one rainy-day option.",
+    "expected": { "destination": "Edinburgh", "country": "United Kingdom", "days": 3, "themes": ["history", "viewpoints", "rain-safe"] }
+  },
+  {
+    "id": "zurich-2-day-premium-calm",
+    "prompt": "Plan Zurich for 2 days with premium food, lake walks, design, and a calm pace.",
+    "expected": { "destination": "Zurich", "country": "Switzerland", "days": 2, "themes": ["premium", "food", "design", "calm"] }
+  },
+  {
+    "id": "munich-3-day-beer-museums",
+    "prompt": "Plan Munich for 3 days with beer halls, museums, parks, and group dinners.",
+    "expected": { "destination": "Munich", "country": "Germany", "days": 3, "themes": ["food", "museums", "parks"] }
+  },
+  {
+    "id": "venice-2-day-slow-romantic",
+    "prompt": "Plan Venice for 2 days with slow wandering, cicchetti, art, and one special dinner.",
+    "expected": { "destination": "Venice", "country": "Italy", "days": 2, "themes": ["romantic", "food", "art", "slow"] }
+  },
+  {
+    "id": "naples-3-day-pizza-history",
+    "prompt": "Plan Naples for 3 days with pizza, history, waterfront, and a Pompeii day trip.",
+    "expected": { "destination": "Naples", "country": "Italy", "days": 3, "themes": ["food", "history", "waterfront", "day trip"] }
+  },
+  {
+    "id": "hanoi-4-day-food-culture",
+    "prompt": "Plan Hanoi for 4 days with street food, coffee, culture, and one slower lake morning.",
+    "expected": { "destination": "Hanoi", "country": "Vietnam", "days": 4, "themes": ["food", "coffee", "culture", "slow"] }
+  },
+  {
+    "id": "singapore-3-day-family-food",
+    "prompt": "Plan Singapore for 3 days for a family group with hawker food, gardens, and rain-safe stops.",
+    "expected": { "destination": "Singapore", "country": "Singapore", "days": 3, "themes": ["family", "food", "gardens", "rain-safe"] }
+  },
+  {
+    "id": "hong-kong-3-day-food-views",
+    "prompt": "Plan Hong Kong for 3 days with dim sum, viewpoints, ferries, and markets.",
+    "expected": { "destination": "Hong Kong", "country": "Hong Kong", "days": 3, "themes": ["food", "viewpoints", "markets"] }
+  },
+  {
+    "id": "taipei-4-day-food-hot-springs",
+    "prompt": "Plan Taipei for 4 days with night markets, tea, temples, and hot springs.",
+    "expected": { "destination": "Taipei", "country": "Taiwan", "days": 4, "themes": ["markets", "tea", "temples", "hot springs"] }
+  },
+  {
+    "id": "auckland-3-day-nature-food",
+    "prompt": "Plan Auckland for 3 days with nature, waterfront food, islands, and easy pacing.",
+    "expected": { "destination": "Auckland", "country": "New Zealand", "days": 3, "themes": ["nature", "food", "islands", "easy"] }
+  },
+  {
+    "id": "dubai-3-day-luxury-family",
+    "prompt": "Plan Dubai for 3 days for a luxury family group with food, views, and indoor heat-safe options.",
+    "expected": { "destination": "Dubai", "country": "United Arab Emirates", "days": 3, "themes": ["luxury", "family", "food", "heat-safe"] }
+  },
+  {
+    "id": "madrid-seville-5-day-multi-city",
+    "prompt": "Plan Madrid and Seville for 5 days with tapas, art, flamenco, and train-friendly pacing.",
+    "expected": { "destination": "Madrid", "country": "Spain", "days": 5, "themes": ["food", "art", "music", "multi-city"], "multiCity": true }
+  },
+  {
+    "id": "washington-dc-3-day-museums-family",
+    "prompt": "Plan Washington DC for 3 days for a family with museums, monuments, and rain-safe meals.",
+    "expected": { "destination": "Washington DC", "country": "United States", "days": 3, "themes": ["family", "museums", "rain-safe"] }
+  }
+]

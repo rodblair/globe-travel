@@ -8,9 +8,22 @@ function cleanDestinationCandidate(candidate: string) {
   return candidate
     .replace(/[“”"']/g, '')
     .replace(/\s+/g, ' ')
+    .replace(/^(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?/i, '')
+    .replace(/\s+\band\s+[A-Z][A-Za-z\s'’-]{1,60}$/g, '')
     .replace(DESTINATION_TRAILING_THEME_PATTERN, '')
     .replace(/\s+(?:trip|itinerary|city break|escape|weekend|getaway|with friends|for friends)$/i, '')
     .trim()
+}
+
+function looksLikeDateOrDuration(candidate: string) {
+  const normalized = candidate.trim().toLowerCase()
+  if (!normalized) return true
+
+  return (
+    /\b(?:january|february|march|april|may|june|july|august|september|october|november|december)\b/.test(normalized) ||
+    /\b(?:spring|summer|fall|autumn|winter|weekend|weekday|tonight|tomorrow|next\s+week|next\s+month|next\s+year)\b/.test(normalized) ||
+    /^\d+\s*[- ]?\s*(?:day|days|night|nights|week|weeks)$/.test(normalized)
+  )
 }
 
 export function extractLatestUserMessage(messages: UIMessage[]) {
@@ -52,8 +65,10 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
   if (!text) return ''
   const cleaned = text.trim()
   const patterns = [
-    /\b(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|from|on|around|near|and|that|who|leaving|including)\b|[,.!?]|$)/i,
+    /\b(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?(?:\d+\s*[- ]?\s*days?\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:\d+\s*[- ]?\s*days?|for|with|around|over|as|trip|itinerary|weekend|city break)\b|[,.!?]|$)/i,
+    /\b(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:\d+\s*[- ]?\s*days?|weekend)\b/i,
     /\b\d+\s*[- ]?\s*days?\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
+    /\b(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|from|on|around|near|and|that|who|leaving|including)\b|[,.!?]|$)/i,
     /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
     /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+itinerary\b/i,
   ]
@@ -63,7 +78,11 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
     const candidate = match?.[1]?.trim()
     if (!candidate) continue
     const normalized = cleanDestinationCandidate(extractDestinationFromTitle(candidate))
-    if (normalized && !/\b(realistic|balanced|beautiful|budget|friendly|group|city|short|weekend)\b/i.test(normalized)) {
+    if (
+      normalized &&
+      !looksLikeDateOrDuration(normalized) &&
+      !/^(?:realistic|balanced|beautiful|budget|friendly|group|city|short|weekend|friends?|couples?|family)$/i.test(normalized)
+    ) {
       return normalized
     }
   }
