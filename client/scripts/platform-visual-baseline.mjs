@@ -54,7 +54,7 @@ if (tripId) {
   allRoutes.push({
     id: 'trip-studio',
     path: `/trips/${tripId}`,
-    markers: ['Itinerary', 'Save trip', 'Build maps'],
+    markers: ['Itinerary', ['Save trip', 'Saved'], 'Build maps'],
   })
 }
 
@@ -151,6 +151,7 @@ async function compareScreenshot({ routeId, screenshotName, screenshotPath }) {
 
 async function collectPageMetrics(page, route, viewport) {
   await page.setViewportSize({ width: viewport.width, height: viewport.height })
+  const markerGroups = route.markers.map((marker) => Array.isArray(marker) ? marker : [marker])
   const response = await page.goto(`${baseUrl}${route.path}`, {
     waitUntil: 'domcontentloaded',
     timeout: 30000,
@@ -158,8 +159,20 @@ async function collectPageMetrics(page, route, viewport) {
 
   await page.waitForLoadState('networkidle', { timeout: 1500 }).catch(() => {})
   await page.waitForTimeout(Number.isFinite(settleMs) ? Math.max(0, settleMs) : 900)
+  await page.waitForFunction(
+    ({ markerGroups: groups }) => {
+      const text = document.body?.innerText.toLowerCase() || ''
+      const appErrors = ['application error', 'unhandled runtime error', 'hydration failed']
+      return (
+        groups.every((group) => group.some((marker) => text.includes(marker.toLowerCase()))) ||
+        appErrors.some((pattern) => text.includes(pattern))
+      )
+    },
+    { markerGroups },
+    { timeout: 8000 }
+  ).catch(() => {})
 
-  const metrics = await page.evaluate(({ markers }) => {
+  const metrics = await page.evaluate(({ markerGroups }) => {
     const text = document.body?.innerText || ''
     const appErrorPatterns = [
       'Application error',
@@ -254,7 +267,9 @@ async function collectPageMetrics(page, route, viewport) {
       clientHeight: document.documentElement.clientHeight,
       scrollHeight: document.documentElement.scrollHeight,
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-      missingMarkers: markers.filter((marker) => !text.toLowerCase().includes(marker.toLowerCase())),
+      missingMarkers: markerGroups
+        .filter((group) => !group.some((choice) => text.toLowerCase().includes(choice.toLowerCase())))
+        .map((group) => group.join(' or ')),
       appErrors: appErrorPatterns.filter((pattern) => text.includes(pattern)),
       headings: Array.from(document.querySelectorAll('h1,h2,h3')).slice(0, 8).map((el) => el.textContent.trim().replace(/\s+/g, ' ')),
       smallAppTargets,
@@ -263,7 +278,7 @@ async function collectPageMetrics(page, route, viewport) {
       visibleControlCount: controls.filter((control) => control.inViewport).length,
       bodyPreview: text.slice(0, 500).replace(/\s+/g, ' '),
     }
-  }, { markers: route.markers })
+  }, { markerGroups })
 
   const screenshotName = `${route.id}-${viewport.id}-${viewport.width}x${viewport.height}.png`
   const screenshotPath = resolve(screenshotDir, screenshotName)

@@ -534,7 +534,7 @@ function AccountPageContent() {
                     <div key={feature} className="grid gap-2 py-3 text-sm">
                       <p className="font-medium text-foreground">{feature}</p>
                       <div className="grid grid-cols-2 gap-2">
-                        <span className="rounded-xl bg-paper px-3 py-2 text-xs text-foreground/50">Explorer: {free}</span>
+                        <span className="rounded-xl bg-paper px-3 py-2 text-xs text-foreground/70">Explorer: {free}</span>
                         <span className="rounded-xl bg-[var(--brass-subtle)] px-3 py-2 text-xs font-medium text-[var(--brass)]">Adventurer: {pro}</span>
                       </div>
                     </div>

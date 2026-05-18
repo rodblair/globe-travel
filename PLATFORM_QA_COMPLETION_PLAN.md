@@ -562,6 +562,8 @@ These are the next focused passes to run before another release candidate decisi
 - Result: `npm run qa:stripe-readiness` verifies test-mode Stripe keys, monthly/yearly price IDs, webhook signature verification, and billing portal configuration. `QA_STRIPE_CREATE_TEST_SESSIONS=1 npm run qa:stripe-readiness` creates and cleans up a test customer, test checkout session, and test billing portal session.
 - Hosted checkout Browser evidence: `qa/stripe-hosted-checkout-browser-2026-05-18.md`.
 - Result: `QA_STRIPE_RUN_HOSTED_CHECKOUT=1 npm run qa:stripe-checkout-browser` completes hosted Stripe Checkout with a test card, verifies return to account billing, verifies the Stripe session/subscription state, and cleans up the test subscription/customer.
+- Local release-candidate evidence: `qa/release-candidate-gate-2026-05-18.md`.
+- Result: `npm run qa:release-candidate` now bundles lint, build, ops, smoke, commercial, a11y, public share/social preview, public share recovery, feedback mutation cleanup, planner handoff cleanup, billing recovery, Trip Studio action/recovery checks on one kept disposable fixture, Stripe readiness, prompt contract suite, full responsive visual QA, and fixture cleanup. The first passing run completed `17/17` top-level tasks with visual QA `50/50` and writes `qa/release-candidate-2026-05-18/summary.json`.
 - Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
 - Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
 - Finish public share social preview evidence integration and keep share-card image rendering in the release gate.
