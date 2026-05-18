@@ -23,11 +23,11 @@ Already established:
 - Mutation-safe Trip Studio action QA command: `npm run qa:studio-actions`
 - Browser route-sweep evidence for core local surfaces
 - Public-share QA for the Athens five-day itinerary
-- Local operations health endpoint and ops smoke test
+- Local and production operations health endpoint and ops smoke test
 
 Known release blocker:
 
-- Production operations verification remains blocked until Vercel serves the latest deployment containing `/api/health`. The live production alias was still returning 404 for `/api/health` when this plan was written, while local build and local ops checks passed.
+- No current P0/P1 operations blocker. Production `/api/health` is live on `https://globe-travel-two.vercel.app`, reports `status: "ok"`, and currently has `summary.criticalMissing: 0` and `summary.warningMissing: 0`.
 
 ## Operating Rhythm
 

@@ -52,8 +52,9 @@ QA_PROMPT_SUITE_ACTUALS=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-
 - HTTP `200`
 - `status: "ok"`
 - `summary.criticalMissing: 0`
+- `summary.warningMissing: 0` for a launch-candidate production deployment
 
-Treat HTTP `503`, missing JSON, or any missing critical check as a release blocker.
+Treat HTTP `503`, missing JSON, or any missing critical check as a release blocker. Treat warning checks as pre-launch cleanup items unless an owner explicitly accepts the risk.
 
 ## Incident Severity
 
