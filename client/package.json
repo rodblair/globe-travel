@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "qa:auth-access": "node scripts/platform-auth-access-smoke.mjs",
     "qa:billing-recovery": "node scripts/platform-billing-recovery-smoke.mjs",
     "qa:a11y": "node scripts/platform-accessibility-smoke.mjs",
     "qa:commercial": "node scripts/platform-commercial-smoke.mjs",

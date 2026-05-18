@@ -3,7 +3,7 @@
   "date": "2026-05-18",
   "runId": "release-candidate-2026-05-18",
   "shareSlug": "x3m2c8cnws",
-  "tripId": "5093df61-9c67-45ae-8b7b-f18325070089",
+  "tripId": "e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
   "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-release-candidate-2026-05-18",
   "baselineDir": null,
   "diffRoutes": [],
@@ -553,7 +553,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
       "viewportId": "phone",
       "requestedViewport": {
         "id": "phone",
@@ -563,7 +563,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 390,
         "innerHeight": 844,
@@ -575,15 +575,15 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions 7fbbefb7 Saved",
-          "QA Trip Studio Actions 7fbbefb7 Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
         "visibleControlCount": 13,
-        "bodyPreview": "Skip to content QA TRIP STUDIO ACTIONS 7FBBEFB7 SAVED ITINERARY QA Trip Studio Actions 7fbbefb7 Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save. GROUP REVIEW Invite friends to react to this QA Trip Studio Actions 7fbbefb7 Saved plan. Keep the planning flow social without burying the itinerary in extra controls. Public link on http://localhost:3000/t/8qq6txu"
+        "bodyPreview": "Skip to content QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save. GROUP REVIEW Invite friends to react to this QA Trip Studio Actions b3b3524f Saved plan. Keep the planning flow social without burying the itinerary in extra controls. Public link on http://localhost:3000/t/iijni03"
       },
       "screenshot": {
         "ok": true,
@@ -743,13 +743,15 @@
         "appErrors": [],
         "headings": [
           "Trips",
-          "Your itineraries"
+          "Your itineraries",
+          "QA Trip Studio Actions a621295b Saved",
+          "Athens with an Island Overnight"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
-        "visibleControlCount": 11,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 0 NOTES 0 Trips Trip notes Your itineraries Start a trip to keep itinerary maps, notes, and friend-ready plans here. Plan another trip"
+        "visibleControlCount": 15,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Your itineraries 2 itineraries ready to reopen, refine, or share. Plan another trip GLOBE.TRAVEL MAP QA TRIP STUDIO ACTIONS A621295B SAVED QA Trip Studio Actions a621295b Saved Friend-ready Public Saved May 17, 2026 Delete GLOBE.T"
       },
       "screenshot": {
         "ok": true,
@@ -802,7 +804,7 @@
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
         "visibleControlCount": 10,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 0 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries."
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 2 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries."
       },
       "screenshot": {
         "ok": true,
@@ -1116,7 +1118,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
       "viewportId": "tablet",
       "requestedViewport": {
         "id": "tablet",
@@ -1126,7 +1128,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 768,
         "innerHeight": 1024,
@@ -1138,15 +1140,15 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions 7fbbefb7 Saved",
-          "QA Trip Studio Actions 7fbbefb7 Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
         "smallMapControlTargets": [],
         "thirdPartySmallTargets": [],
         "visibleControlCount": 18,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign QA TRIP STUDIO ACTIONS 7FBBEFB7 SAVED ITINERARY QA Trip Studio Actions 7fbbefb7 Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save. GROUP REVIEW Invite friends to react to this QA Trip Studio Actions 7fb"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save. GROUP REVIEW Invite friends to react to this QA Trip Studio Actions b3b"
       },
       "screenshot": {
         "ok": true,
@@ -1681,7 +1683,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
       "viewportId": "laptop",
       "requestedViewport": {
         "id": "laptop",
@@ -1691,7 +1693,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 1280,
         "innerHeight": 800,
@@ -1703,8 +1705,8 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions 7fbbefb7 Saved",
-          "QA Trip Studio Actions 7fbbefb7 Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
@@ -1724,7 +1726,7 @@
           }
         ],
         "visibleControlCount": 26,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions 7fbbefb7 Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS 7FBBEFB7 SAVED ITINERARY QA Trip Studio Actions 7fbbefb7 Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions b3b3524f Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
       },
       "screenshot": {
         "ok": true,
@@ -2259,7 +2261,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
       "viewportId": "desktop",
       "requestedViewport": {
         "id": "desktop",
@@ -2269,7 +2271,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 1440,
         "innerHeight": 950,
@@ -2281,8 +2283,8 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions 7fbbefb7 Saved",
-          "QA Trip Studio Actions 7fbbefb7 Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
@@ -2302,7 +2304,7 @@
           }
         ],
         "visibleControlCount": 26,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions 7fbbefb7 Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS 7FBBEFB7 SAVED ITINERARY QA Trip Studio Actions 7fbbefb7 Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions b3b3524f Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
       },
       "screenshot": {
         "ok": true,
@@ -2837,7 +2839,7 @@
     },
     {
       "routeId": "trip-studio",
-      "path": "/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+      "path": "/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
       "viewportId": "wide",
       "requestedViewport": {
         "id": "wide",
@@ -2847,7 +2849,7 @@
       "status": 200,
       "ok": true,
       "metrics": {
-        "url": "http://localhost:3000/trips/5093df61-9c67-45ae-8b7b-f18325070089",
+        "url": "http://localhost:3000/trips/e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06",
         "title": "Globe.travel — Plan the trip everyone can say yes to",
         "innerWidth": 1728,
         "innerHeight": 1050,
@@ -2859,8 +2861,8 @@
         "missingMarkers": [],
         "appErrors": [],
         "headings": [
-          "QA Trip Studio Actions 7fbbefb7 Saved",
-          "QA Trip Studio Actions 7fbbefb7 Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
+          "QA Trip Studio Actions b3b3524f Saved",
           "Itinerary for Day 1"
         ],
         "smallAppTargets": [],
@@ -2880,7 +2882,7 @@
           }
         ],
         "visibleControlCount": 29,
-        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions 7fbbefb7 Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS 7FBBEFB7 SAVED ITINERARY QA Trip Studio Actions 7fbbefb7 Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign MAP READINESS QA Trip Studio Actions b3b3524f Saved 3 routed stops across 2 days QA TRIP STUDIO ACTIONS B3B3524F SAVED ITINERARY QA Trip Studio Actions b3b3524f Saved View only Planner chat Optimize day Build maps Shared preview View share Shared preview. Use the public share page for friend feedback, or start your own trip to edit"
       },
       "screenshot": {
         "ok": true,

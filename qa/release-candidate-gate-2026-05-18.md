@@ -9,7 +9,7 @@ Command: `npm run qa:release-candidate`
 This gate bundles the local checks required before a production release decision:
 
 - lint and production build
-- operations, route smoke, commercial smoke, accessibility/keyboard smoke
+- operations, route smoke, auth/guest access, commercial smoke, accessibility/keyboard smoke
 - public share/social preview, public share recovery, and public feedback mutation with cleanup
 - planner handoff mutation with cleanup
 - billing recovery states
@@ -30,7 +30,7 @@ Hosted Stripe Checkout browser completion remains opt-in with `QA_RELEASE_INCLUD
 
 ## Evidence
 
-Final result: passed `17/17` release-candidate tasks.
+Final result: passed `18/18` release-candidate tasks.
 
 Key nested results:
 
@@ -38,6 +38,7 @@ Key nested results:
 - `npm run build`: passed
 - local ops readiness: `3/3`
 - local route smoke: `8/8`
+- auth and guest access smoke: `11/11`, cleaned up disposable guest account
 - local commercial smoke: `4/4`
 - local accessibility and keyboard smoke: `16/16`
 - public share and social preview smoke: `5/5`
@@ -59,6 +60,7 @@ In-app Browser sanity:
 
 Artifacts:
 
+- `qa/auth-guest-access-2026-05-18.md`
 - `qa/release-candidate-2026-05-18/README.md`
 - `qa/release-candidate-2026-05-18/summary.json`
 - `qa/accessibility-keyboard-2026-05-18/README.md`

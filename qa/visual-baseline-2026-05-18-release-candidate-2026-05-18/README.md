@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Environment: http://localhost:3000
 Public share slug: x3m2c8cnws
-Trip Studio fixture: 5093df61-9c67-45ae-8b7b-f18325070089
+Trip Studio fixture: e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06
 Baseline comparison: not enabled
 Pixel-compared routes: none
 Diff threshold: 1.50%

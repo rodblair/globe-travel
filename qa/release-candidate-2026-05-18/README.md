@@ -6,8 +6,8 @@ Public share slug: x3m2c8cnws
 
 ## Result
 
-- Checked tasks: 17
-- Passed: 17
+- Checked tasks: 18
+- Passed: 18
 - Failed: 0
 - Visual QA included: yes
 - Trip Studio fixture included: yes
@@ -16,29 +16,30 @@ Public share slug: x3m2c8cnws
 
 | Task | Result | Checks | Elapsed | Mutation |
 | --- | --- | ---: | ---: | --- |
-| lint | Pass | n/a | 4.3s | no |
-| production build | Pass | n/a | 10.9s | no |
+| lint | Pass | n/a | 4.2s | no |
+| production build | Pass | n/a | 10.2s | no |
 | local ops readiness | Pass | 3 | 0.1s | no |
-| local route smoke | Pass | 8 | 1.6s | no |
-| local commercial smoke | Pass | 4 | 0.8s | no |
-| local accessibility and keyboard smoke | Pass | 16 | 43.5s | no |
-| public share and social preview smoke | Pass | 5 | 1.1s | no |
-| public share recovery smoke | Pass | 3 | 13.2s | no |
-| public share feedback mutation smoke | Pass | 5 | 1.2s | local |
-| planner handoff smoke | Pass | 10 | 1.5s | local |
-| billing recovery smoke | Pass | 9 | 16.3s | no |
-| Trip Studio action smoke with kept fixture | Pass | 23 | 5.4s | local |
-| Trip Studio recovery smoke on kept fixture | Pass | 6 | 8.4s | no |
-| Stripe test-mode readiness | Pass | 11 | 0.6s | no |
+| local route smoke | Pass | 8 | 0.8s | no |
+| auth and guest access smoke | Pass | 11 | 51.1s | local |
+| local commercial smoke | Pass | 4 | 0.2s | no |
+| local accessibility and keyboard smoke | Pass | 16 | 44.1s | no |
+| public share and social preview smoke | Pass | 5 | 0.7s | no |
+| public share recovery smoke | Pass | 3 | 11.8s | no |
+| public share feedback mutation smoke | Pass | 5 | 0.7s | local |
+| planner handoff smoke | Pass | 10 | 1.0s | local |
+| billing recovery smoke | Pass | 9 | 15.4s | no |
+| Trip Studio action smoke with kept fixture | Pass | 23 | 8.4s | local |
+| Trip Studio recovery smoke on kept fixture | Pass | 6 | 8.2s | no |
+| Stripe test-mode readiness | Pass | 11 | 0.5s | no |
 | planner prompt contract suite | Pass | 52 | 0.1s | no |
-| responsive visual QA | Pass | 50 | 159.0s | no |
+| responsive visual QA | Pass | 50 | 142.3s | no |
 | cleanup release-candidate Trip Studio fixture | Pass | n/a | 0.4s | local |
 
 ## Fixture
 
-- Trip id: 5093df61-9c67-45ae-8b7b-f18325070089
-- Share slug: 8qq6txub6a
-- Run id: 7fbbefb7
+- Trip id: e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06
+- Share slug: iijni03pdg
+- Run id: b3b3524f
 - Cleanup task: passed
 
 ## Failure Detail

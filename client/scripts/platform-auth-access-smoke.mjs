@@ -1,0 +1,319 @@
+import { randomUUID } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { chromium } from 'playwright-core'
+import { createClient } from '@supabase/supabase-js'
+
+const root = process.cwd()
+const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
+const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
+const guestId = process.env.QA_GUEST_ID || randomUUID()
+const allowRemoteGuestMutation = process.env.QA_ALLOW_REMOTE_GUEST_MUTATION === '1'
+const shouldCheckGuestApi = isLocalBaseUrl || allowRemoteGuestMutation
+const failures = []
+const results = []
+let browser = null
+let cleanup = null
+
+async function loadDotEnv() {
+  const envPath = resolve(root, '.env.local')
+  let text = ''
+
+  try {
+    text = await readFile(envPath, 'utf8')
+  } catch {
+    return
+  }
+
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/)
+    if (!match) continue
+    const [, key, rawValue] = match
+    if (process.env[key]) continue
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '')
+  }
+}
+
+function record(name, ok, details = {}) {
+  const result = { name, ok: Boolean(ok), ...details }
+  results.push(result)
+  if (!result.ok) failures.push(result)
+  return result
+}
+
+function markerSatisfied(text, markers) {
+  const normalized = text.toLowerCase()
+  return markers.every((marker) => {
+    const choices = Array.isArray(marker) ? marker : [marker]
+    return choices.some((choice) => normalized.includes(choice.toLowerCase()))
+  })
+}
+
+function missingMarkers(text, markers) {
+  const normalized = text.toLowerCase()
+  return markers
+    .filter((marker) => {
+      const choices = Array.isArray(marker) ? marker : [marker]
+      return !choices.some((choice) => normalized.includes(choice.toLowerCase()))
+    })
+    .map((marker) => Array.isArray(marker) ? marker.join(' or ') : marker)
+}
+
+async function readPageState(page, markerGroups = []) {
+  await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {})
+  await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
+  await page.waitForFunction(
+    ({ markers }) => {
+      const text = document.body?.innerText || ''
+      const appErrors = ['Application error', 'Unhandled Runtime Error', 'Hydration failed']
+      const ready = markers.every((marker) => {
+        const choices = Array.isArray(marker) ? marker : [marker]
+        return choices.some((choice) => text.toLowerCase().includes(choice.toLowerCase()))
+      })
+      return ready || appErrors.some((pattern) => text.includes(pattern))
+    },
+    { markers: markerGroups },
+    { timeout: 8000 }
+  ).catch(() => {})
+
+  return page.evaluate(({ markers }) => {
+    const text = document.body?.innerText || ''
+    return {
+      url: location.href,
+      title: document.title,
+      text,
+      missingMarkers: markers
+        .filter((marker) => {
+          const choices = Array.isArray(marker) ? marker : [marker]
+          return !choices.some((choice) => text.toLowerCase().includes(choice.toLowerCase()))
+        })
+        .map((marker) => Array.isArray(marker) ? marker.join(' or ') : marker),
+      hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => text.includes(pattern)),
+      horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }
+  }, { markers: markerGroups })
+}
+
+async function checkPage({ context, name, path, markers, expectedPathnames = null }) {
+  const page = await context.newPage()
+  await page.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+  const state = await readPageState(page, markers)
+  await page.close().catch(() => {})
+
+  const finalUrl = new URL(state.url)
+  const pathOk = !expectedPathnames || expectedPathnames.includes(finalUrl.pathname)
+  const ok = (
+    pathOk &&
+    state.missingMarkers.length === 0 &&
+    !state.hasAppError &&
+    !state.horizontalOverflow
+  )
+
+  return record(name, ok, {
+    path,
+    finalUrl: state.url,
+    expectedPathnames,
+    missingMarkers: state.missingMarkers,
+    hasAppError: state.hasAppError,
+    horizontalOverflow: state.horizontalOverflow,
+    clientWidth: state.clientWidth,
+    scrollWidth: state.scrollWidth,
+  })
+}
+
+async function cleanupGuestAccount() {
+  if (!shouldCheckGuestApi) {
+    cleanup = { attempted: false, reason: 'guest API mutation skipped for remote base URL' }
+    return
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    cleanup = { attempted: false, reason: 'missing Supabase service role cleanup credentials', guestId }
+    record('guest access smoke cleans up disposable guest account', false, cleanup)
+    return
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false },
+  })
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', guestId)
+
+  const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+
+  cleanup = {
+    attempted: true,
+    guestId,
+    profileDeleted: !profileError,
+    userDeleted: !userError,
+    profileError: profileError?.message || null,
+    userError: userError?.message || null,
+  }
+
+  record('guest access smoke cleans up disposable guest account', !profileError && !userError, cleanup)
+}
+
+await loadDotEnv()
+
+try {
+  browser = await chromium.launch({
+    executablePath: chromePath,
+    headless: true,
+    args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
+  })
+
+  const anonymous = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 })
+
+  await checkPage({
+    context: anonymous,
+    name: 'logged-out login page offers guest access',
+    path: '/login',
+    markers: ['Welcome back', 'Continue as guest'],
+    expectedPathnames: ['/login'],
+  })
+  await checkPage({
+    context: anonymous,
+    name: 'logged-out signup page offers guest access',
+    path: '/signup',
+    markers: ['Create your account', 'Continue as guest'],
+    expectedPathnames: ['/signup'],
+  })
+  await checkPage({
+    context: anonymous,
+    name: 'logged-out public share remains readable',
+    path: `/t/${shareSlug}`,
+    markers: ['Start your own trip', ['Friend feedback', 'ADD YOUR REACTION']],
+    expectedPathnames: [`/t/${shareSlug}`],
+  })
+  await checkPage({
+    context: anonymous,
+    name: 'logged-out saved trips resolves safely',
+    path: '/saved',
+    markers: [['Welcome back', 'Trips']],
+    expectedPathnames: ['/login', '/saved'],
+  })
+  await checkPage({
+    context: anonymous,
+    name: 'logged-out billing resolves safely',
+    path: '/account?tab=billing',
+    markers: [['Welcome back', 'Plan and billing']],
+    expectedPathnames: ['/login', '/account'],
+  })
+  await checkPage({
+    context: anonymous,
+    name: 'pricing resolves to login or billing',
+    path: '/pricing',
+    markers: [['Welcome back', 'Plan and billing']],
+    expectedPathnames: ['/login', '/account'],
+  })
+
+  await anonymous.close().catch(() => {})
+
+  const guest = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 })
+  const guestPage = await guest.newPage()
+  const guestStartPath = isLocalBaseUrl ? `/api/guest/start?id=${guestId}` : '/api/guest/start'
+  await guestPage.goto(`${baseUrl}${guestStartPath}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+  const guestChatState = await readPageState(guestPage, ['Planner'])
+  const cookies = await guest.cookies(baseUrl)
+  const guestCookie = cookies.find((cookie) => cookie.name === 'globe_travel_guest')
+
+  record('guest start creates browser session and opens planner', (
+    new URL(guestChatState.url).pathname === '/chat' &&
+    markerSatisfied(guestChatState.text, ['Planner']) &&
+    Boolean(guestCookie?.value) &&
+    !guestChatState.hasAppError &&
+    !guestChatState.horizontalOverflow
+  ), {
+    finalUrl: guestChatState.url,
+    hasGuestCookie: Boolean(guestCookie?.value),
+    guestId: guestCookie?.value || null,
+    missingMarkers: missingMarkers(guestChatState.text, ['Planner']),
+    hasAppError: guestChatState.hasAppError,
+    horizontalOverflow: guestChatState.horizontalOverflow,
+  })
+  await guestPage.close().catch(() => {})
+
+  await checkPage({
+    context: guest,
+    name: 'guest can open saved trips surface',
+    path: '/saved',
+    markers: ['Trips'],
+    expectedPathnames: ['/saved'],
+  })
+  await checkPage({
+    context: guest,
+    name: 'guest can open account surface',
+    path: '/account',
+    markers: ['Account', ['Guest Traveler', 'Traveler']],
+    expectedPathnames: ['/account'],
+  })
+
+  if (shouldCheckGuestApi) {
+    const apiPage = await guest.newPage()
+    await apiPage.goto(`${baseUrl}/chat`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    const apiResult = await apiPage.evaluate(async () => {
+      const response = await fetch('/api/trips', { cache: 'no-store' })
+      const text = await response.text()
+      let json = null
+      try {
+        json = JSON.parse(text)
+      } catch {
+        // handled below
+      }
+      return {
+        status: response.status,
+        ok: response.ok,
+        isArray: Array.isArray(json),
+        count: Array.isArray(json) ? json.length : null,
+        bodyPreview: text.slice(0, 120),
+      }
+    })
+    await apiPage.close().catch(() => {})
+
+    record('guest session can read owned trip list API', apiResult.ok && apiResult.isArray, apiResult)
+  } else {
+    record('remote guest API mutation skipped by default', true, {
+      enableWith: 'QA_ALLOW_REMOTE_GUEST_MUTATION=1',
+    })
+  }
+
+  await guest.close().catch(() => {})
+} catch (error) {
+  record('auth and guest access smoke completed without unexpected exception', false, {
+    error: error instanceof Error ? error.message : String(error),
+  })
+} finally {
+  await browser?.close().catch(() => {})
+  await cleanupGuestAccount()
+}
+
+const summary = {
+  baseUrl,
+  shareSlug,
+  checked: results.length,
+  passed: results.filter((result) => result.ok).length,
+  failed: failures.length,
+  guestId,
+  shouldCheckGuestApi,
+  cleanup,
+  results,
+  failures,
+}
+
+console.log(JSON.stringify(summary, null, 2))
+
+if (failures.length > 0) {
+  process.exitCode = 1
+}

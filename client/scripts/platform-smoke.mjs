@@ -29,13 +29,47 @@ if (process.env.QA_TRIP_ID) {
 
 const failures = []
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function fetchWithRetry(url, options, attempts = 3) {
+  let lastError = null
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, options)
+      if (response.status < 500 || attempt === attempts) {
+        return { response, attempts: attempt, error: null }
+      }
+      lastError = new Error(`HTTP ${response.status}`)
+    } catch (error) {
+      lastError = error
+      if (attempt === attempts) break
+    }
+
+    await wait(250 * attempt)
+  }
+
+  return {
+    response: null,
+    attempts,
+    error: lastError instanceof Error ? lastError.message : String(lastError),
+  }
+}
+
 async function checkRoute(route) {
   const url = `${baseUrl}${route.path}`
   const started = Date.now()
-  const response = await fetch(url, {
+  const fetched = await fetchWithRetry(url, {
     redirect: 'follow',
     headers: { 'user-agent': 'globe-travel-platform-smoke/1.0' },
   })
+  if (!fetched.response) {
+    throw new Error(fetched.error || 'Fetch failed')
+  }
+
+  const response = fetched.response
   const body = await response.text()
   const elapsedMs = Date.now() - started
 
@@ -57,6 +91,7 @@ async function checkRoute(route) {
       path: route.path,
       status: response.status,
       elapsedMs,
+      attempts: fetched.attempts,
       ok: tripOk,
       tripTitle: payload?.trip?.title,
       isOwner: payload?.trip?.is_owner,
@@ -79,6 +114,7 @@ async function checkRoute(route) {
     path: route.path,
     status: response.status,
     elapsedMs,
+    attempts: fetched.attempts,
     ok: response.ok && missingMarkers.length === 0,
     missingMarkers,
     finalUrl: response.url,
@@ -95,11 +131,13 @@ for (const route of routes) {
   try {
     results.push(await checkRoute(route))
   } catch (error) {
-    failures.push({
+    const result = {
       path: route.path,
       ok: false,
       error: error instanceof Error ? error.message : String(error),
-    })
+    }
+    failures.push(result)
+    results.push(result)
   }
 }
 

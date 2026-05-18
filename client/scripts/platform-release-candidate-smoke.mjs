@@ -204,6 +204,7 @@ try {
 
   await runNodeTask('local ops readiness', 'scripts/platform-ops-smoke.mjs')
   await runNodeTask('local route smoke', 'scripts/platform-smoke.mjs')
+  await runNodeTask('auth and guest access smoke', 'scripts/platform-auth-access-smoke.mjs', {}, { mutatesLocal: true })
   await runNodeTask('local commercial smoke', 'scripts/platform-commercial-smoke.mjs')
   await runNodeTask('local accessibility and keyboard smoke', 'scripts/platform-accessibility-smoke.mjs')
   await runNodeTask('public share and social preview smoke', 'scripts/platform-share-smoke.mjs')
