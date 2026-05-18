@@ -3,11 +3,13 @@
 Date: 2026-05-18
 Production URL: `https://globe-travel-two.vercel.app`
 Stable share slug: `x3m2c8cnws`
-Status: production healthy, current local social-preview batch not deployed
+Deployment: `dpl_67z9WNZWz4wuRNk9soZpTmp1PGcb`
+Commit: `e70b4a2`
+Status: production release rehearsal passed after deployment
 
 ## Purpose
 
-This rehearsal checks the live production app against the release-runbook gates after the local social-preview work. The goal is to separate production health from release-candidate readiness.
+This rehearsal checks the live production app against the release-runbook gates after the local social-preview work. The first pass proved production was healthy but did not yet include the share-card endpoint. After commit `e70b4a2` deployed as `dpl_67z9WNZWz4wuRNk9soZpTmp1PGcb`, the production gates were re-run and the social-preview gate passed.
 
 ## Production Gates
 
@@ -17,7 +19,8 @@ This rehearsal checks the live production app against the release-runbook gates 
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops
 ```
 
-Result: passed `3/3`.
+Initial result: passed `3/3`.
+Post-deploy result: passed `3/3`.
 
 Evidence:
 
@@ -34,7 +37,8 @@ Evidence:
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:smoke
 ```
 
-Result: passed `8/8`.
+Initial result: passed `8/8`.
+Post-deploy result: passed `8/8`.
 
 Evidence:
 
@@ -47,7 +51,8 @@ Evidence:
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial
 ```
 
-Result: passed `4/4`.
+Initial result: passed `4/4`.
+Post-deploy result: passed `4/4`.
 
 Evidence:
 
@@ -62,7 +67,8 @@ Evidence:
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
 ```
 
-Result: failed `3/5`.
+Initial result before deploy: failed `3/5`.
+Post-deploy result: passed `5/5`.
 
 What passed:
 
@@ -70,7 +76,7 @@ What passed:
 - Every public itinerary day has mapped stops, a single country, and at least one usable route.
 - Public feedback API returns an array.
 
-What failed:
+What failed before deploy:
 
 - Production public page is missing the new social image metadata:
   - `og:image`
@@ -79,7 +85,14 @@ What failed:
   - `twitter:image`
 - Production `/api/share-card/x3m2c8cnws` returns `404` with `content-type: text/html; charset=utf-8`.
 
-Interpretation: the live app is healthy, but production does not yet include the local social-preview release-candidate changes.
+Post-deploy evidence:
+
+- Public page emits the new share metadata.
+- `/api/share-card/x3m2c8cnws` returns `200`.
+- Share card `content-type`: `image/png`.
+- Share card byte length: `81579`.
+
+Interpretation: the live app is healthy and production now includes the social-preview release-candidate changes.
 
 ## Browser Evidence
 
@@ -95,28 +108,29 @@ Observed:
 - Athens public share title visible.
 - `Start your own trip` CTA visible.
 - No horizontal overflow at the active Browser viewport.
-- `og:image`: missing.
-- `og:image:width`: missing.
-- `og:image:height`: missing.
-- `twitter:image`: missing.
+- Before deploy, `og:image`, image dimensions, and `twitter:image` were missing.
+- After deploy, `og:image` is `https://globe-travel-two.vercel.app/api/share-card/x3m2c8cnws`.
+- After deploy, `og:image:width` is `1200`.
+- After deploy, `og:image:height` is `630`.
+- After deploy, `twitter:image` is `https://globe-travel-two.vercel.app/api/share-card/x3m2c8cnws`.
 
 ## Release Decision
 
-Do not treat the current production alias as carrying the completed social-preview work.
+Production now carries the completed social-preview work for the stable Athens public share.
 
 Next release action:
 
-1. Commit the verified local release-candidate batch when the owner is ready.
-2. Push and deploy to Vercel.
-3. Re-run production:
-   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops`
-   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:smoke`
-   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial`
-   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share`
-4. Production release rehearsal passes only when `qa:share` returns `5/5` and the share-card image returns `image/png`.
+1. Continue the broader platform-readiness goal with the remaining Month 1/2 release-candidate scope.
+2. Run the fuller release-candidate matrix before a larger public launch decision:
+   - accessibility gate
+   - visual-diff gate
+   - Trip Studio owner fixture gate
+   - prompt actuals gate
+   - production share feedback gate where safe
+3. Keep this deployment as the current production baseline unless a later gate finds a P0/P1 regression.
 
 ## Current Risk
 
-Severity: P1 for viral sharing readiness, not a production availability outage.
+Severity after deploy: no open P1 for the stable Athens social-preview path.
 
-Reason: the public share page itself is live and mapped, but social apps will not receive the intended rich image card until the local share-card endpoint and metadata are deployed.
+Remaining risk: this proves the stable Athens public-share social preview in production. Broader launch readiness still needs continued multi-itinerary production/preview coverage, fuller visual regression scheduling, subscription-state evidence, and the larger release-candidate matrix.
