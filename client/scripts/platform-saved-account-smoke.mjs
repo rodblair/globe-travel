@@ -129,6 +129,10 @@ function stateOk(state, markers = []) {
   )
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 async function readPageState(page) {
   await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {})
   await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
@@ -285,6 +289,94 @@ try {
     hasTripTitle: journalState.text.includes(tripTitle),
     horizontalOverflow: journalState.horizontalOverflow,
     hasAppError: journalState.hasAppError,
+  })
+
+  await page.getByRole('button', { name: /Add note/i }).click({ timeout: 8000 })
+  const editorDialog = page.getByRole('dialog', { name: /New trip note/i })
+  await editorDialog.waitFor({ state: 'visible', timeout: 8000 })
+  const editorDialogState = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="dialog"]')
+    return {
+      activeInsideDialog: Boolean(dialog && document.activeElement && dialog.contains(document.activeElement)),
+      ariaModal: dialog?.getAttribute('aria-modal'),
+    }
+  })
+  for (let index = 0; index < 8; index += 1) {
+    await page.keyboard.press('Tab')
+  }
+  const editorFocusStayedInDialog = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="dialog"]')
+    return Boolean(dialog && document.activeElement && dialog.contains(document.activeElement))
+  })
+  await page.keyboard.press('Escape')
+  await editorDialog.waitFor({ state: 'hidden', timeout: 2000 }).catch(() => {})
+  const editorVisibleAfterEscape = await editorDialog.isVisible().catch(() => false)
+  record('journal editor dialog has keyboard focus management', (
+    editorDialogState.activeInsideDialog &&
+    editorDialogState.ariaModal === 'true' &&
+    editorFocusStayedInDialog &&
+    !editorVisibleAfterEscape
+  ), {
+    ...editorDialogState,
+    focusStayedInDialog: editorFocusStayedInDialog,
+    visibleAfterEscape: editorVisibleAfterEscape,
+  })
+
+  const journalCardButton = page.getByRole('button', { name: new RegExp(`^Open ${escapeRegExp(`${journalTitle} updated`)}$`, 'i') })
+  await journalCardButton.click({ timeout: 8000 })
+  const readerDialog = page.getByRole('dialog', { name: new RegExp(escapeRegExp(`${journalTitle} updated`), 'i') })
+  await readerDialog.waitFor({ state: 'visible', timeout: 8000 })
+  const readerDialogState = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="dialog"]')
+    return {
+      activeInsideDialog: Boolean(dialog && document.activeElement && dialog.contains(document.activeElement)),
+      ariaModal: dialog?.getAttribute('aria-modal'),
+    }
+  })
+  for (let index = 0; index < 6; index += 1) {
+    await page.keyboard.press('Tab')
+  }
+  const readerFocusStayedInDialog = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="dialog"]')
+    return Boolean(dialog && document.activeElement && dialog.contains(document.activeElement))
+  })
+  await page.getByRole('button', { name: 'Delete note' }).click({ timeout: 8000 })
+  const deleteDialog = page.getByRole('alertdialog', { name: /Delete note/i })
+  await deleteDialog.waitFor({ state: 'visible', timeout: 8000 })
+  const deleteDialogState = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="alertdialog"]')
+    return {
+      activeInsideDialog: Boolean(dialog && document.activeElement && dialog.contains(document.activeElement)),
+      ariaModal: dialog?.getAttribute('aria-modal'),
+    }
+  })
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Tab')
+  const deleteFocusStayedInDialog = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="alertdialog"]')
+    return Boolean(dialog && document.activeElement && dialog.contains(document.activeElement))
+  })
+  await page.keyboard.press('Escape')
+  await deleteDialog.waitFor({ state: 'hidden', timeout: 2000 }).catch(() => {})
+  const deleteVisibleAfterEscape = await deleteDialog.isVisible().catch(() => false)
+  record('journal reader and delete dialogs have keyboard focus management', (
+    readerDialogState.activeInsideDialog &&
+    readerDialogState.ariaModal === 'true' &&
+    readerFocusStayedInDialog &&
+    deleteDialogState.activeInsideDialog &&
+    deleteDialogState.ariaModal === 'true' &&
+    deleteFocusStayedInDialog &&
+    !deleteVisibleAfterEscape
+  ), {
+    reader: {
+      ...readerDialogState,
+      focusStayedInDialog: readerFocusStayedInDialog,
+    },
+    deleteDialog: {
+      ...deleteDialogState,
+      focusStayedInDialog: deleteFocusStayedInDialog,
+      visibleAfterEscape: deleteVisibleAfterEscape,
+    },
   })
 
   await page.goto(`${baseUrl}/account`, { waitUntil: 'domcontentloaded', timeout: 30000 })

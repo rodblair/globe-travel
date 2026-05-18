@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 public feedback validation checkpoint
+Updated: 2026-05-18 saved journal dialog accessibility checkpoint
 
 ## Active Goal
 
@@ -20,6 +20,8 @@ The current reliability upgrade is that public production visual QA and public s
 The newest commercial-readiness checkpoint closes a paid-path polish gap in the saved journal limit flow: the upgrade modal now has accessible dialog semantics, shows recoverable checkout errors, and no longer advertises a `coming soon` feature as paid value. `npm run qa:billing-recovery` now covers that modal through a development-only QA path.
 
 The newest public-share checkpoint closes a recipient feedback validation gap: optional email is validated before submission with clear recovery copy, the public feedback textarea now enforces the API's 600-character limit, and `npm run qa:share-recovery` covers invalid optional email plus forced feedback failure recovery.
+
+The newest saved/account checkpoint closes a journal keyboard accessibility gap: saved note editor, reader, and delete-confirmation modals now expose dialog semantics, keep focus inside while open, close with Escape, and are covered by `npm run qa:saved-account`.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 

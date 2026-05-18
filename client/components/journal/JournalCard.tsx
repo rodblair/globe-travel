@@ -43,7 +43,7 @@ export function JournalCard({
       transition={{ duration: 0.18 }}
       className="group relative bg-paper-recessed/60 border border-rule rounded-2xl overflow-hidden hover:border-rule hover:bg-paper-recessed/60 transition-all duration-200"
     >
-      <button className="w-full text-left p-5" onClick={onClick}>
+      <button className="w-full p-5 text-left" onClick={onClick} aria-label={`Open ${title}`}>
         {/* Date + place row */}
         <div className="flex items-center gap-3 mb-3">
           <div className="flex items-center gap-1.5 text-foreground/35">
@@ -84,7 +84,8 @@ export function JournalCard({
         {onEdit && (
           <button
             onClick={(e) => { e.stopPropagation(); onEdit() }}
-            className="p-1.5 rounded-lg bg-paper-recessed hover:bg-paper-recessed text-foreground/40 hover:text-foreground transition-colors"
+            aria-label={`Edit ${title}`}
+            className="touch-target rounded-lg bg-paper-recessed p-1.5 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
             title="Edit note"
           >
             <Pencil className="w-3.5 h-3.5" />
@@ -93,7 +94,8 @@ export function JournalCard({
         {onDelete && (
           <button
             onClick={(e) => { e.stopPropagation(); onDelete() }}
-            className="p-1.5 rounded-lg bg-paper-recessed hover:bg-[color:var(--pillar-desert-wash)] text-foreground/40 hover:text-[var(--terracotta)] transition-colors"
+            aria-label={`Delete ${title}`}
+            className="touch-target rounded-lg bg-paper-recessed p-1.5 text-foreground/40 transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
             title="Delete note"
           >
             <Trash2 className="w-3.5 h-3.5" />

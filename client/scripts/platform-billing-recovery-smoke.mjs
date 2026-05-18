@@ -166,7 +166,10 @@ try {
   record('billing recovery smoke crashed', false, { error: error instanceof Error ? error.message : String(error) })
 } finally {
   await context.close().catch(() => {})
-  await browser.close().catch(() => {})
+  await Promise.race([
+    browser.close().catch(() => {}),
+    new Promise((resolve) => setTimeout(resolve, 5000)),
+  ])
 }
 
 const summary = {
@@ -183,3 +186,5 @@ console.log(JSON.stringify(summary, null, 2))
 if (failures.length > 0) {
   process.exitCode = 1
 }
+
+process.exit(failures.length > 0 ? 1 : 0)

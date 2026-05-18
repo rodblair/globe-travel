@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Suspense, useMemo, useState } from 'react'
+import { Suspense, useId, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'motion/react'
@@ -24,6 +24,7 @@ import { JournalCard } from '@/components/journal/JournalCard'
 import { JournalEditor, type JournalEntryFields } from '@/components/journal/JournalEditor'
 import { UpgradeModal } from '@/components/billing/UpgradeModal'
 import { ArtifactFrame, getTripKeepsakeMeta } from '@/components/trips/KeepsakeArtifacts'
+import { useDialogFocus } from '@/hooks/useDialogFocus'
 import { useSubscription } from '@/hooks/useSubscription'
 import { PLANS } from '@/lib/plans'
 import { cn } from '@/lib/utils'
@@ -78,6 +79,12 @@ function SavedPageContent() {
   const [confirmingTripId, setConfirmingTripId] = useState<string | null>(null)
   const qaForceUpgradeOpen = process.env.NODE_ENV === 'development' && searchParams.get('qaUpgradeModal') === '1'
   const [upgradeOpen, setUpgradeOpen] = useState(qaForceUpgradeOpen)
+  const readingDialogRef = useRef<HTMLDivElement>(null)
+  const deleteDialogRef = useRef<HTMLDivElement>(null)
+  const readingDialogTitleId = useId()
+  const readingDialogDescriptionId = useId()
+  const deleteDialogTitleId = useId()
+  const deleteDialogDescriptionId = useId()
 
   const queryClient = useQueryClient()
   const { isPro } = useSubscription()
@@ -86,6 +93,18 @@ function SavedPageContent() {
     process.env.NODE_ENV === 'development' && searchParams.get('qaCheckoutFailure') === '1'
       ? 'Checkout is temporarily unavailable in QA mode.'
       : undefined
+
+  useDialogFocus({
+    isOpen: Boolean(readingEntry),
+    onClose: () => setReadingEntry(null),
+    dialogRef: readingDialogRef,
+  })
+
+  useDialogFocus({
+    isOpen: Boolean(deletingId),
+    onClose: () => setDeletingId(null),
+    dialogRef: deleteDialogRef,
+  })
 
   const { data: entries = [], isLoading: journalLoading } = useQuery<JournalEntry[]>({
     queryKey: ['journal-entries'],
@@ -524,6 +543,12 @@ function SavedPageContent() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.97 }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+              ref={readingDialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={readingDialogTitleId}
+              aria-describedby={readingDialogDescriptionId}
+              tabIndex={-1}
               className="fixed inset-x-0 bottom-0 z-50 flex max-h-[90dvh] flex-col md:inset-auto md:top-1/2 md:left-1/2 md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2 md:max-h-[85vh]"
             >
               <div className="flex h-full flex-col overflow-hidden rounded-t-3xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)] md:rounded-2xl">
@@ -550,7 +575,7 @@ function SavedPageContent() {
                         </span>
                       )}
                     </div>
-                    <h2 className="font-serif text-xl font-semibold leading-snug text-foreground">
+                    <h2 id={readingDialogTitleId} className="font-serif text-xl font-semibold leading-snug text-foreground">
                       {readingEntry.mood && <span className="mr-2">{readingEntry.mood}</span>}
                       {readingEntry.title}
                     </h2>
@@ -558,7 +583,8 @@ function SavedPageContent() {
                   <div className="flex shrink-0 items-center gap-1">
                     <button
                       onClick={() => openEditEntry(readingEntry)}
-                      className="rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
+                      aria-label="Edit note"
+                      className="touch-target rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
                       title="Edit"
                     >
                       <Pencil className="h-4 w-4" />
@@ -568,21 +594,23 @@ function SavedPageContent() {
                         setDeletingId(readingEntry.id)
                         setReadingEntry(null)
                       }}
-                      className="rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
+                      aria-label="Delete note"
+                      className="touch-target rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
                       title="Delete"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => setReadingEntry(null)}
-                      className="ml-1 rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
+                      aria-label="Close note"
+                      className="touch-target ml-1 rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
                     >
                       <X className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-6 py-6">
+                <div id={readingDialogDescriptionId} className="flex-1 overflow-y-auto px-6 py-6">
                   <p className="whitespace-pre-wrap text-base font-light leading-[1.85] text-foreground/80">
                     {readingEntry.content}
                   </p>
@@ -607,22 +635,28 @@ function SavedPageContent() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
+              ref={deleteDialogRef}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby={deleteDialogTitleId}
+              aria-describedby={deleteDialogDescriptionId}
+              tabIndex={-1}
               className="fixed inset-x-4 bottom-4 z-50 md:inset-auto md:top-1/2 md:left-1/2 md:w-80 md:-translate-x-1/2 md:-translate-y-1/2"
             >
               <div className="rounded-2xl border border-rule bg-paper-raised p-5 shadow-[var(--shadow-lg)]">
-                <h3 className="mb-1 font-semibold text-foreground">Delete note?</h3>
-                <p className="mb-4 text-sm text-foreground/50">This can&apos;t be undone.</p>
+                <h3 id={deleteDialogTitleId} className="mb-1 font-semibold text-foreground">Delete note?</h3>
+                <p id={deleteDialogDescriptionId} className="mb-4 text-sm text-foreground/50">This can&apos;t be undone.</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setDeletingId(null)}
-                    className="flex-1 rounded-xl bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:bg-paper-recessed"
+                    className="touch-target flex-1 rounded-xl bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:bg-paper-recessed"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => deleteEntry.mutate(deletingId)}
                     disabled={deleteEntry.isPending}
-                    className="flex-1 rounded-xl bg-[color:var(--pillar-desert-wash)] px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-[var(--terracotta)] disabled:opacity-50"
+                    className="touch-target flex-1 rounded-xl bg-[color:var(--pillar-desert-wash)] px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-[var(--terracotta)] disabled:opacity-50"
                   >
                     {deleteEntry.isPending ? 'Deleting…' : 'Delete'}
                   </button>

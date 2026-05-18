@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { X, Check, Zap, Crown, AlertCircle } from 'lucide-react'
 import { PLANS } from '@/lib/plans'
 import { startCheckout } from '@/hooks/useSubscription'
+import { useDialogFocus } from '@/hooks/useDialogFocus'
 import { cn } from '@/lib/utils'
 
 type UpgradeModalProps = {
@@ -24,48 +25,14 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
   const descriptionId = useId()
   const dialogRef = useRef<HTMLDivElement>(null)
 
+  useDialogFocus({ isOpen, onClose, dialogRef })
+
   useEffect(() => {
     if (!isOpen) {
       setLoading(false)
       setBillingError(null)
-      return
     }
-
-    dialogRef.current?.focus()
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
-      if (event.key !== 'Tab') return
-
-      const focusableElements = Array.from(
-        dialogRef.current?.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        ) || []
-      ).filter((element) => !element.hasAttribute('aria-hidden'))
-
-      if (focusableElements.length === 0) {
-        event.preventDefault()
-        dialogRef.current?.focus()
-        return
-      }
-
-      const firstElement = focusableElements[0]
-      const lastElement = focusableElements[focusableElements.length - 1]
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault()
-        lastElement.focus()
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault()
-        firstElement.focus()
-      } else if (!dialogRef.current?.contains(document.activeElement)) {
-        event.preventDefault()
-        firstElement.focus()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
+  }, [isOpen])
 
   const handleUpgrade = async () => {
     setBillingError(null)

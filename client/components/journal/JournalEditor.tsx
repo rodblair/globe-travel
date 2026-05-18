@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { X, Save, MapPin, CalendarDays, Briefcase } from 'lucide-react'
 import { MoodPicker } from './MoodPicker'
+import { useDialogFocus } from '@/hooks/useDialogFocus'
 import { cn } from '@/lib/utils'
 
 type UserPlace = { id: string; place: { name: string } }
@@ -45,6 +46,11 @@ export function JournalEditor({
   const [selectedPlace, setSelectedPlace] = useState('')
   const [selectedTrip, setSelectedTrip] = useState('')
   const [saving, setSaving] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+  const descriptionId = useId()
+
+  useDialogFocus({ isOpen, onClose, dialogRef })
 
   // Reset form when the note changes or dialog opens.
   useEffect(() => {
@@ -99,6 +105,12 @@ export function JournalEditor({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 60, scale: 0.97 }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            aria-describedby={descriptionId}
+            tabIndex={-1}
             className="fixed inset-x-0 bottom-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl z-50 flex flex-col max-h-[92dvh] md:max-h-[88vh]"
           >
             <div className="flex flex-col overflow-hidden rounded-t-3xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)] md:rounded-2xl">
@@ -109,7 +121,7 @@ export function JournalEditor({
 
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-rule">
-                <h2 className="text-lg font-serif font-semibold text-foreground">
+                <h2 id={titleId} className="text-lg font-serif font-semibold text-foreground">
                   {initialData?.id ? 'Edit trip note' : 'New trip note'}
                 </h2>
                 <button
@@ -122,7 +134,7 @@ export function JournalEditor({
               </div>
 
               {/* Body — scrollable */}
-              <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+              <div id={descriptionId} className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
 
                 {/* Title */}
                 <div>
