@@ -193,4 +193,6 @@ Billing:
 
 - Check Stripe env values in `/api/health`.
 - Run `npm run qa:commercial`.
+- Run `npm run qa:stripe-readiness` before release candidates to verify Stripe test-mode keys, prices, webhook signature verification, and billing portal configuration.
+- Run `QA_STRIPE_CREATE_TEST_SESSIONS=1 npm run qa:stripe-readiness` during approved release rehearsals to create and clean up a test customer, test checkout session, and test portal session.
 - Confirm checkout/portal failures return structured JSON when unauthenticated.

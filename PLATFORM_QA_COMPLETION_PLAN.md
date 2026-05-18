@@ -558,6 +558,8 @@ These are the next focused passes to run before another release candidate decisi
 - Billing state hardening evidence: `qa/billing-subscription-state-hardening-2026-05-18.md`.
 - Result: `npm run qa:billing-recovery` now covers trialing, past-due, canceled, checkout failure, billing portal failure, checkout cancel return, checkout success return, and overflow. The expanded gate passed `9/9`.
 - Visual result: focused account-billing responsive visual check passed `3/3` for tablet, laptop, and desktop in `qa/visual-baseline-billing-commercial-state/README.md`.
+- Stripe test-mode readiness evidence: `qa/stripe-test-mode-readiness-2026-05-18.md`.
+- Result: `npm run qa:stripe-readiness` verifies test-mode Stripe keys, monthly/yearly price IDs, webhook signature verification, and billing portal configuration. `QA_STRIPE_CREATE_TEST_SESSIONS=1 npm run qa:stripe-readiness` creates and cleans up a test customer, test checkout session, and test billing portal session.
 - Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
 - Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
 - Finish public share social preview evidence integration and keep share-card image rendering in the release gate.

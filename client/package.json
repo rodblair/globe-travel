@@ -24,6 +24,7 @@
     "qa:studio-actions": "node scripts/platform-trip-studio-actions.mjs",
     "qa:studio-browser-fixture": "node scripts/platform-trip-studio-browser-fixture.mjs",
     "qa:studio-recovery": "node scripts/platform-trip-studio-recovery-smoke.mjs",
+    "qa:stripe-readiness": "node scripts/platform-stripe-readiness.mjs",
     "qa:visual": "node scripts/platform-visual-baseline.mjs"
   },
   "dependencies": {
