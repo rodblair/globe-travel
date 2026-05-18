@@ -4,6 +4,7 @@ import { inter, sourceSerif, jetbrainsMono } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://globe-travel-two.vercel.app'),
   title: "Globe.travel — Plan the trip everyone can say yes to",
   description:
     "Plan group city trips, collect friend feedback, and share a polished itinerary map everyone can react to.",

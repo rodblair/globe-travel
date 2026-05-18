@@ -309,21 +309,32 @@ export function ShareLinkCard({
   className?: string
 }) {
   const [copied, setCopied] = useState(false)
+  const [shareError, setShareError] = useState<string | null>(null)
 
   const copyLink = async () => {
     if (!shareUrl) return
-    await navigator.clipboard.writeText(shareUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2200)
+    try {
+      setShareError(null)
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2200)
+    } catch {
+      setShareError('Could not copy the link. Select the URL above and copy it manually.')
+    }
   }
 
   const nativeShare = async () => {
     if (!shareUrl) return
-    if (navigator.share) {
-      await navigator.share({ title, text: `Review this Globe.travel itinerary: ${title}`, url: shareUrl })
-      return
+    try {
+      setShareError(null)
+      if (navigator.share) {
+        await navigator.share({ title, text: `Review this Globe.travel itinerary: ${title}`, url: shareUrl })
+        return
+      }
+      await copyLink()
+    } catch {
+      setShareError('Could not open the share sheet. Copy the link instead.')
     }
-    await copyLink()
   }
 
   return (
@@ -336,6 +347,14 @@ export function ShareLinkCard({
       <div className="mt-4 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-ink-2">
         <p className="truncate">{shareUrl || 'Enable sharing to create a public link'}</p>
       </div>
+      {shareError && (
+        <p role="alert" className="mt-3 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
+          {shareError}
+        </p>
+      )}
+      <p aria-live="polite" className="sr-only">
+        {copied ? 'Share link copied to clipboard.' : ''}
+      </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
