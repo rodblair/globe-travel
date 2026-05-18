@@ -41,7 +41,7 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /praia da rainha/i, name: 'Praia da Rainha', country: 'Portugal', country_code: 'PT', latitude: 38.69986, longitude: -9.41819, manualId: 'manual:cascais:praia-da-rainha' },
   { pattern: /boca do inferno/i, name: 'Boca do Inferno', country: 'Portugal', country_code: 'PT', latitude: 38.69161, longitude: -9.43134, manualId: 'manual:cascais:boca-do-inferno' },
   { pattern: /taberna da rua das flores|farewell dinner/i, name: 'Taberna da Rua das Flores', country: 'Portugal', country_code: 'PT', latitude: 38.70947, longitude: -9.1441, manualId: 'manual:lisbon:taberna-rua-das-flores' },
-  { pattern: /ferry from piraeus to aegina|return ferry to piraeus/i, name: 'Port of Piraeus', country: 'Greece', country_code: 'GR', latitude: 37.94486, longitude: 23.64082, manualId: 'manual:athens:piraeus-port' },
+  { pattern: /piraeus ferry|piraeus port|port of piraeus|ferry from piraeus to aegina|return ferry to piraeus/i, name: 'Port of Piraeus', country: 'Greece', country_code: 'GR', latitude: 37.94486, longitude: 23.64082, manualId: 'manual:athens:piraeus-port' },
   { pattern: /aegina harbor|aegina port|aegina town|pistachio market/i, name: 'Aegina Town', country: 'Greece', country_code: 'GR', latitude: 37.74679, longitude: 23.42775, manualId: 'manual:aegina:town' },
   { pattern: /temple of aphaia/i, name: 'Temple of Aphaia', country: 'Greece', country_code: 'GR', latitude: 37.75448, longitude: 23.53313, manualId: 'manual:aegina:temple-of-aphaia' },
   { pattern: /agia marina|afternoon swim and beach time/i, name: 'Agia Marina, Aegina', country: 'Greece', country_code: 'GR', latitude: 37.74417, longitude: 23.53374, manualId: 'manual:aegina:agia-marina' },
@@ -373,7 +373,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
       for (const query of buildQueries(item.title, day.title, destinationContext)) {
         if (resolvedPlace) break
-        const result = await geocodePlace(query, token, geocodeOptions)
+        const result = await geocodePlace(query, token, { ...geocodeOptions, strictName: true })
         if (!result) continue
 
         if (

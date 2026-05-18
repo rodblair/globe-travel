@@ -11,6 +11,7 @@
     "qa:billing-recovery": "node scripts/platform-billing-recovery-smoke.mjs",
     "qa:a11y": "node scripts/platform-accessibility-smoke.mjs",
     "qa:commercial": "node scripts/platform-commercial-smoke.mjs",
+    "qa:geocode-quality": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/platform-geocode-quality-smoke.mjs",
     "qa:map-fallback": "node scripts/platform-map-fallback-smoke.mjs",
     "qa:ops": "node scripts/platform-ops-smoke.mjs",
     "qa:planner-handoff": "node scripts/platform-planner-handoff-smoke.mjs",

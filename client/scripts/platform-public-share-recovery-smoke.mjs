@@ -25,6 +25,8 @@ const page = await context.newPage()
 const failures = []
 const results = []
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 function record(name, ok, details = {}) {
   const result = { name, ok: Boolean(ok), ...details }
   results.push(result)
@@ -36,11 +38,22 @@ async function text() {
   return page.locator('body').innerText({ timeout: 8000 })
 }
 
+async function gotoWithRetry(url) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await page.goto(url, {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      })
+    } catch (error) {
+      if (attempt === 3) throw error
+      await sleep(600 * attempt)
+    }
+  }
+}
+
 try {
-  await page.goto(`${baseUrl}/t/${shareSlug}?qaFeedbackFailure=1`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 30000,
-  })
+  await gotoWithRetry(`${baseUrl}/t/${shareSlug}?qaFeedbackFailure=1`)
   await page.waitForLoadState('networkidle', { timeout: 2500 }).catch(() => {})
   await page.waitForTimeout(900)
 

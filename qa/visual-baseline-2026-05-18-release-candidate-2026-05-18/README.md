@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Environment: http://localhost:3000
 Public share slug: x3m2c8cnws
-Trip Studio fixture: 655410b4-0f65-4389-a5c5-2f6380e32707
+Trip Studio fixture: a8f74428-70ec-4699-8fe6-b34bd43243cf
 Auth mode: guest (external guest id)
 Baseline comparison: not enabled
 Pixel-compared routes: none

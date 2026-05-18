@@ -42,6 +42,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -295,6 +296,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -324,7 +326,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -497,6 +499,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -526,7 +529,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -699,6 +702,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -784,7 +788,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 41,
-              "y": 444,
+              "y": 464,
               "width": 308,
               "height": 46
             }
@@ -798,7 +802,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 41,
-              "y": 534,
+              "y": 590,
               "width": 308,
               "height": 106
             }
@@ -812,7 +816,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 41,
-              "y": 666,
+              "y": 722,
               "width": 158,
               "height": 46
             }
@@ -901,6 +905,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -1103,6 +1108,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -1356,6 +1362,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -1576,7 +1583,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1609,6 +1616,7 @@
         "height": 844
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "5 Days in Athens Greece in mid september | Globe.travel",
@@ -1652,7 +1660,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 8,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -1825,6 +1833,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -2045,7 +2054,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -2,
+              "y": -3,
               "width": 150,
               "height": 44
             }
@@ -2078,6 +2087,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -2121,7 +2131,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -2294,6 +2304,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -2323,7 +2334,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -2496,6 +2507,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -2679,7 +2691,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 385,
-              "y": 440,
+              "y": 460,
               "width": 578,
               "height": 46
             }
@@ -2698,6 +2710,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -2900,6 +2913,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -3153,6 +3167,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "Globe.travel — Plan the trip everyone can say yes to",
@@ -3406,6 +3421,7 @@
         "height": 950
       },
       "status": 200,
+      "navigationError": null,
       "ok": true,
       "preflight": {
         "title": "5 Days in Athens Greece in mid september | Globe.travel",
@@ -3449,7 +3465,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 8,
+              "y": -40,
               "width": 150,
               "height": 44
             }

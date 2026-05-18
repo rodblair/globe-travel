@@ -107,9 +107,26 @@ function buildTripContextBlock(runtime: PlannerRuntimeContext) {
   return `\n\n${lines.join('\n')}`
 }
 
+function buildTrustedPlaceGuidanceBlock(runtime: PlannerRuntimeContext) {
+  const destinationText = [
+    runtime.latestUserText,
+    runtime.trip?.title,
+    runtime.trip?.brief?.destination,
+  ].filter(Boolean).join(' ')
+
+  if (!/\blisbon\b/i.test(destinationText)) return ''
+
+  return `\n\nTRUSTED_LISBON_PLACE_SET:
+When planning Lisbon, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Alfama/Baixa: Lisbon Cathedral, Praça do Comércio, Santa Justa Lift, Castelo de São Jorge, Miradouro de Santa Luzia, Miradouro da Graça, Clube de Fado, Pois Café, Miss Can, Canto da Vila, Taberna Sal Grosso, Chapitô à Mesa, da Prata 52.
+- Belém/riverside: Jerónimos Monastery, Pastéis de Belém, Belém Tower, Padrão dos Descobrimentos, MAAT, À Margem, O Frade, Enoteca de Belém, Darwin's Café.
+- Chiado/Bairro Alto/nightlife: Dear Breakfast Chiado, Miradouro de São Pedro de Alcântara, Time Out Market Lisboa, Taberna da Rua das Flores, Oficina do Duque, By The Wine, Bairro do Avillez, Pavilhão Chinês, Pensão Amor, Park Rooftop, Pharmacia, Topo Chiado, Foxtrot, Pink Street.
+Use the exact place name in both title and place_query for meals; do not substitute obscure restaurants when a trusted routeable venue fits the day.`
+}
+
 export function buildPlannerSystemPrompt(runtime: PlannerRuntimeContext) {
   const basePrompt = PLANNER_SYSTEM_PROMPTS[runtime.mode] || PLANNER_SYSTEM_PROMPTS.explore
-  return `${basePrompt}${buildUserContextBlock(runtime)}${buildTripContextBlock(runtime)}`
+  return `${basePrompt}${buildUserContextBlock(runtime)}${buildTripContextBlock(runtime)}${buildTrustedPlaceGuidanceBlock(runtime)}`
 }
 
 export function runPlannerPolicyHooks({

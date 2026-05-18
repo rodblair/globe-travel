@@ -53,6 +53,8 @@ const routes = routeFilter.length
   ? allRoutes.filter((route) => routeFilter.includes(route.id))
   : allRoutes
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 function markdownTable(rows) {
   return [
     '| Route | Viewport | Axe Critical/Serious | Axe Moderate | Keyboard Issues | Missing Markers | Result |',
@@ -77,13 +79,40 @@ function compactViolation(violation) {
 
 async function collectA11y(page, route, viewport) {
   await page.setViewportSize({ width: viewport.width, height: viewport.height })
-  const response = await page.goto(`${baseUrl}${route.path}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 30000,
-  })
+  let response = null
+  let lastNavigationError = null
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      response = await page.goto(`${baseUrl}${route.path}`, {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      })
+      break
+    } catch (error) {
+      lastNavigationError = error
+      if (attempt === 3) throw error
+      await sleep(600 * attempt)
+    }
+  }
 
   await page.waitForLoadState('networkidle', { timeout: 1500 }).catch(() => {})
   await page.waitForTimeout(700)
+  await page.waitForFunction(
+    ({ markers }) => {
+      const text = [
+        document.body?.innerText || '',
+        ...Array.from(document.querySelectorAll('[aria-label], input[placeholder], textarea[placeholder]')).map((el) => (
+          el.getAttribute('aria-label') ||
+          el.getAttribute('placeholder') ||
+          ''
+        )),
+      ].join('\n').toLowerCase()
+
+      return markers.every((marker) => text.includes(marker.toLowerCase()))
+    },
+    { markers: route.markers },
+    { timeout: 10000 }
+  ).catch(() => {})
   await page.addScriptTag({ content: axeSource })
 
   const preflight = await page.evaluate(({ markers }) => {
@@ -153,6 +182,7 @@ async function collectA11y(page, route, viewport) {
     viewportId: viewport.id,
     requestedViewport: viewport,
     status: response?.status() || 0,
+    navigationError: lastNavigationError instanceof Error ? lastNavigationError.message : null,
     ok,
     preflight,
     missingMarkers: preflight.missingMarkers,

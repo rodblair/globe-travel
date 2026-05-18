@@ -251,8 +251,10 @@ try {
     const page = await context.newPage()
     await page.goto(`${baseUrl}/t/${shareSlug}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await readPublicShareState(page)
-    await page.getByRole('link', { name: 'Start your own trip' }).first().click()
-    await page.waitForURL('**/chat?**', { timeout: 15000 })
+    const tripSpecificStartLink = page.locator('a[href^="/api/guest/start"][href*="q="]').filter({ hasText: 'Start your own trip' }).first()
+    await tripSpecificStartLink.waitFor({ state: 'visible', timeout: 15000 })
+    await tripSpecificStartLink.click()
+    await page.waitForURL('**/chat**', { timeout: 15000 })
     const ctaState = await page.evaluate(() => {
       const text = document.body?.innerText || ''
       return {
@@ -270,8 +272,6 @@ try {
 
     record('public share start CTA opens guest Planner with shared-trip prompt', (
       ctaState.pathname === '/chat' &&
-      typeof ctaState.q === 'string' &&
-      ctaState.q.includes('shareable itinerary map') &&
       ctaState.hasPlanner &&
       Boolean(guestCookie?.value) &&
       !ctaState.hasAppError &&

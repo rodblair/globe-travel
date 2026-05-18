@@ -6,40 +6,49 @@ Public share slug: x3m2c8cnws
 
 ## Result
 
-- Checked tasks: 18
-- Passed: 18
+- Checked tasks: 24
+- Passed: 24
 - Failed: 0
 - Visual QA included: yes
 - Trip Studio fixture included: yes
+- Public share fixture sweep included: no
+- Owner feedback readback included: yes
+- Slow-network recovery included: yes
 - Hosted Stripe Checkout included: no
 - Summary JSON: `qa/release-candidate-2026-05-18/summary.json`
 
 | Task | Result | Checks | Elapsed | Mutation |
 | --- | --- | ---: | ---: | --- |
-| lint | Pass | n/a | 4.2s | no |
-| production build | Pass | n/a | 10.2s | no |
-| local ops readiness | Pass | 3 | 0.1s | no |
+| lint | Pass | n/a | 4.4s | no |
+| production build | Pass | n/a | 10.4s | no |
+| local ops readiness | Pass | 3 | 0.2s | no |
+| geocode quality smoke | Pass | 14 | 0.2s | no |
 | local route smoke | Pass | 8 | 0.8s | no |
-| auth and guest access smoke | Pass | 11 | 51.1s | local |
-| local commercial smoke | Pass | 4 | 0.2s | no |
-| local accessibility and keyboard smoke | Pass | 16 | 44.1s | no |
+| auth and guest access smoke | Pass | 14 | 32.8s | local |
+| saved and account smoke | Pass | 13 | 14.5s | local |
+| local commercial smoke | Pass | 4 | 0.3s | no |
+| local accessibility and keyboard smoke | Pass | 16 | 42.0s | no |
 | public share and social preview smoke | Pass | 5 | 0.7s | no |
-| public share recovery smoke | Pass | 3 | 11.8s | no |
-| public share feedback mutation smoke | Pass | 5 | 0.7s | local |
-| planner handoff smoke | Pass | 10 | 1.0s | local |
-| billing recovery smoke | Pass | 9 | 15.4s | no |
-| Trip Studio action smoke with kept fixture | Pass | 23 | 8.4s | local |
-| Trip Studio recovery smoke on kept fixture | Pass | 6 | 8.2s | no |
+| public share recovery smoke | Pass | 4 | 12.6s | no |
+| public share viral loop smoke | Pass | 5 | 105.4s | local |
+| public share map fallback smoke | Pass | 1 | 3.3s | no |
+| public share feedback mutation smoke | Pass | 5 | 0.5s | local |
+| planner handoff smoke | Pass | 17 | 10.0s | local |
+| billing recovery smoke | Pass | 13 | 18.1s | no |
+| Trip Studio action smoke with kept fixture | Pass | 23 | 5.1s | local |
+| Trip Studio recovery smoke on kept fixture | Pass | 6 | 8.1s | no |
+| Trip Studio owner feedback readback smoke | Pass | 6 | 0.7s | local |
+| slow-network recovery smoke on kept fixture | Pass | 5 | 45.6s | local |
 | Stripe test-mode readiness | Pass | 11 | 0.5s | no |
-| planner prompt contract suite | Pass | 52 | 0.1s | no |
-| responsive visual QA | Pass | 50 | 142.3s | no |
-| cleanup release-candidate Trip Studio fixture | Pass | n/a | 0.4s | local |
+| planner prompt contract suite | Pass | 56 | 0.1s | no |
+| responsive visual QA | Pass | 50 | 141.3s | no |
+| cleanup release-candidate Trip Studio fixture | Pass | n/a | 0.7s | local |
 
 ## Fixture
 
-- Trip id: e6b9b5ac-ee6a-4b15-b6b9-1e8af3303d06
-- Share slug: iijni03pdg
-- Run id: b3b3524f
+- Trip id: a8f74428-70ec-4699-8fe6-b34bd43243cf
+- Share slug: 6247qedryb
+- Run id: a67cd892
 - Cleanup task: passed
 
 ## Failure Detail

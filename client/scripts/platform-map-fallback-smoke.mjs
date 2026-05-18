@@ -7,6 +7,8 @@ const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i
 const results = []
 const failures = []
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 function record(name, ok, details = {}) {
   const result = { name, ok: Boolean(ok), ...details }
   results.push(result)
@@ -35,6 +37,17 @@ async function collectState(page) {
   })
 }
 
+async function gotoWithRetry(page, url) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    } catch (error) {
+      if (attempt === 3) throw error
+      await sleep(600 * attempt)
+    }
+  }
+}
+
 let browser = null
 
 try {
@@ -51,7 +64,7 @@ try {
     })
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true })
     const page = await context.newPage()
-    await page.goto(`${baseUrl}/t/${shareSlug}?qaMapFallback=1`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await gotoWithRetry(page, `${baseUrl}/t/${shareSlug}?qaMapFallback=1`)
     await page.waitForFunction(() => document.body.innerText.includes('Static route preview'), { timeout: 15000 }).catch(() => {})
     await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
     const state = await collectState(page)

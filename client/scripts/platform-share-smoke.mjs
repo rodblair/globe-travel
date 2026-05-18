@@ -11,6 +11,8 @@ if (!shareSlugs.length) {
 
 const failures = []
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 function hasMeta(html, matcher) {
   return matcher.test(html)
 }
@@ -19,10 +21,38 @@ function fail(shareSlug, name, details) {
   failures.push({ shareSlug, name, ...details })
 }
 
+async function fetchWithRetry(path, options = {}) {
+  const url = path.startsWith('http') ? path : `${baseUrl}${path}`
+  let lastError = null
+  let lastResponse = null
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'user-agent': 'globe-travel-share-smoke/1.0',
+          ...(options.headers || {}),
+        },
+      })
+      lastResponse = response
+      if (response.status < 500 || attempt === 3) {
+        return response
+      }
+    } catch (error) {
+      lastError = error
+      if (attempt === 3) throw error
+    }
+
+    await sleep(500 * attempt)
+  }
+
+  if (lastResponse) return lastResponse
+  throw lastError || new Error(`Failed to fetch ${url}`)
+}
+
 async function fetchJson(path) {
-  const response = await fetch(`${baseUrl}${path}`, {
-    headers: { 'user-agent': 'globe-travel-share-smoke/1.0' },
-  })
+  const response = await fetchWithRetry(path)
   const text = await response.text()
   let json = null
   try {
@@ -124,9 +154,7 @@ async function checkShareSlug(shareSlug) {
   if (!feedbackOk) fail(shareSlug, feedbackResult.name, feedbackResult)
   results.push(feedbackResult)
 
-  const pageResponse = await fetch(`${baseUrl}/t/${shareSlug}`, {
-    headers: { 'user-agent': 'globe-travel-share-smoke/1.0' },
-  })
+  const pageResponse = await fetchWithRetry(`/t/${shareSlug}`)
   const html = await pageResponse.text()
   const escapedTitle = tripTitle?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const metaChecks = [
@@ -153,9 +181,7 @@ async function checkShareSlug(shareSlug) {
   if (!pageOk) fail(shareSlug, pageResult.name, pageResult)
   results.push(pageResult)
 
-  const imageResponse = await fetch(`${baseUrl}/api/share-card/${shareSlug}`, {
-    headers: { 'user-agent': 'globe-travel-share-smoke/1.0' },
-  })
+  const imageResponse = await fetchWithRetry(`/api/share-card/${shareSlug}`)
   const imageBuffer = await imageResponse.arrayBuffer()
   const imageContentType = imageResponse.headers.get('content-type') || ''
   const imageOk =

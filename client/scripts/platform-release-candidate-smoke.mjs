@@ -229,6 +229,16 @@ try {
   await runTask({ name: 'production build', command: npmBin, args: ['run', 'build'] })
 
   await runNodeTask('local ops readiness', 'scripts/platform-ops-smoke.mjs')
+  await runTask({
+    name: 'geocode quality smoke',
+    command: process.execPath,
+    args: [
+      '--disable-warning=MODULE_TYPELESS_PACKAGE_JSON',
+      '--experimental-strip-types',
+      'scripts/platform-geocode-quality-smoke.mjs',
+    ],
+    parseJson: true,
+  })
   await runNodeTask('local route smoke', 'scripts/platform-smoke.mjs')
   await runNodeTask('auth and guest access smoke', 'scripts/platform-auth-access-smoke.mjs', {}, { mutatesLocal: true })
   await runNodeTask('saved and account smoke', 'scripts/platform-saved-account-smoke.mjs', {}, { mutatesLocal: true })

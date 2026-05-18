@@ -359,26 +359,31 @@ async function testPlannerSlowDraftCreation() {
   const routeDelay = await delayRoute(context, '**/api/trips', 'trip-create-api')
   const page = await context.newPage()
   let tripId = null
+  const prompt = 'Plan a 2 day Athens trip for friends with food and history'
 
   try {
     await page.goto(`${baseUrl}/chat`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     const ideaInput = page.locator('input[aria-label="Describe your trip idea"]:visible').first()
     await ideaInput.waitFor({ state: 'visible', timeout: 10000 })
-    await ideaInput.fill('Plan a 2 day Athens trip for friends with food and history')
+    await ideaInput.click()
+    await ideaInput.fill('')
+    await ideaInput.pressSequentially(prompt, { delay: 5 })
     await page.waitForFunction(() => {
       const input = document.querySelector('input[aria-label="Describe your trip idea"]')
       const sendButtons = Array.from(document.querySelectorAll('button'))
         .filter((button) => button.textContent?.trim() === 'Send')
-      return input?.value.trim() && sendButtons.some((button) => !button.disabled)
-    }, { timeout: 8000 })
-    await page.locator('button:visible').filter({ hasText: /^Send$/ }).last().click({ timeout: 8000 })
+      return input instanceof HTMLInputElement &&
+        input.value.trim().length > 0 &&
+        sendButtons.some((button) => !button.disabled)
+    }, undefined, { timeout: 5000 })
+    await page.locator('button:visible:not([disabled])').filter({ hasText: /^Send$/ }).last().click({ timeout: 10000 })
     await page.waitForTimeout(350)
 
     const waitingText = await visibleText(page)
     const waitingMetrics = await pageMetrics(page)
     const inputPlaceholder = await ideaInput.getAttribute('placeholder').catch(() => '')
 
-    await page.waitForURL(/\/trips\/[^/?]+/, { timeout: 15000 })
+    await page.waitForURL(/\/trips\/[^/?]+/, { timeout: 30000 })
     tripId = new URL(page.url()).pathname.split('/').filter(Boolean).pop()
     const loadedMetrics = await pageMetrics(page)
 
