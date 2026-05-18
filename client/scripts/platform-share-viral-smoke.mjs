@@ -27,6 +27,8 @@ const viewports = [
   { id: 'desktop', width: 1280, height: 900 },
 ]
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 async function loadDotEnv() {
   const envPath = resolve(root, '.env.local')
   let text = ''
@@ -73,6 +75,17 @@ async function installShareStubs(page) {
       },
     })
   })
+}
+
+async function gotoWithRetry(page, url) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    } catch (error) {
+      if (attempt === 3) throw error
+      await sleep(600 * attempt)
+    }
+  }
 }
 
 async function readPublicShareState(page) {
@@ -180,7 +193,7 @@ try {
     })
     const page = await context.newPage()
     await installShareStubs(page)
-    await page.goto(`${baseUrl}/t/${shareSlug}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await gotoWithRetry(page, `${baseUrl}/t/${shareSlug}`)
     const state = await readPublicShareState(page)
     const startPrompts = state.startLinks.map((link) => link.q || '')
     const startLinksOk =
@@ -249,7 +262,7 @@ try {
       deviceScaleFactor: 1,
     })
     const page = await context.newPage()
-    await page.goto(`${baseUrl}/t/${shareSlug}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await gotoWithRetry(page, `${baseUrl}/t/${shareSlug}`)
     await readPublicShareState(page)
     const tripSpecificStartLink = page.locator('a[href^="/api/guest/start"][href*="q="]').filter({ hasText: 'Start your own trip' }).first()
     await tripSpecificStartLink.waitFor({ state: 'visible', timeout: 15000 })
