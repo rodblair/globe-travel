@@ -110,6 +110,9 @@ results.push(record('Planner query handoff marks query as sent only inside the d
 results.push(record('Planner handoff preserves the prompt in the Trip Studio URL', targetPromptIndex >= 0))
 results.push(record('Planner handoff creates draft trips with days and destination constraints', chatSource.includes('days: extractDraftDays(prompt)') && chatSource.includes('destination_query: extractDestinationFromPrompt(prompt) || undefined')))
 results.push(record('Planner mobile composer keeps an explicit trip idea label', chatSource.includes('aria-label="Describe your trip idea"')))
+results.push(record('Planner handoff has a visible opening state', chatSource.includes('Opening Trip Studio') && chatSource.includes('Building a draft for')))
+results.push(record('Planner handoff preserves failed prompts for retry', chatSource.includes('setDraftInput(trimmed)') && chatSource.includes('Try again') && chatSource.includes('Your trip idea is still here')))
+results.push(record('Planner handoff disables starter prompts while opening', chatSource.includes('disabled={planningInProgress}') && chatSource.includes('cursor-wait opacity-55')))
 
 try {
   const chatRoute = await fetchText(`/chat?q=${encodeURIComponent(prompt)}`)

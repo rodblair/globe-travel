@@ -105,6 +105,10 @@ function ChatPageContent() {
   const { user } = useAuth()
   const sentQueryRef = useRef<string | null>(null)
   const queryPrompt = searchParams.get('q')?.trim() || ''
+  const qaForcePlannerDraftFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaPlannerDraftFailure') === '1'
+  const qaPlannerDraftDelayMs = process.env.NODE_ENV === 'development'
+    ? Math.min(5000, Math.max(0, Number(searchParams.get('qaPlannerDraftDelayMs') || 0) || 0))
+    : 0
   const [activeTripId, setActiveTripId] = useState<string | null>(null)
   const [selectedDayIndex, setSelectedDayIndex] = useState(1)
   const [mapStopsByKey, setMapStopsByKey] = useState<Record<string, ChatMapStop[]>>({})
@@ -226,6 +230,7 @@ function ChatPageContent() {
 
   const [planningError, setPlanningError] = useState<string | null>(null)
   const [planningInProgress, setPlanningInProgress] = useState(false)
+  const [lastPlannerPrompt, setLastPlannerPrompt] = useState('')
   const [draftInput, setDraftInput] = useState('')
 
   const sendMessage = useCallback(async (content: string) => {
@@ -234,8 +239,13 @@ function ChatPageContent() {
 
     if (isPlanningPrompt(trimmed)) {
       setPlanningError(null)
+      setLastPlannerPrompt(trimmed)
       setPlanningInProgress(true)
       try {
+        if (qaPlannerDraftDelayMs > 0) {
+          await new Promise((resolve) => setTimeout(resolve, qaPlannerDraftDelayMs))
+        }
+        if (qaForcePlannerDraftFailure) throw new Error('Forced planner draft failure')
         const tripId = resolvedActiveTripId || await createDraftTrip(trimmed)
         const target = `/trips/${tripId}?prompt=${encodeURIComponent(trimmed)}`
         if (typeof window !== 'undefined') {
@@ -244,14 +254,15 @@ function ChatPageContent() {
           router.push(target)
         }
       } catch {
-        setPlanningError('Could not start trip planning. Please try again.')
+        setPlanningError('Could not open Trip Studio. Your trip idea is still here, so you can try again.')
+        setDraftInput(trimmed)
         setPlanningInProgress(false)
       }
       return
     }
 
     exploreChat.sendMessage(trimmed)
-  }, [createDraftTrip, exploreChat, isPlanningPrompt, resolvedActiveTripId, router])
+  }, [createDraftTrip, exploreChat, isPlanningPrompt, qaForcePlannerDraftFailure, qaPlannerDraftDelayMs, resolvedActiveTripId, router])
 
   const submitDraftInput = useCallback(() => {
     const next = draftInput.trim()
@@ -382,9 +393,11 @@ function ChatPageContent() {
                           <button
                             key={item.label}
                             onClick={() => sendMessage(item.q)}
-                          className={cn(
-                            'touch-target group relative rounded-md border border-rule px-3 py-3 text-left',
+                            disabled={planningInProgress}
+                            className={cn(
+                              'touch-target group relative rounded-md border border-rule px-3 py-3 text-left',
                               'bg-paper hover:bg-paper-hover transition-colors',
+                              planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
                             )}
                           >
                             <div className="flex items-center gap-2 mb-1.5">
@@ -417,8 +430,10 @@ function ChatPageContent() {
                         <button
                           key={item.label}
                           onClick={() => sendMessage(item.q)}
+                          disabled={planningInProgress}
                           className={cn(
                             'touch-target group min-h-16 rounded-md border border-rule bg-paper p-3 text-left transition-colors hover:bg-paper-hover',
+                            planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
                           )}
                         >
                           <p className="text-[0.8125rem] font-medium text-foreground group-hover:text-foreground transition-colors">
@@ -556,9 +571,29 @@ function ChatPageContent() {
           className="relative z-30 flex-shrink-0 border-t border-rule bg-paper-raised/92 px-4 py-3 shadow-[0_-8px_24px_rgba(12,31,51,0.06)] backdrop-blur-md md:py-4"
           style={{ paddingBottom: 'max(0.85rem, env(safe-area-inset-bottom))' }}
         >
+          {planningInProgress && (
+            <div className="mx-auto mb-3 flex max-w-2xl items-start gap-3 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-4 py-3 text-body-sm text-foreground">
+              <Sparkles className="mt-0.5 h-4 w-4 flex-shrink-0 animate-pulse text-[var(--brass)]" strokeWidth={1.5} />
+              <div className="min-w-0">
+                <p className="font-medium text-foreground">Opening Trip Studio…</p>
+                <p className="mt-1 line-clamp-2 text-ink-2">
+                  Building a draft for “{lastPlannerPrompt || queryPrompt || 'your trip idea'}”.
+                </p>
+              </div>
+            </div>
+          )}
           {planningError && (
-            <div className="max-w-2xl mx-auto mb-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] px-4 py-2 text-body-sm text-[var(--terracotta)]">
-              {planningError}
+            <div className="mx-auto mb-3 flex max-w-2xl flex-col gap-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] px-4 py-3 text-body-sm text-[var(--terracotta)] sm:flex-row sm:items-center sm:justify-between">
+              <span>{planningError}</span>
+              {lastPlannerPrompt && (
+                <button
+                  type="button"
+                  onClick={() => sendMessage(lastPlannerPrompt)}
+                  className="touch-target inline-flex items-center justify-center rounded-sm border border-[color:var(--terracotta)]/30 bg-paper-raised px-3 py-2 text-xs font-semibold text-[var(--terracotta)] transition-colors hover:bg-paper"
+                >
+                  Try again
+                </button>
+              )}
             </div>
           )}
           <div className={cn(
@@ -580,12 +615,12 @@ function ChatPageContent() {
                 }
               }}
             />
-              <button
-                type="button"
-                onClick={submitDraftInput}
-                disabled={!draftInput.trim() || planningInProgress}
-                className="touch-target rounded-sm bg-[var(--action)] px-3 py-2 t-mono text-[0.625rem] tracking-[0.14em] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
-              >
+            <button
+              type="button"
+              onClick={submitDraftInput}
+              disabled={!draftInput.trim() || planningInProgress}
+              className="touch-target rounded-sm bg-[var(--action)] px-3 py-2 t-mono text-[0.625rem] tracking-[0.14em] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+            >
               Send
             </button>
           </div>

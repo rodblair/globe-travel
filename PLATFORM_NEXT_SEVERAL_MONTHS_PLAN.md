@@ -353,19 +353,20 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice should focus on Week 1 of the 12-week board: Trip Studio density and owner confidence.
+The next execution slice should continue Week 2 of the 12-week board: planner start-to-trip confidence and map-trust expansion.
 
-1. Open the Athens five-day owner trip in Browser at phone, laptop, and desktop widths.
-2. Test day switching, itinerary item selection, edit, delete, reorder, swap, optimize, rewrite, build maps, save, share, and public-link handoff.
-3. Record every overlap, confusing label, repeated panel, weak hierarchy, hidden control, slow state, failure state, or map/itinerary mismatch.
-4. Fix the highest-impact P0/P1 first, then reduce P2 operational density in the readiness/workflow/account-adjacent panels.
-5. Retest the exact Browser paths that produced findings.
+1. Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
+2. Keep hardening slow and failed planner draft creation until users always see progress, preserved input, and a retry path.
+3. Expand realistic prompt coverage beyond the current Athens handoff baseline into more generated actuals for Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin.
+4. Record every confusing planner state, duplicate-start risk, empty draft, wrong destination extraction, weak map preview, hidden control, or handoff failure.
+5. Fix the highest-impact P0/P1 first, then address P2 trust and clarity issues in planner progress, map preview, and draft recovery.
 6. Run the focused gates:
-   - `npm run qa:studio-actions`
-   - `npm run qa:studio-recovery`
-   - `QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=<known-public-slug> npm run qa:visual`
+   - `npm run qa:planner-handoff`
+   - `npm run qa:slow-network`
+   - `npm run qa:prompt-suite`
+   - `QA_VISUAL_ROUTES=planner QA_VISUAL_VIEWPORTS=phone,laptop,desktop npm run qa:visual`
 7. Run `npm run lint` and `npm run build` before any commit.
-8. Update `RELEASE_READINESS_MEMO.md` and a focused `qa/` evidence file with fixes, commands, remaining risks, and retest results.
+8. Update `RELEASE_READINESS_MEMO.md` and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
 9. Commit, push, deploy to Vercel, and run `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production` only after the local gate is green.
 
 ## Completion Definition

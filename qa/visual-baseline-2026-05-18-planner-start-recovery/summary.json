@@ -1,0 +1,242 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-18",
+  "runId": "planner-start-recovery",
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-planner-start-recovery",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 1200,
+  "auth": {
+    "requestedMode": "auto",
+    "mode": "guest",
+    "guestId": "df439a10-a2a2-4906-bb94-aa8567b97573",
+    "protectedRoutes": [
+      "planner"
+    ],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "df439a10-a2a2-4906-bb94-aa8567b97573",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "guest",
+        "guestId": "df439a10-a2a2-4906-bb94-aa8567b97573",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "df439a10-a2a2-4906-bb94-aa8567b97573",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": true,
+      "reason": null,
+      "guestId": "df439a10-a2a2-4906-bb94-aa8567b97573",
+      "profileDeleted": true,
+      "userDeleted": false,
+      "error": "User not found"
+    }
+  },
+  "checked": 3,
+  "passed": 3,
+  "failed": 0,
+  "routes": [
+    "planner"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "results": [
+    {
+      "routeId": "planner",
+      "path": "/chat",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/chat",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Planner",
+          "Plan the trip your friends will actually say yes to.",
+          "Globe.travel map preview",
+          "Start with the trip idea."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content CHAT · DISCOVER Planner START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each person cares about. STEP 02 Compare the tradeoffs See which cities fit the group before committing to a full itinerary. STEP 03 Create the Globe.travel map"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-planner-start-recovery/screenshots/planner-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-planner-start-recovery/screenshots/planner-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "planner",
+      "path": "/chat",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/chat",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Planner",
+          "Plan the trip your friends will actually say yes to.",
+          "Globe.travel map preview",
+          "Start with the trip idea."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 16,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-planner-start-recovery/screenshots/planner-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-planner-start-recovery/screenshots/planner-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "planner",
+      "path": "/chat",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/chat",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Planner",
+          "Plan the trip your friends will actually say yes to.",
+          "Globe.travel map preview",
+          "Start with the trip idea."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 16,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-planner-start-recovery/screenshots/planner-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-planner-start-recovery/screenshots/planner-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}
