@@ -240,3 +240,4 @@ Use this section as work progresses.
 - 2026-05-17: `npm run lint` passed.
 - 2026-05-17: `npm run build` passed.
 - 2026-05-17: Added `PLATFORM_READINESS_ROADMAP.md` for the six-month platform QA, visual QA, subscription, viral loop, and release operations plan. Added `npm run qa:smoke` and validated it against production, including expected unauthenticated redirects to `/login`.
+- 2026-05-17: Added Month 1 Browser route-sweep evidence in `qa/month-1-browser-route-sweep-2026-05-17.md`. Retested landing, planner, saved, journal, account, billing, auth, Athens Trip Studio, and Athens public share at 390 x 844 and 1280 x 800. Fixed the unlabeled sidebar account avatar link and confirmed no missing labels, mobile overflow, stale brand copy, or visible error copy remained on the checked routes.

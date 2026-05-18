@@ -155,6 +155,7 @@ export function Sidebar() {
         <div className="flex min-h-12 items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors hover:bg-[var(--sidebar-hover)]">
           <Link
             href="/account"
+            aria-label="Open account settings"
             className={cn(
               'relative w-8 h-8 rounded-full overflow-hidden flex items-center justify-center shrink-0',
               'border border-rule bg-[var(--paper-recessed)]',
