@@ -88,10 +88,11 @@ function AccountPageContent() {
   const searchParams = useSearchParams()
   const activeTab = normalizeTab(searchParams.get('tab'))
   const { profile, signOut, refreshProfile } = useAuth()
-  const { subscription, isPro, isLoading: subscriptionLoading } = useSubscription()
+  const { subscription, isPro, isLoading: subscriptionLoading, refetch: refetchSubscription } = useSubscription()
   const qaSubscription = useMemo(() => buildQaSubscription(searchParams.get('qaBillingState')), [searchParams])
   const displayedSubscription = qaSubscription || subscription
   const displayedIsPro = qaSubscription ? hasProAccess(qaSubscription) : isPro
+  const checkoutReturned = activeTab === 'billing' && searchParams.get('upgraded') === 'true'
   const billingChecking = subscriptionLoading && !qaSubscription
   const canOpenBillingPortal = displayedIsPro || Boolean(displayedSubscription?.stripeCustomerId)
   const supabase = createClient()
@@ -106,6 +107,7 @@ function AccountPageContent() {
   const [billingLoading, setBillingLoading] = useState(false)
   const [billingError, setBillingError] = useState<string | null>(null)
   const [billingNotice, setBillingNotice] = useState<string | null>(null)
+  const billingActionDisabled = billingLoading || (checkoutReturned && !canOpenBillingPortal)
   const qaForceCheckoutFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaCheckoutFailure') === '1'
   const qaForcePortalFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaPortalFailure') === '1'
 
@@ -119,11 +121,12 @@ function AccountPageContent() {
 
     if (searchParams.get('upgraded') === 'true') {
       setBillingNotice('Checkout returned successfully. We are refreshing your subscription status.')
+      void refetchSubscription()
       return
     }
 
     setBillingNotice(null)
-  }, [activeTab, searchParams])
+  }, [activeTab, refetchSubscription, searchParams])
 
   const switchTab = (tab: AccountTab) => {
     const next = new URLSearchParams(searchParams.toString())
@@ -495,7 +498,7 @@ function AccountPageContent() {
 
                 <button
                   onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
-                  disabled={billingLoading}
+                  disabled={billingActionDisabled}
                   className={cn(
                     'touch-target inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors duration-200 disabled:opacity-60',
                     canOpenBillingPortal
@@ -511,7 +514,7 @@ function AccountPageContent() {
                   ) : (
                     <>
                       <Zap className="h-4 w-4" />
-                      {billingLoading ? 'Redirecting…' : 'Start free trial'}
+                      {billingLoading ? 'Redirecting…' : checkoutReturned ? 'Checking subscription…' : 'Start free trial'}
                     </>
                   )}
                 </button>

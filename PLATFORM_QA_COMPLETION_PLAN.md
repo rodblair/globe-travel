@@ -560,6 +560,8 @@ These are the next focused passes to run before another release candidate decisi
 - Visual result: focused account-billing responsive visual check passed `3/3` for tablet, laptop, and desktop in `qa/visual-baseline-billing-commercial-state/README.md`.
 - Stripe test-mode readiness evidence: `qa/stripe-test-mode-readiness-2026-05-18.md`.
 - Result: `npm run qa:stripe-readiness` verifies test-mode Stripe keys, monthly/yearly price IDs, webhook signature verification, and billing portal configuration. `QA_STRIPE_CREATE_TEST_SESSIONS=1 npm run qa:stripe-readiness` creates and cleans up a test customer, test checkout session, and test billing portal session.
+- Hosted checkout Browser evidence: `qa/stripe-hosted-checkout-browser-2026-05-18.md`.
+- Result: `QA_STRIPE_RUN_HOSTED_CHECKOUT=1 npm run qa:stripe-checkout-browser` completes hosted Stripe Checkout with a test card, verifies return to account billing, verifies the Stripe session/subscription state, and cleans up the test subscription/customer.
 - Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
 - Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
 - Finish public share social preview evidence integration and keep share-card image rendering in the release gate.
