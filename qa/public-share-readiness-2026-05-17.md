@@ -2,7 +2,7 @@
 
 Date: 2026-05-17
 Target slug: `x3m2c8cnws`
-Status: Passed locally; production verification pending deployment
+Status: Passed locally and in production
 
 ## Scope
 
@@ -56,8 +56,23 @@ Results:
 
 `npm run build` passed.
 
+## Production Command Evidence
+
+Vercel auto-deployed commit `5ccdf68` to production deployment `dpl_Aoxi6ozG1nUotJExYAQgVtJ6Rc1D`, aliased to `https://globe-travel-two.vercel.app`.
+
+`QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:smoke` passed `7/7`.
+
+`QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial` passed `4/4`.
+
+`QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share` passed `3/3`:
+
+| Check | Result | Production proof |
+| --- | --- | --- |
+| Public trip API | Pass | Returned the Athens trip and 5 itinerary days |
+| Public feedback API | Pass | Returned feedback array with 2 entries |
+| Public page metadata | Pass | Title, description, Open Graph, and Twitter metadata present |
+
 ## Follow-Up
 
-- Run `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share` after deploy.
 - Add generated Open Graph image support once a stable social-card renderer exists.
 - Add analytics events for public page viewed, share copied, native share attempted, feedback submitted, and recipient started trip.
