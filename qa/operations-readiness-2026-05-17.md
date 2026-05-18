@@ -1,7 +1,7 @@
 # Operations Readiness
 
 Date: 2026-05-17
-Status: Passed locally; production verification pending deployment
+Status: Passed locally; production verification blocked by Vercel queue
 
 ## Scope
 
@@ -55,3 +55,21 @@ Local warning:
 - Add uptime monitoring against `/api/health`.
 - Add alerting thresholds for planner failures, map hydration failures, share feedback failures, checkout failures, and API 5xx spikes.
 - Add a rollback checklist tied to failed health or smoke checks.
+
+## Production Deployment Blocker
+
+Production verification is still pending because Vercel has kept the latest production deployments queued. The live alias `https://globe-travel-two.vercel.app/api/health` returned `404`, which proves the live alias has not yet picked up the `/api/health` route.
+
+Queued deployments observed:
+
+- `dpl_HuivHMRirBBS6z92xZCSxAc5kfyR`
+- `dpl_9fs6y7qeoftXASoPJVZ5RBjazA84`
+- `dpl_8nBNjyTjjXkMviUt8Ebwmwn3tJzH`
+
+Local prebuilt deployment was attempted as a workaround, but `vercel build --prod` failed after the Next.js build with a Vercel CLI packaging error:
+
+```text
+ENOENT: no such file or directory, lstat '.next/server/chunks/ssr/[root-of-the-server]__12effdb2._.js'
+```
+
+Next action: once Vercel clears the queue or the packaging issue is resolved, deploy the current `main`, then run production `qa:smoke`, `qa:commercial`, `qa:ops`, and `qa:share`.

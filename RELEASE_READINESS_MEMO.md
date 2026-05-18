@@ -248,3 +248,4 @@ Use this section as work progresses.
 - 2026-05-17: Added `/api/health`, `npm run qa:ops`, and evidence in `qa/operations-readiness-2026-05-17.md` so production monitoring can verify planner, map, Supabase, Stripe, and deployment metadata readiness without exposing secrets.
 - 2026-05-17: Added `OPERATIONS_RUNBOOK.md` with release gates, health expectations, incident severity, rollback criteria, rollback steps, monitoring targets, and product-specific debug pointers.
 - 2026-05-17: Strengthened `npm run qa:share` so public share QA now verifies every day has mapped itinerary stops, a single country, and at least one usable route. Local Athens public share check passed 4/4 with all five days mapped in Greece.
+- 2026-05-17: Production ops verification remains blocked by queued Vercel deployments. The live alias still returns 404 for `/api/health`, while local `npm run qa:ops` passes 2/2 and local `npm run build` includes `/api/health`.
