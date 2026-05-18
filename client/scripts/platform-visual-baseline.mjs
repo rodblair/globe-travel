@@ -179,14 +179,15 @@ async function cleanupGeneratedGuest() {
     .delete()
     .eq('id', visualGuestId)
   const { error: userError } = await supabase.auth.admin.deleteUser(visualGuestId)
+  const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
 
   guestCleanup = {
     attempted: true,
     reason: null,
     guestId: visualGuestId,
     profileDeleted: !profileError,
-    userDeleted: !userError,
-    error: profileError?.message || userError?.message || null,
+    userDeleted: !userError || Boolean(userAlreadyAbsent),
+    error: profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
   }
 }
 

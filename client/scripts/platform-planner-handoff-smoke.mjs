@@ -1,12 +1,15 @@
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { chromium } from 'playwright-core'
 import { createClient } from '@supabase/supabase-js'
 
 const root = process.cwd()
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const prompt = process.env.QA_PLANNER_PROMPT || 'Plan a 5 day Athens trip for 4 friends with history food relaxed pacing and one memorable night out'
 const runId = process.env.QA_RUN_ID || randomUUID().slice(0, 8)
+const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const failures = []
 
 async function loadDotEnv() {
@@ -85,6 +88,187 @@ async function cleanupTrip(tripId) {
     attempted: true,
     tripDeleted: !error,
     error: error?.message || null,
+  }
+}
+
+async function cleanupGuestAccount(guestId) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!guestId || !supabaseUrl || !supabaseKey) {
+    return {
+      attempted: false,
+      guestId: guestId || null,
+      profileDeleted: false,
+      userDeleted: false,
+      error: null,
+    }
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false },
+  })
+  const { error: profileError } = await supabase.from('profiles').delete().eq('id', guestId)
+  const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+  const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
+
+  return {
+    attempted: true,
+    guestId,
+    profileDeleted: !profileError,
+    userDeleted: !userError || Boolean(userAlreadyAbsent),
+    error: profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
+  }
+}
+
+function pageMetrics(page) {
+  return page.evaluate(() => ({
+    url: location.href,
+    path: location.pathname,
+    hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => document.body.innerText.includes(pattern)),
+    horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }))
+}
+
+async function runBrowserPlannerStartChecks() {
+  if (!isLocalBaseUrl) {
+    results.push(record('Browser planner start checks skipped for remote base URL', true, {
+      reason: 'development-only QA query params and disposable guest mutations are local-only',
+    }))
+    return
+  }
+
+  let browser = null
+  let slowTripId = null
+  const failureGuestId = randomUUID()
+  const slowGuestId = randomUUID()
+  const failurePrompt = 'Plan a 4 day Lisbon food trip for friends with viewpoints and relaxed mornings'
+  const slowPrompt = 'Plan a 3 day Porto food and viewpoints trip for four friends with relaxed pacing'
+
+  try {
+    browser = await chromium.launch({
+      executablePath: chromePath,
+      headless: true,
+      args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
+    })
+
+    const failureContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true })
+    const failurePage = await failureContext.newPage()
+    await failurePage.goto(`${baseUrl}/api/guest/start?id=${failureGuestId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await failurePage.goto(`${baseUrl}/chat?q=${encodeURIComponent(failurePrompt)}&qaPlannerDraftFailure=1`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await failurePage.waitForFunction(() => document.body.innerText.includes('Could not open Trip Studio'), { timeout: 10000 }).catch(() => {})
+    const failureState = await failurePage.evaluate(() => {
+      const text = document.body.innerText
+      const input = document.querySelector('input[aria-label="Describe your trip idea"]')
+      const tryAgain = Array.from(document.querySelectorAll('button')).find((button) => button.textContent?.trim() === 'Try again')
+      return {
+        hasRecoveryCopy: text.includes('Could not open Trip Studio') && text.includes('Your trip idea is still here'),
+        inputValue: input?.value || '',
+        tryAgainVisible: Boolean(tryAgain),
+        tryAgainDisabled: tryAgain?.disabled ?? null,
+      }
+    })
+    const failureMetrics = await pageMetrics(failurePage)
+    results.push(record('Browser planner query failure preserves the trip idea and retry path', (
+      failureState.hasRecoveryCopy &&
+      failureState.inputValue === failurePrompt &&
+      failureState.tryAgainVisible &&
+      failureState.tryAgainDisabled === false &&
+      !failureMetrics.hasAppError &&
+      !failureMetrics.horizontalOverflow
+    ), {
+      ...failureState,
+      metrics: failureMetrics,
+    }))
+    await failureContext.close().catch(() => {})
+
+    const slowContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true })
+    const slowPage = await slowContext.newPage()
+    await slowPage.goto(`${baseUrl}/api/guest/start?id=${slowGuestId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await slowPage.goto(`${baseUrl}/chat?q=${encodeURIComponent(slowPrompt)}&qaPlannerDraftDelayMs=2200`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await slowPage.waitForFunction(() => (
+      document.body.innerText.includes('Opening Trip Studio') ||
+      /\/trips\/[^/?]+/.test(location.pathname)
+    ), { timeout: 8000 }).catch(() => {})
+    const waitingState = await slowPage.evaluate(() => {
+      const text = document.body.innerText
+      const input = document.querySelector('input[aria-label="Describe your trip idea"]')
+      const sendButton = Array.from(document.querySelectorAll('button'))
+        .find((button) => button.textContent?.trim() === 'Send')
+      const stepButtons = Array.from(document.querySelectorAll('button'))
+        .filter((button) => /^STEP 0/.test((button.textContent || '').trim()))
+      return {
+        hasOpeningState: text.includes('Opening Trip Studio') && text.includes('Building a draft for'),
+        promptVisible: text.includes('Porto food and viewpoints'),
+        inputPlaceholder: input?.getAttribute('placeholder') || '',
+        inputDisabled: input?.disabled ?? null,
+        sendDisabled: sendButton?.disabled ?? null,
+        disabledStepCount: stepButtons.filter((button) => button.disabled).length,
+        stepCount: stepButtons.length,
+      }
+    })
+    const waitingMetrics = await pageMetrics(slowPage)
+    await slowPage.waitForFunction(() => /\/trips\/[^/?]+/.test(location.pathname), { timeout: 20000 })
+    await slowPage.waitForFunction(() => (
+      document.body.innerText.includes('Save trip') ||
+      document.body.innerText.includes('Building the first itinerary from your trip idea') ||
+      document.body.innerText.includes('Globe is adding named stops')
+    ), { timeout: 12000 }).catch(() => {})
+    const studioState = await slowPage.evaluate(() => {
+      const text = document.body.innerText
+      return {
+        tripId: location.pathname.split('/').filter(Boolean).pop() || null,
+        hasPromptParam: location.search.includes('prompt='),
+        hasStudioActions: text.includes('Save trip') && text.includes('Share with friends'),
+        hasInitialGenerationCopy: text.includes('Building the first itinerary from your trip idea') || text.includes('Globe is adding named stops'),
+      }
+    })
+    slowTripId = studioState.tripId
+    const studioMetrics = await pageMetrics(slowPage)
+    results.push(record('Browser planner delayed query shows progress and reaches Trip Studio', (
+      waitingState.hasOpeningState &&
+      waitingState.promptVisible &&
+      waitingState.inputPlaceholder.includes('Opening Trip Studio') &&
+      waitingState.inputDisabled === true &&
+      waitingState.sendDisabled === true &&
+      waitingState.disabledStepCount === waitingState.stepCount &&
+      studioState.hasPromptParam &&
+      studioState.hasStudioActions &&
+      studioState.hasInitialGenerationCopy &&
+      !waitingMetrics.hasAppError &&
+      !waitingMetrics.horizontalOverflow &&
+      !studioMetrics.hasAppError &&
+      !studioMetrics.horizontalOverflow
+    ), {
+      waitingState,
+      studioState,
+      waitingMetrics,
+      studioMetrics,
+    }))
+    await slowContext.close().catch(() => {})
+  } catch (error) {
+    results.push(record('Browser planner start checks completed without unexpected exception', false, {
+      error: error instanceof Error ? error.message : String(error),
+    }))
+  } finally {
+    await browser?.close().catch(() => {})
+    const tripCleanup = await cleanupTrip(slowTripId)
+    const failureGuestCleanup = await cleanupGuestAccount(failureGuestId)
+    const slowGuestCleanup = await cleanupGuestAccount(slowGuestId)
+    results.push(record('Browser planner start checks clean up disposable state', (
+      (!slowTripId || tripCleanup.tripDeleted) &&
+      failureGuestCleanup.userDeleted &&
+      slowGuestCleanup.userDeleted &&
+      !tripCleanup.error &&
+      !failureGuestCleanup.error &&
+      !slowGuestCleanup.error
+    ), {
+      tripCleanup,
+      failureGuestCleanup,
+      slowGuestCleanup,
+    }))
   }
 }
 
@@ -205,6 +389,8 @@ if (process.env.QA_SKIP_MUTATION !== '1') {
     }
   }
 }
+
+await runBrowserPlannerStartChecks()
 
 const summary = {
   baseUrl,

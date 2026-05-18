@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 saved journal dialog accessibility checkpoint
+Updated: 2026-05-18 planner start Browser regression checkpoint
 
 ## Active Goal
 
@@ -22,6 +22,8 @@ The newest commercial-readiness checkpoint closes a paid-path polish gap in the 
 The newest public-share checkpoint closes a recipient feedback validation gap: optional email is validated before submission with clear recovery copy, the public feedback textarea now enforces the API's 600-character limit, and `npm run qa:share-recovery` covers invalid optional email plus forced feedback failure recovery.
 
 The newest saved/account checkpoint closes a journal keyboard accessibility gap: saved note editor, reader, and delete-confirmation modals now expose dialog semantics, keep focus inside while open, close with Escape, and are covered by `npm run qa:saved-account`.
+
+The newest planner-start checkpoint strengthens first-time guest confidence: `npm run qa:planner-handoff` now proves Browser-style failed and delayed `/chat?q=...` starts on a phone viewport, including preserved prompts, visible retry, disabled duplicate-start controls, Trip Studio arrival, initial generation copy, and disposable cleanup.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
