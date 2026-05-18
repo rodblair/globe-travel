@@ -35,7 +35,7 @@ export const PLANS = {
       'Unlimited friend feedback',
       'Share trip itineraries',
       'Priority AI responses',
-      'Export to PDF (coming soon)',
+      'Friend-ready public review pages',
     ],
   },
 } as const

@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 production visual and viral release-gate checkpoint
+Updated: 2026-05-18 commercial upgrade recovery checkpoint
 
 ## Active Goal
 
@@ -16,6 +16,8 @@ This goal stays active until the full platform is proven launch-ready with evide
 The active goal is pinned and remains open. The previous full release-candidate blocker is closed: saved trip open/delete hit targets are separated, long Trip Studio titles wrap cleanly, the full local predeploy gate passed `23/23`, production deployed, and the production release gate passed.
 
 The current reliability upgrade is that public production visual QA and public share viral-loop QA are now part of the one-command production release gate. `npm run qa:release-production` checks public production layout for landing, login, signup, and public share, verifies recipient share/copy/start-own-trip affordances on the stable Athens public itinerary, pixel-compares stable shell routes against the production visual baseline, and still runs production ops, smoke, auth/guest, commercial, public share/social preview, prompt actuals, and prompt-suite checks.
+
+The newest commercial-readiness checkpoint closes a paid-path polish gap in the saved journal limit flow: the upgrade modal now has accessible dialog semantics, shows recoverable checkout errors, and no longer advertises a `coming soon` feature as paid value. `npm run qa:billing-recovery` now covers that modal through a development-only QA path.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 

@@ -47,6 +47,15 @@ async function gotoAccountBilling(query = '') {
   await page.waitForTimeout(700)
 }
 
+async function gotoSavedJournal(query = '') {
+  await page.goto(`${baseUrl}/saved?tab=journal${query}`, {
+    waitUntil: 'domcontentloaded',
+    timeout: 30000,
+  })
+  await page.waitForLoadState('networkidle', { timeout: 2000 }).catch(() => {})
+  await page.waitForTimeout(700)
+}
+
 try {
   await gotoAccountBilling('')
   const initialText = await bodyText()
@@ -110,6 +119,42 @@ try {
 
   await gotoAccountBilling('&upgraded=true')
   record('checkout return notice visible', (await bodyText()).includes('Checkout returned successfully. We are refreshing your subscription status.'))
+
+  await gotoSavedJournal('&qaUpgradeModal=1&qaCheckoutFailure=1')
+  const upgradeDialog = page.getByRole('dialog', { name: /full planning workspace/i })
+  await upgradeDialog.waitFor({ state: 'visible', timeout: 8000 })
+  const upgradeText = await bodyText()
+  const upgradeHasInitialFocus = await page.evaluate(() => document.activeElement === document.querySelector('[role="dialog"]'))
+  record(
+    'journal upgrade dialog is accessible and commercially ready',
+    upgradeText.includes('Unlock the full planning workspace') &&
+      upgradeText.includes('Friend-ready public review pages') &&
+      !upgradeText.toLowerCase().includes('coming soon') &&
+      upgradeHasInitialFocus
+  )
+
+  await page.getByRole('button', { name: /Start 7-day free trial/i }).click({ timeout: 8000 })
+  await page.waitForTimeout(600)
+  const upgradeFailureText = await bodyText()
+  record(
+    'journal upgrade dialog shows checkout recovery',
+      upgradeFailureText.includes('Checkout is temporarily unavailable in QA mode.') &&
+      upgradeFailureText.includes('Try again')
+  )
+
+  for (let index = 0; index < 8; index += 1) {
+    await page.keyboard.press('Tab')
+  }
+  const upgradeFocusStayedInDialog = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="dialog"]')
+    return Boolean(dialog && document.activeElement && dialog.contains(document.activeElement))
+  })
+  record('journal upgrade dialog traps keyboard focus', upgradeFocusStayedInDialog)
+
+  await page.keyboard.press('Escape')
+  await upgradeDialog.waitFor({ state: 'hidden', timeout: 2000 }).catch(() => {})
+  const upgradeVisibleAfterEscape = await upgradeDialog.isVisible().catch(() => false)
+  record('journal upgrade dialog closes with Escape', !upgradeVisibleAfterEscape)
 
   const metrics = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,

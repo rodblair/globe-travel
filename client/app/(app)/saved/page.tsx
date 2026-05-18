@@ -76,11 +76,16 @@ function SavedPageContent() {
   const [readingEntry, setReadingEntry] = useState<JournalEntry | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirmingTripId, setConfirmingTripId] = useState<string | null>(null)
-  const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const qaForceUpgradeOpen = process.env.NODE_ENV === 'development' && searchParams.get('qaUpgradeModal') === '1'
+  const [upgradeOpen, setUpgradeOpen] = useState(qaForceUpgradeOpen)
 
   const queryClient = useQueryClient()
   const { isPro } = useSubscription()
   const FREE_LIMIT = PLANS.free.limits.journalEntries
+  const qaCheckoutFailureMessage =
+    process.env.NODE_ENV === 'development' && searchParams.get('qaCheckoutFailure') === '1'
+      ? 'Checkout is temporarily unavailable in QA mode.'
+      : undefined
 
   const { data: entries = [], isLoading: journalLoading } = useQuery<JournalEntry[]>({
     queryKey: ['journal-entries'],
@@ -653,6 +658,7 @@ function SavedPageContent() {
         isOpen={upgradeOpen}
         onClose={() => setUpgradeOpen(false)}
         reason={`You've used all ${FREE_LIMIT} free trip notes. Upgrade for unlimited.`}
+        checkoutFailureMessage={qaCheckoutFailureMessage}
       />
     </div>
   )
