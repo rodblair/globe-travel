@@ -2,7 +2,7 @@
 
 Date: 2026-05-17
 Target: `http://localhost:3000`
-Status: Passed locally
+Status: Passed locally and in production
 
 ## Scope
 
@@ -36,6 +36,21 @@ Checks added:
 | Billing portal safe failure | Pass | `401 Unauthorized` JSON response when unauthenticated |
 | Public feedback validation | Pass | Invalid payload returns `400 Invalid feedback` JSON response |
 
+## Production Command Evidence
+
+After deploying commit `5e625bb`, Vercel reported production deployment `dpl_JECLbP4USeFDqUZuAWiAk8zxrYdj` as `READY` and aliased it to `https://globe-travel-two.vercel.app`.
+
+`QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:smoke` passed `7/7`.
+
+`QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial` passed `4/4`:
+
+| Check | Result | Production proof |
+| --- | --- | --- |
+| Pricing protected path | Pass | `/pricing` resolves safely to `/login` when unauthenticated |
+| Checkout safe failure | Pass | `401 Unauthorized` JSON response |
+| Billing portal safe failure | Pass | `401 Unauthorized` JSON response |
+| Public feedback validation | Pass | Invalid payload returns `400 Invalid feedback` JSON response |
+
 ## Browser Evidence
 
 Browser checked `/account?tab=billing`, `/pricing`, `/login`, and `/signup` at:
@@ -54,6 +69,5 @@ Results:
 
 ## Follow-Up
 
-- Run `QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:commercial` after deploy.
 - Add an authenticated Stripe test-mode walkthrough once production test keys and test Price IDs are confirmed.
 - Add explicit UI copy for `checkout=cancelled` and `upgraded=true` states if those query params become part of the visible post-checkout journey.
