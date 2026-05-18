@@ -15,6 +15,7 @@
     "qa:planner-handoff": "node scripts/platform-planner-handoff-smoke.mjs",
     "qa:release-candidate": "node scripts/platform-release-candidate-smoke.mjs",
     "qa:release-production": "node scripts/platform-production-release-smoke.mjs",
+    "qa:saved-account": "node scripts/platform-saved-account-smoke.mjs",
     "qa:prompt-actuals": "node scripts/planner-share-actuals.mjs",
     "qa:prompt-suite": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/planner-prompt-suite.mjs",
     "qa:share": "node scripts/platform-share-smoke.mjs",

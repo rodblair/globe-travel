@@ -15,7 +15,6 @@ import {
   Zap,
 } from 'lucide-react'
 import { useAuth } from '@/components/providers/AuthProvider'
-import { createClient } from '@/lib/supabase-browser'
 import { PLANS } from '@/lib/plans'
 import { openBillingPortal, startCheckout, useSubscription } from '@/hooks/useSubscription'
 import { cn } from '@/lib/utils'
@@ -95,7 +94,6 @@ function AccountPageContent() {
   const checkoutReturned = activeTab === 'billing' && searchParams.get('upgraded') === 'true'
   const billingChecking = subscriptionLoading && !qaSubscription
   const canOpenBillingPortal = displayedIsPro || Boolean(displayedSubscription?.stripeCustomerId)
-  const supabase = createClient()
 
   const [displayName, setDisplayName] = useState(profile?.display_name || '')
   const [username, setUsername] = useState(profile?.username || '')
@@ -144,16 +142,17 @@ function AccountPageContent() {
     setSaving(true)
     setProfileError(null)
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
+      const response = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           display_name: displayName.trim(),
           username: username.trim(),
           bio: bio.trim(),
-        })
-        .eq('id', profile.id)
+        }),
+      })
 
-      if (error) throw error
+      if (!response.ok) throw new Error(await response.text())
       await refreshProfile()
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)

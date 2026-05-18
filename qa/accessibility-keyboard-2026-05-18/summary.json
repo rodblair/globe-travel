@@ -248,7 +248,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 442,
+              "y": 402,
               "width": 358,
               "height": 48
             }
@@ -262,7 +262,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 502,
+              "y": 462,
               "width": 358,
               "height": 48
             }
@@ -526,7 +526,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -1436,7 +1436,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -1576,7 +1576,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -1652,7 +1652,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2323,7 +2323,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
