@@ -489,6 +489,7 @@ A release candidate is eligible only when:
 - At least one private Trip Studio URL is verified.
 - At least one public share URL is verified.
 - Vercel deploy is ready.
+- `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=<known-public-slug> npm run qa:release-production` passes after deploy.
 - Production smoke passes.
 - Production ops health passes.
 - Release memo records evidence, deployment URL, deployment ID, and remaining risk.
@@ -531,7 +532,8 @@ These are the next focused passes to run before another release candidate decisi
 - Billing recovery result: `npm run qa:billing-recovery` now covers forced checkout failure recovery, checkout-cancel return, checkout-success return copy, billing visibility, and horizontal overflow. The first gate passed `5/5`, and the focused account-billing visual sweep passed `5/5` viewports.
 - Public-share recovery result: `npm run qa:share-recovery` now covers forced recipient feedback failure, recipient surface visibility, and mobile overflow. The first gate passed `3/3`, while `qa:share`, `qa:share-feedback`, and the focused public-share visual sweep passed `4/4`, `5/5`, and `5/5`.
 - Ops monitoring result: `npm run qa:ops` now verifies health readiness, no-store cache behavior, parseable `checkedAt`, expected check roster, and deployment metadata policy. The first strengthened gate passed `3/3`.
-- Remaining follow-up: schedule visual diff runs in release/preview automation and keep expanding slow-network recovery plus production release rehearsal.
+- Production release result: `npm run qa:release-production` now bundles the read-only post-deploy ops, smoke, commercial, share, production prompt-actuals, and prompt-suite-with-actuals checks.
+- Remaining follow-up: schedule visual diff runs in release/preview automation and keep expanding slow-network recovery.
 
 ### Sprint 3: Planner And Map Trust Expansion
 
@@ -554,7 +556,7 @@ These are the next focused passes to run before another release candidate decisi
 - Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
 - Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
 - Finish public share social preview evidence integration and keep share-card image rendering in the release gate.
-- Run `lint`, `build`, `qa:smoke`, `qa:commercial`, `qa:ops`, `qa:planner-handoff`, `qa:share-feedback`, and `qa:share`.
+- Run `lint`, `build`, `qa:smoke`, `qa:commercial`, `qa:ops`, `qa:planner-handoff`, `qa:share-feedback`, `qa:share`, and post-deploy `qa:release-production`.
 - Deploy only after the release memo has exact command output, URLs, deployment ID, and remaining risk.
 - Evidence target: `qa/release-candidate-gate-YYYY-MM-DD.md`.
 

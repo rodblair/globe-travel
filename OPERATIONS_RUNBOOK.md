@@ -35,6 +35,23 @@ npm run build
 Run from `client/` after deploy:
 
 ```bash
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production
+```
+
+The production release gate above runs the read-only post-deploy checks together:
+
+- production ops with deployment metadata
+- production smoke
+- production commercial safety checks
+- production public share, map integrity, metadata, and share-card image
+- production prompt actuals export for the stable Athens share
+- prompt-suite validation with the production actual
+
+Set `QA_INCLUDE_PROMPT_ACTUALS=0` to skip the prompt-suite actuals check. Set `QA_INCLUDE_FEEDBACK_MUTATION=1` only during an approved release window if production friend-feedback insert/readback/cleanup should also be tested.
+
+Manual equivalents:
+
+```bash
 QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:smoke
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops
