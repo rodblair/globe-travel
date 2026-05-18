@@ -602,7 +602,7 @@ function TripStudioPageContent() {
           <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center lg:w-auto">
             <button
               onClick={saveTrip}
-              disabled={isSavingTrip || !trip}
+              disabled={isSavingTrip || !trip || !canEditTrip}
               className={cn(
                 'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
                 saveDone
@@ -612,7 +612,7 @@ function TripStudioPageContent() {
               title="Save the latest trip plan"
             >
               {saveDone ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-              {isSavingTrip ? 'Saving…' : saveDone ? 'Saved' : 'Save trip'}
+              {!canEditTrip ? 'View only' : isSavingTrip ? 'Saving…' : saveDone ? 'Saved' : 'Save trip'}
             </button>
             <button
               onClick={() => setChatOpen((current) => !current)}
@@ -655,7 +655,7 @@ function TripStudioPageContent() {
             </button>
             <button
               onClick={shareWithFriends}
-              disabled={isSharingTrip || !trip || !shareUrl}
+              disabled={isSharingTrip || !trip || !shareUrl || !canEditTrip}
               className={cn(
                 'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
                 shareDone
@@ -665,7 +665,7 @@ function TripStudioPageContent() {
               title="Create a friend review link and share it"
             >
               {shareDone ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-              {isSharingTrip ? 'Sharing…' : shareDone ? 'Link copied' : 'Share with friends'}
+              {!canEditTrip ? 'Shared preview' : isSharingTrip ? 'Sharing…' : shareDone ? 'Link copied' : 'Share with friends'}
             </button>
             {trip?.is_public && shareUrl && (
               <Link
@@ -690,10 +690,10 @@ function TripStudioPageContent() {
         </motion.div>
       </div>
 
-      {/* Invite + feedback */}
-      <div className="pointer-events-none hidden">
-        <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
+      {/* Trip readiness */}
+      <aside className="relative z-20 mx-3 mt-3 max-w-[760px] space-y-3 pb-1 xl:absolute xl:right-4 xl:top-44 xl:mx-0 xl:mt-0 xl:max-h-[calc(100dvh-12rem)] xl:w-[340px] xl:overflow-y-auto xl:pb-0">
+        <div className="grid gap-3">
+          <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Group review</p>
@@ -705,8 +705,9 @@ function TripStudioPageContent() {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={togglePublic}
+                  disabled={!canEditTrip}
                   className={cn(
-                    'pointer-events-auto rounded-full border px-3 py-2 text-xs font-medium transition-colors',
+                    'touch-target rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
                     trip?.is_public
                       ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                       : 'border-rule bg-paper-recessed text-foreground/78 hover:bg-paper-recessed'
@@ -724,14 +725,14 @@ function TripStudioPageContent() {
                 </div>
                 <button
                   onClick={copyInviteLink}
-                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                  className="touch-target inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                 >
                   <Copy className="w-4 h-4" />
                   Copy link
                 </button>
                 <button
                   onClick={shareInvite}
-                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+                  className="touch-target inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 >
                   <Send className="w-4 h-4" />
                   Share invite
@@ -742,10 +743,10 @@ function TripStudioPageContent() {
                 Reviews open automatically once the trip is public.
               </p>
             )}
-          </div>
+          </section>
 
           <div className="grid gap-3">
-            <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
+            <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Crew brief</p>
@@ -776,9 +777,9 @@ function TripStudioPageContent() {
                   Trip readiness: {readinessCount}/4 — {trip?.is_public ? 'shareable' : 'turn on sharing'}, {feedback.length > 0 ? 'crew reacting' : 'needs reactions'}.
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
+            <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Friend feedback</p>
@@ -808,9 +809,9 @@ function TripStudioPageContent() {
                   ))
                 )}
               </div>
-            </div>
+            </section>
 
-            <div className="pointer-events-none rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
+            <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Planner workflows</p>
@@ -822,24 +823,24 @@ function TripStudioPageContent() {
               <div className="mt-4 grid gap-2">
                 <button
                   onClick={() => startWorkflow('decision_memo')}
-                  disabled={Boolean(creatingWorkflow)}
-                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+                  disabled={Boolean(creatingWorkflow) || !canEditTrip}
+                  className="touch-target flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
                 >
                   <span>{creatingWorkflow === 'decision_memo' ? 'Starting decision memo...' : 'Generate decision memo'}</span>
                   <Scale3d className="w-4 h-4 text-[var(--brass)]" />
                 </button>
                 <button
                   onClick={() => startWorkflow('generate_variants')}
-                  disabled={Boolean(creatingWorkflow)}
-                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+                  disabled={Boolean(creatingWorkflow) || !canEditTrip}
+                  className="touch-target flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
                 >
                   <span>{creatingWorkflow === 'generate_variants' ? 'Starting variants...' : 'Create cheap / balanced / premium variants'}</span>
                   <Wand2 className="w-4 h-4 text-[var(--horizon)]" />
                 </button>
                 <button
                   onClick={() => startWorkflow('feedback_refresh')}
-                  disabled={Boolean(creatingWorkflow)}
-                  className="pointer-events-auto flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+                  disabled={Boolean(creatingWorkflow) || !canEditTrip}
+                  className="touch-target flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
                 >
                   <span>{creatingWorkflow === 'feedback_refresh' ? 'Starting refresh...' : 'Refresh plan from feedback'}</span>
                   <RefreshCcw className="w-4 h-4 text-[var(--moss)]" />
@@ -877,10 +878,10 @@ function TripStudioPageContent() {
                   </p>
                 )}
               </div>
-            </div>
+            </section>
           </div>
         </div>
-      </div>
+      </aside>
 
       {/* Left panel: chat */}
       <AnimatePresence>

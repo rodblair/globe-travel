@@ -24,6 +24,7 @@ npm run qa:ops
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
 # or validate several public itinerary links at once:
 QA_SHARE_SLUGS=x3m2c8cnws,<next-share-slug> npm run qa:share
+QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=x3m2c8cnws npm run qa:studio
 QA_PROMPT_SUITE_SHARE_MAP=athens-5-day-couples-rest=x3m2c8cnws QA_PROMPT_SUITE_ACTUALS_OUT=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-actuals
 QA_PROMPT_SUITE_ACTUALS=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-suite
 npm run lint

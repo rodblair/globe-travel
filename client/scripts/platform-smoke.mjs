@@ -22,8 +22,8 @@ if (process.env.QA_SHARE_SLUG) {
 
 if (process.env.QA_TRIP_ID) {
   routes.push({
-    path: `/trips/${process.env.QA_TRIP_ID}`,
-    markers: ['ITINERARY', 'Save trip'],
+    path: `/api/trips/${process.env.QA_TRIP_ID}`,
+    kind: 'trip-api',
   })
 }
 
@@ -38,6 +38,36 @@ async function checkRoute(route) {
   })
   const body = await response.text()
   const elapsedMs = Date.now() - started
+
+  if (route.kind === 'trip-api') {
+    let payload = null
+    try {
+      payload = JSON.parse(body)
+    } catch {
+      // handled below
+    }
+
+    const days = Array.isArray(payload?.days) ? payload.days : []
+    const tripOk =
+      response.ok &&
+      typeof payload?.trip?.title === 'string' &&
+      payload.trip.is_owner !== false &&
+      days.length > 0
+    const result = {
+      path: route.path,
+      status: response.status,
+      elapsedMs,
+      ok: tripOk,
+      tripTitle: payload?.trip?.title,
+      isOwner: payload?.trip?.is_owner,
+      dayCount: days.length,
+      finalUrl: response.url,
+    }
+
+    if (!result.ok) failures.push(result)
+    return result
+  }
+
   const finalUrl = new URL(response.url)
   const loginRedirected = route.allowLoginRedirect && finalUrl.pathname === '/login'
   const expectedMarkers = loginRedirected
