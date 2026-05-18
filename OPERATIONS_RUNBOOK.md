@@ -133,6 +133,15 @@ Patch forward when:
 
 ## Monitoring Targets
 
+GitHub Actions production release gate:
+
+- Workflow: `.github/workflows/production-release-gate.yml`
+- Schedule: every 6 hours
+- Manual run: Actions -> Production release gate -> Run workflow
+- Default command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
+- Artifact: `production-release-gate-log`
+- Mutation policy: feedback insertion is off by default; enable `include_feedback_mutation=1` only during an approved release window.
+
 Add external uptime or scheduled checks for:
 
 - `/api/health`

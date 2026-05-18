@@ -1,0 +1,80 @@
+name: Production release gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Production base URL to check.
+        required: false
+        default: https://globe-travel-two.vercel.app
+      share_slug:
+        description: Public share slug used for production share and map-trust checks.
+        required: false
+        default: x3m2c8cnws
+      include_prompt_actuals:
+        description: Run prompt-suite validation using the production share actual.
+        required: false
+        type: choice
+        options:
+          - "1"
+          - "0"
+        default: "1"
+      include_feedback_mutation:
+        description: Insert/read/cleanup production feedback during an approved release window only.
+        required: false
+        type: choice
+        options:
+          - "0"
+          - "1"
+        default: "0"
+  schedule:
+    - cron: "23 */6 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-release-gate
+  cancel-in-progress: false
+
+jobs:
+  production-release-gate:
+    name: Production release gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: client
+    env:
+      QA_BASE_URL: ${{ github.event.inputs.base_url || 'https://globe-travel-two.vercel.app' }}
+      QA_SHARE_SLUG: ${{ github.event.inputs.share_slug || 'x3m2c8cnws' }}
+      QA_INCLUDE_PROMPT_ACTUALS: ${{ github.event.inputs.include_prompt_actuals || '1' }}
+      QA_INCLUDE_FEEDBACK_MUTATION: ${{ github.event.inputs.include_feedback_mutation || '0' }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run production release gate
+        run: |
+          set -o pipefail
+          mkdir -p ../qa-ci
+          npm run qa:release-production | tee ../qa-ci/production-release-gate.log
+
+      - name: Upload release gate log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-release-gate-log
+          path: qa-ci/production-release-gate.log
+          if-no-files-found: error

@@ -533,6 +533,7 @@ These are the next focused passes to run before another release candidate decisi
 - Public-share recovery result: `npm run qa:share-recovery` now covers forced recipient feedback failure, recipient surface visibility, and mobile overflow. The first gate passed `3/3`, while `qa:share`, `qa:share-feedback`, and the focused public-share visual sweep passed `4/4`, `5/5`, and `5/5`.
 - Ops monitoring result: `npm run qa:ops` now verifies health readiness, no-store cache behavior, parseable `checkedAt`, expected check roster, and deployment metadata policy. The first strengthened gate passed `3/3`.
 - Production release result: `npm run qa:release-production` now bundles the read-only post-deploy ops, smoke, commercial, share, production prompt-actuals, and prompt-suite-with-actuals checks.
+- Production monitoring result: `.github/workflows/production-release-gate.yml` now runs the production release gate every 6 hours and supports manual dispatch with configurable base URL/share slug.
 - Remaining follow-up: schedule visual diff runs in release/preview automation and keep expanding slow-network recovery.
 
 ### Sprint 3: Planner And Map Trust Expansion
