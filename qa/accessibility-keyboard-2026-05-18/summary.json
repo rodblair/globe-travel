@@ -248,7 +248,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 402,
+              "y": 442,
               "width": 358,
               "height": 48
             }
@@ -262,7 +262,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 462,
+              "y": 502,
               "width": 358,
               "height": 48
             }
@@ -526,7 +526,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1436,7 +1436,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1576,7 +1576,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1675,7 +1675,7 @@
             "tag": "a",
             "label": "Start your own trip",
             "role": "",
-            "href": "/chat",
+            "href": "/api/guest/start?q=Plan%20a%205-day%20trip%20to%20Athens%20Greece%20in%20mid%20september%20with%20a%20shareable%20itinerary%20map%20for%20my%20group.",
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
@@ -2045,7 +2045,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 4,
+              "y": -3,
               "width": 150,
               "height": 44
             }
@@ -2323,7 +2323,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -3472,7 +3472,7 @@
             "tag": "a",
             "label": "Start your own trip",
             "role": "",
-            "href": "/chat",
+            "href": "/api/guest/start?q=Plan%20a%205-day%20trip%20to%20Athens%20Greece%20in%20mid%20september%20with%20a%20shareable%20itinerary%20map%20for%20my%20group.",
             "visible": true,
             "hasAccessibleName": true,
             "rect": {

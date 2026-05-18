@@ -51,6 +51,14 @@ const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
   practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
 }
 
+function buildStarterPrompt(meta: { days: number | null; destination: string }, title: string) {
+  const destination = meta.destination || title
+  if (meta.days) {
+    return `Plan a ${meta.days}-day trip to ${destination} with a shareable itinerary map for my group.`
+  }
+  return `Plan a group trip inspired by ${destination} with a shareable itinerary map.`
+}
+
 function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const searchParams = useSearchParams()
   const [authorName, setAuthorName] = useState('')
@@ -86,6 +94,11 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const trip = data?.trip
   const days = data?.days || []
   const meta = useMemo(() => getTripKeepsakeMeta(trip?.title || 'Trip'), [trip?.title])
+  const starterPrompt = useMemo(
+    () => buildStarterPrompt(meta, trip?.title || 'this trip'),
+    [meta, trip?.title]
+  )
+  const starterHref = `/api/guest/start?q=${encodeURIComponent(starterPrompt)}`
   const shareUrl = typeof window !== 'undefined' ? window.location.href : null
   const canSubmit = authorName.trim().length > 1 && comment.trim().length >= 8 && !submitting
 
@@ -139,7 +152,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
           <AlbatrossBrand compact />
         </Link>
         <Link
-          href="/chat"
+          href={trip ? starterHref : '/chat'}
           className="touch-target inline-flex items-center justify-center gap-2 rounded-full border border-rule bg-paper-raised px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover"
         >
           Start your own trip
@@ -317,7 +330,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                   Start with a destination, build a day-by-day route, then send a polished link for friend feedback.
                 </p>
                 <Link
-                  href="/chat"
+                  href={starterHref}
                   className="touch-target mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 >
                   Start your own trip
