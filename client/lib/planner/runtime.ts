@@ -2,7 +2,7 @@ import type { UIMessage } from 'ai'
 import type { PlannerGroupBrief, PlannerRuntimeContext, PlannerTripContext, PlannerTripDaySummary } from '@/lib/planner/types'
 
 const DESTINATION_TRAILING_THEME_PATTERN =
-  /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|shopping|markets?)\b.*$/i
+  /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|design|architecture|shops?|shopping|bakeries|bakery|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|markets?)\b.*$/i
 
 function cleanDestinationCandidate(candidate: string) {
   return candidate

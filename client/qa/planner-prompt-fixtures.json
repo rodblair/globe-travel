@@ -55,6 +55,11 @@
     "expected": { "destination": "Copenhagen", "country": "Denmark", "days": 2, "themes": ["design", "food", "bike"] }
   },
   {
+    "id": "copenhagen-3-day-design-food-prefix",
+    "prompt": "Plan a 3 day Copenhagen design and food trip for four friends in October. Keep it walkable and include a shareable map.",
+    "expected": { "destination": "Copenhagen", "country": "Denmark", "days": 3, "themes": ["design", "food", "walkable"] }
+  },
+  {
     "id": "berlin-3-day-nightlife-culture",
     "prompt": "Plan Berlin for 3 days with daytime culture and serious nightlife.",
     "expected": { "destination": "Berlin", "country": "Germany", "days": 3, "themes": ["culture", "nightlife"] }

@@ -362,7 +362,7 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice resumes Week 2 planner start-to-trip confidence and map-trust expansion, now protected by the upgraded production release gate.
+The next execution slice continues Week 2 planner start-to-trip confidence and map-trust expansion, now protected by the upgraded production release gate and the Browser-verified initial-generation state fix.
 
 1. Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
 2. Keep hardening slow and failed planner draft creation until users always see progress, preserved input, and a retry path.

@@ -114,6 +114,14 @@ results.push(record('Planner handoff has a visible opening state', chatSource.in
 results.push(record('Planner handoff preserves failed prompts for retry', chatSource.includes('setDraftInput(trimmed)') && chatSource.includes('Try again') && chatSource.includes('Your trip idea is still here')))
 results.push(record('Planner handoff disables starter prompts while opening', chatSource.includes('disabled={planningInProgress}') && chatSource.includes('cursor-wait opacity-55')))
 
+const tripStudioSource = await readFile(resolve(root, 'app/(app)/trips/[tripId]/page.tsx'), 'utf8')
+const itineraryArtifactSource = await readFile(resolve(root, 'components/trips/ItineraryArtifact.tsx'), 'utf8')
+results.push(record('Trip Studio explains initial prompt generation before stops arrive', (
+  tripStudioSource.includes('isBuildingInitialItinerary') &&
+  tripStudioSource.includes('Building the first itinerary from your trip idea.') &&
+  itineraryArtifactSource.includes('Globe is adding named stops, timing, and map context')
+)))
+
 try {
   const chatRoute = await fetchText(`/chat?q=${encodeURIComponent(prompt)}`)
   const missingMarkers = ['Planner', 'Trip Studio'].filter((marker) => !chatRoute.text.includes(marker))

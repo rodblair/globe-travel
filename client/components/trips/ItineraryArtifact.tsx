@@ -63,6 +63,7 @@ type ItineraryArtifactProps = {
   onApplySwapItem?: (item: TripItem, choiceId: string) => Promise<void> | void
   onOptimize?: (dayIndex: number) => Promise<void>
   isLoading?: boolean
+  loadingLabel?: string
   readOnly?: boolean
 }
 
@@ -99,6 +100,7 @@ export default function ItineraryArtifact({
   onApplySwapItem,
   onOptimize,
   isLoading,
+  loadingLabel,
   readOnly = false,
 }: ItineraryArtifactProps) {
   const selectedDay = useMemo(
@@ -433,7 +435,7 @@ export default function ItineraryArtifact({
             {!readOnly && onRegenerateDay && (
               <button
                 onClick={() => onRegenerateDay(selectedDay.day_index)}
-                disabled={regeneratingDayIndex != null}
+                disabled={regeneratingDayIndex != null || isLoading}
                 className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                 title="Rewrite this day only, leaving the rest of the trip unchanged"
               >
@@ -485,7 +487,19 @@ export default function ItineraryArtifact({
           </div>
         )}
 
-        {selectedDayMap && (
+        {isLoading && (
+          <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-4 py-3 text-sm font-semibold text-foreground shadow-[var(--panel-shadow)]">
+            <span className="inline-flex items-center gap-2">
+              <Sparkles className="h-4 w-4 animate-pulse text-[var(--brass)]" />
+              {loadingLabel || 'Building this itinerary.'}
+            </span>
+            <p className="mt-1 text-xs font-normal leading-relaxed text-foreground/62">
+              Globe is adding named stops, timing, and map context. The first draft will appear here automatically.
+            </p>
+          </div>
+        )}
+
+        {selectedDayMap && (!isLoading || selectedDayMap.mappedStops.length > 0) && (
           <div className="rounded-[26px] border border-rule bg-paper-recessed/60 p-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
@@ -585,12 +599,16 @@ export default function ItineraryArtifact({
                   <div className="min-w-0 text-left">
                     <p className="text-[11px] uppercase tracking-[0.22em] text-foreground/42">Day {day.day_index}</p>
                     <h3 className="mt-1 text-sm font-medium text-foreground">{day.title || `Itinerary for Day ${day.day_index}`}</h3>
-                    <p className="mt-1 text-xs text-foreground/62">{subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}</p>
+                    <p className="mt-1 text-xs text-foreground/62">
+                      {isLoading && sortedItems.length === 0
+                        ? 'Building named stops and map context...'
+                        : subtitle || `${sortedItems.length} item${sortedItems.length === 1 ? '' : 's'}`}
+                    </p>
                   </div>
                   {!readOnly && onRegenerateDay && (
                     <button
                       onClick={() => onRegenerateDay(day.day_index)}
-                      disabled={regeneratingDayIndex != null}
+                      disabled={regeneratingDayIndex != null || isLoading}
                       className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
                       title="Rewrite this day only, leaving the rest of the trip unchanged"
                     >
@@ -907,6 +925,17 @@ export default function ItineraryArtifact({
                     </div>
                   )})}
                 </div>
+
+                {isLoading && sortedItems.length === 0 && (
+                  <div className="mt-6 grid gap-2">
+                    {[0, 1, 2].map((item) => (
+                      <div
+                        key={item}
+                        className="h-16 animate-pulse rounded-2xl border border-rule bg-paper-raised/80"
+                      />
+                    ))}
+                  </div>
+                )}
 
                 {!isLoading && sortedItems.length === 0 && (
                   <div className="mt-6 rounded-2xl border border-dashed border-rule bg-paper-raised/85 px-4 py-5 text-center">

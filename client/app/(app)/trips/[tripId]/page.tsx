@@ -173,6 +173,8 @@ function TripStudioPageContent() {
   const trip = resolvedPayload?.trip
   const days = resolvedPayload?.days ?? EMPTY_DAYS
   const canEditTrip = trip?.is_owner !== false
+  const urlPrompt = searchParams.get('prompt')?.trim() || ''
+  const totalItineraryItems = days.reduce((sum, day) => sum + (day.items?.length ?? 0), 0)
 
   const { data: feedback = [] } = useQuery({
     queryKey: ['trip-feedback', tripId],
@@ -279,6 +281,7 @@ function TripStudioPageContent() {
       }
     },
   })
+  const isBuildingInitialItinerary = Boolean(urlPrompt && days.length > 0 && totalItineraryItems === 0 && !chatError)
 
   // If the trip has days but 0 items (e.g. a previous plan run failed to insert),
   // auto-generate an itinerary — either by clearing the URL-prompt lock or by sending
@@ -289,7 +292,6 @@ function TripStudioPageContent() {
     const totalItems = days.reduce((sum, d) => sum + (d.items?.length ?? 0), 0)
     if (days.length === 0 || totalItems > 0) return
 
-    const urlPrompt = searchParams.get('prompt')?.trim()
     if (urlPrompt) {
       // Clear URL-prompt lock so the send-effect below can fire
       window.sessionStorage.removeItem(`${INITIAL_PROMPT_PREFIX}${tripId}:${urlPrompt}`)
@@ -303,12 +305,12 @@ function TripStudioPageContent() {
     if (window.sessionStorage.getItem(fallbackKey)) return
     window.sessionStorage.setItem(fallbackKey, 'sent')
     sendMessage(fallback).catch(() => window.sessionStorage.removeItem(fallbackKey))
-  }, [tripId, isLoading, chatReady, days, searchParams, trip?.title, sendMessage])
+  }, [tripId, isLoading, chatReady, days, urlPrompt, trip?.title, sendMessage])
 
   useEffect(() => {
     if (!tripId || typeof window === 'undefined' || !chatReady) return
 
-    const prompt = searchParams.get('prompt')?.trim()
+    const prompt = urlPrompt
     if (!prompt) return
 
     const storageKey = `${INITIAL_PROMPT_PREFIX}${tripId}:${prompt}`
@@ -318,7 +320,7 @@ function TripStudioPageContent() {
     sendMessage(prompt).catch(() => {
       window.sessionStorage.removeItem(storageKey)
     })
-  }, [searchParams, sendMessage, tripId, chatReady])
+  }, [sendMessage, tripId, chatReady, urlPrompt])
 
   const handleRegenerateDay = useCallback(async (dayIndex: number) => {
     if (!canEditTrip) {
@@ -1066,7 +1068,8 @@ function TripStudioPageContent() {
             onSwapItem={handleSwapItem}
             onApplySwapItem={handleApplySwapItem}
             onOptimize={handleOptimize}
-            isLoading={isLoading}
+            isLoading={isLoading || isBuildingInitialItinerary}
+            loadingLabel={isBuildingInitialItinerary ? 'Building the first itinerary from your trip idea.' : undefined}
             readOnly={!canEditTrip}
           />
         </div>
