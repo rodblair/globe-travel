@@ -13,6 +13,7 @@ const reportPath = resolve(artifactDir, 'README.md')
 const includeVisual = process.env.QA_RELEASE_INCLUDE_VISUAL !== '0'
 const includeStudioFixture = process.env.QA_RELEASE_INCLUDE_STUDIO !== '0'
 const includeShareFeedback = process.env.QA_RELEASE_INCLUDE_SHARE_FEEDBACK !== '0'
+const includeOwnerFeedback = process.env.QA_RELEASE_INCLUDE_OWNER_FEEDBACK !== '0'
 const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT === '1'
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
@@ -169,6 +170,7 @@ Public share slug: ${shareSlug}
 - Failed: ${summary.failed}
 - Visual QA included: ${includeVisual ? 'yes' : 'no'}
 - Trip Studio fixture included: ${includeStudioFixture ? 'yes' : 'no'}
+- Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
 - Summary JSON: \`qa/${artifactName}/summary.json\`
 
@@ -236,6 +238,29 @@ try {
         QA_TRIP_ID: studioFixture.tripId,
         QA_GUEST_ID: studioFixture.guestId,
       })
+
+      if (includeOwnerFeedback) {
+        if (studioFixture.shareSlug) {
+          await runNodeTask(
+            'Trip Studio owner feedback readback smoke',
+            'scripts/platform-share-feedback-smoke.mjs',
+            {
+              QA_SHARE_SLUG: studioFixture.shareSlug,
+              QA_TRIP_ID: studioFixture.tripId,
+              QA_VERIFY_TRIP_FEEDBACK: '1',
+            },
+            { mutatesLocal: true }
+          )
+        } else {
+          const failure = {
+            name: 'Trip Studio owner feedback readback has a public share slug',
+            ok: false,
+            studioFixture,
+          }
+          failures.push(failure)
+          results.push(failure)
+        }
+      }
     } else {
       const failure = {
         name: 'Trip Studio fixture exposes trip and guest for recovery/visual checks',
@@ -293,6 +318,7 @@ const summary = {
   includeVisual,
   includeStudioFixture,
   includeShareFeedback,
+  includeOwnerFeedback,
   includeStripeCheckout,
   includePromptSuite,
   studioFixture,

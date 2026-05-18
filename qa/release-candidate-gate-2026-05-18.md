@@ -15,6 +15,7 @@ This gate bundles the local checks required before a production release decision
 - billing recovery states
 - Trip Studio action coverage on a kept disposable fixture
 - Trip Studio recovery coverage on the same fixture
+- Trip Studio owner feedback readback on the same public fixture
 - Stripe test-mode readiness
 - planner prompt contract suite
 - full responsive visual QA across 10 routes and 5 viewports
@@ -48,6 +49,7 @@ Key nested results:
 - billing recovery smoke: `9/9`
 - Trip Studio action smoke on kept fixture: `23/23`
 - Trip Studio recovery smoke on kept fixture: `6/6`
+- Trip Studio owner feedback readback smoke: `6/6`
 - Stripe test-mode readiness: `11/11`
 - planner prompt contract suite: `52/52`
 - responsive visual QA: `50/50`
@@ -63,6 +65,8 @@ Artifacts:
 - `qa/auth-guest-access-2026-05-18.md`
 - `qa/release-candidate-2026-05-18/README.md`
 - `qa/release-candidate-2026-05-18/summary.json`
+- `qa/release-candidate-owner-feedback-2026-05-18/README.md`
+- `qa/release-candidate-owner-feedback-2026-05-18/summary.json`
 - `qa/accessibility-keyboard-2026-05-18/README.md`
 - `qa/accessibility-keyboard-2026-05-18/summary.json`
 - `qa/visual-baseline-2026-05-18-release-candidate-2026-05-18/README.md`
@@ -71,4 +75,4 @@ Artifacts:
 
 ## Release Impact
 
-This closes the missing local release-candidate command gap for Sprint 4. The app now has a single repeatable pre-deploy gate that exercises core functionality, accessibility, visual QA, commercial readiness, viral sharing surfaces, Trip Studio owner behavior, planner handoff, and billing recovery before production verification.
+This closes the missing local release-candidate command gap for Sprint 4 and the owner-feedback/readback follow-up from Sprint 1. The app now has a single repeatable pre-deploy gate that exercises core functionality, accessibility, visual QA, commercial readiness, viral sharing surfaces, public-to-owner feedback, Trip Studio owner behavior, planner handoff, and billing recovery before production verification.

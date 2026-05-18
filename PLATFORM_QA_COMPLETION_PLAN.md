@@ -516,7 +516,7 @@ These are the next focused passes to run before another release candidate decisi
 - Browser coverage: owner Trip Studio shows submitted friend feedback, readiness updates to `crew reacting`, and `Refresh plan from feedback` completes with a feedback-driven planner result.
 - Social preview evidence: `qa/public-share-social-preview-2026-05-18.md`.
 - Viral metadata coverage: `QA_SHARE_SLUG=<known-public-slug> npm run qa:share` checks itinerary API integrity, mapped stop/route integrity, public metadata, feedback API readability, and generated share-card image rendering.
-- Remaining follow-up: include this gate in release-candidate runs for disposable fixtures or a stable owned fixture.
+- Release-candidate integration: `npm run qa:release-candidate` now runs `Trip Studio owner feedback readback smoke` against the kept disposable Trip Studio fixture and verifies submitted public feedback appears in the owner feed before cleanup. Focused evidence: `qa/release-candidate-owner-feedback-2026-05-18/README.md`.
 
 ### Sprint 2: Visual Evidence And Responsive Polish
 
@@ -563,7 +563,7 @@ These are the next focused passes to run before another release candidate decisi
 - Hosted checkout Browser evidence: `qa/stripe-hosted-checkout-browser-2026-05-18.md`.
 - Result: `QA_STRIPE_RUN_HOSTED_CHECKOUT=1 npm run qa:stripe-checkout-browser` completes hosted Stripe Checkout with a test card, verifies return to account billing, verifies the Stripe session/subscription state, and cleans up the test subscription/customer.
 - Local release-candidate evidence: `qa/release-candidate-gate-2026-05-18.md`.
-- Result: `npm run qa:release-candidate` now bundles lint, build, ops, smoke, commercial, a11y, public share/social preview, public share recovery, feedback mutation cleanup, planner handoff cleanup, billing recovery, Trip Studio action/recovery checks on one kept disposable fixture, Stripe readiness, prompt contract suite, full responsive visual QA, and fixture cleanup. The first passing run completed `17/17` top-level tasks with visual QA `50/50` and writes `qa/release-candidate-2026-05-18/summary.json`.
+- Result: `npm run qa:release-candidate` now bundles lint, build, ops, smoke, commercial, a11y, public share/social preview, public share recovery, feedback mutation cleanup, planner handoff cleanup, billing recovery, Trip Studio action/recovery checks on one kept disposable fixture, owner feedback readback on that fixture, Stripe readiness, prompt contract suite, full responsive visual QA, and fixture cleanup. The full visual run completed `18/18` top-level tasks with visual QA `50/50` and writes `qa/release-candidate-2026-05-18/summary.json`; the focused owner-feedback integration run passed `18/18` with visual screenshots disabled and writes `qa/release-candidate-owner-feedback-2026-05-18/summary.json`.
 - Auth/guest access evidence: `qa/auth-guest-access-2026-05-18.md`.
 - Result: `npm run qa:auth-access` verifies logged-out login/signup/public-share/saved/account/pricing behavior, guest-start-to-planner, guest saved/account access, local guest trip-list API access, and disposable guest cleanup. Local passed `11/11`; production non-mutating passed `10/10`.
 - Production release gate update: `npm run qa:release-production` now includes production auth/guest access and passes `7/7`; `.github/workflows/production-release-gate.yml` locates Chrome for that Browser-backed check.
