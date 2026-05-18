@@ -22,6 +22,8 @@ npm run qa:smoke
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial
 npm run qa:ops
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
+# or validate several public itinerary links at once:
+QA_SHARE_SLUGS=x3m2c8cnws,<next-share-slug> npm run qa:share
 npm run lint
 npm run build
 ```
@@ -33,6 +35,8 @@ QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:smoke
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
+# or:
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUGS=x3m2c8cnws,<next-share-slug> npm run qa:share
 ```
 
 ## Health Status

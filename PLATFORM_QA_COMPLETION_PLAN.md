@@ -215,7 +215,7 @@ Visual QA work:
 
 Automation work:
 
-- Expand `qa:share` to support multiple known public slugs.
+- Expand `qa:share` to support multiple known public slugs. Completed for `QA_SHARE_SLUGS`; keep adding stable public itinerary slugs as they are created.
 - Add metadata checks for Open Graph, Twitter, title, and description.
 - Add feedback API and page-render checks for recipient flows.
 

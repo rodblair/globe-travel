@@ -77,3 +77,4 @@ Vercel auto-deployed commit `5ccdf68` to production deployment `dpl_Aoxi6ozG1nUo
 
 - Add generated Open Graph image support once a stable social-card renderer exists.
 - Add analytics events for public page viewed, share copied, native share attempted, feedback submitted, and recipient started trip.
+- Add more stable public share slugs to `QA_SHARE_SLUGS` as generated itinerary fixtures are promoted.

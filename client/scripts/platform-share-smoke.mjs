@@ -1,8 +1,11 @@
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
-const shareSlug = process.env.QA_SHARE_SLUG
+const shareSlugs = (process.env.QA_SHARE_SLUGS || process.env.QA_SHARE_SLUG || '')
+  .split(/[\s,]+/)
+  .map((slug) => slug.trim())
+  .filter(Boolean)
 
-if (!shareSlug) {
-  console.error('QA_SHARE_SLUG is required for qa:share')
+if (!shareSlugs.length) {
+  console.error('QA_SHARE_SLUG or QA_SHARE_SLUGS is required for qa:share')
   process.exit(1)
 }
 
@@ -12,8 +15,8 @@ function hasMeta(html, matcher) {
   return matcher.test(html)
 }
 
-function fail(name, details) {
-  failures.push({ name, ...details })
+function fail(shareSlug, name, details) {
+  failures.push({ shareSlug, name, ...details })
 }
 
 async function fetchJson(path) {
@@ -30,7 +33,7 @@ async function fetchJson(path) {
   return { response, text, json }
 }
 
-async function run() {
+async function checkShareSlug(shareSlug) {
   const results = []
 
   const tripApi = await fetchJson(`/api/trips/share/${shareSlug}`)
@@ -44,7 +47,7 @@ async function run() {
     tripTitle,
     dayCount,
   }
-  if (!apiOk) fail(apiResult.name, apiResult)
+  if (!apiOk) fail(shareSlug, apiResult.name, apiResult)
   results.push(apiResult)
 
   const days = Array.isArray(tripApi.json?.days) ? tripApi.json.days : []
@@ -86,7 +89,7 @@ async function run() {
     badDays,
     dayIntegrity,
   }
-  if (!integrityOk) fail(integrityResult.name, integrityResult)
+  if (!integrityOk) fail(shareSlug, integrityResult.name, integrityResult)
   results.push(integrityResult)
 
   const feedbackApi = await fetchJson(`/api/trips/share/${shareSlug}/feedback`)
@@ -97,7 +100,7 @@ async function run() {
     status: feedbackApi.response.status,
     feedbackCount: Array.isArray(feedbackApi.json) ? feedbackApi.json.length : null,
   }
-  if (!feedbackOk) fail(feedbackResult.name, feedbackResult)
+  if (!feedbackOk) fail(shareSlug, feedbackResult.name, feedbackResult)
   results.push(feedbackResult)
 
   const pageResponse = await fetch(`${baseUrl}/t/${shareSlug}`, {
@@ -106,7 +109,7 @@ async function run() {
   const html = await pageResponse.text()
   const escapedTitle = tripTitle?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const metaChecks = [
-    ['trip title tag', new RegExp(`<title[^>]*>[^<]*${escapedTitle}[^<]*Globe\\.travel`, 'i')],
+    ['trip title tag', escapedTitle ? new RegExp(`<title[^>]*>[^<]*${escapedTitle}[^<]*Globe\\.travel`, 'i') : /$a/],
     ['meta description', /<meta\s+name=["']description["'][^>]+content=["'][^"']*Review the/i],
     ['og title', /<meta\s+property=["']og:title["'][^>]+content=["'][^"']*Globe\.travel/i],
     ['og description', /<meta\s+property=["']og:description["'][^>]+content=["'][^"']*Review the/i],
@@ -122,16 +125,33 @@ async function run() {
     status: pageResponse.status,
     missingMeta,
   }
-  if (!pageOk) fail(pageResult.name, pageResult)
+  if (!pageOk) fail(shareSlug, pageResult.name, pageResult)
   results.push(pageResult)
+
+  return {
+    shareSlug,
+    checked: results.length,
+    passed: results.filter((result) => result.ok).length,
+    failed: results.filter((result) => !result.ok).length,
+    results,
+  }
+}
+
+async function run() {
+  const shareResults = []
+
+  for (const shareSlug of shareSlugs) {
+    shareResults.push(await checkShareSlug(shareSlug))
+  }
 
   const summary = {
     baseUrl,
-    shareSlug,
-    checked: results.length,
-    passed: results.length - failures.length,
+    shareSlugs,
+    checked: shareResults.reduce((total, result) => total + result.checked, 0),
+    passed: shareResults.reduce((total, result) => total + result.passed, 0),
     failed: failures.length,
-    results,
+    shareResults,
+    failures,
   }
 
   console.log(JSON.stringify(summary, null, 2))
