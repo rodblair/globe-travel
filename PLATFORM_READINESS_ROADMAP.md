@@ -131,6 +131,7 @@ Deliverables:
 - Production monitoring for planner failures, map hydration failures, share feedback failures, checkout failures, and API 5xx spikes.
 - Weekly QA cadence and monthly visual QA review.
 - Support/debug playbook with common symptoms, likely causes, and first checks.
+- Rollback runbook for failed production gates and release-blocking incidents.
 - Launch candidate signoff packet with evidence links.
 
 Exit criteria:
@@ -237,6 +238,7 @@ Before any production deploy:
 - `npm run qa:commercial` passes against local or preview URL.
 - `npm run qa:ops` passes against local or preview URL.
 - `QA_SHARE_SLUG=<known-public-slug> npm run qa:share` passes against local or preview URL.
+- `OPERATIONS_RUNBOOK.md` is current for the deploy.
 - Browser mobile route sweep passes for `/`, `/chat`, `/saved`, `/account`, `/login`, `/signup`.
 - At least one known Trip Studio URL opens and maps correctly.
 - At least one known public share URL opens and feedback form is visible.
