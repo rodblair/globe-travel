@@ -20,6 +20,7 @@
     "qa:share": "node scripts/platform-share-smoke.mjs",
     "qa:share-feedback": "node scripts/platform-share-feedback-smoke.mjs",
     "qa:share-fixtures": "node scripts/platform-share-fixtures.mjs",
+    "qa:share-fixture-sweep": "node scripts/platform-share-fixture-sweep.mjs",
     "qa:share-recovery": "node scripts/platform-public-share-recovery-smoke.mjs",
     "qa:slow-network": "node scripts/platform-slow-network-smoke.mjs",
     "qa:smoke": "node scripts/platform-smoke.mjs",

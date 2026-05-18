@@ -1,0 +1,195 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "shareSlug": "x3m2c8cnws",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-share-fixture-sweep-2026-05-18",
+  "summaryPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-share-fixture-sweep-2026-05-18/summary.json",
+  "reportPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-share-fixture-sweep-2026-05-18/README.md",
+  "checked": 13,
+  "passed": 13,
+  "failed": 0,
+  "includeVisual": false,
+  "includeStudioFixture": false,
+  "includeShareFeedback": false,
+  "includeShareFixtureSweep": true,
+  "includeOwnerFeedback": false,
+  "includeSlowNetwork": false,
+  "includeStripeCheckout": false,
+  "includePromptSuite": false,
+  "studioFixture": null,
+  "localOnly": true,
+  "results": [
+    {
+      "name": "lint",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 4093,
+      "mutatesLocal": false
+    },
+    {
+      "name": "production build",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 9725,
+      "mutatesLocal": false
+    },
+    {
+      "name": "local ops readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 85,
+      "mutatesLocal": false,
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "local route smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 633,
+      "mutatesLocal": false,
+      "checked": 8,
+      "passed": 8,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "auth and guest access smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 51254,
+      "mutatesLocal": true,
+      "checked": 11,
+      "passed": 11,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "guestId": "c4b0e0b0-837e-4d5b-a828-bdbdc483b92f",
+      "cleanup": {
+        "attempted": true,
+        "guestId": "c4b0e0b0-837e-4d5b-a828-bdbdc483b92f",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "profileError": null,
+        "userError": null
+      }
+    },
+    {
+      "name": "local commercial smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 474,
+      "mutatesLocal": false,
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "local accessibility and keyboard smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 44008,
+      "mutatesLocal": false,
+      "checked": 16,
+      "passed": 16,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share and social preview smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 1043,
+      "mutatesLocal": false,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 11966,
+      "mutatesLocal": false,
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws"
+    },
+    {
+      "name": "public share fixture sweep",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 10651,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "cleanup": {
+        "mode": "cleanup",
+        "tripIds": [
+          "c9e1ef1b-90ef-46ac-80a6-2d6d86324264",
+          "d9f0eeeb-08f7-4983-931e-2f20f0421f3a",
+          "9449bcdf-fc0a-423d-b20a-9a48d44df68d",
+          "acde1187-2be6-46e0-b85a-7e800751cebf",
+          "36d04331-e1d5-423e-8d65-049140ad0a40",
+          "c73e1fac-11b5-4ff0-8ffc-eb804d5e5143",
+          "b368c355-6901-4092-a771-eb6be58997fc",
+          "1e624a97-2567-45f9-b540-35f9fa700ef2",
+          "c52f0ff7-8f69-4917-8df8-d907f0d1971e",
+          "3356538e-cdac-400f-81ee-d7e4b9d2994e"
+        ],
+        "runId": "f5da7ca4",
+        "tripsDeleted": 10,
+        "placesDeleted": 62,
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "planner handoff smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 954,
+      "mutatesLocal": true,
+      "checked": 13,
+      "passed": 13,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "5208ad84-00be-4a5e-932d-737ba7575145",
+      "runId": "9dab1a2b",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "billing recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 15153,
+      "mutatesLocal": false,
+      "checked": 9,
+      "passed": 9,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "Stripe test-mode readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 588,
+      "mutatesLocal": false,
+      "checked": 11,
+      "passed": 11,
+      "failed": 0
+    }
+  ],
+  "failures": []
+}

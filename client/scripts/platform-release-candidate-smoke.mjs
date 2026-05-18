@@ -10,16 +10,23 @@ const repoRoot = resolve(process.cwd(), '..')
 const artifactDir = resolve(repoRoot, 'qa', artifactName)
 const summaryPath = resolve(artifactDir, 'summary.json')
 const reportPath = resolve(artifactDir, 'README.md')
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const includeVisual = process.env.QA_RELEASE_INCLUDE_VISUAL !== '0'
 const includeStudioFixture = process.env.QA_RELEASE_INCLUDE_STUDIO !== '0'
 const includeShareFeedback = process.env.QA_RELEASE_INCLUDE_SHARE_FEEDBACK !== '0'
+const includeShareFixtureSweep =
+  process.env.QA_RELEASE_INCLUDE_SHARE_FIXTURE_SWEEP === '1' ||
+  (
+    process.env.QA_RELEASE_INCLUDE_SHARE_FIXTURE_SWEEP !== '0' &&
+    isLocalBaseUrl &&
+    Boolean(process.env.QA_OWNER_USER_ID)
+  )
 const includeOwnerFeedback = process.env.QA_RELEASE_INCLUDE_OWNER_FEEDBACK !== '0'
 const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT === '1'
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
 const includeSlowNetwork = process.env.QA_RELEASE_INCLUDE_SLOW_NETWORK !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
 const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const failures = []
 const results = []
 let studioFixture = null
@@ -185,6 +192,7 @@ Public share slug: ${shareSlug}
 - Failed: ${summary.failed}
 - Visual QA included: ${includeVisual ? 'yes' : 'no'}
 - Trip Studio fixture included: ${includeStudioFixture ? 'yes' : 'no'}
+- Public share fixture sweep included: ${includeShareFixtureSweep ? 'yes' : 'no'}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
 - Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
@@ -227,6 +235,15 @@ try {
   await runNodeTask('local accessibility and keyboard smoke', 'scripts/platform-accessibility-smoke.mjs')
   await runNodeTask('public share and social preview smoke', 'scripts/platform-share-smoke.mjs')
   await runNodeTask('public share recovery smoke', 'scripts/platform-public-share-recovery-smoke.mjs')
+
+  if (includeShareFixtureSweep) {
+    await runNodeTask(
+      'public share fixture sweep',
+      'scripts/platform-share-fixture-sweep.mjs',
+      {},
+      { mutatesLocal: true }
+    )
+  }
 
   if (includeShareFeedback) {
     await runNodeTask('public share feedback mutation smoke', 'scripts/platform-share-feedback-smoke.mjs', {}, { mutatesLocal: true })
@@ -349,6 +366,7 @@ const summary = {
   includeVisual,
   includeStudioFixture,
   includeShareFeedback,
+  includeShareFixtureSweep,
   includeOwnerFeedback,
   includeSlowNetwork,
   includeStripeCheckout,
