@@ -58,14 +58,15 @@ export async function POST(request: NextRequest) {
     }
 
     const origin = request.headers.get('origin') ?? 'http://localhost:3000'
+    const billingUrl = `${origin}/account?tab=billing`
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       line_items: [{ price: resolvedPriceId, quantity: 1 }],
       mode: 'subscription',
-      success_url: `${origin}/settings?upgraded=true`,
-      cancel_url: `${origin}/pricing`,
+      success_url: `${billingUrl}&upgraded=true`,
+      cancel_url: `${billingUrl}&checkout=cancelled`,
       subscription_data: {
         metadata: { supabase_user_id: user.id },
         trial_period_days: 7,

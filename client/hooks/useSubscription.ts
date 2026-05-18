@@ -31,15 +31,29 @@ export async function startCheckout(interval: 'month' | 'year' = 'month') {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ interval }),
   })
-  const { url, error } = await res.json()
+  const { url, error } = await readBillingResponse(res)
   if (error) throw new Error(error)
+  if (!url) throw new Error('Checkout did not return a redirect link. Please try again.')
   window.location.href = url
 }
 
 /** Open Stripe Customer Portal */
 export async function openBillingPortal() {
   const res = await fetch('/api/stripe/portal', { method: 'POST' })
-  const { url, error } = await res.json()
+  const { url, error } = await readBillingResponse(res)
   if (error) throw new Error(error)
+  if (!url) throw new Error('Billing portal did not return a redirect link. Please try again.')
   window.location.href = url
+}
+
+async function readBillingResponse(res: Response): Promise<{ url?: string; error?: string }> {
+  try {
+    return await res.json()
+  } catch {
+    return {
+      error: res.ok
+        ? 'Billing returned an unreadable response. Please try again.'
+        : 'Billing is temporarily unavailable. Please try again soon.',
+    }
+  }
 }
