@@ -65,19 +65,40 @@ async function checkShareSlug(shareSlug) {
       route.distance_m > 0 &&
       route.distance_m <= 25000
     ))
+    const mappedStopKeys = mappedItems.map((item) => {
+      const latitude = Number(item.place.latitude).toFixed(5)
+      const longitude = Number(item.place.longitude).toFixed(5)
+      return `${latitude},${longitude}`
+    })
+    const seenStopKeys = new Set()
+    const duplicateMappedStops = mappedItems
+      .filter((item, index) => {
+        const key = mappedStopKeys[index]
+        if (seenStopKeys.has(key)) return true
+        seenStopKeys.add(key)
+        return false
+      })
+      .map((item) => ({
+        title: item.title,
+        placeName: item.place?.name || null,
+      }))
 
     return {
       dayIndex: day.day_index,
       title: day.title,
       itemCount: items.length,
       mappedItemCount: mappedItems.length,
+      uniqueMappedStopCount: seenStopKeys.size,
+      duplicateMappedStops,
       countries,
       usableRouteCount: usableRoutes.length,
+      routeDistanceMeters: usableRoutes.map((route) => route.distance_m),
     }
   })
   const badDays = dayIntegrity.filter((day) => (
     day.itemCount === 0 ||
     day.mappedItemCount !== day.itemCount ||
+    day.duplicateMappedStops.length > 0 ||
     day.countries.length !== 1 ||
     day.usableRouteCount === 0
   ))
