@@ -47,6 +47,48 @@ async function run() {
   if (!apiOk) fail(apiResult.name, apiResult)
   results.push(apiResult)
 
+  const days = Array.isArray(tripApi.json?.days) ? tripApi.json.days : []
+  const dayIntegrity = days.map((day) => {
+    const items = Array.isArray(day.items) ? day.items : []
+    const mappedItems = items.filter((item) => (
+      item.place &&
+      Number.isFinite(item.place.latitude) &&
+      Number.isFinite(item.place.longitude)
+    ))
+    const countries = [...new Set(mappedItems.map((item) => item.place.country).filter(Boolean))]
+    const routes = Array.isArray(day.routes) ? day.routes : []
+    const usableRoutes = routes.filter((route) => (
+      Number.isFinite(route.distance_m) &&
+      route.distance_m > 0 &&
+      route.distance_m <= 25000
+    ))
+
+    return {
+      dayIndex: day.day_index,
+      title: day.title,
+      itemCount: items.length,
+      mappedItemCount: mappedItems.length,
+      countries,
+      usableRouteCount: usableRoutes.length,
+    }
+  })
+  const badDays = dayIntegrity.filter((day) => (
+    day.itemCount === 0 ||
+    day.mappedItemCount !== day.itemCount ||
+    day.countries.length !== 1 ||
+    day.usableRouteCount === 0
+  ))
+  const integrityOk = apiOk && days.length > 0 && badDays.length === 0
+  const integrityResult = {
+    name: 'public itinerary days have mapped stops and routes',
+    ok: integrityOk,
+    dayCount: days.length,
+    badDays,
+    dayIntegrity,
+  }
+  if (!integrityOk) fail(integrityResult.name, integrityResult)
+  results.push(integrityResult)
+
   const feedbackApi = await fetchJson(`/api/trips/share/${shareSlug}/feedback`)
   const feedbackOk = feedbackApi.response.ok && Array.isArray(feedbackApi.json)
   const feedbackResult = {

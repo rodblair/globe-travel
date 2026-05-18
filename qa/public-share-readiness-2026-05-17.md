@@ -44,11 +44,12 @@ Results:
 
 ## Local Command Evidence
 
-`QA_SHARE_SLUG=x3m2c8cnws npm run qa:share` passed `3/3`:
+`QA_SHARE_SLUG=x3m2c8cnws npm run qa:share` passed `4/4`:
 
 | Check | Result | Proof |
 | --- | --- | --- |
 | Public trip API | Pass | Returned the Athens trip and 5 itinerary days |
+| Public itinerary map integrity | Pass | All 5 days have mapped stops, one country (`Greece`), and at least one usable route |
 | Public feedback API | Pass | Returned feedback array with 2 entries |
 | Public page metadata | Pass | Title, description, Open Graph, and Twitter metadata present |
 
