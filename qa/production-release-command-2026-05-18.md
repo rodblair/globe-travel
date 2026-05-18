@@ -16,10 +16,13 @@ The new command runs the read-only production release gates together:
 - production auth and guest access Browser smoke
 - production commercial safety checks
 - production public share integrity and social-preview metadata
+- production public visual QA for landing, login, signup, and public share
+- pixel-diff comparison for stable public shell routes
 - production prompt actual export for the stable Athens public share
 - 52-prompt suite validation using the production Athens actual
 
 Production feedback insertion remains opt-in with `QA_INCLUDE_FEEDBACK_MUTATION=1`.
+Production visual QA is enabled by default and can be disabled only with `QA_INCLUDE_PRODUCTION_VISUAL=0`.
 
 ## Verification
 
@@ -27,7 +30,8 @@ Production feedback insertion remains opt-in with `QA_INCLUDE_FEEDBACK_MUTATION=
 npm run qa:release-production
 ```
 
-Result: passed `7/7`.
+Original command result: passed `7/7`.
+Latest integrated visual release-gate result: passed `8/8`.
 
 Summary:
 
@@ -36,8 +40,18 @@ Summary:
 - production auth and guest access: passed
 - production commercial: passed
 - production share: passed
+- production public visual gate: passed `20/20`
 - production prompt actuals export: passed
 - prompt suite with production actuals: passed
+
+Production visual evidence:
+
+- artifact: `qa/visual-baseline-production-release-2026-05-18/`
+- checked routes: `landing`, `login`, `signup`, `public-share`
+- checked viewports: phone, tablet, laptop, desktop, wide
+- pixel-compared routes: `landing`, `login`, `signup`
+- visual checks passed: `20/20`
+- in-app Browser confirmed the live Athens public share rendered with no horizontal overflow or visible runtime errors, with the title/day content, feedback section, and Start your own trip CTA present.
 
 Prompt actual evidence:
 
@@ -74,3 +88,5 @@ QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run
 ```
 
 This reduces the chance of skipping the exact production check that previously caught the missing share-card route.
+
+The command now also reduces the chance of shipping a visually broken acquisition, auth, or public-share surface after production deploys.

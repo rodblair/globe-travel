@@ -27,6 +27,14 @@ on:
           - "0"
           - "1"
         default: "0"
+      include_production_visual:
+        description: Run public production visual QA and pixel diffs.
+        required: false
+        type: choice
+        options:
+          - "1"
+          - "0"
+        default: "1"
   schedule:
     - cron: "23 */6 * * *"
 
@@ -50,6 +58,8 @@ jobs:
       QA_SHARE_SLUG: ${{ github.event.inputs.share_slug || 'x3m2c8cnws' }}
       QA_INCLUDE_PROMPT_ACTUALS: ${{ github.event.inputs.include_prompt_actuals || '1' }}
       QA_INCLUDE_FEEDBACK_MUTATION: ${{ github.event.inputs.include_feedback_mutation || '0' }}
+      QA_INCLUDE_PRODUCTION_VISUAL: ${{ github.event.inputs.include_production_visual || '1' }}
+      QA_PRODUCTION_VISUAL_ARTIFACT_NAME: production-release-visual-${{ github.run_id }}
 
     steps:
       - name: Check out repository
@@ -85,5 +95,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: production-release-gate-log
-          path: qa-ci/production-release-gate.log
+          path: |
+            qa-ci/production-release-gate.log
+            qa/production-release-visual-${{ github.run_id }}/
           if-no-files-found: error

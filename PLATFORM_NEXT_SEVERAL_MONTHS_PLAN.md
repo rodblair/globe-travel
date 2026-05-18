@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 current workspace checkpoint
+Updated: 2026-05-18 production visual release-gate checkpoint
 
 ## Active Goal
 
@@ -13,13 +13,11 @@ This goal stays active until the full platform is proven launch-ready with evide
 
 ## Current Checkpoint
 
-The active goal is pinned and remains open. The current branch is ahead of `origin/main` with verified local release-readiness work, but the latest full local release-candidate attempt exposed a real responsive visual QA blocker that must be fixed before another push or Vercel production deploy:
+The active goal is pinned and remains open. The previous full release-candidate blocker is closed: saved trip open/delete hit targets are separated, long Trip Studio titles wrap cleanly, the full local predeploy gate passed `23/23`, production deployed, and the production release gate passed.
 
-- Saved trips card: the full-card open link overlaps the Delete action across phone, tablet, laptop, desktop, and wide viewports.
-- Trip Studio tablet: long saved trip titles can clip inside an `h2` instead of wrapping cleanly.
-- Failed visual artifacts from that run should be replaced by a passing release-candidate artifact after the fix.
+The current reliability upgrade is that public production visual QA is now part of the one-command production release gate. `npm run qa:release-production` checks public production layout for landing, login, signup, and public share, pixel-compares stable shell routes against the production visual baseline, and still runs production ops, smoke, auth/guest, commercial, public share/social preview, prompt actuals, and prompt-suite checks.
 
-Immediate release rule: do not push or deploy the current batch until the saved-card hit target and Trip Studio title wrapping are fixed, the focused visual sweep passes, and the full local release-candidate gate passes.
+Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
 ## Product Quality Bar
 
@@ -364,24 +362,7 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice is a release-candidate unblock, then the plan returns to Week 2 planner/map-trust expansion.
-
-1. Fix saved trip card interaction so opening the trip and deleting the trip are separate, non-overlapping hit targets.
-2. Fix Trip Studio saved-title typography so long trip titles wrap cleanly at tablet width without clipping.
-3. Create or reuse a disposable owner fixture and run focused visual QA for `saved-trips` and `trip-studio` at phone, tablet, laptop, desktop, and wide viewports.
-4. Run the saved/account and Trip Studio mutation gates that cover the touched surfaces:
-   - `npm run qa:saved-account`
-   - `npm run qa:studio-actions`
-   - `npm run qa:studio-recovery`
-5. Rerun the full local release-candidate gate:
-   - `QA_SHARE_SLUG=x3m2c8cnws QA_OWNER_USER_ID=b643aed0-e6d2-4f56-8836-0fed5a1e12ea QA_RELEASE_ARTIFACT_NAME=release-candidate-full-predeploy-2026-05-18 npm run qa:release-candidate`
-6. Replace failed visual artifacts with passing evidence and update `RELEASE_READINESS_MEMO.md` with the exact command results.
-7. Run `npm run lint` and `npm run build` before any commit.
-8. Commit the verified fixes and evidence.
-9. Push to `origin/main`, let Vercel build, then run production verification:
-   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
-
-After that release-candidate unblock is green, resume the Week 2 planner start-to-trip and map-trust work:
+The next execution slice resumes Week 2 planner start-to-trip confidence and map-trust expansion, now protected by the upgraded production release gate.
 
 1. Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
 2. Keep hardening slow and failed planner draft creation until users always see progress, preserved input, and a retry path.
@@ -393,7 +374,9 @@ After that release-candidate unblock is green, resume the Week 2 planner start-t
    - `npm run qa:slow-network`
    - `npm run qa:prompt-suite`
    - `QA_VISUAL_ROUTES=planner QA_VISUAL_VIEWPORTS=phone,laptop,desktop npm run qa:visual`
-7. Update `RELEASE_READINESS_MEMO.md` and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
+7. Run production release verification after any deployment:
+   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
+8. Update `RELEASE_READINESS_MEMO.md` and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
 
 ## Completion Definition
 

@@ -8,6 +8,14 @@ const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
 const shareMap = process.env.QA_PROMPT_SUITE_SHARE_MAP || `athens-5-day-couples-rest=${shareSlug}`
 const includePromptActuals = process.env.QA_INCLUDE_PROMPT_ACTUALS !== '0'
 const includeFeedbackMutation = process.env.QA_INCLUDE_FEEDBACK_MUTATION === '1'
+const includeProductionVisual = process.env.QA_INCLUDE_PRODUCTION_VISUAL !== '0'
+const visualArtifactName =
+  process.env.QA_PRODUCTION_VISUAL_ARTIFACT_NAME ||
+  `visual-baseline-production-release-${new Date().toISOString().slice(0, 10)}`
+const visualBaselineDir = process.env.QA_PRODUCTION_VISUAL_BASELINE_DIR || 'qa/visual-baseline-production-2026-05-18'
+const visualRoutes = process.env.QA_PRODUCTION_VISUAL_ROUTES || 'landing,login,signup,public-share'
+const visualDiffRoutes = process.env.QA_PRODUCTION_VISUAL_DIFF_ROUTES || 'landing,login,signup'
+const visualSettleMs = process.env.QA_PRODUCTION_VISUAL_SETTLE_MS || '1200'
 
 const tmpDir = await mkdtemp(join(tmpdir(), 'globe-travel-release-'))
 const actualsPath = join(tmpDir, 'prompt-actuals.json')
@@ -62,6 +70,9 @@ function runNodeTask({ name, args, env = {}, mutatesProduction = false, echoOutp
           ids: parsed.ids,
           cleanup: parsed.cleanup,
           missingCoverage: parsed.missingCoverage,
+          artifactDir: parsed.artifactDir,
+          baselineDir: parsed.baselineDir,
+          diffRoutes: parsed.diffRoutes,
         }, null, 2))
       } else if (!echoOutput && stdout.trim()) {
         console.log(stdout.trim().split('\n').slice(-12).join('\n'))
@@ -123,6 +134,24 @@ const tasks = [
   },
 ]
 
+if (includeProductionVisual) {
+  tasks.push({
+    name: 'production public visual gate',
+    args: ['scripts/platform-visual-baseline.mjs'],
+    env: {
+      QA_BASE_URL: baseUrl,
+      QA_SHARE_SLUG: shareSlug,
+      QA_VISUAL_AUTH_MODE: 'none',
+      QA_VISUAL_BASELINE_DIR: visualBaselineDir,
+      QA_VISUAL_ARTIFACT_NAME: visualArtifactName,
+      QA_VISUAL_ROUTES: visualRoutes,
+      QA_VISUAL_DIFF_ROUTES: visualDiffRoutes,
+      QA_VISUAL_SETTLE_MS: visualSettleMs,
+    },
+    echoOutput: false,
+  })
+}
+
 if (includePromptActuals) {
   tasks.push(
     {
@@ -183,6 +212,11 @@ const summary = {
   failed: failures.length,
   includePromptActuals,
   includeFeedbackMutation,
+  includeProductionVisual,
+  visualArtifactName: includeProductionVisual ? visualArtifactName : null,
+  visualBaselineDir: includeProductionVisual ? visualBaselineDir : null,
+  visualRoutes: includeProductionVisual ? visualRoutes.split(',').map((route) => route.trim()).filter(Boolean) : [],
+  visualDiffRoutes: includeProductionVisual ? visualDiffRoutes.split(',').map((route) => route.trim()).filter(Boolean) : [],
   promptActualIds: Array.isArray(actuals) ? actuals.map((actual) => actual.id) : [],
   results,
   failures,
