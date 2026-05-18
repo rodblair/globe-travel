@@ -1,0 +1,207 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-18",
+  "runId": "billing-commercial-state",
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-billing-commercial-state",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 1200,
+  "checked": 3,
+  "passed": 3,
+  "failed": 0,
+  "routes": [
+    "account-billing"
+  ],
+  "viewports": [
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "results": [
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-billing-commercial-state/screenshots/account-billing-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-billing-commercial-state/screenshots/account-billing-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-billing-commercial-state/screenshots/account-billing-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-billing-commercial-state/screenshots/account-billing-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "visibleControlCount": 14,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. FREE WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-billing-commercial-state/screenshots/account-billing-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-billing-commercial-state/screenshots/account-billing-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

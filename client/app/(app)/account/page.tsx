@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -19,6 +19,7 @@ import { createClient } from '@/lib/supabase-browser'
 import { PLANS } from '@/lib/plans'
 import { openBillingPortal, startCheckout, useSubscription } from '@/hooks/useSubscription'
 import { cn } from '@/lib/utils'
+import { hasProAccess, type Subscription } from '@/lib/subscription'
 
 type AccountTab = 'profile' | 'billing'
 
@@ -31,12 +32,68 @@ function normalizeTab(value: string | null): AccountTab {
   return value === 'billing' ? 'billing' : 'profile'
 }
 
+function buildQaSubscription(state: string | null): Subscription | null {
+  if (process.env.NODE_ENV !== 'development' || !state) return null
+
+  const periodEnd = new Date(Date.now() + 1000 * 60 * 60 * 24 * 14).toISOString()
+  const base = {
+    currentPeriodEnd: periodEnd,
+    cancelAtPeriodEnd: false,
+    stripeCustomerId: 'cus_globe_qa',
+  }
+
+  if (state === 'free') {
+    return { plan: 'free', status: 'active', currentPeriodEnd: null, cancelAtPeriodEnd: false, stripeCustomerId: null }
+  }
+
+  if (state === 'active' || state === 'trialing' || state === 'past_due' || state === 'canceled') {
+    return { ...base, plan: 'pro', status: state }
+  }
+
+  return null
+}
+
+function billingStatusLabel(subscription: Subscription | null | undefined) {
+  if (!subscription || subscription.plan === 'free') return 'Free'
+  if (subscription.status === 'trialing') return 'Trial active'
+  if (subscription.status === 'active' && subscription.cancelAtPeriodEnd) return 'Cancels soon'
+  if (subscription.status === 'active') return 'Active'
+  if (subscription.status === 'past_due') return 'Payment needs attention'
+  if (subscription.status === 'canceled') return 'Canceled'
+  return subscription.status.replaceAll('_', ' ')
+}
+
+function billingSummary(subscription: Subscription | null | undefined, isPro: boolean) {
+  if (!subscription || subscription.plan === 'free') {
+    return 'Free plan with generous limits to get started.'
+  }
+
+  if (subscription.status === 'trialing') {
+    return 'Your Adventurer trial is active. Keep planning before the first bill.'
+  }
+
+  if (subscription.status === 'past_due') {
+    return 'Your Adventurer access needs a payment update before it can continue.'
+  }
+
+  if (subscription.status === 'canceled') {
+    return 'Your Adventurer subscription is canceled. Your saved work remains available.'
+  }
+
+  return isPro ? 'Pro features are active on this account.' : 'Free plan with generous limits to get started.'
+}
+
 function AccountPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeTab = normalizeTab(searchParams.get('tab'))
   const { profile, signOut, refreshProfile } = useAuth()
   const { subscription, isPro, isLoading: subscriptionLoading } = useSubscription()
+  const qaSubscription = useMemo(() => buildQaSubscription(searchParams.get('qaBillingState')), [searchParams])
+  const displayedSubscription = qaSubscription || subscription
+  const displayedIsPro = qaSubscription ? hasProAccess(qaSubscription) : isPro
+  const billingChecking = subscriptionLoading && !qaSubscription
+  const canOpenBillingPortal = displayedIsPro || Boolean(displayedSubscription?.stripeCustomerId)
   const supabase = createClient()
 
   const [displayName, setDisplayName] = useState(profile?.display_name || '')
@@ -327,19 +384,20 @@ function AccountPageContent() {
                   <div className="min-w-0 border-b border-rule pb-5 md:border-b-0 md:border-r md:pb-0 md:pr-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/35">Current plan</p>
                     <p className="mt-2 text-2xl font-serif font-semibold text-foreground">
-                      {isPro ? PLANS.pro.name : PLANS.free.name}
+                      {displayedSubscription?.plan === 'pro' ? PLANS.pro.name : PLANS.free.name}
                     </p>
                     <p className="mt-1 text-sm text-foreground/45">
-                      {subscriptionLoading
+                      {billingChecking
                         ? 'Checking subscription…'
-                        : isPro
-                        ? 'Pro features are active on this account.'
-                        : 'Free plan with generous limits to get started.'}
+                        : billingSummary(displayedSubscription, displayedIsPro)}
                     </p>
-                    {subscription?.currentPeriodEnd && (
+                    <p className="mt-3 inline-flex rounded-full border border-rule bg-paper px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground/45">
+                      {billingStatusLabel(displayedSubscription)}
+                    </p>
+                    {displayedSubscription?.currentPeriodEnd && (
                       <p className="mt-3 text-xs text-foreground/35">
                         Current period ends{' '}
-                        {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', {
+                        {new Date(displayedSubscription.currentPeriodEnd).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
                           day: 'numeric',
@@ -351,7 +409,7 @@ function AccountPageContent() {
                   <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/35">What you get</p>
                     <ul className="mt-3 space-y-2 text-sm text-foreground/55">
-                      {(isPro ? PLANS.pro.features : PLANS.free.features).slice(0, 5).map((feature) => (
+                      {(displayedSubscription?.plan === 'pro' ? PLANS.pro.features : PLANS.free.features).slice(0, 5).map((feature) => (
                         <li key={feature} className="flex items-start gap-2">
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brass)]" />
                           <span>{feature}</span>
@@ -366,15 +424,19 @@ function AccountPageContent() {
                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="text-lg font-serif font-semibold text-foreground">
-                      {isPro ? 'Manage subscription' : 'Upgrade to Adventurer'}
+                      {canOpenBillingPortal
+                        ? displayedSubscription?.status === 'past_due'
+                          ? 'Update billing'
+                          : 'Manage subscription'
+                        : 'Upgrade to Adventurer'}
                     </h2>
                     <p className="mt-1 text-sm text-foreground/40">
-                      {isPro
+                      {canOpenBillingPortal
                         ? 'Open Stripe billing portal to manage payment details and billing.'
                         : 'Unlock unlimited trip planning and richer sharing tools.'}
                     </p>
                   </div>
-                  {!isPro && (
+                  {!canOpenBillingPortal && (
                     <div className="flex items-center gap-1 rounded-xl border border-rule bg-paper-recessed/60 p-1">
                       {(['month', 'year'] as const).map((value) => (
                         <button
@@ -392,7 +454,7 @@ function AccountPageContent() {
                   )}
                 </div>
 
-                {!isPro && (
+                {!canOpenBillingPortal && (
                   <div className="mb-5 border-y border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] px-1 py-4 sm:px-0">
                     <div className="flex flex-wrap items-end justify-between gap-3">
                       <div className="flex items-baseline gap-2">
@@ -422,7 +484,7 @@ function AccountPageContent() {
                     <p>{billingError}</p>
                     <button
                       type="button"
-                      onClick={isPro ? handleManage : handleUpgrade}
+                      onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
                       disabled={billingLoading}
                       className="touch-target mt-3 inline-flex items-center justify-center rounded-full border border-[color:var(--terracotta)]/30 bg-paper-raised px-3 py-2 text-xs font-semibold text-[var(--terracotta)] disabled:opacity-60"
                     >
@@ -432,16 +494,16 @@ function AccountPageContent() {
                 )}
 
                 <button
-                  onClick={isPro ? handleManage : handleUpgrade}
+                  onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
                   disabled={billingLoading}
                   className={cn(
                     'touch-target inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors duration-200 disabled:opacity-60',
-                    isPro
+                    canOpenBillingPortal
                       ? 'bg-paper-recessed text-foreground hover:bg-paper-recessed'
                       : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)]'
                   )}
                 >
-                  {isPro ? (
+                  {canOpenBillingPortal ? (
                     <>
                       Manage billing
                       <ArrowRight className="h-4 w-4" />
@@ -466,10 +528,12 @@ function AccountPageContent() {
                     ['AI messages / day', '10', 'Unlimited'],
                     ['Trip sharing', 'Basic links', 'Advanced feedback'],
                   ].map(([feature, free, pro]) => (
-                    <div key={feature} className="grid gap-2 py-3 text-sm sm:grid-cols-[minmax(0,1fr)_9rem_9rem] sm:items-center">
+                    <div key={feature} className="grid gap-2 py-3 text-sm">
                       <p className="font-medium text-foreground">{feature}</p>
-                      <span className="text-xs text-foreground/45 sm:text-right">Explorer: {free}</span>
-                      <span className="text-xs font-medium text-[var(--brass)] sm:text-right">Adventurer: {pro}</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <span className="rounded-xl bg-paper px-3 py-2 text-xs text-foreground/50">Explorer: {free}</span>
+                        <span className="rounded-xl bg-[var(--brass-subtle)] px-3 py-2 text-xs font-medium text-[var(--brass)]">Adventurer: {pro}</span>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -34,6 +34,10 @@ async function bodyText() {
   return page.locator('body').innerText({ timeout: 6000 })
 }
 
+function includesText(source, expected) {
+  return source.toLowerCase().includes(expected.toLowerCase())
+}
+
 async function gotoAccountBilling(query = '') {
   await page.goto(`${baseUrl}/account?tab=billing${query}`, {
     waitUntil: 'domcontentloaded',
@@ -51,6 +55,36 @@ try {
     initialText.includes('Plan and billing') && initialText.includes('Plan comparison') && initialText.includes('Start free trial')
   )
 
+  await gotoAccountBilling('&qaBillingState=trialing')
+  const trialingText = await bodyText()
+  record(
+    'trialing subscription is shown as Adventurer access',
+    includesText(trialingText, 'Adventurer') &&
+      includesText(trialingText, 'Trial active') &&
+      includesText(trialingText, 'Your Adventurer trial is active') &&
+      includesText(trialingText, 'Manage billing')
+  )
+
+  await gotoAccountBilling('&qaBillingState=past_due')
+  const pastDueText = await bodyText()
+  record(
+    'past due subscription prompts billing recovery',
+    includesText(pastDueText, 'Adventurer') &&
+      includesText(pastDueText, 'Payment needs attention') &&
+      includesText(pastDueText, 'Update billing') &&
+      includesText(pastDueText, 'Manage billing')
+  )
+
+  await gotoAccountBilling('&qaBillingState=canceled')
+  const canceledText = await bodyText()
+  record(
+    'canceled subscription state is explicit and recoverable',
+    includesText(canceledText, 'Adventurer') &&
+      includesText(canceledText, 'Canceled') &&
+      includesText(canceledText, 'Your Adventurer subscription is canceled') &&
+      includesText(canceledText, 'Manage billing')
+  )
+
   await gotoAccountBilling('&qaCheckoutFailure=1')
   await page.getByRole('button', { name: /Start free trial/i }).click({ timeout: 8000 })
   await page.waitForTimeout(600)
@@ -59,6 +93,16 @@ try {
     'checkout failure recovery visible',
     checkoutFailureText.includes('Checkout is temporarily unavailable in QA mode.') &&
       checkoutFailureText.includes('Try again')
+  )
+
+  await gotoAccountBilling('&qaBillingState=trialing&qaPortalFailure=1')
+  await page.getByRole('button', { name: /Manage billing/i }).click({ timeout: 8000 })
+  await page.waitForTimeout(600)
+  const portalFailureText = await bodyText()
+  record(
+    'billing portal failure recovery visible',
+    portalFailureText.includes('Billing portal is temporarily unavailable in QA mode.') &&
+      portalFailureText.includes('Try again')
   )
 
   await gotoAccountBilling('&checkout=cancelled')

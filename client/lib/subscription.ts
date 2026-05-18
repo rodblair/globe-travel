@@ -9,6 +9,10 @@ export type Subscription = {
   stripeCustomerId: string | null
 }
 
+export function hasProAccess(subscription: Pick<Subscription, 'plan' | 'status'> | null | undefined): boolean {
+  return subscription?.plan === 'pro' && ['active', 'trialing'].includes(subscription.status)
+}
+
 /** Fetch the user's subscription from the DB. Returns free plan if none found. */
 export async function getUserSubscription(
   supabase: SupabaseClient,
@@ -24,9 +28,8 @@ export async function getUserSubscription(
     return { plan: 'free', status: 'active', currentPeriodEnd: null, cancelAtPeriodEnd: false, stripeCustomerId: null }
   }
 
-  const isActive = data.status === 'active' || data.status === 'trialing'
   return {
-    plan: isActive ? (data.plan as Plan) : 'free',
+    plan: data.plan as Plan,
     status: data.status,
     currentPeriodEnd: data.current_period_end,
     cancelAtPeriodEnd: data.cancel_at_period_end ?? false,
@@ -37,7 +40,7 @@ export async function getUserSubscription(
 /** Quick isPro check for API route gating */
 export async function isPro(supabase: SupabaseClient, userId: string): Promise<boolean> {
   const sub = await getUserSubscription(supabase, userId)
-  return sub.plan === 'pro'
+  return hasProAccess(sub)
 }
 
 /** Upsert subscription record after a Stripe webhook event */

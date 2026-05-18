@@ -554,7 +554,10 @@ These are the next focused passes to run before another release candidate decisi
 
 ### Sprint 4: Commercial And Release Gate Hardening
 
-- Status: next active execution slice.
+- Status: in progress as of 2026-05-18.
+- Billing state hardening evidence: `qa/billing-subscription-state-hardening-2026-05-18.md`.
+- Result: `npm run qa:billing-recovery` now covers trialing, past-due, canceled, checkout failure, billing portal failure, checkout cancel return, checkout success return, and overflow. The expanded gate passed `9/9`.
+- Visual result: focused account-billing responsive visual check passed `3/3` for tablet, laptop, and desktop in `qa/visual-baseline-billing-commercial-state/README.md`.
 - Browser-test pricing, upgrade, checkout-start, billing portal, return URLs, and safe failure states.
 - Verify unauthenticated, guest, signed-in free, paid-candidate, and logged-out recipient paths.
 - Finish public share social preview evidence integration and keep share-card image rendering in the release gate.

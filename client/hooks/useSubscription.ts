@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import type { Subscription } from '@/lib/subscription'
+import { hasProAccess, type Subscription } from '@/lib/subscription'
 
 export function useSubscription() {
   const query = useQuery<Subscription>({
@@ -14,7 +14,7 @@ export function useSubscription() {
     staleTime: 1000 * 60 * 5, // 5 min cache
   })
 
-  const isPro = query.data?.plan === 'pro' && query.data?.status === 'active'
+  const isPro = hasProAccess(query.data)
 
   return {
     subscription: query.data,
