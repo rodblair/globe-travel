@@ -1,0 +1,87 @@
+name: Production visual gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Production or preview base URL to check.
+        required: false
+        default: https://globe-travel-two.vercel.app
+      share_slug:
+        description: Public share slug used for visual public-share checks.
+        required: false
+        default: x3m2c8cnws
+      routes:
+        description: Comma-separated visual route ids to check.
+        required: false
+        default: landing,login,signup,public-share
+      diff_routes:
+        description: Comma-separated stable route ids to pixel-compare.
+        required: false
+        default: landing,login,signup
+  schedule:
+    - cron: "41 8 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-visual-gate
+  cancel-in-progress: false
+
+jobs:
+  production-visual-gate:
+    name: Production visual gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: client
+    env:
+      QA_BASE_URL: ${{ github.event.inputs.base_url || 'https://globe-travel-two.vercel.app' }}
+      QA_SHARE_SLUG: ${{ github.event.inputs.share_slug || 'x3m2c8cnws' }}
+      QA_VISUAL_BASELINE_DIR: qa/visual-baseline-production-2026-05-18
+      QA_VISUAL_RUN_ID: production-ci-${{ github.run_id }}
+      QA_VISUAL_ARTIFACT_NAME: visual-baseline-production-ci-${{ github.run_id }}
+      QA_VISUAL_ROUTES: ${{ github.event.inputs.routes || 'landing,login,signup,public-share' }}
+      QA_VISUAL_DIFF_ROUTES: ${{ github.event.inputs.diff_routes || 'landing,login,signup' }}
+      QA_VISUAL_SETTLE_MS: "1200"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Locate Chrome
+        run: |
+          CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME_PATH" ]; then
+            echo "Chrome executable not found on runner." >&2
+            exit 1
+          fi
+          echo "QA_CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run production visual gate
+        run: |
+          set -o pipefail
+          mkdir -p ../qa-ci
+          npm run qa:visual | tee ../qa-ci/production-visual-gate.log
+
+      - name: Upload visual gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-visual-gate-${{ github.run_id }}
+          path: |
+            qa-ci/production-visual-gate.log
+            qa/visual-baseline-production-ci-${{ github.run_id }}/
+          if-no-files-found: error

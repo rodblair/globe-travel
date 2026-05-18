@@ -534,7 +534,8 @@ These are the next focused passes to run before another release candidate decisi
 - Ops monitoring result: `npm run qa:ops` now verifies health readiness, no-store cache behavior, parseable `checkedAt`, expected check roster, and deployment metadata policy. The first strengthened gate passed `3/3`.
 - Production release result: `npm run qa:release-production` now bundles the read-only post-deploy ops, smoke, commercial, share, production prompt-actuals, and prompt-suite-with-actuals checks.
 - Production monitoring result: `.github/workflows/production-release-gate.yml` now runs the production release gate every 6 hours and supports manual dispatch with configurable base URL/share slug.
-- Remaining follow-up: schedule visual diff runs in release/preview automation and keep expanding slow-network recovery.
+- Production visual monitoring result: `.github/workflows/production-visual-gate.yml` now runs daily/manual production visual checks for public routes, pixel-compares stable public shells, and uploads screenshot/diff artifacts.
+- Remaining follow-up: extend visual automation to authenticated preview fixtures and keep expanding slow-network recovery.
 
 ### Sprint 3: Planner And Map Trust Expansion
 

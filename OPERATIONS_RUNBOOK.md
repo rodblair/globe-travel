@@ -142,6 +142,15 @@ GitHub Actions production release gate:
 - Artifact: `production-release-gate-log`
 - Mutation policy: feedback insertion is off by default; enable `include_feedback_mutation=1` only during an approved release window.
 
+GitHub Actions production visual gate:
+
+- Workflow: `.github/workflows/production-visual-gate.yml`
+- Schedule: daily
+- Manual run: Actions -> Production visual gate -> Run workflow
+- Default command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_VISUAL_BASELINE_DIR=qa/visual-baseline-production-2026-05-18 QA_VISUAL_ROUTES=landing,login,signup,public-share QA_VISUAL_DIFF_ROUTES=landing,login,signup npm run qa:visual`
+- Artifact: `production-visual-gate-<run_id>`
+- Scope: public production surfaces only by default; authenticated Trip Studio/account/saved visual QA remains a signed-in local or preview fixture gate.
+
 Add external uptime or scheduled checks for:
 
 - `/api/health`
