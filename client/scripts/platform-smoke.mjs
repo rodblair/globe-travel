@@ -13,7 +13,10 @@ const routes = [
 if (process.env.QA_SHARE_SLUG) {
   routes.push({
     path: `/t/${process.env.QA_SHARE_SLUG}`,
-    markers: ['Shared Globe.travel map', 'Send feedback'],
+    // Public share content is client-rendered behind Suspense, so the fetch-only
+    // smoke gate checks server-rendered metadata while qa:share validates the
+    // full itinerary, feedback API, and map integrity.
+    markers: ['og:site_name', 'twitter:card'],
   })
 }
 

@@ -1,7 +1,7 @@
 # Operations Readiness
 
 Date: 2026-05-17
-Status: Passed locally; production verification blocked by Vercel queue
+Status: Passed locally and in production
 
 ## Scope
 
@@ -51,14 +51,13 @@ Local warning:
 
 ## Follow-Up
 
-- Run `QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops` after deploy.
 - Add uptime monitoring against `/api/health`.
 - Add alerting thresholds for planner failures, map hydration failures, share feedback failures, checkout failures, and API 5xx spikes.
 - Add a rollback checklist tied to failed health or smoke checks.
 
 ## Production Deployment Blocker
 
-Production verification is still pending because Vercel has kept the latest production deployments queued. The live alias `https://globe-travel-two.vercel.app/api/health` returned `404`, which proves the live alias has not yet picked up the `/api/health` route.
+Production verification was initially blocked because Vercel kept several production deployments queued. The live alias `https://globe-travel-two.vercel.app/api/health` returned `404`, which proved the live alias had not yet picked up the `/api/health` route.
 
 Queued deployments observed:
 
@@ -72,4 +71,19 @@ Local prebuilt deployment was attempted as a workaround, but `vercel build --pro
 ENOENT: no such file or directory, lstat '.next/server/chunks/ssr/[root-of-the-server]__12effdb2._.js'
 ```
 
-Next action: once Vercel clears the queue or the packaging issue is resolved, deploy the current `main`, then run production `qa:smoke`, `qa:commercial`, `qa:ops`, and `qa:share`.
+Resolution:
+
+- Removed six stale queued deployments with `vercel remove --safe --yes`.
+- Vercel then advanced deployment `dpl_ET7i958vfsvgGRis4f4RXQn3NTgx` for commit `2a554034cddba6a0d7dfff37a794297247a8ba62`.
+- The deployment became `READY` with 238 outputs.
+- The production aliases now point to `globe-travel-22uv0cm02-rodney-blairs-projects.vercel.app`.
+- `https://globe-travel-two.vercel.app/api/health` returned `200` with service `globe-travel`, status `ok`, environment `production`, region `iad1`, and zero missing critical checks.
+
+Production command evidence:
+
+| Command | Result | Notes |
+| --- | --- | --- |
+| `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:smoke` | Pass 8/8 | Public share smoke now checks server-rendered metadata while `qa:share` checks full content |
+| `QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops` | Pass 2/2 | Production metadata present; `site_url` remains a warning only |
+| `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial` | Pass 4/4 | Pricing redirect and unauthenticated billing failures are safe |
+| `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share` | Pass 4/4 | Athens five-day public itinerary has all days mapped in Greece with usable routes |
