@@ -114,14 +114,44 @@ function buildTrustedPlaceGuidanceBlock(runtime: PlannerRuntimeContext) {
     runtime.trip?.brief?.destination,
   ].filter(Boolean).join(' ')
 
-  if (!/\blisbon\b/i.test(destinationText)) return ''
+  const guidance: string[] = []
 
-  return `\n\nTRUSTED_LISBON_PLACE_SET:
+  if (/\blisbon\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_LISBON_PLACE_SET:
 When planning Lisbon, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
 - Alfama/Baixa: Lisbon Cathedral, Praça do Comércio, Santa Justa Lift, Castelo de São Jorge, Miradouro de Santa Luzia, Miradouro da Graça, Clube de Fado, Pois Café, Miss Can, Canto da Vila, Taberna Sal Grosso, Chapitô à Mesa, da Prata 52.
 - Belém/riverside: Jerónimos Monastery, Pastéis de Belém, Belém Tower, Padrão dos Descobrimentos, MAAT, À Margem, O Frade, Enoteca de Belém, Darwin's Café.
 - Chiado/Bairro Alto/nightlife: Dear Breakfast Chiado, Miradouro de São Pedro de Alcântara, Time Out Market Lisboa, Taberna da Rua das Flores, Oficina do Duque, By The Wine, Bairro do Avillez, Pavilhão Chinês, Pensão Amor, Park Rooftop, Pharmacia, Topo Chiado, Foxtrot, Pink Street.
-Use the exact place name in both title and place_query for meals; do not substitute obscure restaurants when a trusted routeable venue fits the day.`
+Use the exact place name in both title and place_query for meals; do not substitute obscure restaurants when a trusted routeable venue fits the day.`)
+  }
+
+  if (/\bporto\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_PORTO_PLACE_SET:
+When planning Porto, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Viewpoints/landmarks: Porto Cathedral, Miradouro da Vitória, Livraria Lello, São Bento Station, Igreja do Carmo, Ribeira, Jardim do Morro, Dom Luís I Bridge.
+- Food/drink: Mercado do Bolhão, Tapabento S.Bento, Taberna dos Mercadores, Adega São Nicolau, Majestic Café, Manteigaria Porto, Café Santiago.
+For a one-day Porto plan, keep the route compact around Baixa/Ribeira/Gaia and use the exact place name in both title and place_query.`)
+  }
+
+  if (/\bmexico city\b|\bcdmx\b|ciudad de m[eé]xico/i.test(destinationText)) {
+    guidance.push(`TRUSTED_MEXICO_CITY_PLACE_SET:
+When planning Mexico City, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Centro Histórico: Palacio de Bellas Artes, Café de Tacuba, Museo del Templo Mayor, Azul Histórico, El Cardenal, Terraza Catedral.
+- Chapultepec/Roma/Condesa: Museo Nacional de Antropología, Castillo de Chapultepec, Museo Tamayo, Contramar, Rosetta, Lardo, Parque México, Licorería Limantour.
+- Coyoacán: Museo Frida Kahlo, Mercado de Coyoacán, Tostadas Coyoacán, Los Danzantes, Museo Nacional de Culturas Populares, Museo Anahuacalli.
+Keep each day geographically coherent; do not mix Coyoacán with far north suburbs in the same walking route.`)
+  }
+
+  if (/\btokyo\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_TOKYO_PLACE_SET:
+When planning Tokyo, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Asakusa/Ueno: Senso-ji Temple, Suzukien Asakusa, Daikokuya Tempura, Tokyo National Museum, Ueno Park, Inshotei, Ameya-Yokocho.
+- Harajuku/Shibuya: Meiji Jingu, Afuri Harajuku, A Happy Pancake Omotesando, Omotesando Hills, Shibuya Scramble Crossing, Hachiko Memorial Statue, Shibuya Sky, Uobei Shibuya Dogenzaka.
+- Tsukiji/Ginza/calm evening: Tsukiji Outer Market, Tsukiji Sushizanmai Honten, teamLab Planets TOKYO, Hamarikyu Gardens, Ginza Six, Ginza Kagari Main Branch, Cafe de L'Ambre.
+Avoid obscure restaurant names when a trusted routeable venue fits the day; Tokyo generated plans should favor map reliability over novelty.`)
+  }
+
+  return guidance.length ? `\n\n${guidance.join('\n\n')}` : ''
 }
 
 export function buildPlannerSystemPrompt(runtime: PlannerRuntimeContext) {

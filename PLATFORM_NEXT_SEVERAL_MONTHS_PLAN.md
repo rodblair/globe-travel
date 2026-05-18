@@ -33,7 +33,7 @@ The newest planner-start checkpoint closes a natural-language duration gap: Brow
 
 The newest auth/guest checkpoint preserves work across the auth boundary: protected routes now redirect to login with a safe `next`, login/signup/guest actions preserve the destination, guest start can carry planner prompts through to Trip Studio, and `npm run qa:auth-access` covers the handoff.
 
-The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. The wider Mexico City/Tokyo discovery run remains Month 2 follow-up for larger multi-city launch coverage.
+The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. The wider Month 2 launch-city follow-up is now started and passing for Lisbon, Porto, Mexico City, and Tokyo through `npm run qa:planner-actuals:launch-cities`, with exported generated actuals cross-checked by the prompt suite.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
@@ -98,7 +98,7 @@ This is the near-term working plan for turning the active goal into shippable pr
 | --- | --- | --- | --- | --- | --- |
 | 1 | Trip Studio density and owner confidence | Returning organizer editing a real trip | Athens five-day owner view, mobile day switching, edit/delete/reorder/swap/save/share, map-stop connection | Reduce operational density, simplify repeated panels, clarify owner next action, protect mobile controls from overlap | Focused Trip Studio visual QA, studio action/recovery gates, release memo entry |
 | 2 | Planner start-to-trip confidence | First-time guest with a natural trip idea | Landing to guest planner, `/chat?q=...`, slow planner, failed planner, generated trip handoff | Make planner progress and recovery calm, obvious, and reassuring | Planner handoff QA, slow-network QA, Browser route evidence |
-| 3 | Map trust and itinerary truth | User deciding whether the plan is believable | Athens, Lisbon, Porto, Mexico City, Tokyo actuals; all day tabs; public map view | Flag or repair missing/wrong-country stops, make partial route states honest | Prompt actuals report, share QA, map-trust evidence |
+| 3 | Map trust and itinerary truth | User deciding whether the plan is believable | Athens, Lisbon, Porto, Mexico City, Tokyo actuals; all day tabs; public map view | Flag or repair missing/wrong-country stops, make partial route states honest | Prompt actuals report, share QA, map-trust evidence; launch-city actuals for Lisbon, Porto, Mexico City, and Tokyo now passing |
 | 4 | Saved/account usefulness | Returning user managing work | `/saved`, journal, empty states, reopen trip, delete safety, `/account`, `/account?tab=billing` | Reduce account/billing density, clarify saved/private/public states, improve empty and recovery copy | Saved/account visual sweep, commercial QA, billing recovery QA |
 | 5 | Public share as a growth surface | Logged-out friend receiving a link | Public share mobile and desktop, feedback submit, copy/native share, start-own-trip CTA | Make first viewport instantly understandable, make feedback feel social and low friction | Multi-slug share QA, feedback readback QA, social preview evidence |
 | 6 | Auth and guest edge cases | User moving between guest, signup, login, and saved state | Guest start, login, signup, protected routes, public routes, signout/reopen | Eliminate confusing redirects and preserve user work across auth transitions | Auth access QA, Browser auth notes, release memo entry |
@@ -210,6 +210,13 @@ Exit gate:
 - Wrong-country pins are blocked, repaired, or visibly flagged.
 - No new trip lands in a confusing zero-stop state without recovery.
 - At least ten real generated/public-share actuals pass map trust checks.
+
+Current progress:
+
+- Lisbon default generated actuals are passing.
+- Launch-city generated actuals for Lisbon, Porto, Mexico City, and Tokyo are passing through `npm run qa:planner-actuals:launch-cities`.
+- The prompt suite now cross-checks the four launch-city generated actuals with `56/56` passing and no missing coverage.
+- The next expansion target is adding Rome, Barcelona, London, Paris, Copenhagen, and Berlin until the ten-actual exit gate is met.
 
 ## Month 3: Trip Studio Completion
 

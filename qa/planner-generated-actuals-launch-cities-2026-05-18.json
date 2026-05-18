@@ -1,0 +1,603 @@
+[
+  {
+    "id": "lisbon-3-day-friends-nightlife",
+    "shareSlug": "au3o22sfu5",
+    "tripId": "18417b7b-d3c4-49fd-81d2-cab1415b8b3c",
+    "tripTitle": "3 Days in Lisbon",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Baixa, Alfama & Fado",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Praça do Comércio",
+            "type": "activity",
+            "placeName": "Praça do Comércio",
+            "latitude": 38.70775,
+            "longitude": -9.13642
+          },
+          {
+            "title": "da Prata 52",
+            "type": "meal",
+            "placeName": "da Prata 52",
+            "latitude": 38.71028,
+            "longitude": -9.1363
+          },
+          {
+            "title": "Miradouro de Santa Luzia",
+            "type": "activity",
+            "placeName": "Miradouro de Santa Luzia",
+            "latitude": 38.71183,
+            "longitude": -9.13075
+          },
+          {
+            "title": "Castelo de São Jorge",
+            "type": "activity",
+            "placeName": "Castelo de São Jorge",
+            "latitude": 38.71391,
+            "longitude": -9.13348
+          },
+          {
+            "title": "Clube de Fado",
+            "type": "meal",
+            "placeName": "Clube de Fado",
+            "latitude": 38.71036,
+            "longitude": -9.13111
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2653
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Belém Riverside Day",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Jerónimos Monastery",
+            "type": "activity",
+            "placeName": "Jerónimos Monastery",
+            "latitude": 38.6979,
+            "longitude": -9.20673
+          },
+          {
+            "title": "Pastéis de Belém",
+            "type": "meal",
+            "placeName": "Pastéis de Belém",
+            "latitude": 38.69748,
+            "longitude": -9.20322
+          },
+          {
+            "title": "Belém Tower",
+            "type": "activity",
+            "placeName": "Belém Tower",
+            "latitude": 38.69158,
+            "longitude": -9.21604
+          },
+          {
+            "title": "MAAT",
+            "type": "activity",
+            "placeName": "MAAT",
+            "latitude": 38.69578,
+            "longitude": -9.19468
+          },
+          {
+            "title": "Darwin's Café",
+            "type": "meal",
+            "placeName": "Darwin's Café",
+            "latitude": 38.6945,
+            "longitude": -9.2219
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7196
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Chiado, Viewpoints & Night Out",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Dear Breakfast Chiado",
+            "type": "meal",
+            "placeName": "Dear Breakfast Chiado",
+            "latitude": 38.71082,
+            "longitude": -9.14363
+          },
+          {
+            "title": "Santa Justa Lift",
+            "type": "activity",
+            "placeName": "Santa Justa Lift",
+            "latitude": 38.71214,
+            "longitude": -9.13939
+          },
+          {
+            "title": "Miradouro de São Pedro de Alcântara",
+            "type": "activity",
+            "placeName": "Miradouro de São Pedro de Alcântara",
+            "latitude": 38.7151,
+            "longitude": -9.14442
+          },
+          {
+            "title": "Taberna da Rua das Flores",
+            "type": "meal",
+            "placeName": "Taberna da Rua das Flores",
+            "latitude": 38.71026,
+            "longitude": -9.14352
+          },
+          {
+            "title": "Pavilhão Chinês",
+            "type": "meal",
+            "placeName": "Pavilhão Chinês",
+            "latitude": 38.71528,
+            "longitude": -9.14829
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2937
+        ]
+      }
+    ]
+  },
+  {
+    "id": "porto-1-day-food-viewpoints",
+    "shareSlug": "cxfvdh3ma7",
+    "tripId": "cd5a08c7-0f77-4daa-826e-b6c2ba4acac3",
+    "tripTitle": "1 Day in Porto",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Porto viewpoints & food walk",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Majestic Café",
+            "type": "meal",
+            "placeName": "Majestic Café",
+            "latitude": 41.14713,
+            "longitude": -8.6067
+          },
+          {
+            "title": "São Bento Station",
+            "type": "activity",
+            "placeName": "São Bento Station",
+            "latitude": 41.14566,
+            "longitude": -8.6109
+          },
+          {
+            "title": "Tapabento S.Bento",
+            "type": "meal",
+            "placeName": "Tapabento S.Bento",
+            "latitude": 41.14552,
+            "longitude": -8.61062
+          },
+          {
+            "title": "Miradouro da Vitória",
+            "type": "activity",
+            "placeName": "Miradouro da Vitória",
+            "latitude": 41.14278,
+            "longitude": -8.61563
+          },
+          {
+            "title": "Adega São Nicolau",
+            "type": "meal",
+            "placeName": "Adega São Nicolau",
+            "latitude": 41.14058,
+            "longitude": -8.61653
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1740
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mexico-city-4-day-food-museums-nightlife",
+    "shareSlug": "x1kk0s29wr",
+    "tripId": "5822ee49-7f1a-43fa-974a-6059fad98504",
+    "tripTitle": "4 Days in Mexico City",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Centro Histórico Highlights",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "El Cardenal",
+            "type": "meal",
+            "placeName": "El Cardenal",
+            "latitude": 19.4337,
+            "longitude": -99.1391
+          },
+          {
+            "title": "Palacio de Bellas Artes",
+            "type": "activity",
+            "placeName": "Palacio de Bellas Artes",
+            "latitude": 19.4352,
+            "longitude": -99.1412
+          },
+          {
+            "title": "Museo del Templo Mayor",
+            "type": "activity",
+            "placeName": "Museo del Templo Mayor",
+            "latitude": 19.4347,
+            "longitude": -99.1312
+          },
+          {
+            "title": "Azul Histórico",
+            "type": "meal",
+            "placeName": "Azul Histórico",
+            "latitude": 19.4338,
+            "longitude": -99.1377
+          },
+          {
+            "title": "Terraza Catedral",
+            "type": "meal",
+            "placeName": "Terraza Catedral",
+            "latitude": 19.4341,
+            "longitude": -99.1335
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3123
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Chapultepec Museums & Roma Dinner",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Museo Nacional de Antropología",
+            "type": "activity",
+            "placeName": "Museo Nacional de Antropología",
+            "latitude": 19.426,
+            "longitude": -99.1863
+          },
+          {
+            "title": "Castillo de Chapultepec",
+            "type": "activity",
+            "placeName": "Castillo de Chapultepec",
+            "latitude": 19.4204,
+            "longitude": -99.1819
+          },
+          {
+            "title": "Contramar",
+            "type": "meal",
+            "placeName": "Contramar",
+            "latitude": 19.4191,
+            "longitude": -99.1694
+          },
+          {
+            "title": "Licorería Limantour",
+            "type": "meal",
+            "placeName": "Licorería Limantour",
+            "latitude": 19.414,
+            "longitude": -99.1713
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4827
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Coyoacán Art & Local Flavors",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Museo Frida Kahlo",
+            "type": "activity",
+            "placeName": "Museo Frida Kahlo",
+            "latitude": 19.3552,
+            "longitude": -99.1626
+          },
+          {
+            "title": "Museo Nacional de Culturas Populares",
+            "type": "activity",
+            "placeName": "Museo Nacional de Culturas Populares",
+            "latitude": 19.3481,
+            "longitude": -99.1623
+          },
+          {
+            "title": "Tostadas Coyoacán",
+            "type": "meal",
+            "placeName": "Tostadas Coyoacán",
+            "latitude": 19.34921,
+            "longitude": -99.16111
+          },
+          {
+            "title": "Museo Anahuacalli",
+            "type": "activity",
+            "placeName": "Museo Anahuacalli",
+            "latitude": 19.3231,
+            "longitude": -99.1436
+          },
+          {
+            "title": "Los Danzantes",
+            "type": "meal",
+            "placeName": "Los Danzantes",
+            "latitude": 19.3495,
+            "longitude": -99.1625
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9204
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Roma-Condesa Easy Final Day",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Lardo",
+            "type": "meal",
+            "placeName": "Lardo",
+            "latitude": 19.4128,
+            "longitude": -99.1727
+          },
+          {
+            "title": "Museo Tamayo",
+            "type": "activity",
+            "placeName": "Museo Tamayo Arte Contemporáneo",
+            "latitude": 19.4257,
+            "longitude": -99.1817
+          },
+          {
+            "title": "Parque México",
+            "type": "activity",
+            "placeName": "Parque México",
+            "latitude": 19.4113,
+            "longitude": -99.1695
+          },
+          {
+            "title": "Rosetta",
+            "type": "meal",
+            "placeName": "Rosetta",
+            "latitude": 19.4199,
+            "longitude": -99.1605
+          },
+          {
+            "title": "Café de Tacuba",
+            "type": "meal",
+            "placeName": "Café de Tacuba",
+            "latitude": 19.4357,
+            "longitude": -99.1398
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9948
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tokyo-3-day-calm-evening",
+    "shareSlug": "hltldahncj",
+    "tripId": "07d1ef9a-1791-4d20-92a0-432a4ce5707c",
+    "tripTitle": "3 Days in Tokyo",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Asakusa & Ueno",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Senso-ji Temple",
+            "type": "activity",
+            "placeName": "Senso-ji Temple",
+            "latitude": 35.7148,
+            "longitude": 139.7967
+          },
+          {
+            "title": "Daikokuya Tempura",
+            "type": "meal",
+            "placeName": "Daikokuya Tempura",
+            "latitude": 35.71195,
+            "longitude": 139.79469
+          },
+          {
+            "title": "Tokyo National Museum",
+            "type": "activity",
+            "placeName": "Tokyo National Museum",
+            "latitude": 35.7188,
+            "longitude": 139.7765
+          },
+          {
+            "title": "Inshotei",
+            "type": "meal",
+            "placeName": "Inshotei",
+            "latitude": 35.7169,
+            "longitude": 139.7721
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3546
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Harajuku & Shibuya",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Meiji Jingu",
+            "type": "activity",
+            "placeName": "Meiji Jingu",
+            "latitude": 35.6764,
+            "longitude": 139.6993
+          },
+          {
+            "title": "Afuri Harajuku",
+            "type": "meal",
+            "placeName": "Afuri Harajuku",
+            "latitude": 35.669,
+            "longitude": 139.7055
+          },
+          {
+            "title": "Shibuya Scramble Crossing",
+            "type": "activity",
+            "placeName": "Shibuya Scramble Crossing",
+            "latitude": 35.6595,
+            "longitude": 139.7005
+          },
+          {
+            "title": "Shibuya Sky",
+            "type": "activity",
+            "placeName": "Shibuya Sky",
+            "latitude": 35.6584,
+            "longitude": 139.702
+          },
+          {
+            "title": "Uobei Shibuya Dogenzaka",
+            "type": "meal",
+            "placeName": "Uobei Shibuya Dogenzaka",
+            "latitude": 35.6581,
+            "longitude": 139.6973
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3902
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Tsukiji, teamLab & Calm Ginza Evening",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Tsukiji Sushizanmai Honten",
+            "type": "meal",
+            "placeName": "Tsukiji Sushizanmai Honten",
+            "latitude": 35.6657,
+            "longitude": 139.7707
+          },
+          {
+            "title": "teamLab Planets TOKYO",
+            "type": "activity",
+            "placeName": "teamLab Planets TOKYO DMM",
+            "latitude": 35.6491,
+            "longitude": 139.7904
+          },
+          {
+            "title": "Hamarikyu Gardens",
+            "type": "activity",
+            "placeName": "Hamarikyu Gardens",
+            "latitude": 35.6595,
+            "longitude": 139.7634
+          },
+          {
+            "title": "Ginza Kagari Main Branch",
+            "type": "meal",
+            "placeName": "Ginza Kagari Main Branch",
+            "latitude": 35.6712,
+            "longitude": 139.7638
+          },
+          {
+            "title": "Cafe de L'Ambre",
+            "type": "meal",
+            "placeName": "Cafe de L'Ambre",
+            "latitude": 35.67082,
+            "longitude": 139.76554
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          14711
+        ]
+      }
+    ]
+  }
+]

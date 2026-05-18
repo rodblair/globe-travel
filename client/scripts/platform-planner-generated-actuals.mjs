@@ -8,7 +8,20 @@ const root = process.cwd()
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const allowRemoteMutation = process.env.QA_ALLOW_REMOTE_MUTATION === '1'
-const fixtureIds = (process.env.QA_GENERATED_ACTUAL_IDS || 'lisbon-3-day-friends-nightlife')
+const generatedActualPresets = {
+  default: ['lisbon-3-day-friends-nightlife'],
+  'launch-cities': [
+    'lisbon-3-day-friends-nightlife',
+    'porto-1-day-food-viewpoints',
+    'mexico-city-4-day-food-museums-nightlife',
+    'tokyo-3-day-calm-evening',
+  ],
+}
+const explicitFixtureIds = Boolean(process.env.QA_GENERATED_ACTUAL_IDS)
+const presetName = explicitFixtureIds ? null : (process.env.QA_GENERATED_ACTUAL_PRESET || 'default')
+const presetFixtureIds = presetName ? generatedActualPresets[presetName] : null
+const fixtureIdsInput = process.env.QA_GENERATED_ACTUAL_IDS || (presetFixtureIds || generatedActualPresets.default).join(',')
+const fixtureIds = fixtureIdsInput
   .split(/[\s,]+/)
   .map((id) => id.trim())
   .filter(Boolean)
@@ -16,6 +29,8 @@ const outputPath = process.env.QA_GENERATED_ACTUALS_OUT
 const keepGeneratedActuals = process.env.QA_KEEP_GENERATED_ACTUALS === '1'
 const failures = []
 const results = []
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 if (!isLocalBaseUrl && !allowRemoteMutation) {
   console.error('qa:planner-actuals creates disposable trips and only runs against localhost unless QA_ALLOW_REMOTE_MUTATION=1 is set.')
@@ -63,14 +78,37 @@ function cookieHeaderFromSetCookie(headers) {
     .join('; ')
 }
 
-async function fetchJson(path, init = {}) {
-  const response = await fetch(`${baseUrl}${path}`, {
-    ...init,
-    headers: {
-      'user-agent': 'globe-travel-planner-generated-actuals/1.0',
-      ...(init.headers || {}),
-    },
-  })
+async function fetchWithRetry(path, init = {}, options = {}) {
+  const method = String(init.method || 'GET').toUpperCase()
+  const canRetry = method === 'GET' || method === 'HEAD' || method === 'PATCH' || options.retryUnsafe
+  let lastError = null
+  let lastResponse = null
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(`${baseUrl}${path}`, {
+        ...init,
+        headers: {
+          'user-agent': 'globe-travel-planner-generated-actuals/1.0',
+          ...(init.headers || {}),
+        },
+      })
+      lastResponse = response
+      if (!canRetry || response.status < 500 || attempt === 3) return response
+    } catch (error) {
+      lastError = error
+      if (!canRetry || attempt === 3) throw error
+    }
+
+    await sleep(750 * attempt)
+  }
+
+  if (lastResponse) return lastResponse
+  throw lastError || new Error(`fetch failed for ${path}`)
+}
+
+async function fetchJson(path, init = {}, options = {}) {
+  const response = await fetchWithRetry(path, init, options)
   const text = await response.text()
   let json = null
 
@@ -85,6 +123,29 @@ async function fetchJson(path, init = {}) {
 
 function normalize(value) {
   return String(value || '').trim().toLowerCase()
+}
+
+function isRecoverablePlannerStreamError(error) {
+  const message = error instanceof Error ? error.message : String(error)
+  return /terminated|fetch failed|other side closed|socket|network/i.test(message)
+}
+
+async function retrySupabaseOperation(operation) {
+  let lastError = null
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const result = await operation()
+      if (!result?.error) return result
+      lastError = result.error
+    } catch (error) {
+      lastError = error
+    }
+
+    if (attempt < 3) await sleep(750 * attempt)
+  }
+
+  return { error: lastError || new Error('Supabase operation failed') }
 }
 
 function dayIntegrity(day) {
@@ -192,19 +253,25 @@ async function cleanupTripAndGuest({ supabase, tripId, guestId }) {
   }
 
   if (tripId) {
-    const { error } = await supabase.from('trips').delete().eq('id', tripId)
+    const { error } = await retrySupabaseOperation(() => supabase.from('trips').delete().eq('id', tripId))
     result.tripDeleted = !error
-    if (error) result.errors.push(error.message)
+    if (error) result.errors.push(error.message || String(error))
+  }
+
+  if (!tripId && guestId) {
+    const { error } = await retrySupabaseOperation(() => supabase.from('trips').delete().eq('user_id', guestId))
+    result.tripDeleted = !error
+    if (error) result.errors.push(error.message || String(error))
   }
 
   if (guestId) {
-    const { error: profileError } = await supabase.from('profiles').delete().eq('id', guestId)
-    const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+    const { error: profileError } = await retrySupabaseOperation(() => supabase.from('profiles').delete().eq('id', guestId))
+    const { error: userError } = await retrySupabaseOperation(() => supabase.auth.admin.deleteUser(guestId))
     const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
     result.profileDeleted = !profileError
     result.userDeleted = !userError || Boolean(userAlreadyAbsent)
-    if (profileError) result.errors.push(profileError.message)
-    if (userError && !userAlreadyAbsent) result.errors.push(userError.message)
+    if (profileError) result.errors.push(profileError.message || String(profileError))
+    if (userError && !userAlreadyAbsent) result.errors.push(userError.message || String(userError))
   }
 
   return result
@@ -222,6 +289,7 @@ const fixturesById = new Map(fixtures.map((fixture) => [fixture.id, fixture]))
 const selectedFixtures = fixtureIds.map((id) => fixturesById.get(id))
 
 record('generated actual fixture ids resolve', selectedFixtures.every(Boolean), {
+  preset: presetFixtureIds ? presetName : null,
   requested: fixtureIds,
   missing: fixtureIds.filter((id) => !fixturesById.has(id)),
 })
@@ -235,33 +303,36 @@ for (const fixture of selectedFixtures.filter(Boolean)) {
   let shareSlug = null
 
   try {
-    const guestStart = await fetch(`${baseUrl}/api/guest/start?id=${guestId}`, {
+    const guestStart = await fetchWithRetry(`/api/guest/start?id=${guestId}`, {
       redirect: 'manual',
-      headers: { 'user-agent': 'globe-travel-planner-generated-actuals/1.0' },
     })
     const cookie = cookieHeaderFromSetCookie(guestStart.headers)
     if (!cookie) throw new Error('guest start did not set a guest cookie')
 
     const expectedDays = extractDaysFromPrompt(fixture.prompt) || fixture.expected.days
     const expectedDestination = extractDestinationFromPrompt(fixture.prompt) || fixture.expected.destination
-    const created = await fetchJson('/api/trips', {
-      method: 'POST',
-      headers: {
-        cookie,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: `${expectedDays} ${expectedDays === 1 ? 'Day' : 'Days'} in ${expectedDestination}`,
-        travelers_count: 4,
-        pace: 'balanced',
-        budget_level: 'mid',
-        constraints: {
-          days: expectedDays,
-          destination_query: expectedDestination,
-          group_vibe: 'Generated actual QA sample',
+    const created = await fetchJson(
+      '/api/trips',
+      {
+        method: 'POST',
+        headers: {
+          cookie,
+          'content-type': 'application/json',
         },
-      }),
-    })
+        body: JSON.stringify({
+          title: `${expectedDays} ${expectedDays === 1 ? 'Day' : 'Days'} in ${expectedDestination}`,
+          travelers_count: 4,
+          pace: 'balanced',
+          budget_level: 'mid',
+          constraints: {
+            days: expectedDays,
+            destination_query: expectedDestination,
+            group_vibe: 'Generated actual QA sample',
+          },
+        }),
+      },
+      { retryUnsafe: true }
+    )
 
     if (!created.response.ok || !created.json?.tripId) {
       throw new Error(`draft creation failed: ${created.response.status} ${created.text.slice(0, 160)}`)
@@ -270,28 +341,33 @@ for (const fixture of selectedFixtures.filter(Boolean)) {
     tripId = created.json.tripId
     shareSlug = created.json.shareSlug
 
-    const chatResponse = await fetch(`${baseUrl}/api/chat`, {
-      method: 'POST',
-      headers: {
-        cookie,
-        'content-type': 'application/json',
-        'user-agent': 'globe-travel-planner-generated-actuals/1.0',
-      },
-      body: JSON.stringify({
-        type: 'plan',
-        tripId,
-        messages: [
-          {
-            id: `qa-${fixture.id}`,
-            role: 'user',
-            parts: [{ type: 'text', text: fixture.prompt }],
-          },
-        ],
-      }),
-    })
-    const streamText = await chatResponse.text()
-    if (!chatResponse.ok) {
-      throw new Error(`planner chat failed: ${chatResponse.status} ${streamText.slice(0, 240)}`)
+    try {
+      const chatResponse = await fetch(`${baseUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          cookie,
+          'content-type': 'application/json',
+          'user-agent': 'globe-travel-planner-generated-actuals/1.0',
+        },
+        body: JSON.stringify({
+          type: 'plan',
+          tripId,
+          messages: [
+            {
+              id: `qa-${fixture.id}`,
+              role: 'user',
+              parts: [{ type: 'text', text: fixture.prompt }],
+            },
+          ],
+        }),
+      })
+      const streamText = await chatResponse.text()
+      if (!chatResponse.ok) {
+        throw new Error(`planner chat failed: ${chatResponse.status} ${streamText.slice(0, 240)}`)
+      }
+    } catch (error) {
+      if (!isRecoverablePlannerStreamError(error)) throw error
+      await sleep(1500)
     }
 
     await fetchJson(`/api/trips/${tripId}`, {
@@ -351,6 +427,7 @@ record('generated actual cleanup completed', cleanupResults.every((result) => (
 
 const summary = {
   baseUrl,
+  preset: presetFixtureIds ? presetName : null,
   fixtureIds,
   outputPath: outputPath || null,
   keepGeneratedActuals,
