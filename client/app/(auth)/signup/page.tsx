@@ -10,6 +10,8 @@ import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { appendAuthNext, getAuthNextFromSearchParams } from '@/lib/auth-next'
+import { useCurrentSearch } from '@/lib/use-current-search'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -21,12 +23,14 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [pendingConfirmationEmail, setPendingConfirmationEmail] = useState<string | null>(null)
+  const currentSearch = useCurrentSearch()
+  const authNext = getAuthNextFromSearchParams(new URLSearchParams(currentSearch))
   const router = useRouter()
   const supabase = createClient()
   const authRedirectTo =
     typeof window === 'undefined'
-      ? '/callback'
-      : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback`
+      ? `/callback?next=${encodeURIComponent(authNext)}`
+      : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback?next=${encodeURIComponent(authNext)}`
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,7 +52,7 @@ export default function SignupPage() {
       if (error) {
         setError(error.message)
       } else if (data.session) {
-        router.push('/chat')
+        router.push(authNext)
         router.refresh()
       } else if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
         setPendingConfirmationEmail(email)
@@ -128,7 +132,7 @@ export default function SignupPage() {
           Plan a trip now, share it with friends, then create an account when you want to keep it.
         </p>
         <Button asChild variant="action" size="lg" className="w-full">
-          <Link href="/api/guest/start">
+          <Link href={appendAuthNext('/api/guest/start', authNext)}>
             Continue as guest
             <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
@@ -249,7 +253,7 @@ export default function SignupPage() {
       <p className="text-center text-body-sm text-ink-3 mt-7">
         Already booked?{' '}
         <Link
-          href="/login"
+          href={appendAuthNext('/login', authNext)}
           className="touch-target inline-flex items-center justify-center rounded-md px-1 text-[var(--brass)] font-medium transition-colors hover:text-[var(--brass-hover)]"
         >
           Sign in

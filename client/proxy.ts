@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getSafeAuthNext } from '@/lib/auth-next'
 import { GUEST_SESSION_COOKIE } from '@/lib/dev-auth'
 
 export async function proxy(request: NextRequest) {
@@ -50,7 +51,10 @@ export async function proxy(request: NextRequest) {
 
   if (!user && !hasGuestSession && !isPublicPath && !isApiPath) {
     const url = request.nextUrl.clone()
+    const next = getSafeAuthNext(`${request.nextUrl.pathname}${request.nextUrl.search}`)
     url.pathname = '/login'
+    url.search = ''
+    url.searchParams.set('next', next)
     return NextResponse.redirect(url)
   }
 
@@ -71,8 +75,7 @@ export async function proxy(request: NextRequest) {
 
   // Redirect logged-in users away from login/signup
   if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/chat'
+    const url = new URL(getSafeAuthNext(request.nextUrl.searchParams.get('next')), request.url)
     return NextResponse.redirect(url)
   }
 

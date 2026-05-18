@@ -1,12 +1,20 @@
 import { NextResponse } from 'next/server'
+import { getAuthNextFromSearchParams, getSafeAuthNext } from '@/lib/auth-next'
 import { GUEST_SESSION_COOKIE } from '@/lib/dev-auth'
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
-  const redirectTo = new URL('/chat', url.origin)
+  const redirectTo = new URL(getAuthNextFromSearchParams(url.searchParams), url.origin)
   const prompt = url.searchParams.get('q')?.trim()
-  if (prompt && prompt.length <= 500) {
+  if (redirectTo.pathname === '/chat' && !redirectTo.searchParams.has('q') && prompt && prompt.length <= 500) {
     redirectTo.searchParams.set('q', prompt)
+  }
+  const next = url.searchParams.get('next')
+  if (next) {
+    const safeNext = getSafeAuthNext(next)
+    redirectTo.pathname = safeNext.split('?')[0].split('#')[0]
+    redirectTo.search = new URL(safeNext, url.origin).search
+    redirectTo.hash = new URL(safeNext, url.origin).hash
   }
   const response = NextResponse.redirect(redirectTo)
   const requestedGuestId = url.searchParams.get('id')

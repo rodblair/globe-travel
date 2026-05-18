@@ -209,6 +209,7 @@ The paid path should be credible:
 
 Recently completed:
 
+- Auth/guest next handoff was hardened. Protected routes now redirect to login with a safe `next` destination, login/signup/guest actions preserve that destination through hydrated route search state, and guest start can carry a planner prompt through to Trip Studio instead of dropping the user's trip idea. Evidence: `qa/auth-guest-next-handoff-2026-05-18.md`; automated gate: `npm run qa:auth-access` passed `14/14`; `npm run lint`, `npm run build`, and `git diff --check` passed.
 - Planner word-duration handoff was repaired. Browser reproduced `Plan five days in Athens...` creating `4 Days in five days in Athens`; the shared planner parser now extracts word-based day counts and clean destinations, Trip Studio opens as `5 Days in Athens` with five day tabs, and `npm run qa:planner-handoff` now verifies this Browser-style path. Evidence: `qa/planner-word-duration-handoff-2026-05-18.md`.
 - Account profile identity validation was hardened. `PATCH /api/profile` now rejects invalid and overlong public identity updates, the account form shows field limits and clear username rules, profile fields sync after async load/refresh, and Browser verified invalid-error recovery plus a valid guest profile save without overflow. Evidence: `qa/account-profile-identity-validation-2026-05-18.md`; automated gate: `npm run qa:saved-account` passed `13/13`.
 - Itinerary map stop verification was repaired.
@@ -237,6 +238,7 @@ Use this section as work progresses.
 - 2026-05-17: Verified all six saved itineraries in Browser. Opened every day tab across the saved trips, including the five-day Athens itinerary. Each selected day rendered an itinerary-linked map with stop counts matching the visible day plan.
 - 2026-05-17: Verified public share pages for Athens links. Public itinerary, day-by-day route cards, share card, and friend feedback are visible without auth after load. Submitted a Browser QA reaction successfully and confirmed it appeared in Friend Feedback.
 - 2026-05-17: Verified private-trip sharing from Trip Studio. Closing the planner chat and using Share with friends turns the trip public and exposes a View share link.
+- 2026-05-18: Verified auth/guest protected-destination handoff. Browser confirmed `/login?next=/chat?q=Plan five days in Athens...` renders guest and signup links with the encoded planner destination, and automated auth access passed `14/14`.
 - 2026-05-17: Fixed mobile Trip Studio chat overlap by moving the drawer below the top action grid on phone viewports.
 - 2026-05-17: Tested first-plan creation from `/chat`. The planner created a Trip Studio from natural language and generated itinerary items. Found and fixed a P1 destination anchoring bug where theme-heavy prompts such as "Porto food and viewpoints" could geocode Porto stops to the wrong country. Retested the same prompt and confirmed Porto stops mapped to Portugal.
 - 2026-05-17: Cleaned temporary QA trips from Saved after planner testing.

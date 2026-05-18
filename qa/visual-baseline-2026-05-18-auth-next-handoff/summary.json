@@ -1,0 +1,412 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-18",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 900,
+  "auth": {
+    "requestedMode": "auto",
+    "mode": "none",
+    "guestId": null,
+    "protectedRoutes": [],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "guest visual auth not used",
+      "guestId": null,
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "routes": [
+    "login",
+    "signup"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "results": [
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 1009,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Globe.travel SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begin a journey"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/login-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/login-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 1050,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 8,
+        "bodyPreview": "Skip to content Globe.travel BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agree to our Terms of Service and Privacy Policy. Already booked? Sign in"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/signup-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/signup-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 937,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/login-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/login-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 962,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/signup-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/signup-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/login-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/login-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 962,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/signup-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-2026-05-18-auth-next-handoff/screenshots/signup-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

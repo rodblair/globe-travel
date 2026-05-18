@@ -10,6 +10,8 @@ import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { appendAuthNext, getAuthNextFromSearchParams } from '@/lib/auth-next'
+import { useCurrentSearch } from '@/lib/use-current-search'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -28,12 +30,14 @@ export default function LoginPage() {
       : authError
   })
   const [message, setMessage] = useState<string | null>(null)
+  const currentSearch = useCurrentSearch()
+  const authNext = getAuthNextFromSearchParams(new URLSearchParams(currentSearch))
   const router = useRouter()
   const supabase = createClient()
   const authRedirectTo =
     typeof window === 'undefined'
-      ? '/callback'
-      : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback`
+      ? `/callback?next=${encodeURIComponent(authNext)}`
+      : `${window.location.origin.replace('127.0.0.1', 'localhost')}/callback?next=${encodeURIComponent(authNext)}`
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,7 +56,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
       else {
-        router.push('/chat')
+        router.push(authNext)
         router.refresh()
       }
     }
@@ -118,7 +122,7 @@ export default function LoginPage() {
           Plan a trip, create a share link, and let friends react before you commit to an account.
         </p>
         <Button asChild variant="action" size="lg" className="w-full">
-          <Link href="/api/guest/start">
+          <Link href={appendAuthNext('/api/guest/start', authNext)}>
             Continue as guest
             <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
@@ -257,7 +261,7 @@ export default function LoginPage() {
       <p className="text-center text-body-sm text-ink-3 mt-7">
         New to Globe?{' '}
         <Link
-          href="/signup"
+          href={appendAuthNext('/signup', authNext)}
           className="touch-target inline-flex items-center justify-center rounded-md px-1 text-[var(--brass)] font-medium transition-colors hover:text-[var(--brass-hover)]"
         >
           Begin a journey

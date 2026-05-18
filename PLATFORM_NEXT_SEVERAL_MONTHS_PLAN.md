@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 planner word-duration handoff checkpoint
+Updated: 2026-05-18 active multi-month plan refreshed
 
 ## Active Goal
 
@@ -30,6 +30,8 @@ The newest map-trust checkpoint makes degraded map rendering explicit: public sh
 The newest saved/account checkpoint closes a profile identity reliability gap: `PATCH /api/profile` now rejects invalid or overlong identity updates, the account form shows field limits and username rules, editable fields sync after profile refresh, and Browser verified invalid username recovery plus valid guest profile saving without overflow. `npm run qa:saved-account` now includes this regression and passed `13/13`.
 
 The newest planner-start checkpoint closes a natural-language duration gap: Browser reproduced `Plan five days in Athens...` creating `4 Days in five days in Athens`; the shared planner parser now extracts word-based durations and clean destinations, Trip Studio opens as `5 Days in Athens` with five day tabs, and `npm run qa:planner-handoff` verifies the corrected Browser-style path.
+
+The newest auth/guest checkpoint preserves work across the auth boundary: protected routes now redirect to login with a safe `next`, login/signup/guest actions preserve the destination, guest start can carry planner prompts through to Trip Studio, and `npm run qa:auth-access` covers the handoff.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
@@ -60,6 +62,31 @@ Every work cycle follows this loop:
 6. Run the relevant local gates.
 7. Update the release evidence log.
 8. Commit, push, and deploy only after verification.
+
+## Active Goal Governance
+
+This plan is the active operating goal for Globe.travel from May 18, 2026 forward. It should be treated as a living launch-readiness program, not a one-time audit. Each work slice must connect to one of the monthly outcomes below and leave behind enough evidence that another reviewer could reproduce the result.
+
+Goal control rules:
+
+- Keep the active goal open until the six-month completion definition is met.
+- Prefer Browser-verified user journeys over code-only assumptions.
+- Prefer fixing and retesting one real P0/P1 journey over collecting many low-confidence observations.
+- Promote repeated manual findings into QA scripts or visual baselines.
+- Update this plan only when the roadmap meaningfully changes.
+- Update `RELEASE_READINESS_MEMO.md` after every verified fix, deployment, or release-blocking discovery.
+- Do not ship production changes unless `npm run lint`, `npm run build`, and the relevant local and production QA gates pass.
+
+## Next Six Months At A Glance
+
+| Month | Outcome | Main Risk To Retire | Evidence Required |
+| --- | --- | --- | --- |
+| Month 1 | Current web product is stable and coherent | Core flows work only in happy paths or one viewport | Browser route sweep, responsive visual QA, lint/build, smoke, auth, saved/account, share, studio, commercial, ops |
+| Month 2 | Planner and maps are trustworthy | Generated itineraries contain wrong duration, destination, route, or map confidence | Prompt actuals, map-trust reports, fallback-state QA, multi-city generated itinerary evidence |
+| Month 3 | Trip Studio is launch-grade | Owner editing surface feels dense, fragile, or unclear | Complete owner workflow evidence, mutation persistence, recovery QA, Studio visual baseline |
+| Month 4 | Public sharing becomes a growth loop | Shared pages are readable but not viral, social, or action-driving | Multi-slug share QA, feedback states, owner readback, social preview cards, recipient CTA evidence |
+| Month 5 | Paid/account paths are safe | Upgrade and billing states are confusing or non-recoverable | Stripe readiness, billing recovery, subscription states, pricing/account UX audit |
+| Month 6 | Launch candidate can be approved | Release decision relies on vibes instead of proof | Full release-candidate gate, production gate, rollback notes, no open P0/P1, launch signoff packet |
 
 ## Next 12-Week Execution Board
 
@@ -376,14 +403,23 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice continues Week 2 planner start-to-trip confidence and map-trust expansion, now protected by the upgraded production release gate and the Browser-verified initial-generation state fix.
+The next execution slice is a short release-hardening checkpoint before the broader Month 1 and Month 2 work resumes. Close the auth/guest destination-preservation work already in progress, then continue planner, map trust, and visual QA expansion.
 
-1. Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
-2. Keep hardening slow and failed planner draft creation until users always see progress, preserved input, and a retry path.
-3. Expand realistic prompt coverage beyond the current Athens handoff baseline into more generated actuals for Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin.
-4. Record every confusing planner state, duplicate-start risk, empty draft, wrong destination extraction, weak map preview, hidden control, or handoff failure.
-5. Fix the highest-impact P0/P1 first, then address P2 trust and clarity issues in planner progress, map preview, and draft recovery.
-6. Run the focused gates:
+1. Retest the Browser auth/guest handoff path from `/login?next=/chat?q=Plan five days in Athens...` and prove guest, signup, and login actions preserve the planned-trip destination.
+2. Run and keep green:
+   - `npm run qa:auth-access`
+   - `npm run lint`
+   - `npm run build`
+   - `git diff --check`
+3. Update `qa/auth-guest-next-handoff-2026-05-18.md` and `RELEASE_READINESS_MEMO.md` with the final command results.
+4. Commit the verified auth handoff fix, push, deploy through Vercel, and run the production release gate.
+5. Resume Week 2 planner start-to-trip confidence and map-trust expansion:
+   - Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
+   - Harden slow and failed planner draft creation until users always see progress, preserved input, and a retry path.
+   - Expand generated actuals for Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin.
+   - Record every confusing planner state, duplicate-start risk, empty draft, wrong destination extraction, weak map preview, hidden control, or handoff failure.
+   - Fix the highest-impact P0/P1 first, then address P2 trust and clarity issues in planner progress, map preview, and draft recovery.
+6. Run the focused planner/map gates:
    - `npm run qa:planner-handoff`
    - `npm run qa:slow-network`
    - `npm run qa:prompt-suite`

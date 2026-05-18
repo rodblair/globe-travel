@@ -10,6 +10,7 @@ const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const guestId = process.env.QA_GUEST_ID || randomUUID()
+const protectedPlannerNext = '/chat?q=Plan%20five%20days%20in%20Athens%20for%20friends%20with%20food%20and%20beaches'
 const allowRemoteGuestMutation = process.env.QA_ALLOW_REMOTE_GUEST_MUTATION === '1'
 const shouldCheckGuestApi = isLocalBaseUrl || allowRemoteGuestMutation
 const failures = []
@@ -168,6 +169,20 @@ async function cleanupGuestAccount() {
 await loadDotEnv()
 
 try {
+  const proxySource = await readFile(resolve(root, 'proxy.ts'), 'utf8')
+  const loginSource = await readFile(resolve(root, 'app/(auth)/login/page.tsx'), 'utf8')
+  const signupSource = await readFile(resolve(root, 'app/(auth)/signup/page.tsx'), 'utf8')
+  const guestStartSource = await readFile(resolve(root, 'app/api/guest/start/route.ts'), 'utf8')
+  record('auth source preserves protected next destinations', (
+    proxySource.includes("url.searchParams.set('next', next)") &&
+    proxySource.includes("getSafeAuthNext(`${request.nextUrl.pathname}${request.nextUrl.search}`)") &&
+    loginSource.includes("router.push(authNext)") &&
+    signupSource.includes("router.push(authNext)") &&
+    loginSource.includes("appendAuthNext('/api/guest/start', authNext)") &&
+    signupSource.includes("appendAuthNext('/api/guest/start', authNext)") &&
+    guestStartSource.includes('getAuthNextFromSearchParams(url.searchParams)')
+  ))
+
   browser = await chromium.launch({
     executablePath: chromePath,
     headless: true,
@@ -218,6 +233,59 @@ try {
     markers: [['Welcome back', 'Plan and billing']],
     expectedPathnames: ['/login', '/account'],
   })
+
+  const handoffPage = await anonymous.newPage()
+  await handoffPage.goto(`${baseUrl}/login?next=${encodeURIComponent(protectedPlannerNext)}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+  await handoffPage.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
+  const loginHandoff = await handoffPage.evaluate(() => {
+    const guestLink = Array.from(document.querySelectorAll('a')).find((link) => link.textContent?.includes('Continue as guest'))
+    const signupLink = Array.from(document.querySelectorAll('a')).find((link) => link.textContent?.includes('Begin a journey'))
+    return {
+      url: location.href,
+      guestHref: guestLink?.getAttribute('href') || null,
+      signupHref: signupLink?.getAttribute('href') || null,
+      hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => document.body.innerText.includes(pattern)),
+      horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    }
+  })
+  record('login preserves protected planner intent in guest and signup actions', (
+    loginHandoff.guestHref?.includes(`next=${encodeURIComponent(protectedPlannerNext)}`) &&
+    loginHandoff.signupHref?.includes(`next=${encodeURIComponent(protectedPlannerNext)}`) &&
+    !loginHandoff.hasAppError &&
+    !loginHandoff.horizontalOverflow
+  ), loginHandoff)
+  await handoffPage.close().catch(() => {})
+
+  if (shouldCheckGuestApi) {
+    const guestHandoffPage = await anonymous.newPage()
+    await guestHandoffPage.goto(
+      `${baseUrl}/api/guest/start?id=${guestId}&next=${encodeURIComponent(protectedPlannerNext)}`,
+      { waitUntil: 'domcontentloaded', timeout: 30000 },
+    )
+    const guestHandoffState = await readPageState(guestHandoffPage, ['Planner'])
+    const finalUrl = new URL(guestHandoffState.url)
+    const promptValue = finalUrl.searchParams.get('q') || finalUrl.searchParams.get('prompt')
+    const preservedPlannerIntent =
+      (finalUrl.pathname === '/chat' && promptValue?.includes('five days in Athens')) ||
+      (finalUrl.pathname.startsWith('/trips/') && promptValue?.includes('five days in Athens') && guestHandoffState.text.includes('5 Days in Athens'))
+    record('guest start preserves protected planner prompt destination', (
+      preservedPlannerIntent &&
+      markerSatisfied(guestHandoffState.text, [['Planner', 'Trip Studio']]) &&
+      !guestHandoffState.hasAppError &&
+      !guestHandoffState.horizontalOverflow
+    ), {
+      finalUrl: guestHandoffState.url,
+      promptValue,
+      missingMarkers: guestHandoffState.missingMarkers,
+      hasAppError: guestHandoffState.hasAppError,
+      horizontalOverflow: guestHandoffState.horizontalOverflow,
+    })
+    await guestHandoffPage.close().catch(() => {})
+  } else {
+    record('remote guest-start protected planner handoff skipped by default', true, {
+      enableWith: 'QA_ALLOW_REMOTE_GUEST_MUTATION=1',
+    })
+  }
 
   await anonymous.close().catch(() => {})
 
