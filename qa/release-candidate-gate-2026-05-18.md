@@ -16,6 +16,7 @@ This gate bundles the local checks required before a production release decision
 - Trip Studio action coverage on a kept disposable fixture
 - Trip Studio recovery coverage on the same fixture
 - Trip Studio owner feedback readback on the same public fixture
+- slow-network recovery for planner, Trip Studio, public share, and billing
 - authenticated visual QA using the kept fixture guest ID for protected owner surfaces
 - Stripe test-mode readiness
 - planner prompt contract suite
@@ -51,6 +52,7 @@ Key nested results:
 - Trip Studio action smoke on kept fixture: `23/23`
 - Trip Studio recovery smoke on kept fixture: `6/6`
 - Trip Studio owner feedback readback smoke: `6/6`
+- slow-network recovery smoke on kept fixture: `5/5`
 - authenticated owner visual QA focused run: `6/6`
 - Stripe test-mode readiness: `11/11`
 - planner prompt contract suite: `52/52`
@@ -72,6 +74,9 @@ Artifacts:
 - `qa/release-candidate-authenticated-visual-2026-05-18/README.md`
 - `qa/release-candidate-authenticated-visual-2026-05-18/summary.json`
 - `qa/authenticated-visual-qa-2026-05-18.md`
+- `qa/release-candidate-slow-network-2026-05-18/README.md`
+- `qa/release-candidate-slow-network-2026-05-18/summary.json`
+- `qa/slow-network-recovery-2026-05-18.md`
 - `qa/accessibility-keyboard-2026-05-18/README.md`
 - `qa/accessibility-keyboard-2026-05-18/summary.json`
 - `qa/visual-baseline-2026-05-18-release-candidate-2026-05-18/README.md`
@@ -80,4 +85,4 @@ Artifacts:
 
 ## Release Impact
 
-This closes the missing local release-candidate command gap for Sprint 4, the owner-feedback/readback follow-up from Sprint 1, and the authenticated visual-fixture follow-up from Sprint 2. The app now has a single repeatable pre-deploy gate that exercises core functionality, accessibility, authenticated visual QA, commercial readiness, viral sharing surfaces, public-to-owner feedback, Trip Studio owner behavior, planner handoff, and billing recovery before production verification.
+This closes the missing local release-candidate command gap for Sprint 4, the owner-feedback/readback follow-up from Sprint 1, the authenticated visual-fixture follow-up from Sprint 2, and the current slow-network recovery follow-up. The app now has a single repeatable pre-deploy gate that exercises core functionality, accessibility, authenticated visual QA, commercial readiness, viral sharing surfaces, public-to-owner feedback, slow successful API behavior, Trip Studio owner behavior, planner handoff, and billing recovery before production verification.

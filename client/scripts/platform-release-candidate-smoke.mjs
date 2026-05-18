@@ -16,6 +16,7 @@ const includeShareFeedback = process.env.QA_RELEASE_INCLUDE_SHARE_FEEDBACK !== '
 const includeOwnerFeedback = process.env.QA_RELEASE_INCLUDE_OWNER_FEEDBACK !== '0'
 const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT === '1'
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
+const includeSlowNetwork = process.env.QA_RELEASE_INCLUDE_SLOW_NETWORK !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
 const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
@@ -185,6 +186,7 @@ Public share slug: ${shareSlug}
 - Visual QA included: ${includeVisual ? 'yes' : 'no'}
 - Trip Studio fixture included: ${includeStudioFixture ? 'yes' : 'no'}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
+- Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
 - Summary JSON: \`qa/${artifactName}/summary.json\`
 
@@ -275,6 +277,19 @@ try {
           results.push(failure)
         }
       }
+
+      if (includeSlowNetwork && studioFixture.shareSlug) {
+        await runNodeTask(
+          'slow-network recovery smoke on kept fixture',
+          'scripts/platform-slow-network-smoke.mjs',
+          {
+            QA_TRIP_ID: studioFixture.tripId,
+            QA_GUEST_ID: studioFixture.guestId,
+            QA_SHARE_SLUG: studioFixture.shareSlug,
+          },
+          { mutatesLocal: true }
+        )
+      }
     } else {
       const failure = {
         name: 'Trip Studio fixture exposes trip and guest for recovery/visual checks',
@@ -335,6 +350,7 @@ const summary = {
   includeStudioFixture,
   includeShareFeedback,
   includeOwnerFeedback,
+  includeSlowNetwork,
   includeStripeCheckout,
   includePromptSuite,
   studioFixture,

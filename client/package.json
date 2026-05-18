@@ -21,6 +21,7 @@
     "qa:share-feedback": "node scripts/platform-share-feedback-smoke.mjs",
     "qa:share-fixtures": "node scripts/platform-share-fixtures.mjs",
     "qa:share-recovery": "node scripts/platform-public-share-recovery-smoke.mjs",
+    "qa:slow-network": "node scripts/platform-slow-network-smoke.mjs",
     "qa:smoke": "node scripts/platform-smoke.mjs",
     "qa:studio": "node scripts/platform-trip-studio-smoke.mjs",
     "qa:studio-actions": "node scripts/platform-trip-studio-actions.mjs",
