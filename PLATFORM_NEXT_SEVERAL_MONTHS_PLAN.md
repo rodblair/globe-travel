@@ -3,7 +3,7 @@
 Date: 2026-05-18
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 account profile identity validation checkpoint
+Updated: 2026-05-18 planner word-duration handoff checkpoint
 
 ## Active Goal
 
@@ -28,6 +28,8 @@ The newest planner-start checkpoint strengthens first-time guest confidence: `np
 The newest map-trust checkpoint makes degraded map rendering explicit: public share route cards can force the static fallback in development, label the fallback as `Static Route`, preserve recipient itinerary/feedback/CTA usability without Mapbox canvas, and are covered by `npm run qa:map-fallback` inside the local release-candidate gate.
 
 The newest saved/account checkpoint closes a profile identity reliability gap: `PATCH /api/profile` now rejects invalid or overlong identity updates, the account form shows field limits and username rules, editable fields sync after profile refresh, and Browser verified invalid username recovery plus valid guest profile saving without overflow. `npm run qa:saved-account` now includes this regression and passed `13/13`.
+
+The newest planner-start checkpoint closes a natural-language duration gap: Browser reproduced `Plan five days in Athens...` creating `4 Days in five days in Athens`; the shared planner parser now extracts word-based durations and clean destinations, Trip Studio opens as `5 Days in Athens` with five day tabs, and `npm run qa:planner-handoff` verifies the corrected Browser-style path.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 

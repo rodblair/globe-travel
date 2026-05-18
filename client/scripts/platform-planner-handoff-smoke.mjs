@@ -145,7 +145,7 @@ async function runBrowserPlannerStartChecks() {
   const failureGuestId = randomUUID()
   const slowGuestId = randomUUID()
   const failurePrompt = 'Plan a 4 day Lisbon food trip for friends with viewpoints and relaxed mornings'
-  const slowPrompt = 'Plan a 3 day Porto food and viewpoints trip for four friends with relaxed pacing'
+  const slowPrompt = 'Plan five days in Athens for friends with food, beaches, and relaxed mornings'
 
   try {
     browser = await chromium.launch({
@@ -201,7 +201,7 @@ async function runBrowserPlannerStartChecks() {
         .filter((button) => /^STEP 0/.test((button.textContent || '').trim()))
       return {
         hasOpeningState: text.includes('Opening Trip Studio') && text.includes('Building a draft for'),
-        promptVisible: text.includes('Porto food and viewpoints'),
+        promptVisible: text.includes('Athens') && text.includes('five days'),
         inputPlaceholder: input?.getAttribute('placeholder') || '',
         inputDisabled: input?.disabled ?? null,
         sendDisabled: sendButton?.disabled ?? null,
@@ -216,10 +216,21 @@ async function runBrowserPlannerStartChecks() {
       document.body.innerText.includes('Building the first itinerary from your trip idea') ||
       document.body.innerText.includes('Globe is adding named stops')
     ), { timeout: 12000 }).catch(() => {})
-    const studioState = await slowPage.evaluate(() => {
+    const studioState = await slowPage.evaluate(async () => {
       const text = document.body.innerText
+      const tripId = location.pathname.split('/').filter(Boolean).pop() || null
+      let tripPayload = null
+      if (tripId) {
+        const response = await fetch(`/api/trips/${tripId}`, { cache: 'no-store' })
+        tripPayload = response.ok ? await response.json().catch(() => null) : null
+      }
+      const constraints = tripPayload?.trip?.constraints || {}
       return {
-        tripId: location.pathname.split('/').filter(Boolean).pop() || null,
+        tripId,
+        tripTitle: tripPayload?.trip?.title || null,
+        dayCount: Array.isArray(tripPayload?.days) ? tripPayload.days.length : null,
+        destinationQuery: constraints.destination_query || null,
+        constraintDays: constraints.days || null,
         hasPromptParam: location.search.includes('prompt='),
         hasStudioActions: text.includes('Save trip') && text.includes('Share with friends'),
         hasInitialGenerationCopy: text.includes('Building the first itinerary from your trip idea') || text.includes('Globe is adding named stops'),
@@ -235,6 +246,10 @@ async function runBrowserPlannerStartChecks() {
       waitingState.sendDisabled === true &&
       waitingState.disabledStepCount === waitingState.stepCount &&
       studioState.hasPromptParam &&
+      studioState.tripTitle === '5 Days in Athens' &&
+      studioState.dayCount === 5 &&
+      studioState.destinationQuery === 'Athens' &&
+      studioState.constraintDays === 5 &&
       studioState.hasStudioActions &&
       studioState.hasInitialGenerationCopy &&
       !waitingMetrics.hasAppError &&

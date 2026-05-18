@@ -15,7 +15,7 @@ import {
   shouldUseSavedRoute,
   sortTripItemsForDisplay,
 } from '@/components/trips/derivedStops'
-import { extractDestinationFromPrompt } from '@/lib/planner/runtime'
+import { extractDaysFromPrompt, extractDestinationFromPrompt } from '@/lib/planner/runtime'
 import { CompassRose } from '@/components/atmosphere/CompassRose'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { cn } from '@/lib/utils'
@@ -185,10 +185,7 @@ function ChatPageContent() {
   }, [])
 
   const extractDraftDays = useCallback((text: string) => {
-    const match = text.match(/\b(\d+)(?:\s*-\s*|\s+)days?\b/i)
-    if (!match) return 4
-    const parsed = Number(match[1])
-    return Number.isFinite(parsed) ? Math.min(14, Math.max(1, parsed)) : 4
+    return extractDaysFromPrompt(text) ?? 4
   }, [])
 
   const extractDraftTitle = useCallback((text: string) => {

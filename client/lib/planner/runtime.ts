@@ -1,14 +1,49 @@
 import type { UIMessage } from 'ai'
 import type { PlannerGroupBrief, PlannerRuntimeContext, PlannerTripContext, PlannerTripDaySummary } from '@/lib/planner/types'
 
+const DAY_NUMBER_WORDS: Record<string, number> = {
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+}
+const DAY_NUMBER_SOURCE = String.raw`\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen`
+const DAY_DURATION_SOURCE = String.raw`(?:${DAY_NUMBER_SOURCE})\s*[- ]?\s*(?:day|days)`
+const DAY_DURATION_PATTERN = new RegExp(String.raw`\b(${DAY_NUMBER_SOURCE})\s*[- ]?\s*(?:day|days)\b`, 'i')
 const DESTINATION_TRAILING_THEME_PATTERN =
   /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|design|architecture|shops?|shopping|bakeries|bakery|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|markets?)\b.*$/i
+
+export function extractDaysFromPrompt(text: string | null | undefined): number | null {
+  if (!text) return null
+  const normalized = text.trim().toLowerCase()
+  const match = normalized.match(DAY_DURATION_PATTERN)
+  if (match?.[1]) {
+    const token = match[1].toLowerCase()
+    const parsed = /^\d+$/.test(token) ? Number(token) : DAY_NUMBER_WORDS[token]
+    return Number.isFinite(parsed) ? Math.min(14, Math.max(1, parsed)) : null
+  }
+  if (/\bweekend\b/.test(normalized)) return 2
+  return null
+}
 
 function cleanDestinationCandidate(candidate: string) {
   return candidate
     .replace(/[“”"']/g, '')
     .replace(/\s+/g, ' ')
     .replace(/^(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?/i, '')
+    .replace(new RegExp(String.raw`^(?:${DAY_DURATION_SOURCE})\s+(?:in|to|for)\s+`, 'i'), '')
+    .replace(new RegExp(String.raw`^(?:${DAY_DURATION_SOURCE})\s+`, 'i'), '')
+    .replace(/^(?:in|to|for)\s+/i, '')
     .replace(/\s+\band\s+[A-Z][A-Za-z\s'’-]{1,60}$/g, '')
     .replace(DESTINATION_TRAILING_THEME_PATTERN, '')
     .replace(/\s+(?:trip|itinerary|city break|escape|weekend|getaway|with friends|for friends)$/i, '')
@@ -22,7 +57,7 @@ function looksLikeDateOrDuration(candidate: string) {
   return (
     /\b(?:january|february|march|april|may|june|july|august|september|october|november|december)\b/.test(normalized) ||
     /\b(?:spring|summer|fall|autumn|winter|weekend|weekday|tonight|tomorrow|next\s+week|next\s+month|next\s+year)\b/.test(normalized) ||
-    /^\d+\s*[- ]?\s*(?:day|days|night|nights|week|weeks)$/.test(normalized)
+    new RegExp(String.raw`^(?:${DAY_DURATION_SOURCE}|(?:\d+|${Object.keys(DAY_NUMBER_WORDS).join('|')})\s*[- ]?\s*(?:night|nights|week|weeks))$`, 'i').test(normalized)
   )
 }
 
@@ -64,10 +99,13 @@ export function extractDestinationFromTitle(title: string | null | undefined): s
 export function extractDestinationFromPrompt(text: string | null | undefined): string {
   if (!text) return ''
   const cleaned = text.trim()
+  const commandSource = String.raw`\b(?:plan|build|create|make|generate)\s+(?:(?:me|us)\s+)?(?:(?:an|a|the)\s+)?`
   const patterns = [
-    /\b(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?(?:\d+\s*[- ]?\s*days?\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:\d+\s*[- ]?\s*days?|for|with|around|over|as|trip|itinerary|weekend|city break)\b|[,.!?]|$)/i,
-    /\b(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:\d+\s*[- ]?\s*days?|weekend)\b/i,
-    /\b\d+\s*[- ]?\s*days?\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
+    new RegExp(String.raw`${commandSource}(?:${DAY_DURATION_SOURCE})\s+(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|around|over|as|trip|itinerary|city break)\b|[,.!?]|$)`, 'i'),
+    new RegExp(String.raw`${commandSource}(?:${DAY_DURATION_SOURCE})\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:trip|itinerary|city break)\b`, 'i'),
+    new RegExp(String.raw`${commandSource}(?:(?:${DAY_DURATION_SOURCE})\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:(?:${DAY_DURATION_SOURCE})|for|with|around|over|as|trip|itinerary|weekend|city break)\b|[,.!?]|$)`, 'i'),
+    new RegExp(String.raw`${commandSource}([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:${DAY_DURATION_SOURCE}|weekend)\b`, 'i'),
+    new RegExp(String.raw`\b(?:${DAY_DURATION_SOURCE})\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b`, 'i'),
     /\b(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|from|on|around|near|and|that|who|leaving|including)\b|[,.!?]|$)/i,
     /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
     /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+itinerary\b/i,
@@ -81,7 +119,7 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
     if (
       normalized &&
       !looksLikeDateOrDuration(normalized) &&
-      !/^(?:realistic|balanced|beautiful|budget|friendly|group|city|short|weekend|friends?|couples?|family)$/i.test(normalized)
+      !/^(?:realistic|balanced|beautiful|budget|friendly|group|city|day city|short|weekend|friends?|couples?|family)$/i.test(normalized)
     ) {
       return normalized
     }

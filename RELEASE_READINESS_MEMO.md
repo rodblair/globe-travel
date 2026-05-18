@@ -209,6 +209,7 @@ The paid path should be credible:
 
 Recently completed:
 
+- Planner word-duration handoff was repaired. Browser reproduced `Plan five days in Athens...` creating `4 Days in five days in Athens`; the shared planner parser now extracts word-based day counts and clean destinations, Trip Studio opens as `5 Days in Athens` with five day tabs, and `npm run qa:planner-handoff` now verifies this Browser-style path. Evidence: `qa/planner-word-duration-handoff-2026-05-18.md`.
 - Account profile identity validation was hardened. `PATCH /api/profile` now rejects invalid and overlong public identity updates, the account form shows field limits and clear username rules, profile fields sync after async load/refresh, and Browser verified invalid-error recovery plus a valid guest profile save without overflow. Evidence: `qa/account-profile-identity-validation-2026-05-18.md`; automated gate: `npm run qa:saved-account` passed `13/13`.
 - Itinerary map stop verification was repaired.
 - Six saved itineraries were retested locally.

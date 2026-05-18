@@ -5,6 +5,21 @@
     "expected": { "destination": "Athens", "country": "Greece", "days": 5, "themes": ["culture", "rest"], "requiresRestDay": true }
   },
   {
+    "id": "athens-five-day-word-duration",
+    "prompt": "Plan five days in Athens for friends with food, beaches, and relaxed mornings.",
+    "expected": { "destination": "Athens", "country": "Greece", "days": 5, "themes": ["food", "beach", "relaxed"] }
+  },
+  {
+    "id": "lisbon-two-day-hyphen-word-duration",
+    "prompt": "Build a two-day Lisbon itinerary with viewpoints, seafood, and easy walking.",
+    "expected": { "destination": "Lisbon", "country": "Portugal", "days": 2, "themes": ["viewpoints", "food", "walkable"] }
+  },
+  {
+    "id": "mexico-city-four-day-make-me",
+    "prompt": "Make me a four day Mexico City food trip with museums and one big night out.",
+    "expected": { "destination": "Mexico City", "country": "Mexico", "days": 4, "themes": ["food", "museums", "nightlife"] }
+  },
+  {
     "id": "porto-1-day-food-viewpoints",
     "prompt": "Plan a 1-day Porto food and viewpoints trip for 2 friends, walkable.",
     "expected": { "destination": "Porto", "country": "Portugal", "days": 1, "themes": ["food", "viewpoints", "walkable"] }

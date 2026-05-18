@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { extractDestinationFromPrompt } from '../lib/planner/runtime.ts'
+import { extractDaysFromPrompt, extractDestinationFromPrompt } from '../lib/planner/runtime.ts'
 import { getPlanToolSelection, inferPlanIntent } from '../lib/planner/tools.ts'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -25,11 +25,7 @@ function normalize(value) {
 }
 
 function dayCountFromPrompt(prompt) {
-  const normalized = prompt.toLowerCase()
-  const numericMatch = normalized.match(/\b(\d+)\s*[- ]?\s*(?:day|days)\b/)
-  if (numericMatch) return Number(numericMatch[1])
-  if (normalized.includes('weekend')) return 2
-  return null
+  return extractDaysFromPrompt(prompt)
 }
 
 function validateFixtureShape(fixture) {
