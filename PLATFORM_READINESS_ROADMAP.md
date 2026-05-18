@@ -10,6 +10,8 @@ Make Globe.travel commercially launch-ready at scale: every important product jo
 
 This document is the monthly operating plan. `RELEASE_READINESS_MEMO.md` remains the current release evidence log.
 
+For the working next-several-months execution cadence, weekly QA gates, Browser evidence standard, and launch-candidate definition, see `PLATFORM_QA_COMPLETION_PLAN.md`.
+
 ## North Star
 
 A first-time group-trip planner can describe a trip, receive a useful mapped itinerary, refine it, save it, share it with friends, collect feedback, and understand the paid value without confusion.
