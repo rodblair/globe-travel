@@ -1,0 +1,1489 @@
+[
+  {
+    "id": "lisbon-3-day-friends-nightlife",
+    "shareSlug": "au3o22sfu5",
+    "tripId": "18417b7b-d3c4-49fd-81d2-cab1415b8b3c",
+    "tripTitle": "3 Days in Lisbon",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Baixa, Alfama & Fado",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Praça do Comércio",
+            "type": "activity",
+            "placeName": "Praça do Comércio",
+            "latitude": 38.70775,
+            "longitude": -9.13642
+          },
+          {
+            "title": "da Prata 52",
+            "type": "meal",
+            "placeName": "da Prata 52",
+            "latitude": 38.71028,
+            "longitude": -9.1363
+          },
+          {
+            "title": "Miradouro de Santa Luzia",
+            "type": "activity",
+            "placeName": "Miradouro de Santa Luzia",
+            "latitude": 38.71183,
+            "longitude": -9.13075
+          },
+          {
+            "title": "Castelo de São Jorge",
+            "type": "activity",
+            "placeName": "Castelo de São Jorge",
+            "latitude": 38.71391,
+            "longitude": -9.13348
+          },
+          {
+            "title": "Clube de Fado",
+            "type": "meal",
+            "placeName": "Clube de Fado",
+            "latitude": 38.71036,
+            "longitude": -9.13111
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2653
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Belém Riverside Day",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Jerónimos Monastery",
+            "type": "activity",
+            "placeName": "Jerónimos Monastery",
+            "latitude": 38.6979,
+            "longitude": -9.20673
+          },
+          {
+            "title": "Pastéis de Belém",
+            "type": "meal",
+            "placeName": "Pastéis de Belém",
+            "latitude": 38.69748,
+            "longitude": -9.20322
+          },
+          {
+            "title": "Belém Tower",
+            "type": "activity",
+            "placeName": "Belém Tower",
+            "latitude": 38.69158,
+            "longitude": -9.21604
+          },
+          {
+            "title": "MAAT",
+            "type": "activity",
+            "placeName": "MAAT",
+            "latitude": 38.69578,
+            "longitude": -9.19468
+          },
+          {
+            "title": "Darwin's Café",
+            "type": "meal",
+            "placeName": "Darwin's Café",
+            "latitude": 38.6945,
+            "longitude": -9.2219
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7196
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Chiado, Viewpoints & Night Out",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Dear Breakfast Chiado",
+            "type": "meal",
+            "placeName": "Dear Breakfast Chiado",
+            "latitude": 38.71082,
+            "longitude": -9.14363
+          },
+          {
+            "title": "Santa Justa Lift",
+            "type": "activity",
+            "placeName": "Santa Justa Lift",
+            "latitude": 38.71214,
+            "longitude": -9.13939
+          },
+          {
+            "title": "Miradouro de São Pedro de Alcântara",
+            "type": "activity",
+            "placeName": "Miradouro de São Pedro de Alcântara",
+            "latitude": 38.7151,
+            "longitude": -9.14442
+          },
+          {
+            "title": "Taberna da Rua das Flores",
+            "type": "meal",
+            "placeName": "Taberna da Rua das Flores",
+            "latitude": 38.71026,
+            "longitude": -9.14352
+          },
+          {
+            "title": "Pavilhão Chinês",
+            "type": "meal",
+            "placeName": "Pavilhão Chinês",
+            "latitude": 38.71528,
+            "longitude": -9.14829
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2937
+        ]
+      }
+    ]
+  },
+  {
+    "id": "porto-1-day-food-viewpoints",
+    "shareSlug": "cxfvdh3ma7",
+    "tripId": "cd5a08c7-0f77-4daa-826e-b6c2ba4acac3",
+    "tripTitle": "1 Day in Porto",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Porto viewpoints & food walk",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Majestic Café",
+            "type": "meal",
+            "placeName": "Majestic Café",
+            "latitude": 41.14713,
+            "longitude": -8.6067
+          },
+          {
+            "title": "São Bento Station",
+            "type": "activity",
+            "placeName": "São Bento Station",
+            "latitude": 41.14566,
+            "longitude": -8.6109
+          },
+          {
+            "title": "Tapabento S.Bento",
+            "type": "meal",
+            "placeName": "Tapabento S.Bento",
+            "latitude": 41.14552,
+            "longitude": -8.61062
+          },
+          {
+            "title": "Miradouro da Vitória",
+            "type": "activity",
+            "placeName": "Miradouro da Vitória",
+            "latitude": 41.14278,
+            "longitude": -8.61563
+          },
+          {
+            "title": "Adega São Nicolau",
+            "type": "meal",
+            "placeName": "Adega São Nicolau",
+            "latitude": 41.14058,
+            "longitude": -8.61653
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1740
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mexico-city-4-day-food-museums-nightlife",
+    "shareSlug": "x1kk0s29wr",
+    "tripId": "5822ee49-7f1a-43fa-974a-6059fad98504",
+    "tripTitle": "4 Days in Mexico City",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Centro Histórico Highlights",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "El Cardenal",
+            "type": "meal",
+            "placeName": "El Cardenal",
+            "latitude": 19.4337,
+            "longitude": -99.1391
+          },
+          {
+            "title": "Palacio de Bellas Artes",
+            "type": "activity",
+            "placeName": "Palacio de Bellas Artes",
+            "latitude": 19.4352,
+            "longitude": -99.1412
+          },
+          {
+            "title": "Museo del Templo Mayor",
+            "type": "activity",
+            "placeName": "Museo del Templo Mayor",
+            "latitude": 19.4347,
+            "longitude": -99.1312
+          },
+          {
+            "title": "Azul Histórico",
+            "type": "meal",
+            "placeName": "Azul Histórico",
+            "latitude": 19.4338,
+            "longitude": -99.1377
+          },
+          {
+            "title": "Terraza Catedral",
+            "type": "meal",
+            "placeName": "Terraza Catedral",
+            "latitude": 19.4341,
+            "longitude": -99.1335
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3123
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Chapultepec Museums & Roma Dinner",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Museo Nacional de Antropología",
+            "type": "activity",
+            "placeName": "Museo Nacional de Antropología",
+            "latitude": 19.426,
+            "longitude": -99.1863
+          },
+          {
+            "title": "Castillo de Chapultepec",
+            "type": "activity",
+            "placeName": "Castillo de Chapultepec",
+            "latitude": 19.4204,
+            "longitude": -99.1819
+          },
+          {
+            "title": "Contramar",
+            "type": "meal",
+            "placeName": "Contramar",
+            "latitude": 19.4191,
+            "longitude": -99.1694
+          },
+          {
+            "title": "Licorería Limantour",
+            "type": "meal",
+            "placeName": "Licorería Limantour",
+            "latitude": 19.414,
+            "longitude": -99.1713
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4827
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Coyoacán Art & Local Flavors",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Museo Frida Kahlo",
+            "type": "activity",
+            "placeName": "Museo Frida Kahlo",
+            "latitude": 19.3552,
+            "longitude": -99.1626
+          },
+          {
+            "title": "Museo Nacional de Culturas Populares",
+            "type": "activity",
+            "placeName": "Museo Nacional de Culturas Populares",
+            "latitude": 19.3481,
+            "longitude": -99.1623
+          },
+          {
+            "title": "Tostadas Coyoacán",
+            "type": "meal",
+            "placeName": "Tostadas Coyoacán",
+            "latitude": 19.34921,
+            "longitude": -99.16111
+          },
+          {
+            "title": "Museo Anahuacalli",
+            "type": "activity",
+            "placeName": "Museo Anahuacalli",
+            "latitude": 19.3231,
+            "longitude": -99.1436
+          },
+          {
+            "title": "Los Danzantes",
+            "type": "meal",
+            "placeName": "Los Danzantes",
+            "latitude": 19.3495,
+            "longitude": -99.1625
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9204
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Roma-Condesa Easy Final Day",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Lardo",
+            "type": "meal",
+            "placeName": "Lardo",
+            "latitude": 19.4128,
+            "longitude": -99.1727
+          },
+          {
+            "title": "Museo Tamayo",
+            "type": "activity",
+            "placeName": "Museo Tamayo Arte Contemporáneo",
+            "latitude": 19.4257,
+            "longitude": -99.1817
+          },
+          {
+            "title": "Parque México",
+            "type": "activity",
+            "placeName": "Parque México",
+            "latitude": 19.4113,
+            "longitude": -99.1695
+          },
+          {
+            "title": "Rosetta",
+            "type": "meal",
+            "placeName": "Rosetta",
+            "latitude": 19.4199,
+            "longitude": -99.1605
+          },
+          {
+            "title": "Café de Tacuba",
+            "type": "meal",
+            "placeName": "Café de Tacuba",
+            "latitude": 19.4357,
+            "longitude": -99.1398
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Mexico"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9948
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tokyo-3-day-calm-evening",
+    "shareSlug": "hltldahncj",
+    "tripId": "07d1ef9a-1791-4d20-92a0-432a4ce5707c",
+    "tripTitle": "3 Days in Tokyo",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Asakusa & Ueno",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Senso-ji Temple",
+            "type": "activity",
+            "placeName": "Senso-ji Temple",
+            "latitude": 35.7148,
+            "longitude": 139.7967
+          },
+          {
+            "title": "Daikokuya Tempura",
+            "type": "meal",
+            "placeName": "Daikokuya Tempura",
+            "latitude": 35.71195,
+            "longitude": 139.79469
+          },
+          {
+            "title": "Tokyo National Museum",
+            "type": "activity",
+            "placeName": "Tokyo National Museum",
+            "latitude": 35.7188,
+            "longitude": 139.7765
+          },
+          {
+            "title": "Inshotei",
+            "type": "meal",
+            "placeName": "Inshotei",
+            "latitude": 35.7169,
+            "longitude": 139.7721
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3546
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Harajuku & Shibuya",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Meiji Jingu",
+            "type": "activity",
+            "placeName": "Meiji Jingu",
+            "latitude": 35.6764,
+            "longitude": 139.6993
+          },
+          {
+            "title": "Afuri Harajuku",
+            "type": "meal",
+            "placeName": "Afuri Harajuku",
+            "latitude": 35.669,
+            "longitude": 139.7055
+          },
+          {
+            "title": "Shibuya Scramble Crossing",
+            "type": "activity",
+            "placeName": "Shibuya Scramble Crossing",
+            "latitude": 35.6595,
+            "longitude": 139.7005
+          },
+          {
+            "title": "Shibuya Sky",
+            "type": "activity",
+            "placeName": "Shibuya Sky",
+            "latitude": 35.6584,
+            "longitude": 139.702
+          },
+          {
+            "title": "Uobei Shibuya Dogenzaka",
+            "type": "meal",
+            "placeName": "Uobei Shibuya Dogenzaka",
+            "latitude": 35.6581,
+            "longitude": 139.6973
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3902
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Tsukiji, teamLab & Calm Ginza Evening",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Tsukiji Sushizanmai Honten",
+            "type": "meal",
+            "placeName": "Tsukiji Sushizanmai Honten",
+            "latitude": 35.6657,
+            "longitude": 139.7707
+          },
+          {
+            "title": "teamLab Planets TOKYO",
+            "type": "activity",
+            "placeName": "teamLab Planets TOKYO DMM",
+            "latitude": 35.6491,
+            "longitude": 139.7904
+          },
+          {
+            "title": "Hamarikyu Gardens",
+            "type": "activity",
+            "placeName": "Hamarikyu Gardens",
+            "latitude": 35.6595,
+            "longitude": 139.7634
+          },
+          {
+            "title": "Ginza Kagari Main Branch",
+            "type": "meal",
+            "placeName": "Ginza Kagari Main Branch",
+            "latitude": 35.6712,
+            "longitude": 139.7638
+          },
+          {
+            "title": "Cafe de L'Ambre",
+            "type": "meal",
+            "placeName": "Cafe de L'Ambre",
+            "latitude": 35.67082,
+            "longitude": 139.76554
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          14711
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rome-weekend-classics-drinks",
+    "shareSlug": "xwkl8atkfk",
+    "tripId": "4d24a088-ebd0-4fe0-97f9-6438da79d5c4",
+    "tripTitle": "2 Days in Rome",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Ancient Rome & Trastevere",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Colosseum",
+            "type": "activity",
+            "placeName": "Colosseum",
+            "latitude": 41.89021,
+            "longitude": 12.49223
+          },
+          {
+            "title": "Taverna dei Fori Imperiali",
+            "type": "meal",
+            "placeName": "Taverna dei Fori Imperiali",
+            "latitude": 41.89303,
+            "longitude": 12.48923
+          },
+          {
+            "title": "Pantheon",
+            "type": "activity",
+            "placeName": "Pantheon",
+            "latitude": 41.89861,
+            "longitude": 12.47687
+          },
+          {
+            "title": "Da Enzo al 29",
+            "type": "meal",
+            "placeName": "Da Enzo al 29",
+            "latitude": 41.88798,
+            "longitude": 12.46947
+          },
+          {
+            "title": "Freni e Frizioni",
+            "type": "meal",
+            "placeName": "Freni e Frizioni",
+            "latitude": 41.88908,
+            "longitude": 12.47014
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Italy"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4477
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Vatican, River Walk & Centro Storico",
+        "itemCount": 6,
+        "mappedItemCount": 6,
+        "mappedStops": [
+          {
+            "title": "Vatican Museums",
+            "type": "activity",
+            "placeName": "Vatican Museums",
+            "latitude": 41.90649,
+            "longitude": 12.45362
+          },
+          {
+            "title": "Pizzarium Bonci",
+            "type": "meal",
+            "placeName": "Pizzarium Bonci",
+            "latitude": 41.90708,
+            "longitude": 12.44645
+          },
+          {
+            "title": "St. Peter's Square",
+            "type": "activity",
+            "placeName": "St. Peter's Square",
+            "latitude": 41.90217,
+            "longitude": 12.45394
+          },
+          {
+            "title": "Castel Sant'Angelo",
+            "type": "activity",
+            "placeName": "Castel Sant'Angelo",
+            "latitude": 41.90317,
+            "longitude": 12.46631
+          },
+          {
+            "title": "Il Sorpasso",
+            "type": "meal",
+            "placeName": "Il Sorpasso",
+            "latitude": 41.9053,
+            "longitude": 12.4641
+          },
+          {
+            "title": "Freni e Frizioni",
+            "type": "meal",
+            "placeName": "Freni e Frizioni",
+            "latitude": 41.88908,
+            "longitude": 12.47014
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 6,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Italy"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7202
+        ]
+      }
+    ]
+  },
+  {
+    "id": "barcelona-3-day-budget-beaches",
+    "shareSlug": "spayy7x5mq",
+    "tripId": "6fa9f93d-01ff-4ead-9252-dbf8e6c55e55",
+    "tripTitle": "3 Days in Barcelona",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Gothic Quarter & El Born",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Barcelona Cathedral",
+            "type": "activity",
+            "placeName": "Barcelona Cathedral",
+            "latitude": 41.38396,
+            "longitude": 2.1762
+          },
+          {
+            "title": "Mercat de Santa Caterina",
+            "type": "meal",
+            "placeName": "Mercat de Santa Caterina",
+            "latitude": 41.3865,
+            "longitude": 2.1784
+          },
+          {
+            "title": "Picasso Museum",
+            "type": "activity",
+            "placeName": "Picasso Museum",
+            "latitude": 41.3853,
+            "longitude": 2.1809
+          },
+          {
+            "title": "El Xampanyet",
+            "type": "meal",
+            "placeName": "El Xampanyet",
+            "latitude": 41.3849,
+            "longitude": 2.181
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1021
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Gaudí Highlights & Views",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Sagrada Família",
+            "type": "activity",
+            "placeName": "Sagrada Família",
+            "latitude": 41.40363,
+            "longitude": 2.17436
+          },
+          {
+            "title": "Baluard Barceloneta",
+            "type": "meal",
+            "placeName": "Baluard Barceloneta",
+            "latitude": 41.3791,
+            "longitude": 2.1888
+          },
+          {
+            "title": "Park Güell",
+            "type": "activity",
+            "placeName": "Park Güell",
+            "latitude": 41.41449,
+            "longitude": 2.15269
+          },
+          {
+            "title": "Bunkers del Carmel",
+            "type": "activity",
+            "placeName": "Bunkers del Carmel",
+            "latitude": 41.41952,
+            "longitude": 2.16187
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          11367
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Beach Day & Montjuïc Tapas",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Barceloneta Beach",
+            "type": "activity",
+            "placeName": "Barceloneta Beach",
+            "latitude": 41.37839,
+            "longitude": 2.1925
+          },
+          {
+            "title": "Can Maño",
+            "type": "meal",
+            "placeName": "Can Maño",
+            "latitude": 41.379,
+            "longitude": 2.1882
+          },
+          {
+            "title": "Montjuïc Castle",
+            "type": "activity",
+            "placeName": "Montjuïc Castle",
+            "latitude": 41.36343,
+            "longitude": 2.16649
+          },
+          {
+            "title": "Quimet & Quimet",
+            "type": "meal",
+            "placeName": "Quimet & Quimet",
+            "latitude": 41.3749,
+            "longitude": 2.1644
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6823
+        ]
+      }
+    ]
+  },
+  {
+    "id": "london-3-day-rain-safe",
+    "shareSlug": "5unepytujd",
+    "tripId": "d6a9e0a0-10c2-47f1-ba4e-0a3ed6ece82e",
+    "tripTitle": "3 Days in London",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Westminster & South Bank",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Westminster Abbey",
+            "type": "activity",
+            "placeName": "Westminster Abbey",
+            "latitude": 51.49929,
+            "longitude": -0.12731
+          },
+          {
+            "title": "The Wolseley",
+            "type": "meal",
+            "placeName": "The Wolseley",
+            "latitude": 51.50745,
+            "longitude": -0.14192
+          },
+          {
+            "title": "Tate Modern",
+            "type": "activity",
+            "placeName": "Tate Modern",
+            "latitude": 51.5076,
+            "longitude": -0.0994
+          },
+          {
+            "title": "Anchor Bankside",
+            "type": "meal",
+            "placeName": "Anchor Bankside",
+            "latitude": 51.50751,
+            "longitude": -0.09379
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "United Kingdom"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7075
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Bloomsbury & Covent Garden",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "The British Museum",
+            "type": "activity",
+            "placeName": "The British Museum",
+            "latitude": 51.51941,
+            "longitude": -0.12696
+          },
+          {
+            "title": "Dishoom Covent Garden",
+            "type": "meal",
+            "placeName": "Dishoom Covent Garden",
+            "latitude": 51.51238,
+            "longitude": -0.12688
+          },
+          {
+            "title": "London Transport Museum",
+            "type": "activity",
+            "placeName": "London Transport Museum",
+            "latitude": 51.51191,
+            "longitude": -0.12155
+          },
+          {
+            "title": "Frenchie Covent Garden",
+            "type": "meal",
+            "placeName": "Frenchie Covent Garden",
+            "latitude": 51.5121,
+            "longitude": -0.12542
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "United Kingdom"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2189
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Tower Hill & the City",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Tower of London",
+            "type": "activity",
+            "placeName": "Tower of London",
+            "latitude": 51.50811,
+            "longitude": -0.07595
+          },
+          {
+            "title": "Eataly London",
+            "type": "meal",
+            "placeName": "Eataly London",
+            "latitude": 51.5191,
+            "longitude": -0.08005
+          },
+          {
+            "title": "Sky Garden",
+            "type": "activity",
+            "placeName": "Sky Garden",
+            "latitude": 51.5113,
+            "longitude": -0.0836
+          },
+          {
+            "title": "BRAT",
+            "type": "meal",
+            "placeName": "BRAT",
+            "latitude": 51.52466,
+            "longitude": -0.07641
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "United Kingdom"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5047
+        ]
+      }
+    ]
+  },
+  {
+    "id": "paris-4-day-couples-premium",
+    "shareSlug": "zw4afzpl3j",
+    "tripId": "7b507719-f795-44ac-bebf-214be2fcb1e3",
+    "tripTitle": "4 Days in Paris",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Le Marais Warm-Up",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Musée Carnavalet",
+            "type": "activity",
+            "placeName": "Musée Carnavalet",
+            "latitude": 48.8575,
+            "longitude": 2.3628
+          },
+          {
+            "title": "Marché des Enfants Rouges",
+            "type": "meal",
+            "placeName": "Marché des Enfants Rouges",
+            "latitude": 48.8628,
+            "longitude": 2.361
+          },
+          {
+            "title": "Musée Picasso",
+            "type": "activity",
+            "placeName": "Musée Picasso",
+            "latitude": 48.8599,
+            "longitude": 2.3624
+          },
+          {
+            "title": "Le Mary Celeste",
+            "type": "meal",
+            "placeName": "Le Mary Celeste",
+            "latitude": 48.8617,
+            "longitude": 2.363
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1548
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Left Bank Classics, Lightly Done",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Café de Flore",
+            "type": "meal",
+            "placeName": "Café de Flore",
+            "latitude": 48.85413,
+            "longitude": 2.3322
+          },
+          {
+            "title": "Jardin du Luxembourg",
+            "type": "activity",
+            "placeName": "Jardin du Luxembourg",
+            "latitude": 48.84622,
+            "longitude": 2.33716
+          },
+          {
+            "title": "Semilla",
+            "type": "meal",
+            "placeName": "Semilla",
+            "latitude": 48.8537,
+            "longitude": 2.3373
+          },
+          {
+            "title": "Musée de la Vie Romantique",
+            "type": "activity",
+            "placeName": "Musée de la Vie Romantique",
+            "latitude": 48.8817,
+            "longitude": 2.333
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6036
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Montmartre Without the Rush",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Hardware Société",
+            "type": "meal",
+            "placeName": "Hardware Société",
+            "latitude": 48.8865,
+            "longitude": 2.3424
+          },
+          {
+            "title": "Sacré-Cœur Basilica",
+            "type": "activity",
+            "placeName": "Sacré-Cœur Basilica",
+            "latitude": 48.8867,
+            "longitude": 2.3431
+          },
+          {
+            "title": "Musée de Montmartre",
+            "type": "activity",
+            "placeName": "Musée de Montmartre",
+            "latitude": 48.8874,
+            "longitude": 2.3407
+          },
+          {
+            "title": "Bouillon Pigalle",
+            "type": "meal",
+            "placeName": "Bouillon Pigalle",
+            "latitude": 48.8825,
+            "longitude": 2.3379
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1503
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Canal to Premium Finale",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Du Pain et des Idées",
+            "type": "meal",
+            "placeName": "Du Pain et des Idées",
+            "latitude": 48.8713,
+            "longitude": 2.3625
+          },
+          {
+            "title": "Atelier des Lumières",
+            "type": "activity",
+            "placeName": "Atelier des Lumières",
+            "latitude": 48.8612,
+            "longitude": 2.38
+          },
+          {
+            "title": "Père Lachaise Cemetery",
+            "type": "activity",
+            "placeName": "Père Lachaise Cemetery",
+            "latitude": 48.8614,
+            "longitude": 2.3933
+          },
+          {
+            "title": "Le Jules Verne",
+            "type": "meal",
+            "placeName": "Le Jules Verne",
+            "latitude": 48.8583,
+            "longitude": 2.2945
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "France"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          12271
+        ]
+      }
+    ]
+  },
+  {
+    "id": "copenhagen-2-day-design-food",
+    "shareSlug": "qwtetfk1u4",
+    "tripId": "484afa95-ebd3-48be-9a63-517ed7084338",
+    "tripTitle": "2 Days in Copenhagen",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Design Classics & Harbor Wandering",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Atelier September",
+            "type": "meal",
+            "placeName": "Atelier September",
+            "latitude": 55.6816,
+            "longitude": 12.5821
+          },
+          {
+            "title": "Designmuseum Danmark",
+            "type": "activity",
+            "placeName": "Designmuseum Danmark",
+            "latitude": 55.6846,
+            "longitude": 12.5932
+          },
+          {
+            "title": "Apollo Bar",
+            "type": "meal",
+            "placeName": "Apollo Bar",
+            "latitude": 55.681,
+            "longitude": 12.5898
+          },
+          {
+            "title": "HAY House",
+            "type": "activity",
+            "placeName": "HAY House",
+            "latitude": 55.6794,
+            "longitude": 12.5799
+          },
+          {
+            "title": "Broens Street Food",
+            "type": "meal",
+            "placeName": "Broens Street Food",
+            "latitude": 55.6776,
+            "longitude": 12.5934
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Denmark"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4050
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Bakery Morning & Creative City Ride",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Andersen & Maillard",
+            "type": "meal",
+            "placeName": "Andersen & Maillard",
+            "latitude": 55.6897,
+            "longitude": 12.5533
+          },
+          {
+            "title": "FRAMA Studio Store",
+            "type": "activity",
+            "placeName": "FRAMA Studio Store",
+            "latitude": 55.6859,
+            "longitude": 12.5567
+          },
+          {
+            "title": "Juno the Bakery",
+            "type": "meal",
+            "placeName": "Juno the Bakery",
+            "latitude": 55.7001,
+            "longitude": 12.5778
+          },
+          {
+            "title": "DAC - Danish Architecture Center",
+            "type": "activity",
+            "placeName": "DAC - Danish Architecture Center",
+            "latitude": 55.6726,
+            "longitude": 12.5797
+          },
+          {
+            "title": "Baka d'Busk",
+            "type": "meal",
+            "placeName": "Baka d'Busk",
+            "latitude": 55.687,
+            "longitude": 12.5432
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Denmark"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          10589
+        ]
+      }
+    ]
+  },
+  {
+    "id": "berlin-3-day-nightlife-culture",
+    "shareSlug": "bin4y8wlw6",
+    "tripId": "4321edec-9185-4fd8-a7f2-42dbac6d2d9d",
+    "tripTitle": "3 Days in Berlin",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Museum Island & Kreuzberg Night",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Pergamonmuseum - Das Panorama",
+            "type": "activity",
+            "placeName": "Pergamonmuseum - Das Panorama",
+            "latitude": 52.5209,
+            "longitude": 13.3974
+          },
+          {
+            "title": "Markthalle Neun",
+            "type": "meal",
+            "placeName": "Markthalle Neun",
+            "latitude": 52.5024,
+            "longitude": 13.4317
+          },
+          {
+            "title": "Jewish Museum Berlin",
+            "type": "activity",
+            "placeName": "Jewish Museum Berlin",
+            "latitude": 52.502,
+            "longitude": 13.395
+          },
+          {
+            "title": "Rüyam Gemüse Kebab",
+            "type": "meal",
+            "placeName": "Rüyam Gemüse Kebab",
+            "latitude": 52.485,
+            "longitude": 13.3951
+          },
+          {
+            "title": "SO36",
+            "type": "activity",
+            "placeName": "SO36",
+            "latitude": 52.4994,
+            "longitude": 13.4228
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Germany"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          12591
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "East Berlin Art & Late Night",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "East Side Gallery",
+            "type": "activity",
+            "placeName": "East Side Gallery",
+            "latitude": 52.505,
+            "longitude": 13.4397
+          },
+          {
+            "title": "Michelberger Restaurant",
+            "type": "meal",
+            "placeName": "Michelberger Restaurant",
+            "latitude": 52.5053,
+            "longitude": 13.4496
+          },
+          {
+            "title": "Berlinische Galerie",
+            "type": "activity",
+            "placeName": "Berlinische Galerie",
+            "latitude": 52.5049,
+            "longitude": 13.3989
+          },
+          {
+            "title": "Burgeramt",
+            "type": "meal",
+            "placeName": "Burgeramt",
+            "latitude": 52.5114,
+            "longitude": 13.4582
+          },
+          {
+            "title": "Sisyphos",
+            "type": "activity",
+            "placeName": "Sisyphos",
+            "latitude": 52.4937,
+            "longitude": 13.4778
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Germany"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          13093
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "West Berlin Photos, Palace & Cocktails",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "C/O Berlin",
+            "type": "activity",
+            "placeName": "C/O Berlin",
+            "latitude": 52.5054,
+            "longitude": 13.3335
+          },
+          {
+            "title": "Dicke Wirtin",
+            "type": "meal",
+            "placeName": "Dicke Wirtin",
+            "latitude": 52.506,
+            "longitude": 13.3262
+          },
+          {
+            "title": "Schloss Charlottenburg",
+            "type": "activity",
+            "placeName": "Schloss Charlottenburg",
+            "latitude": 52.5206,
+            "longitude": 13.2957
+          },
+          {
+            "title": "Barra",
+            "type": "meal",
+            "placeName": "Barra",
+            "latitude": 52.4936,
+            "longitude": 13.4211
+          },
+          {
+            "title": "Green Door Bar",
+            "type": "activity",
+            "placeName": "Green Door Bar",
+            "latitude": 52.4964,
+            "longitude": 13.3546
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Germany"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          19143
+        ]
+      }
+    ]
+  }
+]

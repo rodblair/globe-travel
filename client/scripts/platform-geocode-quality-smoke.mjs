@@ -66,12 +66,27 @@ const destinationCases = [
   { query: 'Mexico City, Mexico', countryCode: 'MX' },
   { query: 'Tokyo', countryCode: 'JP' },
   { query: 'Tokyo, Japan', countryCode: 'JP' },
+  { query: 'Rome', countryCode: 'IT' },
+  { query: 'Rome, Italy', countryCode: 'IT' },
+  { query: 'Barcelona', countryCode: 'ES' },
+  { query: 'Barcelona, Spain', countryCode: 'ES' },
+  { query: 'London', countryCode: 'GB' },
+  { query: 'London, United Kingdom', countryCode: 'GB' },
+  { query: 'Paris', countryCode: 'FR' },
+  { query: 'Paris, France', countryCode: 'FR' },
+  { query: 'Copenhagen', countryCode: 'DK' },
+  { query: 'Copenhagen, Denmark', countryCode: 'DK' },
+  { query: 'Berlin', countryCode: 'DE' },
+  { query: 'Berlin, Germany', countryCode: 'DE' },
 ]
 
 const destinationAnchors = {
   Lisbon: { latitude: 38.72225, longitude: -9.13934, countryCode: 'PT' },
   'Mexico City': { latitude: 19.43261, longitude: -99.13321, countryCode: 'MX' },
   Tokyo: { latitude: 35.67642, longitude: 139.65003, countryCode: 'JP' },
+  Barcelona: { latitude: 41.3874, longitude: 2.1686, countryCode: 'ES' },
+  London: { latitude: 51.50722, longitude: -0.1275, countryCode: 'GB' },
+  Paris: { latitude: 48.85661, longitude: 2.35222, countryCode: 'FR' },
 }
 
 const weakStrictCases = [

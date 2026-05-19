@@ -33,7 +33,7 @@ The newest planner-start checkpoint closes a natural-language duration gap: Brow
 
 The newest auth/guest checkpoint preserves work across the auth boundary: protected routes now redirect to login with a safe `next`, login/signup/guest actions preserve the destination, guest start can carry planner prompts through to Trip Studio, and `npm run qa:auth-access` covers the handoff.
 
-The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. The wider Month 2 launch-city follow-up is now started and passing for Lisbon, Porto, Mexico City, and Tokyo through `npm run qa:planner-actuals:launch-cities`, with exported generated actuals cross-checked by the prompt suite.
+The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. Month 2 generated actual coverage now reaches ten cities: Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin. `npm run qa:planner-actuals:launch-cities` and `npm run qa:planner-actuals:next-cities` both pass, and the combined `qa/planner-generated-actuals-month2-cities-2026-05-18.json` artifact cross-checks in the prompt suite with `actualsChecked: 10`.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
@@ -216,7 +216,9 @@ Current progress:
 - Lisbon default generated actuals are passing.
 - Launch-city generated actuals for Lisbon, Porto, Mexico City, and Tokyo are passing through `npm run qa:planner-actuals:launch-cities`.
 - The prompt suite now cross-checks the four launch-city generated actuals with `56/56` passing and no missing coverage.
-- The next expansion target is adding Rome, Barcelona, London, Paris, Copenhagen, and Berlin until the ten-actual exit gate is met.
+- Rome, Barcelona, London, Paris, Copenhagen, and Berlin next-city generated actuals are passing through `npm run qa:planner-actuals:next-cities`.
+- The ten-actual Month 2 exit target is met for generated map-trust coverage through the combined Month 2 actuals artifact.
+- The next expansion target is adding more varied regional coverage and edge cases beyond the first ten cities.
 
 ## Month 3: Trip Studio Completion
 

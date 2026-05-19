@@ -151,6 +151,58 @@ When planning Tokyo, strongly prefer these routeable known-good places for mappe
 Avoid obscure restaurant names when a trusted routeable venue fits the day; Tokyo generated plans should favor map reliability over novelty.`)
   }
 
+  if (/\brome\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_ROME_PLACE_SET:
+When planning Rome, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Ancient center/Trastevere: Colosseum, Pantheon, Piazza Navona, Taverna dei Fori Imperiali, Da Enzo al 29, Freni e Frizioni, Armando al Pantheon.
+- Vatican/Prati: Vatican Museums, Pizzarium Bonci, St. Peter's Square, Castel Sant'Angelo, Il Sorpasso.
+For a Rome weekend, keep days compact around Ancient Rome/Trastevere and Vatican/Piazza Navona; use the exact place name in title and place_query.`)
+  }
+
+  if (/\bbarcelona\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_BARCELONA_PLACE_SET:
+When planning Barcelona, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Gothic/El Born: Barcelona Cathedral, Mercat de Santa Caterina, Picasso Museum, El Xampanyet.
+- Gaudi/viewpoints: Sagrada Família, Park Güell, Bunkers del Carmel.
+- Beach/Montjuic: Barceloneta Beach, Baluard Barceloneta, Can Maño, Montjuïc Castle, Quimet & Quimet.
+Do not use Lisbon venues or generic street matches for Barcelona; favor exact venue names and compact day geography.`)
+  }
+
+  if (/\blondon\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_LONDON_PLACE_SET:
+When planning London, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Westminster/South Bank: Westminster Abbey, The Wolseley, Tate Modern, Anchor Bankside.
+- Bloomsbury/Covent Garden: The British Museum, Dishoom Covent Garden, London Transport Museum, Frenchie Covent Garden.
+- City/Shoreditch: Tower of London, Sky Garden, Eataly London, BRAT.
+Use exact attraction and restaurant names; do not let street or neighborhood names stand in for venues.`)
+  }
+
+  if (/\bparis\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_PARIS_PLACE_SET:
+When planning Paris, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Marais/Canal: Musée Carnavalet, Marché des Enfants Rouges, Musée Picasso, Du Pain et des Idées, Le Mary Celeste.
+- Left Bank/premium: Café de Flore, Jardin du Luxembourg, Musée de la Vie Romantique, Semilla, Le Jules Verne.
+- Montmartre/11th: Hardware Société, Sacré-Cœur Basilica, Musée de Montmartre, Bouillon Pigalle, Atelier des Lumières, Père Lachaise Cemetery, Café Méricourt, Septime La Cave, Clamato.
+Avoid vague street hits; Paris generated plans should use exact venue names and realistic clustered days.`)
+  }
+
+  if (/\bcopenhagen\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_COPENHAGEN_PLACE_SET:
+When planning Copenhagen, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Harbor/design: Designmuseum Danmark, Broens Street Food, DAC - Danish Architecture Center, Apollo Bar, HAY House.
+- Bakeries/shops: Andersen & Maillard, Juno the Bakery, Atelier September, FRAMA Studio Store, Baka d'Busk.
+Use exact title and place_query names for food and design stops; keep biking/walking days compact.`)
+  }
+
+  if (/\bberlin\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_BERLIN_PLACE_SET:
+When planning Berlin, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Museums/Kreuzberg: Pergamonmuseum - Das Panorama, Jewish Museum Berlin, Markthalle Neun, Rüyam Gemüse Kebab, SO36.
+- East/Friedrichshain: East Side Gallery, Michelberger Restaurant, Berlinische Galerie, Burgeramt, Sisyphos.
+- Charlottenburg/Schoneberg: C/O Berlin, Schloss Charlottenburg, Dicke Wirtin, Barra, Green Door Bar.
+Use exact venues and avoid broad district pins such as Mitte unless the user explicitly asks for neighborhood orientation.`)
+  }
+
   return guidance.length ? `\n\n${guidance.join('\n\n')}` : ''
 }
 

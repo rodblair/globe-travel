@@ -16,6 +16,26 @@ const generatedActualPresets = {
     'mexico-city-4-day-food-museums-nightlife',
     'tokyo-3-day-calm-evening',
   ],
+  'next-cities': [
+    'rome-weekend-classics-drinks',
+    'barcelona-3-day-budget-beaches',
+    'london-3-day-rain-safe',
+    'paris-4-day-couples-premium',
+    'copenhagen-2-day-design-food',
+    'berlin-3-day-nightlife-culture',
+  ],
+  'month2-cities': [
+    'lisbon-3-day-friends-nightlife',
+    'porto-1-day-food-viewpoints',
+    'mexico-city-4-day-food-museums-nightlife',
+    'tokyo-3-day-calm-evening',
+    'rome-weekend-classics-drinks',
+    'barcelona-3-day-budget-beaches',
+    'london-3-day-rain-safe',
+    'paris-4-day-couples-premium',
+    'copenhagen-2-day-design-food',
+    'berlin-3-day-nightlife-culture',
+  ],
 }
 const explicitFixtureIds = Boolean(process.env.QA_GENERATED_ACTUAL_IDS)
 const presetName = explicitFixtureIds ? null : (process.env.QA_GENERATED_ACTUAL_PRESET || 'default')
