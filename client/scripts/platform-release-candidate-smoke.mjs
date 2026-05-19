@@ -285,6 +285,27 @@ try {
         QA_GUEST_ID: studioFixture.guestId,
       })
 
+      if (studioFixture.shareSlug) {
+        await runNodeTask(
+          'Trip Studio owner/read-only browser UI smoke on kept fixture',
+          'scripts/platform-trip-studio-owner-ui-smoke.mjs',
+          {
+            QA_TRIP_ID: studioFixture.tripId,
+            QA_GUEST_ID: studioFixture.guestId,
+            QA_SHARE_SLUG: studioFixture.shareSlug,
+            QA_RUN_ID: studioFixture.runId || '',
+          }
+        )
+      } else {
+        const failure = {
+          name: 'Trip Studio owner/read-only browser UI smoke has a public share slug',
+          ok: false,
+          studioFixture,
+        }
+        failures.push(failure)
+        results.push(failure)
+      }
+
       if (includeOwnerFeedback) {
         if (studioFixture.shareSlug) {
           await runNodeTask(
