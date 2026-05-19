@@ -37,6 +37,8 @@ The newest planner/map checkpoint hardens generated itinerary map trust. `npm ru
 
 The newest Trip Studio checkpoint starts Month 3 owner-surface completion. A kept disposable owned Trip Studio fixture passed API owner actions `23/23`, Browser verified the direct/public state was clearly read-only instead of edit-capable, two visual collisions were removed from the owner workspace, `npm run qa:studio-recovery` passed `6/6`, and Trip Studio responsive visual QA passed `5/5` across phone, tablet, laptop, desktop, and wide viewports. Evidence: `qa/trip-studio-month3-owner-visual-qa-2026-05-19.md` and `qa/visual-baseline-2026-05-19-trip-studio-month3-owner/`.
 
+The newest Trip Studio identity checkpoint closes a guest-owner edit-mode risk. Server trip APIs and `/api/chat` now resolve guest identity before Supabase auth while the guest cookie exists, account auth success clears that guest cookie, Browser verified a guest-owned Trip Studio fixture now opens with owner controls instead of `View only`, `npm run qa:auth-access` passed `15/15` with the new regression assertion, and `npm run qa:studio-actions` still passed `23/23`. Evidence: `qa/trip-studio-guest-owner-auth-precedence-2026-05-19.md`.
+
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
 ## Product Quality Bar
@@ -222,6 +224,7 @@ Current progress:
 - The ten-actual Month 2 exit target is met for generated map-trust coverage through the combined Month 2 actuals artifact.
 - The next expansion target is adding more varied regional coverage and edge cases beyond the first ten cities.
 - Month 3 Trip Studio owner visual QA has started with a disposable Athens fixture, visible layout collision fixes, recovery coverage, and a five-viewport owner visual artifact.
+- Guest-owned Trip Studio identity precedence is now aligned between client and server so a guest organizer does not lose edit mode when stale account auth state is present.
 
 ## Month 3: Trip Studio Completion
 

@@ -173,6 +173,9 @@ try {
   const loginSource = await readFile(resolve(root, 'app/(auth)/login/page.tsx'), 'utf8')
   const signupSource = await readFile(resolve(root, 'app/(auth)/signup/page.tsx'), 'utf8')
   const guestStartSource = await readFile(resolve(root, 'app/api/guest/start/route.ts'), 'utf8')
+  const authUtilsSource = await readFile(resolve(root, 'app/api/trips/_utils.ts'), 'utf8')
+  const chatRouteSource = await readFile(resolve(root, 'app/api/chat/route.ts'), 'utf8')
+  const callbackClientSource = await readFile(resolve(root, 'app/(auth)/auth/callback-client/page.tsx'), 'utf8')
   record('auth source preserves protected next destinations', (
     proxySource.includes("url.searchParams.set('next', next)") &&
     proxySource.includes("getSafeAuthNext(`${request.nextUrl.pathname}${request.nextUrl.search}`)") &&
@@ -182,6 +185,20 @@ try {
     signupSource.includes("appendAuthNext('/api/guest/start', authNext)") &&
     guestStartSource.includes('getAuthNextFromSearchParams(url.searchParams)')
   ))
+  record('guest identity wins consistently until account auth succeeds', (
+    authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) > -1 &&
+    authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) <
+      authUtilsSource.indexOf("const { data: { user } } = await supabase.auth.getUser()") &&
+    chatRouteSource.includes('const user = (guestId ? createGuestUser(guestId) : null) || authUser') &&
+    loginSource.includes('clearBrowserGuestSession()') &&
+    signupSource.includes('clearBrowserGuestSession()') &&
+    callbackClientSource.includes('clearBrowserGuestSession()')
+  ), {
+    utilityOrder: {
+      guestCookieIndex: authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`),
+      authUserIndex: authUtilsSource.indexOf("const { data: { user } } = await supabase.auth.getUser()"),
+    },
+  })
 
   browser = await chromium.launch({
     executablePath: chromePath,

@@ -19,15 +19,15 @@ export const TripBudgetSchema = z.enum(['budget', 'mid', 'luxury']).optional()
 
 export async function requireUser() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (user) return { supabase, user }
-
   const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value
   if (guestId) {
     const serviceSupabase = await createServiceClient()
     await ensureGuestAccount(guestId, serviceSupabase)
     return { supabase: serviceSupabase, user: createGuestUser(guestId) }
   }
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) return { supabase, user }
 
   if (isDevAuthBypassEnabled) {
     const serviceSupabase = await createServiceClient()

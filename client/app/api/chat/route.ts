@@ -527,12 +527,12 @@ export async function POST(req: Request) {
     const guestId = getGuestIdFromCookieHeader(req.headers.get('cookie'))
     // Service client bypasses RLS — used for all DB operations so inserts aren't blocked by policy subqueries
     const db = await createServiceClient()
-    if (guestId && !authUser) {
+    if (guestId) {
       await ensureGuestAccount(guestId, db)
     } else if (!authUser && isDevAuthBypassEnabled) {
       await ensureDevAccount(db)
     }
-    const user = authUser || (guestId ? createGuestUser(guestId) : null) || (isDevAuthBypassEnabled ? devUser : null)
+    const user = (guestId ? createGuestUser(guestId) : null) || authUser || (isDevAuthBypassEnabled ? devUser : null)
 
     if (!user) {
       return new Response('Unauthorized', { status: 401 })

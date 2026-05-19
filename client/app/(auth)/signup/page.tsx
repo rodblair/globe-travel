@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { appendAuthNext, getAuthNextFromSearchParams } from '@/lib/auth-next'
+import { clearBrowserGuestSession } from '@/lib/dev-auth'
 import { useCurrentSearch } from '@/lib/use-current-search'
 
 export default function SignupPage() {
@@ -52,6 +53,7 @@ export default function SignupPage() {
       if (error) {
         setError(error.message)
       } else if (data.session) {
+        clearBrowserGuestSession()
         router.push(authNext)
         router.refresh()
       } else if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
@@ -94,6 +96,7 @@ export default function SignupPage() {
   }
 
   const handleGoogleSignup = async () => {
+    clearBrowserGuestSession()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: authRedirectTo },

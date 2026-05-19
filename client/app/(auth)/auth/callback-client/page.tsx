@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { EmailOtpType } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase-browser'
+import { clearBrowserGuestSession } from '@/lib/dev-auth'
 
 function getHashParams() {
   if (typeof window === 'undefined') return new URLSearchParams()
@@ -74,6 +75,7 @@ function CallbackClientContent() {
         }
 
         if (mounted) {
+          clearBrowserGuestSession()
           setMessage(isPasswordRecovery
             ? 'Verified. Taking you to reset your password...'
             : 'Confirmed. Taking you to your planner...'

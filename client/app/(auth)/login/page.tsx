@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { appendAuthNext, getAuthNextFromSearchParams } from '@/lib/auth-next'
+import { clearBrowserGuestSession } from '@/lib/dev-auth'
 import { useCurrentSearch } from '@/lib/use-current-search'
 
 export default function LoginPage() {
@@ -56,6 +57,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
       else {
+        clearBrowserGuestSession()
         router.push(authNext)
         router.refresh()
       }
@@ -64,6 +66,7 @@ export default function LoginPage() {
   }
 
   const handleGoogleLogin = async () => {
+    clearBrowserGuestSession()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: authRedirectTo },

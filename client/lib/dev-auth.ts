@@ -12,6 +12,11 @@ export function getGuestIdFromCookieHeader(cookieHeader: string | null | undefin
   return match ? decodeURIComponent(match.slice(GUEST_SESSION_COOKIE.length + 1)) : null
 }
 
+export function clearBrowserGuestSession() {
+  if (typeof document === 'undefined') return
+  document.cookie = `${GUEST_SESSION_COOKIE}=; path=/; max-age=0`
+}
+
 export function createGuestUser(guestId: string) {
   return {
     id: guestId,

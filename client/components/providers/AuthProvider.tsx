@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import {
-  GUEST_SESSION_COOKIE,
+  clearBrowserGuestSession,
   createGuestProfile,
   createGuestUser,
   devProfile,
@@ -137,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     if (getBrowserGuestId()) {
-      document.cookie = `${GUEST_SESSION_COOKIE}=; path=/; max-age=0`
+      clearBrowserGuestSession()
       setUser(null)
       setProfile(null)
       return
