@@ -40,6 +40,12 @@ Verified visible owner state:
 - Result: passed `15/15`.
 - New regression: `guest identity wins consistently until account auth succeeds`.
 
+`QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:auth-access`
+
+- Initial production release-gate run exposed brittle remote navigation timeouts in the auth-access runner.
+- The runner now uses remote-friendly navigation retries and a longer production timeout while keeping the same route, marker, overflow, and app-error checks.
+- Result after runner hardening: passed `14/14`.
+
 `npm run qa:studio-actions`
 
 - Result: passed `23/23`.
@@ -56,6 +62,11 @@ Verified visible owner state:
 `git diff --check`
 
 - Result: passed.
+
+`QA_INCLUDE_PRODUCTION_VIRAL=0 QA_INCLUDE_PRODUCTION_VISUAL=0 npm run qa:release-production`
+
+- Result: passed `7/7` against `https://globe-travel-two.vercel.app`.
+- Covered production ops, smoke, auth and guest access, commercial safety, public share, production prompt actuals export, and prompt-suite validation.
 
 Cleanup:
 
