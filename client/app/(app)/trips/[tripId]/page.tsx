@@ -650,7 +650,7 @@ function TripStudioPageContent() {
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--brass),transparent_88%),transparent_38%),radial-gradient(circle_at_80%_20%,color-mix(in_oklch,var(--horizon),transparent_88%),transparent_26%),linear-gradient(180deg,var(--paper),var(--paper-recessed))]" />
         <div className="paper-grain absolute inset-0 pointer-events-none" />
         <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--paper-raised),transparent_10%),transparent)]" />
-        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-rule bg-paper-raised/80 px-4 py-3 shadow-[var(--shadow-md)] backdrop-blur-2xl xl:block">
+        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-rule bg-paper-raised/80 px-4 py-3 shadow-[var(--shadow-md)] backdrop-blur-2xl 2xl:block">
           <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Map readiness</p>
           <p className="mt-1 text-sm font-medium text-foreground">{tripDestination || trip?.title || 'Trip Studio'}</p>
           <p className="mt-2 text-xs text-foreground/62">
@@ -1047,13 +1047,6 @@ function TripStudioPageContent() {
         className="relative z-20 order-2 mx-3 mb-3 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:bottom-4 xl:left-1/2 xl:right-auto xl:top-44 xl:order-none xl:mx-0 xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-27rem))] xl:-translate-x-[calc(50%+8rem)]"
       >
         <div className="flex min-h-0 flex-1 flex-col">
-          <div
-            onPointerDown={(event) => itineraryDragControls.start(event)}
-            className="absolute right-4 top-4 z-30 hidden xl:inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] text-foreground/55 cursor-grab active:cursor-grabbing"
-          >
-            <GripHorizontal className="h-3.5 w-3.5" />
-            Move
-          </div>
           <ItineraryArtifact
             tripTitle={trip?.title || 'Trip'}
             days={days}

@@ -35,6 +35,8 @@ The newest auth/guest checkpoint preserves work across the auth boundary: protec
 
 The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. Month 2 generated actual coverage now reaches ten cities: Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin. `npm run qa:planner-actuals:launch-cities` and `npm run qa:planner-actuals:next-cities` both pass, and the combined `qa/planner-generated-actuals-month2-cities-2026-05-18.json` artifact cross-checks in the prompt suite with `actualsChecked: 10`.
 
+The newest Trip Studio checkpoint starts Month 3 owner-surface completion. A kept disposable owned Trip Studio fixture passed API owner actions `23/23`, Browser verified the direct/public state was clearly read-only instead of edit-capable, two visual collisions were removed from the owner workspace, `npm run qa:studio-recovery` passed `6/6`, and Trip Studio responsive visual QA passed `5/5` across phone, tablet, laptop, desktop, and wide viewports. Evidence: `qa/trip-studio-month3-owner-visual-qa-2026-05-19.md` and `qa/visual-baseline-2026-05-19-trip-studio-month3-owner/`.
+
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
 ## Product Quality Bar
@@ -219,6 +221,7 @@ Current progress:
 - Rome, Barcelona, London, Paris, Copenhagen, and Berlin next-city generated actuals are passing through `npm run qa:planner-actuals:next-cities`.
 - The ten-actual Month 2 exit target is met for generated map-trust coverage through the combined Month 2 actuals artifact.
 - The next expansion target is adding more varied regional coverage and edge cases beyond the first ten cities.
+- Month 3 Trip Studio owner visual QA has started with a disposable Athens fixture, visible layout collision fixes, recovery coverage, and a five-viewport owner visual artifact.
 
 ## Month 3: Trip Studio Completion
 
