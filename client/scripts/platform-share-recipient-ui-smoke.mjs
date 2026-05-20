@@ -10,6 +10,7 @@ const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const allowRemoteMutation = process.env.QA_ALLOW_REMOTE_FEEDBACK_MUTATION === '1'
+const keepFeedback = process.env.QA_KEEP_FEEDBACK === '1'
 const runId = process.env.QA_RUN_ID || randomUUID().slice(0, 8)
 const authorName = `QA Friend ${runId}`
 const feedbackComment = `QA browser feedback ${runId}: Day 2 looks strong, but please add one slower cafe break before dinner.`
@@ -93,6 +94,20 @@ async function getSupabase() {
 
 async function cleanupFeedback() {
   if (!insertedFeedbackId) return
+
+  if (keepFeedback) {
+    cleanup = {
+      attempted: false,
+      feedbackId: insertedFeedbackId,
+      deleted: false,
+      error: 'kept for caller',
+    }
+    record('recipient UI feedback kept inserted reaction for caller cleanup', true, {
+      feedbackId: insertedFeedbackId,
+      cleanupCommand: `QA_CLEANUP_FEEDBACK_ID=${insertedFeedbackId} npm run qa:share-feedback`,
+    })
+    return
+  }
 
   try {
     const supabase = await getSupabase()
@@ -269,6 +284,7 @@ const summary = {
   baseUrl,
   shareSlug,
   runId,
+  keepFeedback,
   insertedFeedbackId,
   cleanup,
   checked: results.length,

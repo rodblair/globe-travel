@@ -319,6 +319,17 @@ try {
             },
             { mutatesLocal: true }
           )
+          await runNodeTask(
+            'Trip Studio owner feedback browser UI smoke',
+            'scripts/platform-share-owner-feedback-ui-smoke.mjs',
+            {
+              QA_SHARE_SLUG: studioFixture.shareSlug,
+              QA_TRIP_ID: studioFixture.tripId,
+              QA_GUEST_ID: studioFixture.guestId,
+              QA_RUN_ID: studioFixture.runId || '',
+            },
+            { mutatesLocal: true }
+          )
         } else {
           const failure = {
             name: 'Trip Studio owner feedback readback has a public share slug',

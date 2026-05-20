@@ -28,6 +28,7 @@
     "qa:share-feedback": "node scripts/platform-share-feedback-smoke.mjs",
     "qa:share-fixtures": "node scripts/platform-share-fixtures.mjs",
     "qa:share-fixture-sweep": "node scripts/platform-share-fixture-sweep.mjs",
+    "qa:share-owner-feedback-ui": "node scripts/platform-share-owner-feedback-ui-smoke.mjs",
     "qa:share-recipient-ui": "node scripts/platform-share-recipient-ui-smoke.mjs",
     "qa:share-recovery": "node scripts/platform-public-share-recovery-smoke.mjs",
     "qa:share-viral": "node scripts/platform-share-viral-smoke.mjs",

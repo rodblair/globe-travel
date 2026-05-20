@@ -1,9 +1,9 @@
 # Globe.travel Next Several Months Platform Completion Plan
 
-Date: 2026-05-18
+Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-18 active multi-month plan refreshed
+Updated: 2026-05-20 owner feedback loop coverage added
 
 ## Active Goal
 
@@ -42,6 +42,8 @@ The newest Trip Studio identity checkpoint closes a guest-owner edit-mode risk. 
 The newest Trip Studio automation checkpoint converts the owner/read-only Browser finding into repeatable coverage. `npm run qa:studio-owner-ui` creates or accepts a mapped guest-owned Trip Studio fixture, verifies owner controls, Day 2 itinerary/map context, logged-out direct read-only state, public-share recipient state, no app errors, no horizontal overflow, and fixture cleanup. The local release-candidate gate now includes this check on its kept fixture; the focused 2026-05-19 pass completed `20/20`. Evidence: `qa/trip-studio-owner-readonly-browser-smoke-2026-05-19.md` and `qa/release-candidate-2026-05-19/`.
 
 The newest Month 4 public-share checkpoint turns successful recipient feedback into browser coverage. `npm run qa:share-recipient-ui` submits feedback through the rendered public share page on phone, verifies public API readback, confirms the reaction is visible after desktop reload, and cleans up the inserted feedback. The local release-candidate gate now includes this browser check whenever share feedback mutation is enabled. Evidence: `qa/public-share-recipient-ui-feedback-2026-05-19.md`.
+
+The newest public-share-to-owner checkpoint closes the first full feedback loop through rendered UI. `npm run qa:share-owner-feedback-ui` submits a logged-out friend reaction through the public share page, opens the owner Trip Studio with the guest organizer cookie, verifies the submitted author/comment and owner readiness copy, runs `Refresh plan from feedback`, confirms the workflow reaches `"status": "ready"`, and cleans up disposable data. The focused release-candidate pass `qa/release-candidate-owner-feedback-ui-2026-05-19/` completed `24/24` with recipient feedback UI, owner feedback readback, owner feedback browser UI, Stripe test-mode readiness, and fixture cleanup all passing. Evidence: `qa/public-share-owner-feedback-ui-2026-05-20.md`.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
@@ -424,30 +426,44 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice is a short release-hardening checkpoint before the broader Month 1 and Month 2 work resumes. Close the auth/guest destination-preservation work already in progress, then continue planner, map trust, and visual QA expansion.
+The next execution slice is the Month 4 share-loop expansion now that the owner feedback UI path has a repeatable gate. Broaden the viral loop from one stable Athens public share to multiple real trip shapes, then move the strongest repeated findings into automated QA.
 
-1. Retest the Browser auth/guest handoff path from `/login?next=/chat?q=Plan five days in Athens...` and prove guest, signup, and login actions preserve the planned-trip destination.
-2. Run and keep green:
-   - `npm run qa:auth-access`
+1. Browser-test the full share loop on at least three public trips:
+   - logged-out recipient opens `/t/[shareSlug]`;
+   - recipient reads the first viewport, day tabs, map state, feedback section, copy link/native share, and `Start your own trip`;
+   - recipient submits practical, excited, and caution-style feedback;
+   - owner opens Trip Studio and sees the feedback clearly;
+   - owner runs `Refresh plan from feedback` and gets a clear ready or recovery state.
+2. Expand feedback-state coverage:
+   - empty state;
+   - one reaction;
+   - many reactions;
+   - long comment near the limit;
+   - invalid optional email;
+   - duplicate author names;
+   - forced network failure and retry.
+3. Improve the public share UI if Browser exposes friction:
+   - first viewport clarity;
+   - feedback form density and helper copy;
+   - recipient CTA prominence;
+   - mobile map/readability balance;
+   - owner feedback readback hierarchy.
+4. Promote repeatable findings into gates:
+   - extend `npm run qa:share-recipient-ui`;
+   - extend `npm run qa:share-owner-feedback-ui`;
+   - add multi-slug share-loop fixtures when stable public slugs are available;
+   - add social-card image checks after the metadata path is hardened.
+5. Run the focused share-loop and release gates:
+   - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share`
+   - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-feedback`
+   - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-recipient-ui`
+   - `npm run qa:share-owner-feedback-ui`
    - `npm run lint`
    - `npm run build`
-   - `git diff --check`
-3. Update `qa/auth-guest-next-handoff-2026-05-18.md` and `RELEASE_READINESS_MEMO.md` with the final command results.
-4. Commit the verified auth handoff fix, push, deploy through Vercel, and run the production release gate.
-5. Resume Week 2 planner start-to-trip confidence and map-trust expansion:
-   - Browser-test first-time planner starts from landing, `/chat`, and `/chat?q=...` at phone, laptop, and desktop widths.
-   - Harden slow and failed planner draft creation until users always see progress, preserved input, and a retry path.
-   - Expand generated actuals for Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin.
-   - Record every confusing planner state, duplicate-start risk, empty draft, wrong destination extraction, weak map preview, hidden control, or handoff failure.
-   - Fix the highest-impact P0/P1 first, then address P2 trust and clarity issues in planner progress, map preview, and draft recovery.
-6. Run the focused planner/map gates:
-   - `npm run qa:planner-handoff`
-   - `npm run qa:slow-network`
-   - `npm run qa:prompt-suite`
-   - `QA_VISUAL_ROUTES=planner QA_VISUAL_VIEWPORTS=phone,laptop,desktop npm run qa:visual`
-7. Run production release verification after any deployment:
+   - focused `npm run qa:release-candidate` with visual, prompt-suite, and slow-network toggles selected for the slice.
+6. After deployment, run production release verification:
    - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
-8. Update `RELEASE_READINESS_MEMO.md` and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
+7. Update `RELEASE_READINESS_MEMO.md`, `PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md`, and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
 
 ## Completion Definition
 
