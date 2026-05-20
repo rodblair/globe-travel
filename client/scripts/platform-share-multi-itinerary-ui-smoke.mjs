@@ -1,9 +1,10 @@
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright-core'
 import { createClient } from '@supabase/supabase-js'
+import { PNG } from 'pngjs'
 
 const root = process.cwd()
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
@@ -21,6 +22,7 @@ let ownerUserId = null
 let created = null
 let fixtureCleanup = null
 let ownerCleanup = null
+let shareCardAnalyses = []
 
 if (!isLocalBaseUrl && !allowRemote) {
   console.error('qa:share-multi-itinerary-ui creates disposable public trips and only runs against localhost unless QA_ALLOW_REMOTE_MUTATION=1 is set.')
@@ -111,6 +113,17 @@ async function fetchJson(path, init = {}) {
   }
 
   return { response, text, json }
+}
+
+async function fetchBuffer(path, init = {}) {
+  const response = await fetch(`${baseUrl}${path}`, {
+    ...init,
+    headers: {
+      'user-agent': 'globe-travel-share-multi-itinerary-ui-smoke/1.0',
+      ...(init.headers || {}),
+    },
+  })
+  return { response, buffer: Buffer.from(await response.arrayBuffer()) }
 }
 
 async function setupSupabase() {
@@ -492,6 +505,96 @@ async function runBrowserChecks() {
   await desktopContext.close().catch(() => {})
 }
 
+async function runShareCardImageChecks() {
+  const analyses = []
+
+  for (const fixture of created.fixtures) {
+    const image = await fetchBuffer(`/api/share-card/${fixture.shareSlug}`, { cache: 'no-store' })
+    let png = null
+    try {
+      png = PNG.sync.read(image.buffer)
+    } catch {
+      png = null
+    }
+
+    const expectedPaper = { r: 246, g: 241, b: 230 }
+    let sampled = 0
+    let nonPaper = 0
+    let darkPixels = 0
+    let brassPixels = 0
+    const colorBuckets = new Set()
+
+    if (png) {
+      for (let y = 0; y < png.height; y += 6) {
+        for (let x = 0; x < png.width; x += 6) {
+          const offset = (png.width * y + x) << 2
+          const r = png.data[offset]
+          const g = png.data[offset + 1]
+          const b = png.data[offset + 2]
+          const a = png.data[offset + 3]
+          if (a < 16) continue
+          sampled += 1
+          const paperDistance = Math.abs(r - expectedPaper.r) + Math.abs(g - expectedPaper.g) + Math.abs(b - expectedPaper.b)
+          if (paperDistance > 30) nonPaper += 1
+          if (r < 90 && g < 110 && b < 130) darkPixels += 1
+          if (r >= 90 && r <= 180 && g >= 55 && g <= 140 && b <= 110) brassPixels += 1
+          colorBuckets.add(`${Math.round(r / 12)},${Math.round(g / 12)},${Math.round(b / 12)}`)
+        }
+      }
+    }
+
+    const analysis = {
+      key: fixture.key,
+      shareSlug: fixture.shareSlug,
+      title: fixture.title,
+      status: image.response.status,
+      contentType: image.response.headers.get('content-type') || '',
+      byteLength: image.buffer.length,
+      hash: createHash('sha256').update(image.buffer).digest('hex'),
+      width: png?.width || 0,
+      height: png?.height || 0,
+      sampledPixels: sampled,
+      uniqueColorBuckets: colorBuckets.size,
+      nonPaperRatio: sampled ? Number((nonPaper / sampled).toFixed(4)) : 0,
+      darkPixelRatio: sampled ? Number((darkPixels / sampled).toFixed(4)) : 0,
+      brassPixelRatio: sampled ? Number((brassPixels / sampled).toFixed(4)) : 0,
+    }
+
+    analyses.push(analysis)
+    record(`multi-itinerary ${fixture.key} share-card image has branded nonblank content`, (
+      image.response.ok &&
+      analysis.contentType.toLowerCase().startsWith('image/png') &&
+      analysis.width === 1200 &&
+      analysis.height === 630 &&
+      analysis.byteLength > 40000 &&
+      analysis.uniqueColorBuckets >= 30 &&
+      analysis.nonPaperRatio >= 0.04 &&
+      analysis.darkPixelRatio >= 0.015 &&
+      analysis.brassPixelRatio >= 0.003
+    ), analysis)
+  }
+
+  const uniqueHashes = new Set(analyses.map((analysis) => analysis.hash))
+  const uniqueByteLengths = new Set(analyses.map((analysis) => analysis.byteLength))
+  shareCardAnalyses = analyses
+
+  record('multi-itinerary share-card images are trip-specific across fixture set', (
+    analyses.length === created.fixtures.length &&
+    uniqueHashes.size === analyses.length &&
+    uniqueByteLengths.size >= Math.min(5, analyses.length)
+  ), {
+    imageCount: analyses.length,
+    uniqueHashCount: uniqueHashes.size,
+    uniqueByteLengthCount: uniqueByteLengths.size,
+    hashes: analyses.map((analysis) => ({
+      key: analysis.key,
+      shareSlug: analysis.shareSlug,
+      hash: analysis.hash.slice(0, 16),
+      byteLength: analysis.byteLength,
+    })),
+  })
+}
+
 try {
   await setupSupabase()
   await createDisposableOwner()
@@ -510,6 +613,7 @@ try {
       })
     })
   }
+  if (failures.length === 0) await runShareCardImageChecks()
   if (failures.length === 0) await runBrowserChecks()
 } catch (error) {
   record('multi-itinerary share UI smoke completed without unexpected exception', false, {
@@ -531,6 +635,7 @@ const summary = {
   checkedFixtureKeys: created?.fixtures?.slice(0, Math.max(1, fixtureLimit)).map((fixture) => fixture.key) || [],
   shareSlugs: created?.shareSlugs || [],
   feedbackIds: insertedFeedbackIds,
+  shareCardAnalyses,
   fixtureCleanup,
   ownerCleanup,
   checked: results.length,

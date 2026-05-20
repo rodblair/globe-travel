@@ -23,6 +23,7 @@ Added `npm run qa:share-multi-itinerary-ui`, a self-contained local browser smok
   - Copenhagen
   - Berlin
 - Runs public share API/social-card smoke across all ten fixture slugs.
+- Decodes all ten social-card PNGs and verifies exact `1200x630` dimensions, nonblank/branded pixel content, visible dark/brass visual elements, and unique hashes/byte lengths across trip shapes.
 - Opens Lisbon, Porto, and Mexico City public share pages on a 390px phone viewport.
 - Verifies each tested page shows the trip title, day count, day-by-day itinerary, feedback form, share card, and `Start your own trip` links without app errors or horizontal overflow.
 - Submits one feedback reaction per tested itinerary:
@@ -39,33 +40,48 @@ Added `npm run qa:share-multi-itinerary-ui`, a self-contained local browser smok
 
 ## Verified Commands
 
-- `npm run qa:share-multi-itinerary-ui` passed `20/20`.
+- `npm run qa:share-multi-itinerary-ui` passed `31/31`.
 - `node --check scripts/platform-share-multi-itinerary-ui-smoke.mjs` passed.
 - `git diff --check` passed.
 
 ## Latest Run
 
-- Run id: `8cdaf8ed`
+- Run id: `86fee606`
 - Fixture count: `10`
 - Browser-tested fixture keys: `lisbon`, `porto`, `mexico-city`
 - Share slugs:
-  - `qa8cdaf8ed1`
-  - `qa8cdaf8ed2`
-  - `qa8cdaf8ed3`
-  - `qa8cdaf8ed4`
-  - `qa8cdaf8ed5`
-  - `qa8cdaf8ed6`
-  - `qa8cdaf8ed7`
-  - `qa8cdaf8ed8`
-  - `qa8cdaf8ed9`
-  - `qa8cdaf8ed10`
+  - `qa86fee6061`
+  - `qa86fee6062`
+  - `qa86fee6063`
+  - `qa86fee6064`
+  - `qa86fee6065`
+  - `qa86fee6066`
+  - `qa86fee6067`
+  - `qa86fee6068`
+  - `qa86fee6069`
+  - `qa86fee60610`
 - Feedback rows created and deleted:
-  - `82728a17-2847-4d98-8d05-be714b436a50`
-  - `db41d09d-e9d8-4252-bcff-646437855f50`
-  - `43e3ebf9-8742-40c8-a4ef-5e17396de2eb`
+  - `c04b3105-265c-4265-8cbb-874b56237906`
+  - `93af4033-8927-44c7-a720-63866525ab86`
+  - `e2904473-4012-4d86-bbae-25416b2f1101`
 - Fixture cleanup: `10` trips and `62` places deleted.
 - Owner cleanup: disposable owner profile and auth user deleted.
 
+## Social-Card Image Assertions
+
+All ten fixture cards passed:
+
+- Response status: `200`
+- Content type: `image/png`
+- Dimensions: `1200x630`
+- Byte length: `74666` to `80981`
+- Unique color buckets: `56` to `58`
+- Non-paper pixel ratio: `0.0641` to `0.0734`
+- Dark text/line pixel ratio: `0.0282` to `0.0356`
+- Brass accent pixel ratio: `0.0048`
+- Unique SHA-256 hashes: `10/10`
+- Unique byte lengths: `10/10`
+
 ## Release Impact
 
-This closes the first multi-itinerary public-share browser loop: the product is no longer only tested against one stable Athens public share. Remaining Month 4 expansion work is to add social-card image content assertions and owner-side feedback refresh coverage across multiple itinerary shapes.
+This closes the first multi-itinerary public-share browser loop and the first multi-card social preview content gate: the product is no longer only tested against one stable Athens public share, and social cards are no longer checked only for existence. Remaining Month 4 expansion work is owner-side feedback refresh coverage across multiple itinerary shapes.
