@@ -1,0 +1,242 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "shareSlug": "x3m2c8cnws",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-stripe-portal-2026-05-20",
+  "summaryPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-stripe-portal-2026-05-20/summary.json",
+  "reportPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-stripe-portal-2026-05-20/README.md",
+  "checked": 17,
+  "passed": 17,
+  "failed": 0,
+  "includeVisual": false,
+  "includeStudioFixture": false,
+  "includeShareFeedback": false,
+  "includeShareFixtureSweep": false,
+  "includeOwnerFeedback": false,
+  "includeSlowNetwork": false,
+  "includeStripeCheckout": false,
+  "includeStripePortal": true,
+  "includePromptSuite": false,
+  "shareFixtureOwnerUserId": null,
+  "studioFixture": null,
+  "localOnly": true,
+  "results": [
+    {
+      "name": "lint",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 13373,
+      "mutatesLocal": false
+    },
+    {
+      "name": "production build",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 29858,
+      "mutatesLocal": false
+    },
+    {
+      "name": "local ops readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 390,
+      "mutatesLocal": false,
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "geocode quality smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 392,
+      "mutatesLocal": false,
+      "checked": 26,
+      "passed": 26,
+      "failed": 0
+    },
+    {
+      "name": "local route smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 4478,
+      "mutatesLocal": false,
+      "checked": 8,
+      "passed": 8,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "auth and guest access smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 52280,
+      "mutatesLocal": true,
+      "checked": 15,
+      "passed": 15,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "guestId": "792d7334-6ac2-4024-b082-ef80a4da24c5",
+      "cleanup": {
+        "attempted": true,
+        "guestId": "792d7334-6ac2-4024-b082-ef80a4da24c5",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "profileError": null,
+        "userError": null
+      }
+    },
+    {
+      "name": "saved and account smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 17097,
+      "mutatesLocal": true,
+      "checked": 13,
+      "passed": 13,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "8c6ad7a2-7b82-4a9b-9b4f-ca4c7ff19b4a",
+      "guestId": "a3895502-67a5-41a7-8820-3eef5de1df29",
+      "runId": "c9fa19c4",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "journalDeleted": true,
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "local commercial smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 890,
+      "mutatesLocal": false,
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "local accessibility and keyboard smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 82229,
+      "mutatesLocal": false,
+      "checked": 16,
+      "passed": 16,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share and social preview smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 2264,
+      "mutatesLocal": false,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 23346,
+      "mutatesLocal": false,
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws"
+    },
+    {
+      "name": "public share viral loop smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 109871,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "cleanup": {
+        "attempted": true,
+        "reason": null,
+        "guestId": "03a404ac-4317-4881-a6cc-84bb1047f461",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "public share map fallback smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 5577,
+      "mutatesLocal": false,
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws"
+    },
+    {
+      "name": "planner handoff smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 14235,
+      "mutatesLocal": true,
+      "checked": 17,
+      "passed": 17,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "3a3a03df-1728-4d28-95fb-0351f169851c",
+      "runId": "d4ba1d25",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "billing recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 27411,
+      "mutatesLocal": false,
+      "checked": 13,
+      "passed": 13,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "Stripe test-mode readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 556,
+      "mutatesLocal": false,
+      "checked": 11,
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "name": "hosted Stripe billing portal browser QA",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 21127,
+      "mutatesLocal": true,
+      "checked": 16,
+      "passed": 16,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "runId": "e42a2658"
+    }
+  ],
+  "failures": []
+}

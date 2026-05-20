@@ -42,6 +42,7 @@
     "qa:studio-owner-ui": "node scripts/platform-trip-studio-owner-ui-smoke.mjs",
     "qa:studio-recovery": "node scripts/platform-trip-studio-recovery-smoke.mjs",
     "qa:stripe-checkout-browser": "node scripts/platform-stripe-checkout-browser.mjs",
+    "qa:stripe-portal-browser": "node scripts/platform-stripe-portal-browser.mjs",
     "qa:stripe-readiness": "node scripts/platform-stripe-readiness.mjs",
     "qa:visual": "node scripts/platform-visual-baseline.mjs"
   },

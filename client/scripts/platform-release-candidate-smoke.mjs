@@ -24,6 +24,7 @@ const includeShareFixtureSweep =
   )
 const includeOwnerFeedback = process.env.QA_RELEASE_INCLUDE_OWNER_FEEDBACK !== '0'
 const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT === '1'
+const includeStripePortal = process.env.QA_RELEASE_INCLUDE_STRIPE_PORTAL === '1'
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
 const includeSlowNetwork = process.env.QA_RELEASE_INCLUDE_SLOW_NETWORK !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
@@ -199,6 +200,7 @@ Public share slug: ${shareSlug}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
 - Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
+- Hosted Stripe billing portal included: ${includeStripePortal ? 'yes' : 'no'}
 - Summary JSON: \`qa/${artifactName}/summary.json\`
 
 ${markdownTable(rows)}
@@ -224,6 +226,7 @@ ${failedRows.length ? failedRows.map((row) => `### ${row.name}
 - This gate is the local pre-deploy release-candidate contract.
 - It intentionally keeps one disposable Trip Studio fixture alive across owner action QA, recovery QA, and visual QA, then cleans it up.
 - Set \`QA_RELEASE_INCLUDE_STRIPE_CHECKOUT=1\` to include hosted Stripe Checkout browser completion with test-mode Stripe objects.
+- Set \`QA_RELEASE_INCLUDE_STRIPE_PORTAL=1\` to include hosted Stripe billing portal browser completion with test-mode Stripe objects.
 `
 }
 
@@ -401,6 +404,12 @@ try {
       QA_STRIPE_RUN_HOSTED_CHECKOUT: '1',
     }, { mutatesLocal: true })
   }
+
+  if (includeStripePortal) {
+    await runNodeTask('hosted Stripe billing portal browser QA', 'scripts/platform-stripe-portal-browser.mjs', {
+      QA_STRIPE_RUN_PORTAL_BROWSER: '1',
+    }, { mutatesLocal: true })
+  }
 } finally {
   if (includeStudioFixture) {
     await cleanupStudioFixture()
@@ -423,6 +432,7 @@ const summary = {
   includeOwnerFeedback,
   includeSlowNetwork,
   includeStripeCheckout,
+  includeStripePortal,
   includePromptSuite,
   shareFixtureOwnerUserId: includeShareFixtureSweep ? shareFixtureOwnerUserId : null,
   studioFixture,
