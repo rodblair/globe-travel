@@ -3,13 +3,28 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-20 full local release-candidate consolidation passed with visual, share fixture sweep, owner feedback, and hosted Stripe checkout enabled
+Updated: 2026-05-20 active next-phase platform completion plan set after full local, production, Stripe checkout, and Stripe portal readiness gates passed
 
 ## Active Goal
 
 Complete the next several months of Globe.travel platform readiness: full-platform functionality testing, Browser-driven user journey QA, visual QA across responsive surfaces, design-system polish, reliability hardening, production monitoring, viral sharing loops, subscription readiness, and release operations until the platform is commercially launch-ready at scale.
 
 This goal stays active until the full platform is proven launch-ready with evidence. It is not complete just because a feature works once, a build passes once, or a route looks good in one viewport.
+
+## Next Phase Operating Plan: May-October 2026
+
+This is the forward plan from the current release-candidate checkpoint. The product is no longer in a blank audit state; the next several months should be run as a disciplined launch-readiness program that keeps proving the app through real Browser journeys, automated gates, visual baselines, production verification, and commercial user value.
+
+| Phase | Window | Completion Target | Testing And Visual QA Focus | Product/Business Outcome |
+| --- | --- | --- | --- | --- |
+| Phase 1 | Late May 2026 | Final internal release candidate | Re-run full local release candidate with every gate enabled, expand regional planner actuals beyond the first ten cities, retest Athens five-day public and owner surfaces, and run clean-browser visual QA across public/protected routes | The team can say the current web app is coherent, stable, and ready for invite-only beta usage |
+| Phase 2 | June 2026 | Invite-only beta | Test 25-50 real or representative trips across friend groups, couples, families, solo, budget, premium, food, nightlife, outdoors, and culture prompts; capture Browser evidence for every failed or confusing journey; refresh visual baselines weekly | Globe.travel produces useful itineraries for varied users and avoids embarrassing map, layout, auth, or share failures |
+| Phase 3 | July 2026 | Paid-path and retention beta | Verify upgrade moments after user value, hosted checkout, billing portal, account recovery, saved work, returning-user journeys, subscription states, and Stripe webhook operations; run account/billing visual QA at every release | Users understand the free-to-paid path, can manage subscriptions safely, and do not lose work across account or billing boundaries |
+| Phase 4 | August 2026 | Public sharing and viral loop hardening | Stress-test multi-itinerary public links, recipient feedback, owner refresh from feedback, share-card metadata/images, native share/copy, and mobile public-share readability; test links in logged-out and clean-session Browser states | Shared trip pages become a growth surface that friends can understand, react to, and use to start their own plans |
+| Phase 5 | September 2026 | Production scale rehearsal | Run production release gates after every deploy, scheduled monitoring, visual-diff review, rollback rehearsal, incident playbooks, seed/fixture cleanup audits, and a no-P0/P1 launch review | Release operations are boring, observable, recoverable, and not dependent on one-off manual knowledge |
+| Phase 6 | October 2026 | Launch approval | Execute the final launch signoff packet: full local gate, production gate, clean Browser user matrix, accessibility/keyboard pass, commercial QA, visual QA, remaining-risk register, and rollback plan | Globe.travel can be released as a polished, useful, commercially credible product |
+
+Phase dates are operating targets, not permission to defer P0/P1 fixes. Any core-flow blocker found in any phase is repaired, retested, and promoted into a gate before moving forward.
 
 ## Current Checkpoint
 
@@ -47,7 +62,7 @@ The newest planner-start checkpoint closes a natural-language duration gap: Brow
 
 The newest auth/guest checkpoint preserves work across the auth boundary: protected routes now redirect to login with a safe `next`, login/signup/guest actions preserve the destination, guest start can carry planner prompts through to Trip Studio, and `npm run qa:auth-access` covers the handoff.
 
-The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. Month 2 generated actual coverage now reaches ten cities: Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin. `npm run qa:planner-actuals:launch-cities` and `npm run qa:planner-actuals:next-cities` both pass, and the combined `qa/planner-generated-actuals-month2-cities-2026-05-18.json` artifact cross-checks in the prompt suite with `actualsChecked: 10`.
+The newest planner/map checkpoint hardens generated itinerary map trust. `npm run qa:planner-actuals` now creates a disposable guest and trip, sends a real Lisbon planner prompt through `/api/chat`, verifies mapped stops, country consistency, unique pins, usable routes, and cleanup, then exports the generated actual for prompt-suite cross-checking. `npm run qa:geocode-quality` adds strict destination-anchor and false-positive geocoder checks, and the local release-candidate gate now includes it. Browser also verified a kept generated public Lisbon share page with itinerary content, Mapbox canvas, map markers, share/copy actions, and no console errors before cleanup. Month 2 generated actual coverage reached ten cities: Lisbon, Porto, Mexico City, Tokyo, Rome, Barcelona, London, Paris, Copenhagen, and Berlin. The Phase 1 regional expansion now adds Istanbul, Bangkok, Marrakech, and Sydney as generated actuals beyond the first ten cities. `npm run qa:planner-actuals:regional-edge` passes `6/6`, and the exported actuals cross-check in `npm run qa:prompt-suite` with `actualsChecked: 4`. Evidence: `qa/planner-generated-actuals-regional-edge-2026-05-20.md` and `qa/planner-generated-actuals-regional-edge-cities-2026-05-20.json`.
 
 The newest Trip Studio checkpoint starts Month 3 owner-surface completion. A kept disposable owned Trip Studio fixture passed API owner actions `23/23`, Browser verified the direct/public state was clearly read-only instead of edit-capable, two visual collisions were removed from the owner workspace, `npm run qa:studio-recovery` passed `6/6`, and Trip Studio responsive visual QA passed `5/5` across phone, tablet, laptop, desktop, and wide viewports. Evidence: `qa/trip-studio-month3-owner-visual-qa-2026-05-19.md` and `qa/visual-baseline-2026-05-19-trip-studio-month3-owner/`.
 
@@ -246,7 +261,7 @@ Current progress:
 - The prompt suite now cross-checks the four launch-city generated actuals with `56/56` passing and no missing coverage.
 - Rome, Barcelona, London, Paris, Copenhagen, and Berlin next-city generated actuals are passing through `npm run qa:planner-actuals:next-cities`.
 - The ten-actual Month 2 exit target is met for generated map-trust coverage through the combined Month 2 actuals artifact.
-- The next expansion target is adding more varied regional coverage and edge cases beyond the first ten cities.
+- The first regional expansion target is met for Istanbul, Bangkok, Marrakech, and Sydney, with Seoul and Cape Town intentionally left for a later regional tranche after deeper trusted-place and day-trip routing work.
 - Month 3 Trip Studio owner visual QA has started with a disposable Athens fixture, visible layout collision fixes, recovery coverage, and a five-viewport owner visual artifact.
 - Guest-owned Trip Studio identity precedence is now aligned between client and server so a guest organizer does not lose edit mode when stale account auth state is present.
 
@@ -444,58 +459,32 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice is final release-candidate consolidation: protected local evidence and public production evidence are now fresh, so the next meaningful gap is a full local release-candidate run with the newest gates enabled, followed by non-mutating production verification and final P0/P1 audit review.
+The next execution slice is Phase 1 launch-candidate maintenance and regional confidence expansion. The previous local and production release-candidate blockers are closed, so the next useful work should increase coverage breadth, keep the release gate green, and remove any remaining visual or operational roughness found by real Browser use.
 
-1. Browser-test the full share loop on at least three public trips:
-   - logged-out recipient opens `/t/[shareSlug]`;
-   - recipient reads the first viewport, day tabs, map state, feedback section, copy link/native share, and `Start your own trip`;
-   - recipient submits practical, excited, and caution-style feedback;
-   - owner opens Trip Studio and sees the feedback clearly;
-   - owner runs `Refresh plan from feedback` and gets a clear ready or recovery state.
-   - Done as of May 20: logged-out recipient UI, feedback submit/readback, copy/native share, desktop reload, owner feedback readback, and owner feedback refresh are covered across Lisbon, Porto, and Mexico City.
-2. Expand feedback-state coverage:
-   - one reaction;
-   - many reactions beyond the first four visible cards;
-   - forced network failure and retry;
-   - owner-side readback after mixed feedback.
-   - Done as of May 20: empty state, invalid optional email, all three sentiments, duplicate author names, long author names, a 540-character rendered UI comment, forced recipient failure/retry, seven-reaction public overflow summary, owner mixed-feedback hierarchy, and owner feedback-refresh failure/retry.
-3. Improve the public share UI if Browser exposes friction:
-   - first viewport clarity;
-   - feedback form density and helper copy;
-   - recipient CTA prominence;
-   - mobile map/readability balance;
-   - owner feedback readback hierarchy.
-   - Done as of May 20: owner readback now shows sentiment counts, latest 4 of 5 review summary, long-name-safe cards, and feedback refresh recovery copy.
-4. Promote repeatable findings into gates:
-   - extend `npm run qa:share-recipient-ui`;
-   - extend `npm run qa:share-owner-feedback-ui`;
-   - add multi-slug share-loop fixtures when stable public slugs are available;
-   - Done as of May 20: `npm run qa:share-multi-itinerary-ui` creates disposable multi-slug fixtures, Browser-tests the first three itinerary shapes, validates social-card image content across all ten fixture cards, and runs owner-side feedback refresh across phone/tablet/desktop Trip Studio.
-5. Run the focused share-loop and release gates:
-   - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share`
-   - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-feedback`
-   - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-recipient-ui`
-   - `npm run qa:share-feedback-states-ui`
-   - `npm run qa:share-multi-itinerary-ui`
-   - `npm run qa:share-owner-feedback-ui`
-   - `npm run lint`
-   - `npm run build`
-   - focused `npm run qa:release-candidate` with visual, prompt-suite, and slow-network toggles selected for the slice.
-6. After deployment, run production release verification:
-   - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
-7. Update `RELEASE_READINESS_MEMO.md`, `PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md`, and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
+1. Regional planner and map expansion:
+   - add a `regional-edge-cities` generated-actual preset beyond the first ten cities;
+   - include at least four varied destinations across different regions and trip styles;
+   - verify day count, title/destination match, country consistency, mapped stop count, duplicate mapped stops, route usability, cleanup, and prompt-suite actual validation;
+   - document failures as P0/P1 if maps are wrong-country, duplicate-pin, zero-stop, or overconfident.
+   - Done as of May 20: Istanbul, Bangkok, Marrakech, and Sydney pass `npm run qa:planner-actuals:regional-edge` `6/6`, and the exported actuals pass prompt-suite validation with `actualsChecked: 4`.
+2. Athens five-day release anchor:
+   - keep `/t/x3m2c8cnws` as the stable production public-share reference;
+   - retest the public share, owner Trip Studio, day tabs, map/itinerary relationship, feedback loop, `Start your own trip`, and share-card metadata after every meaningful release;
+   - treat an Athens public or owner regression as a release blocker because it is the durable product proof point.
+3. Clean-browser launch matrix:
+   - run Browser as a first-time guest, returning owner, logged-out recipient, paid candidate, and recovery user;
+   - cover phone, tablet, laptop, desktop, and wide desktop for the primary public and protected routes;
+   - capture horizontal overflow, clipped text, app-owned control overlap, missing loading/error states, stale copy, and confusing auth/guest transitions.
+4. Visual QA and design-system polish:
+   - run `qa:visual` for public shells, protected surfaces, public share, and Trip Studio owner surfaces;
+   - normalize repeated button hierarchy, panel spacing, mobile action density, empty states, and upgrade language;
+   - preserve the clean navigator-log design direction while removing generic AI-app patterns and repeated card clutter.
+5. Reliability and release operations:
+   - run the full local release-candidate gate with visual, prompt suite, share fixture sweep, owner feedback, slow network, saved/account, billing recovery, auth/guest, a11y, ops, Stripe checkout, Stripe portal, and production build enabled;
+   - run the non-mutating production release gate after deploy;
+   - update `RELEASE_READINESS_MEMO.md`, this roadmap, and a focused `qa/` evidence file with commands, Browser findings, fixes, and remaining risks.
 
-8. Protected-surface production-confidence slice:
-   - run a fresh local authenticated visual sweep for saved trips, saved journal, account profile, account billing, and Trip Studio owner on a disposable guest fixture;
-   - run `npm run qa:saved-account`, `npm run qa:billing-recovery`, `npm run qa:studio-owner-ui`, and `npm run qa:studio-recovery`;
-   - Browser spot-check the most important protected surfaces locally after the automated gates;
-   - if all local gates pass, run the non-mutating production release gate again and keep production mutation toggles disabled;
-   - document any remaining protected-route evidence gaps before moving toward final launch-candidate signoff.
-   - Done as of May 20: `qa:saved-account` `13/13`, `qa:billing-recovery` `13/13`, `qa:studio-owner-ui` `6/6`, kept owner fixture `qa:studio-actions` `23/23`, `qa:studio-recovery` `6/6`, authenticated protected visual QA `25/25`, Browser spot-checks for saved/billing/Trip Studio, and fixture cleanup.
-9. Run the final local release-candidate consolidation:
-   - include visual QA, prompt suite, share fixture sweep, owner feedback, slow-network, saved/account, billing recovery, auth/guest, a11y, ops, and production build;
-   - preserve the generated summary and screenshot artifacts;
-   - fix any P0/P1 found before another production release verification.
+Phase 1 is complete only when the broadened regional generated-actuals pass, the clean-browser matrix has no open P0/P1 issues, the visual gate has no launch-blocking diffs, local release-candidate remains green, and production release verification remains green after deployment.
 
 ## Completion Definition
 

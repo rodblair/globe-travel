@@ -14,6 +14,7 @@ import { ensureDevAccount, ensureGuestAccount } from '@/lib/guest-server'
 import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
+import { REGIONAL_PLACE_OVERRIDES } from '@/lib/planner/regional-place-overrides'
 import { getPlanToolChoice, getPlanToolSelection, inferPlanIntent } from '@/lib/planner/tools'
 import { extractDestinationFromPrompt, extractDestinationFromTitle } from '@/lib/planner/runtime'
 import { loadPlannerSession } from '@/lib/planner/session'
@@ -47,9 +48,16 @@ const PLANNER_DESTINATION_OVERRIDES: PlannerDestinationOverride[] = [
   { pattern: /^paris(?:,\s*france)?$/i, latitude: 48.85661, longitude: 2.35222, country_code: 'FR' },
   { pattern: /^copenhagen(?:,\s*denmark)?$/i, latitude: 55.6761, longitude: 12.5683, country_code: 'DK' },
   { pattern: /^berlin(?:,\s*germany)?$/i, latitude: 52.52, longitude: 13.405, country_code: 'DE' },
+  { pattern: /^istanbul(?:,\s*(?:turkey|t[üu]rkiye))?$/i, latitude: 41.00824, longitude: 28.97836, country_code: 'TR' },
+  { pattern: /^seoul(?:,\s*south korea)?$/i, latitude: 37.56654, longitude: 126.978, country_code: 'KR' },
+  { pattern: /^bangkok(?:,\s*thailand)?$/i, latitude: 13.75633, longitude: 100.50177, country_code: 'TH' },
+  { pattern: /^marrakech(?:,\s*morocco)?$/i, latitude: 31.62947, longitude: -7.98108, country_code: 'MA' },
+  { pattern: /^cape town(?:,\s*south africa)?$/i, latitude: -33.92487, longitude: 18.42406, country_code: 'ZA' },
+  { pattern: /^sydney(?:,\s*australia)?$/i, latitude: -33.86882, longitude: 151.2093, country_code: 'AU' },
 ]
 
 const PLANNER_PLACE_OVERRIDES: PlannerPlaceOverride[] = [
+  ...REGIONAL_PLACE_OVERRIDES,
   { pattern: /acropolis archaeological site|acropolis.*parthenon|parthenon.*acropolis|^acropolis of athens$/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
   { pattern: /\bstrofi\b/i, name: 'Strofi', country: 'Greece', country_code: 'GR', latitude: 37.96801, longitude: 23.72453, manualId: 'manual:athens:strofi' },

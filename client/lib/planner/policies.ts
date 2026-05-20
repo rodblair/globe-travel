@@ -203,6 +203,43 @@ When planning Berlin, strongly prefer these routeable known-good places for mapp
 Use exact venues and avoid broad district pins such as Mitte unless the user explicitly asks for neighborhood orientation.`)
   }
 
+  if (/\bistanbul\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_ISTANBUL_PLACE_SET:
+When planning Istanbul, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Sultanahmet: Hagia Sophia Grand Mosque, Matbah Restaurant, Basilica Cistern, Grand Bazaar, Seven Hills Restaurant.
+- Spice/Bosphorus/Kadıköy: Mısır Çarşısı, Pandeli Restaurant, Eminönü Ferry Terminal, Kadıköy Çarşı, Hamdi Restaurant.
+- Galata/Balat: Topkapı Palace Museum, Karaköy Lokantası, Galata Tower, Istanbul Modern, Mikla, Balat Antik Cafe, Fener Greek Orthodox Patriarchate, Bulgarian St. Stephen Church, Chora Church, Meze By Lemon Tree.
+Use Balat Antik Cafe only once as a cafe or meal; do not repeat it as an activity.
+Avoid distant island escapes unless the user asks for them; keep days clustered so walking routes remain believable.`)
+  }
+
+  if (/\bbangkok\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_BANGKOK_PLACE_SET:
+When planning Bangkok, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Old City/Riverside: Wat Pho, The Sixth 6th, Grand Palace, Wat Arun, Supanniga Eating Room Tha Tien.
+- Siam/Chinatown: Jim Thompson House Museum, Baan Khun Mae, Bangkok Art and Culture Centre, Tep Bar, Wat Traimit, Nai Ek Roll Noodle, Yaowarat Road, Pak Khlong Talat.
+- Market/modern day: Chatuchak Weekend Market, Or Tor Kor Market, Lumphini Park, Ruen Mallika Royal Thai Cuisine, Jodd Fairs Night Market.
+Use exact venue names and avoid vague canal tours or district-only items.`)
+  }
+
+  if (/\bmarrakech\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_MARRAKECH_PLACE_SET:
+When planning Marrakech, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Medina/souks: Le Jardin Secret, Nomad, Maison de la Photographie, Dar Cherifa, Souk Semmarine.
+- Majorelle/new town: Jardin Majorelle, Musée Yves Saint Laurent Marrakech, Plus61, Cyber Park Arsat Moulay Abdeslam, Le Jardin.
+- Palaces/farewell: Bahia Palace, El Badi Palace, Dar Si Said Museum, La Famille, Kabana.
+Keep the plan medina-centered and use exact title/place_query names for every meal and activity.`)
+  }
+
+  if (/\bsydney\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_SYDNEY_PLACE_SET:
+When planning Sydney, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Harbour/The Rocks: Sydney Opera House, City Extra 24 Hour Restaurant, The Rocks Discovery Museum, Museum of Contemporary Art Australia, Mures Circular Quay.
+- Bondi/Manly: Bondi Icebergs Club, Bills Bondi, Bondi to Bronte Coastal Walk, Bronte Baths, Fish At The Rocks, Manly Wharf, Manly Pavilion, Shelly Beach, North Head Lookout, Sake Restaurant & Bar The Rocks.
+- Inner city: Royal Botanic Garden Sydney, Paddington Reservoir Gardens, Art Gallery of New South Wales, The Grounds of Alexandria, Saint Peter.
+Use exact venue names and split beach/ferry days so routes stay readable instead of implying everything is a short walk.`)
+  }
+
   return guidance.length ? `\n\n${guidance.join('\n\n')}` : ''
 }
 

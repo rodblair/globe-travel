@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { directionsGeojson, geocodePlace } from '@/app/api/trips/_mapbox'
 import { requireUser } from '@/app/api/trips/_utils'
+import { REGIONAL_PLACE_OVERRIDES } from '@/lib/planner/regional-place-overrides'
 import { extractDestinationFromTitle } from '@/lib/planner/runtime'
 
 type CanonicalPlaceOverride = {
@@ -17,6 +18,7 @@ type CanonicalPlaceOverride = {
 const WALK_ROUTE_MAX_METERS = 8500
 
 const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
+  ...REGIONAL_PLACE_OVERRIDES,
   { pattern: /dear breakfast/i, name: 'Dear Breakfast Chiado', country: 'Portugal', country_code: 'PT', latitude: 38.71082, longitude: -9.14363, manualId: 'manual:lisbon:dear-breakfast-chiado' },
   { pattern: /praça do comércio|praca do comercio|commerce square/i, name: 'Praça do Comércio', country: 'Portugal', country_code: 'PT', latitude: 38.70775, longitude: -9.13659, manualId: 'manual:lisbon:praca-do-comercio' },
   { pattern: /lisbon cathedral|sé de lisboa|se de lisboa/i, name: 'Lisbon Cathedral', country: 'Portugal', country_code: 'PT', latitude: 38.70975, longitude: -9.13349, manualId: 'manual:lisbon:cathedral' },

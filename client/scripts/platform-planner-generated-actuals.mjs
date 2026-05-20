@@ -36,6 +36,12 @@ const generatedActualPresets = {
     'copenhagen-2-day-design-food',
     'berlin-3-day-nightlife-culture',
   ],
+  'regional-edge-cities': [
+    'istanbul-4-day-history-markets',
+    'bangkok-4-day-temples-street-food',
+    'marrakech-3-day-markets-riads',
+    'sydney-4-day-beaches-neighborhoods',
+  ],
 }
 const explicitFixtureIds = Boolean(process.env.QA_GENERATED_ACTUAL_IDS)
 const presetName = explicitFixtureIds ? null : (process.env.QA_GENERATED_ACTUAL_PRESET || 'default')
@@ -145,6 +151,18 @@ function normalize(value) {
   return String(value || '').trim().toLowerCase()
 }
 
+function normalizeCountry(value) {
+  const normalized = normalize(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const aliases = {
+    turkiye: 'turkey',
+    'united states of america': 'united states',
+    usa: 'united states',
+    uk: 'united kingdom',
+  }
+
+  return aliases[normalized] || normalized
+}
+
 function isRecoverablePlannerStreamError(error) {
   const message = error instanceof Error ? error.message : String(error)
   return /terminated|fetch failed|other side closed|socket|network/i.test(message)
@@ -235,7 +253,7 @@ function validateActual(fixture, actual) {
     day.mappedItemCount !== day.itemCount ||
     day.duplicateMappedStops.length > 0 ||
     day.countries.length !== 1 ||
-    normalize(day.countries[0]) !== normalize(expected.country) ||
+    normalizeCountry(day.countries[0]) !== normalizeCountry(expected.country) ||
     day.usableRouteCount <= 0
   ))
   const titleDestinationOk = normalize(actual.tripTitle).includes(normalize(expected.destination))

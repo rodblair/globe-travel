@@ -24,6 +24,18 @@ function normalize(value) {
   return String(value || '').trim().toLowerCase()
 }
 
+function normalizeCountry(value) {
+  const normalized = normalize(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const aliases = {
+    turkiye: 'turkey',
+    'united states of america': 'united states',
+    usa: 'united states',
+    uk: 'united kingdom',
+  }
+
+  return aliases[normalized] || normalized
+}
+
 function dayCountFromPrompt(prompt) {
   return extractDaysFromPrompt(prompt)
 }
@@ -60,7 +72,7 @@ function validateActualOutput(fixture, actual) {
     (Array.isArray(day.duplicateMappedStops) && day.duplicateMappedStops.length > 0) ||
     !Array.isArray(day.countries) ||
     day.countries.length !== 1 ||
-    normalize(day.countries[0]) !== normalize(expected.country) ||
+    normalizeCountry(day.countries[0]) !== normalizeCountry(expected.country) ||
     day.usableRouteCount <= 0
   ))
   const ok = days.length === expected.days && dayIndexesOk && titleDestinationOk && badDays.length === 0

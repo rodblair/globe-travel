@@ -78,6 +78,18 @@ const destinationCases = [
   { query: 'Copenhagen, Denmark', countryCode: 'DK' },
   { query: 'Berlin', countryCode: 'DE' },
   { query: 'Berlin, Germany', countryCode: 'DE' },
+  { query: 'Istanbul', countryCode: 'TR' },
+  { query: 'Istanbul, Turkey', countryCode: 'TR' },
+  { query: 'Seoul', countryCode: 'KR' },
+  { query: 'Seoul, South Korea', countryCode: 'KR' },
+  { query: 'Bangkok', countryCode: 'TH' },
+  { query: 'Bangkok, Thailand', countryCode: 'TH' },
+  { query: 'Marrakech', countryCode: 'MA' },
+  { query: 'Marrakech, Morocco', countryCode: 'MA' },
+  { query: 'Cape Town', countryCode: 'ZA' },
+  { query: 'Cape Town, South Africa', countryCode: 'ZA' },
+  { query: 'Sydney', countryCode: 'AU' },
+  { query: 'Sydney, Australia', countryCode: 'AU' },
 ]
 
 const destinationAnchors = {
