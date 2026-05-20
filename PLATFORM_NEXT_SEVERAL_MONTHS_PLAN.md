@@ -3,7 +3,7 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-20 owner mixed-feedback hierarchy and retry coverage added
+Updated: 2026-05-20 full local release-candidate consolidation passed with visual, share fixture sweep, owner feedback, and hosted Stripe checkout enabled
 
 ## Active Goal
 
@@ -13,7 +13,13 @@ This goal stays active until the full platform is proven launch-ready with evide
 
 ## Current Checkpoint
 
-The active goal is pinned and remains open. The previous full release-candidate blocker is closed: saved trip open/delete hit targets are separated, long Trip Studio titles wrap cleanly, the full local predeploy gate passed `23/23`, production deployed, and the production release gate passed.
+The active goal is pinned and remains open. The newest full local release-candidate consolidation passed `30/30` with `npm run lint`, `npm run build`, public-share fixture sweep, public-share feedback states, Trip Studio owner/read-only UI, owner feedback refresh, slow-network recovery, prompt suite, responsive visual QA, and hosted Stripe Checkout enabled. Evidence: `qa/release-candidate-full-consolidation-2026-05-20-final/`, `qa/visual-baseline-2026-05-20-full-consolidation-final/`, and `qa/stripe-checkout-browser-2026-05-20-full-consolidation-final/`.
+
+The release-candidate gate now self-provisions the disposable owner profile needed for public-share fixture sweeps and deletes that profile/auth user after the sweep. This closes the setup brittleness that previously made the comprehensive gate depend on a manually prepared `QA_OWNER_USER_ID`. A focused standalone `npm run qa:share-fixture-sweep` also passed with 10 generated public itineraries, 50 share checks, 10 exported prompt actuals, prompt suite `56/56`, and full fixture/profile cleanup.
+
+In-app Browser spot-checked the local `/saved` returning-user surface and the stable Athens public share page `/t/x3m2c8cnws` after the full candidate run. Both loaded in a fresh Browser tab with no app error and no horizontal overflow; the Athens share page retained trip/share copy and title `5 Days in Athens Greece in mid september | Globe.travel`.
+
+The previous full release-candidate blocker is closed: saved trip open/delete hit targets are separated, long Trip Studio titles wrap cleanly, the full local predeploy gate passed `23/23`, production deployed, and the production release gate passed.
 
 The current reliability upgrade is that public production visual QA and public share viral-loop QA are now part of the one-command production release gate. `npm run qa:release-production` checks public production layout for landing, login, signup, and public share, verifies recipient share/copy/start-own-trip affordances on the stable Athens public itinerary, pixel-compares stable shell routes against the production visual baseline, and still runs production ops, smoke, auth/guest, commercial, public share/social preview, prompt actuals, and prompt-suite checks.
 

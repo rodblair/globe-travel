@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { randomUUID } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
@@ -26,6 +27,7 @@ const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT ===
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
 const includeSlowNetwork = process.env.QA_RELEASE_INCLUDE_SLOW_NETWORK !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
+const shareFixtureOwnerUserId = process.env.QA_OWNER_USER_ID || randomUUID()
 const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const failures = []
 const results = []
@@ -193,6 +195,7 @@ Public share slug: ${shareSlug}
 - Visual QA included: ${includeVisual ? 'yes' : 'no'}
 - Trip Studio fixture included: ${includeStudioFixture ? 'yes' : 'no'}
 - Public share fixture sweep included: ${includeShareFixtureSweep ? 'yes' : 'no'}
+- Public share fixture owner id: ${includeShareFixtureSweep ? shareFixtureOwnerUserId : 'n/a'}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
 - Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
@@ -253,7 +256,10 @@ try {
     await runNodeTask(
       'public share fixture sweep',
       'scripts/platform-share-fixture-sweep.mjs',
-      {},
+      {
+        QA_OWNER_USER_ID: shareFixtureOwnerUserId,
+        QA_CREATE_OWNER_PROFILE: process.env.QA_OWNER_USER_ID ? '0' : '1',
+      },
       { mutatesLocal: true }
     )
   }
@@ -418,6 +424,7 @@ const summary = {
   includeSlowNetwork,
   includeStripeCheckout,
   includePromptSuite,
+  shareFixtureOwnerUserId: includeShareFixtureSweep ? shareFixtureOwnerUserId : null,
   studioFixture,
   localOnly: isLocalBaseUrl,
   results: results.map(withoutParsed),
