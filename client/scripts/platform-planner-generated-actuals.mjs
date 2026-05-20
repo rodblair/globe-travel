@@ -38,8 +38,10 @@ const generatedActualPresets = {
   ],
   'regional-edge-cities': [
     'istanbul-4-day-history-markets',
+    'seoul-5-day-food-shopping',
     'bangkok-4-day-temples-street-food',
     'marrakech-3-day-markets-riads',
+    'cape-town-5-day-outdoors-food',
     'sydney-4-day-beaches-neighborhoods',
   ],
 }

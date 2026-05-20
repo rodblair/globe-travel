@@ -213,6 +213,17 @@ Use Balat Antik Cafe only once as a cafe or meal; do not repeat it as an activit
 Avoid distant island escapes unless the user asks for them; keep days clustered so walking routes remain believable.`)
   }
 
+  if (/\bseoul\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_SEOUL_PLACE_SET:
+When planning Seoul, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Palace/Ikseon day: Gyeongbokgung Palace, Tosokchon Samgyetang, Bukchon Hanok Village, Cheongsudang, Changhwadang Ikseon.
+- Myeongdong/Namsan day: Myeongdong Cathedral, Myeongdong Kyoja Main Store, Lotte Department Store Main Store, Wangbijip Myeongdong Main Store, N Seoul Tower.
+- Gangnam/spa day: Starfield COEX Mall, Woo Lae Oak COEX, Bongeunsa Temple, Spa Lei, Yang Good Gangnam Main Branch.
+- Hongdae/Yeonnam day: Gyeongui Line Forest Park, Cafe Layered Yeonnam, Hongdae Shopping Street, Myth Jokbal Hongdae, KT&G Sangsangmadang Hongdae.
+- Seongsu/Han River day: Seoul Forest, Grandmother's Recipe, Musinsa Standard Seongsu, Center Coffee Seoul Forest, Banpo Hangang Park.
+Use exact title/place_query names. Avoid Seoul-wide, district-only, or subway-station pins; Korean place names are fragile in geocoding, so prefer this trusted set for reliable map output.`)
+  }
+
   if (/\bbangkok\b/i.test(destinationText)) {
     guidance.push(`TRUSTED_BANGKOK_PLACE_SET:
 When planning Bangkok, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
@@ -229,6 +240,17 @@ When planning Marrakech, strongly prefer these routeable known-good places for m
 - Majorelle/new town: Jardin Majorelle, Musée Yves Saint Laurent Marrakech, Plus61, Cyber Park Arsat Moulay Abdeslam, Le Jardin.
 - Palaces/farewell: Bahia Palace, El Badi Palace, Dar Si Said Museum, La Famille, Kabana.
 Keep the plan medina-centered and use exact title/place_query names for every meal and activity.`)
+  }
+
+  if (/\bcape town\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_CAPE_TOWN_PLACE_SET:
+When planning Cape Town, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- City/Table Mountain: Table Mountain Aerial Cableway, Bo-Kaap Museum, Kloof Street House, Signal Hill, The Athletic Club & Social.
+- Beach/hike day: Lion's Head Trailhead, JARRYDS Brunch & Bistro, Clifton 4th Beach, Camps Bay Beach, Codfather Seafood & Sushi.
+- Wine day: Beau Constantia, Chefs Warehouse at Beau Constantia, Constantia Glen, Groot Constantia, Buitenverwachting.
+- Waterfront/Woodstock day: Oranjezicht City Farm Market, V&A Waterfront, Zeitz MOCAA, The Old Biscuit Mill, The Pot Luck Club.
+- Gardens/final meal: Kirstenbosch National Botanical Garden, The Lawns at the Roundhouse, Kloof Street House, GOLD Restaurant, V&A Waterfront.
+For generated full-plan QA, keep Cape Town days clustered around city, Atlantic Seaboard, Constantia, Waterfront/Woodstock, and Kirstenbosch. Avoid mixing Franschhoek, Cape Point, Boulders, and central Cape Town in the same day unless the user explicitly asks for a long driving day; walking routes should remain believable and under the map-trust threshold.`)
   }
 
   if (/\bsydney\b/i.test(destinationText)) {
