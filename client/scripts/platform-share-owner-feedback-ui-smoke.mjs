@@ -14,6 +14,28 @@ const runId = providedRunId || randomUUID().slice(0, 8)
 const feedbackRunId = `owner${runId.slice(0, 8)}`
 const feedbackAuthor = `QA Friend ${feedbackRunId}`
 const feedbackComment = `QA browser feedback ${feedbackRunId}: Day 2 looks strong, but please add one slower cafe break before dinner.`
+const feedbackVariants = [
+  {
+    author: `QA Owner Love ${feedbackRunId}`,
+    sentiment: 'love_it',
+    comment: `QA owner mixed feedback ${feedbackRunId}: Keep the first landmark morning because everyone will recognize it.`,
+  },
+  {
+    author: `QA Owner Curious ${feedbackRunId}`,
+    sentiment: 'curious',
+    comment: `QA owner mixed feedback ${feedbackRunId}: Can we clarify the dinner timing before everyone commits?`,
+  },
+  {
+    author: `QA Owner Long Logistics Friend ${feedbackRunId}`,
+    sentiment: 'practical',
+    comment: `QA owner mixed feedback ${feedbackRunId}: Please add a slower transfer, a rain backup, and one elevator-friendly route so the organizer has practical constraints visible before refreshing the plan.`,
+  },
+  {
+    author: `QA Owner Late Arrival ${feedbackRunId}`,
+    sentiment: 'curious',
+    comment: `QA owner mixed feedback ${feedbackRunId}: Two friends may arrive late, so the first night should stay flexible.`,
+  },
+]
 const failures = []
 const results = []
 let fixture = {
@@ -23,6 +45,7 @@ let fixture = {
   runId,
   external: !shouldCreateFixture,
 }
+const insertedFeedbackIds = []
 let insertedFeedbackId = null
 let browser = null
 
@@ -76,6 +99,26 @@ function runNodeScript(script, env = {}) {
   })
 }
 
+async function fetchJson(path, init = {}) {
+  const response = await fetch(`${baseUrl}${path}`, {
+    ...init,
+    headers: {
+      'user-agent': 'globe-travel-share-owner-feedback-ui-smoke/1.0',
+      ...(init.headers || {}),
+    },
+  })
+  const text = await response.text()
+  let json = null
+
+  try {
+    json = JSON.parse(text)
+  } catch {
+    // handled by caller
+  }
+
+  return { response, text, json }
+}
+
 async function createFixtureIfNeeded() {
   if (!shouldCreateFixture) {
     record('owner feedback UI fixture supplied by caller', true, fixture)
@@ -108,12 +151,40 @@ async function createFixtureIfNeeded() {
 }
 
 async function submitRecipientFeedback() {
+  for (const variant of feedbackVariants) {
+    const response = await fetchJson(`/api/trips/share/${fixture.shareSlug}/feedback`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        author_name: variant.author,
+        author_email: '',
+        sentiment: variant.sentiment,
+        comment: variant.comment,
+      }),
+    })
+    const feedbackId = response.json?.id || null
+    if (feedbackId) insertedFeedbackIds.push(feedbackId)
+
+    record(`owner mixed feedback ${variant.sentiment} seed inserts for organizer`, (
+      response.response.status === 201 &&
+      typeof feedbackId === 'string' &&
+      response.json?.author_name === variant.author &&
+      response.json?.comment === variant.comment
+    ), {
+      status: response.response.status,
+      feedbackId,
+      author: variant.author,
+      sentiment: response.json?.sentiment || null,
+    })
+  }
+
   const submitted = await runNodeScript('scripts/platform-share-recipient-ui-smoke.mjs', {
     QA_SHARE_SLUG: fixture.shareSlug,
     QA_RUN_ID: feedbackRunId,
     QA_KEEP_FEEDBACK: '1',
   })
   insertedFeedbackId = submitted.parsed?.insertedFeedbackId || null
+  if (insertedFeedbackId) insertedFeedbackIds.push(insertedFeedbackId)
 
   record('recipient browser UI submits feedback for owner review', (
     submitted.code === 0 &&
@@ -131,16 +202,25 @@ async function submitRecipientFeedback() {
 }
 
 async function cleanupFeedback() {
-  if (!insertedFeedbackId) return
+  if (insertedFeedbackIds.length === 0) return
 
-  const cleaned = await runNodeScript('scripts/platform-share-feedback-smoke.mjs', {
-    QA_CLEANUP_FEEDBACK_ID: insertedFeedbackId,
-  })
-  record('owner feedback UI cleanup deleted inserted reaction', cleaned.code === 0 && cleaned.parsed?.ok === true, {
-    code: cleaned.code,
-    feedbackId: insertedFeedbackId,
-    error: cleaned.parsed?.error || null,
-    stderr: cleaned.stderr.trim().slice(-300),
+  const cleanupResults = []
+  for (const feedbackId of insertedFeedbackIds) {
+    const cleaned = await runNodeScript('scripts/platform-share-feedback-smoke.mjs', {
+      QA_CLEANUP_FEEDBACK_ID: feedbackId,
+    })
+    cleanupResults.push({
+      code: cleaned.code,
+      feedbackId,
+      ok: cleaned.parsed?.ok === true,
+      error: cleaned.parsed?.error || null,
+      stderr: cleaned.stderr.trim().slice(-200),
+    })
+  }
+
+  record('owner feedback UI cleanup deleted inserted reactions', cleanupResults.every((result) => result.code === 0 && result.ok), {
+    feedbackIds: insertedFeedbackIds,
+    cleanupResults,
   })
 }
 
@@ -210,7 +290,7 @@ async function runOwnerUiChecks() {
   const page = await context.newPage()
 
   try {
-    await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await page.goto(`${baseUrl}/trips/${fixture.tripId}?qaWorkflowFailure=once`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await page.waitForFunction((author) => {
       const text = document.body?.innerText || ''
       return text.includes(author) || text.includes('Friend feedback')
@@ -220,9 +300,18 @@ async function runOwnerUiChecks() {
     const refreshButton = page.getByRole('button', { name: /Refresh plan from feedback/i })
     const refreshEnabled = await refreshButton.isEnabled().catch(() => false)
 
-    record('owner Trip Studio shows submitted friend feedback', (
+    const hiddenCount = Math.max(0, insertedFeedbackIds.length - 4)
+    const latestVisibleVariants = feedbackVariants.slice(-3)
+    record('owner Trip Studio shows mixed friend feedback hierarchy', (
       initialState.text.includes(feedbackAuthor) &&
       initialState.text.includes(feedbackComment) &&
+      initialState.text.includes(`${insertedFeedbackIds.length} reviews`) &&
+      initialState.text.includes('Love') &&
+      initialState.text.includes('Curious') &&
+      initialState.text.includes('Notes') &&
+      latestVisibleVariants.every((variant) => initialState.text.includes(variant.author)) &&
+      latestVisibleVariants.every((variant) => initialState.text.includes(variant.comment)) &&
+      initialState.text.includes(`Showing latest 4 of ${insertedFeedbackIds.length} reviews`) &&
       initialState.text.includes('crew reacting') &&
       refreshEnabled &&
       !initialState.hasAppError &&
@@ -231,12 +320,41 @@ async function runOwnerUiChecks() {
       url: initialState.url,
       hasAuthor: initialState.text.includes(feedbackAuthor),
       hasComment: initialState.text.includes(feedbackComment),
+      hasReviewCount: initialState.text.includes(`${insertedFeedbackIds.length} reviews`),
+      hasLoveCount: initialState.text.includes('Love'),
+      hasCuriousCount: initialState.text.includes('Curious'),
+      hasPracticalCount: initialState.text.includes('Notes'),
+      visibleAuthorsPresent: latestVisibleVariants.every((variant) => initialState.text.includes(variant.author)),
+      visibleCommentsPresent: latestVisibleVariants.every((variant) => initialState.text.includes(variant.comment)),
+      hasOverflowSummary: initialState.text.includes(`Showing latest 4 of ${insertedFeedbackIds.length} reviews`),
+      hiddenCount,
       hasCrewReacting: initialState.text.includes('crew reacting'),
       refreshEnabled,
       hasAppError: initialState.hasAppError,
       horizontalOverflow: initialState.horizontalOverflow,
       clientWidth: initialState.clientWidth,
       scrollWidth: initialState.scrollWidth,
+    })
+
+    await refreshButton.click({ timeout: 8000 })
+    await page.waitForFunction(() => {
+      const text = document.body?.innerText || ''
+      return text.includes('Could not start that trip option. Please try again.')
+    }, { timeout: 8000 }).catch(() => {})
+    const failureState = await pageState(page)
+    const retryEnabled = await refreshButton.isEnabled().catch(() => false)
+    record('owner feedback refresh failure is recoverable from visible workflow controls', (
+      failureState.text.includes('Could not start that trip option. Please try again.') &&
+      failureState.text.includes('Refresh plan from feedback') &&
+      retryEnabled &&
+      !failureState.hasAppError &&
+      !failureState.horizontalOverflow
+    ), {
+      hasFailureCopy: failureState.text.includes('Could not start that trip option. Please try again.'),
+      hasRefreshButton: failureState.text.includes('Refresh plan from feedback'),
+      retryEnabled,
+      hasAppError: failureState.hasAppError,
+      horizontalOverflow: failureState.horizontalOverflow,
     })
 
     await refreshButton.click({ timeout: 8000 })
@@ -281,6 +399,7 @@ const summary = {
   baseUrl,
   fixture,
   feedbackId: insertedFeedbackId,
+  feedbackIds: insertedFeedbackIds,
   feedbackAuthor,
   checked: results.length,
   passed: results.filter((result) => result.ok).length,

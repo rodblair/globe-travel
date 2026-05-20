@@ -127,7 +127,8 @@ function TripStudioPageContent() {
   const qaForceBuildMapsFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaBuildMapsFailure') === '1'
   const qaForceOptimizeFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaOptimizeFailure') === '1'
   const qaForceShareFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaShareFailure') === '1'
-  const qaForceWorkflowFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaWorkflowFailure') === '1'
+  const qaWorkflowFailureMode = process.env.NODE_ENV === 'development' ? searchParams.get('qaWorkflowFailure') : null
+  const qaWorkflowFailureConsumedRef = useRef(false)
 
   // Capture window.location.origin after mount to avoid SSR ↔ client mismatch
   useEffect(() => { setPageOrigin(window.location.origin) }, [])
@@ -197,6 +198,14 @@ function TripStudioPageContent() {
       return jobs.some((job) => job.status === 'queued' || job.status === 'running') ? 2500 : false
     },
   })
+
+  const feedbackCounts = useMemo(() => ({
+    love_it: feedback.filter((entry) => entry.sentiment === 'love_it').length,
+    curious: feedback.filter((entry) => entry.sentiment === 'curious').length,
+    practical: feedback.filter((entry) => entry.sentiment === 'practical').length,
+  }), [feedback])
+  const visibleFeedback = feedback.slice(0, 4)
+  const hiddenFeedbackCount = Math.max(0, feedback.length - visibleFeedback.length)
 
   const ensureSelectedDayExists = useMemo(() => {
     if (days.length === 0) return 1
@@ -583,7 +592,10 @@ function TripStudioPageContent() {
     setWorkflowError(null)
     setCreatingWorkflow(type)
     try {
-      if (qaForceWorkflowFailure) throw new Error('Planner workflow could not start')
+      if (qaWorkflowFailureMode === '1' || (qaWorkflowFailureMode === 'once' && !qaWorkflowFailureConsumedRef.current)) {
+        qaWorkflowFailureConsumedRef.current = true
+        throw new Error('Planner workflow could not start')
+      }
       const res = await fetch(`/api/trips/${tripId}/planner-jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -596,7 +608,7 @@ function TripStudioPageContent() {
     } finally {
       setCreatingWorkflow(null)
     }
-  }, [tripId, creatingWorkflow, refetchWorkflowJobs, qaForceWorkflowFailure])
+  }, [tripId, creatingWorkflow, refetchWorkflowJobs, qaWorkflowFailureMode])
 
   if (isLoading && !resolvedPayload) {
     return (
@@ -885,17 +897,38 @@ function TripStudioPageContent() {
                     No reviews yet. Invite a few friends and ask them where the itinerary feels too busy, expensive, or worth keeping.
                   </p>
                 ) : (
-                  feedback.slice(0, 3).map((entry) => (
-                    <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="truncate text-xs font-medium text-foreground">{entry.author_name}</p>
-                        <span className={cn('px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
-                          {sentimentLabel[entry.sentiment]}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs leading-relaxed text-foreground/72 line-clamp-3">{entry.comment}</p>
+                  <>
+                    <div className="grid grid-cols-3 gap-2">
+                      {([
+                        ['love_it', 'Love'],
+                        ['curious', 'Curious'],
+                        ['practical', 'Notes'],
+                      ] as const).map(([key, label]) => (
+                        <div key={key} className={cn('rounded-2xl border px-2.5 py-2 text-center', sentimentClasses[key])}>
+                          <p className="text-sm font-semibold leading-none">{feedbackCounts[key]}</p>
+                          <p className="mt-1 text-[10px]">{label}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))
+
+                    {visibleFeedback.map((entry) => (
+                      <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="min-w-0 truncate text-xs font-medium text-foreground">{entry.author_name}</p>
+                          <span className={cn('shrink-0 px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
+                            {sentimentLabel[entry.sentiment]}
+                          </span>
+                        </div>
+                        <p className="mt-2 break-words text-xs leading-relaxed text-foreground/72 line-clamp-3">{entry.comment}</p>
+                      </div>
+                    ))}
+
+                    {hiddenFeedbackCount > 0 && (
+                      <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-3 py-2 text-xs leading-relaxed text-foreground/58">
+                        Showing latest 4 of {feedback.length} reviews. {hiddenFeedbackCount} more {hiddenFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for refresh.
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             </section>

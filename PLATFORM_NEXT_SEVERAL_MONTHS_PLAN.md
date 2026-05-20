@@ -3,7 +3,7 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-20 public share feedback retry and overflow coverage added
+Updated: 2026-05-20 owner mixed-feedback hierarchy and retry coverage added
 
 ## Active Goal
 
@@ -43,7 +43,7 @@ The newest Trip Studio automation checkpoint converts the owner/read-only Browse
 
 The newest Month 4 public-share checkpoint turns successful recipient feedback into browser coverage. `npm run qa:share-recipient-ui` submits feedback through the rendered public share page on phone, verifies public API readback, confirms the reaction is visible after desktop reload, and cleans up the inserted feedback. The local release-candidate gate now includes this browser check whenever share feedback mutation is enabled. Evidence: `qa/public-share-recipient-ui-feedback-2026-05-19.md`.
 
-The newest public-share-to-owner checkpoint closes the first full feedback loop through rendered UI. `npm run qa:share-owner-feedback-ui` submits a logged-out friend reaction through the public share page, opens the owner Trip Studio with the guest organizer cookie, verifies the submitted author/comment and owner readiness copy, runs `Refresh plan from feedback`, confirms the workflow reaches `"status": "ready"`, and cleans up disposable data. The focused release-candidate pass `qa/release-candidate-owner-feedback-ui-2026-05-19/` completed `24/24` with recipient feedback UI, owner feedback readback, owner feedback browser UI, Stripe test-mode readiness, and fixture cleanup all passing. Evidence: `qa/public-share-owner-feedback-ui-2026-05-20.md`.
+The newest public-share-to-owner checkpoint hardens the full feedback loop through rendered UI. `npm run qa:share-owner-feedback-ui` seeds mixed friend reactions, submits a logged-out friend reaction through the public share page, opens the owner Trip Studio with the guest organizer cookie, verifies sentiment counts, latest feedback cards, overflow summary, submitted author/comment, and owner readiness copy, forces a one-time feedback-refresh workflow failure, retries `Refresh plan from feedback` to `"status": "ready"`, and cleans up disposable data. The Codex in-app Browser also verified the same owner surface, failure copy, retry-to-ready output, no app error, no horizontal overflow, and fixture cleanup. Evidence: `qa/public-share-owner-feedback-ui-2026-05-20.md`.
 
 The newest feedback-state checkpoint hardens the recipient side of the share loop for volume and recovery. `npm run qa:share-feedback-states-ui` creates a disposable public Trip Studio fixture, verifies clear `0 reactions` guidance, blocks invalid optional email in the rendered form, forces a one-time feedback submission failure, verifies the comment is preserved for retry, submits seven reactions across mixed sentiments, covers duplicate names, long author text, and a 540-character comment, verifies desktop reload shows `7 reactions` with a `Showing latest 4 of 7 reactions` overflow summary, and cleans up every inserted row plus the disposable fixture. Evidence: `qa/public-share-feedback-states-ui-2026-05-20.md`.
 
@@ -444,13 +444,14 @@ The next execution slice is the Month 4 share-loop expansion now that the owner 
    - many reactions beyond the first four visible cards;
    - forced network failure and retry;
    - owner-side readback after mixed feedback.
-   - Done as of May 20: empty state, invalid optional email, all three sentiments, duplicate author names, long author names, a 540-character rendered UI comment, forced recipient failure/retry, and seven-reaction overflow summary.
+   - Done as of May 20: empty state, invalid optional email, all three sentiments, duplicate author names, long author names, a 540-character rendered UI comment, forced recipient failure/retry, seven-reaction public overflow summary, owner mixed-feedback hierarchy, and owner feedback-refresh failure/retry.
 3. Improve the public share UI if Browser exposes friction:
    - first viewport clarity;
    - feedback form density and helper copy;
    - recipient CTA prominence;
    - mobile map/readability balance;
    - owner feedback readback hierarchy.
+   - Done as of May 20: owner readback now shows sentiment counts, latest 4 of 5 review summary, long-name-safe cards, and feedback refresh recovery copy.
 4. Promote repeatable findings into gates:
    - extend `npm run qa:share-recipient-ui`;
    - extend `npm run qa:share-owner-feedback-ui`;
