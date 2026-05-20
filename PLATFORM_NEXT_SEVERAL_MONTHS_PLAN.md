@@ -17,6 +17,8 @@ The active goal is pinned and remains open. The previous full release-candidate 
 
 The current reliability upgrade is that public production visual QA and public share viral-loop QA are now part of the one-command production release gate. `npm run qa:release-production` checks public production layout for landing, login, signup, and public share, verifies recipient share/copy/start-own-trip affordances on the stable Athens public itinerary, pixel-compares stable shell routes against the production visual baseline, and still runs production ops, smoke, auth/guest, commercial, public share/social preview, prompt actuals, and prompt-suite checks.
 
+The latest post-deploy production checkpoint re-ran that full non-mutating production gate after the owner-feedback release with production visual and viral coverage enabled. `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-20 npm run qa:release-production` passed `9/9`, including visual QA `20/20`, viral loop `5/5`, and prompt-suite production actual validation `56/56`. In-app Browser also spot-checked the live Athens share page through route/map content, feedback loop content, share controls, Start your own trip links, no app error, and no horizontal overflow. Evidence: `qa/production-release-full-visual-viral-2026-05-20.md`.
+
 The newest commercial-readiness checkpoint closes a paid-path polish gap in the saved journal limit flow: the upgrade modal now has accessible dialog semantics, shows recoverable checkout errors, and no longer advertises a `coming soon` feature as paid value. `npm run qa:billing-recovery` now covers that modal through a development-only QA path.
 
 The newest public-share checkpoint closes a recipient feedback validation gap: optional email is validated before submission with clear recovery copy, the public feedback textarea now enforces the API's 600-character limit, and `npm run qa:share-recovery` covers invalid optional email plus forced feedback failure recovery.
@@ -430,7 +432,7 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice is the Month 4 share-loop expansion now that the owner feedback UI path has a repeatable gate. Broaden the viral loop from one stable Athens public share to multiple real trip shapes, then move the strongest repeated findings into automated QA.
+The next execution slice is to move from public production proof into protected production confidence: authenticated saved/account/billing and owner Trip Studio visual QA need fresh current-state evidence after the latest share-loop and production-release passes. Use disposable guest-owned fixtures locally, then only non-mutating checks against production unless a specific remote mutation is explicitly approved.
 
 1. Browser-test the full share loop on at least three public trips:
    - logged-out recipient opens `/t/[shareSlug]`;
@@ -470,6 +472,13 @@ The next execution slice is the Month 4 share-loop expansion now that the owner 
 6. After deployment, run production release verification:
    - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
 7. Update `RELEASE_READINESS_MEMO.md`, `PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md`, and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
+
+8. Start the protected-surface production-confidence slice:
+   - run a fresh local authenticated visual sweep for saved trips, saved journal, account profile, account billing, and Trip Studio owner on a disposable guest fixture;
+   - run `npm run qa:saved-account`, `npm run qa:billing-recovery`, `npm run qa:studio-owner-ui`, and `npm run qa:studio-recovery`;
+   - Browser spot-check the most important protected surfaces locally after the automated gates;
+   - if all local gates pass, run the non-mutating production release gate again and keep production mutation toggles disabled;
+   - document any remaining protected-route evidence gaps before moving toward final launch-candidate signoff.
 
 ## Completion Definition
 
