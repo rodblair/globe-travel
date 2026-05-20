@@ -249,6 +249,8 @@ export function FriendFeedbackPanel({
   feedback: FeedbackPreview[]
   className?: string
 }) {
+  const visibleFeedback = feedback.slice(0, 4)
+  const remainingFeedbackCount = Math.max(0, feedback.length - visibleFeedback.length)
   const counts = useMemo(() => {
     return {
       love_it: feedback.filter((entry) => entry.sentiment === 'love_it').length,
@@ -287,17 +289,24 @@ export function FriendFeedbackPanel({
             Send this link to the group. They can mark what they love, what needs a question, and what might break the plan.
           </p>
         ) : (
-          feedback.slice(0, 4).map((entry) => (
-            <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-4">
-              <div className="flex items-center justify-between gap-3">
-                <p className="truncate text-sm font-semibold text-foreground">{entry.author_name}</p>
-                <span className={cn('rounded-full border px-2 py-1 text-[10px]', toneClass[entry.sentiment])}>
-                  {toneLabel[entry.sentiment]}
-                </span>
+          <>
+            {visibleFeedback.map((entry) => (
+              <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="min-w-0 truncate text-sm font-semibold text-foreground">{entry.author_name}</p>
+                  <span className={cn('shrink-0 rounded-full border px-2 py-1 text-[10px]', toneClass[entry.sentiment])}>
+                    {toneLabel[entry.sentiment]}
+                  </span>
+                </div>
+                <p className="mt-2 line-clamp-3 break-words text-sm leading-relaxed text-ink-2">{entry.comment}</p>
               </div>
-              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-2">{entry.comment}</p>
-            </div>
-          ))
+            ))}
+            {remainingFeedbackCount > 0 && (
+              <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-ink-2">
+                Showing latest 4 of {feedback.length} reactions. {remainingFeedbackCount} more {remainingFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for the organizer.
+              </p>
+            )}
+          </>
         )}
       </div>
     </section>

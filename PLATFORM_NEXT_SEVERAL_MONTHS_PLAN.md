@@ -3,7 +3,7 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-20 multi-itinerary public share and owner feedback refresh coverage added
+Updated: 2026-05-20 public share feedback retry and overflow coverage added
 
 ## Active Goal
 
@@ -45,7 +45,7 @@ The newest Month 4 public-share checkpoint turns successful recipient feedback i
 
 The newest public-share-to-owner checkpoint closes the first full feedback loop through rendered UI. `npm run qa:share-owner-feedback-ui` submits a logged-out friend reaction through the public share page, opens the owner Trip Studio with the guest organizer cookie, verifies the submitted author/comment and owner readiness copy, runs `Refresh plan from feedback`, confirms the workflow reaches `"status": "ready"`, and cleans up disposable data. The focused release-candidate pass `qa/release-candidate-owner-feedback-ui-2026-05-19/` completed `24/24` with recipient feedback UI, owner feedback readback, owner feedback browser UI, Stripe test-mode readiness, and fixture cleanup all passing. Evidence: `qa/public-share-owner-feedback-ui-2026-05-20.md`.
 
-The newest feedback-state checkpoint expands the recipient side of the share loop. `npm run qa:share-feedback-states-ui` creates a disposable public Trip Studio fixture, verifies the public share starts with clear `0 reactions` guidance, blocks invalid optional email in the rendered form, submits `Love it`, `Curious`, and `Practical note` reactions, covers duplicate author names and a 540-character comment, verifies desktop reload visibility, and cleans up every inserted row plus the disposable fixture. Evidence: `qa/public-share-feedback-states-ui-2026-05-20.md`.
+The newest feedback-state checkpoint hardens the recipient side of the share loop for volume and recovery. `npm run qa:share-feedback-states-ui` creates a disposable public Trip Studio fixture, verifies clear `0 reactions` guidance, blocks invalid optional email in the rendered form, forces a one-time feedback submission failure, verifies the comment is preserved for retry, submits seven reactions across mixed sentiments, covers duplicate names, long author text, and a 540-character comment, verifies desktop reload shows `7 reactions` with a `Showing latest 4 of 7 reactions` overflow summary, and cleans up every inserted row plus the disposable fixture. Evidence: `qa/public-share-feedback-states-ui-2026-05-20.md`.
 
 The newest multi-itinerary share checkpoint broadens the growth loop beyond the stable Athens share and adds social-card image plus owner refresh QA. `npm run qa:share-multi-itinerary-ui` creates ten disposable public itinerary fixtures, API-smokes all ten, decodes all ten share-card PNGs for dimensions, nonblank branded content, and unique per-trip hashes, Browser-tests Lisbon, Porto, and Mexico City as logged-out recipients on phone and desktop, submits feedback on each, verifies desktop readback, checks copy/native share affordances, then opens the owner Trip Studio for Lisbon on phone, Porto on tablet, and Mexico City on desktop and runs `Refresh plan from feedback` through ready state on each. Evidence: `qa/public-share-multi-itinerary-ui-2026-05-20.md`.
 
@@ -444,7 +444,7 @@ The next execution slice is the Month 4 share-loop expansion now that the owner 
    - many reactions beyond the first four visible cards;
    - forced network failure and retry;
    - owner-side readback after mixed feedback.
-   - Done as of May 20: empty state, invalid optional email, all three sentiments, duplicate author names, and a 540-character rendered UI comment.
+   - Done as of May 20: empty state, invalid optional email, all three sentiments, duplicate author names, long author names, a 540-character rendered UI comment, forced recipient failure/retry, and seven-reaction overflow summary.
 3. Improve the public share UI if Browser exposes friction:
    - first viewport clarity;
    - feedback form density and helper copy;

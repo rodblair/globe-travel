@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
@@ -74,8 +74,9 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
-  const qaForceFeedbackFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaFeedbackFailure') === '1'
+  const qaFeedbackFailureMode = process.env.NODE_ENV === 'development' ? searchParams.get('qaFeedbackFailure') : null
   const qaForceMapFallback = process.env.NODE_ENV === 'development' && searchParams.get('qaMapFallback') === '1'
+  const qaFeedbackFailureConsumedRef = useRef(false)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['trip-share', shareSlug],
@@ -122,7 +123,10 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
     setSubmitted(false)
     setSubmitError(null)
     try {
-      if (qaForceFeedbackFailure) throw new Error('Feedback is temporarily unavailable in QA mode.')
+      if (qaFeedbackFailureMode === '1' || (qaFeedbackFailureMode === 'once' && !qaFeedbackFailureConsumedRef.current)) {
+        qaFeedbackFailureConsumedRef.current = true
+        throw new Error('Feedback is temporarily unavailable in QA mode.')
+      }
       const res = await fetch(`/api/trips/share/${shareSlug}/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

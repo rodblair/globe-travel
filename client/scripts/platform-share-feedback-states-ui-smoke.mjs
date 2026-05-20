@@ -28,18 +28,44 @@ let fixture = {
   external: !shouldCreateFixture,
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 const feedbackVariants = [
   {
     label: 'Love it',
     sentiment: 'love_it',
-    author: `QA Love ${runId}`,
-    comment: `QA share-state ${runId}: The Acropolis morning should absolutely stay because it anchors the whole trip.`,
+    author: `QA Retry ${runId}`,
+    comment: `QA share-state ${runId}: This note should fail once in QA mode, keep the form intact, and then send on retry.`,
   },
   {
     label: 'Curious',
     sentiment: 'curious',
     author: duplicateAuthor,
     comment: `QA share-state ${runId}: Could we clarify whether the ferry timing leaves enough room for breakfast?`,
+  },
+  {
+    label: 'Love it',
+    sentiment: 'love_it',
+    author: `QA Keep ${runId}`,
+    comment: `QA share-state ${runId}: Keep the first museum morning because it gives the group a memorable anchor.`,
+  },
+  {
+    label: 'Curious',
+    sentiment: 'curious',
+    author: `QA Logistics ${runId}`,
+    comment: `QA share-state ${runId}: Is the evening transfer realistic if two friends arrive late and need to drop bags first?`,
+  },
+  {
+    label: 'Practical note',
+    sentiment: 'practical',
+    author: `QA Long Name Friend With Extra Planning Context ${runId}`,
+    comment: `QA share-state ${runId}: Please add a clear backup plan for rain, taxi delays, and one person who may need an elevator-friendly route.`,
+  },
+  {
+    label: 'Love it',
+    sentiment: 'love_it',
+    author: `QA Emoji ${runId}`,
+    comment: `QA share-state ${runId}: Love the balance of landmarks, food, and breathing room. This feels easy to say yes to.`,
   },
   {
     label: 'Practical note',
@@ -252,11 +278,24 @@ async function pageState(page) {
   })
 }
 
-async function gotoPublicShare(page) {
-  await page.goto(`${baseUrl}/t/${fixture.shareSlug}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 30000,
-  })
+async function gotoPublicShare(page, query = '') {
+  const url = `${baseUrl}/t/${fixture.shareSlug}${query}`
+  let lastError = null
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      await page.goto(url, {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      })
+      lastError = null
+      break
+    } catch (error) {
+      lastError = error
+      if (attempt < 3) await sleep(700 * attempt)
+    }
+  }
+  if (lastError) throw lastError
+
   await page.waitForFunction(() => {
     const text = (document.body?.innerText || '').toLowerCase()
     return (
@@ -290,7 +329,7 @@ async function selectSentiment(page, label) {
   await option.click({ timeout: 8000 })
 }
 
-async function submitVariant(page, variant) {
+async function submitVariant(page, variant, options = {}) {
   await page.getByLabel('Your name').fill(variant.author)
   await page.getByLabel('Email optional').fill('')
   await selectSentiment(page, variant.label)
@@ -318,6 +357,35 @@ async function submitVariant(page, variant) {
   })
 
   await sendButton.click({ timeout: 8000 })
+
+  if (options.expectFirstFailure) {
+    await page.waitForFunction(() => {
+      const text = document.body?.innerText || ''
+      return text.includes('Feedback is temporarily unavailable in QA mode.')
+    }, { timeout: 8000 }).catch(() => {})
+
+    const failureState = await pageState(page)
+    const commentValueAfterFailure = await page.getByLabel('Trip feedback').inputValue()
+    const retryEnabled = await sendButton.isEnabled().catch(() => false)
+    record(`feedback state ${variant.sentiment} preserves form after forced failure`, (
+      failureState.text.includes('Feedback is temporarily unavailable in QA mode.') &&
+      failureState.text.includes('Ready to send') &&
+      commentValueAfterFailure === variant.comment &&
+      retryEnabled &&
+      !failureState.hasAppError &&
+      !failureState.horizontalOverflow
+    ), {
+      hasFailureCopy: failureState.text.includes('Feedback is temporarily unavailable in QA mode.'),
+      hasReadyCopy: failureState.text.includes('Ready to send'),
+      commentPreserved: commentValueAfterFailure === variant.comment,
+      retryEnabled,
+      hasAppError: failureState.hasAppError,
+      horizontalOverflow: failureState.horizontalOverflow,
+    })
+
+    await sendButton.click({ timeout: 8000 })
+  }
+
   await page.waitForFunction((comment) => {
     const text = document.body?.innerText || ''
     return text.includes('Feedback sent') || text.includes(comment)
@@ -357,7 +425,7 @@ async function runBrowserChecks() {
     isMobile: true,
   })
   const phonePage = await phoneContext.newPage()
-  await gotoPublicShare(phonePage)
+  await gotoPublicShare(phonePage, '?qaFeedbackFailure=once')
 
   const emptyState = await pageState(phonePage)
   const expectsEmpty = !fixture.external
@@ -394,8 +462,8 @@ async function runBrowserChecks() {
     horizontalOverflow: invalidEmailState.horizontalOverflow,
   })
 
-  for (const variant of feedbackVariants) {
-    await submitVariant(phonePage, variant)
+  for (const [index, variant] of feedbackVariants.entries()) {
+    await submitVariant(phonePage, variant, { expectFirstFailure: index === 0 })
   }
   await phoneContext.close().catch(() => {})
 
@@ -407,28 +475,34 @@ async function runBrowserChecks() {
   await gotoPublicShare(desktopPage)
   await desktopPage.waitForFunction((author) => {
     const text = document.body?.innerText || ''
-    return text.includes(author) && text.includes('3 reactions')
+    return text.includes(author) && text.includes('7 reactions')
   }, duplicateAuthor, { timeout: 12000 }).catch(() => {})
   const desktopState = await pageState(desktopPage)
 
-  record('public share feedback shows multiple sentiments and duplicate-name reactions after reload', (
-    desktopState.text.includes('3 reactions') &&
+  const visibleFeedback = feedbackVariants.slice(-4)
+  const hiddenFeedback = feedbackVariants.slice(0, -4)
+  record('public share feedback shows many sentiments and summarizes overflow reactions after reload', (
+    desktopState.text.includes('7 reactions') &&
     desktopState.text.includes('Love') &&
     desktopState.text.includes('Curious') &&
     desktopState.text.includes('Notes') &&
-    desktopState.text.includes(feedbackVariants[0].author) &&
+    visibleFeedback.every((variant) => desktopState.text.includes(variant.author)) &&
+    visibleFeedback.every((variant) => desktopState.text.includes(variant.comment)) &&
     desktopState.text.includes(duplicateAuthor) &&
-    desktopState.text.includes(feedbackVariants[2].comment) &&
+    desktopState.text.includes('Showing latest 4 of 7 reactions') &&
+    hiddenFeedback.every((variant) => !desktopState.text.includes(variant.comment)) &&
     !desktopState.hasAppError &&
     !desktopState.horizontalOverflow
   ), {
-    hasThreeReactions: desktopState.text.includes('3 reactions'),
+    hasSevenReactions: desktopState.text.includes('7 reactions'),
     hasLoveTone: desktopState.text.includes('Love'),
     hasCuriousTone: desktopState.text.includes('Curious'),
     hasPracticalTone: desktopState.text.includes('Notes'),
-    hasUniqueAuthor: desktopState.text.includes(feedbackVariants[0].author),
+    visibleAuthorsPresent: visibleFeedback.every((variant) => desktopState.text.includes(variant.author)),
     hasDuplicateAuthor: desktopState.text.includes(duplicateAuthor),
-    hasLongComment: desktopState.text.includes(feedbackVariants[2].comment),
+    visibleCommentsPresent: visibleFeedback.every((variant) => desktopState.text.includes(variant.comment)),
+    hasOverflowSummary: desktopState.text.includes('Showing latest 4 of 7 reactions'),
+    hiddenOlderCommentsAbsent: hiddenFeedback.every((variant) => !desktopState.text.includes(variant.comment)),
     hasAppError: desktopState.hasAppError,
     horizontalOverflow: desktopState.horizontalOverflow,
     clientWidth: desktopState.clientWidth,
