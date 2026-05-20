@@ -19,6 +19,8 @@ The current reliability upgrade is that public production visual QA and public s
 
 The latest post-deploy production checkpoint re-ran that full non-mutating production gate after the owner-feedback release with production visual and viral coverage enabled. `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-20 npm run qa:release-production` passed `9/9`, including visual QA `20/20`, viral loop `5/5`, and prompt-suite production actual validation `56/56`. In-app Browser also spot-checked the live Athens share page through route/map content, feedback loop content, share controls, Start your own trip links, no app error, and no horizontal overflow. Evidence: `qa/production-release-full-visual-viral-2026-05-20.md`.
 
+The newest protected-surface checkpoint adds current authenticated local evidence for returning-user and owner surfaces. `npm run qa:saved-account` passed `13/13`, `npm run qa:billing-recovery` passed `13/13`, `npm run qa:studio-owner-ui` passed `6/6`, a kept owner fixture passed `qa:studio-actions` `23/23` and `qa:studio-recovery` `6/6`, and authenticated visual QA passed `25/25` across saved trips, saved journal, account profile, account billing, and Trip Studio at five viewport sizes. In-app Browser also checked saved trips, Explorer billing, and owner Trip Studio controls with no app error or horizontal overflow before cleanup. Evidence: `qa/protected-surfaces-authenticated-visual-2026-05-20.md`.
+
 The newest commercial-readiness checkpoint closes a paid-path polish gap in the saved journal limit flow: the upgrade modal now has accessible dialog semantics, shows recoverable checkout errors, and no longer advertises a `coming soon` feature as paid value. `npm run qa:billing-recovery` now covers that modal through a development-only QA path.
 
 The newest public-share checkpoint closes a recipient feedback validation gap: optional email is validated before submission with clear recovery copy, the public feedback textarea now enforces the API's 600-character limit, and `npm run qa:share-recovery` covers invalid optional email plus forced feedback failure recovery.
@@ -432,7 +434,7 @@ At the end of each month, run a scorecard review and decide whether the platform
 
 ## Immediate Next Execution Slice
 
-The next execution slice is to move from public production proof into protected production confidence: authenticated saved/account/billing and owner Trip Studio visual QA need fresh current-state evidence after the latest share-loop and production-release passes. Use disposable guest-owned fixtures locally, then only non-mutating checks against production unless a specific remote mutation is explicitly approved.
+The next execution slice is final release-candidate consolidation: protected local evidence and public production evidence are now fresh, so the next meaningful gap is a full local release-candidate run with the newest gates enabled, followed by non-mutating production verification and final P0/P1 audit review.
 
 1. Browser-test the full share loop on at least three public trips:
    - logged-out recipient opens `/t/[shareSlug]`;
@@ -473,12 +475,17 @@ The next execution slice is to move from public production proof into protected 
    - `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
 7. Update `RELEASE_READINESS_MEMO.md`, `PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md`, and focused `qa/` evidence with Browser findings, fixes, command results, remaining risks, and retest status.
 
-8. Start the protected-surface production-confidence slice:
+8. Protected-surface production-confidence slice:
    - run a fresh local authenticated visual sweep for saved trips, saved journal, account profile, account billing, and Trip Studio owner on a disposable guest fixture;
    - run `npm run qa:saved-account`, `npm run qa:billing-recovery`, `npm run qa:studio-owner-ui`, and `npm run qa:studio-recovery`;
    - Browser spot-check the most important protected surfaces locally after the automated gates;
    - if all local gates pass, run the non-mutating production release gate again and keep production mutation toggles disabled;
    - document any remaining protected-route evidence gaps before moving toward final launch-candidate signoff.
+   - Done as of May 20: `qa:saved-account` `13/13`, `qa:billing-recovery` `13/13`, `qa:studio-owner-ui` `6/6`, kept owner fixture `qa:studio-actions` `23/23`, `qa:studio-recovery` `6/6`, authenticated protected visual QA `25/25`, Browser spot-checks for saved/billing/Trip Studio, and fixture cleanup.
+9. Run the final local release-candidate consolidation:
+   - include visual QA, prompt suite, share fixture sweep, owner feedback, slow-network, saved/account, billing recovery, auth/guest, a11y, ops, and production build;
+   - preserve the generated summary and screenshot artifacts;
+   - fix any P0/P1 found before another production release verification.
 
 ## Completion Definition
 
