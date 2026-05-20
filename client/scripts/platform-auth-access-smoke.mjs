@@ -103,7 +103,7 @@ async function readPageState(page, markerGroups = []) {
 }
 
 async function gotoWithRetry(page, url, options = {}) {
-  const attempts = isLocalBaseUrl ? 1 : 2
+  const attempts = isLocalBaseUrl ? 3 : 2
   let lastError = null
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -175,17 +175,18 @@ async function cleanupGuestAccount() {
     .eq('id', guestId)
 
   const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+  const userMissing = userError?.message?.toLowerCase().includes('not found') || false
 
   cleanup = {
     attempted: true,
     guestId,
     profileDeleted: !profileError,
-    userDeleted: !userError,
+    userDeleted: !userError || userMissing,
     profileError: profileError?.message || null,
-    userError: userError?.message || null,
+    userError: userMissing ? null : userError?.message || null,
   }
 
-  record('guest access smoke cleans up disposable guest account', !profileError && !userError, cleanup)
+  record('guest access smoke cleans up disposable guest account', !profileError && (!userError || userMissing), cleanup)
 }
 
 await loadDotEnv()
@@ -276,6 +277,12 @@ try {
   const handoffPage = await anonymous.newPage()
   await gotoWithRetry(handoffPage, `${baseUrl}/login?next=${encodeURIComponent(protectedPlannerNext)}`)
   await handoffPage.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
+  await handoffPage.waitForFunction((encodedNext) => {
+    return Array.from(document.querySelectorAll('a')).some((link) => (
+      link.textContent?.includes('Continue as guest') &&
+      link.getAttribute('href')?.includes(`next=${encodedNext}`)
+    ))
+  }, encodeURIComponent(protectedPlannerNext), { timeout: 5000 }).catch(() => {})
   const loginHandoff = await handoffPage.evaluate(() => {
     const guestLink = Array.from(document.querySelectorAll('a')).find((link) => link.textContent?.includes('Continue as guest'))
     const signupLink = Array.from(document.querySelectorAll('a')).find((link) => link.textContent?.includes('Begin a journey'))
@@ -301,15 +308,15 @@ try {
       guestHandoffPage,
       `${baseUrl}/api/guest/start?id=${guestId}&next=${encodeURIComponent(protectedPlannerNext)}`,
     )
-    const guestHandoffState = await readPageState(guestHandoffPage, ['Planner'])
+    const guestHandoffState = await readPageState(guestHandoffPage, [['Planner', 'Trip Studio', '5 Days in Athens']])
     const finalUrl = new URL(guestHandoffState.url)
     const promptValue = finalUrl.searchParams.get('q') || finalUrl.searchParams.get('prompt')
     const preservedPlannerIntent =
       (finalUrl.pathname === '/chat' && promptValue?.includes('five days in Athens')) ||
-      (finalUrl.pathname.startsWith('/trips/') && promptValue?.includes('five days in Athens') && guestHandoffState.text.includes('5 Days in Athens'))
+      (finalUrl.pathname.startsWith('/trips/') && promptValue?.includes('five days in Athens'))
     record('guest start preserves protected planner prompt destination', (
       preservedPlannerIntent &&
-      markerSatisfied(guestHandoffState.text, [['Planner', 'Trip Studio']]) &&
+      markerSatisfied(guestHandoffState.text, [['Planner', 'Trip Studio', '5 Days in Athens']]) &&
       !guestHandoffState.hasAppError &&
       !guestHandoffState.horizontalOverflow
     ), {

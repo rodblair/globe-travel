@@ -1,22 +1,20 @@
 'use client'
 
-import { useSyncExternalStore } from 'react'
-
-function subscribeToLocationChange(onStoreChange: () => void) {
-  if (typeof window === 'undefined') return () => {}
-
-  window.addEventListener('popstate', onStoreChange)
-  return () => window.removeEventListener('popstate', onStoreChange)
-}
+import { useEffect, useState } from 'react'
 
 function getLocationSearch() {
   return typeof window === 'undefined' ? '' : window.location.search
 }
 
-function getServerSearch() {
-  return ''
-}
-
 export function useCurrentSearch() {
-  return useSyncExternalStore(subscribeToLocationChange, getLocationSearch, getServerSearch)
+  const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const update = () => setSearch(getLocationSearch())
+    update()
+    window.addEventListener('popstate', update)
+    return () => window.removeEventListener('popstate', update)
+  }, [])
+
+  return search
 }

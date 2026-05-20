@@ -221,7 +221,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -20,
+              "y": -39,
               "width": 150,
               "height": 44
             }
@@ -277,7 +277,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 93,
-              "y": 594,
+              "y": 587,
               "width": 204,
               "height": 48
             }
@@ -529,7 +529,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -30,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -935,7 +935,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1189,7 +1189,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -36,
               "width": 150,
               "height": 44
             }
@@ -1443,7 +1443,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1660,7 +1660,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 8,
+              "y": -1,
               "width": 150,
               "height": 44
             }
@@ -1914,7 +1914,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -29,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2018,6 +2018,20 @@
             }
           },
           {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 950,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
             "tag": "body",
             "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
             "role": "",
@@ -2040,7 +2054,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -19,
+              "y": 1,
               "width": 150,
               "height": 44
             }
@@ -2056,20 +2070,6 @@
               "x": 168,
               "y": 26,
               "width": 198,
-              "height": 44
-            }
-          },
-          {
-            "tag": "a",
-            "label": "How it works",
-            "role": "",
-            "href": "#how",
-            "visible": true,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 952,
-              "y": 28,
-              "width": 109,
               "height": 44
             }
           }
@@ -2131,7 +2131,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -36,
               "width": 150,
               "height": 44
             }
@@ -2480,17 +2480,17 @@
             }
           },
           {
-            "tag": "nextjs-portal",
-            "label": "NEXTJS-PORTAL",
+            "tag": "a",
+            "label": "Open QA Trip Studio Actions a621295b Saved",
             "role": "",
-            "href": "",
-            "visible": false,
+            "href": "/trips/13de71f2-9e04-44c3-8b72-ee419645184f",
+            "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": 950,
-              "width": 0,
-              "height": 0
+              "x": 321,
+              "y": 329,
+              "width": 432,
+              "height": 125
             }
           }
         ],
@@ -2740,7 +2740,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -30,
               "width": 150,
               "height": 44
             }
@@ -2994,7 +2994,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -29,
               "width": 150,
               "height": 44
             }
@@ -3465,7 +3465,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -6,
+              "y": 8,
               "width": 150,
               "height": 44
             }
