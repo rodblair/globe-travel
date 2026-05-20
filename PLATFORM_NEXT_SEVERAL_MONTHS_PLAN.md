@@ -3,7 +3,7 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-20 multi-itinerary public share loop coverage added
+Updated: 2026-05-20 multi-itinerary public share and owner feedback refresh coverage added
 
 ## Active Goal
 
@@ -47,7 +47,7 @@ The newest public-share-to-owner checkpoint closes the first full feedback loop 
 
 The newest feedback-state checkpoint expands the recipient side of the share loop. `npm run qa:share-feedback-states-ui` creates a disposable public Trip Studio fixture, verifies the public share starts with clear `0 reactions` guidance, blocks invalid optional email in the rendered form, submits `Love it`, `Curious`, and `Practical note` reactions, covers duplicate author names and a 540-character comment, verifies desktop reload visibility, and cleans up every inserted row plus the disposable fixture. Evidence: `qa/public-share-feedback-states-ui-2026-05-20.md`.
 
-The newest multi-itinerary share checkpoint broadens the growth loop beyond the stable Athens share and adds social-card image content QA. `npm run qa:share-multi-itinerary-ui` creates ten disposable public itinerary fixtures, API-smokes all ten, decodes all ten share-card PNGs for dimensions, nonblank branded content, and unique per-trip hashes, Browser-tests Lisbon, Porto, and Mexico City on phone and desktop, submits feedback on each, verifies desktop readback, checks copy/native share affordances, and cleans up feedback, fixtures, places, and owner data. Evidence: `qa/public-share-multi-itinerary-ui-2026-05-20.md`.
+The newest multi-itinerary share checkpoint broadens the growth loop beyond the stable Athens share and adds social-card image plus owner refresh QA. `npm run qa:share-multi-itinerary-ui` creates ten disposable public itinerary fixtures, API-smokes all ten, decodes all ten share-card PNGs for dimensions, nonblank branded content, and unique per-trip hashes, Browser-tests Lisbon, Porto, and Mexico City as logged-out recipients on phone and desktop, submits feedback on each, verifies desktop readback, checks copy/native share affordances, then opens the owner Trip Studio for Lisbon on phone, Porto on tablet, and Mexico City on desktop and runs `Refresh plan from feedback` through ready state on each. Evidence: `qa/public-share-multi-itinerary-ui-2026-05-20.md`.
 
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
@@ -438,7 +438,7 @@ The next execution slice is the Month 4 share-loop expansion now that the owner 
    - recipient submits practical, excited, and caution-style feedback;
    - owner opens Trip Studio and sees the feedback clearly;
    - owner runs `Refresh plan from feedback` and gets a clear ready or recovery state.
-   - Done as of May 20: logged-out recipient UI, feedback submit/readback, copy/native share, and desktop reload are covered across Lisbon, Porto, and Mexico City; owner-side refresh is still single-fixture coverage.
+   - Done as of May 20: logged-out recipient UI, feedback submit/readback, copy/native share, desktop reload, owner feedback readback, and owner feedback refresh are covered across Lisbon, Porto, and Mexico City.
 2. Expand feedback-state coverage:
    - one reaction;
    - many reactions beyond the first four visible cards;
@@ -455,7 +455,7 @@ The next execution slice is the Month 4 share-loop expansion now that the owner 
    - extend `npm run qa:share-recipient-ui`;
    - extend `npm run qa:share-owner-feedback-ui`;
    - add multi-slug share-loop fixtures when stable public slugs are available;
-   - Done as of May 20: `npm run qa:share-multi-itinerary-ui` creates disposable multi-slug fixtures, Browser-tests the first three itinerary shapes, and validates social-card image content across all ten fixture cards.
+   - Done as of May 20: `npm run qa:share-multi-itinerary-ui` creates disposable multi-slug fixtures, Browser-tests the first three itinerary shapes, validates social-card image content across all ten fixture cards, and runs owner-side feedback refresh across phone/tablet/desktop Trip Studio.
 5. Run the focused share-loop and release gates:
    - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share`
    - `QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-feedback`

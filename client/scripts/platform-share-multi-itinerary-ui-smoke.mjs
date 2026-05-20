@@ -273,6 +273,19 @@ async function installShareStubs(page) {
   })
 }
 
+async function addOwnerCookie(context) {
+  await context.addCookies([
+    {
+      name: 'globe_travel_guest',
+      value: ownerUserId,
+      url: baseUrl,
+      httpOnly: false,
+      secure: baseUrl.startsWith('https://'),
+      sameSite: 'Lax',
+    },
+  ])
+}
+
 async function pageState(page) {
   await page.waitForLoadState('domcontentloaded', { timeout: 30000 }).catch(() => {})
   await page.waitForLoadState('networkidle', { timeout: 3500 }).catch(() => {})
@@ -305,6 +318,21 @@ async function pageState(page) {
       scrollWidth: document.documentElement.scrollWidth,
     }
   })
+}
+
+async function gotoOwnerTrip(page, tripId) {
+  await page.goto(`${baseUrl}/trips/${tripId}`, {
+    waitUntil: 'domcontentloaded',
+    timeout: 30000,
+  })
+  await page.waitForFunction(() => {
+    const text = document.body?.innerText || ''
+    return (
+      text.includes('Trip Studio') &&
+      text.includes('Friend feedback') &&
+      text.includes('Planner workflows')
+    )
+  }, { timeout: 15000 }).catch(() => {})
 }
 
 async function gotoPublicShare(page, shareSlug) {
@@ -383,6 +411,92 @@ async function submitFeedback(page, fixture, index) {
   })
 
   return { author, comment, sentiment, feedbackId: row?.id || null }
+}
+
+async function runOwnerFeedbackRefreshChecks(verifications) {
+  const ownerViewports = [
+    { label: 'phone', viewport: { width: 390, height: 844 }, isMobile: true },
+    { label: 'tablet', viewport: { width: 768, height: 1024 }, isMobile: false },
+    { label: 'desktop', viewport: { width: 1280, height: 900 }, isMobile: false },
+  ]
+
+  for (const [index, verification] of verifications.entries()) {
+    const viewport = ownerViewports[index % ownerViewports.length]
+    const ownerContext = await browser.newContext({
+      viewport: viewport.viewport,
+      deviceScaleFactor: 1,
+      isMobile: viewport.isMobile,
+    })
+    await addOwnerCookie(ownerContext)
+    const ownerPage = await ownerContext.newPage()
+
+    try {
+      await gotoOwnerTrip(ownerPage, verification.fixture.tripId)
+      await ownerPage.waitForFunction((expectedComment) => {
+        const text = document.body?.innerText || ''
+        return text.includes(expectedComment) && text.includes('crew reacting')
+      }, verification.feedback.comment, { timeout: 15000 }).catch(() => {})
+
+      const ownerState = await pageState(ownerPage)
+      const refreshButton = ownerPage.getByRole('button', { name: /Refresh plan from feedback/i })
+      const refreshEnabled = await refreshButton.isEnabled().catch(() => false)
+
+      record(`multi-itinerary ${verification.fixture.key} owner feedback readback works on ${viewport.label}`, (
+        ownerState.text.includes(verification.fixture.title) &&
+        ownerState.text.includes(verification.feedback.author) &&
+        ownerState.text.includes(verification.feedback.comment) &&
+        ownerState.text.includes('crew reacting') &&
+        ownerState.text.includes('Share invite') &&
+        !ownerState.text.includes('View only') &&
+        refreshEnabled &&
+        !ownerState.hasAppError &&
+        !ownerState.horizontalOverflow
+      ), {
+        shareSlug: verification.fixture.shareSlug,
+        tripId: verification.fixture.tripId,
+        viewport: viewport.label,
+        hasTitle: ownerState.text.includes(verification.fixture.title),
+        hasAuthor: ownerState.text.includes(verification.feedback.author),
+        hasComment: ownerState.text.includes(verification.feedback.comment),
+        hasCrewReacting: ownerState.text.includes('crew reacting'),
+        hasShareInvite: ownerState.text.includes('Share invite'),
+        hasViewOnly: ownerState.text.includes('View only'),
+        refreshEnabled,
+        hasAppError: ownerState.hasAppError,
+        horizontalOverflow: ownerState.horizontalOverflow,
+        clientWidth: ownerState.clientWidth,
+        scrollWidth: ownerState.scrollWidth,
+      })
+
+      await refreshButton.click({ timeout: 8000 })
+      await ownerPage.waitForFunction(() => {
+        const text = document.body?.innerText || ''
+        const lowerText = text.toLowerCase()
+        return lowerText.includes('feedback refresh') && (lowerText.includes('completed') || text.includes('"status": "ready"'))
+      }, { timeout: 15000 }).catch(() => {})
+
+      const refreshState = await pageState(ownerPage)
+      const refreshText = refreshState.text.toLowerCase()
+      record(`multi-itinerary ${verification.fixture.key} owner feedback refresh completes on ${viewport.label}`, (
+        refreshText.includes('feedback refresh') &&
+        refreshState.text.includes('"status": "ready"') &&
+        !refreshState.hasAppError &&
+        !refreshState.horizontalOverflow
+      ), {
+        shareSlug: verification.fixture.shareSlug,
+        tripId: verification.fixture.tripId,
+        viewport: viewport.label,
+        hasFeedbackRefresh: refreshText.includes('feedback refresh'),
+        hasReadyStatus: refreshState.text.includes('"status": "ready"'),
+        hasAppError: refreshState.hasAppError,
+        horizontalOverflow: refreshState.horizontalOverflow,
+        clientWidth: refreshState.clientWidth,
+        scrollWidth: refreshState.scrollWidth,
+      })
+    } finally {
+      await ownerContext.close().catch(() => {})
+    }
+  }
 }
 
 async function runBrowserChecks() {
@@ -503,6 +617,8 @@ async function runBrowserChecks() {
   }
 
   await desktopContext.close().catch(() => {})
+
+  await runOwnerFeedbackRefreshChecks(desktopVerifications)
 }
 
 async function runShareCardImageChecks() {
