@@ -260,6 +260,7 @@ try {
 
   if (includeShareFeedback) {
     await runNodeTask('public share feedback mutation smoke', 'scripts/platform-share-feedback-smoke.mjs', {}, { mutatesLocal: true })
+    await runNodeTask('public share recipient browser feedback smoke', 'scripts/platform-share-recipient-ui-smoke.mjs', {}, { mutatesLocal: true })
   }
 
   await runNodeTask('planner handoff smoke', 'scripts/platform-planner-handoff-smoke.mjs', {}, { mutatesLocal: true })

@@ -87,19 +87,20 @@ async function cleanupGuestAccount(id, cleanupResult = null) {
     .delete()
     .eq('id', id)
   const { error: userError } = await serviceSupabase.auth.admin.deleteUser(id)
+  const userAlreadyAbsent = Boolean(userError?.message?.toLowerCase().includes('not found'))
 
   if (profileError) errors.push(profileError.message)
-  if (userError) errors.push(userError.message)
+  if (userError && !userAlreadyAbsent) errors.push(userError.message)
 
   if (cleanupResult) {
     cleanupResult.guestId = id
     cleanupResult.guestProfileDeleted = !profileError
-    cleanupResult.guestUserDeleted = !userError
+    cleanupResult.guestUserDeleted = !userError || userAlreadyAbsent
   }
 
   return {
     profileDeleted: !profileError,
-    userDeleted: !userError,
+    userDeleted: !userError || userAlreadyAbsent,
     errors,
   }
 }

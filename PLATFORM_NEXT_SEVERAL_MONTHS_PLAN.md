@@ -41,6 +41,8 @@ The newest Trip Studio identity checkpoint closes a guest-owner edit-mode risk. 
 
 The newest Trip Studio automation checkpoint converts the owner/read-only Browser finding into repeatable coverage. `npm run qa:studio-owner-ui` creates or accepts a mapped guest-owned Trip Studio fixture, verifies owner controls, Day 2 itinerary/map context, logged-out direct read-only state, public-share recipient state, no app errors, no horizontal overflow, and fixture cleanup. The local release-candidate gate now includes this check on its kept fixture; the focused 2026-05-19 pass completed `20/20`. Evidence: `qa/trip-studio-owner-readonly-browser-smoke-2026-05-19.md` and `qa/release-candidate-2026-05-19/`.
 
+The newest Month 4 public-share checkpoint turns successful recipient feedback into browser coverage. `npm run qa:share-recipient-ui` submits feedback through the rendered public share page on phone, verifies public API readback, confirms the reaction is visible after desktop reload, and cleans up the inserted feedback. The local release-candidate gate now includes this browser check whenever share feedback mutation is enabled. Evidence: `qa/public-share-recipient-ui-feedback-2026-05-19.md`.
+
 Immediate release rule: keep `npm run qa:release-production` green after every production deploy. If public visual QA or public share viral-loop QA fails, treat it as a release blocker for acquisition, auth conversion, and viral share readiness.
 
 ## Product Quality Bar
@@ -281,7 +283,7 @@ Visual QA:
 Automation:
 
 - Keep `QA_SHARE_SLUGS=<slugs> npm run qa:share` in fixture runs.
-- Keep public feedback and owner feedback gates in release-candidate runs.
+- Keep public feedback, recipient feedback UI, and owner feedback gates in release-candidate runs.
 - Add share-card image checks to public share QA.
 
 Exit gate:

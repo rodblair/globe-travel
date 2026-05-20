@@ -267,7 +267,8 @@ try {
     const tripSpecificStartLink = page.locator('a[href^="/api/guest/start"][href*="q="]').filter({ hasText: 'Start your own trip' }).first()
     await tripSpecificStartLink.waitFor({ state: 'visible', timeout: 15000 })
     await tripSpecificStartLink.click()
-    await page.waitForURL('**/chat**', { timeout: 15000 })
+    await page.waitForFunction(() => location.pathname === '/chat', { timeout: 15000 })
+    await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {})
     const ctaState = await page.evaluate(() => {
       const text = document.body?.innerText || ''
       return {
