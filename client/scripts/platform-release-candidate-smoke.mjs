@@ -34,6 +34,23 @@ const failures = []
 const results = []
 let studioFixture = null
 
+async function assertLocalServerReady() {
+  if (!isLocalBaseUrl) return
+
+  const healthUrl = `${baseUrl}/api/health`
+  try {
+    await fetch(healthUrl, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(15000),
+    })
+  } catch (error) {
+    console.error(`[release-candidate] ${baseUrl} is not reachable. Start the app first with \`npm run dev\` or set QA_BASE_URL to a running deployment.`)
+    console.error(`[release-candidate] Preflight URL: ${healthUrl}`)
+    console.error(`[release-candidate] Error: ${error instanceof Error ? error.message : String(error)}`)
+    process.exit(1)
+  }
+}
+
 function parseJsonOutput(stdout) {
   const trimmed = stdout.trim()
   if (!trimmed) return null
@@ -231,6 +248,8 @@ ${failedRows.length ? failedRows.map((row) => `### ${row.name}
 }
 
 try {
+  await assertLocalServerReady()
+
   await runTask({ name: 'lint', command: npmBin, args: ['run', 'lint'] })
   await runTask({ name: 'production build', command: npmBin, args: ['run', 'build'] })
 
