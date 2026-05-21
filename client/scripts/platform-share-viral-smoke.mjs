@@ -89,21 +89,32 @@ async function gotoWithRetry(page, url) {
 }
 
 async function readPublicShareState(page) {
-  await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {})
-  await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
-  await page.waitForFunction(() => {
-    const text = document.body?.innerText || ''
-    const appErrors = ['Application error', 'Unhandled Runtime Error', 'Hydration failed']
-    return (
-      (
-        text.includes('Start your own trip') &&
-        text.includes('Add your reaction') &&
-        text.includes('Friend feedback') &&
-        text.includes('Share trip')
-      ) ||
-      appErrors.some((pattern) => text.includes(pattern))
-    )
-  }, { timeout: 10000 }).catch(() => {})
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {})
+    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
+    await page.waitForFunction(() => {
+      const text = document.body?.innerText || ''
+      const appErrors = ['Application error', 'Unhandled Runtime Error', 'Hydration failed']
+      return (
+        (
+          text.includes('Start your own trip') &&
+          text.includes('Add your reaction') &&
+          text.includes('Friend feedback') &&
+          text.includes('Share trip')
+        ) ||
+        appErrors.some((pattern) => text.includes(pattern))
+      )
+    }, { timeout: 12000 }).catch(() => {})
+
+    const ready = await page.evaluate(() => {
+      const text = document.body?.innerText || ''
+      return text.includes('Add your reaction') && text.includes('Friend feedback') && text.includes('Share trip')
+    })
+
+    if (ready || attempt === 3) break
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {})
+    await sleep(700 * attempt)
+  }
 
   return page.evaluate(() => {
     const text = document.body?.innerText || ''
@@ -231,6 +242,7 @@ try {
     if (viewport.id === 'desktop') {
       await page.getByRole('button', { name: 'Copy link' }).click()
       await page.waitForFunction(() => (window.__globeShareEvents?.clipboardWrites || []).length > 0, { timeout: 5000 })
+      await page.waitForFunction(() => (document.body?.innerText || '').includes('Copied'), { timeout: 5000 }).catch(() => {})
       const copyState = await page.evaluate(() => ({
         clipboardWrites: window.__globeShareEvents?.clipboardWrites || [],
         copiedVisible: (document.body?.innerText || '').includes('Copied'),

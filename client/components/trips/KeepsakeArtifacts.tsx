@@ -366,8 +366,16 @@ export function ShareLinkCard({
           {shareError}
         </p>
       )}
-      <p aria-live="polite" className="sr-only">
-        {copied ? 'Share link copied to clipboard.' : ''}
+      <p
+        aria-live="polite"
+        className={cn(
+          'mt-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-colors',
+          copied
+            ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+            : 'sr-only border-transparent bg-transparent text-transparent',
+        )}
+      >
+        {copied ? 'Copied to clipboard.' : 'Copy status'}
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <button

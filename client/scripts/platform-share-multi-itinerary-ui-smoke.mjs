@@ -593,6 +593,7 @@ async function runBrowserChecks() {
     if (index === 0) {
       await desktopPage.getByRole('button', { name: 'Copy link' }).click({ timeout: 8000 })
       await desktopPage.waitForFunction(() => (window.__globeShareEvents?.clipboardWrites || []).length > 0, { timeout: 5000 }).catch(() => {})
+      await desktopPage.waitForFunction(() => (document.body?.innerText || '').includes('Copied'), { timeout: 5000 }).catch(() => {})
       const copyState = await desktopPage.evaluate(() => ({
         clipboardWrites: window.__globeShareEvents?.clipboardWrites || [],
         copiedVisible: (document.body?.innerText || '').includes('Copied'),
