@@ -28,6 +28,7 @@
     "qa:release-candidate": "node scripts/platform-release-candidate-smoke.mjs",
     "qa:release-production": "node scripts/platform-production-release-smoke.mjs",
     "qa:production-monitoring": "node scripts/platform-production-monitoring-readiness.mjs",
+    "qa:visual-review-schedule": "node scripts/platform-visual-review-schedule.mjs",
     "qa:saved-account": "node scripts/platform-saved-account-smoke.mjs",
     "qa:prompt-actuals": "node scripts/planner-share-actuals.mjs",
     "qa:prompt-suite": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/planner-prompt-suite.mjs",

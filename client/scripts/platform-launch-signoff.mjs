@@ -126,6 +126,14 @@ const requiredProductionVisualDiffRoutes = [
   'signup',
 ]
 
+const requiredProductionVisualViewports = [
+  'phone',
+  'tablet',
+  'laptop',
+  'desktop',
+  'wide',
+]
+
 const requiredDesignSystemChecks = [
   'design context documents users, tone, aesthetic, and principles',
   'global design tokens expose the Globe.travel atmosphere palette and interaction system',
@@ -1187,10 +1195,54 @@ async function checkVisualReviewRegister(productionHealth) {
     hasReviewProtocol: hasMeaningfulText(register.reviewProtocol, 80),
   })
 
+  const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
+  const minimumPublicLaunchReviewHistory = Number(register.minimumPublicLaunchReviewHistory) || 4
+  const historyDates = unique(reviewHistory.map((review) => dateOnly(review.reviewedAt)).filter(Boolean))
+  const remainingRequiredVisualReviewDates = Math.max(0, minimumPublicLaunchReviewHistory - historyDates.length)
+  const scheduledReviews = Array.isArray(register.scheduledPublicLaunchReviews) ? register.scheduledPublicLaunchReviews : []
+  const scheduledDates = unique(scheduledReviews.map((review) => dateOnly(review.dueAt)).filter(Boolean))
+  const scheduledReviewIssues = scheduledReviews.filter((review) => {
+    const dueAt = dateOnly(review.dueAt)
+    const dueTime = dueAt ? Date.parse(`${dueAt}T00:00:00Z`) : Number.NaN
+    const missingRoutes = hasAll(review.routes || [], requiredProductionVisualRoutes)
+    const missingViewports = hasAll(review.viewports || [], requiredProductionVisualViewports)
+    const missingDiffRoutes = hasAll(review.diffRoutes || [], requiredProductionVisualDiffRoutes)
+    return !hasMeaningfulText(review.id) ||
+      !Number.isFinite(dueTime) ||
+      dueTime < todayUtc ||
+      !hasMeaningfulText(review.owner) ||
+      !hasMeaningfulText(review.reviewerRole) ||
+      !['planned', 'scheduled'].includes(String(review.status || '').toLowerCase()) ||
+      !hasMeaningfulText(review.command) ||
+      !review.command.includes('npm run qa:release-production') ||
+      !review.command.includes('QA_PRODUCTION_VISUAL_ARTIFACT_NAME') ||
+      !hasMeaningfulText(review.expectedArtifactPrefix) ||
+      !review.expectedArtifactPrefix.includes('qa/visual-baseline-production-') ||
+      missingRoutes.length > 0 ||
+      missingViewports.length > 0 ||
+      missingDiffRoutes.length > 0 ||
+      !hasMeaningfulText(review.acceptanceCriteria, 80)
+  })
+
+  addCheck('production visual review schedule covers remaining public-launch review dates', (
+    scheduledReviews.length >= remainingRequiredVisualReviewDates &&
+    scheduledDates.length >= remainingRequiredVisualReviewDates &&
+    scheduledReviewIssues.length === 0
+  ), {
+    completedHistoryDateCount: historyDates.length,
+    minimumPublicLaunchReviewHistory,
+    remainingRequiredVisualReviewDates,
+    scheduledReviewCount: scheduledReviews.length,
+    distinctScheduledDateCount: scheduledDates.length,
+    scheduledReviewIssues: scheduledReviewIssues.map((review) => ({
+      id: review.id || null,
+      dueAt: review.dueAt || null,
+      status: review.status || null,
+      command: review.command || null,
+    })),
+  })
+
   if (requirePublicLaunchReadiness) {
-    const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
-    const minimumPublicLaunchReviewHistory = Number(register.minimumPublicLaunchReviewHistory) || 4
-    const historyDates = unique(reviewHistory.map((review) => dateOnly(review.reviewedAt)).filter(Boolean))
     const malformedHistory = reviewHistory.filter((review) => (
       !hasMeaningfulText(review.reviewedAt) ||
       !hasMeaningfulText(review.artifact) ||

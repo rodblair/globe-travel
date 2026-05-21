@@ -5,6 +5,47 @@
   "minimumPublicLaunchReviewHistory": 4,
   "nextReviewDueAt": "2026-05-28",
   "reviewProtocol": "Review every production visual QA screenshot for route clarity, brand consistency, text fit, mobile readability, empty/error-state polish, visual hierarchy, and trust. Treat app errors, horizontal overflow, clipped primary text, overlapping controls, broken share affordances, or unexplained pixel diffs on stable shell routes as release-blocking until fixed or explicitly accepted in the risk register.",
+  "scheduledPublicLaunchReviews": [
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "dueAt": "2026-05-28",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "planned",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
+      "routes": ["landing", "login", "signup", "public-share"],
+      "viewports": ["phone", "tablet", "laptop", "desktop", "wide"],
+      "diffRoutes": ["landing", "login", "signup"],
+      "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-003",
+      "dueAt": "2026-06-04",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "planned",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-04",
+      "routes": ["landing", "login", "signup", "public-share"],
+      "viewports": ["phone", "tablet", "laptop", "desktop", "wide"],
+      "diffRoutes": ["landing", "login", "signup"],
+      "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "planned",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-11",
+      "routes": ["landing", "login", "signup", "public-share"],
+      "viewports": ["phone", "tablet", "laptop", "desktop", "wide"],
+      "diffRoutes": ["landing", "login", "signup"],
+      "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+    }
+  ],
   "latestProductionReview": {
     "artifact": "qa/visual-baseline-production-beta-review-packets-2026-05-21-8931b58",
     "summaryArtifact": "qa/visual-baseline-production-beta-review-packets-2026-05-21-8931b58/summary.json",

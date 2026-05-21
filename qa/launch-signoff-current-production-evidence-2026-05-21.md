@@ -76,6 +76,7 @@ Commit `8931b58b4b7a0147d4b3bfacba270bd303ea301e` deployed to Vercel production.
 - Beta human-review reviewer packets: `25/25`
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-beta-review-packets-2026-05-21-8931b58/`
+- Production visual review schedule: `3/3`, covering the remaining planned public-launch visual-review dates for 2026-05-28, 2026-06-04, and 2026-06-11.
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`
 - Production monitoring artifact: `qa/production-monitoring-readiness-2026-05-21.md`
 - Design-system artifact: `qa/design-system-readiness-2026-05-21.json`
