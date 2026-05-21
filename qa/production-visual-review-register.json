@@ -47,10 +47,10 @@
     }
   ],
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-visual-schedule-2026-05-21-7df2ee0",
-    "summaryArtifact": "qa/visual-baseline-production-visual-schedule-2026-05-21-7df2ee0/summary.json",
-    "productionCommit": "7df2ee01ebb4390f3fa0711cae2049b09e61052b",
-    "deploymentUrl": "globe-travel-n9rj50ct8-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399",
+    "summaryArtifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399/summary.json",
+    "productionCommit": "ec38399177df6919d31e128baab202ad74444679",
+    "deploymentUrl": "globe-travel-4vbq7gozu-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -73,15 +73,15 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual gate passed 20/20 on the live 7df2ee0 deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production visual gate passed 20/20 on the live ec38399 deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
       "reviewedAt": "2026-05-21",
-      "artifact": "qa/visual-baseline-production-visual-schedule-2026-05-21-7df2ee0",
-      "summaryArtifact": "qa/visual-baseline-production-visual-schedule-2026-05-21-7df2ee0/summary.json",
-      "productionCommit": "7df2ee01ebb4390f3fa0711cae2049b09e61052b",
-      "deploymentUrl": "globe-travel-n9rj50ct8-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399",
+      "summaryArtifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399/summary.json",
+      "productionCommit": "ec38399177df6919d31e128baab202ad74444679",
+      "deploymentUrl": "globe-travel-4vbq7gozu-rodney-blairs-projects.vercel.app",
       "reviewedBy": "Codex visual QA",
       "verdict": "pass",
       "blockingFindings": [],
