@@ -265,6 +265,7 @@ try {
     parseJson: true,
   })
   await runNodeTask('local route smoke', 'scripts/platform-smoke.mjs')
+  await runNodeTask('Trip Studio missing-trip recovery UI smoke', 'scripts/platform-trip-studio-recovery-ui-smoke.mjs')
   await runNodeTask('auth and guest access smoke', 'scripts/platform-auth-access-smoke.mjs', {}, { mutatesLocal: true })
   await runNodeTask('saved and account smoke', 'scripts/platform-saved-account-smoke.mjs', {}, { mutatesLocal: true })
   await runNodeTask('local commercial smoke', 'scripts/platform-commercial-smoke.mjs')

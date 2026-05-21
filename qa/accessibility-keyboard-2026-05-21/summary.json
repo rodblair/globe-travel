@@ -221,7 +221,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 4,
+              "y": -2,
               "width": 150,
               "height": 44
             }
@@ -1660,7 +1660,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2054,7 +2054,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -3,
+              "y": 5,
               "width": 150,
               "height": 44
             }
@@ -3465,7 +3465,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -29,
               "width": 150,
               "height": 44
             }

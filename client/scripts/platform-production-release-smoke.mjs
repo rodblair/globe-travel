@@ -109,6 +109,14 @@ const tasks = [
     },
   },
   {
+    name: 'production Trip Studio recovery UI',
+    args: ['scripts/platform-trip-studio-recovery-ui-smoke.mjs'],
+    env: {
+      QA_BASE_URL: baseUrl,
+    },
+    echoOutput: false,
+  },
+  {
     name: 'production auth and guest access',
     args: ['scripts/platform-auth-access-smoke.mjs'],
     env: {

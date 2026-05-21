@@ -1,0 +1,241 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "shareSlug": "x3m2c8cnws",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-trip-recovery-gate-2026-05-21",
+  "summaryPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-trip-recovery-gate-2026-05-21/summary.json",
+  "reportPath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/release-candidate-trip-recovery-gate-2026-05-21/README.md",
+  "checked": 17,
+  "passed": 17,
+  "failed": 0,
+  "includeVisual": false,
+  "includeStudioFixture": false,
+  "includeShareFeedback": false,
+  "includeShareFixtureSweep": false,
+  "includeOwnerFeedback": false,
+  "includeSlowNetwork": false,
+  "includeStripeCheckout": false,
+  "includeStripePortal": false,
+  "includePromptSuite": false,
+  "shareFixtureOwnerUserId": null,
+  "studioFixture": null,
+  "localOnly": true,
+  "results": [
+    {
+      "name": "lint",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 8040,
+      "mutatesLocal": false
+    },
+    {
+      "name": "production build",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 15509,
+      "mutatesLocal": false
+    },
+    {
+      "name": "local ops readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 106,
+      "mutatesLocal": false,
+      "checked": 3,
+      "passed": 3,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "geocode quality smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 243,
+      "mutatesLocal": false,
+      "checked": 38,
+      "passed": 38,
+      "failed": 0
+    },
+    {
+      "name": "local route smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 702,
+      "mutatesLocal": false,
+      "checked": 8,
+      "passed": 8,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "Trip Studio missing-trip recovery UI smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 5564,
+      "mutatesLocal": false,
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "auth and guest access smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 35640,
+      "mutatesLocal": true,
+      "checked": 15,
+      "passed": 15,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "guestId": "7d45cd57-a3f6-444f-950f-7a4fed786559",
+      "cleanup": {
+        "attempted": true,
+        "guestId": "7d45cd57-a3f6-444f-950f-7a4fed786559",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "profileError": null,
+        "userError": null
+      }
+    },
+    {
+      "name": "saved and account smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 13987,
+      "mutatesLocal": true,
+      "checked": 13,
+      "passed": 13,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "20d01eaf-5a94-4d0d-bfac-e2a2592fcd98",
+      "guestId": "283fde2f-cd15-4f6f-afe7-4a29308485a7",
+      "runId": "577cc575",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "journalDeleted": true,
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "local commercial smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 253,
+      "mutatesLocal": false,
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "local accessibility and keyboard smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 57471,
+      "mutatesLocal": false,
+      "checked": 16,
+      "passed": 16,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share and social preview smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 997,
+      "mutatesLocal": false,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "public share recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 12060,
+      "mutatesLocal": false,
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws"
+    },
+    {
+      "name": "public share viral loop smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 331837,
+      "mutatesLocal": true,
+      "checked": 5,
+      "passed": 5,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws",
+      "cleanup": {
+        "attempted": true,
+        "reason": null,
+        "guestId": "f1709ffc-a428-4f2d-ae1b-383a6fe4daa5",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "public share map fallback smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 4565,
+      "mutatesLocal": false,
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "shareSlug": "x3m2c8cnws"
+    },
+    {
+      "name": "planner handoff smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 9597,
+      "mutatesLocal": true,
+      "checked": 17,
+      "passed": 17,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000",
+      "tripId": "e2934981-9172-4492-89eb-6d0867e13d6f",
+      "runId": "061bae40",
+      "cleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "error": null
+      }
+    },
+    {
+      "name": "billing recovery smoke",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 19179,
+      "mutatesLocal": false,
+      "checked": 13,
+      "passed": 13,
+      "failed": 0,
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "Stripe test-mode readiness",
+      "ok": true,
+      "code": 0,
+      "elapsedMs": 523,
+      "mutatesLocal": false,
+      "checked": 11,
+      "passed": 11,
+      "failed": 0
+    }
+  ],
+  "failures": []
+}
