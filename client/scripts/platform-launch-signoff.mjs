@@ -1085,6 +1085,57 @@ async function checkBetaHumanReviewRegister() {
     })
   }
 
+  let intakeArtifact = null
+  if (hasMeaningfulText(register.completedReviewIntakeArtifact)) {
+    try {
+      intakeArtifact = await readJson(register.completedReviewIntakeArtifact)
+      addCheck('beta human review intake artifact is readable', true, {
+        artifact: register.completedReviewIntakeArtifact,
+        status: intakeArtifact.status || null,
+        submissionDir: intakeArtifact.submissionDir || null,
+        submissionCount: intakeArtifact.submissionCount ?? null,
+        validSubmissionCount: intakeArtifact.validSubmissionCount ?? null,
+        imported: intakeArtifact.imported ?? null,
+      })
+      checkEvidenceFreshness(
+        'beta human review intake',
+        evidenceDateFrom(intakeArtifact, register.completedReviewIntakeArtifact),
+      )
+    } catch (error) {
+      addCheck('beta human review intake artifact is readable', false, {
+        artifact: register.completedReviewIntakeArtifact,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  } else {
+    addCheck('beta human review intake artifact is configured', false, {
+      artifact: null,
+    })
+  }
+
+  if (intakeArtifact) {
+    addCheck('beta human review intake artifact matches current register', (
+      intakeArtifact.status === 'pass' &&
+      intakeArtifact.registerPath === betaHumanReviewRegister &&
+      intakeArtifact.submissionDir === register.completedReviewSubmissionDirectory &&
+      Number(intakeArtifact.plannedReviewCount) === plannedReviews.length &&
+      Number(intakeArtifact.completedReviewCountAfter) === completedReviews.length &&
+      Number(intakeArtifact.invalidSubmissionCount) === 0 &&
+      Number(intakeArtifact.duplicateSubmissionCount) === 0 &&
+      Number(intakeArtifact.unknownReviewCount) === 0
+    ), {
+      plannedReviewCount: plannedReviews.length,
+      intakePlannedReviewCount: intakeArtifact.plannedReviewCount ?? null,
+      completedReviewCount: completedReviews.length,
+      intakeCompletedReviewCountAfter: intakeArtifact.completedReviewCountAfter ?? null,
+      expectedSubmissionDir: register.completedReviewSubmissionDirectory || null,
+      intakeSubmissionDir: intakeArtifact.submissionDir || null,
+      invalidSubmissionCount: intakeArtifact.invalidSubmissionCount ?? null,
+      duplicateSubmissionCount: intakeArtifact.duplicateSubmissionCount ?? null,
+      unknownReviewCount: intakeArtifact.unknownReviewCount ?? null,
+    })
+  }
+
   if (requirePublicBetaReviews) {
     addCheck('public-launch beta human review threshold is met', completedReviews.length >= publicLaunchMinimum, {
       completedReviewCount: completedReviews.length,

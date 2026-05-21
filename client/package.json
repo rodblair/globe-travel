@@ -11,6 +11,7 @@
     "qa:billing-recovery": "node scripts/platform-billing-recovery-smoke.mjs",
     "qa:a11y": "node scripts/platform-accessibility-smoke.mjs",
     "qa:beta-review-packets": "QA_BETA_REVIEW_WRITE_PACKETS=1 node scripts/platform-beta-human-review-readiness.mjs",
+    "qa:beta-review-intake": "node scripts/platform-beta-human-review-intake.mjs",
     "qa:beta-review-progress": "node scripts/platform-beta-human-review-progress.mjs",
     "qa:beta-review-readiness": "node scripts/platform-beta-human-review-readiness.mjs",
     "qa:commercial": "node scripts/platform-commercial-smoke.mjs",

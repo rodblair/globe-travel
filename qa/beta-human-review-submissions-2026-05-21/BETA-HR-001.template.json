@@ -1,0 +1,34 @@
+{
+  "id": "BETA-HR-001",
+  "sourceActualId": "athens-5-day-couples-rest",
+  "reviewerRole": "first-time couple trip planner",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/t/example-share-slug",
+  "viewport": "390x844",
+  "device": "phone",
+  "prompt": "Plan a restful 5-day Athens trip for a couple with culture, food, and recovery time.",
+  "status": "passed",
+  "completedAt": "2026-06-01",
+  "firstMinuteOutcome": "Replace with the reviewer's first-minute clarity notes.",
+  "mapTrustNotes": "Replace with notes about mapped stops, route trust, country consistency, and pin clarity.",
+  "shareFeedbackOutcome": "Replace with notes about the public share and friend feedback loop.",
+  "scorecard": {
+    "firstMinuteClarity": 4,
+    "itineraryUsefulness": 4,
+    "mapTrust": 4,
+    "editAndSwapConfidence": 4,
+    "saveReopenConfidence": 4,
+    "shareRecipientClarity": 4,
+    "feedbackLoopClarity": 4,
+    "mobileUsability": 4,
+    "paidValueCredibility": 4
+  },
+  "findings": [
+    {
+      "severity": "P3",
+      "status": "closed",
+      "surface": "public-share",
+      "title": "Example finding title",
+      "notes": "Replace with a concise reviewer finding, or use an empty array when there are no findings."
+    }
+  ]
+}

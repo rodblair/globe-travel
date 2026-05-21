@@ -6,6 +6,8 @@
   "reviewerPacketManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
   "reviewerPacketDirectory": "qa/beta-human-review-packets-2026-05-21",
   "progressArtifact": "qa/beta-human-review-progress-2026-05-21.json",
+  "completedReviewSubmissionDirectory": "qa/beta-human-review-submissions-2026-05-21",
+  "completedReviewIntakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
   "minimumCompletedReviewsForPublicLaunch": 25,
   "targetCompletedReviewsBeforePublicLaunch": 50,
   "minimumAverageScoreForPublicLaunch": 4,
