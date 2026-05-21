@@ -521,6 +521,8 @@ The next execution slice is Phase 1 launch-candidate maintenance and regional co
 
 Phase 1 is complete only when the broadened regional generated-actuals pass, the clean-browser matrix has no open P0/P1 issues, the visual gate has no launch-blocking diffs, local release-candidate remains green, and production release verification remains green after deployment.
 
+Current signoff checkpoint: `npm run qa:launch-signoff` now provides the fast evidence audit for release meetings. It passed `15/15` on 2026-05-21, proving production health `11/11`, full local release-candidate evidence `33/33`, responsive visual QA `50/50`, hosted Stripe evidence, launch docs, and postdeploy production evidence. Use `QA_LAUNCH_EXPECTED_COMMIT=<sha>` when a launch meeting needs the audit to prove a specific production commit is live.
+
 ## Completion Definition
 
 This active goal is complete only when Globe.travel has:
