@@ -60,22 +60,22 @@ Launch signoff now proves that postdeploy production evidence is tied to the exa
 
 ## Postdeploy Evidence
 
-Commit `8931b58b4b7a0147d4b3bfacba270bd303ea301e` deployed to Vercel production.
+Commit `7df2ee01ebb4390f3fa0711cae2049b09e61052b` deployed to Vercel production.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-ouaw2babc-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-n9rj50ct8-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate passed `10/10`
 - Production accessibility and keyboard QA: `16/16`
 - Beta human review readiness: `12/12`
 - Production monitoring readiness: `9/9`
 - Design-system readiness: `10/10`
-- Current launch signoff gate passed `68/68`
+- Current launch signoff gate passed `69/69`
 - Public-launch signoff mode fails as expected until `25/25` beta reviews are completed and production visual review history reaches four distinct passing review dates.
 - Beta human-review reviewer packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
 - Beta human-review reviewer packets: `25/25`
 - Production visual QA: `20/20`
-- Production visual artifact: `qa/visual-baseline-production-beta-review-packets-2026-05-21-8931b58/`
+- Production visual artifact: `qa/visual-baseline-production-visual-schedule-2026-05-21-7df2ee0/`
 - Production visual review schedule: `3/3`, covering the remaining planned public-launch visual-review dates for 2026-05-28, 2026-06-04, and 2026-06-11.
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`
 - Production monitoring artifact: `qa/production-monitoring-readiness-2026-05-21.md`
