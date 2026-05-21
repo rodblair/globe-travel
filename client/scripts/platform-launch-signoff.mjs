@@ -17,6 +17,9 @@ const visualArtifact =
 const designSystemArtifact =
   process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
   'qa/design-system-readiness-2026-05-21.json'
+const paidPathReadinessArtifact =
+  process.env.QA_LAUNCH_PAID_PATH_ARTIFACT ||
+  'qa/paid-path-readiness-2026-05-21.json'
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
@@ -778,6 +781,58 @@ async function checkStripeArtifacts() {
     requiredScreenshots: requiredStripeScreenshots,
     missing,
   })
+}
+
+async function checkPaidPathReadinessArtifact() {
+  let summary
+  try {
+    summary = await readJson(paidPathReadinessArtifact)
+  } catch (error) {
+    addCheck('paid-path readiness artifact is readable', false, {
+      artifact: paidPathReadinessArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+
+  addCheck('paid-path readiness artifact is readable', true, {
+    artifact: paidPathReadinessArtifact,
+    checked: summary.checked ?? null,
+    passed: summary.passed ?? null,
+    failed: summary.failed ?? null,
+    status: summary.status || null,
+  })
+
+  checkEvidenceFreshness(
+    'paid-path readiness',
+    evidenceDateFrom(summary, paidPathReadinessArtifact),
+  )
+
+  const requiredPaidPathTasks = [
+    'local commercial smoke',
+    'billing recovery smoke',
+    'Stripe test-mode readiness',
+    'hosted Stripe checkout browser QA',
+    'hosted Stripe billing portal browser QA',
+  ]
+  const missingTasks = hasAll(summary.requiredReleaseTasks || [], requiredPaidPathTasks)
+
+  addCheck('paid-path readiness covers commercial, subscription, checkout, and portal gates', (
+    summary.status === 'pass' &&
+    Number(summary.checked) >= 6 &&
+    Number(summary.failed) === 0 &&
+    missingTasks.length === 0 &&
+    Number(summary.screenshotCount) >= requiredStripeScreenshots.length
+  ), {
+    status: summary.status || null,
+    checked: summary.checked ?? null,
+    failed: summary.failed ?? null,
+    requiredPaidPathTasks,
+    missingTasks,
+    screenshotCount: summary.screenshotCount ?? null,
+  })
+
+  return summary
 }
 
 async function checkPlannerActualsArtifact() {
@@ -1610,6 +1665,7 @@ await checkVisualArtifact()
 await checkDesignSystemArtifact()
 await checkAccessibilityArtifact()
 await checkStripeArtifacts()
+await checkPaidPathReadinessArtifact()
 await checkPlannerActualsArtifact()
 await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
@@ -1625,6 +1681,7 @@ const summary = {
   releaseArtifact,
   visualArtifact,
   designSystemArtifact,
+  paidPathReadinessArtifact,
   accessibilityArtifact,
   plannerActualsArtifact,
   betaHumanReviewRegister,
