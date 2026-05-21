@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises'
+import { access, readFile, stat } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -150,6 +150,26 @@ function evidenceDateFrom(summary, artifactPath) {
     dateOnly(summary?.checkedAt) ||
     dateOnly(summary?.artifactDir) ||
     dateOnly(artifactPath)
+}
+
+function evidenceDateFromText(text) {
+  const dateLine = String(text || '').match(/^Date:\s*(\d{4}-\d{2}-\d{2})\b/im)
+  if (dateLine) return dateLine[1]
+
+  const checkedAt = String(text || '').match(/"checkedAt":\s*"([^"]+)"/i)
+  return checkedAt ? dateOnly(checkedAt[1]) : null
+}
+
+async function evidenceDateFromTextOrPathOrMtime(text, artifactPath) {
+  const explicitDate = evidenceDateFromText(text) || dateOnly(artifactPath)
+  if (explicitDate) return explicitDate
+
+  try {
+    const info = await stat(repoPath(artifactPath))
+    return info.mtime.toISOString().slice(0, 10)
+  } catch {
+    return null
+  }
 }
 
 function ageInDays(dateValue) {
@@ -365,6 +385,11 @@ async function checkProductionEvidence() {
     })
     return
   }
+
+  checkEvidenceFreshness(
+    'postdeploy production release',
+    await evidenceDateFromTextOrPathOrMtime(text, productionEvidence),
+  )
 
   const evidenceMatchers = [
     {
