@@ -14,6 +14,9 @@ const releaseArtifact =
 const visualArtifact =
   process.env.QA_LAUNCH_VISUAL_ARTIFACT ||
   'qa/visual-baseline-2026-05-21-full-with-multi-2026-05-21/summary.json'
+const plannerActualsArtifact =
+  process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
+  'qa/planner-generated-actuals-regional-edge-cities-2026-05-20.json'
 const productionEvidence =
   process.env.QA_LAUNCH_PRODUCTION_EVIDENCE ||
   'qa/release-candidate-share-multi-integration-2026-05-21/README.md'
@@ -95,6 +98,15 @@ const requiredStripeScreenshots = [
   'qa/stripe-checkout-browser-full-with-multi-2026-05-21/screenshots/stripe-checkout-returned.png',
   'qa/stripe-portal-browser-full-with-multi-2026-05-21/screenshots/stripe-portal-loaded.png',
   'qa/stripe-portal-browser-full-with-multi-2026-05-21/screenshots/stripe-portal-returned.png',
+]
+
+const requiredPlannerActualIds = [
+  'istanbul-4-day-history-markets',
+  'seoul-5-day-food-shopping',
+  'bangkok-4-day-temples-street-food',
+  'marrakech-3-day-markets-riads',
+  'cape-town-5-day-outdoors-food',
+  'sydney-4-day-beaches-neighborhoods',
 ]
 
 const checks = []
@@ -374,6 +386,72 @@ async function checkStripeArtifacts() {
   })
 }
 
+async function checkPlannerActualsArtifact() {
+  let actuals
+  try {
+    actuals = await readJson(plannerActualsArtifact)
+  } catch (error) {
+    addCheck('regional planner generated actuals artifact is readable', false, {
+      artifact: plannerActualsArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('regional planner generated actuals artifact is readable', Array.isArray(actuals), {
+    artifact: plannerActualsArtifact,
+    actualCount: Array.isArray(actuals) ? actuals.length : null,
+  })
+
+  checkEvidenceFreshness('regional planner generated actuals', dateOnly(plannerActualsArtifact))
+
+  const actualIds = Array.isArray(actuals) ? actuals.map((actual) => actual.id).filter(Boolean) : []
+  const missingActualIds = hasAll(actualIds, requiredPlannerActualIds)
+  addCheck('regional planner generated actuals cover launch edge cities', missingActualIds.length === 0, {
+    requiredPlannerActualIds,
+    actualIds,
+    missingActualIds,
+  })
+
+  const badActuals = Array.isArray(actuals)
+    ? actuals.filter((actual) => {
+      const days = Array.isArray(actual.days) ? actual.days : []
+      return days.length === 0 || days.some((day) => (
+        day.itemCount <= 0 ||
+        day.mappedItemCount !== day.itemCount ||
+        day.uniqueMappedStopCount !== day.mappedItemCount ||
+        (Array.isArray(day.duplicateMappedStops) && day.duplicateMappedStops.length > 0) ||
+        !Array.isArray(day.countries) ||
+        day.countries.length !== 1 ||
+        day.usableRouteCount <= 0
+      ))
+    })
+    : []
+  addCheck('regional planner generated actuals have mapped stops, unique pins, country consistency, and routes', badActuals.length === 0, {
+    badActuals: badActuals.map((actual) => ({
+      id: actual.id,
+      tripTitle: actual.tripTitle || null,
+      badDays: (actual.days || []).filter((day) => (
+        day.itemCount <= 0 ||
+        day.mappedItemCount !== day.itemCount ||
+        day.uniqueMappedStopCount !== day.mappedItemCount ||
+        (Array.isArray(day.duplicateMappedStops) && day.duplicateMappedStops.length > 0) ||
+        !Array.isArray(day.countries) ||
+        day.countries.length !== 1 ||
+        day.usableRouteCount <= 0
+      )).map((day) => ({
+        dayIndex: day.dayIndex,
+        itemCount: day.itemCount,
+        mappedItemCount: day.mappedItemCount,
+        uniqueMappedStopCount: day.uniqueMappedStopCount,
+        duplicateMappedStops: day.duplicateMappedStops || [],
+        countries: day.countries || [],
+        usableRouteCount: day.usableRouteCount,
+      })),
+    })),
+  })
+}
+
 async function checkProductionEvidence() {
   let text
   try {
@@ -541,6 +619,7 @@ await checkRequiredDocs()
 await checkReleaseArtifact()
 await checkVisualArtifact()
 await checkStripeArtifacts()
+await checkPlannerActualsArtifact()
 await checkProductionEvidence()
 await checkRiskRegister()
 await checkRollbackPlan()
@@ -551,6 +630,7 @@ const summary = {
   expectedCommit: expectedCommit || null,
   releaseArtifact,
   visualArtifact,
+  plannerActualsArtifact,
   productionEvidence,
   riskRegister,
   rollbackPlan,

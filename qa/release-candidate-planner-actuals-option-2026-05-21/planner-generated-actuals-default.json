@@ -1,0 +1,169 @@
+[
+  {
+    "id": "lisbon-3-day-friends-nightlife",
+    "shareSlug": "c2qrr8hb42",
+    "tripId": "db057480-6804-407e-a182-f126166d62af",
+    "tripTitle": "3 Days in Lisbon",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Alfama Views & Fado",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Lisbon Cathedral",
+            "type": "activity",
+            "placeName": "Lisbon Cathedral",
+            "latitude": 38.70975,
+            "longitude": -9.13349
+          },
+          {
+            "title": "Pois Café",
+            "type": "meal",
+            "placeName": "Pois Café",
+            "latitude": 38.71015,
+            "longitude": -9.13174
+          },
+          {
+            "title": "Castelo de São Jorge",
+            "type": "activity",
+            "placeName": "Castelo de São Jorge",
+            "latitude": 38.71391,
+            "longitude": -9.13348
+          },
+          {
+            "title": "Miradouro de Santa Luzia",
+            "type": "activity",
+            "placeName": "Miradouro de Santa Luzia",
+            "latitude": 38.71183,
+            "longitude": -9.13075
+          },
+          {
+            "title": "Clube de Fado",
+            "type": "meal",
+            "placeName": "Clube de Fado",
+            "latitude": 38.71036,
+            "longitude": -9.13111
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1985
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Belém Riverside",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Jerónimos Monastery",
+            "type": "activity",
+            "placeName": "Jerónimos Monastery",
+            "latitude": 38.6979,
+            "longitude": -9.20673
+          },
+          {
+            "title": "Pastéis de Belém",
+            "type": "meal",
+            "placeName": "Pastéis de Belém",
+            "latitude": 38.69748,
+            "longitude": -9.20322
+          },
+          {
+            "title": "Belém Tower",
+            "type": "activity",
+            "placeName": "Belém Tower",
+            "latitude": 38.69158,
+            "longitude": -9.21604
+          },
+          {
+            "title": "MAAT",
+            "type": "activity",
+            "placeName": "MAAT",
+            "latitude": 38.69578,
+            "longitude": -9.19468
+          },
+          {
+            "title": "Park Rooftop",
+            "type": "meal",
+            "placeName": "Park Rooftop",
+            "latitude": 38.71014,
+            "longitude": -9.14784
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9492
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Chiado, Market & Night Out",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Dear Breakfast Chiado",
+            "type": "meal",
+            "placeName": "Dear Breakfast Chiado",
+            "latitude": 38.71082,
+            "longitude": -9.14363
+          },
+          {
+            "title": "Miradouro de São Pedro de Alcântara",
+            "type": "activity",
+            "placeName": "Miradouro de São Pedro de Alcântara",
+            "latitude": 38.7151,
+            "longitude": -9.14442
+          },
+          {
+            "title": "Time Out Market Lisboa",
+            "type": "meal",
+            "placeName": "Time Out Market Lisboa",
+            "latitude": 38.70697,
+            "longitude": -9.14562
+          },
+          {
+            "title": "Taberna da Rua das Flores",
+            "type": "meal",
+            "placeName": "Taberna da Rua das Flores",
+            "latitude": 38.71026,
+            "longitude": -9.14352
+          },
+          {
+            "title": "Pavilhão Chinês",
+            "type": "activity",
+            "placeName": "Pavilhão Chinês",
+            "latitude": 38.71528,
+            "longitude": -9.14829
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Portugal"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3369
+        ]
+      }
+    ]
+  }
+]

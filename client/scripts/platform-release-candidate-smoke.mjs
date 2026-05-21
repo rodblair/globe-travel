@@ -24,11 +24,16 @@ const includeShareFixtureSweep =
   )
 const includeShareMultiItinerary = process.env.QA_RELEASE_INCLUDE_SHARE_MULTI_ITINERARY === '1'
 const includeOwnerFeedback = process.env.QA_RELEASE_INCLUDE_OWNER_FEEDBACK !== '0'
+const includePlannerActuals = process.env.QA_RELEASE_INCLUDE_PLANNER_ACTUALS === '1'
 const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT === '1'
 const includeStripePortal = process.env.QA_RELEASE_INCLUDE_STRIPE_PORTAL === '1'
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
 const includeSlowNetwork = process.env.QA_RELEASE_INCLUDE_SLOW_NETWORK !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
+const plannerActualsPreset = process.env.QA_RELEASE_PLANNER_ACTUALS_PRESET || 'regional-edge-cities'
+const plannerActualsOutput =
+  process.env.QA_RELEASE_PLANNER_ACTUALS_OUT ||
+  `../qa/${artifactName}/planner-generated-actuals-${plannerActualsPreset}.json`
 const shareFixtureOwnerUserId = process.env.QA_OWNER_USER_ID || randomUUID()
 const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const failures = []
@@ -82,6 +87,9 @@ function summarizeParsed(parsed) {
     runId: parsed.runId,
     tripDeleted: parsed.tripDeleted,
     placesDeleted: parsed.placesDeleted,
+    preset: parsed.preset,
+    actualsChecked: parsed.actualsChecked,
+    outputPath: parsed.outputPath,
     guestProfileDeleted: parsed.guestProfileDeleted,
     guestUserDeleted: parsed.guestUserDeleted,
     auth: parsed.auth
@@ -217,6 +225,8 @@ Public share slug: ${shareSlug}
 - Public share fixture owner id: ${includeShareFixtureSweep ? shareFixtureOwnerUserId : 'n/a'}
 - Multi-itinerary share UI included: ${includeShareMultiItinerary ? 'yes' : 'no'}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
+- Planner generated actuals included: ${includePlannerActuals ? 'yes' : 'no'}
+- Planner generated actuals preset: ${includePlannerActuals ? plannerActualsPreset : 'n/a'}
 - Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
 - Hosted Stripe billing portal included: ${includeStripePortal ? 'yes' : 'no'}
@@ -245,6 +255,7 @@ ${failedRows.length ? failedRows.map((row) => `### ${row.name}
 - This gate is the local pre-deploy release-candidate contract.
 - It intentionally keeps one disposable Trip Studio fixture alive across owner action QA, recovery QA, and visual QA, then cleans it up.
 - Set \`QA_RELEASE_INCLUDE_SHARE_MULTI_ITINERARY=1\` to include the multi-itinerary public share Browser loop with disposable public trips, social-card image checks, recipient feedback, owner readback, and feedback refresh.
+- Set \`QA_RELEASE_INCLUDE_PLANNER_ACTUALS=1\` to include live planner generated-actual map-trust checks; use \`QA_RELEASE_PLANNER_ACTUALS_PRESET\` to choose the fixture preset.
 - Set \`QA_RELEASE_INCLUDE_STRIPE_CHECKOUT=1\` to include hosted Stripe Checkout browser completion with test-mode Stripe objects.
 - Set \`QA_RELEASE_INCLUDE_STRIPE_PORTAL=1\` to include hosted Stripe billing portal browser completion with test-mode Stripe objects.
 `
@@ -252,6 +263,7 @@ ${failedRows.length ? failedRows.map((row) => `### ${row.name}
 
 try {
   await assertLocalServerReady()
+  await mkdir(artifactDir, { recursive: true })
 
   await runTask({ name: 'lint', command: npmBin, args: ['run', 'lint'] })
   await runTask({ name: 'production build', command: npmBin, args: ['run', 'build'] })
@@ -267,6 +279,39 @@ try {
     ],
     parseJson: true,
   })
+
+  if (includePlannerActuals) {
+    await runTask({
+      name: 'planner generated actuals map trust',
+      command: process.execPath,
+      args: [
+        '--disable-warning=MODULE_TYPELESS_PACKAGE_JSON',
+        '--experimental-strip-types',
+        'scripts/platform-planner-generated-actuals.mjs',
+      ],
+      env: {
+        QA_BASE_URL: baseUrl,
+        QA_GENERATED_ACTUAL_PRESET: plannerActualsPreset,
+        QA_GENERATED_ACTUALS_OUT: plannerActualsOutput,
+      },
+      parseJson: true,
+      mutatesLocal: isLocalBaseUrl,
+    })
+    await runTask({
+      name: 'planner generated actuals prompt-suite cross-check',
+      command: process.execPath,
+      args: [
+        '--disable-warning=MODULE_TYPELESS_PACKAGE_JSON',
+        '--experimental-strip-types',
+        'scripts/planner-prompt-suite.mjs',
+      ],
+      env: {
+        QA_PROMPT_SUITE_ACTUALS: plannerActualsOutput,
+      },
+      parseJson: true,
+    })
+  }
+
   await runNodeTask('local route smoke', 'scripts/platform-smoke.mjs')
   await runNodeTask('Trip Studio missing-trip recovery UI smoke', 'scripts/platform-trip-studio-recovery-ui-smoke.mjs')
   await runNodeTask('auth and guest access smoke', 'scripts/platform-auth-access-smoke.mjs', {}, { mutatesLocal: true })
@@ -463,6 +508,9 @@ const summary = {
   includeShareFixtureSweep,
   includeShareMultiItinerary,
   includeOwnerFeedback,
+  includePlannerActuals,
+  plannerActualsPreset: includePlannerActuals ? plannerActualsPreset : null,
+  plannerActualsOutput: includePlannerActuals ? plannerActualsOutput : null,
   includeSlowNetwork,
   includeStripeCheckout,
   includeStripePortal,
