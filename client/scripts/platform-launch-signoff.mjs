@@ -19,7 +19,7 @@ const plannerActualsArtifact =
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const productionEvidence =
   process.env.QA_LAUNCH_PRODUCTION_EVIDENCE ||
-  'qa/full-release-candidate-planner-promotion-2026-05-21.md'
+  'qa/launch-signoff-current-production-evidence-2026-05-21.md'
 const riskRegister =
   process.env.QA_LAUNCH_RISK_REGISTER ||
   'qa/launch-risk-register.json'
