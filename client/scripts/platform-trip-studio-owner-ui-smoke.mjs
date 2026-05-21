@@ -297,6 +297,51 @@ async function runReadOnlyTripStudioChecks() {
   }
 }
 
+async function runMissingTripRecoveryChecks() {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 2,
+    isMobile: true,
+  })
+  const page = await context.newPage()
+  const missingTripId = '00000000-0000-4000-8000-000000000001'
+
+  try {
+    await page.goto(`${baseUrl}/trips/${missingTripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await page.waitForFunction(
+      () => document.body.innerText.includes('Trip unavailable') || document.body.innerText.includes('Trip workspace'),
+      { timeout: 15000 },
+    ).catch(() => {})
+    const missingState = await readPageState(page)
+
+    record('missing Trip Studio route shows recovery instead of empty owner workspace', (
+      missingState.text.includes('We could not open this trip') &&
+      missingState.text.includes('Go to saved trips') &&
+      missingState.text.includes('Plan a new trip') &&
+      !missingState.text.includes('Save trip') &&
+      !missingState.text.includes('Share with friends') &&
+      !missingState.text.includes('Create a trip to start planning') &&
+      !missingState.appError &&
+      !missingState.horizontalOverflow
+    ), {
+      url: missingState.url,
+      hasTripUnavailable: missingState.text.includes('Trip unavailable'),
+      hasRecoveryHeading: missingState.text.includes('We could not open this trip'),
+      hasSavedRecovery: missingState.text.includes('Go to saved trips'),
+      hasPlanRecovery: missingState.text.includes('Plan a new trip'),
+      hasSaveTrip: missingState.text.includes('Save trip'),
+      hasShareWithFriends: missingState.text.includes('Share with friends'),
+      hasEmptyWorkspaceCopy: missingState.text.includes('Create a trip to start planning'),
+      appError: missingState.appError,
+      horizontalOverflow: missingState.horizontalOverflow,
+      clientWidth: missingState.clientWidth,
+      scrollWidth: missingState.scrollWidth,
+    })
+  } finally {
+    await context.close().catch(() => {})
+  }
+}
+
 try {
   await createFixtureIfNeeded()
   if (failures.length === 0) {
@@ -307,6 +352,7 @@ try {
     })
     await runOwnerTripStudioChecks()
     await runReadOnlyTripStudioChecks()
+    await runMissingTripRecoveryChecks()
   }
 } catch (error) {
   record('owner UI smoke completed without unexpected exception', false, {

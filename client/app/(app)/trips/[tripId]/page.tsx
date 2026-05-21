@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence, useDragControls } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d, Save } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -23,6 +23,10 @@ type Trip = {
 type TripPayload = {
   trip: Trip
   days: TripDay[]
+}
+
+type TripLoadError = Error & {
+  status?: number
 }
 
 const EMPTY_DAYS: TripDay[] = []
@@ -99,6 +103,61 @@ function coerceCoordinate(value: unknown) {
   return null
 }
 
+function TripStudioRecovery({ status }: { status?: number }) {
+  const isAuthProblem = status === 401 || status === 403
+
+  return (
+    <section
+      aria-labelledby="trip-studio-recovery-title"
+      className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--brass),transparent_82%),transparent_32%),linear-gradient(180deg,var(--paper),var(--paper-recessed))] px-5 py-10"
+    >
+      <div className="paper-grain pointer-events-none absolute inset-0" />
+      <div className="absolute inset-x-0 top-0 h-px bg-paper-recessed" />
+      <section className="relative mx-auto w-full max-w-4xl rounded-[32px] border border-rule bg-paper-raised/90 p-6 shadow-[var(--shadow-lg)] backdrop-blur-2xl md:p-8">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--terracotta)]">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          Trip unavailable
+        </div>
+        <h1 id="trip-studio-recovery-title" className="mt-5 max-w-2xl font-serif text-4xl leading-[1] text-foreground md:text-6xl">
+          We could not open this trip.
+        </h1>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/62 md:text-base">
+          {isAuthProblem
+            ? 'This itinerary needs the account or guest session that created it. Sign in, return to saved trips, or start a fresh plan.'
+            : 'The trip may have been deleted, made private, or created in a different guest session. Your saved trips and planner are still available.'}
+        </p>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <Link
+            href="/saved"
+            className="touch-target group rounded-[24px] border border-[color:var(--brass)]/30 bg-[var(--brass)] p-4 text-[var(--brass-text)] shadow-[0_16px_42px_rgba(245,158,11,0.18)] transition-colors hover:bg-[var(--brass-hover)]"
+          >
+            <span className="flex items-center gap-3 text-sm font-semibold">
+              <MapPinned className="h-4 w-4" />
+              Go to saved trips
+            </span>
+            <span className="mt-2 block text-xs leading-relaxed text-[var(--brass-text)]/78">
+              Reopen an itinerary you still own or review trips saved to this session.
+            </span>
+          </Link>
+          <Link
+            href="/chat"
+            className="touch-target rounded-[24px] border border-rule bg-paper-recessed p-4 text-foreground transition-colors hover:bg-paper"
+          >
+            <span className="flex items-center gap-3 text-sm font-semibold">
+              <MessageSquareQuote className="h-4 w-4 text-[var(--brass)]" />
+              Plan a new trip
+            </span>
+            <span className="mt-2 block text-xs leading-relaxed text-foreground/62">
+              Start from a destination, a date, or a rough idea and move it into Trip Studio.
+            </span>
+          </Link>
+        </div>
+      </section>
+    </section>
+  )
+}
+
 function TripStudioPageContent() {
   const params = useParams<{ tripId: string }>()
   const searchParams = useSearchParams()
@@ -160,11 +219,15 @@ function TripStudioPageContent() {
   const chatDragControls = useDragControls()
   const itineraryDragControls = useDragControls()
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['trip', tripId],
     queryFn: async () => {
       const res = await fetch(`/api/trips/${tripId}`, { cache: 'no-store' })
-      if (!res.ok) throw new Error('Failed to load trip')
+      if (!res.ok) {
+        const loadError = new Error('Failed to load trip') as TripLoadError
+        loadError.status = res.status
+        throw loadError
+      }
       return res.json() as Promise<TripPayload>
     },
     retry: 1,
@@ -184,6 +247,7 @@ function TripStudioPageContent() {
       if (!res.ok) return [] as TripFeedback[]
       return res.json() as Promise<TripFeedback[]>
     },
+    enabled: Boolean(trip),
   })
 
   const { data: workflowJobs = [], refetch: refetchWorkflowJobs } = useQuery({
@@ -193,6 +257,7 @@ function TripStudioPageContent() {
       if (!res.ok) return [] as PlannerWorkflowJob[]
       return res.json() as Promise<PlannerWorkflowJob[]>
     },
+    enabled: Boolean(trip),
     refetchInterval: (query) => {
       const jobs = (query.state.data as PlannerWorkflowJob[] | undefined) || []
       return jobs.some((job) => job.status === 'queued' || job.status === 'running') ? 2500 : false
@@ -653,6 +718,10 @@ function TripStudioPageContent() {
         </div>
       </div>
     )
+  }
+
+  if (isError && !resolvedPayload) {
+    return <TripStudioRecovery status={(error as TripLoadError | null)?.status} />
   }
 
   return (
