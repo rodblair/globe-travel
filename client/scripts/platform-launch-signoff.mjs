@@ -19,7 +19,7 @@ const plannerActualsArtifact =
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const productionEvidence =
   process.env.QA_LAUNCH_PRODUCTION_EVIDENCE ||
-  'qa/release-candidate-share-multi-integration-2026-05-21/README.md'
+  'qa/full-release-candidate-planner-promotion-2026-05-21.md'
 const riskRegister =
   process.env.QA_LAUNCH_RISK_REGISTER ||
   'qa/launch-risk-register.json'
@@ -476,7 +476,7 @@ async function checkPlannerActualsArtifact() {
   })
 }
 
-async function checkProductionEvidence() {
+async function checkProductionEvidence(productionHealth) {
   let text
   try {
     text = await readText(productionEvidence)
@@ -503,6 +503,7 @@ async function checkProductionEvidence() {
       label: 'production health 11/11',
       ok: /Checks:\s*`11\/11`/i.test(text) ||
         /health\s+`11\/11`/i.test(text) ||
+        /Production health:\s*`ok`,\s*`11\/11`/i.test(text) ||
         /"ok":\s*11[\s\S]{0,120}"criticalMissing":\s*0[\s\S]{0,120}"warningMissing":\s*0/i.test(text) ||
         /"healthStatus":\s*"ok"[\s\S]{0,160}"criticalMissing":\s*\[\][\s\S]{0,160}"warningMissing":\s*\[\]/i.test(text),
     },
@@ -510,14 +511,26 @@ async function checkProductionEvidence() {
       label: 'production release gate 9/9',
       ok: /Overall production gate:\s*`9\/9`/i.test(text) ||
         /production release gate passed\s*`9\/9`/i.test(text) ||
+        /production release gate:\s*`9\/9`/i.test(text) ||
         /"checked":\s*9[\s\S]{0,80}"passed":\s*9[\s\S]{0,80}"failed":\s*0/i.test(text),
     },
   ]
+
+  const liveProductionCommit = productionHealth?.deployment?.commit || ''
+  const expectedEvidenceCommit = expectedCommit || liveProductionCommit
+  if (expectedEvidenceCommit) {
+    evidenceMatchers.push({
+      label: 'current production commit',
+      ok: text.includes(expectedEvidenceCommit),
+    })
+  }
+
   const missingEvidence = evidenceMatchers.filter((matcher) => !matcher.ok).map((matcher) => matcher.label)
   addCheck('postdeploy production release evidence is present', missingEvidence.length === 0, {
     artifact: productionEvidence,
     requiredEvidence: evidenceMatchers.map((matcher) => matcher.label),
     missingEvidence,
+    expectedEvidenceCommit: expectedEvidenceCommit || null,
   })
 }
 
@@ -638,13 +651,13 @@ async function checkRollbackPlan() {
   })
 }
 
-await checkProductionHealth()
+const productionHealth = await checkProductionHealth()
 await checkRequiredDocs()
 await checkReleaseArtifact()
 await checkVisualArtifact()
 await checkStripeArtifacts()
 await checkPlannerActualsArtifact()
-await checkProductionEvidence()
+await checkProductionEvidence(productionHealth)
 await checkRiskRegister()
 await checkRollbackPlan()
 
