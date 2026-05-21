@@ -146,6 +146,7 @@ async function readPageState(page) {
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
+      mainCount: document.querySelectorAll('main').length,
     }
   })
 }
@@ -411,6 +412,38 @@ try {
   record('saved trip card exposes reopen link to Trip Studio', linkCount >= 1, {
     linkCount,
     href: `/trips/${createdTripId}`,
+  })
+
+  if (linkCount >= 1) {
+    await Promise.all([
+      page.waitForURL(new RegExp(`/trips/${escapeRegExp(createdTripId)}(?:$|[?#])`), { timeout: 12000 }).catch(() => {}),
+      tripLink.first().click({ timeout: 8000 }),
+    ])
+    await page.getByText(tripTitle, { exact: false }).waitFor({ state: 'visible', timeout: 12000 }).catch(() => {})
+  }
+
+  const reopenedState = await readPageState(page)
+  record('saved trip card reopens editable Trip Studio without recovery dead end', (
+    linkCount >= 1 &&
+    reopenedState.url.includes(`/trips/${createdTripId}`) &&
+    reopenedState.text.includes(tripTitle) &&
+    reopenedState.text.includes('Save trip') &&
+    reopenedState.text.includes('Share with friends') &&
+    reopenedState.text.includes('Build maps') &&
+    !reopenedState.text.includes('We could not open this trip.') &&
+    !reopenedState.hasAppError &&
+    !reopenedState.horizontalOverflow &&
+    reopenedState.mainCount === 1
+  ), {
+    url: reopenedState.url,
+    hasTripTitle: reopenedState.text.includes(tripTitle),
+    hasSaveTrip: reopenedState.text.includes('Save trip'),
+    hasShareWithFriends: reopenedState.text.includes('Share with friends'),
+    hasBuildMaps: reopenedState.text.includes('Build maps'),
+    hasUnavailableRecovery: reopenedState.text.includes('We could not open this trip.'),
+    horizontalOverflow: reopenedState.horizontalOverflow,
+    hasAppError: reopenedState.hasAppError,
+    mainCount: reopenedState.mainCount,
   })
 
   await context.close().catch(() => {})
