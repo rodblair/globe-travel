@@ -213,6 +213,21 @@ const requiredBetaReviewScorecardFields = [
   'mobileUsability',
   'paidValueCredibility',
 ]
+const requiredCompletedBetaReviewFields = [
+  'reviewerRole',
+  'routeOrShareUrl',
+  'viewport',
+  'device',
+  'prompt',
+  'completedAt',
+  'firstMinuteOutcome',
+  'mapTrustNotes',
+  'shareFeedbackOutcome',
+  'scorecard',
+  'findings',
+]
+const allowedBetaFindingSeverities = new Set(['P0', 'P1', 'P2', 'P3'])
+const allowedBetaFindingStatuses = new Set(['open', 'closed', 'accepted-risk'])
 
 const checks = []
 
@@ -337,6 +352,80 @@ function checkEvidenceFreshness(name, dateValue) {
 
 function hasMeaningfulText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
+}
+
+function isLaunchScorecardRating(value) {
+  return Number.isInteger(value) && value >= 1 && value <= 5
+}
+
+function isLaunchHttpUrl(value) {
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+function isLaunchViewport(value) {
+  return /^\d{3,4}x\d{3,4}$/.test(String(value || '').trim())
+}
+
+function isLaunchDate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+}
+
+function completedBetaReviewEvidenceIssues(review) {
+  const issues = []
+
+  for (const field of requiredCompletedBetaReviewFields) {
+    if (field === 'scorecard') {
+      if (!review.scorecard || typeof review.scorecard !== 'object' || Array.isArray(review.scorecard)) {
+        issues.push('scorecard')
+      }
+      continue
+    }
+
+    if (field === 'findings') {
+      if (!Array.isArray(review.findings)) issues.push('findings')
+      continue
+    }
+
+    if (!hasMeaningfulText(review[field])) issues.push(field)
+  }
+
+  if (hasMeaningfulText(review.routeOrShareUrl) && !isLaunchHttpUrl(review.routeOrShareUrl)) {
+    issues.push('routeOrShareUrl must be http(s)')
+  }
+
+  if (hasMeaningfulText(review.viewport) && !isLaunchViewport(review.viewport)) {
+    issues.push('viewport must look like 390x844')
+  }
+
+  if (hasMeaningfulText(review.completedAt) && !isLaunchDate(review.completedAt)) {
+    issues.push('completedAt must be YYYY-MM-DD')
+  }
+
+  const scorecard = review.scorecard || {}
+  const missingRatings = requiredBetaReviewScorecardFields.filter((field) => !isLaunchScorecardRating(scorecard[field]))
+  if (missingRatings.length > 0) {
+    issues.push(`scorecard ratings missing or out of range: ${missingRatings.join(', ')}`)
+  }
+
+  const malformedFindings = Array.isArray(review.findings)
+    ? review.findings.filter((finding) => (
+      !allowedBetaFindingSeverities.has(String(finding.severity || '').toUpperCase()) ||
+      !allowedBetaFindingStatuses.has(String(finding.status || '').toLowerCase()) ||
+      !hasMeaningfulText(finding.surface) ||
+      !hasMeaningfulText(finding.title) ||
+      !hasMeaningfulText(finding.notes)
+    ))
+    : []
+  if (malformedFindings.length > 0) {
+    issues.push(`${malformedFindings.length} malformed finding(s)`)
+  }
+
+  return issues
 }
 
 async function checkProductionHealth() {
@@ -803,6 +892,12 @@ async function checkBetaHumanReviewRegister() {
 
   const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
   const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
+  const completedReviewEvidenceGaps = completedReviews
+    .map((review) => ({
+      id: review.id || '(missing id)',
+      issues: completedBetaReviewEvidenceIssues(review),
+    }))
+    .filter((review) => review.issues.length > 0)
   const unresolvedBlockingReviews = completedReviews.filter((review) => {
     const findings = Array.isArray(review.findings) ? review.findings : []
     return findings.some((finding) => {
@@ -811,6 +906,12 @@ async function checkBetaHumanReviewRegister() {
       return (severity === 'P0' || severity === 'P1') && status !== 'closed'
     })
   })
+  addCheck('completed beta human reviews include required reviewer evidence', completedReviewEvidenceGaps.length === 0, {
+    completedReviewCount: completedReviews.length,
+    requiredCompletedBetaReviewFields,
+    completedReviewEvidenceGaps,
+  })
+
   addCheck('completed beta human reviews have no unresolved P0/P1 findings', unresolvedBlockingReviews.length === 0, {
     completedReviewCount: completedReviews.length,
     publicLaunchMinimum: Number(register.minimumCompletedReviewsForPublicLaunch) || null,

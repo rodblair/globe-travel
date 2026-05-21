@@ -6,8 +6,8 @@ Status: fail
 
 ## Result
 
-- Checked: 11
-- Passed: 10
+- Checked: 12
+- Passed: 11
 - Failed: 1
 - Planned reviews: 25
 - Completed reviews: 0
@@ -33,6 +33,7 @@ Status: fail
 - Pass: beta human review scorecard has required fields
 - Pass: every planned beta review has required metadata
 - Fail: completed beta reviews meet requested threshold
+- Pass: completed beta reviews include required reviewer evidence
 - Pass: completed beta reviews have no unresolved P0/P1 findings
 
 ## Planned Review Queue
@@ -80,6 +81,9 @@ Missing scorecard fields:
 Malformed reviews:
 - none
 
+Completed review evidence gaps:
+- none
+
 Unresolved P0/P1 findings:
 - none
 
@@ -87,4 +91,4 @@ Unresolved P0/P1 findings:
 
 - This gate does not pretend the invite beta has happened. With the default `QA_BETA_REVIEW_MIN_COMPLETED=0`, it proves the review plan, matrix, and scorecard are operationally ready.
 - For public-launch approval, run with `QA_BETA_REVIEW_MIN_COMPLETED=25` or higher and keep unresolved P0/P1 findings at zero.
-- Review records should include the route, viewport, reviewer role, prompt, scorecard ratings, and any findings with severity and status.
+- Completed review records must include reviewer role, route or share URL, viewport, device, completed date, outcome notes, complete 1-5 scorecard ratings, and findings with severity, status, surface, title, and notes.

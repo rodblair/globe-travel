@@ -24,6 +24,21 @@ const requiredScorecardFields = [
   'mobileUsability',
   'paidValueCredibility',
 ]
+const requiredCompletedReviewFields = [
+  'reviewerRole',
+  'routeOrShareUrl',
+  'viewport',
+  'device',
+  'prompt',
+  'completedAt',
+  'firstMinuteOutcome',
+  'mapTrustNotes',
+  'shareFeedbackOutcome',
+  'scorecard',
+  'findings',
+]
+const allowedFindingSeverities = new Set(['P0', 'P1', 'P2', 'P3'])
+const allowedFindingStatuses = new Set(['open', 'closed', 'accepted-risk'])
 
 function unique(values) {
   return [...new Set(values.filter(Boolean))]
@@ -40,6 +55,80 @@ function isNonEmptyString(value) {
 
 function isReviewComplete(review) {
   return completedStatuses.has(review.status)
+}
+
+function isRating(value) {
+  return Number.isInteger(value) && value >= 1 && value <= 5
+}
+
+function isHttpUrl(value) {
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+function isViewport(value) {
+  return /^\d{3,4}x\d{3,4}$/.test(String(value || '').trim())
+}
+
+function isDate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+}
+
+function completedReviewEvidenceIssues(review) {
+  const issues = []
+
+  for (const field of requiredCompletedReviewFields) {
+    if (field === 'scorecard') {
+      if (!review.scorecard || typeof review.scorecard !== 'object' || Array.isArray(review.scorecard)) {
+        issues.push('scorecard')
+      }
+      continue
+    }
+
+    if (field === 'findings') {
+      if (!Array.isArray(review.findings)) issues.push('findings')
+      continue
+    }
+
+    if (!isNonEmptyString(review[field])) issues.push(field)
+  }
+
+  if (isNonEmptyString(review.routeOrShareUrl) && !isHttpUrl(review.routeOrShareUrl)) {
+    issues.push('routeOrShareUrl must be http(s)')
+  }
+
+  if (isNonEmptyString(review.viewport) && !isViewport(review.viewport)) {
+    issues.push('viewport must look like 390x844')
+  }
+
+  if (isNonEmptyString(review.completedAt) && !isDate(review.completedAt)) {
+    issues.push('completedAt must be YYYY-MM-DD')
+  }
+
+  const scorecard = review.scorecard || {}
+  const missingRatings = requiredScorecardFields.filter((field) => !isRating(scorecard[field]))
+  if (missingRatings.length > 0) {
+    issues.push(`scorecard ratings missing or out of range: ${missingRatings.join(', ')}`)
+  }
+
+  const malformedFindings = Array.isArray(review.findings)
+    ? review.findings.filter((finding) => (
+      !allowedFindingSeverities.has(String(finding.severity || '').toUpperCase()) ||
+      !allowedFindingStatuses.has(String(finding.status || '').toLowerCase()) ||
+      !isNonEmptyString(finding.surface) ||
+      !isNonEmptyString(finding.title) ||
+      !isNonEmptyString(finding.notes)
+    ))
+    : []
+  if (malformedFindings.length > 0) {
+    issues.push(`${malformedFindings.length} malformed finding(s)`)
+  }
+
+  return issues
 }
 
 function markdownList(items) {
@@ -61,6 +150,12 @@ const unresolvedBlockingReviews = completedReviews.filter((review) => {
     String(issue.status || '').toLowerCase() !== 'closed'
   ))
 })
+const completedReviewEvidenceGaps = completedReviews
+  .map((review) => ({
+    id: review.id || '(missing id)',
+    issues: completedReviewEvidenceIssues(review),
+  }))
+  .filter((review) => review.issues.length > 0)
 
 const checks = []
 function addCheck(name, ok, detail = {}) {
@@ -152,6 +247,12 @@ addCheck('completed beta reviews meet requested threshold', completedReviews.len
   requestedMinimum: minCompletedReviews,
 })
 
+addCheck('completed beta reviews include required reviewer evidence', completedReviewEvidenceGaps.length === 0, {
+  completedReviewCount: completedReviews.length,
+  requiredCompletedReviewFields,
+  completedReviewEvidenceGaps,
+})
+
 addCheck('completed beta reviews have no unresolved P0/P1 findings', unresolvedBlockingReviews.length === 0, {
   unresolvedBlockingReviews: unresolvedBlockingReviews.map((review) => ({
     id: review.id,
@@ -226,6 +327,9 @@ ${markdownList(missingScorecardFields)}
 Malformed reviews:
 ${markdownList(malformedReviews.map((review) => review.id || '(missing id)'))}
 
+Completed review evidence gaps:
+${markdownList(completedReviewEvidenceGaps.map((review) => `${review.id}: ${review.issues.join('; ')}`))}
+
 Unresolved P0/P1 findings:
 ${markdownList(unresolvedBlockingReviews.map((review) => review.id))}
 
@@ -233,7 +337,7 @@ ${markdownList(unresolvedBlockingReviews.map((review) => review.id))}
 
 - This gate does not pretend the invite beta has happened. With the default \`QA_BETA_REVIEW_MIN_COMPLETED=0\`, it proves the review plan, matrix, and scorecard are operationally ready.
 - For public-launch approval, run with \`QA_BETA_REVIEW_MIN_COMPLETED=25\` or higher and keep unresolved P0/P1 findings at zero.
-- Review records should include the route, viewport, reviewer role, prompt, scorecard ratings, and any findings with severity and status.
+- Completed review records must include reviewer role, route or share URL, viewport, device, completed date, outcome notes, complete 1-5 scorecard ratings, and findings with severity, status, surface, title, and notes.
 `
 
 await mkdir(resolve(root, 'qa'), { recursive: true })
