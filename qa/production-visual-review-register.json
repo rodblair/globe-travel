@@ -6,10 +6,10 @@
   "nextReviewDueAt": "2026-05-28",
   "reviewProtocol": "Review every production visual QA screenshot for route clarity, brand consistency, text fit, mobile readability, empty/error-state polish, visual hierarchy, and trust. Treat app errors, horizontal overflow, clipped primary text, overlapping controls, broken share affordances, or unexplained pixel diffs on stable shell routes as release-blocking until fixed or explicitly accepted in the risk register.",
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-public-launch-signoff-2026-05-21-b83eb4e",
-    "summaryArtifact": "qa/visual-baseline-production-public-launch-signoff-2026-05-21-b83eb4e/summary.json",
-    "productionCommit": "b83eb4e305c86bce90a36921e4b532c5ef995c19",
-    "deploymentUrl": "globe-travel-7i595t0ei-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-visual-history-gate-2026-05-21-bfc390c",
+    "summaryArtifact": "qa/visual-baseline-production-visual-history-gate-2026-05-21-bfc390c/summary.json",
+    "productionCommit": "bfc390c37bfe65c6cd61b57eb4e0b08cc04700d5",
+    "deploymentUrl": "globe-travel-je8zx1npo-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -32,15 +32,15 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual gate passed 20/20 on the live b83eb4e deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production visual gate passed 20/20 on the live bfc390c deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
       "reviewedAt": "2026-05-21",
-      "artifact": "qa/visual-baseline-production-public-launch-signoff-2026-05-21-b83eb4e",
-      "summaryArtifact": "qa/visual-baseline-production-public-launch-signoff-2026-05-21-b83eb4e/summary.json",
-      "productionCommit": "b83eb4e305c86bce90a36921e4b532c5ef995c19",
-      "deploymentUrl": "globe-travel-7i595t0ei-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-visual-history-gate-2026-05-21-bfc390c",
+      "summaryArtifact": "qa/visual-baseline-production-visual-history-gate-2026-05-21-bfc390c/summary.json",
+      "productionCommit": "bfc390c37bfe65c6cd61b57eb4e0b08cc04700d5",
+      "deploymentUrl": "globe-travel-je8zx1npo-rodney-blairs-projects.vercel.app",
       "reviewedBy": "Codex visual QA",
       "verdict": "pass",
       "blockingFindings": [],
