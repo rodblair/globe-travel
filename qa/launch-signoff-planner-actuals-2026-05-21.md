@@ -46,3 +46,15 @@ The focused run verified the new release-candidate planner-actuals wiring withou
 ## Result
 
 Launch signoff now proves the regional generated itinerary/map-trust evidence is current and complete. Release-candidate runs can also opt into live generated actuals, giving the platform a repeatable path from real planner generation to launch approval evidence.
+
+## Postdeploy Evidence
+
+Commit `b7ea3719daadd0f335d75a245dcc70c3399aa91e` deployed to Vercel production.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-6iuufpxom-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `32/32`
+- Non-visual production release gate: `9/9`
+- Athens public share/map integrity: `5/5`, with 5 itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `56/56`
