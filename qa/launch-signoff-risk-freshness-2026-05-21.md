@@ -55,3 +55,17 @@ Results:
 A temporary risk register with one open `P1` issue was passed through `QA_LAUNCH_RISK_REGISTER=<tempfile> npm run qa:launch-signoff`.
 
 Result: the command exited nonzero and reported `launch risk register has no open P0/P1 issues` with issue `TEST-P1`, proving the signoff blocks open launch blockers instead of merely reporting them.
+
+## Postdeploy Verification
+
+Commit `03878b2` deployed to Vercel production as:
+
+- Deployment URL: `globe-travel-gwz0tne7n-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `21/21`
+
+Postdeploy command:
+
+```bash
+QA_LAUNCH_EXPECTED_COMMIT=03878b26f6227eba21cd7b8015a484e4af613aed npm run qa:launch-signoff
+```
