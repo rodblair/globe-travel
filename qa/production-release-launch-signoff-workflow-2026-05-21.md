@@ -39,3 +39,17 @@ Results:
 
 - The workflow does not require the GitHub workflow commit to equal the deployed production commit because documentation/evidence-only commits intentionally skip Vercel deployment.
 - Exact deployed-commit checks remain available for release windows with `QA_LAUNCH_EXPECTED_COMMIT=<sha>`.
+
+## Postdeploy Verification
+
+Commit `0e3ab0e` deployed to Vercel production as:
+
+- Deployment URL: `globe-travel-2jk3o7he4-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `16/16`
+
+Postdeploy command:
+
+```bash
+QA_LAUNCH_EXPECTED_COMMIT=0e3ab0e1caf62507fc01f7bbfda95af593b91caf npm run qa:launch-signoff
+```
