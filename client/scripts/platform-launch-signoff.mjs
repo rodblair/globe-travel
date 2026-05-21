@@ -17,6 +17,10 @@ const visualArtifact =
 const productionEvidence =
   process.env.QA_LAUNCH_PRODUCTION_EVIDENCE ||
   'qa/release-candidate-share-multi-integration-2026-05-21/README.md'
+const riskRegister =
+  process.env.QA_LAUNCH_RISK_REGISTER ||
+  'qa/launch-risk-register.json'
+const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 
 const requiredDocs = [
   'RELEASE_READINESS_MEMO.md',
@@ -131,6 +135,37 @@ function hasAll(actual, expected) {
   return expected.filter((item) => !actualSet.has(item))
 }
 
+function dateOnly(value) {
+  if (!value) return null
+  const match = String(value).match(/\b\d{4}-\d{2}-\d{2}\b/)
+  return match?.[0] || null
+}
+
+function evidenceDateFrom(summary, artifactPath) {
+  return dateOnly(summary?.date) ||
+    dateOnly(summary?.createdAt) ||
+    dateOnly(summary?.checkedAt) ||
+    dateOnly(summary?.artifactDir) ||
+    dateOnly(artifactPath)
+}
+
+function ageInDays(dateValue) {
+  const parsed = Date.parse(`${dateValue}T00:00:00Z`)
+  if (!Number.isFinite(parsed)) return null
+  const now = new Date()
+  const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  return Math.floor((todayUtc - parsed) / 86400000)
+}
+
+function checkEvidenceFreshness(name, dateValue) {
+  const ageDays = dateValue ? ageInDays(dateValue) : null
+  addCheck(`${name} evidence is fresh`, Number.isFinite(ageDays) && ageDays >= 0 && ageDays <= maxEvidenceAgeDays, {
+    evidenceDate: dateValue || null,
+    ageDays,
+    maxEvidenceAgeDays,
+  })
+}
+
 async function checkProductionHealth() {
   const url = `${baseUrl}/api/health`
   let response
@@ -214,6 +249,8 @@ async function checkReleaseArtifact() {
     failed: summary.failed,
   })
 
+  checkEvidenceFreshness('full local release-candidate', evidenceDateFrom(summary, releaseArtifact))
+
   const requiredFlags = [
     'includeVisual',
     'includeStudioFixture',
@@ -267,6 +304,8 @@ async function checkVisualArtifact() {
     failed: summary.failed,
     viewportCount: Array.isArray(summary.viewports) ? summary.viewports.length : 0,
   })
+
+  checkEvidenceFreshness('responsive visual QA', evidenceDateFrom(summary, visualArtifact))
 
   const missingRoutes = hasAll(summary.routes || [], requiredVisualRoutes)
   const missingProtectedRoutes = hasAll(summary.auth?.protectedRoutes || [], requiredProtectedRoutes)
@@ -348,12 +387,49 @@ async function checkProductionEvidence() {
   })
 }
 
+async function checkRiskRegister() {
+  let register
+  try {
+    register = await readJson(riskRegister)
+  } catch (error) {
+    addCheck('launch risk register is readable', false, {
+      artifact: riskRegister,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('launch risk register is readable', true, {
+    artifact: riskRegister,
+    reviewedAt: register.reviewedAt || null,
+  })
+
+  checkEvidenceFreshness('launch risk register', dateOnly(register.reviewedAt))
+
+  const issues = Array.isArray(register.issues) ? register.issues : []
+  const openBlockingIssues = issues.filter((issue) => {
+    const severity = String(issue.severity || '').toUpperCase()
+    const status = String(issue.status || '').toLowerCase()
+    return (severity === 'P0' || severity === 'P1') && status !== 'closed'
+  })
+  addCheck('launch risk register has no open P0/P1 issues', openBlockingIssues.length === 0, {
+    totalIssues: issues.length,
+    openBlockingIssues: openBlockingIssues.map((issue) => ({
+      id: issue.id,
+      severity: issue.severity,
+      status: issue.status,
+      title: issue.title,
+    })),
+  })
+}
+
 await checkProductionHealth()
 await checkRequiredDocs()
 await checkReleaseArtifact()
 await checkVisualArtifact()
 await checkStripeArtifacts()
 await checkProductionEvidence()
+await checkRiskRegister()
 
 const failures = checks.filter((check) => !check.ok)
 const summary = {
@@ -362,6 +438,8 @@ const summary = {
   releaseArtifact,
   visualArtifact,
   productionEvidence,
+  riskRegister,
+  maxEvidenceAgeDays,
   checked: checks.length,
   passed: checks.length - failures.length,
   failed: failures.length,

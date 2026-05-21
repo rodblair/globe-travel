@@ -1,0 +1,26 @@
+{
+  "reviewedAt": "2026-05-21",
+  "policy": "Release is blocked by any open P0 or P1 issue. P2 issues require owner, target month, and accepted-risk notes.",
+  "issues": [
+    {
+      "id": "GT-P2-001",
+      "severity": "P2",
+      "status": "open",
+      "title": "Invite-only beta still needs broader representative trip coverage beyond current automated fixtures",
+      "surface": "planner, maps, public sharing",
+      "owner": "Product",
+      "targetMonth": "June 2026",
+      "acceptedRisk": "Current release-candidate gates prove the launch fixture matrix, regional generated actuals, Athens public share, multi-itinerary public-share flows, and production health. The next beta phase should add 25-50 real or representative trips before public launch."
+    },
+    {
+      "id": "GT-P2-002",
+      "severity": "P2",
+      "status": "open",
+      "title": "Production visual-diff review cadence should mature from artifact capture to routine human review",
+      "surface": "visual QA",
+      "owner": "Product",
+      "targetMonth": "September 2026",
+      "acceptedRisk": "Automated visual gates currently fail on overflow, app errors, clipped text, overlap, and selected pixel diffs. The scale rehearsal phase should add recurring human review of visual artifacts before broad public launch."
+    }
+  ]
+}
