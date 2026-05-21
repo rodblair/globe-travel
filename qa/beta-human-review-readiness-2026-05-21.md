@@ -6,12 +6,13 @@ Status: pass
 
 ## Result
 
-- Checked: 12
-- Passed: 12
+- Checked: 13
+- Passed: 13
 - Failed: 0
 - Planned reviews: 25
 - Completed reviews: 0
 - Requested completed-review threshold: 0
+- Reviewer packets: 25 written to `qa/beta-human-review-packets-2026-05-21`
 
 ## Coverage
 
@@ -32,6 +33,7 @@ Status: pass
 - Pass: beta human review plan includes core journey surfaces
 - Pass: beta human review scorecard has required fields
 - Pass: every planned beta review has required metadata
+- Pass: every planned beta review can produce a reviewer packet
 - Pass: completed beta reviews meet requested threshold
 - Pass: completed beta reviews include required reviewer evidence
 - Pass: completed beta reviews have no unresolved P0/P1 findings
@@ -81,6 +83,9 @@ Missing scorecard fields:
 Malformed reviews:
 - none
 
+Reviewer packet issues:
+- none
+
 Completed review evidence gaps:
 - none
 
@@ -90,5 +95,6 @@ Unresolved P0/P1 findings:
 ## Notes
 
 - This gate does not pretend the invite beta has happened. With the default `QA_BETA_REVIEW_MIN_COMPLETED=0`, it proves the review plan, matrix, and scorecard are operationally ready.
+- Run `QA_BETA_REVIEW_WRITE_PACKETS=1 npm run qa:beta-review-readiness` to generate reviewer-ready packets and a machine-readable packet manifest.
 - For public-launch approval, run with `QA_BETA_REVIEW_MIN_COMPLETED=25` or higher and keep unresolved P0/P1 findings at zero.
 - Completed review records must include reviewer role, route or share URL, viewport, device, completed date, outcome notes, complete 1-5 scorecard ratings, and findings with severity, status, surface, title, and notes.

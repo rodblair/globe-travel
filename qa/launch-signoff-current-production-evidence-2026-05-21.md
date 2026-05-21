@@ -70,8 +70,10 @@ Commit `bfc390c37bfe65c6cd61b57eb4e0b08cc04700d5` deployed to Vercel production.
 - Beta human review readiness: `12/12`
 - Production monitoring readiness: `9/9`
 - Design-system readiness: `10/10`
-- Current launch signoff gate passed `66/66`
+- Current launch signoff gate passed `68/68`
 - Public-launch signoff mode fails as expected until `25/25` beta reviews are completed and production visual review history reaches four distinct passing review dates.
+- Beta human-review reviewer packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
+- Beta human-review reviewer packets: `25/25`
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-visual-history-gate-2026-05-21-bfc390c/`
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`

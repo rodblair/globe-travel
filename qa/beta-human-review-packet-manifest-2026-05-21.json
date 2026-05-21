@@ -1,0 +1,526 @@
+{
+  "date": "2026-05-21",
+  "registerPath": "qa/beta-human-review-register.json",
+  "reviewerBaseUrl": "https://globe-travel-two.vercel.app",
+  "packetDir": "qa/beta-human-review-packets-2026-05-21",
+  "packetCount": 25,
+  "packets": [
+    {
+      "id": "BETA-HR-001",
+      "packetFile": "BETA-HR-001-athens.md",
+      "destination": "Athens",
+      "prompt": "Plan a restful 5-day Athens trip for a couple with culture, food, and recovery time.",
+      "audience": "couple",
+      "style": "culture",
+      "region": "Europe",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback",
+        "save-reopen"
+      ],
+      "sourceActualId": "athens-5-day-couples-rest",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md"
+    },
+    {
+      "id": "BETA-HR-002",
+      "packetFile": "BETA-HR-002-lisbon.md",
+      "destination": "Lisbon",
+      "prompt": "Plan a 3-day Lisbon trip for friends who want food, viewpoints, and nightlife.",
+      "audience": "friend-group",
+      "style": "nightlife",
+      "region": "Europe",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "lisbon-3-day-friends-nightlife",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md"
+    },
+    {
+      "id": "BETA-HR-003",
+      "packetFile": "BETA-HR-003-barcelona.md",
+      "destination": "Barcelona",
+      "prompt": "Plan a budget 3-day Barcelona beach and neighborhood trip for friends.",
+      "audience": "friend-group",
+      "style": "budget",
+      "region": "Europe",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "barcelona-3-day-budget-beaches",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md"
+    },
+    {
+      "id": "BETA-HR-004",
+      "packetFile": "BETA-HR-004-paris.md",
+      "destination": "Paris",
+      "prompt": "Plan a premium 4-day Paris trip for a couple with restaurants, art, and romantic pacing.",
+      "audience": "couple",
+      "style": "premium",
+      "region": "Europe",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "paris-4-day-couples-premium",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md"
+    },
+    {
+      "id": "BETA-HR-005",
+      "packetFile": "BETA-HR-005-new-york.md",
+      "destination": "New York",
+      "prompt": "Plan a 3-day New York trip for repeat visitors who want neighborhoods, food, and fresh ideas.",
+      "audience": "friend-group",
+      "style": "food",
+      "region": "North America",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
+      "sourceActualId": "new-york-3-day-repeat-visitors",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md"
+    },
+    {
+      "id": "BETA-HR-006",
+      "packetFile": "BETA-HR-006-istanbul.md",
+      "destination": "Istanbul",
+      "prompt": "Plan a 4-day Istanbul history and markets trip for a small group.",
+      "audience": "friend-group",
+      "style": "culture",
+      "region": "Asia",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "istanbul-4-day-history-markets",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Istanbul+history+and+markets+trip+for+a+small+group.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-006-istanbul.md"
+    },
+    {
+      "id": "BETA-HR-007",
+      "packetFile": "BETA-HR-007-seoul.md",
+      "destination": "Seoul",
+      "prompt": "Plan a 5-day Seoul food and shopping trip for friends.",
+      "audience": "friend-group",
+      "style": "food",
+      "region": "Asia",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "seoul-5-day-food-shopping",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Seoul+food+and+shopping+trip+for+friends.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-007-seoul.md"
+    },
+    {
+      "id": "BETA-HR-008",
+      "packetFile": "BETA-HR-008-bangkok.md",
+      "destination": "Bangkok",
+      "prompt": "Plan a 4-day Bangkok trip with temples, street food, and easy pacing.",
+      "audience": "friend-group",
+      "style": "food",
+      "region": "Asia",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "bangkok-4-day-temples-street-food",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Bangkok+trip+with+temples%2C+street+food%2C+and+easy+pacing.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-008-bangkok.md"
+    },
+    {
+      "id": "BETA-HR-009",
+      "packetFile": "BETA-HR-009-marrakech.md",
+      "destination": "Marrakech",
+      "prompt": "Plan a 3-day Marrakech trip around markets, riads, food, and culture.",
+      "audience": "couple",
+      "style": "culture",
+      "region": "Africa",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "marrakech-3-day-markets-riads",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Marrakech+trip+around+markets%2C+riads%2C+food%2C+and+culture.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-009-marrakech.md"
+    },
+    {
+      "id": "BETA-HR-010",
+      "packetFile": "BETA-HR-010-cape-town.md",
+      "destination": "Cape Town",
+      "prompt": "Plan a 5-day Cape Town outdoors and food trip for friends.",
+      "audience": "friend-group",
+      "style": "outdoors",
+      "region": "Africa",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "cape-town-5-day-outdoors-food",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Cape+Town+outdoors+and+food+trip+for+friends.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-010-cape-town.md"
+    },
+    {
+      "id": "BETA-HR-011",
+      "packetFile": "BETA-HR-011-sydney.md",
+      "destination": "Sydney",
+      "prompt": "Plan a 4-day Sydney trip for beaches, neighborhoods, and easy food stops.",
+      "audience": "friend-group",
+      "style": "outdoors",
+      "region": "Oceania",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "sydney-4-day-beaches-neighborhoods",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Sydney+trip+for+beaches%2C+neighborhoods%2C+and+easy+food+stops.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-011-sydney.md"
+    },
+    {
+      "id": "BETA-HR-012",
+      "packetFile": "BETA-HR-012-vancouver.md",
+      "destination": "Vancouver",
+      "prompt": "Plan a 3-day Vancouver outdoors and food trip for a mixed group.",
+      "audience": "friend-group",
+      "style": "outdoors",
+      "region": "North America",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "vancouver-3-day-outdoors-food",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Vancouver+outdoors+and+food+trip+for+a+mixed+group.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-012-vancouver.md"
+    },
+    {
+      "id": "BETA-HR-013",
+      "packetFile": "BETA-HR-013-rio-de-janeiro.md",
+      "destination": "Rio de Janeiro",
+      "prompt": "Plan a 5-day Rio beach and nightlife trip for friends.",
+      "audience": "friend-group",
+      "style": "nightlife",
+      "region": "Latin America",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "rio-5-day-beach-nightlife",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Rio+beach+and+nightlife+trip+for+friends.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-013-rio-de-janeiro.md"
+    },
+    {
+      "id": "BETA-HR-014",
+      "packetFile": "BETA-HR-014-reykjavik.md",
+      "destination": "Reykjavik",
+      "prompt": "Plan a 4-day Reykjavik outdoors trip with weather-safe pacing.",
+      "audience": "couple",
+      "style": "outdoors",
+      "region": "Europe",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen"
+      ],
+      "sourceActualId": "reykjavik-4-day-outdoors",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Reykjavik+outdoors+trip+with+weather-safe+pacing.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-014-reykjavik.md"
+    },
+    {
+      "id": "BETA-HR-015",
+      "packetFile": "BETA-HR-015-crete.md",
+      "destination": "Crete",
+      "prompt": "Plan a 5-day Crete family beach trip with culture and relaxed travel days.",
+      "audience": "family",
+      "style": "outdoors",
+      "region": "Europe",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "crete-5-day-family-beaches",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Crete+family+beach+trip+with+culture+and+relaxed+travel+days.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-015-crete.md"
+    },
+    {
+      "id": "BETA-HR-016",
+      "packetFile": "BETA-HR-016-singapore.md",
+      "destination": "Singapore",
+      "prompt": "Plan a 3-day Singapore family food trip with easy transit and heat-aware pacing.",
+      "audience": "family",
+      "style": "food",
+      "region": "Asia",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "singapore-3-day-family-food",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Singapore+family+food+trip+with+easy+transit+and+heat-aware+pacing.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-016-singapore.md"
+    },
+    {
+      "id": "BETA-HR-017",
+      "packetFile": "BETA-HR-017-dubai.md",
+      "destination": "Dubai",
+      "prompt": "Plan a 3-day luxury Dubai family trip with indoor options and clear logistics.",
+      "audience": "family",
+      "style": "premium",
+      "region": "Asia",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "dubai-3-day-luxury-family",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+luxury+Dubai+family+trip+with+indoor+options+and+clear+logistics.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-017-dubai.md"
+    },
+    {
+      "id": "BETA-HR-018",
+      "packetFile": "BETA-HR-018-madrid-and-seville.md",
+      "destination": "Madrid and Seville",
+      "prompt": "Plan a 5-day Madrid and Seville trip with food, culture, and intercity flow.",
+      "audience": "couple",
+      "style": "culture",
+      "region": "Europe",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
+      "sourceActualId": "madrid-seville-5-day-multi-city",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Madrid+and+Seville+trip+with+food%2C+culture%2C+and+intercity+flow.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-018-madrid-and-seville.md"
+    },
+    {
+      "id": "BETA-HR-019",
+      "packetFile": "BETA-HR-019-kyoto.md",
+      "destination": "Kyoto",
+      "prompt": "Plan a 3-day solo Kyoto trip with temples, food, and calm pacing.",
+      "audience": "solo",
+      "style": "culture",
+      "region": "Asia",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "kyoto-3-day-solo-temples-food",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+solo+Kyoto+trip+with+temples%2C+food%2C+and+calm+pacing.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-019-kyoto.md"
+    },
+    {
+      "id": "BETA-HR-020",
+      "packetFile": "BETA-HR-020-seattle.md",
+      "destination": "Seattle",
+      "prompt": "Plan a 2-day solo Seattle coffee and music trip.",
+      "audience": "solo",
+      "style": "budget",
+      "region": "North America",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen"
+      ],
+      "sourceActualId": "seattle-2-day-solo-coffee-music",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+2-day+solo+Seattle+coffee+and+music+trip.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-020-seattle.md"
+    },
+    {
+      "id": "BETA-HR-021",
+      "packetFile": "BETA-HR-021-bali.md",
+      "destination": "Bali",
+      "prompt": "Plan a 5-day solo Bali reset trip with wellness, food, and gentle exploration.",
+      "audience": "solo",
+      "style": "outdoors",
+      "region": "Asia",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
+      "sourceActualId": "bali-5-day-solo-reset",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+solo+Bali+reset+trip+with+wellness%2C+food%2C+and+gentle+exploration.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-021-bali.md"
+    },
+    {
+      "id": "BETA-HR-022",
+      "packetFile": "BETA-HR-022-nairobi.md",
+      "destination": "Nairobi",
+      "prompt": "Plan a 4-day solo Nairobi culture and nature trip.",
+      "audience": "solo",
+      "style": "culture",
+      "region": "Africa",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "nairobi-4-day-solo-culture-nature",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+solo+Nairobi+culture+and+nature+trip.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-022-nairobi.md"
+    },
+    {
+      "id": "BETA-HR-023",
+      "packetFile": "BETA-HR-023-washington-dc.md",
+      "destination": "Washington DC",
+      "prompt": "Plan a 3-day Washington DC museums trip for a family.",
+      "audience": "family",
+      "style": "culture",
+      "region": "North America",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
+      "sourceActualId": "washington-dc-3-day-museums-family",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Washington+DC+museums+trip+for+a+family.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-023-washington-dc.md"
+    },
+    {
+      "id": "BETA-HR-024",
+      "packetFile": "BETA-HR-024-mexico-city.md",
+      "destination": "Mexico City",
+      "prompt": "Plan a 4-day Mexico City trip with food, museums, and nightlife.",
+      "audience": "friend-group",
+      "style": "nightlife",
+      "region": "Latin America",
+      "device": "phone",
+      "viewport": "390x844",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
+      "sourceActualId": "mexico-city-4-day-food-museums-nightlife",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Mexico+City+trip+with+food%2C+museums%2C+and+nightlife.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-024-mexico-city.md"
+    },
+    {
+      "id": "BETA-HR-025",
+      "packetFile": "BETA-HR-025-london.md",
+      "destination": "London",
+      "prompt": "Plan a 3-day rain-safe London trip for friends with museums, food, and flexible timing.",
+      "audience": "friend-group",
+      "style": "budget",
+      "region": "Europe",
+      "device": "desktop",
+      "viewport": "1440x950",
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
+      "sourceActualId": "london-3-day-rain-safe",
+      "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+rain-safe+London+trip+for+friends+with+museums%2C+food%2C+and+flexible+timing.",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-025-london.md"
+    }
+  ]
+}

@@ -894,6 +894,55 @@ async function checkBetaHumanReviewRegister() {
     incompleteMetadata: incompleteMetadata.map((review) => review.id || '(missing id)'),
   })
 
+  let packetManifest = null
+  try {
+    packetManifest = await readJson(register.reviewerPacketManifest || '')
+  } catch (error) {
+    addCheck('beta human review reviewer packet manifest is readable', false, {
+      artifact: register.reviewerPacketManifest || null,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+
+  if (packetManifest) {
+    addCheck('beta human review reviewer packet manifest is readable', true, {
+      artifact: register.reviewerPacketManifest,
+      packetCount: packetManifest.packetCount || null,
+      packetDir: packetManifest.packetDir || null,
+    })
+
+    const packets = Array.isArray(packetManifest.packets) ? packetManifest.packets : []
+    const packetIds = unique(packets.map((packet) => packet.id).filter(Boolean))
+    const missingPacketIds = hasAll(packetIds, plannedReviews.map((review) => review.id).filter(Boolean))
+    const packetFiles = await Promise.all(packets.map(async (packet) => ({
+      id: packet.id || '(missing id)',
+      path: packet.packetPath || null,
+      exists: hasMeaningfulText(packet.packetPath) ? await fileExists(packet.packetPath) : false,
+      hasStartUrl: hasMeaningfulText(packet.startUrl),
+      hasViewport: hasMeaningfulText(packet.viewport),
+      hasSurfaces: Array.isArray(packet.surfaces) && packet.surfaces.length > 0,
+    })))
+    const badPacketFiles = packetFiles.filter((packet) => (
+      !packet.exists ||
+      !packet.hasStartUrl ||
+      !packet.hasViewport ||
+      !packet.hasSurfaces
+    ))
+
+    addCheck('beta human review reviewer packets cover every planned review', (
+      packetManifest.packetCount >= plannedReviews.length &&
+      packets.length >= plannedReviews.length &&
+      missingPacketIds.length === 0 &&
+      badPacketFiles.length === 0
+    ), {
+      plannedReviewCount: plannedReviews.length,
+      packetCount: packetManifest.packetCount || null,
+      packetRecordCount: packets.length,
+      missingPacketIds,
+      badPacketFiles,
+    })
+  }
+
   const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
   const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
   const completedReviewEvidenceGaps = completedReviews

@@ -7,6 +7,10 @@ const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-re
 const minCompletedReviews = Number(process.env.QA_BETA_REVIEW_MIN_COMPLETED || '0')
 const thresholdSuffix = minCompletedReviews > 0 ? `-min-${minCompletedReviews}` : ''
 const reportName = process.env.QA_BETA_REVIEW_REPORT || `beta-human-review-readiness-${date}${thresholdSuffix}.md`
+const writeReviewerPackets = ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_PACKETS || '').toLowerCase())
+const reviewerPacketDir = process.env.QA_BETA_REVIEW_PACKET_DIR || `../qa/beta-human-review-packets-${date}`
+const reviewerPacketManifestName = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || `beta-human-review-packet-manifest-${date}.json`
+const reviewerBaseUrl = process.env.QA_BETA_REVIEW_BASE_URL || 'https://globe-travel-two.vercel.app'
 
 const requiredAudiences = ['friend-group', 'couple', 'family', 'solo']
 const requiredStyles = ['budget', 'premium', 'food', 'nightlife', 'outdoors', 'culture']
@@ -39,6 +43,18 @@ const requiredCompletedReviewFields = [
 ]
 const allowedFindingSeverities = new Set(['P0', 'P1', 'P2', 'P3'])
 const allowedFindingStatuses = new Set(['open', 'closed', 'accepted-risk'])
+const reviewDeviceViewports = {
+  phone: '390x844',
+  desktop: '1440x950',
+}
+const surfaceTasks = {
+  planner: 'Start from a clean session, use the assigned prompt, and note whether the first minute is clear.',
+  'trip-studio': 'Open the generated Trip Studio and inspect day structure, editing confidence, and copy clarity.',
+  map: 'Review mapped stops, route shape, country consistency, duplicate pins, and any map fallback messaging.',
+  'public-share': 'Open the public share page as a logged-out recipient and verify itinerary clarity, metadata, and share controls.',
+  feedback: 'Submit or inspect friend feedback and record whether the loop is useful to the organizer.',
+  'save-reopen': 'Save the trip, reopen it from saved trips, and confirm work preservation is trustworthy.',
+}
 
 function unique(values) {
   return [...new Set(values.filter(Boolean))]
@@ -135,6 +151,116 @@ function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
 
+function qaDisplayPath(value) {
+  return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function slugify(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+}
+
+function packetPathForReview(review) {
+  return `${review.id}-${slugify(review.destination)}.md`
+}
+
+function buildPlannerUrl(prompt) {
+  const url = new URL('/chat', reviewerBaseUrl)
+  url.searchParams.set('q', prompt)
+  return url.toString()
+}
+
+function packetIssuesForReview(review) {
+  const issues = []
+  if (!reviewDeviceViewports[review.device]) issues.push(`unsupported device: ${review.device || '(missing)'}`)
+  if (!Array.isArray(review.primarySurfaces) || review.primarySurfaces.length === 0) {
+    issues.push('primarySurfaces missing')
+  }
+  const unknownSurfaces = Array.isArray(review.primarySurfaces)
+    ? review.primarySurfaces.filter((surface) => !surfaceTasks[surface])
+    : []
+  if (unknownSurfaces.length > 0) issues.push(`unknown surfaces: ${unknownSurfaces.join(', ')}`)
+  if (Array.isArray(review.primarySurfaces) && review.primarySurfaces.includes('feedback') && !review.primarySurfaces.includes('public-share')) {
+    issues.push('feedback review must include public-share surface')
+  }
+  return issues
+}
+
+function packetRecordForReview(review) {
+  const viewport = reviewDeviceViewports[review.device] || ''
+  const packetFile = packetPathForReview(review)
+  return {
+    id: review.id,
+    packetFile,
+    destination: review.destination,
+    prompt: review.prompt,
+    audience: review.audience,
+    style: review.style,
+    region: review.region,
+    device: review.device,
+    viewport,
+    surfaces: review.primarySurfaces || [],
+    sourceActualId: review.sourceActualId,
+    startUrl: buildPlannerUrl(review.prompt || ''),
+  }
+}
+
+function packetMarkdown(record) {
+  const surfaceChecklist = record.surfaces
+    .map((surface) => `- [ ] ${surface}: ${surfaceTasks[surface] || 'Review this assigned surface and record any friction.'}`)
+    .join('\n')
+
+  return `# ${record.id}: ${record.destination} Beta Review Packet
+
+Date: ${date}
+
+## Assignment
+
+- Destination: ${record.destination}
+- Audience: ${record.audience}
+- Trip style: ${record.style}
+- Region: ${record.region}
+- Device lens: ${record.device}
+- Viewport: ${record.viewport}
+- Source actual: ${record.sourceActualId}
+- Start URL: ${record.startUrl}
+
+## Prompt
+
+${record.prompt}
+
+## Journey Checklist
+
+${surfaceChecklist}
+
+## Required Scorecard
+
+Record a 1-5 rating for every field:
+
+${requiredScorecardFields.map((field) => `- [ ] ${field}`).join('\n')}
+
+## Required Written Evidence
+
+- [ ] reviewerRole
+- [ ] routeOrShareUrl
+- [ ] viewport
+- [ ] device
+- [ ] completedAt
+- [ ] firstMinuteOutcome
+- [ ] mapTrustNotes
+- [ ] shareFeedbackOutcome
+- [ ] findings
+
+## Findings Format
+
+Use severities P0, P1, P2, or P3 and statuses open, closed, or accepted-risk. Public launch is blocked by any unresolved P0/P1 finding.
+`
+}
+
 function reviewLabel(review) {
   return `${review.id} (${review.destination}, ${review.audience}, ${review.style}, ${review.region}, ${review.device})`
 }
@@ -186,6 +312,13 @@ const malformedReviews = plannedReviews.filter((review) => (
   review.primarySurfaces.length === 0 ||
   !isNonEmptyString(review.status)
 ))
+const reviewerPacketIssues = plannedReviews
+  .map((review) => ({
+    id: review.id || '(missing id)',
+    issues: packetIssuesForReview(review),
+  }))
+  .filter((review) => review.issues.length > 0)
+const reviewerPackets = plannedReviews.map(packetRecordForReview)
 
 addCheck('beta human review register is owned and dated', (
   isNonEmptyString(register.owner) &&
@@ -242,6 +375,12 @@ addCheck('every planned beta review has required metadata', malformedReviews.len
   malformedReviews: malformedReviews.map((review) => review.id || '(missing id)'),
 })
 
+addCheck('every planned beta review can produce a reviewer packet', reviewerPacketIssues.length === 0, {
+  reviewerPacketCount: reviewerPackets.length,
+  reviewerPacketIssues,
+  reviewerBaseUrl,
+})
+
 addCheck('completed beta reviews meet requested threshold', completedReviews.length >= minCompletedReviews, {
   completedReviewCount: completedReviews.length,
   requestedMinimum: minCompletedReviews,
@@ -275,6 +414,10 @@ const summary = {
   checked: checks.length,
   passed: checks.length - failures.length,
   failed: failures.length,
+  reviewerPacketDir: qaDisplayPath(reviewerPacketDir),
+  reviewerPacketManifest: `qa/${reviewerPacketManifestName}`,
+  reviewerPacketCount: reviewerPackets.length,
+  reviewerPacketsWritten: writeReviewerPackets,
   checks,
   failures,
 }
@@ -293,6 +436,7 @@ Status: ${summary.status}
 - Planned reviews: ${summary.plannedReviewCount}
 - Completed reviews: ${summary.completedReviewCount}
 - Requested completed-review threshold: ${summary.minCompletedReviews}
+- Reviewer packets: ${summary.reviewerPacketCount}${writeReviewerPackets ? ` written to \`${summary.reviewerPacketDir}\`` : ''}
 
 ## Coverage
 
@@ -327,6 +471,9 @@ ${markdownList(missingScorecardFields)}
 Malformed reviews:
 ${markdownList(malformedReviews.map((review) => review.id || '(missing id)'))}
 
+Reviewer packet issues:
+${markdownList(reviewerPacketIssues.map((review) => `${review.id}: ${review.issues.join('; ')}`))}
+
 Completed review evidence gaps:
 ${markdownList(completedReviewEvidenceGaps.map((review) => `${review.id}: ${review.issues.join('; ')}`))}
 
@@ -336,12 +483,31 @@ ${markdownList(unresolvedBlockingReviews.map((review) => review.id))}
 ## Notes
 
 - This gate does not pretend the invite beta has happened. With the default \`QA_BETA_REVIEW_MIN_COMPLETED=0\`, it proves the review plan, matrix, and scorecard are operationally ready.
+- Run \`QA_BETA_REVIEW_WRITE_PACKETS=1 npm run qa:beta-review-readiness\` to generate reviewer-ready packets and a machine-readable packet manifest.
 - For public-launch approval, run with \`QA_BETA_REVIEW_MIN_COMPLETED=25\` or higher and keep unresolved P0/P1 findings at zero.
 - Completed review records must include reviewer role, route or share URL, viewport, device, completed date, outcome notes, complete 1-5 scorecard ratings, and findings with severity, status, surface, title, and notes.
 `
 
 await mkdir(resolve(root, 'qa'), { recursive: true })
 await writeFile(resolve(root, 'qa', reportName), report)
+if (writeReviewerPackets) {
+  const packetDir = resolve(process.cwd(), reviewerPacketDir)
+  await mkdir(packetDir, { recursive: true })
+  for (const packet of reviewerPackets) {
+    await writeFile(resolve(packetDir, packet.packetFile), packetMarkdown(packet))
+  }
+  await writeFile(resolve(root, 'qa', reviewerPacketManifestName), `${JSON.stringify({
+    date,
+    registerPath: qaDisplayPath(registerPath),
+    reviewerBaseUrl,
+    packetDir: qaDisplayPath(reviewerPacketDir),
+    packetCount: reviewerPackets.length,
+    packets: reviewerPackets.map((packet) => ({
+      ...packet,
+      packetPath: `${qaDisplayPath(reviewerPacketDir)}/${packet.packetFile}`,
+    })),
+  }, null, 2)}\n`)
+}
 
 console.log(JSON.stringify(summary, null, 2))
 
