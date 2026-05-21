@@ -916,7 +916,6 @@ export async function POST(req: Request) {
               await db.from('trip_routes').delete().eq('trip_day_id', tripDayId)
             }
 
-            console.log('[setFullTripPlan] day', day.day_index, 'items count:', day.items.length)
             for (let index = 0; index < day.items.length; index++) {
               const item = day.items[index]
               const place = await resolvePlannerPlace({

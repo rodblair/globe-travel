@@ -14,6 +14,9 @@ const releaseArtifact =
 const visualArtifact =
   process.env.QA_LAUNCH_VISUAL_ARTIFACT ||
   'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
+const designSystemArtifact =
+  process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
+  'qa/design-system-readiness-2026-05-21.json'
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
@@ -117,6 +120,19 @@ const requiredProductionVisualDiffRoutes = [
   'landing',
   'login',
   'signup',
+]
+
+const requiredDesignSystemChecks = [
+  'design context documents users, tone, aesthetic, and principles',
+  'global design tokens expose the Globe.travel atmosphere palette and interaction system',
+  'shared UI primitives exist for core forms and controls',
+  'atmosphere component vocabulary exists for editorial travel surfaces',
+  'production UI and API source has no debug console.log calls',
+  'production UI source has no placeholder TODO or lorem copy',
+  'user-facing copy avoids generic AI-travel marketing filler',
+  'responsive visual QA covers every design-critical public and protected route',
+  'responsive visual QA has no polish blockers',
+  'production visual QA covers public acquisition and sharing surfaces',
 ]
 
 const requiredAccessibilityRoutes = [
@@ -510,6 +526,62 @@ async function checkVisualArtifact() {
     screenshotCount: screenshotPaths.length,
     missingScreenshots: missingScreenshots.slice(0, 12),
     missingScreenshotCount: missingScreenshots.length,
+  })
+
+  return summary
+}
+
+async function checkDesignSystemArtifact() {
+  let summary
+  try {
+    summary = await readJson(designSystemArtifact)
+  } catch (error) {
+    addCheck('design-system readiness artifact is readable', false, {
+      artifact: designSystemArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+
+  addCheck('design-system readiness artifact is readable', true, {
+    artifact: designSystemArtifact,
+  })
+
+  checkEvidenceFreshness('design-system readiness', evidenceDateFrom(summary, designSystemArtifact))
+
+  const checkNames = Array.isArray(summary.checks)
+    ? summary.checks.map((check) => check.name).filter(Boolean)
+    : []
+  const missingChecks = hasAll(checkNames, requiredDesignSystemChecks)
+  const failedChecks = Array.isArray(summary.checks)
+    ? summary.checks.filter((check) => check.ok === false).map((check) => check.name)
+    : []
+  addCheck('design-system readiness passed every required polish and token check', (
+    summary.checked === requiredDesignSystemChecks.length &&
+    summary.passed === requiredDesignSystemChecks.length &&
+    summary.failed === 0 &&
+    missingChecks.length === 0 &&
+    failedChecks.length === 0
+  ), {
+    checked: summary.checked,
+    passed: summary.passed,
+    failed: summary.failed,
+    requiredCheckCount: requiredDesignSystemChecks.length,
+    missingChecks,
+    failedChecks,
+  })
+
+  const visualEvidenceOk =
+    summary.responsiveVisualArtifact === visualArtifact &&
+    typeof summary.productionVisualArtifact === 'string' &&
+    summary.productionVisualArtifact.includes('qa/visual-baseline-production-') &&
+    Array.isArray(summary.failures) &&
+    summary.failures.length === 0
+  addCheck('design-system readiness is tied to current visual QA evidence', visualEvidenceOk, {
+    expectedResponsiveVisualArtifact: visualArtifact,
+    responsiveVisualArtifact: summary.responsiveVisualArtifact || null,
+    productionVisualArtifact: summary.productionVisualArtifact || null,
+    failureCount: Array.isArray(summary.failures) ? summary.failures.length : null,
   })
 
   return summary
@@ -1227,6 +1299,7 @@ const productionHealth = await checkProductionHealth()
 await checkRequiredDocs()
 await checkReleaseArtifact()
 await checkVisualArtifact()
+await checkDesignSystemArtifact()
 await checkAccessibilityArtifact()
 await checkStripeArtifacts()
 await checkPlannerActualsArtifact()
@@ -1243,6 +1316,7 @@ const summary = {
   expectedCommit: expectedCommit || null,
   releaseArtifact,
   visualArtifact,
+  designSystemArtifact,
   accessibilityArtifact,
   plannerActualsArtifact,
   betaHumanReviewRegister,

@@ -1,0 +1,105 @@
+{
+  "date": "2026-05-21",
+  "designContext": ".impeccable.md",
+  "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
+  "productionVisualArtifact": "qa/visual-baseline-production-monitoring-gate-2026-05-21-acf72d1/summary.json",
+  "checked": 10,
+  "passed": 10,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "design context documents users, tone, aesthetic, and principles",
+      "ok": true,
+      "missingContextMarkers": []
+    },
+    {
+      "name": "global design tokens expose the Globe.travel atmosphere palette and interaction system",
+      "ok": true,
+      "requiredTokens": [
+        "--deep-horizon-navy",
+        "--cream-vellum",
+        "--sun-compass",
+        "--dusty-aqua",
+        "--terracotta",
+        "--moss",
+        "--paper",
+        "--paper-raised",
+        "--ink",
+        "--brass",
+        "--primary",
+        "--background",
+        "--foreground",
+        "--transition-fast",
+        "--transition-smooth",
+        "--shadow-elevation-low"
+      ],
+      "missingTokens": []
+    },
+    {
+      "name": "shared UI primitives exist for core forms and controls",
+      "ok": true,
+      "requiredUiPrimitives": [
+        "client/components/ui/button.tsx",
+        "client/components/ui/input.tsx",
+        "client/components/ui/textarea.tsx",
+        "client/components/ui/card.tsx",
+        "client/components/ui/badge.tsx",
+        "client/components/ui/label.tsx"
+      ],
+      "missingUiPrimitives": []
+    },
+    {
+      "name": "atmosphere component vocabulary exists for editorial travel surfaces",
+      "ok": true,
+      "requiredAtmosphereComponents": [
+        "client/components/atmosphere/PaperPanel.tsx",
+        "client/components/atmosphere/HorizonHero.tsx",
+        "client/components/atmosphere/ItineraryThread.tsx",
+        "client/components/atmosphere/DestinationPin.tsx",
+        "client/components/atmosphere/AlbatrossBrand.tsx"
+      ],
+      "missingAtmosphereComponents": []
+    },
+    {
+      "name": "production UI and API source has no debug console.log calls",
+      "ok": true,
+      "debugConsoleMatches": []
+    },
+    {
+      "name": "production UI source has no placeholder TODO or lorem copy",
+      "ok": true,
+      "placeholderMatches": []
+    },
+    {
+      "name": "user-facing copy avoids generic AI-travel marketing filler",
+      "ok": true,
+      "aiSlopTextMatches": []
+    },
+    {
+      "name": "responsive visual QA covers every design-critical public and protected route",
+      "ok": true,
+      "artifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
+      "checked": 50,
+      "passed": 50,
+      "failed": 0,
+      "missingRoutes": []
+    },
+    {
+      "name": "responsive visual QA has no polish blockers",
+      "ok": true,
+      "badResultCount": 0,
+      "badResults": []
+    },
+    {
+      "name": "production visual QA covers public acquisition and sharing surfaces",
+      "ok": true,
+      "artifact": "qa/visual-baseline-production-monitoring-gate-2026-05-21-acf72d1/summary.json",
+      "checked": 20,
+      "passed": 20,
+      "failed": 0,
+      "missingRoutes": [],
+      "evidenceDate": "2026-05-21"
+    }
+  ],
+  "failures": []
+}

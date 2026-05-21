@@ -98,10 +98,7 @@ export async function POST(request: NextRequest) {
       }
 
       case 'checkout.session.completed': {
-        // Subscription already handled by customer.subscription.created
-        // but log for visibility
-        const session = event.data.object as Stripe.Checkout.Session
-        console.log('[webhook] checkout.session.completed', session.id, 'customer:', session.customer)
+        // Subscription state is handled by customer.subscription.created.
         break
       }
 
