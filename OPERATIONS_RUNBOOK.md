@@ -49,6 +49,12 @@ The production release gate above runs the read-only post-deploy checks together
 
 Set `QA_INCLUDE_PROMPT_ACTUALS=0` to skip the prompt-suite actuals check. Set `QA_INCLUDE_FEEDBACK_MUTATION=1` only during an approved release window if production friend-feedback insert/readback/cleanup should also be tested.
 
+## Documentation-Only Commits
+
+Vercel uses `client/vercel.json` and `client/scripts/vercel-ignore-build.mjs` to skip production builds for commits that only change release evidence or documentation. The skip list is intentionally conservative: `qa/**`, `README.md`, `OPERATIONS_RUNBOOK.md`, `PLATFORM_*.md`, and `RELEASE_READINESS_MEMO.md`.
+
+Any `client/**` change, package/config change, workflow change, or unknown path continues the build. If a documentation-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
+
 Manual equivalents:
 
 ```bash
