@@ -103,6 +103,52 @@ function validateActualOutput(fixture, actual) {
 
 const ids = new Set()
 const coverage = new Set()
+const betaCoverage = {
+  audience: new Set(),
+  style: new Set(),
+  region: new Set(),
+}
+
+const countryRegions = new Map(Object.entries({
+  Argentina: 'latin-america',
+  Australia: 'oceania',
+  Austria: 'europe',
+  Brazil: 'latin-america',
+  Canada: 'north-america',
+  Colombia: 'latin-america',
+  Croatia: 'europe',
+  Czechia: 'europe',
+  Denmark: 'europe',
+  France: 'europe',
+  Germany: 'europe',
+  Greece: 'europe',
+  'Hong Kong': 'asia',
+  Hungary: 'europe',
+  Iceland: 'europe',
+  Indonesia: 'asia',
+  Ireland: 'europe',
+  Italy: 'europe',
+  Japan: 'asia',
+  Kenya: 'africa',
+  Mexico: 'latin-america',
+  Morocco: 'africa',
+  Netherlands: 'europe',
+  'New Zealand': 'oceania',
+  Peru: 'latin-america',
+  Portugal: 'europe',
+  Singapore: 'asia',
+  Spain: 'europe',
+  'South Africa': 'africa',
+  'South Korea': 'asia',
+  Switzerland: 'europe',
+  Taiwan: 'asia',
+  Thailand: 'asia',
+  Turkey: 'europe-middle-east',
+  'United Arab Emirates': 'middle-east',
+  'United Kingdom': 'europe',
+  'United States': 'north-america',
+  Vietnam: 'asia',
+}))
 
 for (const fixture of fixtures) {
   validateFixtureShape(fixture)
@@ -154,6 +200,20 @@ for (const fixture of fixtures) {
   if (expected.multiCity) coverage.add('multi-city')
   if (expected.requiresRestDay) coverage.add('rest-day')
 
+  const promptText = normalize(fixture.prompt)
+  const themeSet = new Set((expected.themes || []).map(normalize))
+  if (promptText.includes('friend') || themeSet.has('friends')) betaCoverage.audience.add('friend-groups')
+  if (promptText.includes('couple') || themeSet.has('couples') || themeSet.has('romantic')) betaCoverage.audience.add('couples')
+  if (promptText.includes('family') || themeSet.has('family')) betaCoverage.audience.add('families')
+  if (promptText.includes('solo') || themeSet.has('solo')) betaCoverage.audience.add('solo')
+
+  for (const style of ['budget', 'premium', 'food', 'nightlife', 'outdoors', 'culture']) {
+    if (themeSet.has(style) || promptText.includes(style)) betaCoverage.style.add(style)
+  }
+
+  const region = countryRegions.get(expected.country)
+  if (region) betaCoverage.region.add(region)
+
   const actualResult = validateActualOutput(fixture, actualsById.get(fixture.id))
   results.push({
     id: fixture.id,
@@ -190,12 +250,32 @@ const requiredCoverage = [
   'rain-safe',
   'walkable',
 ]
+const requiredBetaCoverage = {
+  audience: ['friend-groups', 'couples', 'families', 'solo'],
+  style: ['budget', 'premium', 'food', 'nightlife', 'outdoors', 'culture'],
+  region: ['africa', 'asia', 'europe', 'latin-america', 'north-america', 'oceania'],
+}
 const missingCoverage = requiredCoverage.filter((tag) => !coverage.has(tag))
+const missingBetaCoverage = Object.fromEntries(
+  Object.entries(requiredBetaCoverage).map(([group, required]) => [
+    group,
+    required.filter((tag) => !betaCoverage[group].has(tag)),
+  ])
+)
+const missingBetaCoverageEntries = Object.values(missingBetaCoverage).flat()
 if (fixtures.length < 50) {
   recordFailure('suite', 'prompt suite must include at least 50 fixtures', { count: fixtures.length })
 }
 if (missingCoverage.length) {
   recordFailure('suite', 'prompt suite is missing required coverage', { missingCoverage })
+}
+if (fixtures.length < 60) {
+  recordFailure('suite', 'beta representative prompt suite must include at least 60 fixtures', { count: fixtures.length })
+}
+if (missingBetaCoverageEntries.length) {
+  recordFailure('suite', 'beta representative prompt suite is missing required audience, style, or regional coverage', {
+    missingBetaCoverage,
+  })
 }
 
 const summary = {
@@ -206,6 +286,10 @@ const summary = {
   failed: failures.length,
   coverage: Array.from(coverage).sort(),
   missingCoverage,
+  betaCoverage: Object.fromEntries(
+    Object.entries(betaCoverage).map(([group, tags]) => [group, Array.from(tags).sort()])
+  ),
+  missingBetaCoverage,
   actualsChecked: actualsById.size,
   failures,
   results,

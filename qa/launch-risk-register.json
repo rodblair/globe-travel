@@ -10,7 +10,7 @@
       "surface": "planner, maps, public sharing",
       "owner": "Product",
       "targetMonth": "June 2026",
-      "acceptedRisk": "Current release-candidate gates prove the launch fixture matrix, regional generated actuals, Athens public share, multi-itinerary public-share flows, and production health. The next beta phase should add 25-50 real or representative trips before public launch."
+      "acceptedRisk": "Current release-candidate gates prove the launch fixture matrix, regional generated actuals, Athens public share, multi-itinerary public-share flows, and production health. The prompt contract now enforces 60 representative fixtures across friend groups, couples, families, solo travelers, budget, premium, food, nightlife, outdoors, culture, and six regions, plus a 25-trip beta-representative generated-actuals preset. The next beta phase still needs that 25-trip generated-actuals run plus 25-50 real or representative trip reviews before public launch."
     },
     {
       "id": "GT-P2-002",

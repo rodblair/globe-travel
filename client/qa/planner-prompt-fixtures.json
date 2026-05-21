@@ -270,6 +270,26 @@
     "expected": { "destination": "Dubai", "country": "United Arab Emirates", "days": 3, "themes": ["luxury", "family", "food", "heat-safe"] }
   },
   {
+    "id": "kyoto-3-day-solo-temples-food",
+    "prompt": "Plan Kyoto for 3 days for a solo traveler with temples, food markets, and quiet evenings.",
+    "expected": { "destination": "Kyoto", "country": "Japan", "days": 3, "themes": ["solo", "temples", "food", "calm", "culture"] }
+  },
+  {
+    "id": "seattle-2-day-solo-coffee-music",
+    "prompt": "Plan Seattle for 2 days for a solo traveler with coffee, waterfront walks, music, and easy transit.",
+    "expected": { "destination": "Seattle", "country": "United States", "days": 2, "themes": ["solo", "coffee", "music", "walkable"] }
+  },
+  {
+    "id": "bali-5-day-solo-reset",
+    "prompt": "Plan Bali for 5 days for a solo reset with beaches, temples, coworking-friendly cafes, and slower mornings.",
+    "expected": { "destination": "Bali", "country": "Indonesia", "days": 5, "themes": ["solo", "beach", "temples", "food", "slow"] }
+  },
+  {
+    "id": "nairobi-4-day-solo-culture-nature",
+    "prompt": "Plan Nairobi for 4 days for a solo traveler with culture, nature, markets, and safe evening pacing.",
+    "expected": { "destination": "Nairobi", "country": "Kenya", "days": 4, "themes": ["solo", "culture", "nature", "markets", "safe pacing"] }
+  },
+  {
     "id": "madrid-seville-5-day-multi-city",
     "prompt": "Plan Madrid and Seville for 5 days with tapas, art, flamenco, and train-friendly pacing.",
     "expected": { "destination": "Madrid", "country": "Spain", "days": 5, "themes": ["food", "art", "music", "multi-city"], "multiCity": true }
