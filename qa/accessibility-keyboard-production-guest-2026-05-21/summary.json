@@ -8,7 +8,7 @@
   "auth": {
     "requestedMode": "guest",
     "mode": "guest",
-    "guestId": "cc1559cd-0ce1-4fea-8ff9-429cf7ed0d40",
+    "guestId": "f7e43fbf-107f-415b-ad02-649c041aa9c5",
     "protectedRoutes": [
       "planner",
       "saved-trips",
@@ -21,20 +21,20 @@
       {
         "viewportId": "phone",
         "mode": "guest",
-        "guestId": "cc1559cd-0ce1-4fea-8ff9-429cf7ed0d40",
+        "guestId": "f7e43fbf-107f-415b-ad02-649c041aa9c5",
         "cookieSet": true
       },
       {
         "viewportId": "desktop",
         "mode": "guest",
-        "guestId": "cc1559cd-0ce1-4fea-8ff9-429cf7ed0d40",
+        "guestId": "f7e43fbf-107f-415b-ad02-649c041aa9c5",
         "cookieSet": true
       }
     ],
     "cleanup": {
       "attempted": true,
       "reason": null,
-      "guestId": "cc1559cd-0ce1-4fea-8ff9-429cf7ed0d40",
+      "guestId": "f7e43fbf-107f-415b-ad02-649c041aa9c5",
       "profileDeleted": true,
       "userDeleted": true,
       "error": null
@@ -564,7 +564,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -609,6 +609,20 @@
               "y": 392,
               "width": 192,
               "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open Planner",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 107,
+              "y": 631,
+              "width": 177,
+              "height": 48
             }
           },
           {
@@ -662,7 +676,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -704,23 +718,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 392,
+              "y": 204,
               "width": 192,
               "height": 46
-            }
-          },
-          {
-            "tag": "a",
-            "label": "Plan",
-            "role": "",
-            "href": "/chat",
-            "visible": true,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 4,
-              "y": 780,
-              "width": 127,
-              "height": 56
             }
           }
         ],
@@ -970,7 +970,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -1110,7 +1110,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -2075,7 +2075,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": 5,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2572,7 +2572,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
