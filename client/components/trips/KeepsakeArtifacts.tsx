@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { CalendarDays, Check, Copy, Heart, MessageCircleQuestion, Route, Share2, Users } from 'lucide-react'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
@@ -324,16 +324,44 @@ export function ShareLinkCard({
 }) {
   const [copied, setCopied] = useState(false)
   const [shareError, setShareError] = useState<string | null>(null)
+  const shareUrlInputRef = useRef<HTMLInputElement | null>(null)
+
+  const writeShareUrl = async () => {
+    if (!shareUrl) return false
+
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      return true
+    } catch {
+      const textarea = document.createElement('textarea')
+      textarea.value = shareUrl
+      textarea.setAttribute('readonly', '')
+      textarea.style.position = 'fixed'
+      textarea.style.top = '0'
+      textarea.style.left = '-9999px'
+      document.body.appendChild(textarea)
+      textarea.select()
+
+      try {
+        return document.execCommand('copy')
+      } finally {
+        document.body.removeChild(textarea)
+      }
+    }
+  }
 
   const copyLink = async () => {
     if (!shareUrl) return
     try {
       setShareError(null)
-      await navigator.clipboard.writeText(shareUrl)
+      const copiedToClipboard = await writeShareUrl()
+      if (!copiedToClipboard) throw new Error('Copy command failed')
       setCopied(true)
       setTimeout(() => setCopied(false), 2200)
     } catch {
-      setShareError('Could not copy the link. Select the URL above and copy it manually.')
+      shareUrlInputRef.current?.focus()
+      shareUrlInputRef.current?.select()
+      setShareError('Copy was blocked. The link is selected so you can copy it manually.')
     }
   }
 
@@ -359,7 +387,15 @@ export function ShareLinkCard({
         Friends can view the itinerary without signing in and leave lightweight feedback.
       </p>
       <div className="mt-4 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-ink-2">
-        <p className="truncate">{shareUrl || 'Enable sharing to create a public link'}</p>
+        <input
+          ref={shareUrlInputRef}
+          type="text"
+          readOnly
+          aria-label="Public trip link"
+          value={shareUrl || 'Enable sharing to create a public link'}
+          onFocus={(event) => event.currentTarget.select()}
+          className="w-full truncate bg-transparent text-xs text-ink-2 outline-none"
+        />
       </div>
       {shareError && (
         <p role="alert" className="mt-3 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">

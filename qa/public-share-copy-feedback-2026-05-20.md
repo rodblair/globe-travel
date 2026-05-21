@@ -10,6 +10,9 @@ Fix the remaining production release-gate issue found in the public share viral 
 
 - Added visible, accessible success feedback to the public-share `ShareLinkCard` after `Copy link`.
 - Kept the button label change from `Copy link` to `Copied`.
+- Changed the visible public trip URL into a read-only selectable field.
+- Added a secondary copy fallback for browsers that block `navigator.clipboard`.
+- When browser copy is still blocked, the URL field is focused and selected with clear manual-copy recovery copy instead of leaving the user at a dead end.
 - Hardened the viral-loop Browser smoke so it waits for the visible copied state before sampling.
 - Hardened the multi-itinerary share smoke with the same copied-state wait.
 - Added retry/reload readiness around the production public-share smoke because the remote page can briefly remain in its loading skeleton before share and feedback sections hydrate.
@@ -36,6 +39,19 @@ npm run build
 ```
 
 Both passed.
+
+May 21 hardening pass:
+
+```bash
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-copy-feedback-2026-05-21-26ff3d6 npm run qa:release-production
+QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-viral
+npm run lint
+npm run build
+```
+
+- Production release gate passed `9/9`, including production viral loop `5/5`, production visual QA `20/20`, and production prompt-suite actual validation `56/56`.
+- Local share viral gate passed `5/5`, including guest-start mutation and cleanup.
+- In-app Browser verified the local Athens public share copy-denial path: when clipboard copy is blocked, the app shows `Copy was blocked. The link is selected so you can copy it manually.`, focuses the public-trip URL field, selects the full URL, keeps `Start your own trip`, shows no app error, and has no horizontal overflow.
 
 ## Notes
 

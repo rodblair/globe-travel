@@ -474,6 +474,7 @@ The next execution slice is Phase 1 launch-candidate maintenance and regional co
    - retest the public share, owner Trip Studio, day tabs, map/itinerary relationship, feedback loop, `Start your own trip`, and share-card metadata after every meaningful release;
    - treat an Athens public or owner regression as a release blocker because it is the durable product proof point.
    - Latest May 20 check: the production viral-loop copy-feedback issue is closed; the Athens production share viral gate now passes `5/5`, including phone, desktop, copy feedback, native share payload, and safe remote guest-start behavior.
+   - Latest May 21 check: the full production release gate passed `9/9` after the copy-feedback deployment, and in-app Browser verified a denied-copy recovery path that focuses and selects the public URL for manual copy.
 3. Clean-browser launch matrix:
    - run Browser as a first-time guest, returning owner, logged-out recipient, paid candidate, and recovery user;
    - cover phone, tablet, laptop, desktop, and wide desktop for the primary public and protected routes;
