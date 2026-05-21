@@ -19,14 +19,14 @@ Full production release gate with visual QA after deploy:
 ```bash
 QA_BASE_URL=https://globe-travel-two.vercel.app \
 QA_SHARE_SLUG=x3m2c8cnws \
-QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-beta-representative-2026-05-21-7ec3872 \
+QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-visual-review-cadence-2026-05-21-678044e \
 npm run qa:release-production
 ```
 
 Result: `10/10` passed.
 
-- Production commit: `7ec3872e16a2aacbb3d22935fb562482e2a5af4a`
-- Production deployment URL: `globe-travel-1yuz317s4-rodney-blairs-projects.vercel.app`
+- Production commit: `678044eb1feb626f9b8ece8d38cb145d1ca5f249`
+- Production deployment URL: `globe-travel-1rw32jba6-rodney-blairs-projects.vercel.app`
 - Production ops: `3/3`
 - Production route smoke: `8/8`
 - Production Trip Studio recovery UI: `1/1`
@@ -40,19 +40,19 @@ Result: `10/10` passed.
 Workflow-style log-driven launch signoff:
 
 ```bash
-QA_LAUNCH_PRODUCTION_EVIDENCE=/tmp/globe-production-release-beta-representative-7ec3872.log npm run qa:launch-signoff
+QA_LAUNCH_PRODUCTION_EVIDENCE=/tmp/globe-production-release-visual-review-678044e.log npm run qa:launch-signoff
 ```
 
 Result: `33/33` passed.
 
 - Required production evidence: Vercel production deploy, production health `11/11`, visual-inclusive production release gate `10/10`, production visual QA `20/20`, current production commit.
-- Expected production commit: `7ec3872e16a2aacbb3d22935fb562482e2a5af4a`
+- Expected production commit: `678044eb1feb626f9b8ece8d38cb145d1ca5f249`
 - Missing production evidence: `[]`
 
 Markdown evidence launch signoff:
 
 ```bash
-QA_LAUNCH_EXPECTED_COMMIT=7ec3872e16a2aacbb3d22935fb562482e2a5af4a npm run qa:launch-signoff
+QA_LAUNCH_EXPECTED_COMMIT=678044eb1feb626f9b8ece8d38cb145d1ca5f249 npm run qa:launch-signoff
 ```
 
 Result: `34/34` passed.

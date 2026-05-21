@@ -17,13 +17,13 @@ Date: 2026-05-21
 ## Verification
 
 ```bash
-QA_LAUNCH_EXPECTED_COMMIT=7ec3872e16a2aacbb3d22935fb562482e2a5af4a npm run qa:launch-signoff
+QA_LAUNCH_EXPECTED_COMMIT=678044eb1feb626f9b8ece8d38cb145d1ca5f249 npm run qa:launch-signoff
 ```
 
 Result: `42/42` passed.
 
 ```bash
-QA_LAUNCH_PRODUCTION_EVIDENCE=/tmp/globe-production-release-beta-representative-7ec3872.log npm run qa:launch-signoff
+QA_LAUNCH_PRODUCTION_EVIDENCE=/tmp/globe-production-release-visual-review-678044e.log npm run qa:launch-signoff
 ```
 
 Result: `41/41` passed.
@@ -43,7 +43,7 @@ Stale visual review negative test:
 
 ```bash
 QA_LAUNCH_VISUAL_REVIEW_REGISTER=/tmp/globe-visual-review-stale-XXXXXX.json \
-QA_LAUNCH_EXPECTED_COMMIT=7ec3872e16a2aacbb3d22935fb562482e2a5af4a \
+QA_LAUNCH_EXPECTED_COMMIT=678044eb1feb626f9b8ece8d38cb145d1ca5f249 \
 npm run qa:launch-signoff
 ```
 

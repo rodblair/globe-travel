@@ -5,10 +5,10 @@
   "nextReviewDueAt": "2026-05-28",
   "reviewProtocol": "Review every production visual QA screenshot for route clarity, brand consistency, text fit, mobile readability, empty/error-state polish, visual hierarchy, and trust. Treat app errors, horizontal overflow, clipped primary text, overlapping controls, broken share affordances, or unexplained pixel diffs on stable shell routes as release-blocking until fixed or explicitly accepted in the risk register.",
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-beta-representative-2026-05-21-7ec3872",
-    "summaryArtifact": "qa/visual-baseline-production-beta-representative-2026-05-21-7ec3872/summary.json",
-    "productionCommit": "7ec3872e16a2aacbb3d22935fb562482e2a5af4a",
-    "deploymentUrl": "globe-travel-1yuz317s4-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-visual-review-cadence-2026-05-21-678044e",
+    "summaryArtifact": "qa/visual-baseline-production-visual-review-cadence-2026-05-21-678044e/summary.json",
+    "productionCommit": "678044eb1feb626f9b8ece8d38cb145d1ca5f249",
+    "deploymentUrl": "globe-travel-1rw32jba6-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -31,6 +31,6 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual gate passed 20/20 on the live 7ec3872 deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production visual gate passed 20/20 on the live 678044e deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   }
 }
