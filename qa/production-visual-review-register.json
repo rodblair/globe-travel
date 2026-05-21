@@ -16,9 +16,24 @@
       "status": "planned",
       "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
       "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
-      "routes": ["landing", "login", "signup", "public-share"],
-      "viewports": ["phone", "tablet", "laptop", "desktop", "wide"],
-      "diffRoutes": ["landing", "login", "signup"],
+      "routes": [
+        "landing",
+        "login",
+        "signup",
+        "public-share"
+      ],
+      "viewports": [
+        "phone",
+        "tablet",
+        "laptop",
+        "desktop",
+        "wide"
+      ],
+      "diffRoutes": [
+        "landing",
+        "login",
+        "signup"
+      ],
       "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
     },
     {
@@ -29,9 +44,24 @@
       "status": "planned",
       "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
       "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-04",
-      "routes": ["landing", "login", "signup", "public-share"],
-      "viewports": ["phone", "tablet", "laptop", "desktop", "wide"],
-      "diffRoutes": ["landing", "login", "signup"],
+      "routes": [
+        "landing",
+        "login",
+        "signup",
+        "public-share"
+      ],
+      "viewports": [
+        "phone",
+        "tablet",
+        "laptop",
+        "desktop",
+        "wide"
+      ],
+      "diffRoutes": [
+        "landing",
+        "login",
+        "signup"
+      ],
       "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
     },
     {
@@ -42,17 +72,32 @@
       "status": "planned",
       "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
       "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-11",
-      "routes": ["landing", "login", "signup", "public-share"],
-      "viewports": ["phone", "tablet", "laptop", "desktop", "wide"],
-      "diffRoutes": ["landing", "login", "signup"],
+      "routes": [
+        "landing",
+        "login",
+        "signup",
+        "public-share"
+      ],
+      "viewports": [
+        "phone",
+        "tablet",
+        "laptop",
+        "desktop",
+        "wide"
+      ],
+      "diffRoutes": [
+        "landing",
+        "login",
+        "signup"
+      ],
       "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
     }
   ],
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399",
-    "summaryArtifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399/summary.json",
-    "productionCommit": "ec38399177df6919d31e128baab202ad74444679",
-    "deploymentUrl": "globe-travel-4vbq7gozu-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-release-2026-05-21-43ae662",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-05-21-43ae662/summary.json",
+    "productionCommit": "43ae6627da1211bd7f6c619b143575eccae0363b",
+    "deploymentUrl": "globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -75,20 +120,20 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual gate passed 20/20 on the live ec38399 deployment. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production visual gate passed 20/20 on the live 43ae662 deployment after the beta and production visual intake gates were deployed. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
       "reviewedAt": "2026-05-21",
-      "artifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399",
-      "summaryArtifact": "qa/visual-baseline-production-paid-path-readiness-2026-05-21-ec38399/summary.json",
-      "productionCommit": "ec38399177df6919d31e128baab202ad74444679",
-      "deploymentUrl": "globe-travel-4vbq7gozu-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-release-2026-05-21-43ae662",
+      "summaryArtifact": "qa/visual-baseline-production-release-2026-05-21-43ae662/summary.json",
+      "productionCommit": "43ae6627da1211bd7f6c619b143575eccae0363b",
+      "deploymentUrl": "globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app",
       "reviewedBy": "Codex visual QA",
       "verdict": "pass",
       "blockingFindings": [],
       "screenshotsReviewed": 20,
-      "notes": "Initial public-launch-mode visual review history entry. Public launch still requires four distinct review dates with passing evidence."
+      "notes": "Initial public-launch-mode visual review history entry, refreshed on the live 43ae662 deployment. Public launch still requires four distinct review dates with passing evidence."
     }
   ]
 }
