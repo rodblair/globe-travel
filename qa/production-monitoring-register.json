@@ -103,8 +103,8 @@
     "command": "npm run qa:production-monitoring",
     "relatedCommands": [
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
-      "QA_LAUNCH_EXPECTED_COMMIT=bfc390c37bfe65c6cd61b57eb4e0b08cc04700d5 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=8931b58b4b7a0147d4b3bfacba270bd303ea301e npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "bfc390c37bfe65c6cd61b57eb4e0b08cc04700d5"
+    "expectedLiveCommit": "8931b58b4b7a0147d4b3bfacba270bd303ea301e"
   }
 }
