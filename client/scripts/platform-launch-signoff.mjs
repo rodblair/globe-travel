@@ -17,6 +17,9 @@ const visualArtifact =
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const accessibilityArtifact =
+  process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
+  'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
 const productionEvidence =
   process.env.QA_LAUNCH_PRODUCTION_EVIDENCE ||
   'qa/launch-signoff-current-production-evidence-2026-05-21.md'
@@ -108,6 +111,29 @@ const requiredProductionVisualDiffRoutes = [
   'landing',
   'login',
   'signup',
+]
+
+const requiredAccessibilityRoutes = [
+  'landing',
+  'planner',
+  'saved-trips',
+  'account-profile',
+  'account-billing',
+  'login',
+  'signup',
+  'public-share',
+]
+
+const requiredAccessibilityProtectedRoutes = [
+  'planner',
+  'saved-trips',
+  'account-profile',
+  'account-billing',
+]
+
+const requiredAccessibilityViewports = [
+  'phone',
+  'desktop',
 ]
 
 const requiredStripeScreenshots = [
@@ -439,6 +465,87 @@ async function checkVisualArtifact() {
     screenshotCount: screenshotPaths.length,
     missingScreenshots: missingScreenshots.slice(0, 12),
     missingScreenshotCount: missingScreenshots.length,
+  })
+
+  return summary
+}
+
+async function checkAccessibilityArtifact() {
+  let summary
+  try {
+    summary = await readJson(accessibilityArtifact)
+  } catch (error) {
+    addCheck('accessibility and keyboard artifact is readable', false, {
+      artifact: accessibilityArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+
+  addCheck('accessibility and keyboard artifact is readable', true, {
+    artifact: accessibilityArtifact,
+  })
+
+  const resultCount = Array.isArray(summary.results) ? summary.results.length : 0
+  const viewportIds = Array.isArray(summary.viewports) ? summary.viewports.map((viewport) => viewport.id).filter(Boolean) : []
+  const missingRoutes = hasAll(summary.routes || [], requiredAccessibilityRoutes)
+  const missingProtectedRoutes = hasAll(summary.auth?.protectedRoutes || [], requiredAccessibilityProtectedRoutes)
+  const missingViewports = hasAll(viewportIds, requiredAccessibilityViewports)
+
+  addCheck('accessibility and keyboard QA passed every required route and viewport', (
+    summary.checked === 16 &&
+    summary.passed === 16 &&
+    summary.failed === 0 &&
+    resultCount === 16 &&
+    missingRoutes.length === 0 &&
+    missingProtectedRoutes.length === 0 &&
+    missingViewports.length === 0
+  ), {
+    checked: summary.checked,
+    passed: summary.passed,
+    failed: summary.failed,
+    resultCount,
+    requiredRoutes: requiredAccessibilityRoutes,
+    missingRoutes,
+    requiredProtectedRoutes: requiredAccessibilityProtectedRoutes,
+    missingProtectedRoutes,
+    requiredViewports: requiredAccessibilityViewports,
+    missingViewports,
+  })
+
+  checkEvidenceFreshness('accessibility and keyboard QA', evidenceDateFrom(summary, accessibilityArtifact))
+
+  const blockingResults = Array.isArray(summary.results)
+    ? summary.results.filter((result) => (
+      result.ok === false ||
+      (Array.isArray(result.missingMarkers) && result.missingMarkers.length > 0) ||
+      (Array.isArray(result.structureIssues) && result.structureIssues.length > 0) ||
+      (Array.isArray(result.axe?.blockingViolations) && result.axe.blockingViolations.length > 0) ||
+      (Array.isArray(result.keyboard?.issues) && result.keyboard.issues.length > 0)
+    ))
+    : []
+
+  addCheck('accessibility and keyboard QA has no blocking axe, structure, marker, or keyboard failures', blockingResults.length === 0, {
+    badResultCount: blockingResults.length,
+    badResults: blockingResults.slice(0, 12).map((result) => ({
+      routeId: result.routeId,
+      viewportId: result.viewportId,
+      missingMarkers: result.missingMarkers || [],
+      structureIssues: result.structureIssues || [],
+      blockingViolations: result.axe?.blockingViolations || [],
+      keyboardIssues: result.keyboard?.issues || [],
+    })),
+  })
+
+  addCheck('accessibility and keyboard QA uses guest auth for protected launch routes and cleans up generated guest', (
+    summary.auth?.mode === 'guest' &&
+    missingProtectedRoutes.length === 0 &&
+    summary.auth?.cleanup?.attempted === true &&
+    summary.auth?.cleanup?.profileDeleted === true &&
+    summary.auth?.cleanup?.userDeleted === true &&
+    !summary.auth?.cleanup?.error
+  ), {
+    auth: summary.auth || null,
   })
 
   return summary
@@ -853,6 +960,7 @@ const productionHealth = await checkProductionHealth()
 await checkRequiredDocs()
 await checkReleaseArtifact()
 await checkVisualArtifact()
+await checkAccessibilityArtifact()
 await checkStripeArtifacts()
 await checkPlannerActualsArtifact()
 await checkProductionEvidence(productionHealth)
@@ -866,6 +974,7 @@ const summary = {
   expectedCommit: expectedCommit || null,
   releaseArtifact,
   visualArtifact,
+  accessibilityArtifact,
   plannerActualsArtifact,
   productionEvidence,
   visualReviewRegister,

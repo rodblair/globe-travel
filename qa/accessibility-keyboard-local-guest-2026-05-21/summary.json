@@ -1,0 +1,3668 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-21",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/accessibility-keyboard-local-guest-2026-05-21",
+  "auth": {
+    "requestedMode": "auto",
+    "mode": "guest",
+    "guestId": "36ae95a6-9682-475e-bd26-d84f735ed8f6",
+    "protectedRoutes": [
+      "planner",
+      "saved-trips",
+      "account-profile",
+      "account-billing"
+    ],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "36ae95a6-9682-475e-bd26-d84f735ed8f6",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "36ae95a6-9682-475e-bd26-d84f735ed8f6",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": true,
+      "reason": null,
+      "guestId": "36ae95a6-9682-475e-bd26-d84f735ed8f6",
+      "profileDeleted": true,
+      "userDeleted": true,
+      "error": null
+    }
+  },
+  "checked": 16,
+  "passed": 16,
+  "failed": 0,
+  "routes": [
+    "landing",
+    "planner",
+    "saved-trips",
+    "account-profile",
+    "account-billing",
+    "login",
+    "signup",
+    "public-share"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "tabLimit": 12,
+  "results": [
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-one-main",
+            "impact": "moderate",
+            "help": "Document should have one main landmark",
+            "nodes": [
+              {
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".justify-self-start > .gap-2\\.5.leading-none.inline-flex > .gap-1.flex-col.inline-flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".flex-1"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".items-end > span:nth-child(1)"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".text-right"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".max-w-\\[760px\\]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 2
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travelGroup trip maps",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 20,
+              "width": 198,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Start planning",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 402,
+              "width": 358,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "See the Globe.travel map",
+            "role": "",
+            "href": "#crew",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 462,
+              "width": 358,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan your first trip",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 93,
+              "y": 601,
+              "width": 204,
+              "height": 48
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "body",
+            "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -2873,
+              "width": 390,
+              "height": 3717
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 5,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travelGroup trip maps",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 20,
+              "width": 198,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Start planning",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 402,
+              "width": 358,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "See the Globe.travel map",
+            "role": "",
+            "href": "#crew",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 462,
+              "width": 358,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan your first trip",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 93,
+              "y": 601,
+              "width": 204,
+              "height": 48
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "planner",
+      "path": "/chat",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/chat",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 01Start with the crewTell us who is going, the pace, budget, and what each person cares about.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 379,
+              "width": 316,
+              "height": 103
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 02Compare the tradeoffsSee which cities fit the group before committing to a full itinerary.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 492,
+              "width": 316,
+              "height": 103
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 03Create the Globe.travel mapMove the plan into a shareable itinerary map your friends can react to.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 578,
+              "width": 316,
+              "height": 103
+            }
+          },
+          {
+            "tag": "button",
+            "label": "City escapeFood, culture, and one memorable night",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 346,
+              "width": 316,
+              "height": 65
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Choose the cityCompare the strongest options",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 421,
+              "width": 316,
+              "height": 65
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Keep it realisticBudget and pace checks",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 496,
+              "width": 316,
+              "height": 65
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Describe your trip idea",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 33,
+              "y": 702,
+              "width": 252,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "saved-trips",
+      "path": "/saved",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trips",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 212,
+              "width": 90,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trip notes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 123,
+              "y": 212,
+              "width": 123,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan another trip",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 392,
+              "width": 192,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open Planner",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 107,
+              "y": 631,
+              "width": 177,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trips",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 212,
+              "width": 90,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trip notes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 123,
+              "y": 212,
+              "width": 123,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Profile",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 121,
+              "width": 99,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Billing",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 132,
+              "y": 121,
+              "width": 96,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Your name",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 354,
+              "width": 308,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "yourusername",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 464,
+              "width": 308,
+              "height": 46
+            }
+          },
+          {
+            "tag": "textarea",
+            "label": "A short note friends will recognize when you share itinerary feedback.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 590,
+              "width": 308,
+              "height": 106
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Save changes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 722,
+              "width": 158,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 673,
+              "width": 113,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account?tab=billing",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Profile",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 121,
+              "width": 99,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Billing",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 132,
+              "y": 121,
+              "width": 96,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Monthly",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 46,
+              "y": 361,
+              "width": 71,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Yearly",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 121,
+              "y": 361,
+              "width": 60,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Start free trial",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 578,
+              "width": 308,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Start a group trip",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 673,
+              "width": 171,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "body",
+            "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/login",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-one-main",
+            "impact": "moderate",
+            "help": "Document should have one main landmark",
+            "nodes": [
+              {
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".lg\\:hidden > .leading-none.gap-2.inline-flex > .gap-0\\.5.flex-col.inline-flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-8"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-7"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".gap-4.mb-5.flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  "label[for=\"email\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 2
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Continue as guest",
+            "role": "",
+            "href": "/api/guest/start",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 45,
+              "y": 386,
+              "width": 300,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Continue with Google",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 479,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "you@example.com",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 605,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Forgot?",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 665,
+              "width": 73,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "••••••••",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 717,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Show password",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 320,
+              "y": 716,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 777,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign in with magic link instead",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 798,
+              "width": 342,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Begin a journey",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 190,
+              "y": 750,
+              "width": 104,
+              "height": 46
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/signup",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-one-main",
+            "impact": "moderate",
+            "help": "Document should have one main landmark",
+            "nodes": [
+              {
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".lg\\:hidden > .leading-none.gap-2.inline-flex > .gap-0\\.5.flex-col.inline-flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-8"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-7"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".gap-4"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  "label[for=\"name\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 2
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Continue as guest",
+            "role": "",
+            "href": "/api/guest/start",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 45,
+              "y": 386,
+              "width": 300,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Continue with Google",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 479,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Maya Tanaka",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 605,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "you@example.com",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 689,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Min 6 characters",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 773,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Show password",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 320,
+              "y": 772,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Create account",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 800,
+              "width": 342,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Sign in",
+            "role": "",
+            "href": "/login",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 223,
+              "y": 750,
+              "width": 50,
+              "height": 46
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 844,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "body",
+            "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -206,
+              "width": 390,
+              "height": 1050
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-unique",
+            "impact": "moderate",
+            "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+            "nodes": [
+              {
+                "target": [
+                  "canvas[height=\"159\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 1
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 132,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Start your own trip",
+            "role": "",
+            "href": "/api/guest/start?q=Plan%20a%205-day%20trip%20to%20Athens%20Greece%20in%20mid%20september%20with%20a%20shareable%20itinerary%20map%20for%20my%20group.",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 192,
+              "y": 16,
+              "width": 182,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 399,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 445,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "role": "",
+            "href": "https://www.mapbox.com/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 44,
+              "y": 475,
+              "width": 88,
+              "height": 23
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 399,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 445,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "role": "",
+            "href": "https://www.mapbox.com/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 44,
+              "y": 475,
+              "width": 88,
+              "height": 23
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 399,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 293,
+              "y": 445,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "role": "",
+            "href": "https://www.mapbox.com/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 44,
+              "y": 475,
+              "width": 88,
+              "height": 23
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-one-main",
+            "impact": "moderate",
+            "help": "Document should have one main landmark",
+            "nodes": [
+              {
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".justify-self-start > .gap-2\\.5.leading-none.inline-flex > .gap-1.flex-col.inline-flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".flex-1"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".pb-6"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".max-w-\\[760px\\]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-10"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 2
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travelGroup trip maps",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 168,
+              "y": 26,
+              "width": 198,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "How it works",
+            "role": "",
+            "href": "#how",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 952,
+              "y": 28,
+              "width": 109,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "For groups",
+            "role": "",
+            "href": "#crew",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1089,
+              "y": 28,
+              "width": 91,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Sign in",
+            "role": "",
+            "href": "/login",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1208,
+              "y": 28,
+              "width": 64,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Start planning",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 502,
+              "y": 433,
+              "width": 175,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "See the Globe.travel map",
+            "role": "",
+            "href": "#crew",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 689,
+              "y": 433,
+              "width": 248,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan your first trip",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 618,
+              "y": 725,
+              "width": 204,
+              "height": 48
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 950,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "body",
+            "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -2345,
+              "width": 1440,
+              "height": 3295
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 5,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travelGroup trip maps",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 168,
+              "y": 26,
+              "width": 198,
+              "height": 44
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "planner",
+      "path": "/chat",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/chat",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-unique",
+            "impact": "moderate",
+            "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+            "nodes": [
+              {
+                "target": [
+                  ".h-dvh"
+                ],
+                "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 1
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 01Start with the crewTell us who is going, the pace, budget, and what each person cares about.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 321,
+              "y": 382,
+              "width": 215,
+              "height": 118
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 02Compare the tradeoffsSee which cities fit the group before committing to a full itinerary.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 546,
+              "y": 382,
+              "width": 215,
+              "height": 118
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 03Create the Globe.travel mapMove the plan into a shareable itinerary map your friends can react to.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 770,
+              "y": 382,
+              "width": 215,
+              "height": 118
+            }
+          },
+          {
+            "tag": "button",
+            "label": "City escapeFood, culture, and one memorable night",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 321,
+              "y": 550,
+              "width": 159,
+              "height": 80
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "saved-trips",
+      "path": "/saved",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trips",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 305,
+              "y": 120,
+              "width": 90,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trip notes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 403,
+              "y": 120,
+              "width": 123,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan another trip",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1208,
+              "y": 231,
+              "width": 192,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open Planner",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 760,
+              "y": 641,
+              "width": 177,
+              "height": 48
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Profile",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 369,
+              "y": 105,
+              "width": 99,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Billing",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 476,
+              "y": 105,
+              "width": 96,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Your name",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 385,
+              "y": 350,
+              "width": 578,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "yourusername",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 385,
+              "y": 460,
+              "width": 578,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account?tab=billing",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Profile",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 369,
+              "y": 105,
+              "width": 99,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Billing",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 476,
+              "y": 105,
+              "width": 96,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Monthly",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 827,
+              "y": 529,
+              "width": 71,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Yearly",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 902,
+              "y": 529,
+              "width": 60,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/login",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-one-main",
+            "impact": "moderate",
+            "help": "Document should have one main landmark",
+            "nodes": [
+              {
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".min-h-11 > .leading-none.gap-2.inline-flex > .gap-0\\.5.flex-col.inline-flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".z-10 > .max-w-md"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".gap-6 > span:nth-child(1)"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  "span:nth-child(3)"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-8"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 2
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 48,
+              "y": 48,
+              "width": 623,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Continue as guest",
+            "role": "",
+            "href": "/api/guest/start",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 877,
+              "y": 320,
+              "width": 406,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Continue with Google",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 413,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "you@example.com",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 539,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Forgot?",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1231,
+              "y": 599,
+              "width": 73,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "••••••••",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 651,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Show password",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1258,
+              "y": 650,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 711,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign in with magic link instead",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 775,
+              "width": 448,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Begin a journey",
+            "role": "",
+            "href": "/signup",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1075,
+              "y": 849,
+              "width": 104,
+              "height": 46
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 950,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/signup",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-one-main",
+            "impact": "moderate",
+            "help": "Document should have one main landmark",
+            "nodes": [
+              {
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+              }
+            ]
+          },
+          {
+            "id": "region",
+            "impact": "moderate",
+            "help": "All page content should be contained by landmarks",
+            "nodes": [
+              {
+                "target": [
+                  ".min-h-11 > .leading-none.gap-2.inline-flex > .gap-0\\.5.flex-col.inline-flex"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".z-10 > .max-w-md"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".gap-6 > span:nth-child(1)"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  "span:nth-child(3)"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              },
+              {
+                "target": [
+                  ".mb-8"
+                ],
+                "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 2
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 48,
+              "y": 48,
+              "width": 623,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Continue as guest",
+            "role": "",
+            "href": "/api/guest/start",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 877,
+              "y": 314,
+              "width": 406,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Continue with Google",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 407,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Maya Tanaka",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 533,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "you@example.com",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 617,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Min 6 characters",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 701,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Show password",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1258,
+              "y": 700,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Create account",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 856,
+              "y": 761,
+              "width": 448,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Sign in",
+            "role": "",
+            "href": "/login",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1108,
+              "y": 868,
+              "width": 50,
+              "height": 46
+            }
+          },
+          {
+            "tag": "nextjs-portal",
+            "label": "NEXTJS-PORTAL",
+            "role": "",
+            "href": "",
+            "visible": false,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 962,
+              "width": 0,
+              "height": 0
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-unique",
+            "impact": "moderate",
+            "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+            "nodes": [
+              {
+                "target": [
+                  "canvas[width=\"427\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 1
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 104,
+              "y": 24,
+              "width": 132,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Start your own trip",
+            "role": "",
+            "href": "/api/guest/start?q=Plan%20a%205-day%20trip%20to%20Athens%20Greece%20in%20mid%20september%20with%20a%20shareable%20itinerary%20map%20for%20my%20group.",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1154,
+              "y": 24,
+              "width": 182,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 831,
+              "y": 516,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 831,
+              "y": 562,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "role": "",
+            "href": "https://www.mapbox.com/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 470,
+              "y": 592,
+              "width": 88,
+              "height": 23
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 444,
+              "y": 452,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 444,
+              "y": 498,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "role": "",
+            "href": "https://www.mapbox.com/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 140,
+              "y": 528,
+              "width": 88,
+              "height": 23
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom in",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 835,
+              "y": 452,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Zoom out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 835,
+              "y": 498,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "role": "",
+            "href": "https://www.mapbox.com/",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 531,
+              "y": 528,
+              "width": 88,
+              "height": 23
+            }
+          }
+        ],
+        "issues": []
+      }
+    }
+  ],
+  "failures": []
+}

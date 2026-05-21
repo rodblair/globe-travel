@@ -10,6 +10,8 @@ Status: Active goal in progress
 - Produced 25 representative generated actuals and cross-checked them through the planner prompt suite.
 - `QA_PROMPT_SUITE_ACTUALS=../qa/planner-generated-actuals-beta-representative-2026-05-21.json npm run qa:prompt-suite` passed `60/60` with `25` actuals checked.
 - The remaining `GT-P2-001` risk is invite-beta human review volume, not missing automated beta coverage.
+- Closed the accessibility false-coverage gap for protected routes: `npm run qa:a11y` now supports guest-auth route coverage and records guest cleanup.
+- Local guest accessibility passed `16/16`; production guest accessibility passed `16/16`; launch signoff now requires the production accessibility artifact and passed `47/47`.
 
 ## Release Objective
 

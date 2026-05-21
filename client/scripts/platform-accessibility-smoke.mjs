@@ -1,10 +1,14 @@
 import { existsSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright-core'
+import { createClient } from '@supabase/supabase-js'
 
 const require = createRequire(import.meta.url)
+
+const GUEST_SESSION_COOKIE = 'globe_travel_guest'
 
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
@@ -21,6 +25,11 @@ const axeSource = await readFile(axePath, 'utf8')
 const routeFilter = (process.env.QA_A11Y_ROUTES || '').split(',').map((entry) => entry.trim()).filter(Boolean)
 const viewportFilter = (process.env.QA_A11Y_VIEWPORTS || '').split(',').map((entry) => entry.trim()).filter(Boolean)
 const tabLimit = Number(process.env.QA_A11Y_TAB_LIMIT || '12')
+const requestedAuthMode = process.env.QA_A11Y_AUTH_MODE || 'auto'
+const providedGuestId = process.env.QA_A11Y_GUEST_ID || process.env.QA_GUEST_ID || ''
+const accessibilityGuestId = providedGuestId || randomUUID()
+const allowRemoteGuestAuth = process.env.QA_A11Y_ALLOW_REMOTE_GUEST === '1'
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 
 const allViewports = [
   { id: 'phone', width: 390, height: 844 },
@@ -52,8 +61,115 @@ const viewports = viewportFilter.length
 const routes = routeFilter.length
   ? allRoutes.filter((route) => routeFilter.includes(route.id))
   : allRoutes
+const protectedRouteIds = new Set(['planner', 'saved-trips', 'account-profile', 'account-billing', 'trip-studio'])
+const protectedRoutes = routes.filter((route) => protectedRouteIds.has(route.id)).map((route) => route.id)
+const useGuestAuth = requestedAuthMode === 'guest' || (requestedAuthMode === 'auto' && isLocalBaseUrl && protectedRoutes.length > 0)
+let guestCleanup = {
+  attempted: false,
+  reason: useGuestAuth
+    ? (providedGuestId ? 'external guest id provided; owner cleanup remains with the caller' : 'not run yet')
+    : 'guest accessibility auth not used',
+  guestId: useGuestAuth ? accessibilityGuestId : null,
+  profileDeleted: false,
+  userDeleted: false,
+  error: null,
+}
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function loadDotEnv() {
+  const envPath = resolve(process.cwd(), '.env.local')
+  let text = ''
+
+  try {
+    text = await readFile(envPath, 'utf8')
+  } catch {
+    return
+  }
+
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/)
+    if (!match) continue
+    const [, key, rawValue] = match
+    if (process.env[key]) continue
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '')
+  }
+}
+
+async function authenticateAccessibilityContext(context) {
+  if (!useGuestAuth) return { mode: 'none', guestId: null, cookieSet: false }
+
+  const parsedBaseUrl = new URL(baseUrl)
+  await context.addCookies([
+    {
+      name: GUEST_SESSION_COOKIE,
+      value: accessibilityGuestId,
+      domain: parsedBaseUrl.hostname,
+      path: '/',
+      httpOnly: false,
+      secure: baseUrl.startsWith('https://'),
+      sameSite: 'Lax',
+      expires: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+    },
+  ])
+
+  const cookies = await context.cookies(baseUrl)
+  const guestCookie = cookies.find((cookie) => cookie.name === GUEST_SESSION_COOKIE)
+
+  return {
+    mode: 'guest',
+    guestId: accessibilityGuestId,
+    cookieSet: guestCookie?.value === accessibilityGuestId,
+  }
+}
+
+async function cleanupGeneratedGuest() {
+  if (!useGuestAuth || providedGuestId) return
+
+  if (!isLocalBaseUrl && !allowRemoteGuestAuth) {
+    guestCleanup = {
+      ...guestCleanup,
+      attempted: false,
+      reason: 'remote guest accessibility cleanup skipped',
+    }
+    return
+  }
+
+  await loadDotEnv()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    guestCleanup = {
+      ...guestCleanup,
+      attempted: false,
+      reason: 'missing Supabase service role cleanup credentials',
+    }
+    return
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false },
+  })
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', accessibilityGuestId)
+  const { error: userError } = await supabase.auth.admin.deleteUser(accessibilityGuestId)
+  const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
+
+  guestCleanup = {
+    attempted: true,
+    reason: null,
+    guestId: accessibilityGuestId,
+    profileDeleted: !profileError,
+    userDeleted: !userError || Boolean(userAlreadyAbsent),
+    error: profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
+  }
+}
 
 function markdownTable(rows) {
   return [
@@ -292,6 +408,16 @@ if (viewportFilter.length && viewports.length !== viewportFilter.length) {
   process.exit(1)
 }
 
+if (!['auto', 'none', 'guest'].includes(requestedAuthMode)) {
+  console.error('QA_A11Y_AUTH_MODE must be one of: auto, none, guest.')
+  process.exit(1)
+}
+
+if (useGuestAuth && !isLocalBaseUrl && !allowRemoteGuestAuth) {
+  console.error('Guest-auth accessibility QA on remote URLs can create remote guest state. Set QA_A11Y_ALLOW_REMOTE_GUEST=1 to allow it intentionally.')
+  process.exit(1)
+}
+
 await mkdir(artifactDir, { recursive: true })
 
 const browser = await chromium.launch({
@@ -302,12 +428,15 @@ const browser = await chromium.launch({
 
 const results = []
 const failures = []
+const authContexts = []
 
 for (const viewport of viewports) {
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
     deviceScaleFactor: 1,
   })
+  const authContext = await authenticateAccessibilityContext(context)
+  authContexts.push({ viewportId: viewport.id, ...authContext })
   const page = await context.newPage()
 
   for (const route of routes) {
@@ -320,6 +449,8 @@ for (const viewport of viewports) {
   await context.close()
 }
 
+await cleanupGeneratedGuest()
+
 const summary = {
   baseUrl,
   date,
@@ -327,6 +458,16 @@ const summary = {
   shareSlug,
   tripId: tripId || null,
   artifactDir,
+  auth: {
+    requestedMode: requestedAuthMode,
+    mode: useGuestAuth ? 'guest' : 'none',
+    guestId: useGuestAuth ? accessibilityGuestId : null,
+    protectedRoutes,
+    externalGuestId: Boolean(providedGuestId),
+    allowRemoteGuestAuth,
+    contexts: authContexts,
+    cleanup: guestCleanup,
+  },
   checked: results.length,
   passed: results.filter((result) => result.ok).length,
   failed: failures.length,
@@ -355,6 +496,7 @@ Date: ${date}
 Environment: ${baseUrl}
 Public share slug: ${shareSlug}
 Trip Studio fixture: ${tripId || 'not included'}
+Auth mode: ${useGuestAuth ? `guest (${providedGuestId ? 'external' : 'generated'} guest id)` : 'none'}
 
 ## Result
 
@@ -362,6 +504,8 @@ Trip Studio fixture: ${tripId || 'not included'}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
 - Artifact JSON: \`qa/${artifactName}/summary.json\`
+- Protected routes: ${protectedRoutes.length ? protectedRoutes.join(', ') : 'none'}
+- Guest cleanup: ${guestCleanup.attempted ? `attempted (${guestCleanup.error || 'ok'})` : guestCleanup.reason}
 
 ${markdownTable(results)}
 
@@ -383,6 +527,7 @@ ${failures.length === 0 ? 'No failures.' : failures.map((failure) => `### ${fail
 - Moderate axe findings are recorded as warnings so they can be triaged without blocking unrelated release work.
 - The keyboard smoke tabs through the first ${tabLimit} focus stops and fails hidden, unnamed, or trapped/empty focus paths.
 - The release shell now includes a global skip link to \`#main-content\` so keyboard users can bypass repeated navigation.
+- Guest auth can be enabled with \`QA_A11Y_AUTH_MODE=guest\`; remote guest checks require \`QA_A11Y_ALLOW_REMOTE_GUEST=1\` so protected launch routes are not accidentally replaced by login-screen coverage.
 `
 
 const mdPath = resolve(artifactDir, 'README.md')
@@ -393,6 +538,12 @@ console.log(JSON.stringify({
   checked: summary.checked,
   passed: summary.passed,
   failed: summary.failed,
+  auth: {
+    mode: summary.auth.mode,
+    protectedRoutes: summary.auth.protectedRoutes,
+    guestId: summary.auth.guestId,
+    cleanup: summary.auth.cleanup,
+  },
   artifactDir,
   summaryPath: jsonPath,
   reportPath: mdPath,
