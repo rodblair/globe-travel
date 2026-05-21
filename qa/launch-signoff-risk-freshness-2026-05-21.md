@@ -75,3 +75,15 @@ Postdeploy command:
 ```bash
 QA_LAUNCH_EXPECTED_COMMIT=03878b26f6227eba21cd7b8015a484e4af613aed npm run qa:launch-signoff
 ```
+
+The follow-up P2 accepted-risk guard deployed as commit `8b7ac26`:
+
+- Deployment URL: `globe-travel-1jtpzwmqe-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `22/22`
+
+Postdeploy command:
+
+```bash
+QA_LAUNCH_EXPECTED_COMMIT=8b7ac260d47633237985f1756e7318dc15216b0f npm run qa:launch-signoff
+```
