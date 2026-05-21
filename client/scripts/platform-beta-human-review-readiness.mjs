@@ -10,6 +10,8 @@ const reportName = process.env.QA_BETA_REVIEW_REPORT || `beta-human-review-readi
 const writeReviewerPackets = ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_PACKETS || '').toLowerCase())
 const reviewerPacketDir = process.env.QA_BETA_REVIEW_PACKET_DIR || `../qa/beta-human-review-packets-${date}`
 const reviewerPacketManifestName = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || `beta-human-review-packet-manifest-${date}.json`
+const reviewerAssignmentCsvName = process.env.QA_BETA_REVIEW_ASSIGNMENT_CSV || `beta-human-review-assignments-${date}.csv`
+const reviewerAssignmentReportName = process.env.QA_BETA_REVIEW_ASSIGNMENT_REPORT || `beta-human-review-assignments-${date}.md`
 const reviewerBaseUrl = process.env.QA_BETA_REVIEW_BASE_URL || 'https://globe-travel-two.vercel.app'
 const submissionTemplateDir = process.env.QA_BETA_REVIEW_SUBMISSION_TEMPLATE_DIR || `../qa/beta-human-review-submissions-${date}`
 const writeSubmissionTemplates = writeReviewerPackets || ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_SUBMISSION_TEMPLATES || '').toLowerCase())
@@ -151,6 +153,11 @@ function completedReviewEvidenceIssues(review) {
 
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
+}
+
+function csvEscape(value) {
+  const text = String(value ?? '')
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text
 }
 
 function qaDisplayPath(value) {
@@ -295,6 +302,71 @@ Use severities P0, P1, P2, or P3 and statuses open, closed, or accepted-risk. Pu
 
 function reviewLabel(review) {
   return `${review.id} (${review.destination}, ${review.audience}, ${review.style}, ${review.region}, ${review.device})`
+}
+
+function assignmentCsv(records) {
+  const columns = [
+    'id',
+    'destination',
+    'audience',
+    'style',
+    'region',
+    'device',
+    'viewport',
+    'surfaces',
+    'startUrl',
+    'packetPath',
+    'submissionTemplatePath',
+    'assignee',
+    'reviewWindow',
+    'status',
+    'submissionPath',
+    'notes',
+  ]
+  const rows = records.map((record) => ({
+    ...record,
+    surfaces: record.surfaces.join('|'),
+    packetPath: `${qaDisplayPath(reviewerPacketDir)}/${record.packetFile}`,
+    submissionTemplatePath: `${qaDisplayPath(submissionTemplateDir)}/${record.submissionTemplateFile}`,
+    assignee: '',
+    reviewWindow: '',
+    status: 'unassigned',
+    submissionPath: '',
+    notes: '',
+  }))
+  return [
+    columns.join(','),
+    ...rows.map((row) => columns.map((column) => csvEscape(row[column])).join(',')),
+  ].join('\n') + '\n'
+}
+
+function assignmentMarkdown(records) {
+  return `# Beta Human Review Assignment Board
+
+Date: ${date}
+Base URL: ${reviewerBaseUrl}
+Status: ready for assignment
+
+## Operator Instructions
+
+- Assign each row to one reviewer, or split rows across reviewer cohorts while preserving the assigned device lens.
+- Send the reviewer the packet path and matching JSON submission template path.
+- Keep template files ending in \`.template.json\` unchanged; save completed reviews as non-template \`.json\` files in \`${qaDisplayPath(submissionTemplateDir)}\`.
+- After submissions arrive, run \`npm run qa:beta-review-intake\`, then \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` only when validation is clean.
+- Run \`npm run qa:beta-review-progress\` and \`npm run qa:public-launch-status\` after import.
+
+## Assignment Matrix
+
+| ID | Destination | Audience | Style | Region | Device | Surfaces | Packet | Submission Template |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${records.map((record) => (
+  `| ${record.id} | ${record.destination} | ${record.audience} | ${record.style} | ${record.region} | ${record.device} ${record.viewport} | ${record.surfaces.join(', ')} | \`${qaDisplayPath(reviewerPacketDir)}/${record.packetFile}\` | \`${qaDisplayPath(submissionTemplateDir)}/${record.submissionTemplateFile}\` |`
+)).join('\n')}
+
+## Launch Rule
+
+Public launch still requires 25 completed reviews, zero unresolved P0/P1 findings, complete scorecard evidence, and passing intake/progress artifacts. This board is an assignment aid, not completed review evidence.
+`
 }
 
 const raw = await readFile(resolve(process.cwd(), registerPath), 'utf8')
@@ -448,6 +520,8 @@ const summary = {
   failed: failures.length,
   reviewerPacketDir: qaDisplayPath(reviewerPacketDir),
   reviewerPacketManifest: `qa/${reviewerPacketManifestName}`,
+  reviewerAssignmentCsv: `qa/${reviewerAssignmentCsvName}`,
+  reviewerAssignmentReport: `qa/${reviewerAssignmentReportName}`,
   reviewerPacketCount: reviewerPackets.length,
   reviewerPacketsWritten: writeReviewerPackets,
   submissionTemplateDir: qaDisplayPath(submissionTemplateDir),
@@ -473,6 +547,7 @@ Status: ${summary.status}
 - Requested completed-review threshold: ${summary.minCompletedReviews}
 - Reviewer packets: ${summary.reviewerPacketCount}${writeReviewerPackets ? ` written to \`${summary.reviewerPacketDir}\`` : ''}
 - Submission templates: ${summary.submissionTemplateCount}${writeSubmissionTemplates ? ` written to \`${summary.submissionTemplateDir}\`` : ''}
+- Assignment board: ${writeReviewerPackets ? `\`${summary.reviewerAssignmentReport}\` and \`${summary.reviewerAssignmentCsv}\`` : 'not written'}
 
 ## Coverage
 
@@ -538,6 +613,8 @@ if (writeReviewerPackets) {
     reviewerBaseUrl,
     packetDir: qaDisplayPath(reviewerPacketDir),
     packetCount: reviewerPackets.length,
+    assignmentCsv: `qa/${reviewerAssignmentCsvName}`,
+    assignmentReport: `qa/${reviewerAssignmentReportName}`,
     submissionTemplateDir: qaDisplayPath(submissionTemplateDir),
     submissionTemplateCount: reviewerPackets.length,
     packets: reviewerPackets.map((packet) => ({
@@ -546,6 +623,8 @@ if (writeReviewerPackets) {
       submissionTemplatePath: `${qaDisplayPath(submissionTemplateDir)}/${packet.submissionTemplateFile}`,
     })),
   }, null, 2)}\n`)
+  await writeFile(resolve(root, 'qa', reviewerAssignmentCsvName), assignmentCsv(reviewerPackets))
+  await writeFile(resolve(root, 'qa', reviewerAssignmentReportName), assignmentMarkdown(reviewerPackets))
 }
 if (writeSubmissionTemplates) {
   const templateDir = resolve(process.cwd(), submissionTemplateDir)

@@ -1065,6 +1065,59 @@ async function checkBetaHumanReviewRegister() {
       submissionTemplateCount: packetManifest.submissionTemplateCount ?? null,
       badSubmissionTemplateFiles,
     })
+
+    const assignmentCsvPath = packetManifest.assignmentCsv || null
+    const assignmentReportPath = packetManifest.assignmentReport || null
+    let assignmentCsv = ''
+    let assignmentReport = ''
+    let assignmentCsvError = null
+    let assignmentReportError = null
+    if (hasMeaningfulText(assignmentCsvPath)) {
+      try {
+        assignmentCsv = await readText(assignmentCsvPath)
+      } catch (error) {
+        assignmentCsvError = error instanceof Error ? error.message : String(error)
+      }
+    }
+    if (hasMeaningfulText(assignmentReportPath)) {
+      try {
+        assignmentReport = await readText(assignmentReportPath)
+      } catch (error) {
+        assignmentReportError = error instanceof Error ? error.message : String(error)
+      }
+    }
+    const assignmentBoardIssues = packets.flatMap((packet) => {
+      const issues = []
+      const packetPath = packet.packetPath || ''
+      const templatePath = packet.submissionTemplatePath || ''
+      if (!assignmentCsv.includes(packet.id)) issues.push('CSV missing id')
+      if (!assignmentCsv.includes(packet.startUrl)) issues.push('CSV missing start URL')
+      if (!assignmentCsv.includes(packetPath)) issues.push('CSV missing packet path')
+      if (!assignmentCsv.includes(templatePath)) issues.push('CSV missing template path')
+      if (!assignmentReport.includes(packet.id)) issues.push('report missing id')
+      if (!assignmentReport.includes(packetPath)) issues.push('report missing packet path')
+      if (!assignmentReport.includes(templatePath)) issues.push('report missing template path')
+      return issues.length > 0 ? [{ id: packet.id || '(missing id)', issues }] : []
+    })
+    const assignmentReportHasLaunchRule = assignmentReport.includes('not completed review evidence') &&
+      assignmentReport.includes('Public launch still requires 25 completed reviews')
+
+    addCheck('beta human review assignment board covers every planned review', (
+      hasMeaningfulText(assignmentCsvPath) &&
+      hasMeaningfulText(assignmentReportPath) &&
+      !assignmentCsvError &&
+      !assignmentReportError &&
+      assignmentBoardIssues.length === 0 &&
+      assignmentReportHasLaunchRule
+    ), {
+      plannedReviewCount: plannedReviews.length,
+      assignmentCsv: assignmentCsvPath,
+      assignmentReport: assignmentReportPath,
+      assignmentCsvError,
+      assignmentReportError,
+      assignmentBoardIssues,
+      assignmentReportHasLaunchRule,
+    })
   }
 
   const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])

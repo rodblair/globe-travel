@@ -14,6 +14,7 @@ Status: fail
 - Requested completed-review threshold: 25
 - Reviewer packets: 25
 - Submission templates: 25
+- Assignment board: not written
 
 ## Coverage
 

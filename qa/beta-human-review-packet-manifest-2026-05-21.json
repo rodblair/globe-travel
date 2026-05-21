@@ -4,6 +4,8 @@
   "reviewerBaseUrl": "https://globe-travel-two.vercel.app",
   "packetDir": "qa/beta-human-review-packets-2026-05-21",
   "packetCount": 25,
+  "assignmentCsv": "qa/beta-human-review-assignments-2026-05-21.csv",
+  "assignmentReport": "qa/beta-human-review-assignments-2026-05-21.md",
   "submissionTemplateDir": "qa/beta-human-review-submissions-2026-05-21",
   "submissionTemplateCount": 25,
   "packets": [
