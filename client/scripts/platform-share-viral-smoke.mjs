@@ -94,13 +94,17 @@ async function readPublicShareState(page) {
     await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
     await page.waitForFunction(() => {
       const text = document.body?.innerText || ''
+      const normalizedText = text.toLowerCase()
+      const buttons = Array.from(document.querySelectorAll('button'))
+        .map((button) => (button.textContent || '').trim().replace(/\s+/g, ' '))
       const appErrors = ['Application error', 'Unhandled Runtime Error', 'Hydration failed']
       return (
         (
-          text.includes('Start your own trip') &&
-          text.includes('Add your reaction') &&
-          text.includes('Friend feedback') &&
-          text.includes('Share trip')
+          normalizedText.includes('start your own trip') &&
+          normalizedText.includes('add your reaction') &&
+          normalizedText.includes('friend feedback') &&
+          buttons.includes('Copy link') &&
+          buttons.includes('Share')
         ) ||
         appErrors.some((pattern) => text.includes(pattern))
       )
@@ -108,7 +112,15 @@ async function readPublicShareState(page) {
 
     const ready = await page.evaluate(() => {
       const text = document.body?.innerText || ''
-      return text.includes('Add your reaction') && text.includes('Friend feedback') && text.includes('Share trip')
+      const normalizedText = text.toLowerCase()
+      const buttons = Array.from(document.querySelectorAll('button'))
+        .map((button) => (button.textContent || '').trim().replace(/\s+/g, ' '))
+      return (
+        normalizedText.includes('add your reaction') &&
+        normalizedText.includes('friend feedback') &&
+        buttons.includes('Copy link') &&
+        buttons.includes('Share')
+      )
     })
 
     if (ready || attempt === 3) break
@@ -137,7 +149,7 @@ async function readPublicShareState(page) {
       hasStartCta: normalizedText.includes('start your own trip'),
       hasFeedbackForm: normalizedText.includes('add your reaction') && normalizedText.includes('send feedback'),
       hasFeedbackPanel: normalizedText.includes('friend feedback'),
-      hasShareCard: normalizedText.includes('share trip') && normalizedText.includes('copy link') && buttons.includes('Share'),
+      hasShareCard: buttons.includes('Copy link') && buttons.includes('Share'),
       hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => text.includes(pattern)),
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       clientWidth: document.documentElement.clientWidth,
@@ -187,6 +199,20 @@ async function cleanupGuestAccount(guestId) {
     profileDeleted: !profileError,
     userDeleted: !userError || userAlreadyAbsent,
     error: profileError?.message || (userAlreadyAbsent ? null : userError?.message) || null,
+  }
+}
+
+async function closeBrowser() {
+  if (!browser) return
+
+  const browserProcess = typeof browser.process === 'function' ? browser.process() : null
+  await Promise.race([
+    browser.close().catch(() => {}),
+    new Promise((resolve) => setTimeout(resolve, 5000)),
+  ])
+
+  if (browserProcess && !browserProcess.killed) {
+    browserProcess.kill('SIGKILL')
   }
 }
 
@@ -317,10 +343,7 @@ try {
     })
   }
 } finally {
-  await Promise.race([
-    browser?.close() || Promise.resolve(),
-    new Promise((resolve) => setTimeout(resolve, 5000)),
-  ])
+  await closeBrowser()
 }
 
 const summary = {
