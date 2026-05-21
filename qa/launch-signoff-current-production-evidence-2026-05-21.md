@@ -60,10 +60,10 @@ Launch signoff now proves that postdeploy production evidence is tied to the exa
 
 ## Postdeploy Evidence
 
-Commit `acf72d18a0bbfffae7d5423d5970577638404ede` deployed to Vercel production.
+Commit `dc353ba5922ed45987a1cf27a40c7903615a60d0` deployed to Vercel production.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-dml7p0txi-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-ci6vvadn4-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate passed `10/10`
 - Production accessibility and keyboard QA: `16/16`
@@ -72,7 +72,7 @@ Commit `acf72d18a0bbfffae7d5423d5970577638404ede` deployed to Vercel production.
 - Design-system readiness: `10/10`
 - Current launch signoff gate passed `65/65`
 - Production visual QA: `20/20`
-- Production visual artifact: `qa/visual-baseline-production-monitoring-gate-2026-05-21-acf72d1/`
+- Production visual artifact: `qa/visual-baseline-production-design-system-gate-2026-05-21-dc353ba/`
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`
 - Production monitoring artifact: `qa/production-monitoring-readiness-2026-05-21.md`
 - Design-system artifact: `qa/design-system-readiness-2026-05-21.json`
