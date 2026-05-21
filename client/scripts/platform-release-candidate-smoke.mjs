@@ -22,6 +22,7 @@ const includeShareFixtureSweep =
     isLocalBaseUrl &&
     Boolean(process.env.QA_OWNER_USER_ID)
   )
+const includeShareMultiItinerary = process.env.QA_RELEASE_INCLUDE_SHARE_MULTI_ITINERARY === '1'
 const includeOwnerFeedback = process.env.QA_RELEASE_INCLUDE_OWNER_FEEDBACK !== '0'
 const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT === '1'
 const includeStripePortal = process.env.QA_RELEASE_INCLUDE_STRIPE_PORTAL === '1'
@@ -214,6 +215,7 @@ Public share slug: ${shareSlug}
 - Trip Studio fixture included: ${includeStudioFixture ? 'yes' : 'no'}
 - Public share fixture sweep included: ${includeShareFixtureSweep ? 'yes' : 'no'}
 - Public share fixture owner id: ${includeShareFixtureSweep ? shareFixtureOwnerUserId : 'n/a'}
+- Multi-itinerary share UI included: ${includeShareMultiItinerary ? 'yes' : 'no'}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
 - Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
@@ -242,6 +244,7 @@ ${failedRows.length ? failedRows.map((row) => `### ${row.name}
 
 - This gate is the local pre-deploy release-candidate contract.
 - It intentionally keeps one disposable Trip Studio fixture alive across owner action QA, recovery QA, and visual QA, then cleans it up.
+- Set \`QA_RELEASE_INCLUDE_SHARE_MULTI_ITINERARY=1\` to include the multi-itinerary public share Browser loop with disposable public trips, social-card image checks, recipient feedback, owner readback, and feedback refresh.
 - Set \`QA_RELEASE_INCLUDE_STRIPE_CHECKOUT=1\` to include hosted Stripe Checkout browser completion with test-mode Stripe objects.
 - Set \`QA_RELEASE_INCLUDE_STRIPE_PORTAL=1\` to include hosted Stripe billing portal browser completion with test-mode Stripe objects.
 `
@@ -283,6 +286,15 @@ try {
         QA_OWNER_USER_ID: shareFixtureOwnerUserId,
         QA_CREATE_OWNER_PROFILE: process.env.QA_OWNER_USER_ID ? '0' : '1',
       },
+      { mutatesLocal: true }
+    )
+  }
+
+  if (includeShareMultiItinerary) {
+    await runNodeTask(
+      'public share multi-itinerary browser UI smoke',
+      'scripts/platform-share-multi-itinerary-ui-smoke.mjs',
+      {},
       { mutatesLocal: true }
     )
   }
@@ -449,6 +461,7 @@ const summary = {
   includeStudioFixture,
   includeShareFeedback,
   includeShareFixtureSweep,
+  includeShareMultiItinerary,
   includeOwnerFeedback,
   includeSlowNetwork,
   includeStripeCheckout,

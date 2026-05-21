@@ -111,3 +111,13 @@ All ten fixture cards passed:
 ## Release Impact
 
 This closes the first multi-itinerary public-share browser loop, the first multi-card social preview content gate, and the first multi-itinerary owner feedback refresh loop. The product is no longer only tested against one stable Athens public share, and owner-side feedback planning is no longer only tested on one fixture. Remaining Month 4 expansion work is deeper mixed-feedback, failure/retry, and owner hierarchy polish.
+
+## Release-Candidate Integration
+
+2026-05-21 update: this Browser loop is now available inside the orchestrated local release-candidate gate with:
+
+```bash
+QA_RELEASE_INCLUDE_SHARE_MULTI_ITINERARY=1 npm run qa:release-candidate
+```
+
+Focused integration evidence passed `18/18`, and the multi-itinerary task passed `37/37` inside the release-candidate run. Evidence: `qa/release-candidate-share-multi-integration-2026-05-21/README.md`.
