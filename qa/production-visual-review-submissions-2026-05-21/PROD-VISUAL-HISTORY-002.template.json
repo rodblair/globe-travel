@@ -1,0 +1,16 @@
+{
+  "scheduledReviewId": "PROD-VISUAL-HISTORY-002",
+  "reviewedAt": "2026-05-28",
+  "artifact": "qa/visual-baseline-production-review-2026-05-28",
+  "summaryArtifact": "qa/visual-baseline-production-review-2026-05-28/summary.json",
+  "productionCommit": "replace-with-live-production-commit",
+  "deploymentUrl": "replace-with-live-production-deployment-url",
+  "reviewedBy": "visual QA reviewer",
+  "verdict": "pass",
+  "blockingFindings": [],
+  "screenshotsReviewed": 20,
+  "routesReviewed": ["landing", "login", "signup", "public-share"],
+  "viewportsReviewed": ["phone", "tablet", "laptop", "desktop", "wide"],
+  "diffRoutesReviewed": ["landing", "login", "signup"],
+  "notes": "Replace with a concise review note confirming no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs."
+}

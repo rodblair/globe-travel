@@ -1404,6 +1404,57 @@ async function checkVisualReviewRegister(productionHealth) {
     })),
   })
 
+  let visualIntakeArtifact = null
+  if (hasMeaningfulText(register.reviewIntakeArtifact)) {
+    try {
+      visualIntakeArtifact = await readJson(register.reviewIntakeArtifact)
+      addCheck('production visual review intake artifact is readable', true, {
+        artifact: register.reviewIntakeArtifact,
+        status: visualIntakeArtifact.status || null,
+        submissionDir: visualIntakeArtifact.submissionDir || null,
+        submissionCount: visualIntakeArtifact.submissionCount ?? null,
+        validSubmissionCount: visualIntakeArtifact.validSubmissionCount ?? null,
+        imported: visualIntakeArtifact.imported ?? null,
+      })
+      checkEvidenceFreshness(
+        'production visual review intake',
+        evidenceDateFrom(visualIntakeArtifact, register.reviewIntakeArtifact),
+      )
+    } catch (error) {
+      addCheck('production visual review intake artifact is readable', false, {
+        artifact: register.reviewIntakeArtifact,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  } else {
+    addCheck('production visual review intake artifact is configured', false, {
+      artifact: null,
+    })
+  }
+
+  if (visualIntakeArtifact) {
+    addCheck('production visual review intake artifact matches current register', (
+      visualIntakeArtifact.status === 'pass' &&
+      visualIntakeArtifact.registerPath === visualReviewRegister &&
+      visualIntakeArtifact.submissionDir === register.reviewSubmissionDirectory &&
+      Number(visualIntakeArtifact.reviewHistoryCountAfter) === reviewHistory.length &&
+      Number(visualIntakeArtifact.scheduledReviewCount) === scheduledReviews.length &&
+      Number(visualIntakeArtifact.invalidSubmissionCount) === 0 &&
+      Number(visualIntakeArtifact.duplicateScheduledIdCount) === 0 &&
+      Number(visualIntakeArtifact.duplicateReviewDateCount) === 0
+    ), {
+      reviewHistoryCount: reviewHistory.length,
+      intakeReviewHistoryCountAfter: visualIntakeArtifact.reviewHistoryCountAfter ?? null,
+      scheduledReviewCount: scheduledReviews.length,
+      intakeScheduledReviewCount: visualIntakeArtifact.scheduledReviewCount ?? null,
+      expectedSubmissionDir: register.reviewSubmissionDirectory || null,
+      intakeSubmissionDir: visualIntakeArtifact.submissionDir || null,
+      invalidSubmissionCount: visualIntakeArtifact.invalidSubmissionCount ?? null,
+      duplicateScheduledIdCount: visualIntakeArtifact.duplicateScheduledIdCount ?? null,
+      duplicateReviewDateCount: visualIntakeArtifact.duplicateReviewDateCount ?? null,
+    })
+  }
+
   if (requirePublicLaunchReadiness) {
     const malformedHistory = reviewHistory.filter((review) => (
       !hasMeaningfulText(review.reviewedAt) ||
