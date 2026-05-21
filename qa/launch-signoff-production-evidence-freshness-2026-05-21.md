@@ -30,3 +30,15 @@ Close the release-signoff gap where postdeploy production evidence could be old 
 ## Result
 
 Launch signoff now proves the postdeploy production evidence is both present and current. This keeps release meetings from accidentally approving a launch packet backed by stale production logs, while preserving the scheduled GitHub Actions flow that feeds a freshly generated production release log into signoff.
+
+## Postdeploy Evidence
+
+Commit `0d7d55aaa7dfbba0f8c2109db25f76714c7e6f63` deployed to Vercel production.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-r8c1kqlqq-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `28/28`
+- Non-visual production release gate: `9/9`
+- Athens public share/map integrity: `5/5`, with 5 itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `56/56`
