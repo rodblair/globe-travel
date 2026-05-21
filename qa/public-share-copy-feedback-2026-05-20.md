@@ -45,6 +45,8 @@ May 21 hardening pass:
 ```bash
 QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-copy-feedback-2026-05-21-26ff3d6 npm run qa:release-production
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-viral
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:auth-access
+QA_SHARE_SLUG=x3m2c8cnws npm run qa:auth-access
 npm run lint
 npm run build
 ```
@@ -52,6 +54,8 @@ npm run build
 - Production release gate passed `9/9`, including production viral loop `5/5`, production visual QA `20/20`, and production prompt-suite actual validation `56/56`.
 - Local share viral gate passed `5/5`, including guest-start mutation and cleanup.
 - In-app Browser verified the local Athens public share copy-denial path: when clipboard copy is blocked, the app shows `Copy was blocked. The link is selected so you can copy it manually.`, focuses the public-trip URL field, selects the full URL, keeps `Start your own trip`, shows no app error, and has no horizontal overflow.
+- Production auth/guest access initially exposed a harness issue: the non-mutating remote gate still directly navigated to `/api/guest/start`. The smoke now skips direct remote guest-session creation unless `QA_ALLOW_REMOTE_GUEST_MUTATION=1` is set.
+- Production auth/guest access passed `13/13` after that fix, local auth/guest access passed `15/15`, and the full production release gate passed `9/9` with visual artifact `qa/visual-baseline-production-copy-recovery-auth-fixed-2026-05-21-c16cf31/`.
 
 ## Notes
 

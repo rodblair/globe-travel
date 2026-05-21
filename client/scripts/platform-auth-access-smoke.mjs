@@ -335,46 +335,46 @@ try {
 
   await anonymous.close().catch(() => {})
 
-  const guest = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 })
-  const guestPage = await guest.newPage()
-  const guestStartPath = isLocalBaseUrl ? `/api/guest/start?id=${guestId}` : '/api/guest/start'
-  await gotoWithRetry(guestPage, `${baseUrl}${guestStartPath}`)
-  const guestChatState = await readPageState(guestPage, ['Plan'])
-  const cookies = await guest.cookies(baseUrl)
-  const guestCookie = cookies.find((cookie) => cookie.name === 'globe_travel_guest')
-
-  record('guest start creates browser session and opens planner', (
-    new URL(guestChatState.url).pathname === '/chat' &&
-    markerSatisfied(guestChatState.text, ['Plan']) &&
-    Boolean(guestCookie?.value) &&
-    !guestChatState.hasAppError &&
-    !guestChatState.horizontalOverflow
-  ), {
-    finalUrl: guestChatState.url,
-    hasGuestCookie: Boolean(guestCookie?.value),
-    guestId: guestCookie?.value || null,
-    missingMarkers: missingMarkers(guestChatState.text, ['Plan']),
-    hasAppError: guestChatState.hasAppError,
-    horizontalOverflow: guestChatState.horizontalOverflow,
-  })
-  await guestPage.close().catch(() => {})
-
-  await checkPage({
-    context: guest,
-    name: 'guest can open saved trips surface',
-    path: '/saved',
-    markers: ['Trips'],
-    expectedPathnames: ['/saved'],
-  })
-  await checkPage({
-    context: guest,
-    name: 'guest can open account surface',
-    path: '/account',
-    markers: ['Account', ['Guest Traveler', 'Traveler']],
-    expectedPathnames: ['/account'],
-  })
-
+  let guest = null
   if (shouldCheckGuestApi) {
+    guest = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 })
+    const guestPage = await guest.newPage()
+    await gotoWithRetry(guestPage, `${baseUrl}/api/guest/start?id=${guestId}`)
+    const guestChatState = await readPageState(guestPage, ['Plan'])
+    const cookies = await guest.cookies(baseUrl)
+    const guestCookie = cookies.find((cookie) => cookie.name === 'globe_travel_guest')
+
+    record('guest start creates browser session and opens planner', (
+      new URL(guestChatState.url).pathname === '/chat' &&
+      markerSatisfied(guestChatState.text, ['Plan']) &&
+      Boolean(guestCookie?.value) &&
+      !guestChatState.hasAppError &&
+      !guestChatState.horizontalOverflow
+    ), {
+      finalUrl: guestChatState.url,
+      hasGuestCookie: Boolean(guestCookie?.value),
+      guestId: guestCookie?.value || null,
+      missingMarkers: missingMarkers(guestChatState.text, ['Plan']),
+      hasAppError: guestChatState.hasAppError,
+      horizontalOverflow: guestChatState.horizontalOverflow,
+    })
+    await guestPage.close().catch(() => {})
+
+    await checkPage({
+      context: guest,
+      name: 'guest can open saved trips surface',
+      path: '/saved',
+      markers: ['Trips'],
+      expectedPathnames: ['/saved'],
+    })
+    await checkPage({
+      context: guest,
+      name: 'guest can open account surface',
+      path: '/account',
+      markers: ['Account', ['Guest Traveler', 'Traveler']],
+      expectedPathnames: ['/account'],
+    })
+
     const apiPage = await guest.newPage()
     await gotoWithRetry(apiPage, `${baseUrl}/chat`)
     const apiResult = await apiPage.evaluate(async () => {
@@ -398,12 +398,18 @@ try {
 
     record('guest session can read owned trip list API', apiResult.ok && apiResult.isArray, apiResult)
   } else {
+    record('remote direct guest-start session creation skipped by default', true, {
+      enableWith: 'QA_ALLOW_REMOTE_GUEST_MUTATION=1',
+    })
+    record('remote guest saved and account surfaces skipped by default', true, {
+      enableWith: 'QA_ALLOW_REMOTE_GUEST_MUTATION=1',
+    })
     record('remote guest API mutation skipped by default', true, {
       enableWith: 'QA_ALLOW_REMOTE_GUEST_MUTATION=1',
     })
   }
 
-  await guest.close().catch(() => {})
+  await guest?.close().catch(() => {})
 } catch (error) {
   record('auth and guest access smoke completed without unexpected exception', false, {
     error: error instanceof Error ? error.message : String(error),

@@ -475,6 +475,7 @@ The next execution slice is Phase 1 launch-candidate maintenance and regional co
    - treat an Athens public or owner regression as a release blocker because it is the durable product proof point.
    - Latest May 20 check: the production viral-loop copy-feedback issue is closed; the Athens production share viral gate now passes `5/5`, including phone, desktop, copy feedback, native share payload, and safe remote guest-start behavior.
    - Latest May 21 check: the full production release gate passed `9/9` after the copy-feedback deployment, and in-app Browser verified a denied-copy recovery path that focuses and selects the public URL for manual copy.
+   - Latest May 21 auth harness check: production guest-start mutation is skipped by default unless explicitly enabled, local guest-start remains covered with cleanup, and the full production release gate passes `9/9` with the corrected non-mutating auth smoke.
 3. Clean-browser launch matrix:
    - run Browser as a first-time guest, returning owner, logged-out recipient, paid candidate, and recovery user;
    - cover phone, tablet, laptop, desktop, and wide desktop for the primary public and protected routes;
