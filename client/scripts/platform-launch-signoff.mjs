@@ -20,6 +20,9 @@ const productionEvidence =
 const riskRegister =
   process.env.QA_LAUNCH_RISK_REGISTER ||
   'qa/launch-risk-register.json'
+const rollbackPlan =
+  process.env.QA_LAUNCH_ROLLBACK_PLAN ||
+  'qa/launch-rollback-plan.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 
 const requiredDocs = [
@@ -447,6 +450,67 @@ async function checkRiskRegister() {
   })
 }
 
+async function checkRollbackPlan() {
+  let plan
+  try {
+    plan = await readJson(rollbackPlan)
+  } catch (error) {
+    addCheck('launch rollback plan is readable', false, {
+      artifact: rollbackPlan,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('launch rollback plan is readable', true, {
+    artifact: rollbackPlan,
+    reviewedAt: plan.reviewedAt || null,
+  })
+
+  checkEvidenceFreshness('launch rollback plan', dateOnly(plan.reviewedAt))
+
+  const production = plan.production || {}
+  addCheck('launch rollback plan identifies production targets', (
+    production.alias === baseUrl &&
+    hasMeaningfulText(production.healthEndpoint) &&
+    hasMeaningfulText(production.knownGoodDeployment?.commit) &&
+    hasMeaningfulText(production.knownGoodDeployment?.url)
+  ), {
+    expectedAlias: baseUrl,
+    alias: production.alias || null,
+    healthEndpoint: production.healthEndpoint || null,
+    knownGoodDeployment: production.knownGoodDeployment || null,
+  })
+
+  const commands = Array.isArray(plan.verificationCommands) ? plan.verificationCommands : []
+  const commandText = commands.join('\n')
+  const requiredCommandMarkers = [
+    'npm run qa:release-production',
+    'npm run qa:launch-signoff',
+  ]
+  const missingCommandMarkers = requiredCommandMarkers.filter((marker) => !commandText.includes(marker))
+  addCheck('launch rollback plan includes post-rollback verification commands', missingCommandMarkers.length === 0, {
+    requiredCommandMarkers,
+    missingCommandMarkers,
+    commandCount: commands.length,
+  })
+
+  const steps = Array.isArray(plan.rollbackSteps) ? plan.rollbackSteps : []
+  const stepText = steps.join('\n').toLowerCase()
+  const requiredStepMarkers = [
+    'identify',
+    'promote',
+    'production',
+    'health',
+    'record',
+  ]
+  const missingStepMarkers = requiredStepMarkers.filter((marker) => !stepText.includes(marker))
+  addCheck('launch rollback plan has actionable restore steps', steps.length >= 5 && missingStepMarkers.length === 0, {
+    stepCount: steps.length,
+    missingStepMarkers,
+  })
+}
+
 await checkProductionHealth()
 await checkRequiredDocs()
 await checkReleaseArtifact()
@@ -454,6 +518,7 @@ await checkVisualArtifact()
 await checkStripeArtifacts()
 await checkProductionEvidence()
 await checkRiskRegister()
+await checkRollbackPlan()
 
 const failures = checks.filter((check) => !check.ok)
 const summary = {
@@ -463,6 +528,7 @@ const summary = {
   visualArtifact,
   productionEvidence,
   riskRegister,
+  rollbackPlan,
   maxEvidenceAgeDays,
   checked: checks.length,
   passed: checks.length - failures.length,

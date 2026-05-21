@@ -137,6 +137,8 @@ Patch forward when:
 5. Record the rollback deployment id, reason, and verification in `RELEASE_READINESS_MEMO.md`.
 6. Create a follow-up fix branch from `main`.
 
+Launch signoff also reads `qa/launch-rollback-plan.json`. Keep that file current whenever the known-good production deployment changes; `npm run qa:launch-signoff` fails if the rollback plan is stale, does not identify the production alias and known-good deployment, lacks restore steps, or omits post-rollback production and launch-signoff verification commands.
+
 ## Monitoring Targets
 
 GitHub Actions production release gate:

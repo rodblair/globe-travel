@@ -527,6 +527,8 @@ Scheduled production release checkpoint: `.github/workflows/production-release-g
 
 Launch-blocker checkpoint: `qa/launch-risk-register.json` is now the machine-readable no-open-P0/P1 source for launch signoff. `npm run qa:launch-signoff` fails if release-candidate evidence, visual evidence, or the risk register is older than `QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS` days, if any P0/P1 item is not closed, or if any open P2 lacks owner, target month, and meaningful accepted-risk notes.
 
+Rollback checkpoint: `qa/launch-rollback-plan.json` is now part of launch signoff. The gate fails if rollback evidence is stale, does not identify the production alias and known-good deployment, lacks restore steps, or omits post-rollback `qa:release-production` and `qa:launch-signoff` verification commands.
+
 ## Completion Definition
 
 This active goal is complete only when Globe.travel has:
