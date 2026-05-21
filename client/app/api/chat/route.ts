@@ -80,7 +80,7 @@ const PLANNER_PLACE_OVERRIDES: PlannerPlaceOverride[] = [
   { pattern: /\bmaat\b/i, name: 'MAAT', country: 'Portugal', country_code: 'PT', latitude: 38.69578, longitude: -9.19468, manualId: 'manual:lisbon:maat' },
   { pattern: /[aà] margem/i, name: 'À Margem', country: 'Portugal', country_code: 'PT', latitude: 38.69562, longitude: -9.19632, manualId: 'manual:lisbon:a-margem' },
   { pattern: /lx factory/i, name: 'LX Factory', country: 'Portugal', country_code: 'PT', latitude: 38.70333, longitude: -9.17844, manualId: 'manual:lisbon:lx-factory' },
-  { pattern: /time out market|mercado da ribeira/i, name: 'Time Out Market Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.70697, longitude: -9.14562, manualId: 'manual:lisbon:time-out-market' },
+  { pattern: /time out market lisboa|time out market lisbon|mercado da ribeira/i, name: 'Time Out Market Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.70697, longitude: -9.14562, manualId: 'manual:lisbon:time-out-market' },
   { pattern: /carmo convent|convento do carmo/i, name: 'Carmo Convent', country: 'Portugal', country_code: 'PT', latitude: 38.71207, longitude: -9.14071, manualId: 'manual:lisbon:carmo-convent' },
   { pattern: /manteigaria/i, name: 'Manteigaria', country: 'Portugal', country_code: 'PT', latitude: 38.71084, longitude: -9.14307, manualId: 'manual:lisbon:manteigaria' },
   { pattern: /dear breakfast/i, name: 'Dear Breakfast Chiado', country: 'Portugal', country_code: 'PT', latitude: 38.71082, longitude: -9.14363, manualId: 'manual:lisbon:dear-breakfast-chiado' },

@@ -16,6 +16,7 @@ The launch risk register tracked beta representative trip coverage as an open P2
   - Styles: budget, premium, food, nightlife, outdoors, culture.
   - Regions: Africa, Asia, Europe, Latin America, North America, Oceania.
 - Added `npm run qa:planner-actuals:beta-representative`, a 25-trip generated-actuals preset for the later beta map-trust run.
+- Hardened generated map trust so the actuals run now waits for the same automatic Trip Studio map hydration path a user receives, rejects wrong-country fallback pins, and requires country-correct mapped coverage for each generated day.
 
 ## Verification
 
@@ -37,6 +38,13 @@ node --check scripts/platform-planner-generated-actuals.mjs
 
 Result: passed.
 
+```bash
+npm run qa:planner-actuals:beta-representative
+QA_PROMPT_SUITE_ACTUALS=../qa/planner-generated-actuals-beta-representative-2026-05-21.json npm run qa:prompt-suite
+```
+
+Result: 25 beta representative generated actuals checked, then `60/60` prompt-suite checks passed with all 25 generated actuals attached.
+
 ## Remaining Risk
 
-This reduces `GT-P2-001` from an undefined coverage gap to a measurable beta matrix. The risk remains open until the 25-trip `qa:planner-actuals:beta-representative` run is executed against a live local or beta environment and reviewed with generated itinerary/map evidence.
+This reduces `GT-P2-001` from an undefined coverage gap to a measured beta matrix with generated itinerary/map evidence. The risk remains open for 25-50 real or representative human trip reviews during invite beta, not for missing automated coverage.

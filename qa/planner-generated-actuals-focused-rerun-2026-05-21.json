@@ -1,0 +1,439 @@
+[
+  {
+    "id": "crete-5-day-family-beaches",
+    "shareSlug": "5tpoj6094r",
+    "tripId": "da7c752a-c3ef-431a-9e51-157255fe5a61",
+    "tripTitle": "5 Days in Crete",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Chania Old Town & Harbor",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Tamam Restaurant",
+            "type": "meal",
+            "placeName": "Tamam Restaurant",
+            "latitude": 35.5168,
+            "longitude": 24.01613
+          },
+          {
+            "title": "Maritime Museum of Crete",
+            "type": "activity",
+            "placeName": "Maritime Museum of Crete",
+            "latitude": 35.51865,
+            "longitude": 24.01512
+          },
+          {
+            "title": "Salis",
+            "type": "meal",
+            "placeName": "Salis",
+            "latitude": 35.51904,
+            "longitude": 24.02141
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Firka Venetian Fortress",
+            "type": "activity"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1231
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "West Crete Beach Day",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Elafonissi Beach",
+            "type": "activity",
+            "placeName": "Elafonissi Beach",
+            "latitude": 35.27179,
+            "longitude": 23.54086
+          },
+          {
+            "title": "Kosmos Fish Tavern",
+            "type": "meal",
+            "placeName": "Kosmos Fish Tavern",
+            "latitude": 35.27122,
+            "longitude": 23.54215
+          },
+          {
+            "title": "Chrisoskalitissa Monastery",
+            "type": "activity",
+            "placeName": "Chrisoskalitissa Monastery",
+            "latitude": 35.31191,
+            "longitude": 23.53289
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Pallas",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5681
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Knossos & Heraklion",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Knossos Palace",
+            "type": "activity",
+            "placeName": "Knossos Palace",
+            "latitude": 35.29862,
+            "longitude": 25.1631
+          },
+          {
+            "title": "Peskesi",
+            "type": "meal",
+            "placeName": "Peskesi",
+            "latitude": 35.34011,
+            "longitude": 25.13262
+          },
+          {
+            "title": "Heraklion Archaeological Museum",
+            "type": "activity",
+            "placeName": "Heraklion Archaeological Museum",
+            "latitude": 35.33901,
+            "longitude": 25.13674
+          },
+          {
+            "title": "Parasties Urban Kitchen",
+            "type": "meal",
+            "placeName": "Parasties Urban Kitchen",
+            "latitude": 35.34053,
+            "longitude": 25.13426
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7068
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Rethymno Stroll & Beach",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Fortezza of Rethymno",
+            "type": "activity",
+            "placeName": "Fortezza of Rethymno",
+            "latitude": 35.37118,
+            "longitude": 24.47133
+          },
+          {
+            "title": "Avli",
+            "type": "meal",
+            "placeName": "Avli",
+            "latitude": 35.36934,
+            "longitude": 24.47366
+          },
+          {
+            "title": "Rethymno Beach",
+            "type": "activity",
+            "placeName": "Rethymno Beach",
+            "latitude": 35.36592,
+            "longitude": 24.48588
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Prima Plora",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2048
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Agios Nikolaos & Mirabello",
+        "itemCount": 4,
+        "mappedItemCount": 2,
+        "mappedStops": [
+          {
+            "title": "Lake Voulismeni",
+            "type": "activity",
+            "placeName": "Lake Voulismeni",
+            "latitude": 35.19113,
+            "longitude": 25.71326
+          },
+          {
+            "title": "Piato",
+            "type": "meal",
+            "placeName": "Piato",
+            "latitude": 35.19064,
+            "longitude": 25.71687
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Almyros Beach",
+            "type": "activity"
+          },
+          {
+            "title": "Karnagio",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 2,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          697
+        ]
+      }
+    ]
+  },
+  {
+    "id": "madrid-seville-5-day-multi-city",
+    "shareSlug": "ufxhyjj8by",
+    "tripId": "00cea0df-3821-4401-8ebc-23c02cdccb77",
+    "tripTitle": "5 Days in Madrid & Seville",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Madrid Classics",
+        "itemCount": 4,
+        "mappedItemCount": 1,
+        "mappedStops": [
+          {
+            "title": "Museo del Prado",
+            "type": "activity",
+            "placeName": "Museo Nacional del Prado",
+            "latitude": 40.41378,
+            "longitude": -3.69213
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "El Brillante",
+            "type": "meal"
+          },
+          {
+            "title": "Parque de El Retiro",
+            "type": "activity"
+          },
+          {
+            "title": "Casa Revuelta",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 1,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      },
+      {
+        "dayIndex": 2,
+        "title": "Madrid Art & Old Town",
+        "itemCount": 4,
+        "mappedItemCount": 2,
+        "mappedStops": [
+          {
+            "title": "Mercado de San Miguel",
+            "type": "meal",
+            "placeName": "Plaza De San Miguel",
+            "latitude": 40.415474,
+            "longitude": -3.709203
+          },
+          {
+            "title": "Plaza Mayor",
+            "type": "activity",
+            "placeName": "Plaza Mayor",
+            "latitude": 40.415812,
+            "longitude": -3.707338
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Museo Nacional Centro de Arte Reina Sofía",
+            "type": "activity"
+          },
+          {
+            "title": "Corral de la Morería",
+            "type": "activity"
+          }
+        ],
+        "uniqueMappedStopCount": 2,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          246
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Train to Seville",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Madrid Puerta de Atocha",
+            "type": "transport",
+            "placeName": "Madrid-Puerta de Atocha-Almudena Grandes",
+            "latitude": 40.40659,
+            "longitude": -3.68919
+          },
+          {
+            "title": "Bodeguita Romero",
+            "type": "meal",
+            "placeName": "Callejón Del Romero",
+            "latitude": 40.430266,
+            "longitude": -3.871985
+          },
+          {
+            "title": "Real Alcázar de Sevilla",
+            "type": "activity",
+            "placeName": "Real Alcázar de Sevilla",
+            "latitude": 37.38309,
+            "longitude": -5.99023
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "La Brunilda Tapas",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      },
+      {
+        "dayIndex": 4,
+        "title": "Seville Heritage & Flamenco",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Seville Cathedral",
+            "type": "activity",
+            "placeName": "Seville Cathedral",
+            "latitude": 37.38583,
+            "longitude": -5.99311
+          },
+          {
+            "title": "Casa Morales",
+            "type": "meal",
+            "placeName": "Casa Morales",
+            "latitude": 37.38683,
+            "longitude": -5.99573
+          },
+          {
+            "title": "Plaza de España",
+            "type": "activity",
+            "placeName": "Plaza De España",
+            "latitude": 40.423495,
+            "longitude": -3.713445
+          },
+          {
+            "title": "Casa de la Memoria",
+            "type": "activity",
+            "placeName": "Casa de la Memoria",
+            "latitude": 37.39177,
+            "longitude": -5.99265
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      },
+      {
+        "dayIndex": 5,
+        "title": "Triana & Departure",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Centro Cerámica Triana",
+            "type": "activity",
+            "placeName": "Centro Cerámica Triana",
+            "latitude": 37.38564,
+            "longitude": -6.00167
+          },
+          {
+            "title": "Las Golondrinas",
+            "type": "meal",
+            "placeName": "Las Golondrinas",
+            "latitude": 37.38434,
+            "longitude": -6.00304
+          },
+          {
+            "title": "Metropol Parasol",
+            "type": "activity",
+            "placeName": "Metropol Parasol",
+            "latitude": 37.39322,
+            "longitude": -5.99168
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2106
+        ]
+      }
+    ]
+  }
+]

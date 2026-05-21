@@ -15,7 +15,7 @@ type CanonicalPlaceOverride = {
   manualId?: string
 }
 
-const WALK_ROUTE_MAX_METERS = 8500
+const ROUTE_MAX_METERS = 25000
 
 const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   ...REGIONAL_PLACE_OVERRIDES,
@@ -34,7 +34,7 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /belém tower|belem tower/i, name: 'Belém Tower', country: 'Portugal', country_code: 'PT', latitude: 38.69158, longitude: -9.21604, manualId: 'manual:lisbon:belem-tower' },
   { pattern: /\bmaat\b/i, name: 'MAAT', country: 'Portugal', country_code: 'PT', latitude: 38.69578, longitude: -9.19468, manualId: 'manual:lisbon:maat' },
   { pattern: /ponto final/i, name: 'Ponto Final', country: 'Portugal', country_code: 'PT', latitude: 38.68495, longitude: -9.14718, manualId: 'manual:almada:ponto-final' },
-  { pattern: /time out market/i, name: 'Time Out Market Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.70697, longitude: -9.14562, manualId: 'manual:lisbon:time-out-market' },
+  { pattern: /time out market lisboa|time out market lisbon|mercado da ribeira/i, name: 'Time Out Market Lisboa', country: 'Portugal', country_code: 'PT', latitude: 38.70697, longitude: -9.14562, manualId: 'manual:lisbon:time-out-market' },
   { pattern: /by the wine/i, name: 'By The Wine', country: 'Portugal', country_code: 'PT', latitude: 38.71047, longitude: -9.14355, manualId: 'manual:lisbon:by-the-wine' },
   { pattern: /pink street|rua nova do carvalho/i, name: 'Pink Street', country: 'Portugal', country_code: 'PT', latitude: 38.70728, longitude: -9.14323, manualId: 'manual:lisbon:pink-street' },
   { pattern: /hello,?\s*kristof/i, name: 'Hello, Kristof', country: 'Portugal', country_code: 'PT', latitude: 38.71007, longitude: -9.15159, manualId: 'manual:lisbon:hello-kristof' },
@@ -353,13 +353,17 @@ async function computeAndStoreDayRoute(
     return false
   }
 
-  const route = await directionsGeojson(coords, token, mode)
+  const mappedRoute = await directionsGeojson(coords, token, mode)
+  const route =
+    mappedRoute?.distance_m != null && mappedRoute.distance_m > 0 && mappedRoute.distance_m <= ROUTE_MAX_METERS
+      ? mappedRoute
+      : buildStraightLineRoute(coords)
   if (!route) {
     await supabase.from('trip_routes').delete().eq('trip_day_id', tripDayId).eq('mode', mode)
     return false
   }
 
-  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > WALK_ROUTE_MAX_METERS) {
+  if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > ROUTE_MAX_METERS) {
     await supabase.from('trip_routes').delete().eq('trip_day_id', tripDayId).eq('mode', mode)
     return false
   }
@@ -380,6 +384,41 @@ async function computeAndStoreDayRoute(
 
   if (routeErr) throw new Error(routeErr.message)
   return true
+}
+
+function buildStraightLineRoute(coords: Array<{ latitude: number; longitude: number }>) {
+  if (coords.length < 2) return null
+
+  let distance_m = 0
+  for (let index = 1; index < coords.length; index++) {
+    distance_m += haversineKm(
+      coords[index - 1].latitude,
+      coords[index - 1].longitude,
+      coords[index].latitude,
+      coords[index].longitude
+    ) * 1000
+  }
+
+  const roundedDistance = Math.round(distance_m)
+  if (roundedDistance <= 0 || roundedDistance > ROUTE_MAX_METERS) return null
+
+  return {
+    geojson: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: { fallback: true, source: 'straight-line' },
+          geometry: {
+            type: 'LineString',
+            coordinates: coords.map((coord) => [coord.longitude, coord.latitude]),
+          },
+        },
+      ],
+    },
+    distance_m: roundedDistance,
+    duration_s: Math.round(roundedDistance / 1.25),
+  }
 }
 
 export async function POST(_req: Request, ctx: { params: Promise<{ id: string }> }) {
@@ -425,11 +464,6 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
   let routeDays = 0
 
   for (const day of tripDays || []) {
-    const dayFallbackPlace =
-      destinationContext && day.title
-        ? await geocodePlace(`${day.title}, ${destinationContext}`, token, geocodeOptions)
-        : null
-
     const { data: items, error: itemsErr } = await supabase
       .from('trip_items')
       .select('id,title,type,place_id,place:places(id,name,country,latitude,longitude)')
@@ -503,49 +537,17 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
         break
       }
 
-      if (!resolvedPlace && dayFallbackPlace) {
-        const { data: place, error: placeErr } = await supabase
-          .from('places')
-          .upsert(
-            {
-              name: dayFallbackPlace.name,
-              country: dayFallbackPlace.country,
-              country_code: dayFallbackPlace.country_code || null,
-              latitude: dayFallbackPlace.latitude,
-              longitude: dayFallbackPlace.longitude,
-              mapbox_id: dayFallbackPlace.mapbox_place_id,
-            },
-            { onConflict: 'mapbox_id' }
-          )
-          .select('id')
-          .single()
+      if (!resolvedPlace?.id) {
+        if (currentDistanceKm != null && currentDistanceKm > 30 && item.place_id) {
+          const { error: clearErr } = await supabase
+            .from('trip_items')
+            .update({ place_id: null, updated_at: new Date().toISOString() })
+            .eq('id', item.id)
 
-        if (placeErr) return NextResponse.json({ error: placeErr.message }, { status: 500 })
-        resolvedPlace = place
+          if (clearErr) return NextResponse.json({ error: clearErr.message }, { status: 500 })
+        }
+        continue
       }
-
-      if (!resolvedPlace && destinationPlace) {
-        const { data: place, error: placeErr } = await supabase
-          .from('places')
-          .upsert(
-            {
-              name: destinationPlace.name,
-              country: destinationPlace.country,
-              country_code: destinationPlace.country_code || null,
-              latitude: destinationPlace.latitude,
-              longitude: destinationPlace.longitude,
-              mapbox_id: destinationPlace.mapbox_place_id,
-            },
-            { onConflict: 'mapbox_id' }
-          )
-          .select('id')
-          .single()
-
-        if (placeErr) return NextResponse.json({ error: placeErr.message }, { status: 500 })
-        resolvedPlace = place
-      }
-
-      if (!resolvedPlace?.id) continue
 
       const { error: updateErr } = await supabase
         .from('trip_items')

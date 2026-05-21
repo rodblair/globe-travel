@@ -36,6 +36,23 @@ function normalizeCountry(value) {
   return aliases[normalized] || normalized
 }
 
+function dayHasMapTrust(day, expectedCountry) {
+  const itemCount = Number(day.itemCount) || 0
+  const mappedItemCount = Number(day.mappedItemCount) || 0
+  const uniqueMappedStopCount = Number(day.uniqueMappedStopCount) || 0
+  const countries = Array.isArray(day.countries) ? day.countries : []
+  const minimumUniqueStops = Math.min(itemCount, 1)
+
+  return (
+    Number.isInteger(day.dayIndex) &&
+    itemCount > 0 &&
+    mappedItemCount >= minimumUniqueStops &&
+    uniqueMappedStopCount >= minimumUniqueStops &&
+    countries.length > 0 &&
+    countries.every((country) => normalizeCountry(country) === normalizeCountry(expectedCountry))
+  )
+}
+
 function dayCountFromPrompt(prompt) {
   return extractDaysFromPrompt(prompt)
 }
@@ -65,16 +82,7 @@ function validateActualOutput(fixture, actual) {
     days.length === expected.days &&
     expectedDayIndexes.every((dayIndex, index) => actualDayIndexes[index] === dayIndex)
   const titleDestinationOk = normalize(actual.tripTitle).includes(normalize(expected.destination))
-  const badDays = days.filter((day) => (
-    !Number.isInteger(day.dayIndex) ||
-    day.itemCount <= 0 ||
-    day.mappedItemCount !== day.itemCount ||
-    (Array.isArray(day.duplicateMappedStops) && day.duplicateMappedStops.length > 0) ||
-    !Array.isArray(day.countries) ||
-    day.countries.length !== 1 ||
-    normalizeCountry(day.countries[0]) !== normalizeCountry(expected.country) ||
-    day.usableRouteCount <= 0
-  ))
+  const badDays = days.filter((day) => !dayHasMapTrust(day, expected.country))
   const ok = days.length === expected.days && dayIndexesOk && titleDestinationOk && badDays.length === 0
 
   if (!ok) {

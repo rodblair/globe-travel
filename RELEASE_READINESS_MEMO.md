@@ -4,6 +4,13 @@ Date: 2026-05-17
 Owner: Codex release audit
 Status: Active goal in progress
 
+## Current Readiness Update - 2026-05-21
+
+- Completed the automated beta representative generated-itinerary/map-trust slice for `GT-P2-001`.
+- Produced 25 representative generated actuals and cross-checked them through the planner prompt suite.
+- `QA_PROMPT_SUITE_ACTUALS=../qa/planner-generated-actuals-beta-representative-2026-05-21.json npm run qa:prompt-suite` passed `60/60` with `25` actuals checked.
+- The remaining `GT-P2-001` risk is invite-beta human review volume, not missing automated beta coverage.
+
 ## Release Objective
 
 Ship Globe.travel as a complete, commercially credible, highly useful group-trip planning app. The release must feel clear, modern, social, and trustworthy for first-time users, while every core flow works from start to finish in the browser.

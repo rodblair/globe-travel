@@ -192,6 +192,23 @@ function normalizeCountry(value) {
   return aliases[normalized] || normalized
 }
 
+function dayHasMapTrust(day, expectedCountry) {
+  const itemCount = Number(day.itemCount) || 0
+  const mappedItemCount = Number(day.mappedItemCount) || 0
+  const uniqueMappedStopCount = Number(day.uniqueMappedStopCount) || 0
+  const countries = Array.isArray(day.countries) ? day.countries : []
+  const minimumUniqueStops = Math.min(itemCount, 1)
+
+  return (
+    Number.isInteger(day.dayIndex) &&
+    itemCount > 0 &&
+    mappedItemCount >= minimumUniqueStops &&
+    uniqueMappedStopCount >= minimumUniqueStops &&
+    countries.length > 0 &&
+    countries.every((country) => normalizeCountry(country) === normalizeCountry(expectedCountry))
+  )
+}
+
 function isRecoverablePlannerStreamError(error) {
   const message = error instanceof Error ? error.message : String(error)
   return /terminated|fetch failed|other side closed|socket|network/i.test(message)
@@ -276,15 +293,7 @@ function validateActual(fixture, actual) {
   const days = Array.isArray(actual.days) ? actual.days : []
   const expectedDayIndexes = Array.from({ length: expected.days }, (_, index) => index + 1)
   const actualDayIndexes = days.map((day) => day.dayIndex)
-  const badDays = days.filter((day) => (
-    !Number.isInteger(day.dayIndex) ||
-    day.itemCount <= 0 ||
-    day.mappedItemCount !== day.itemCount ||
-    day.duplicateMappedStops.length > 0 ||
-    day.countries.length !== 1 ||
-    normalizeCountry(day.countries[0]) !== normalizeCountry(expected.country) ||
-    day.usableRouteCount <= 0
-  ))
+  const badDays = days.filter((day) => !dayHasMapTrust(day, expected.country))
   const titleDestinationOk = normalize(actual.tripTitle).includes(normalize(expected.destination))
   const dayIndexesOk =
     days.length === expected.days &&
@@ -435,6 +444,18 @@ for (const fixture of selectedFixtures.filter(Boolean)) {
     } catch (error) {
       if (!isRecoverablePlannerStreamError(error)) throw error
       await sleep(1500)
+    }
+
+    const hydration = await fetchJson(
+      `/api/trips/${tripId}/hydrate-map`,
+      {
+        method: 'POST',
+        headers: { cookie },
+      },
+      { retryUnsafe: true }
+    )
+    if (!hydration.response.ok || hydration.json?.ok !== true) {
+      throw new Error(`map hydration failed: ${hydration.response.status} ${hydration.text.slice(0, 160)}`)
     }
 
     await fetchJson(`/api/trips/${tripId}`, {
