@@ -59,3 +59,40 @@ No failures.
 - Set `QA_RELEASE_INCLUDE_SHARE_MULTI_ITINERARY=1` to include the multi-itinerary public share Browser loop with disposable public trips, social-card image checks, recipient feedback, owner readback, and feedback refresh.
 - Set `QA_RELEASE_INCLUDE_STRIPE_CHECKOUT=1` to include hosted Stripe Checkout browser completion with test-mode Stripe objects.
 - Set `QA_RELEASE_INCLUDE_STRIPE_PORTAL=1` to include hosted Stripe billing portal browser completion with test-mode Stripe objects.
+
+## Postdeploy Verification
+
+This release-candidate orchestrator change deployed to Vercel production because it changed `client/scripts/platform-release-candidate-smoke.mjs`.
+
+Deployed commit:
+
+```text
+a7a14162fdbaecaff6307642c0fbcc282d72121f
+```
+
+Production health stayed green during and after deployment:
+
+- Status: `ok`
+- Checks: `11/11`
+- Deployment URL: `globe-travel-gw5fmpomm-rodney-blairs-projects.vercel.app`
+
+Postdeploy production gate:
+
+```bash
+QA_BASE_URL=https://globe-travel-two.vercel.app \
+QA_SHARE_SLUG=x3m2c8cnws \
+QA_INCLUDE_PRODUCTION_VISUAL=0 \
+npm run qa:release-production
+```
+
+Result:
+
+- Overall production gate: `9/9`
+- Production ops: `3/3`
+- Route smoke: `8/8`
+- Trip Studio recovery UI: `1/1`
+- Auth and guest access: `13/13`
+- Commercial fail-safe checks: `4/4`
+- Athens public share and map integrity: `5/5`
+- Public share viral loop: `5/5`
+- Prompt suite with production actuals: `56/56`
