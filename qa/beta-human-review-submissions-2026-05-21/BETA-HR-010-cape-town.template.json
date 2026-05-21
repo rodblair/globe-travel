@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-010",
+  "sourceActualId": "cape-town-5-day-outdoors-food",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Cape+Town+outdoors+and+food+trip+for+friends.",
+  "viewport": "390x844",
+  "device": "phone",
+  "prompt": "Plan a 5-day Cape Town outdoors and food trip for friends.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-010. Replace blank fields and null scorecard ratings before intake."
+}

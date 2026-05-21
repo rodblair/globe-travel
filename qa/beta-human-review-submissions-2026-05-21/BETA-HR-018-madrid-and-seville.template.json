@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-018",
+  "sourceActualId": "madrid-seville-5-day-multi-city",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Madrid+and+Seville+trip+with+food%2C+culture%2C+and+intercity+flow.",
+  "viewport": "390x844",
+  "device": "phone",
+  "prompt": "Plan a 5-day Madrid and Seville trip with food, culture, and intercity flow.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-018. Replace blank fields and null scorecard ratings before intake."
+}

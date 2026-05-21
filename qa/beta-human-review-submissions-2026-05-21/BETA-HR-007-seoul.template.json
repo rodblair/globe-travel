@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-007",
+  "sourceActualId": "seoul-5-day-food-shopping",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Seoul+food+and+shopping+trip+for+friends.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 5-day Seoul food and shopping trip for friends.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-007. Replace blank fields and null scorecard ratings before intake."
+}

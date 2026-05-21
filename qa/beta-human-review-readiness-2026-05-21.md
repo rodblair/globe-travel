@@ -13,6 +13,7 @@ Status: pass
 - Completed reviews: 0
 - Requested completed-review threshold: 0
 - Reviewer packets: 25 written to `qa/beta-human-review-packets-2026-05-21`
+- Submission templates: 25 written to `qa/beta-human-review-submissions-2026-05-21`
 
 ## Coverage
 
@@ -95,6 +96,6 @@ Unresolved P0/P1 findings:
 ## Notes
 
 - This gate does not pretend the invite beta has happened. With the default `QA_BETA_REVIEW_MIN_COMPLETED=0`, it proves the review plan, matrix, and scorecard are operationally ready.
-- Run `QA_BETA_REVIEW_WRITE_PACKETS=1 npm run qa:beta-review-readiness` to generate reviewer-ready packets and a machine-readable packet manifest.
+- Run `QA_BETA_REVIEW_WRITE_PACKETS=1 npm run qa:beta-review-readiness` to generate reviewer-ready packets, one JSON submission template per planned review, and a machine-readable packet manifest.
 - For public-launch approval, run with `QA_BETA_REVIEW_MIN_COMPLETED=25` or higher and keep unresolved P0/P1 findings at zero.
 - Completed review records must include reviewer role, route or share URL, viewport, device, completed date, outcome notes, complete 1-5 scorecard ratings, and findings with severity, status, surface, title, and notes.

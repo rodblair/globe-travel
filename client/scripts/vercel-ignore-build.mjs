@@ -2,6 +2,8 @@ import { execFileSync } from 'node:child_process'
 
 const BUILD_SKIP_SAFE_PATTERNS = [
   /^\.github\/workflows\//,
+  /^client\/scripts\/platform-[^/]+\.mjs$/,
+  /^client\/scripts\/vercel-ignore-build\.mjs$/,
   /^qa\//,
   /^README\.md$/,
   /^OPERATIONS_RUNBOOK\.md$/,

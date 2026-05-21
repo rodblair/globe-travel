@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-005",
+  "sourceActualId": "new-york-3-day-repeat-visitors",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 3-day New York trip for repeat visitors who want neighborhoods, food, and fresh ideas.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-005. Replace blank fields and null scorecard ratings before intake."
+}

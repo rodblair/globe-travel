@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-016",
+  "sourceActualId": "singapore-3-day-family-food",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Singapore+family+food+trip+with+easy+transit+and+heat-aware+pacing.",
+  "viewport": "390x844",
+  "device": "phone",
+  "prompt": "Plan a 3-day Singapore family food trip with easy transit and heat-aware pacing.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-016. Replace blank fields and null scorecard ratings before intake."
+}

@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-017",
+  "sourceActualId": "dubai-3-day-luxury-family",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+luxury+Dubai+family+trip+with+indoor+options+and+clear+logistics.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 3-day luxury Dubai family trip with indoor options and clear logistics.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-017. Replace blank fields and null scorecard ratings before intake."
+}

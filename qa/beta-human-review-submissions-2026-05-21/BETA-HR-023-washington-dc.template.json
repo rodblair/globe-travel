@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-023",
+  "sourceActualId": "washington-dc-3-day-museums-family",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Washington+DC+museums+trip+for+a+family.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 3-day Washington DC museums trip for a family.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-023. Replace blank fields and null scorecard ratings before intake."
+}

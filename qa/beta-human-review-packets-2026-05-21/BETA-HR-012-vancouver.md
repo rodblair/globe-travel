@@ -51,6 +51,10 @@ Record a 1-5 rating for every field:
 - [ ] shareFeedbackOutcome
 - [ ] findings
 
+## Submission Template
+
+Fill the matching JSON template after the review: `qa/beta-human-review-submissions-2026-05-21/BETA-HR-012-vancouver.template.json`
+
 ## Findings Format
 
 Use severities P0, P1, P2, or P3 and statuses open, closed, or accepted-risk. Public launch is blocked by any unresolved P0/P1 finding.

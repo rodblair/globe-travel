@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-011",
+  "sourceActualId": "sydney-4-day-beaches-neighborhoods",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Sydney+trip+for+beaches%2C+neighborhoods%2C+and+easy+food+stops.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 4-day Sydney trip for beaches, neighborhoods, and easy food stops.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-011. Replace blank fields and null scorecard ratings before intake."
+}

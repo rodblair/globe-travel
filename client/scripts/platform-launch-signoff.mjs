@@ -446,6 +446,31 @@ function completedBetaReviewEvidenceIssues(review) {
   return issues
 }
 
+function betaSubmissionTemplateIssues(template, packet) {
+  const issues = []
+
+  if (!template || typeof template !== 'object' || Array.isArray(template)) {
+    return ['template is not an object']
+  }
+  if (template.id !== packet.id) issues.push('id must match packet')
+  if (template.prompt !== packet.prompt) issues.push('prompt must match packet')
+  if (template.device !== packet.device) issues.push('device must match packet')
+  if (template.viewport !== packet.viewport) issues.push('viewport must match packet')
+  if (template.sourceActualId !== packet.sourceActualId) issues.push('sourceActualId must match packet')
+  if (!isLaunchHttpUrl(template.routeOrShareUrl)) issues.push('routeOrShareUrl must be prefilled with http(s) start URL')
+  if (!Array.isArray(template.findings)) issues.push('findings must be an array')
+  if (!template.scorecard || typeof template.scorecard !== 'object' || Array.isArray(template.scorecard)) {
+    issues.push('scorecard must be an object')
+  } else {
+    const missingScorecardFields = hasAll(Object.keys(template.scorecard), requiredBetaReviewScorecardFields)
+    if (missingScorecardFields.length > 0) {
+      issues.push(`scorecard missing fields: ${missingScorecardFields.join(', ')}`)
+    }
+  }
+
+  return issues
+}
+
 async function checkProductionHealth() {
   const url = `${baseUrl}/api/health`
   let response
@@ -1006,6 +1031,39 @@ async function checkBetaHumanReviewRegister() {
       packetRecordCount: packets.length,
       missingPacketIds,
       badPacketFiles,
+    })
+
+    const submissionTemplateFiles = await Promise.all(packets.map(async (packet) => {
+      let template = null
+      let parseError = null
+      if (hasMeaningfulText(packet.submissionTemplatePath)) {
+        try {
+          template = await readJson(packet.submissionTemplatePath)
+        } catch (error) {
+          parseError = error instanceof Error ? error.message : String(error)
+        }
+      }
+      const issues = parseError
+        ? [`template is not readable JSON: ${parseError}`]
+        : betaSubmissionTemplateIssues(template, packet)
+      return {
+        id: packet.id || '(missing id)',
+        path: packet.submissionTemplatePath || null,
+        exists: hasMeaningfulText(packet.submissionTemplatePath) ? await fileExists(packet.submissionTemplatePath) : false,
+        issues,
+      }
+    }))
+    const badSubmissionTemplateFiles = submissionTemplateFiles.filter((template) => !template.exists || template.issues.length > 0)
+
+    addCheck('beta human review submission templates cover every planned review', (
+      Number(packetManifest.submissionTemplateCount) >= plannedReviews.length &&
+      hasMeaningfulText(packetManifest.submissionTemplateDir) &&
+      badSubmissionTemplateFiles.length === 0
+    ), {
+      plannedReviewCount: plannedReviews.length,
+      submissionTemplateDir: packetManifest.submissionTemplateDir || null,
+      submissionTemplateCount: packetManifest.submissionTemplateCount ?? null,
+      badSubmissionTemplateFiles,
     })
   }
 

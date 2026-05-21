@@ -11,6 +11,8 @@ const writeReviewerPackets = ['1', 'true', 'yes'].includes(String(process.env.QA
 const reviewerPacketDir = process.env.QA_BETA_REVIEW_PACKET_DIR || `../qa/beta-human-review-packets-${date}`
 const reviewerPacketManifestName = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || `beta-human-review-packet-manifest-${date}.json`
 const reviewerBaseUrl = process.env.QA_BETA_REVIEW_BASE_URL || 'https://globe-travel-two.vercel.app'
+const submissionTemplateDir = process.env.QA_BETA_REVIEW_SUBMISSION_TEMPLATE_DIR || `../qa/beta-human-review-submissions-${date}`
+const writeSubmissionTemplates = writeReviewerPackets || ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_SUBMISSION_TEMPLATES || '').toLowerCase())
 
 const requiredAudiences = ['friend-group', 'couple', 'family', 'solo']
 const requiredStyles = ['budget', 'premium', 'food', 'nightlife', 'outdoors', 'culture']
@@ -168,6 +170,10 @@ function packetPathForReview(review) {
   return `${review.id}-${slugify(review.destination)}.md`
 }
 
+function submissionTemplatePathForReview(review) {
+  return `${review.id}-${slugify(review.destination)}.template.json`
+}
+
 function buildPlannerUrl(prompt) {
   const url = new URL('/chat', reviewerBaseUrl)
   url.searchParams.set('q', prompt)
@@ -193,9 +199,11 @@ function packetIssuesForReview(review) {
 function packetRecordForReview(review) {
   const viewport = reviewDeviceViewports[review.device] || ''
   const packetFile = packetPathForReview(review)
+  const submissionTemplateFile = submissionTemplatePathForReview(review)
   return {
     id: review.id,
     packetFile,
+    submissionTemplateFile,
     destination: review.destination,
     prompt: review.prompt,
     audience: review.audience,
@@ -206,6 +214,26 @@ function packetRecordForReview(review) {
     surfaces: review.primarySurfaces || [],
     sourceActualId: review.sourceActualId,
     startUrl: buildPlannerUrl(review.prompt || ''),
+  }
+}
+
+function submissionTemplateForReview(record) {
+  return {
+    id: record.id,
+    sourceActualId: record.sourceActualId,
+    reviewerRole: '',
+    routeOrShareUrl: record.startUrl,
+    viewport: record.viewport,
+    device: record.device,
+    prompt: record.prompt,
+    status: 'passed',
+    completedAt: '',
+    firstMinuteOutcome: '',
+    mapTrustNotes: '',
+    shareFeedbackOutcome: '',
+    scorecard: Object.fromEntries(requiredScorecardFields.map((field) => [field, null])),
+    findings: [],
+    reviewerNotes: `Use this template after completing ${record.id}. Replace blank fields and null scorecard ratings before intake.`,
   }
 }
 
@@ -254,6 +282,10 @@ ${requiredScorecardFields.map((field) => `- [ ] ${field}`).join('\n')}
 - [ ] mapTrustNotes
 - [ ] shareFeedbackOutcome
 - [ ] findings
+
+## Submission Template
+
+Fill the matching JSON template after the review: \`${qaDisplayPath(submissionTemplateDir)}/${record.submissionTemplateFile}\`
 
 ## Findings Format
 
@@ -418,6 +450,9 @@ const summary = {
   reviewerPacketManifest: `qa/${reviewerPacketManifestName}`,
   reviewerPacketCount: reviewerPackets.length,
   reviewerPacketsWritten: writeReviewerPackets,
+  submissionTemplateDir: qaDisplayPath(submissionTemplateDir),
+  submissionTemplateCount: reviewerPackets.length,
+  submissionTemplatesWritten: writeSubmissionTemplates,
   checks,
   failures,
 }
@@ -437,6 +472,7 @@ Status: ${summary.status}
 - Completed reviews: ${summary.completedReviewCount}
 - Requested completed-review threshold: ${summary.minCompletedReviews}
 - Reviewer packets: ${summary.reviewerPacketCount}${writeReviewerPackets ? ` written to \`${summary.reviewerPacketDir}\`` : ''}
+- Submission templates: ${summary.submissionTemplateCount}${writeSubmissionTemplates ? ` written to \`${summary.submissionTemplateDir}\`` : ''}
 
 ## Coverage
 
@@ -483,7 +519,7 @@ ${markdownList(unresolvedBlockingReviews.map((review) => review.id))}
 ## Notes
 
 - This gate does not pretend the invite beta has happened. With the default \`QA_BETA_REVIEW_MIN_COMPLETED=0\`, it proves the review plan, matrix, and scorecard are operationally ready.
-- Run \`QA_BETA_REVIEW_WRITE_PACKETS=1 npm run qa:beta-review-readiness\` to generate reviewer-ready packets and a machine-readable packet manifest.
+- Run \`QA_BETA_REVIEW_WRITE_PACKETS=1 npm run qa:beta-review-readiness\` to generate reviewer-ready packets, one JSON submission template per planned review, and a machine-readable packet manifest.
 - For public-launch approval, run with \`QA_BETA_REVIEW_MIN_COMPLETED=25\` or higher and keep unresolved P0/P1 findings at zero.
 - Completed review records must include reviewer role, route or share URL, viewport, device, completed date, outcome notes, complete 1-5 scorecard ratings, and findings with severity, status, surface, title, and notes.
 `
@@ -502,11 +538,34 @@ if (writeReviewerPackets) {
     reviewerBaseUrl,
     packetDir: qaDisplayPath(reviewerPacketDir),
     packetCount: reviewerPackets.length,
+    submissionTemplateDir: qaDisplayPath(submissionTemplateDir),
+    submissionTemplateCount: reviewerPackets.length,
     packets: reviewerPackets.map((packet) => ({
       ...packet,
       packetPath: `${qaDisplayPath(reviewerPacketDir)}/${packet.packetFile}`,
+      submissionTemplatePath: `${qaDisplayPath(submissionTemplateDir)}/${packet.submissionTemplateFile}`,
     })),
   }, null, 2)}\n`)
+}
+if (writeSubmissionTemplates) {
+  const templateDir = resolve(process.cwd(), submissionTemplateDir)
+  await mkdir(templateDir, { recursive: true })
+  for (const packet of reviewerPackets) {
+    await writeFile(
+      resolve(templateDir, packet.submissionTemplateFile),
+      `${JSON.stringify(submissionTemplateForReview(packet), null, 2)}\n`,
+    )
+  }
+  await writeFile(resolve(templateDir, 'README.md'), `# Beta Human Review Submissions
+
+Drop completed review JSON files in this directory after reviewers finish their assigned packets.
+
+Each \`.template.json\` file is prefilled with the assigned review id, prompt, source actual, device, viewport, and start URL. Copy or rename the relevant template to a non-template \`.json\` file, fill every blank field, replace null scorecard ratings with 1-5 integers, and keep \`findings\` empty only when the reviewer found no issues.
+
+Use \`npm run qa:beta-review-intake\` from \`client/\` to validate files without changing the canonical register. Use \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` only after the report is clean and the submissions are ready to count toward public-launch review completion.
+
+Template files ending in \`.template.json\` are ignored by the intake command.
+`)
 }
 
 console.log(JSON.stringify(summary, null, 2))

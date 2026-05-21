@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-015",
+  "sourceActualId": "crete-5-day-family-beaches",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Crete+family+beach+trip+with+culture+and+relaxed+travel+days.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 5-day Crete family beach trip with culture and relaxed travel days.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-015. Replace blank fields and null scorecard ratings before intake."
+}

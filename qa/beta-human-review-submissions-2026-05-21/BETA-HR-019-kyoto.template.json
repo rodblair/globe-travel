@@ -1,0 +1,27 @@
+{
+  "id": "BETA-HR-019",
+  "sourceActualId": "kyoto-3-day-solo-temples-food",
+  "reviewerRole": "",
+  "routeOrShareUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+solo+Kyoto+trip+with+temples%2C+food%2C+and+calm+pacing.",
+  "viewport": "1440x950",
+  "device": "desktop",
+  "prompt": "Plan a 3-day solo Kyoto trip with temples, food, and calm pacing.",
+  "status": "passed",
+  "completedAt": "",
+  "firstMinuteOutcome": "",
+  "mapTrustNotes": "",
+  "shareFeedbackOutcome": "",
+  "scorecard": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "shareRecipientClarity": null,
+    "feedbackLoopClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "findings": [],
+  "reviewerNotes": "Use this template after completing BETA-HR-019. Replace blank fields and null scorecard ratings before intake."
+}
