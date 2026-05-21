@@ -42,6 +42,9 @@ const productionMonitoringRegister =
   process.env.QA_LAUNCH_PRODUCTION_MONITORING_REGISTER ||
   'qa/production-monitoring-register.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
+const requirePublicBetaReviews = ['1', 'true', 'yes', 'public'].includes(
+  String(process.env.QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS || process.env.QA_LAUNCH_MODE || '').toLowerCase(),
+)
 
 const requiredDocs = [
   'RELEASE_READINESS_MEMO.md',
@@ -912,9 +915,20 @@ async function checkBetaHumanReviewRegister() {
     completedReviewEvidenceGaps,
   })
 
+  const publicLaunchMinimum = Number(register.minimumCompletedReviewsForPublicLaunch) || 25
+  if (requirePublicBetaReviews) {
+    addCheck('public-launch beta human review threshold is met', completedReviews.length >= publicLaunchMinimum, {
+      completedReviewCount: completedReviews.length,
+      publicLaunchMinimum,
+      mode: process.env.QA_LAUNCH_MODE || null,
+      requirePublicBetaReviews,
+    })
+  }
+
   addCheck('completed beta human reviews have no unresolved P0/P1 findings', unresolvedBlockingReviews.length === 0, {
     completedReviewCount: completedReviews.length,
-    publicLaunchMinimum: Number(register.minimumCompletedReviewsForPublicLaunch) || null,
+    publicLaunchMinimum,
+    requirePublicBetaReviews,
     unresolvedBlockingReviews: unresolvedBlockingReviews.map((review) => review.id),
   })
 }
