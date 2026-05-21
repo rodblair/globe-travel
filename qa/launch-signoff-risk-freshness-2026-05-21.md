@@ -15,6 +15,7 @@ Harden launch signoff so it cannot pass forever on old evidence and so the no-op
   - launch risk register review date
 - Added `QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS`, defaulting to `14`.
 - Added a launch risk register check that fails if any `P0` or `P1` issue is not `closed`.
+- Added a risk-quality check that fails if any open `P2` lacks an owner, target month, or meaningful accepted-risk note.
 - Kept `QA_LAUNCH_RISK_REGISTER` configurable for release rehearsals and negative checks.
 
 ## Current Risk Register
@@ -46,6 +47,7 @@ Results:
 - Responsive visual QA evidence freshness: pass, `2026-05-21`
 - Launch risk register freshness: pass, `2026-05-21`
 - No open P0/P1: pass
+- Open P2 owner/target/accepted-risk quality: pass
 - Lint: pass
 - Build: pass
 - Diff whitespace check: pass
@@ -55,6 +57,10 @@ Results:
 A temporary risk register with one open `P1` issue was passed through `QA_LAUNCH_RISK_REGISTER=<tempfile> npm run qa:launch-signoff`.
 
 Result: the command exited nonzero and reported `launch risk register has no open P0/P1 issues` with issue `TEST-P1`, proving the signoff blocks open launch blockers instead of merely reporting them.
+
+A second temporary risk register with one open `P2` issue missing a meaningful accepted-risk note was passed through `QA_LAUNCH_RISK_REGISTER=<tempfile> npm run qa:launch-signoff`.
+
+Result: the command exited nonzero and reported `launch risk register open P2 issues have owner, target month, and accepted risk` with issue `TEST-P2`, proving non-blocking launch risks must still be owned and explicit.
 
 ## Postdeploy Verification
 

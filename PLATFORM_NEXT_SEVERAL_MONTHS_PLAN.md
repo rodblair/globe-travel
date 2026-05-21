@@ -525,7 +525,7 @@ Current signoff checkpoint: `npm run qa:launch-signoff` now provides the fast ev
 
 Scheduled production release checkpoint: `.github/workflows/production-release-gate.yml` now runs launch signoff after the production release gate by default. The workflow passes its freshly captured production release log into `npm run qa:launch-signoff`, so scheduled operations prove both live production behavior and the standing launch packet. This matters because docs/evidence-only commits intentionally skip Vercel and should not make signoff depend on the GitHub workflow SHA matching the deployed app SHA.
 
-Launch-blocker checkpoint: `qa/launch-risk-register.json` is now the machine-readable no-open-P0/P1 source for launch signoff. `npm run qa:launch-signoff` fails if release-candidate evidence, visual evidence, or the risk register is older than `QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS` days, or if any P0/P1 item is not closed.
+Launch-blocker checkpoint: `qa/launch-risk-register.json` is now the machine-readable no-open-P0/P1 source for launch signoff. `npm run qa:launch-signoff` fails if release-candidate evidence, visual evidence, or the risk register is older than `QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS` days, if any P0/P1 item is not closed, or if any open P2 lacks owner, target month, and meaningful accepted-risk notes.
 
 ## Completion Definition
 

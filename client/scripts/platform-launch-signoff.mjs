@@ -166,6 +166,10 @@ function checkEvidenceFreshness(name, dateValue) {
   })
 }
 
+function hasMeaningfulText(value, minLength = 1) {
+  return typeof value === 'string' && value.trim().length >= minLength
+}
+
 async function checkProductionHealth() {
   const url = `${baseUrl}/api/health`
   let response
@@ -419,6 +423,26 @@ async function checkRiskRegister() {
       severity: issue.severity,
       status: issue.status,
       title: issue.title,
+    })),
+  })
+
+  const openP2Issues = issues.filter((issue) => (
+    String(issue.severity || '').toUpperCase() === 'P2' &&
+    String(issue.status || '').toLowerCase() !== 'closed'
+  ))
+  const incompleteP2Issues = openP2Issues.filter((issue) => (
+    !hasMeaningfulText(issue.owner) ||
+    !hasMeaningfulText(issue.targetMonth) ||
+    !hasMeaningfulText(issue.acceptedRisk, 40)
+  ))
+  addCheck('launch risk register open P2 issues have owner, target month, and accepted risk', incompleteP2Issues.length === 0, {
+    openP2Count: openP2Issues.length,
+    incompleteP2Issues: incompleteP2Issues.map((issue) => ({
+      id: issue.id,
+      title: issue.title,
+      hasOwner: hasMeaningfulText(issue.owner),
+      hasTargetMonth: hasMeaningfulText(issue.targetMonth),
+      hasAcceptedRisk: hasMeaningfulText(issue.acceptedRisk, 40),
     })),
   })
 }
