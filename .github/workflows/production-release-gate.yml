@@ -43,6 +43,14 @@ on:
           - "1"
           - "0"
         default: "1"
+      include_launch_signoff:
+        description: Run launch signoff evidence audit after the production gate.
+        required: false
+        type: choice
+        options:
+          - "1"
+          - "0"
+        default: "1"
   schedule:
     - cron: "23 */6 * * *"
 
@@ -68,6 +76,7 @@ jobs:
       QA_INCLUDE_FEEDBACK_MUTATION: ${{ github.event.inputs.include_feedback_mutation || '0' }}
       QA_INCLUDE_PRODUCTION_VISUAL: ${{ github.event.inputs.include_production_visual || '1' }}
       QA_INCLUDE_PRODUCTION_VIRAL: ${{ github.event.inputs.include_production_viral || '1' }}
+      QA_INCLUDE_LAUNCH_SIGNOFF: ${{ github.event.inputs.include_launch_signoff || '1' }}
       QA_PRODUCTION_VISUAL_ARTIFACT_NAME: production-release-visual-${{ github.run_id }}
 
     steps:
@@ -99,12 +108,23 @@ jobs:
           mkdir -p ../qa-ci
           npm run qa:release-production | tee ../qa-ci/production-release-gate.log
 
+      - name: Run launch signoff audit
+        if: ${{ env.QA_INCLUDE_LAUNCH_SIGNOFF != '0' }}
+        env:
+          QA_LAUNCH_PRODUCTION_EVIDENCE: qa-ci/production-release-gate.log
+        run: |
+          set -o pipefail
+          mkdir -p ../qa-ci
+          npm run qa:launch-signoff | tee ../qa-ci/launch-signoff.log
+
       - name: Upload release gate log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: production-release-gate-log
-          path: qa-ci/production-release-gate.log
+          path: |
+            qa-ci/production-release-gate.log
+            qa-ci/launch-signoff.log
           if-no-files-found: error
 
       - name: Upload release visual artifacts

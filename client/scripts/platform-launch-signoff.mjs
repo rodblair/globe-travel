@@ -323,15 +323,21 @@ async function checkProductionEvidence() {
   const evidenceMatchers = [
     {
       label: 'Vercel production deploy',
-      ok: /deployed to Vercel production/i.test(text),
+      ok: /deployed to Vercel production/i.test(text) ||
+        /"environment":\s*"production"/i.test(text),
     },
     {
       label: 'production health 11/11',
-      ok: /Checks:\s*`11\/11`/i.test(text) || /health\s+`11\/11`/i.test(text),
+      ok: /Checks:\s*`11\/11`/i.test(text) ||
+        /health\s+`11\/11`/i.test(text) ||
+        /"ok":\s*11[\s\S]{0,120}"criticalMissing":\s*0[\s\S]{0,120}"warningMissing":\s*0/i.test(text) ||
+        /"healthStatus":\s*"ok"[\s\S]{0,160}"criticalMissing":\s*\[\][\s\S]{0,160}"warningMissing":\s*\[\]/i.test(text),
     },
     {
       label: 'production release gate 9/9',
-      ok: /Overall production gate:\s*`9\/9`/i.test(text) || /production release gate passed\s*`9\/9`/i.test(text),
+      ok: /Overall production gate:\s*`9\/9`/i.test(text) ||
+        /production release gate passed\s*`9\/9`/i.test(text) ||
+        /"checked":\s*9[\s\S]{0,80}"passed":\s*9[\s\S]{0,80}"failed":\s*0/i.test(text),
     },
   ]
   const missingEvidence = evidenceMatchers.filter((matcher) => !matcher.ok).map((matcher) => matcher.label)

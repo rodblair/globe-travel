@@ -523,6 +523,8 @@ Phase 1 is complete only when the broadened regional generated-actuals pass, the
 
 Current signoff checkpoint: `npm run qa:launch-signoff` now provides the fast evidence audit for release meetings. It passed `15/15` on 2026-05-21, proving production health `11/11`, full local release-candidate evidence `33/33`, responsive visual QA `50/50`, hosted Stripe evidence, launch docs, and postdeploy production evidence. Use `QA_LAUNCH_EXPECTED_COMMIT=<sha>` when a launch meeting needs the audit to prove a specific production commit is live.
 
+Scheduled production release checkpoint: `.github/workflows/production-release-gate.yml` now runs launch signoff after the production release gate by default. The workflow passes its freshly captured production release log into `npm run qa:launch-signoff`, so scheduled operations prove both live production behavior and the standing launch packet. This matters because docs/evidence-only commits intentionally skip Vercel and should not make signoff depend on the GitHub workflow SHA matching the deployed app SHA.
+
 ## Completion Definition
 
 This active goal is complete only when Globe.travel has:
