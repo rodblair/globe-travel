@@ -15,8 +15,10 @@ Launch signoff now has two explicit modes:
 
 ## Verification
 
-- Default exact-commit signoff remains valid for beta/release-candidate operations.
-- `QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS=1 QA_LAUNCH_EXPECTED_COMMIT=b634fee74687159c515b8446c94efc3536f3acdd npm run qa:launch-signoff` fails as expected with `0/25` completed beta reviews.
+- Commit `b83eb4e305c86bce90a36921e4b532c5ef995c19` deployed to Vercel production with health `ok`, `11/11`.
+- The full production release gate passed `10/10`, including production visual QA `20/20`, public-share viral loop `5/5`, Athens public-share map integrity, and prompt-suite production actual validation `60/60`.
+- Default exact-commit signoff passed `66/66` for beta/release-candidate operations.
+- `QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS=1 QA_LAUNCH_EXPECTED_COMMIT=b83eb4e305c86bce90a36921e4b532c5ef995c19 npm run qa:launch-signoff` fails as expected with `0/25` completed beta reviews.
 
 ## Release Meaning
 
