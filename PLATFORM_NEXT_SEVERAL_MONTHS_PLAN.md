@@ -3,7 +3,7 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-20 active next-phase platform completion plan set after full local, production, Stripe checkout, and Stripe portal readiness gates passed
+Updated: 2026-05-21 active next-phase platform completion plan with production monitoring now promoted into launch signoff
 
 ## Active Goal
 
@@ -27,6 +27,8 @@ This is the forward plan from the current release-candidate checkpoint. The prod
 Phase dates are operating targets, not permission to defer P0/P1 fixes. Any core-flow blocker found in any phase is repaired, retested, and promoted into a gate before moving forward.
 
 ## Current Checkpoint
+
+The newest production-monitoring checkpoint turns scheduled monitoring from runbook guidance into enforceable launch-signoff evidence. Added `qa/production-monitoring-register.json`, `npm run qa:production-monitoring`, and `qa/production-monitoring-readiness-2026-05-21.md`. The new gate proves the production alias, health endpoint, stable Athens share slug, GitHub Actions release and visual workflows, monitoring signals for health/acquisition/auth/public share/feedback/release/visual/launch signoff/rollback, alert policy, first-response steps, runbook coverage, live production health, and current verification freshness. `npm run qa:production-monitoring` passed `9/9`; exact-commit launch signoff now includes the monitoring register and passed `61/61` against live production commit `81a8245ee4b0e046e10517e39ed901d9b3218d05`.
 
 The newest beta human-review checkpoint turns the remaining `GT-P2-001` work into an operational intake gate. `qa/beta-human-review-register.json` defines 25 planned reviews across friend groups, couples, families, solo travelers, budget, premium, food, nightlife, outdoors, culture, Africa, Asia, Europe, Latin America, North America, Oceania, phone, desktop, planner, Trip Studio, map, public share, feedback, and save/reopen surfaces. `qa/beta-human-review-scorecard.md` defines required reviewer evidence, scorecard fields, and severity rules. `npm run qa:beta-review-readiness` passed `11/11`; `QA_BETA_REVIEW_MIN_COMPLETED=25 npm run qa:beta-review-readiness` correctly fails with `0/25` completed reviews until real beta records are entered. Launch signoff now checks the beta human-review register and passed `53/53` against production commit `41cb7fd6d570708ec31d650dfd531bced8482c49`. Evidence: `qa/beta-human-review-readiness-2026-05-21.md`, `qa/beta-human-review-register.json`, and `qa/beta-human-review-scorecard.md`.
 

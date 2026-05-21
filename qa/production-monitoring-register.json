@@ -1,0 +1,110 @@
+{
+  "reviewedAt": "2026-05-21",
+  "owner": "release operator",
+  "status": "automation-ready",
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
+  "publicShareSlug": "x3m2c8cnws",
+  "policy": "During beta and launch rehearsal, production monitoring must prove live health, public acquisition pages, public sharing, viral affordances, visual stability, launch-signoff evidence, and rollback readiness. Any P0/P1 signal failure blocks public launch until fixed or rolled back.",
+  "monitors": [
+    {
+      "id": "production-release-gate",
+      "name": "Production release gate",
+      "kind": "github-actions",
+      "workflowFile": ".github/workflows/production-release-gate.yml",
+      "cadence": "every 6 hours and manually after deploys",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
+      "commandMarkers": [
+        "npm run qa:release-production",
+        "npm run qa:launch-signoff",
+        "QA_INCLUDE_PRODUCTION_VISUAL",
+        "QA_INCLUDE_PRODUCTION_VIRAL"
+      ],
+      "signals": [
+        "health",
+        "landing",
+        "login",
+        "signup",
+        "public-share-page",
+        "public-share-api",
+        "feedback-api",
+        "release-gate",
+        "launch-signoff",
+        "rollback"
+      ]
+    },
+    {
+      "id": "production-visual-gate",
+      "name": "Production visual gate",
+      "kind": "github-actions",
+      "workflowFile": ".github/workflows/production-visual-gate.yml",
+      "cadence": "daily and manually before public launch approval",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_VISUAL_BASELINE_DIR=qa/visual-baseline-production-2026-05-18 QA_VISUAL_ROUTES=landing,login,signup,public-share QA_VISUAL_DIFF_ROUTES=landing,login,signup npm run qa:visual",
+      "commandMarkers": [
+        "npm run qa:visual",
+        "QA_VISUAL_BASELINE_DIR",
+        "landing,login,signup,public-share",
+        "production-visual-gate"
+      ],
+      "signals": [
+        "visual-gate",
+        "landing",
+        "login",
+        "signup",
+        "public-share-page"
+      ]
+    },
+    {
+      "id": "health-contract",
+      "name": "Production health contract",
+      "kind": "release-command",
+      "cadence": "before and after every deploy",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
+      "signals": [
+        "health",
+        "rollback"
+      ]
+    },
+    {
+      "id": "public-share-contract",
+      "name": "Stable Athens public-share contract",
+      "kind": "release-command",
+      "cadence": "every production release gate",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share",
+      "signals": [
+        "public-share-page",
+        "public-share-api",
+        "feedback-api"
+      ]
+    }
+  ],
+  "alertPolicy": {
+    "owner": "release operator",
+    "triggers": [
+      "Any 5xx on monitored pages or APIs",
+      "/api/health is not ok or reports criticalMissing above 0",
+      "public share route loses trip-specific metadata or itinerary content",
+      "public share feedback API stops returning structured JSON",
+      "visual gate reports app errors, horizontal overflow, clipped primary text, overlapping controls, or unexpected stable-route diffs",
+      "release gate fails any production smoke, auth, commercial, share, viral, visual, or prompt-suite task",
+      "launch signoff fails current-production, evidence, risk-register, beta-review, visual-review, monitoring, or rollback checks"
+    ],
+    "firstResponseSteps": [
+      "Confirm the exact failing URL, workflow, run id, and timestamp.",
+      "Open the production health endpoint and compare deployment metadata to the latest known good commit.",
+      "Run the matching production QA command locally from client/ with the same base URL and share slug.",
+      "Classify severity using OPERATIONS_RUNBOOK.md.",
+      "Rollback immediately for confirmed P0 or launch-blocking P1 issues when a patch is not ready in the same release window.",
+      "Record the issue, command output, owner, and follow-up in RELEASE_READINESS_MEMO.md or a qa/ evidence file."
+    ]
+  },
+  "latestVerification": {
+    "verifiedAt": "2026-05-21",
+    "command": "npm run qa:production-monitoring",
+    "relatedCommands": [
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
+      "QA_LAUNCH_EXPECTED_COMMIT=81a8245ee4b0e046e10517e39ed901d9b3218d05 npm run qa:launch-signoff"
+    ],
+    "expectedLiveCommit": "81a8245ee4b0e046e10517e39ed901d9b3218d05"
+  }
+}

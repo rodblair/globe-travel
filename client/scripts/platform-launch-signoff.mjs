@@ -35,6 +35,9 @@ const rollbackPlan =
 const visualReviewRegister =
   process.env.QA_LAUNCH_VISUAL_REVIEW_REGISTER ||
   'qa/production-visual-review-register.json'
+const productionMonitoringRegister =
+  process.env.QA_LAUNCH_PRODUCTION_MONITORING_REGISTER ||
+  'qa/production-monitoring-register.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 
 const requiredDocs = [
@@ -137,6 +140,29 @@ const requiredAccessibilityProtectedRoutes = [
 const requiredAccessibilityViewports = [
   'phone',
   'desktop',
+]
+
+const requiredMonitoringSignals = [
+  'health',
+  'landing',
+  'login',
+  'signup',
+  'public-share-page',
+  'public-share-api',
+  'feedback-api',
+  'release-gate',
+  'visual-gate',
+  'launch-signoff',
+  'rollback',
+]
+
+const requiredMonitoringAlertMarkers = [
+  '5xx',
+  '/api/health',
+  'public share',
+  'visual',
+  'release gate',
+  'launch signoff',
 ]
 
 const requiredStripeScreenshots = [
@@ -925,6 +951,139 @@ async function checkVisualReviewRegister(productionHealth) {
   })
 }
 
+async function checkProductionMonitoringRegister(productionHealth) {
+  let register
+  try {
+    register = await readJson(productionMonitoringRegister)
+  } catch (error) {
+    addCheck('production monitoring register is readable', false, {
+      artifact: productionMonitoringRegister,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('production monitoring register is readable', true, {
+    artifact: productionMonitoringRegister,
+    reviewedAt: register.reviewedAt || null,
+    status: register.status || null,
+  })
+
+  checkEvidenceFreshness('production monitoring register', dateOnly(register.reviewedAt))
+
+  addCheck('production monitoring register has owner, status, and production targets', (
+    hasMeaningfulText(register.owner) &&
+    register.status === 'automation-ready' &&
+    register.baseUrl === baseUrl &&
+    register.healthEndpoint === `${baseUrl}/api/health` &&
+    hasMeaningfulText(register.publicShareSlug)
+  ), {
+    owner: register.owner || null,
+    status: register.status || null,
+    expectedBaseUrl: baseUrl,
+    baseUrl: register.baseUrl || null,
+    expectedHealthEndpoint: `${baseUrl}/api/health`,
+    healthEndpoint: register.healthEndpoint || null,
+    publicShareSlug: register.publicShareSlug || null,
+  })
+
+  const monitors = Array.isArray(register.monitors) ? register.monitors : []
+  const coveredSignals = unique(monitors.flatMap((monitor) => monitor.signals || []).filter(Boolean))
+  const missingSignals = hasAll(coveredSignals, requiredMonitoringSignals)
+  addCheck('production monitoring covers launch-critical signals', missingSignals.length === 0, {
+    requiredMonitoringSignals,
+    coveredSignals,
+    missingSignals,
+  })
+
+  const workflowMonitors = monitors.filter((monitor) => monitor.kind === 'github-actions')
+  const workflowResults = []
+  for (const monitor of workflowMonitors) {
+    let workflowText = ''
+    let readable = false
+    try {
+      workflowText = await readText(monitor.workflowFile)
+      readable = true
+    } catch {
+      readable = false
+    }
+    const lower = workflowText.toLowerCase()
+    const missingMarkers = (monitor.commandMarkers || [])
+      .filter((marker) => !lower.includes(String(marker).toLowerCase()))
+    workflowResults.push({
+      id: monitor.id,
+      workflowFile: monitor.workflowFile,
+      readable,
+      hasSchedule: /^  schedule:/m.test(workflowText) || /\n  schedule:\n/m.test(workflowText),
+      missingMarkers,
+    })
+  }
+  addCheck('production monitoring GitHub workflows are scheduled and run the expected gates', (
+    workflowResults.length >= 2 &&
+    workflowResults.every((result) => result.readable && result.hasSchedule && result.missingMarkers.length === 0)
+  ), {
+    workflowResults,
+  })
+
+  const alertText = JSON.stringify(register.alertPolicy || {}).toLowerCase()
+  const missingAlertMarkers = requiredMonitoringAlertMarkers
+    .filter((marker) => !alertText.includes(marker.toLowerCase()))
+  addCheck('production monitoring has actionable alert policy', (
+    hasMeaningfulText(register.alertPolicy?.owner) &&
+    Array.isArray(register.alertPolicy?.triggers) &&
+    register.alertPolicy.triggers.length >= requiredMonitoringAlertMarkers.length &&
+    missingAlertMarkers.length === 0 &&
+    Array.isArray(register.alertPolicy?.firstResponseSteps) &&
+    register.alertPolicy.firstResponseSteps.length >= 5
+  ), {
+    owner: register.alertPolicy?.owner || null,
+    triggerCount: Array.isArray(register.alertPolicy?.triggers) ? register.alertPolicy.triggers.length : 0,
+    missingAlertMarkers,
+    firstResponseStepCount: Array.isArray(register.alertPolicy?.firstResponseSteps) ? register.alertPolicy.firstResponseSteps.length : 0,
+  })
+
+  let runbookText = ''
+  try {
+    runbookText = await readText('OPERATIONS_RUNBOOK.md')
+  } catch {
+    runbookText = ''
+  }
+  const missingRunbookMarkers = [
+    'Monitoring Targets',
+    '.github/workflows/production-release-gate.yml',
+    '.github/workflows/production-visual-gate.yml',
+    '/api/health',
+    '/t/x3m2c8cnws',
+    '/api/trips/share/x3m2c8cnws',
+    'Alert on',
+  ].filter((marker) => !runbookText.includes(marker))
+  addCheck('operations runbook documents production monitoring targets and workflows', missingRunbookMarkers.length === 0, {
+    missingRunbookMarkers,
+  })
+
+  const liveDeployment = productionHealth?.deployment || {}
+  const latestVerification = register.latestVerification || {}
+  const latestVerificationDate = dateOnly(latestVerification.verifiedAt)
+  const latestVerificationAgeDays = latestVerificationDate ? ageInDays(latestVerificationDate) : null
+  const latestVerificationText = JSON.stringify(latestVerification).toLowerCase()
+  addCheck('production monitoring latest verification is fresh and tied to release gates', (
+    Number.isFinite(latestVerificationAgeDays) &&
+    latestVerificationAgeDays >= 0 &&
+    latestVerificationAgeDays <= maxEvidenceAgeDays &&
+    latestVerificationText.includes('qa:production-monitoring') &&
+    latestVerificationText.includes('qa:release-production') &&
+    latestVerificationText.includes('qa:launch-signoff') &&
+    (!liveDeployment.commit || latestVerification.expectedLiveCommit === liveDeployment.commit)
+  ), {
+    verifiedAt: latestVerification.verifiedAt || null,
+    ageDays: latestVerificationAgeDays,
+    command: latestVerification.command || null,
+    relatedCommands: latestVerification.relatedCommands || [],
+    expectedLiveCommit: latestVerification.expectedLiveCommit || null,
+    liveCommit: liveDeployment.commit || null,
+  })
+}
+
 async function checkRiskRegister() {
   let register
   try {
@@ -1074,6 +1233,7 @@ await checkPlannerActualsArtifact()
 await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
+await checkProductionMonitoringRegister(productionHealth)
 await checkRiskRegister()
 await checkRollbackPlan(productionHealth)
 
@@ -1088,6 +1248,7 @@ const summary = {
   betaHumanReviewRegister,
   productionEvidence,
   visualReviewRegister,
+  productionMonitoringRegister,
   riskRegister,
   rollbackPlan,
   maxEvidenceAgeDays,

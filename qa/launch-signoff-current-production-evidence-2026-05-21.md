@@ -68,10 +68,12 @@ Commit `81a8245ee4b0e046e10517e39ed901d9b3218d05` deployed to Vercel production.
 - Production release gate passed `10/10`
 - Production accessibility and keyboard QA: `16/16`
 - Beta human review readiness: `11/11`
-- Current launch signoff gate passed `53/53`
+- Production monitoring readiness: `9/9`
+- Current launch signoff gate passed `61/61`
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-visual-review-cadence-2026-05-21-81a8245/`
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`
+- Production monitoring artifact: `qa/production-monitoring-readiness-2026-05-21.md`
 - Athens public share/map integrity: `5/5`, with 5 itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Public share viral loop: `5/5`
 - Prompt suite with production actuals: `60/60`
