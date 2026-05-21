@@ -33,3 +33,30 @@ Result:
 
 - This is a signoff evidence gate, not a replacement for running the full local or production release gates after product changes.
 - Set `QA_LAUNCH_EXPECTED_COMMIT=<sha>` when the audit must prove that a specific deployed commit is live.
+
+## Postdeploy Verification
+
+Commit `2066920` deployed to Vercel production as:
+
+- Deployment URL: `globe-travel-g7qjorghx-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `16/16`
+
+Postdeploy commands:
+
+```bash
+QA_LAUNCH_EXPECTED_COMMIT=20669203aae9390367549b4a845e8bb48da953cd npm run qa:launch-signoff
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_INCLUDE_PRODUCTION_VISUAL=0 npm run qa:release-production
+```
+
+Postdeploy production release result:
+
+- Overall production gate: `9/9`
+- Production ops: `3/3`
+- Route smoke: `8/8`
+- Trip Studio recovery UI: `1/1`
+- Auth and guest access: `13/13`
+- Commercial fail-safe checks: `4/4`
+- Athens public share and map integrity: `5/5`
+- Public share viral loop: `5/5`
+- Prompt suite with production actuals: `56/56`
