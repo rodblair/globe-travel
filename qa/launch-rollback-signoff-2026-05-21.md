@@ -39,3 +39,17 @@ Results:
 A temporary rollback plan missing `npm run qa:launch-signoff` from its post-rollback verification commands was passed through `QA_LAUNCH_ROLLBACK_PLAN=<tempfile> npm run qa:launch-signoff`.
 
 Result: the command exited nonzero and reported `launch rollback plan includes post-rollback verification commands`, proving signoff blocks incomplete rollback plans.
+
+## Postdeploy Verification
+
+Commit `45fab98` deployed to Vercel production as:
+
+- Deployment URL: `globe-travel-jwfncigjd-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `27/27`
+
+Postdeploy command:
+
+```bash
+QA_LAUNCH_EXPECTED_COMMIT=45fab985d0c302629147eb4bcf49dd21c8438b49 npm run qa:launch-signoff
+```
