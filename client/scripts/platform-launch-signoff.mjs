@@ -508,11 +508,20 @@ async function checkProductionEvidence(productionHealth) {
         /"healthStatus":\s*"ok"[\s\S]{0,160}"criticalMissing":\s*\[\][\s\S]{0,160}"warningMissing":\s*\[\]/i.test(text),
     },
     {
-      label: 'production release gate 9/9',
+      label: 'production release gate with visual QA 10/10',
       ok: /Overall production gate:\s*`9\/9`/i.test(text) ||
+        /Overall production gate:\s*`10\/10`/i.test(text) ||
         /production release gate passed\s*`9\/9`/i.test(text) ||
+        /production release gate passed\s*`10\/10`/i.test(text) ||
         /production release gate:\s*`9\/9`/i.test(text) ||
-        /"checked":\s*9[\s\S]{0,80}"passed":\s*9[\s\S]{0,80}"failed":\s*0/i.test(text),
+        /production release gate:\s*`10\/10`/i.test(text) ||
+        /"checked":\s*10[\s\S]{0,120}"passed":\s*10[\s\S]{0,120}"failed":\s*0[\s\S]{0,220}"includeProductionVisual":\s*true/i.test(text),
+    },
+    {
+      label: 'production visual QA 20/20',
+      ok: /production visual QA:\s*`20\/20`/i.test(text) ||
+        /Production visual QA included:\s*`20\/20`/i.test(text) ||
+        /"checked":\s*20[\s\S]{0,80}"passed":\s*20[\s\S]{0,80}"failed":\s*0[\s\S]{0,220}"artifactDir"/i.test(text),
     },
   ]
 

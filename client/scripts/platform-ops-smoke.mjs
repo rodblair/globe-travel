@@ -86,6 +86,9 @@ const metadataResult = {
   ok: metadataOk,
   required: requireProductionMetadata,
   environment: metadata.environment ?? null,
+  region: metadata.region ?? null,
+  url: metadata.url ?? null,
+  commit: metadata.commit ?? null,
   hasCommit: Boolean(metadata.commit),
   hasUrl: Boolean(metadata.url),
 }

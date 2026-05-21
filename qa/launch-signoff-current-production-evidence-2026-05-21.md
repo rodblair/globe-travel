@@ -65,7 +65,9 @@ Commit `6d1b7f7bc62141746c0added3a0b0346dedbf952` deployed to Vercel production.
 - Production alias: `https://globe-travel-two.vercel.app`
 - Deployment URL: `globe-travel-hps8qtvg7-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
-- Non-visual production release gate: `9/9`
+- Production release gate passed `10/10`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-current-evidence-2026-05-21-6d1b7f7/`
 - Athens public share/map integrity: `5/5`, with 5 itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Public share viral loop: `5/5`
 - Prompt suite with production actuals: `56/56`
