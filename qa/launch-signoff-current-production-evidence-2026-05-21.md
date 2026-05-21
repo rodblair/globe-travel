@@ -60,10 +60,10 @@ Launch signoff now proves that postdeploy production evidence is tied to the exa
 
 ## Postdeploy Evidence
 
-Commit `81a8245ee4b0e046e10517e39ed901d9b3218d05` deployed to Vercel production.
+Commit `acf72d18a0bbfffae7d5423d5970577638404ede` deployed to Vercel production.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-g1whlmvtn-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-dml7p0txi-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate passed `10/10`
 - Production accessibility and keyboard QA: `16/16`
@@ -71,7 +71,7 @@ Commit `81a8245ee4b0e046e10517e39ed901d9b3218d05` deployed to Vercel production.
 - Production monitoring readiness: `9/9`
 - Current launch signoff gate passed `61/61`
 - Production visual QA: `20/20`
-- Production visual artifact: `qa/visual-baseline-production-visual-review-cadence-2026-05-21-81a8245/`
+- Production visual artifact: `qa/visual-baseline-production-monitoring-gate-2026-05-21-acf72d1/`
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`
 - Production monitoring artifact: `qa/production-monitoring-readiness-2026-05-21.md`
 - Athens public share/map integrity: `5/5`, with 5 itinerary days, mapped stops, usable routes, share metadata, and share-card image.
