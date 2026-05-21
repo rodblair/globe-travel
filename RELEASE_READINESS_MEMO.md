@@ -12,6 +12,9 @@ Status: Active goal in progress
 - The remaining `GT-P2-001` risk is invite-beta human review volume, not missing automated beta coverage.
 - Closed the accessibility false-coverage gap for protected routes: `npm run qa:a11y` now supports guest-auth route coverage and records guest cleanup.
 - Local guest accessibility passed `16/16`; production guest accessibility passed `16/16`; launch signoff now requires the production accessibility artifact and passed `47/47`.
+- Operationalized the remaining `GT-P2-001` human beta-review work: `qa/beta-human-review-register.json` defines 25 planned reviews across audience, style, region, device, and journey-surface coverage; `qa/beta-human-review-scorecard.md` defines the reviewer scorecard; and `npm run qa:beta-review-readiness` passed `11/11`.
+- Public-launch beta-review threshold is intentionally still unmet: `QA_BETA_REVIEW_MIN_COMPLETED=25 npm run qa:beta-review-readiness` fails with `0/25` completed reviews, keeping the human-review risk explicit.
+- Launch signoff now checks the beta human review register and passed `53/53` against production commit `41cb7fd6d570708ec31d650dfd531bced8482c49`.
 
 ## Release Objective
 

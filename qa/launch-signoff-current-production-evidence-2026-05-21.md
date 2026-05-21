@@ -67,7 +67,8 @@ Commit `41cb7fd6d570708ec31d650dfd531bced8482c49` deployed to Vercel production.
 - Production health: `ok`, `11/11`
 - Production release gate passed `10/10`
 - Production accessibility and keyboard QA: `16/16`
-- Current launch signoff gate passed `47/47`
+- Beta human review readiness: `11/11`
+- Current launch signoff gate passed `53/53`
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-visual-review-cadence-2026-05-21-41cb7fd/`
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`

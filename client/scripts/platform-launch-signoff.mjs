@@ -17,6 +17,9 @@ const visualArtifact =
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const betaHumanReviewRegister =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_REGISTER ||
+  'qa/beta-human-review-register.json'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -151,6 +154,22 @@ const requiredPlannerActualIds = [
   'marrakech-3-day-markets-riads',
   'cape-town-5-day-outdoors-food',
   'sydney-4-day-beaches-neighborhoods',
+]
+
+const requiredBetaReviewAudiences = ['friend-group', 'couple', 'family', 'solo']
+const requiredBetaReviewStyles = ['budget', 'premium', 'food', 'nightlife', 'outdoors', 'culture']
+const requiredBetaReviewRegions = ['Africa', 'Asia', 'Europe', 'Latin America', 'North America', 'Oceania']
+const requiredBetaReviewSurfaces = ['planner', 'trip-studio', 'map', 'public-share', 'feedback', 'save-reopen']
+const requiredBetaReviewScorecardFields = [
+  'firstMinuteClarity',
+  'itineraryUsefulness',
+  'mapTrust',
+  'editAndSwapConfidence',
+  'saveReopenConfidence',
+  'shareRecipientClarity',
+  'feedbackLoopClarity',
+  'mobileUsability',
+  'paidValueCredibility',
 ]
 
 const checks = []
@@ -612,6 +631,95 @@ async function checkPlannerActualsArtifact() {
   })
 }
 
+async function checkBetaHumanReviewRegister() {
+  let register
+  try {
+    register = await readJson(betaHumanReviewRegister)
+  } catch (error) {
+    addCheck('beta human review register is readable', false, {
+      artifact: betaHumanReviewRegister,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('beta human review register is readable', true, {
+    artifact: betaHumanReviewRegister,
+    reviewedAt: register.reviewedAt || null,
+    status: register.status || null,
+  })
+
+  checkEvidenceFreshness('beta human review register', dateOnly(register.reviewedAt))
+
+  const plannedReviews = Array.isArray(register.plannedReviews) ? register.plannedReviews : []
+  const audiences = unique(plannedReviews.map((review) => review.audience).filter(Boolean))
+  const styles = unique(plannedReviews.map((review) => review.style).filter(Boolean))
+  const regions = unique(plannedReviews.map((review) => review.region).filter(Boolean))
+  const surfaces = unique(plannedReviews.flatMap((review) => review.primarySurfaces || []).filter(Boolean))
+  const missingAudiences = hasAll(audiences, requiredBetaReviewAudiences)
+  const missingStyles = hasAll(styles, requiredBetaReviewStyles)
+  const missingRegions = hasAll(regions, requiredBetaReviewRegions)
+  const missingSurfaces = hasAll(surfaces, requiredBetaReviewSurfaces)
+  const missingScorecardFields = hasAll(register.scorecardFields || [], requiredBetaReviewScorecardFields)
+
+  addCheck('beta human review register has 25-review intake matrix and required cohort coverage', (
+    plannedReviews.length >= 25 &&
+    missingAudiences.length === 0 &&
+    missingStyles.length === 0 &&
+    missingRegions.length === 0 &&
+    missingSurfaces.length === 0
+  ), {
+    plannedReviewCount: plannedReviews.length,
+    requiredMinimum: 25,
+    audiences,
+    missingAudiences,
+    styles,
+    missingStyles,
+    regions,
+    missingRegions,
+    surfaces,
+    missingSurfaces,
+  })
+
+  addCheck('beta human review register has launch scorecard fields', missingScorecardFields.length === 0, {
+    requiredBetaReviewScorecardFields,
+    missingScorecardFields,
+  })
+
+  const incompleteMetadata = plannedReviews.filter((review) => (
+    !hasMeaningfulText(review.id) ||
+    !hasMeaningfulText(review.sourceActualId) ||
+    !hasMeaningfulText(review.destination) ||
+    !hasMeaningfulText(review.prompt) ||
+    !hasMeaningfulText(review.audience) ||
+    !hasMeaningfulText(review.style) ||
+    !hasMeaningfulText(review.region) ||
+    !hasMeaningfulText(review.device) ||
+    !Array.isArray(review.primarySurfaces) ||
+    review.primarySurfaces.length === 0 ||
+    !hasMeaningfulText(review.status)
+  ))
+  addCheck('beta human review register has complete metadata for every planned review', incompleteMetadata.length === 0, {
+    incompleteMetadata: incompleteMetadata.map((review) => review.id || '(missing id)'),
+  })
+
+  const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
+  const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
+  const unresolvedBlockingReviews = completedReviews.filter((review) => {
+    const findings = Array.isArray(review.findings) ? review.findings : []
+    return findings.some((finding) => {
+      const severity = String(finding.severity || '').toUpperCase()
+      const status = String(finding.status || '').toLowerCase()
+      return (severity === 'P0' || severity === 'P1') && status !== 'closed'
+    })
+  })
+  addCheck('completed beta human reviews have no unresolved P0/P1 findings', unresolvedBlockingReviews.length === 0, {
+    completedReviewCount: completedReviews.length,
+    publicLaunchMinimum: Number(register.minimumCompletedReviewsForPublicLaunch) || null,
+    unresolvedBlockingReviews: unresolvedBlockingReviews.map((review) => review.id),
+  })
+}
+
 async function checkProductionEvidence(productionHealth) {
   let text
   try {
@@ -963,6 +1071,7 @@ await checkVisualArtifact()
 await checkAccessibilityArtifact()
 await checkStripeArtifacts()
 await checkPlannerActualsArtifact()
+await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
 await checkRiskRegister()
@@ -976,6 +1085,7 @@ const summary = {
   visualArtifact,
   accessibilityArtifact,
   plannerActualsArtifact,
+  betaHumanReviewRegister,
   productionEvidence,
   visualReviewRegister,
   riskRegister,
