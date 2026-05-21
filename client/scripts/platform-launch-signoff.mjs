@@ -45,6 +45,7 @@ const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AG
 const requirePublicBetaReviews = ['1', 'true', 'yes', 'public'].includes(
   String(process.env.QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS || process.env.QA_LAUNCH_MODE || '').toLowerCase(),
 )
+const requirePublicLaunchReadiness = requirePublicBetaReviews
 
 const requiredDocs = [
   'RELEASE_READINESS_MEMO.md',
@@ -1136,6 +1137,41 @@ async function checkVisualReviewRegister(productionHealth) {
     nextReviewDueAt: register.nextReviewDueAt || null,
     hasReviewProtocol: hasMeaningfulText(register.reviewProtocol, 80),
   })
+
+  if (requirePublicLaunchReadiness) {
+    const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
+    const minimumPublicLaunchReviewHistory = Number(register.minimumPublicLaunchReviewHistory) || 4
+    const historyDates = unique(reviewHistory.map((review) => dateOnly(review.reviewedAt)).filter(Boolean))
+    const malformedHistory = reviewHistory.filter((review) => (
+      !hasMeaningfulText(review.reviewedAt) ||
+      !hasMeaningfulText(review.artifact) ||
+      !hasMeaningfulText(review.summaryArtifact) ||
+      !hasMeaningfulText(review.productionCommit) ||
+      !hasMeaningfulText(review.deploymentUrl) ||
+      !hasMeaningfulText(review.reviewedBy) ||
+      review.verdict !== 'pass' ||
+      !Array.isArray(review.blockingFindings) ||
+      review.blockingFindings.length > 0 ||
+      Number(review.screenshotsReviewed) < 20
+    ))
+
+    addCheck('public-launch production visual review history is mature', (
+      reviewHistory.length >= minimumPublicLaunchReviewHistory &&
+      historyDates.length >= minimumPublicLaunchReviewHistory &&
+      malformedHistory.length === 0
+    ), {
+      reviewHistoryCount: reviewHistory.length,
+      distinctReviewDateCount: historyDates.length,
+      minimumPublicLaunchReviewHistory,
+      malformedHistory: malformedHistory.map((review) => ({
+        artifact: review.artifact || null,
+        reviewedAt: review.reviewedAt || null,
+        verdict: review.verdict || null,
+        screenshotsReviewed: review.screenshotsReviewed || null,
+      })),
+      requirePublicLaunchReadiness,
+    })
+  }
 }
 
 async function checkProductionMonitoringRegister(productionHealth) {
