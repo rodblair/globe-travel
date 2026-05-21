@@ -40,4 +40,6 @@ Screenshot: `qa/trip-studio-missing-trip-recovery-2026-05-21.png`
 - `node --check scripts/platform-trip-studio-owner-ui-smoke.mjs` passed.
 - `npm run lint` passed.
 - `npm run build` passed.
-
+- Commit `0b82945` deployed to Vercel production as `dpl_3dYzb8vNwTWk9EtSRH4G9GW8pRNn`.
+- `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-missing-trip-recovery-2026-05-21-0b82945 npm run qa:release-production` passed `9/9`.
+- Production Browser verified `https://globe-travel-two.vercel.app/trips/00000000-0000-4000-8000-000000000001` exposes the recovery heading and both recovery links with no `Save trip` or `Share with friends` owner actions.
