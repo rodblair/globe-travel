@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process'
 
-const DOC_ONLY_PATTERNS = [
+const BUILD_SKIP_SAFE_PATTERNS = [
+  /^\.github\/workflows\//,
   /^qa\//,
   /^README\.md$/,
   /^OPERATIONS_RUNBOOK\.md$/,
@@ -60,10 +61,10 @@ if (changedFiles.length === 0) {
   process.exit(1)
 }
 
-const unsafeFiles = changedFiles.filter((file) => !DOC_ONLY_PATTERNS.some((pattern) => pattern.test(file)))
+const unsafeFiles = changedFiles.filter((file) => !BUILD_SKIP_SAFE_PATTERNS.some((pattern) => pattern.test(file)))
 
 if (unsafeFiles.length === 0) {
-  console.log(`[vercel-ignore] Skipping build: ${changedFiles.length} documentation/evidence file(s) changed.`)
+  console.log(`[vercel-ignore] Skipping build: ${changedFiles.length} release-ops/documentation/evidence file(s) changed.`)
   process.exit(0)
 }
 

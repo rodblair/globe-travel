@@ -51,9 +51,9 @@ Set `QA_INCLUDE_PROMPT_ACTUALS=0` to skip the prompt-suite actuals check. Set `Q
 
 ## Documentation-Only Commits
 
-Vercel uses `client/vercel.json` and `client/scripts/vercel-ignore-build.mjs` to skip production builds for commits that only change release evidence or documentation. The skip list is intentionally conservative: `qa/**`, `README.md`, `OPERATIONS_RUNBOOK.md`, `PLATFORM_*.md`, and `RELEASE_READINESS_MEMO.md`.
+Vercel uses `client/vercel.json` and `client/scripts/vercel-ignore-build.mjs` to skip production builds for commits that only change release evidence, release monitoring workflows, or documentation. The skip list is intentionally conservative: `.github/workflows/**`, `qa/**`, `README.md`, `OPERATIONS_RUNBOOK.md`, `PLATFORM_*.md`, and `RELEASE_READINESS_MEMO.md`.
 
-Any `client/**` change, package/config change, workflow change, or unknown path continues the build. If a documentation-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
+Any `client/**` change, package/config change, app runtime change, or unknown path continues the build. If a release-ops-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
 
 Manual equivalents:
 
