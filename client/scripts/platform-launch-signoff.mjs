@@ -599,7 +599,7 @@ async function checkRiskRegister() {
   })
 }
 
-async function checkRollbackPlan() {
+async function checkRollbackPlan(productionHealth) {
   let plan
   try {
     plan = await readJson(rollbackPlan)
@@ -619,16 +619,38 @@ async function checkRollbackPlan() {
   checkEvidenceFreshness('launch rollback plan', dateOnly(plan.reviewedAt))
 
   const production = plan.production || {}
+  const knownGoodDeployment = production.knownGoodDeployment || {}
   addCheck('launch rollback plan identifies production targets', (
     production.alias === baseUrl &&
     hasMeaningfulText(production.healthEndpoint) &&
-    hasMeaningfulText(production.knownGoodDeployment?.commit) &&
-    hasMeaningfulText(production.knownGoodDeployment?.url)
+    hasMeaningfulText(knownGoodDeployment.commit) &&
+    hasMeaningfulText(knownGoodDeployment.url)
   ), {
     expectedAlias: baseUrl,
     alias: production.alias || null,
     healthEndpoint: production.healthEndpoint || null,
-    knownGoodDeployment: production.knownGoodDeployment || null,
+    knownGoodDeployment,
+  })
+
+  const liveDeployment = productionHealth?.deployment || {}
+  const liveCommit = liveDeployment.commit || ''
+  const liveUrl = liveDeployment.url || ''
+  const rollbackTracksLiveDeployment =
+    hasMeaningfulText(liveCommit) &&
+    hasMeaningfulText(liveUrl) &&
+    knownGoodDeployment.commit === liveCommit &&
+    knownGoodDeployment.url === liveUrl &&
+    hasMeaningfulText(knownGoodDeployment.verifiedAt) &&
+    hasMeaningfulText(knownGoodDeployment.verifiedBy) &&
+    knownGoodDeployment.verifiedBy.includes(liveCommit) &&
+    knownGoodDeployment.verifiedBy.includes('npm run qa:launch-signoff')
+  addCheck('launch rollback plan tracks current known-good production deployment', rollbackTracksLiveDeployment, {
+    liveDeployment,
+    knownGoodDeployment,
+    commitMatches: knownGoodDeployment.commit === liveCommit,
+    urlMatches: knownGoodDeployment.url === liveUrl,
+    verifiedByIncludesCommit: hasMeaningfulText(liveCommit) && String(knownGoodDeployment.verifiedBy || '').includes(liveCommit),
+    verifiedByIncludesLaunchSignoff: String(knownGoodDeployment.verifiedBy || '').includes('npm run qa:launch-signoff'),
   })
 
   const commands = Array.isArray(plan.verificationCommands) ? plan.verificationCommands : []
@@ -668,7 +690,7 @@ await checkStripeArtifacts()
 await checkPlannerActualsArtifact()
 await checkProductionEvidence(productionHealth)
 await checkRiskRegister()
-await checkRollbackPlan()
+await checkRollbackPlan(productionHealth)
 
 const failures = checks.filter((check) => !check.ok)
 const summary = {
