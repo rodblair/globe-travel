@@ -3,7 +3,7 @@
 Date: 2026-05-20
 Status: Active goal execution plan
 Owner: Codex platform QA and release audit
-Updated: 2026-05-21 active next-phase platform completion plan with production monitoring now promoted into launch signoff
+Updated: 2026-05-21 active next-phase platform completion plan with canonical public-launch status now promoted into launch signoff
 
 ## Active Goal
 
@@ -28,7 +28,7 @@ Phase dates are operating targets, not permission to defer P0/P1 fixes. Any core
 
 ## Current Checkpoint
 
-The newest deployment checkpoint moved the beta-review intake and production visual-review intake gates from local-only readiness work into live Vercel production. Commit `43ae6627da1211bd7f6c619b143575eccae0363b` is live on `globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app` with production health `ok`, `11/11`; the production release gate passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens public-share map integrity passed `5/5`, prompt-suite production actual validation passed `60/60`, production monitoring passed `9/9`, design-system readiness passed `10/10`, and exact launch signoff passed `81/81`. Public-launch mode remains correctly blocked at `81/83` until completed beta reviews reach `25/25` and production visual-review history reaches `4/4` distinct passing dates.
+The newest checkpoint adds a canonical public-launch status artifact on top of the live Vercel deployment evidence. Commit `43ae6627da1211bd7f6c619b143575eccae0363b` is live on `globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app` with production health `ok`, `11/11`; the production release gate passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens public-share map integrity passed `5/5`, prompt-suite production actual validation passed `60/60`, production monitoring passed `9/9`, design-system readiness passed `10/10`, and exact launch signoff now passes `85/85`. `npm run qa:public-launch-status` writes `qa/public-launch-status-2026-05-21.json` and `.md`, reports `beta-ready-public-blocked`, and confirms no guardrail issues while public launch remains correctly blocked at `84/87` until completed beta reviews reach `25/25`, production visual-review history reaches `4/4` distinct passing dates, and the status artifact reports `public-launch-ready`.
 
 The newest beta-review intake checkpoint gives the invite-beta program a validated path from reviewer packets to counted launch evidence. `npm run qa:beta-review-intake` now validates completed review JSON submissions in `qa/beta-human-review-submissions-2026-05-21`, ignores `.template.json` examples, checks each submission against its assigned packet, scorecard, viewport, URL, findings format, and planned review id, writes `qa/beta-human-review-intake-2026-05-21.json` and `.md`, and imports only when `QA_BETA_REVIEW_IMPORT=1` is explicitly set. Dry-run intake passed `4/4`, the missing-directory negative check failed as expected, and exact signoff now verifies the intake artifact and passed `78/78` against production commit `ec38399177df6919d31e128baab202ad74444679`.
 

@@ -44,6 +44,9 @@ const visualReviewRegister =
 const productionMonitoringRegister =
   process.env.QA_LAUNCH_PRODUCTION_MONITORING_REGISTER ||
   'qa/production-monitoring-register.json'
+const publicLaunchStatusArtifact =
+  process.env.QA_LAUNCH_PUBLIC_STATUS_ARTIFACT ||
+  'qa/public-launch-status-2026-05-21.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 const requirePublicBetaReviews = ['1', 'true', 'yes', 'public'].includes(
   String(process.env.QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS || process.env.QA_LAUNCH_MODE || '').toLowerCase(),
@@ -1621,6 +1624,72 @@ async function checkProductionMonitoringRegister(productionHealth) {
   })
 }
 
+async function checkPublicLaunchStatusArtifact(productionHealth) {
+  let status
+  try {
+    status = await readJson(publicLaunchStatusArtifact)
+  } catch (error) {
+    addCheck('public launch status artifact is readable', false, {
+      artifact: publicLaunchStatusArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('public launch status artifact is readable', true, {
+    artifact: publicLaunchStatusArtifact,
+    status: status.status || null,
+    betaReady: status.betaReady ?? null,
+    publicLaunchReady: status.publicLaunchReady ?? null,
+  })
+
+  checkEvidenceFreshness('public launch status', evidenceDateFrom(status, publicLaunchStatusArtifact))
+
+  const liveDeployment = productionHealth?.deployment || {}
+  const statusDeployment = status.liveDeployment || {}
+  const blockers = Array.isArray(status.blockers) ? status.blockers : []
+  const guardrailIssues = Array.isArray(status.guardrailIssues) ? status.guardrailIssues : []
+  const publicStatusMatchesLive =
+    status.baseUrl === baseUrl &&
+    statusDeployment.commit === liveDeployment.commit &&
+    statusDeployment.url === liveDeployment.url &&
+    status.betaReady === true &&
+    guardrailIssues.length === 0
+
+  addCheck('public launch status tracks current production and has no guardrail issues', publicStatusMatchesLive, {
+    expectedBaseUrl: baseUrl,
+    baseUrl: status.baseUrl || null,
+    liveDeployment,
+    statusDeployment,
+    guardrailIssues,
+  })
+
+  if (requirePublicLaunchReadiness) {
+    addCheck('public launch status is ready for public launch', (
+      status.publicLaunchReady === true &&
+      blockers.length === 0 &&
+      status.status === 'public-launch-ready'
+    ), {
+      status: status.status || null,
+      publicLaunchReady: status.publicLaunchReady ?? null,
+      blockerCount: blockers.length,
+      blockers,
+    })
+  } else {
+    addCheck('public launch status exposes remaining public-launch blockers', (
+      status.publicLaunchReady === false &&
+      blockers.length > 0 &&
+      blockers.some((blocker) => blocker.id === 'beta-human-review-threshold') &&
+      blockers.some((blocker) => blocker.id === 'production-visual-review-history')
+    ), {
+      status: status.status || null,
+      publicLaunchReady: status.publicLaunchReady ?? null,
+      blockerCount: blockers.length,
+      blockers,
+    })
+  }
+}
+
 async function checkRiskRegister() {
   let register
   try {
@@ -1773,6 +1842,7 @@ await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
 await checkProductionMonitoringRegister(productionHealth)
+await checkPublicLaunchStatusArtifact(productionHealth)
 await checkRiskRegister()
 await checkRollbackPlan(productionHealth)
 
@@ -1790,6 +1860,7 @@ const summary = {
   productionEvidence,
   visualReviewRegister,
   productionMonitoringRegister,
+  publicLaunchStatusArtifact,
   riskRegister,
   rollbackPlan,
   maxEvidenceAgeDays,
