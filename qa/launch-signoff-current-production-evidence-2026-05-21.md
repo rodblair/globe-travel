@@ -60,10 +60,10 @@ Launch signoff now proves that postdeploy production evidence is tied to the exa
 
 ## Postdeploy Evidence
 
-Commit `43ae6627da1211bd7f6c619b143575eccae0363b` deployed to Vercel production.
+Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-7sx1pv1h0-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate passed `10/10`
 - Production accessibility and keyboard QA: `16/16`
@@ -85,7 +85,7 @@ Commit `43ae6627da1211bd7f6c619b143575eccae0363b` deployed to Vercel production.
 - Beta human-review submission directory: `qa/beta-human-review-submissions-2026-05-21`
 - Beta human-review intake status: dry-run intake passed `4/4`; no completed submission files are currently imported.
 - Production visual QA: `20/20`
-- Production visual artifact: `qa/visual-baseline-production-release-2026-05-21-43ae662/`
+- Production visual artifact: `qa/visual-baseline-production-release-2026-05-21-539506d/`
 - Production visual review schedule: `3/3`, covering the remaining planned public-launch visual-review dates for 2026-05-28, 2026-06-04, and 2026-06-11.
 - Production visual review intake: `4/4`
 - Production visual review intake artifact: `qa/production-visual-review-intake-2026-05-21.json`

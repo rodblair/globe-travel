@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 43ae6627da1211bd7f6c619b143575eccae0363b
-- Production deployment: globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app
+- Production commit: 539506d829bdc4b7c66cb546e39b92a925e098e0
+- Production deployment: globe-travel-7sx1pv1h0-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Production visual review history: 1/4
 - Open P0/P1 risks: 0

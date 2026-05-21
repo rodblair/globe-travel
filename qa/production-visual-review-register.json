@@ -94,10 +94,10 @@
     }
   ],
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-release-2026-05-21-43ae662",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-05-21-43ae662/summary.json",
-    "productionCommit": "43ae6627da1211bd7f6c619b143575eccae0363b",
-    "deploymentUrl": "globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-release-2026-05-21-539506d",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-05-21-539506d/summary.json",
+    "productionCommit": "539506d829bdc4b7c66cb546e39b92a925e098e0",
+    "deploymentUrl": "globe-travel-7sx1pv1h0-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -120,20 +120,20 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual gate passed 20/20 on the live 43ae662 deployment after the beta and production visual intake gates were deployed. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production visual gate passed 20/20 on the live 539506d deployment after the public-launch status gate was deployed. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
       "reviewedAt": "2026-05-21",
-      "artifact": "qa/visual-baseline-production-release-2026-05-21-43ae662",
-      "summaryArtifact": "qa/visual-baseline-production-release-2026-05-21-43ae662/summary.json",
-      "productionCommit": "43ae6627da1211bd7f6c619b143575eccae0363b",
-      "deploymentUrl": "globe-travel-2ie04qr7z-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-release-2026-05-21-539506d",
+      "summaryArtifact": "qa/visual-baseline-production-release-2026-05-21-539506d/summary.json",
+      "productionCommit": "539506d829bdc4b7c66cb546e39b92a925e098e0",
+      "deploymentUrl": "globe-travel-7sx1pv1h0-rodney-blairs-projects.vercel.app",
       "reviewedBy": "Codex visual QA",
       "verdict": "pass",
       "blockingFindings": [],
       "screenshotsReviewed": 20,
-      "notes": "Initial public-launch-mode visual review history entry, refreshed on the live 43ae662 deployment. Public launch still requires four distinct review dates with passing evidence."
+      "notes": "Initial public-launch-mode visual review history entry, refreshed on the live 539506d deployment. Public launch still requires four distinct review dates with passing evidence."
     }
   ]
 }

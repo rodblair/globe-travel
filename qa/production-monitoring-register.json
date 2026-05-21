@@ -102,9 +102,9 @@
     "verifiedAt": "2026-05-21",
     "command": "npm run qa:production-monitoring",
     "relatedCommands": [
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-21-43ae662 npm run qa:release-production",
-      "QA_LAUNCH_EXPECTED_COMMIT=43ae6627da1211bd7f6c619b143575eccae0363b npm run qa:launch-signoff"
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-21-539506d npm run qa:release-production",
+      "QA_LAUNCH_EXPECTED_COMMIT=539506d829bdc4b7c66cb546e39b92a925e098e0 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "43ae6627da1211bd7f6c619b143575eccae0363b"
+    "expectedLiveCommit": "539506d829bdc4b7c66cb546e39b92a925e098e0"
   }
 }
