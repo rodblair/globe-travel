@@ -372,6 +372,26 @@ async function checkVisualArtifact() {
     })),
   })
 
+  const visualResults = Array.isArray(summary.results) ? summary.results : []
+  const screenshotPaths = visualResults
+    .map((result) => result.screenshot?.relativePath || result.screenshot?.path)
+    .filter(Boolean)
+  const missingScreenshots = []
+  for (const screenshotPath of screenshotPaths) {
+    if (!(await fileExists(screenshotPath))) missingScreenshots.push(screenshotPath)
+  }
+  addCheck('responsive visual QA screenshot artifacts exist for every checked route and viewport', (
+    visualResults.length === summary.checked &&
+    screenshotPaths.length === summary.checked &&
+    missingScreenshots.length === 0
+  ), {
+    checked: summary.checked,
+    visualResultCount: visualResults.length,
+    screenshotCount: screenshotPaths.length,
+    missingScreenshots: missingScreenshots.slice(0, 12),
+    missingScreenshotCount: missingScreenshots.length,
+  })
+
   return summary
 }
 
