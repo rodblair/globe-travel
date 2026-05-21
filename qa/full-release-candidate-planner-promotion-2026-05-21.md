@@ -47,3 +47,15 @@ Close the launch-packet gap where planner generated-actual map trust was proven 
 ## Result
 
 The primary full local release-candidate packet now includes live regional planner generated actuals, broad user-journey QA, visual QA, hosted Stripe readiness, sharing loops, owner feedback, slow-network recovery, and cleanup in one launch-signoff artifact.
+
+## Postdeploy Evidence
+
+Commit `c2933cd0211cb12c05bcb09096298b505faa926e` deployed to Vercel production.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-fr2eys8se-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Exact-commit launch signoff: `33/33`
+- Non-visual production release gate: `9/9`
+- Athens public share/map integrity: `5/5`, with 5 itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `56/56`
