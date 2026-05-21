@@ -70,3 +70,44 @@ Production public-share smoke checks:
 - The Athens public itinerary still has five days with mapped stops, no duplicate mapped stops, usable routes, share metadata, a rendered share-card image, visible phone/desktop viral affordances, copy success feedback, native share payload coverage, no app error, and no horizontal overflow.
 
 In-app Browser note: the Browser plugin listed the in-app browser but the active pane was unavailable in this resumed context, so the spot-check used the repo's Browser-backed Playwright smokes instead of a direct pane interaction.
+
+## Postdeploy Verification
+
+This ignore-script update deployed to Vercel production because it changed `client/scripts/vercel-ignore-build.mjs`, which is intentionally treated as build-relevant.
+
+Deployed commit:
+
+```text
+06eb269ac896ccb4204607ae4e2348079f393309
+```
+
+Production health stayed green during and after deployment:
+
+- Status: `ok`
+- Checks: `11/11`
+- Critical missing: `0`
+- Warning missing: `0`
+- Deployment URL: `globe-travel-maensxd9o-rodney-blairs-projects.vercel.app`
+
+Postdeploy production gate:
+
+```bash
+QA_BASE_URL=https://globe-travel-two.vercel.app \
+QA_SHARE_SLUG=x3m2c8cnws \
+QA_INCLUDE_PRODUCTION_VISUAL=0 \
+npm run qa:release-production
+```
+
+Result:
+
+- Overall production gate: `9/9`
+- Production ops: `3/3`
+- Route smoke: `8/8`
+- Trip Studio recovery UI: `1/1`
+- Auth and guest access: `13/13`
+- Commercial fail-safe checks: `4/4`
+- Athens public share and map integrity: `5/5`
+- Public share viral loop: `5/5`
+- Prompt suite with production actuals: `56/56`
+
+Decision: green. The release-ops change is deployed, and future `.github/workflows/**`-only commits are covered by the skip-safe policy without weakening runtime-change deployments.
