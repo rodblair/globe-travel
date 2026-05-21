@@ -26,6 +26,9 @@ const riskRegister =
 const rollbackPlan =
   process.env.QA_LAUNCH_ROLLBACK_PLAN ||
   'qa/launch-rollback-plan.json'
+const visualReviewRegister =
+  process.env.QA_LAUNCH_VISUAL_REVIEW_REGISTER ||
+  'qa/production-visual-review-register.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 
 const requiredDocs = [
@@ -92,6 +95,19 @@ const requiredProtectedRoutes = [
   'account-profile',
   'account-billing',
   'trip-studio',
+]
+
+const requiredProductionVisualRoutes = [
+  'landing',
+  'login',
+  'signup',
+  'public-share',
+]
+
+const requiredProductionVisualDiffRoutes = [
+  'landing',
+  'login',
+  'signup',
 ]
 
 const requiredStripeScreenshots = [
@@ -543,6 +559,144 @@ async function checkProductionEvidence(productionHealth) {
   })
 }
 
+async function checkVisualReviewRegister(productionHealth) {
+  let register
+  try {
+    register = await readJson(visualReviewRegister)
+  } catch (error) {
+    addCheck('production visual review register is readable', false, {
+      artifact: visualReviewRegister,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('production visual review register is readable', true, {
+    artifact: visualReviewRegister,
+    reviewedAt: register.reviewedAt || null,
+  })
+
+  checkEvidenceFreshness('production visual review register', dateOnly(register.reviewedAt))
+
+  const latestReview = register.latestProductionReview || {}
+  const liveDeployment = productionHealth?.deployment || {}
+  const liveCommit = liveDeployment.commit || ''
+  const liveUrl = liveDeployment.url || ''
+  const reviewTracksProduction =
+    hasMeaningfulText(liveCommit) &&
+    hasMeaningfulText(liveUrl) &&
+    latestReview.productionCommit === liveCommit &&
+    latestReview.deploymentUrl === liveUrl
+  addCheck('production visual review tracks current production deployment', reviewTracksProduction, {
+    liveDeployment,
+    productionCommit: latestReview.productionCommit || null,
+    deploymentUrl: latestReview.deploymentUrl || null,
+    commitMatches: latestReview.productionCommit === liveCommit,
+    urlMatches: latestReview.deploymentUrl === liveUrl,
+  })
+
+  let summary = null
+  const summaryPath = latestReview.summaryArtifact || ''
+  try {
+    summary = await readJson(summaryPath)
+  } catch (error) {
+    addCheck('production visual review summary artifact is readable', false, {
+      artifact: summaryPath || null,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+
+  if (summary) {
+    addCheck('production visual review summary artifact is readable', true, {
+      artifact: summaryPath,
+    })
+
+    const missingRoutes = hasAll(summary.routes || [], requiredProductionVisualRoutes)
+    const missingDiffRoutes = hasAll(summary.diffRoutes || [], requiredProductionVisualDiffRoutes)
+    const resultCount = Array.isArray(summary.results) ? summary.results.length : 0
+    addCheck('production visual review covers required public routes, viewports, and diffs', (
+      summary.checked === 20 &&
+      summary.passed === 20 &&
+      summary.failed === 0 &&
+      resultCount === 20 &&
+      Array.isArray(summary.viewports) &&
+      summary.viewports.length === 5 &&
+      missingRoutes.length === 0 &&
+      missingDiffRoutes.length === 0
+    ), {
+      checked: summary.checked,
+      passed: summary.passed,
+      failed: summary.failed,
+      resultCount,
+      viewportCount: Array.isArray(summary.viewports) ? summary.viewports.length : 0,
+      requiredRoutes: requiredProductionVisualRoutes,
+      missingRoutes,
+      requiredDiffRoutes: requiredProductionVisualDiffRoutes,
+      missingDiffRoutes,
+    })
+
+    const visualResults = Array.isArray(summary.results) ? summary.results : []
+    const screenshotPaths = visualResults
+      .map((result) => result.screenshot?.relativePath || result.screenshot?.path)
+      .filter(Boolean)
+    const missingScreenshots = []
+    for (const screenshotPath of screenshotPaths) {
+      if (!(await fileExists(screenshotPath))) missingScreenshots.push(screenshotPath)
+    }
+    addCheck('production visual review screenshot artifacts exist for every reviewed result', (
+      screenshotPaths.length === 20 &&
+      missingScreenshots.length === 0
+    ), {
+      screenshotCount: screenshotPaths.length,
+      missingScreenshots: missingScreenshots.slice(0, 12),
+      missingScreenshotCount: missingScreenshots.length,
+    })
+
+    const badVisualResults = visualResults.filter((result) => {
+      const metrics = result.metrics || {}
+      return result.ok === false ||
+        metrics.horizontalOverflow === true ||
+        (Array.isArray(metrics.appErrors) && metrics.appErrors.length > 0) ||
+        (Array.isArray(metrics.clippedText) && metrics.clippedText.length > 0) ||
+        (Array.isArray(metrics.overlappingAppTargets) && metrics.overlappingAppTargets.length > 0) ||
+        result.comparison?.ok === false
+    })
+    addCheck('production visual review has no unresolved visual blockers', (
+      badVisualResults.length === 0 &&
+      latestReview.verdict === 'pass' &&
+      Array.isArray(latestReview.blockingFindings) &&
+      latestReview.blockingFindings.length === 0
+    ), {
+      verdict: latestReview.verdict || null,
+      blockingFindings: latestReview.blockingFindings || [],
+      badResultCount: badVisualResults.length,
+      badResults: badVisualResults.slice(0, 12).map((result) => ({
+        routeId: result.routeId,
+        viewportId: result.viewportId,
+        ok: result.ok,
+        comparisonOk: result.comparison?.ok,
+      })),
+    })
+  }
+
+  const nextReviewDueAt = dateOnly(register.nextReviewDueAt)
+  const nextReviewDueTime = nextReviewDueAt ? Date.parse(`${nextReviewDueAt}T00:00:00Z`) : Number.NaN
+  const today = new Date()
+  const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
+  addCheck('production visual review cadence has owner and future review date', (
+    hasMeaningfulText(register.owner) &&
+    hasMeaningfulText(register.cadence) &&
+    hasMeaningfulText(register.reviewProtocol, 80) &&
+    Number.isFinite(nextReviewDueTime) &&
+    nextReviewDueTime >= todayUtc
+  ), {
+    owner: register.owner || null,
+    cadence: register.cadence || null,
+    nextReviewDueAt: register.nextReviewDueAt || null,
+    hasReviewProtocol: hasMeaningfulText(register.reviewProtocol, 80),
+  })
+}
+
 async function checkRiskRegister() {
   let register
   try {
@@ -689,6 +843,7 @@ await checkVisualArtifact()
 await checkStripeArtifacts()
 await checkPlannerActualsArtifact()
 await checkProductionEvidence(productionHealth)
+await checkVisualReviewRegister(productionHealth)
 await checkRiskRegister()
 await checkRollbackPlan(productionHealth)
 
@@ -700,6 +855,7 @@ const summary = {
   visualArtifact,
   plannerActualsArtifact,
   productionEvidence,
+  visualReviewRegister,
   riskRegister,
   rollbackPlan,
   maxEvidenceAgeDays,
