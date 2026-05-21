@@ -10,13 +10,13 @@ const baseUrl = (process.env.QA_LAUNCH_BASE_URL || process.env.QA_BASE_URL || 'h
 const expectedCommit = process.env.QA_LAUNCH_EXPECTED_COMMIT || ''
 const releaseArtifact =
   process.env.QA_LAUNCH_RELEASE_ARTIFACT ||
-  'qa/release-candidate-full-with-multi-2026-05-21/summary.json'
+  'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const visualArtifact =
   process.env.QA_LAUNCH_VISUAL_ARTIFACT ||
-  'qa/visual-baseline-2026-05-21-full-with-multi-2026-05-21/summary.json'
+  'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
-  'qa/planner-generated-actuals-regional-edge-cities-2026-05-20.json'
+  'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const productionEvidence =
   process.env.QA_LAUNCH_PRODUCTION_EVIDENCE ||
   'qa/release-candidate-share-multi-integration-2026-05-21/README.md'
@@ -49,6 +49,8 @@ const requiredReleaseTasks = [
   'public share recovery smoke',
   'public share viral loop smoke',
   'public share map fallback smoke',
+  'planner generated actuals map trust',
+  'planner generated actuals prompt-suite cross-check',
   'public share fixture sweep',
   'public share multi-itinerary browser UI smoke',
   'public share feedback mutation smoke',
@@ -93,11 +95,11 @@ const requiredProtectedRoutes = [
 ]
 
 const requiredStripeScreenshots = [
-  'qa/stripe-checkout-browser-full-with-multi-2026-05-21/screenshots/stripe-checkout-loaded.png',
-  'qa/stripe-checkout-browser-full-with-multi-2026-05-21/screenshots/stripe-checkout-filled.png',
-  'qa/stripe-checkout-browser-full-with-multi-2026-05-21/screenshots/stripe-checkout-returned.png',
-  'qa/stripe-portal-browser-full-with-multi-2026-05-21/screenshots/stripe-portal-loaded.png',
-  'qa/stripe-portal-browser-full-with-multi-2026-05-21/screenshots/stripe-portal-returned.png',
+  'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-loaded.png',
+  'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-filled.png',
+  'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-returned.png',
+  'qa/stripe-portal-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-portal-loaded.png',
+  'qa/stripe-portal-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-portal-returned.png',
 ]
 
 const requiredPlannerActualIds = [
@@ -282,10 +284,11 @@ async function checkReleaseArtifact() {
     artifact: releaseArtifact,
   })
 
-  addCheck('full local release-candidate passed all top-level checks', summary.checked === 33 && summary.passed === 33 && summary.failed === 0, {
+  addCheck('full local release-candidate passed all top-level checks', summary.checked === requiredReleaseTasks.length && summary.passed === requiredReleaseTasks.length && summary.failed === 0, {
     checked: summary.checked,
     passed: summary.passed,
     failed: summary.failed,
+    requiredTaskCount: requiredReleaseTasks.length,
   })
 
   checkEvidenceFreshness('full local release-candidate', evidenceDateFrom(summary, releaseArtifact))
@@ -297,6 +300,7 @@ async function checkReleaseArtifact() {
     'includeShareFixtureSweep',
     'includeShareMultiItinerary',
     'includeOwnerFeedback',
+    'includePlannerActuals',
     'includeSlowNetwork',
     'includeStripeCheckout',
     'includeStripePortal',
