@@ -147,7 +147,7 @@ GitHub Actions production release gate:
 - Schedule: every 6 hours
 - Manual run: Actions -> Production release gate -> Run workflow
 - Default command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production`
-- Artifacts: `production-release-gate-log` on every run; `production-release-visual-<run_id>` when production visual QA is enabled.
+- Artifacts: `production-release-gate-log` on every run; `production-launch-signoff-log` when launch signoff is enabled; `production-release-visual-<run_id>` when production visual QA is enabled.
 - Mutation policy: feedback insertion is off by default; enable `include_feedback_mutation=1` only during an approved release window.
 - Visual isolation: `include_production_visual=0` may be used for visual-runner infrastructure debugging. The workflow still uploads the release log and skips only the visual artifact upload.
 

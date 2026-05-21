@@ -122,9 +122,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: production-release-gate-log
-          path: |
-            qa-ci/production-release-gate.log
-            qa-ci/launch-signoff.log
+          path: qa-ci/production-release-gate.log
+          if-no-files-found: error
+
+      - name: Upload launch signoff log
+        if: ${{ always() && env.QA_INCLUDE_LAUNCH_SIGNOFF != '0' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-launch-signoff-log
+          path: qa-ci/launch-signoff.log
           if-no-files-found: error
 
       - name: Upload release visual artifacts
