@@ -60,8 +60,22 @@ try {
   await gotoAccountBilling('')
   const initialText = await bodyText()
   record(
-    'billing surface visible',
-    initialText.includes('Plan and billing') && initialText.includes('Plan comparison') && initialText.includes('Start free trial')
+    'free subscription state shows upgrade path',
+    initialText.includes('Plan and billing') &&
+      initialText.includes('Explorer') &&
+      initialText.includes('Free') &&
+      initialText.includes('Start free trial') &&
+      initialText.includes('Plan comparison')
+  )
+
+  await gotoAccountBilling('&qaBillingState=active')
+  const activeText = await bodyText()
+  record(
+    'active subscription is shown as paid Adventurer access',
+    includesText(activeText, 'Adventurer') &&
+      includesText(activeText, 'Active') &&
+      includesText(activeText, 'Pro features are active on this account.') &&
+      includesText(activeText, 'Manage billing')
   )
 
   await gotoAccountBilling('&qaBillingState=trialing')
@@ -72,6 +86,17 @@ try {
       includesText(trialingText, 'Trial active') &&
       includesText(trialingText, 'Your Adventurer trial is active') &&
       includesText(trialingText, 'Manage billing')
+  )
+
+  await gotoAccountBilling('&qaBillingState=canceling')
+  const cancelingText = await bodyText()
+  record(
+    'cancel-at-period-end subscription keeps access clear',
+    includesText(cancelingText, 'Adventurer') &&
+      includesText(cancelingText, 'Cancels soon') &&
+      includesText(cancelingText, 'Your Adventurer plan stays active until the current period ends.') &&
+      includesText(cancelingText, 'Current period ends') &&
+      includesText(cancelingText, 'Manage billing')
   )
 
   await gotoAccountBilling('&qaBillingState=past_due')

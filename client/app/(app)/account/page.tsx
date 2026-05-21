@@ -45,6 +45,10 @@ function buildQaSubscription(state: string | null): Subscription | null {
     return { plan: 'free', status: 'active', currentPeriodEnd: null, cancelAtPeriodEnd: false, stripeCustomerId: null }
   }
 
+  if (state === 'canceling') {
+    return { ...base, plan: 'pro', status: 'active', cancelAtPeriodEnd: true }
+  }
+
   if (state === 'active' || state === 'trialing' || state === 'past_due' || state === 'canceled') {
     return { ...base, plan: 'pro', status: state }
   }
@@ -77,6 +81,10 @@ function billingSummary(subscription: Subscription | null | undefined, isPro: bo
 
   if (subscription.status === 'canceled') {
     return 'Your Adventurer subscription is canceled. Your saved work remains available.'
+  }
+
+  if (subscription.status === 'active' && subscription.cancelAtPeriodEnd) {
+    return 'Your Adventurer plan stays active until the current period ends.'
   }
 
   return isPro ? 'Pro features are active on this account.' : 'Free plan with generous limits to get started.'
@@ -413,7 +421,7 @@ function AccountPageContent() {
                         ? 'Checking subscription…'
                         : billingSummary(displayedSubscription, displayedIsPro)}
                     </p>
-                    <p className="mt-3 inline-flex rounded-full border border-rule bg-paper px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-foreground/45">
+                    <p className="mt-3 inline-flex rounded-full border border-rule bg-paper px-3 py-1 text-xs font-semibold text-foreground/55">
                       {billingStatusLabel(displayedSubscription)}
                     </p>
                     {displayedSubscription?.currentPeriodEnd && (
