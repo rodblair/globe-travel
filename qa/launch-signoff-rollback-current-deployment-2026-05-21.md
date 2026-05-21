@@ -11,14 +11,14 @@ Date: 2026-05-21
 - `npm run qa:launch-signoff` now passes live `/api/health` deployment metadata into the rollback-plan audit.
 - Launch signoff now fails unless `knownGoodDeployment.commit` and `knownGoodDeployment.url` match the live production deployment.
 - Launch signoff also requires `knownGoodDeployment.verifiedBy` to include the live commit and `npm run qa:launch-signoff`.
-- Updated `qa/launch-rollback-plan.json` to current production commit `b817921cdea00e8c2c7c9e2aec5d34e514d9ccdb` and deployment `globe-travel-ty3qj6o28-rodney-blairs-projects.vercel.app`.
+- Updated `qa/launch-rollback-plan.json` to current production commit `969d252249505e3ba99554cf2b749705f06168fa` and deployment `globe-travel-73le5w4y6-rodney-blairs-projects.vercel.app`.
 
 ## Verification
 
 Exact-commit launch signoff:
 
 ```bash
-QA_LAUNCH_EXPECTED_COMMIT=b817921cdea00e8c2c7c9e2aec5d34e514d9ccdb npm run qa:launch-signoff
+QA_LAUNCH_EXPECTED_COMMIT=969d252249505e3ba99554cf2b749705f06168fa npm run qa:launch-signoff
 ```
 
 Result: `34/34` passed.
