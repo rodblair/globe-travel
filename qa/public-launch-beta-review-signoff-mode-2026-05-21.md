@@ -19,8 +19,9 @@ The same public-launch mode also fails unless `qa/production-visual-review-regis
 
 - Commit `7df2ee01ebb4390f3fa0711cae2049b09e61052b` deployed to Vercel production with health `ok`, `11/11`.
 - The full production release gate passed `10/10`, including production visual QA `20/20`, public-share viral loop `5/5`, Athens public-share map integrity, and prompt-suite production actual validation `60/60`.
-- Default exact-commit signoff passed `69/69` for beta/release-candidate operations, including `25/25` beta reviewer packet coverage and the `3/3` future production visual-review schedule.
+- Default exact-commit signoff passed `72/72` for beta/release-candidate operations, including `25/25` beta reviewer packet coverage, beta review progress artifact consistency, and the `3/3` future production visual-review schedule.
 - `QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS=1 QA_LAUNCH_EXPECTED_COMMIT=7df2ee01ebb4390f3fa0711cae2049b09e61052b npm run qa:launch-signoff` fails as expected with `0/25` completed beta reviews and `1/4` required production visual-review history entries.
+- `QA_BETA_REVIEW_PROGRESS_REQUIRE_PUBLIC=1 npm run qa:beta-review-progress` fails as expected with `0/25` completed beta reviews and missing completed-review matrix coverage.
 
 ## Release Meaning
 

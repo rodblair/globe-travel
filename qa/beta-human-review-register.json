@@ -5,8 +5,11 @@
   "sourceActualsArtifact": "qa/planner-generated-actuals-beta-representative-2026-05-21.json",
   "reviewerPacketManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
   "reviewerPacketDirectory": "qa/beta-human-review-packets-2026-05-21",
+  "progressArtifact": "qa/beta-human-review-progress-2026-05-21.json",
   "minimumCompletedReviewsForPublicLaunch": 25,
   "targetCompletedReviewsBeforePublicLaunch": 50,
+  "minimumAverageScoreForPublicLaunch": 4,
+  "minimumFieldAverageScoreForPublicLaunch": 3.75,
   "policy": "Invite beta may proceed with this intake-ready matrix. Public launch approval requires at least 25 completed human or representative reviews, zero unresolved P0/P1 findings, and Product acceptance of any remaining P2 issues.",
   "scorecardFields": [
     "firstMinuteClarity",

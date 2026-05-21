@@ -1,0 +1,145 @@
+{
+  "date": "2026-05-21",
+  "registerPath": "qa/beta-human-review-register.json",
+  "jsonArtifact": "qa/beta-human-review-progress-2026-05-21.json",
+  "reportArtifact": "qa/beta-human-review-progress-2026-05-21.md",
+  "status": "pass",
+  "requirePublicProgress": false,
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "plannedReviewCount": 25,
+  "completedReviewCount": 0,
+  "publicLaunchMinimum": 25,
+  "targetCompletedReviews": 50,
+  "remainingReviewsForMinimum": 25,
+  "completionPercent": 0,
+  "completedCoverage": {
+    "audiences": [],
+    "styles": [],
+    "regions": [],
+    "devices": [],
+    "surfaces": [],
+    "gaps": {
+      "audiences": [
+        "friend-group",
+        "couple",
+        "family",
+        "solo"
+      ],
+      "styles": [
+        "budget",
+        "premium",
+        "food",
+        "nightlife",
+        "outdoors",
+        "culture"
+      ],
+      "regions": [
+        "Africa",
+        "Asia",
+        "Europe",
+        "Latin America",
+        "North America",
+        "Oceania"
+      ],
+      "devices": [
+        "phone",
+        "desktop"
+      ],
+      "surfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback",
+        "save-reopen"
+      ]
+    }
+  },
+  "completedReviewEvidenceGapCount": 0,
+  "unresolvedBlockingFindingCount": 0,
+  "unresolvedP2FindingCount": 0,
+  "scorecardAverages": {
+    "firstMinuteClarity": null,
+    "itineraryUsefulness": null,
+    "mapTrust": null,
+    "editAndSwapConfidence": null,
+    "saveReopenConfidence": null,
+    "feedbackLoopClarity": null,
+    "shareRecipientClarity": null,
+    "mobileUsability": null,
+    "paidValueCredibility": null
+  },
+  "overallAverageScore": null,
+  "minimumAverageScore": 4,
+  "minimumFieldAverageScore": 3.75,
+  "weakScoreFields": [],
+  "publicLaunchReadiness": {
+    "status": "blocked",
+    "blockers": [
+      "25 more completed beta reviews required",
+      "completed-review matrix coverage is incomplete"
+    ]
+  },
+  "checks": [
+    {
+      "name": "beta human review progress register is owned and dated",
+      "ok": true,
+      "owner": "Product",
+      "reviewedAt": "2026-05-21",
+      "status": "intake-ready"
+    },
+    {
+      "name": "beta human review progress tracks planned and completed review counts",
+      "ok": true,
+      "plannedReviewCount": 25,
+      "completedReviewCount": 0,
+      "completionPercent": 0,
+      "publicLaunchMinimum": 25,
+      "targetCompletedReviews": 50,
+      "remainingReviewsForMinimum": 25
+    },
+    {
+      "name": "completed beta reviews include auditable evidence",
+      "ok": true,
+      "completedReviewCount": 0,
+      "completedReviewEvidenceGapCount": 0,
+      "completedReviewEvidenceGaps": []
+    },
+    {
+      "name": "completed beta reviews have no unresolved P0/P1 findings",
+      "ok": true,
+      "unresolvedBlockingFindingCount": 0,
+      "unresolvedBlockingFindings": []
+    },
+    {
+      "name": "completed beta review scorecard telemetry is computable",
+      "ok": true,
+      "completedReviewCount": 0,
+      "overallAverageScore": null,
+      "scorecardAverages": {
+        "firstMinuteClarity": null,
+        "itineraryUsefulness": null,
+        "mapTrust": null,
+        "editAndSwapConfidence": null,
+        "saveReopenConfidence": null,
+        "feedbackLoopClarity": null,
+        "shareRecipientClarity": null,
+        "mobileUsability": null,
+        "paidValueCredibility": null
+      }
+    },
+    {
+      "name": "public-launch score thresholds will be enforced once the review sample is complete",
+      "ok": true,
+      "publicLaunchMinimum": 25,
+      "completedReviewCount": 0,
+      "minimumAverageScore": 4,
+      "minimumFieldAverageScore": 3.75,
+      "overallAverageScore": null,
+      "weakScoreFields": []
+    }
+  ],
+  "failures": []
+}

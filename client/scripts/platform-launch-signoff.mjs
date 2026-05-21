@@ -967,6 +967,14 @@ async function checkBetaHumanReviewRegister() {
       return (severity === 'P0' || severity === 'P1') && status !== 'closed'
     })
   })
+  const unresolvedBlockingFindingCount = completedReviews.reduce((count, review) => {
+    const findings = Array.isArray(review.findings) ? review.findings : []
+    return count + findings.filter((finding) => {
+      const severity = String(finding.severity || '').toUpperCase()
+      const status = String(finding.status || '').toLowerCase()
+      return (severity === 'P0' || severity === 'P1') && status !== 'closed'
+    }).length
+  }, 0)
   addCheck('completed beta human reviews include required reviewer evidence', completedReviewEvidenceGaps.length === 0, {
     completedReviewCount: completedReviews.length,
     requiredCompletedBetaReviewFields,
@@ -974,6 +982,54 @@ async function checkBetaHumanReviewRegister() {
   })
 
   const publicLaunchMinimum = Number(register.minimumCompletedReviewsForPublicLaunch) || 25
+  let progressArtifact = null
+  if (hasMeaningfulText(register.progressArtifact)) {
+    try {
+      progressArtifact = await readJson(register.progressArtifact)
+      addCheck('beta human review progress artifact is readable', true, {
+        artifact: register.progressArtifact,
+        status: progressArtifact.status || null,
+        completedReviewCount: progressArtifact.completedReviewCount ?? null,
+        publicLaunchStatus: progressArtifact.publicLaunchReadiness?.status || null,
+      })
+      checkEvidenceFreshness(
+        'beta human review progress',
+        evidenceDateFrom(progressArtifact, register.progressArtifact),
+      )
+    } catch (error) {
+      addCheck('beta human review progress artifact is readable', false, {
+        artifact: register.progressArtifact,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  } else {
+    addCheck('beta human review progress artifact is configured', false, {
+      artifact: null,
+    })
+  }
+
+  if (progressArtifact) {
+    addCheck('beta human review progress artifact matches current register', (
+      Number(progressArtifact.plannedReviewCount) === plannedReviews.length &&
+      Number(progressArtifact.completedReviewCount) === completedReviews.length &&
+      Number(progressArtifact.publicLaunchMinimum) === publicLaunchMinimum &&
+      Number(progressArtifact.completedReviewEvidenceGapCount) === completedReviewEvidenceGaps.length &&
+      Number(progressArtifact.unresolvedBlockingFindingCount) === unresolvedBlockingFindingCount
+    ), {
+      plannedReviewCount: plannedReviews.length,
+      progressPlannedReviewCount: progressArtifact.plannedReviewCount ?? null,
+      completedReviewCount: completedReviews.length,
+      progressCompletedReviewCount: progressArtifact.completedReviewCount ?? null,
+      publicLaunchMinimum,
+      progressPublicLaunchMinimum: progressArtifact.publicLaunchMinimum ?? null,
+      completedReviewEvidenceGapCount: completedReviewEvidenceGaps.length,
+      progressCompletedReviewEvidenceGapCount: progressArtifact.completedReviewEvidenceGapCount ?? null,
+      unresolvedBlockingReviewCount: unresolvedBlockingReviews.length,
+      unresolvedBlockingFindingCount,
+      progressUnresolvedBlockingFindingCount: progressArtifact.unresolvedBlockingFindingCount ?? null,
+    })
+  }
+
   if (requirePublicBetaReviews) {
     addCheck('public-launch beta human review threshold is met', completedReviews.length >= publicLaunchMinimum, {
       completedReviewCount: completedReviews.length,
