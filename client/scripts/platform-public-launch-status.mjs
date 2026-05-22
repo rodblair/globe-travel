@@ -51,6 +51,9 @@ const visualSchedulePath = process.env.QA_VISUAL_REVIEW_SCHEDULE || 'qa/producti
 const visualDispatchOutboxPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX || 'qa/production-visual-review-dispatch-outbox-2026-05-21.json'
 const visualDispatchOutboxReportPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_REPORT || 'qa/production-visual-review-dispatch-outbox-2026-05-21.md'
 const visualDispatchOutboxCsvPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_CSV || 'qa/production-visual-review-dispatch-outbox-2026-05-21.csv'
+const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG || 'qa/production-visual-review-dispatch-log-2026-05-21.json'
+const visualDispatchLogReportPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG_REPORT || 'qa/production-visual-review-dispatch-log-2026-05-21.md'
+const visualDispatchLogCsvPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG_CSV || 'qa/production-visual-review-dispatch-log-2026-05-21.csv'
 const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
@@ -659,6 +662,9 @@ const [
   visualDispatchOutbox,
   visualDispatchOutboxReport,
   visualDispatchOutboxCsv,
+  visualDispatchLog,
+  visualDispatchLogReport,
+  visualDispatchLogCsv,
   monitoringRegister,
   rollbackPlan,
   riskRegister,
@@ -719,6 +725,9 @@ const [
   readJson(visualDispatchOutboxPath),
   readText(visualDispatchOutboxReportPath),
   readText(visualDispatchOutboxCsvPath),
+  readJson(visualDispatchLogPath),
+  readText(visualDispatchLogReportPath),
+  readText(visualDispatchLogCsvPath),
   readJson(monitoringRegisterPath),
   readJson(rollbackPath),
   readJson(riskRegisterPath),
@@ -1718,6 +1727,42 @@ if (!visualDispatchOutboxReport.includes('This dispatch outbox is assignment and
   visualDispatchOutboxIssues.push('visual dispatch outbox report does not restate the evidence boundary')
 }
 
+const visualDispatchLogIssues = []
+const visualDispatchLogRows = Array.isArray(visualDispatchLog.dispatchRows) ? visualDispatchLog.dispatchRows : []
+const visualDispatchLogChecks = Array.isArray(visualDispatchLog.checks) ? visualDispatchLog.checks : []
+if (visualDispatchLog.status !== 'pass') visualDispatchLogIssues.push('visual dispatch log status is not pass')
+if (visualDispatchLog.dispatchOutboxArtifact && visualDispatchLog.dispatchOutboxArtifact !== qaDisplayPath(visualDispatchOutboxPath)) {
+  visualDispatchLogIssues.push(`visual dispatch log source ${visualDispatchLog.dispatchOutboxArtifact} does not match ${qaDisplayPath(visualDispatchOutboxPath)}`)
+}
+if (Number(visualDispatchLog.dispatchRowCount) !== Number(visualDispatchOutbox.outboxRowCount || 0)) {
+  visualDispatchLogIssues.push(`visual dispatch log row count ${visualDispatchLog.dispatchRowCount ?? 'missing'} does not match dispatch outbox row count ${visualDispatchOutbox.outboxRowCount ?? 0}`)
+}
+if (Number(visualDispatchLog.requiredDispatchRowCount || 0) !== Number(visualDispatchOutbox.requiredOutboxRowCount || 0)) {
+  visualDispatchLogIssues.push(`visual dispatch log required row count ${visualDispatchLog.requiredDispatchRowCount ?? 'missing'} does not match dispatch outbox required row count ${visualDispatchOutbox.requiredOutboxRowCount ?? 0}`)
+}
+if (Number(visualDispatchLog.sentCount || 0) + Number(visualDispatchLog.preparedNotSentCount || 0) !== visualDispatchLogRows.length) {
+  visualDispatchLogIssues.push('visual dispatch log sent and prepared counts do not match dispatch rows')
+}
+if (Number(visualDispatchLog.preparedOverdueCount || 0) > 0) {
+  visualDispatchLogIssues.push(`visual dispatch log has ${visualDispatchLog.preparedOverdueCount} prepared row(s) past due date`)
+}
+for (const row of visualDispatchLogRows) {
+  if (!row.id || !visualDispatchOutboxCsv.includes(row.id)) visualDispatchLogIssues.push(`visual dispatch log row ${row.id || 'unknown'} is not present in the dispatch outbox CSV`)
+  if (row.messageFile && !visualDispatchOutboxCsv.includes(row.messageFile)) visualDispatchLogIssues.push(`visual dispatch log row ${row.id || 'unknown'} message file is not present in the dispatch outbox CSV`)
+  if (row.command && !visualDispatchOutboxCsv.includes(row.command)) visualDispatchLogIssues.push(`visual dispatch log row ${row.id || 'unknown'} command is not present in the dispatch outbox CSV`)
+  if (row.completedSubmissionPath && !visualDispatchOutboxCsv.includes(row.completedSubmissionPath)) visualDispatchLogIssues.push(`visual dispatch log row ${row.id || 'unknown'} completed submission path is not present in the dispatch outbox CSV`)
+}
+for (const check of visualDispatchLogChecks) {
+  if (!check.ok) visualDispatchLogIssues.push(`visual dispatch log check failed: ${check.name || 'unknown'}`)
+}
+if (!visualDispatchLogReport.includes('Status: pass')) visualDispatchLogIssues.push('visual dispatch log report is not passing')
+if (!visualDispatchLogReport.includes('This dispatch log is send-proof workflow evidence, not completed visual-review history')) {
+  visualDispatchLogIssues.push('visual dispatch log report does not restate the evidence boundary')
+}
+for (const row of visualDispatchLogRows) {
+  if (row.id && !visualDispatchLogCsv.includes(row.id)) visualDispatchLogIssues.push(`visual dispatch log CSV missing row ${row.id}`)
+}
+
 const blockerBoardIssues = []
 const blockerBoardRows = Array.isArray(blockerBoard.rows) ? blockerBoard.rows : []
 const blockerBoardBetaRows = blockerBoardRows.filter((row) => row.workType === 'beta-human-review')
@@ -2143,6 +2188,7 @@ if (visualProgressIssues.length > 0) guardrailIssues.push('production visual rev
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
 if (visualQueueIssues.length > 0) guardrailIssues.push('production visual review assignment queue is not fully prepared')
 if (visualDispatchOutboxIssues.length > 0) guardrailIssues.push('production visual review dispatch outbox is not fully prepared')
+if (visualDispatchLogIssues.length > 0) guardrailIssues.push('production visual review dispatch log is not fully prepared')
 if (incompleteAcceptedP2Risks.length > 0) {
   guardrailIssues.push('open accepted P2 launch risks are missing owner, target month, or accepted-risk notes')
 }
@@ -2416,6 +2462,8 @@ const summary = {
     assignmentQueueIssueCount: visualQueueIssues.length,
     dispatchOutboxReady: visualDispatchOutboxIssues.length === 0,
     dispatchOutboxIssueCount: visualDispatchOutboxIssues.length,
+    dispatchLogReady: visualDispatchLogIssues.length === 0,
+    dispatchLogIssueCount: visualDispatchLogIssues.length,
     dispatchOutboxArtifact: qaDisplayPath(visualDispatchOutboxPath),
     dispatchOutboxReport: qaDisplayPath(visualDispatchOutboxReportPath),
     dispatchOutboxCsv: qaDisplayPath(visualDispatchOutboxCsvPath),
@@ -2425,6 +2473,17 @@ const summary = {
     dispatchOutboxMessageFileCount: visualDispatchOutbox.messageFileCount ?? null,
     dispatchOutboxDueSoonCount: visualDispatchOutbox.dueSoonCount ?? null,
     dispatchOutboxOverdueCount: visualDispatchOutbox.overdueCount ?? null,
+    dispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
+    dispatchLogReport: qaDisplayPath(visualDispatchLogReportPath),
+    dispatchLogCsv: qaDisplayPath(visualDispatchLogCsvPath),
+    dispatchLogRowCount: visualDispatchLog.dispatchRowCount ?? null,
+    dispatchLogRequiredRowCount: visualDispatchLog.requiredDispatchRowCount ?? null,
+    dispatchLogSentCount: visualDispatchLog.sentCount ?? null,
+    dispatchLogPreparedNotSentCount: visualDispatchLog.preparedNotSentCount ?? null,
+    dispatchLogRequiredPreparedNotSentCount: visualDispatchLog.requiredPreparedNotSentCount ?? null,
+    dispatchLogPreparedDueSoonCount: visualDispatchLog.preparedDueSoonCount ?? null,
+    dispatchLogPreparedOverdueCount: visualDispatchLog.preparedOverdueCount ?? null,
+    dispatchLogRequireSent: visualDispatchLog.requireSent ?? null,
     assignmentCsv: qaDisplayPath(visualAssignmentCsvPath),
     assignmentReport: qaDisplayPath(visualAssignmentReportPath),
     submissionTemplateDir: qaDisplayPath(visualSubmissionDir),
@@ -2432,6 +2491,7 @@ const summary = {
     progressIssues: visualProgressIssues,
     queueIssues: visualQueueIssues,
     dispatchOutboxIssues: visualDispatchOutboxIssues,
+    dispatchLogIssues: visualDispatchLogIssues,
   },
   publicLaunchBlockerBoard: {
     ready: blockerBoardIssues.length === 0,
@@ -2888,6 +2948,7 @@ Status: ${status}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Production visual review dispatch outbox ready: ${summary.productionVisualReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchOutboxMessageFileCount || 0} message files, ${summary.productionVisualReviews.dispatchOutboxRequiredRowCount || 0} required)
+- Production visual review dispatch log ready: ${summary.productionVisualReviews.dispatchLogReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchLogSentCount || 0} sent, ${summary.productionVisualReviews.dispatchLogPreparedNotSentCount || 0} prepared not sent)
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
 - Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual)
 - Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
@@ -2962,6 +3023,9 @@ ${markdownList(visualQueueIssues)}
 Production visual-review dispatch outbox:
 ${markdownList(visualDispatchOutboxIssues)}
 
+Production visual-review dispatch log:
+${markdownList(visualDispatchLogIssues)}
+
 Public launch blocker board:
 ${markdownList(blockerBoardIssues)}
 
@@ -3022,6 +3086,7 @@ ${markdownList(summary.nextActions)}
 - Visual intake: \`${summary.productionVisualReviews.intakeArtifact}\`
 - Visual assignment board: \`${summary.productionVisualReviews.assignmentReport}\` and \`${summary.productionVisualReviews.assignmentCsv}\`
 - Visual dispatch outbox: \`${summary.productionVisualReviews.dispatchOutboxArtifact}\`, \`${summary.productionVisualReviews.dispatchOutboxReport}\`, \`${summary.productionVisualReviews.dispatchOutboxCsv}\`, and \`${summary.productionVisualReviews.dispatchOutboxArtifactDir}\`
+- Visual dispatch log: \`${summary.productionVisualReviews.dispatchLogArtifact}\`, \`${summary.productionVisualReviews.dispatchLogReport}\`, and \`${summary.productionVisualReviews.dispatchLogCsv}\`
 - Visual submission templates: \`${summary.productionVisualReviews.submissionTemplateDir}\`
 - Monitoring register: \`${summary.artifacts.monitoringRegister}\`
 - Rollback plan: \`${summary.artifacts.rollbackPlan}\`

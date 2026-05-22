@@ -2869,6 +2869,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   const visualDispatchOutboxIssues = Array.isArray(visualReviewStatus.dispatchOutboxIssues) ? visualReviewStatus.dispatchOutboxIssues : []
+  const visualDispatchLogIssues = Array.isArray(visualReviewStatus.dispatchLogIssues) ? visualReviewStatus.dispatchLogIssues : []
   addCheck('public launch status includes beta review wave browser rehearsal', (
     betaReviewStatus.waveRehearsalReady === true &&
     betaReviewStatus.waveRehearsalStatus === 'pass' &&
@@ -3215,8 +3216,17 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(visualReviewStatus.dispatchOutboxRequiredRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
     Number(visualReviewStatus.dispatchOutboxMessageFileCount) === Number(visualReviewStatus.dispatchOutboxRowCount || 0) &&
     Number(visualReviewStatus.dispatchOutboxOverdueCount) === 0 &&
+    visualReviewStatus.dispatchLogReady === true &&
+    hasMeaningfulText(visualReviewStatus.dispatchLogArtifact) &&
+    hasMeaningfulText(visualReviewStatus.dispatchLogReport) &&
+    hasMeaningfulText(visualReviewStatus.dispatchLogCsv) &&
+    Number(visualReviewStatus.dispatchLogIssueCount) === 0 &&
+    Number(visualReviewStatus.dispatchLogRowCount) === Number(visualReviewStatus.dispatchOutboxRowCount || 0) &&
+    Number(visualReviewStatus.dispatchLogRequiredRowCount) === Number(visualReviewStatus.dispatchOutboxRequiredRowCount || 0) &&
+    Number(visualReviewStatus.dispatchLogPreparedOverdueCount) === 0 &&
     visualProgressIssues.length === 0 &&
     visualDispatchOutboxIssues.length === 0 &&
+    visualDispatchLogIssues.length === 0 &&
     visualQueueIssues.length === 0
   ), {
     betaAssignmentQueueReady: betaReviewStatus.assignmentQueueReady ?? null,
@@ -3350,6 +3360,19 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     visualDispatchOutboxMessageFileCount: visualReviewStatus.dispatchOutboxMessageFileCount ?? null,
     visualDispatchOutboxOverdueCount: visualReviewStatus.dispatchOutboxOverdueCount ?? null,
     visualDispatchOutboxIssues,
+    visualDispatchLogReady: visualReviewStatus.dispatchLogReady ?? null,
+    visualDispatchLogIssueCount: visualReviewStatus.dispatchLogIssueCount ?? null,
+    visualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact ?? null,
+    visualDispatchLogReport: visualReviewStatus.dispatchLogReport ?? null,
+    visualDispatchLogCsv: visualReviewStatus.dispatchLogCsv ?? null,
+    visualDispatchLogRowCount: visualReviewStatus.dispatchLogRowCount ?? null,
+    visualDispatchLogRequiredRowCount: visualReviewStatus.dispatchLogRequiredRowCount ?? null,
+    visualDispatchLogSentCount: visualReviewStatus.dispatchLogSentCount ?? null,
+    visualDispatchLogPreparedNotSentCount: visualReviewStatus.dispatchLogPreparedNotSentCount ?? null,
+    visualDispatchLogRequiredPreparedNotSentCount: visualReviewStatus.dispatchLogRequiredPreparedNotSentCount ?? null,
+    visualDispatchLogPreparedDueSoonCount: visualReviewStatus.dispatchLogPreparedDueSoonCount ?? null,
+    visualDispatchLogPreparedOverdueCount: visualReviewStatus.dispatchLogPreparedOverdueCount ?? null,
+    visualDispatchLogIssues,
     visualQueueIssues,
   })
 
