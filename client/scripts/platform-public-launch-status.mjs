@@ -30,6 +30,17 @@ const requiredBetaReviewScorecardFields = [
   'mobileUsability',
   'paidValueCredibility',
 ]
+const requiredBetaPacketEvidenceFields = [
+  'reviewerRole',
+  'routeOrShareUrl',
+  'viewport',
+  'device',
+  'completedAt',
+  'firstMinuteOutcome',
+  'mapTrustNotes',
+  'shareFeedbackOutcome',
+  'findings',
+]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
@@ -132,6 +143,40 @@ function summarizeBlocker(id, title, detail) {
   return { id, title, detail }
 }
 
+function betaPacketMarkdownIssues(text, packet) {
+  const issues = []
+  const body = String(text || '')
+  const requiredStrings = [
+    packet.id,
+    packet.destination,
+    packet.audience,
+    packet.style,
+    packet.region,
+    packet.device,
+    packet.viewport,
+    packet.sourceActualId,
+    packet.startUrl,
+    packet.prompt,
+    packet.submissionTemplatePath,
+    'Public launch is blocked by any unresolved P0/P1 finding',
+  ].filter(Boolean)
+
+  for (const value of requiredStrings) {
+    if (!body.includes(value)) issues.push(`packet markdown missing ${value}`)
+  }
+  for (const surface of packet.surfaces || []) {
+    if (!body.includes(`- [ ] ${surface}:`)) issues.push(`packet markdown missing surface task ${surface}`)
+  }
+  for (const field of requiredBetaReviewScorecardFields) {
+    if (!body.includes(`- [ ] ${field}`)) issues.push(`packet markdown missing scorecard field ${field}`)
+  }
+  for (const field of requiredBetaPacketEvidenceFields) {
+    if (!body.includes(`- [ ] ${field}`)) issues.push(`packet markdown missing evidence field ${field}`)
+  }
+
+  return issues
+}
+
 const [
   betaRegister,
   betaPacketManifest,
@@ -207,6 +252,7 @@ const [
   readableText(visualAssignmentReportPath),
   Promise.all(betaPacketRecords.map(async (packet) => ({
     id: packet.id || null,
+    packet,
     path: packet.packetPath || null,
     ...(await readableText(packet.packetPath || '')),
   }))),
@@ -257,6 +303,11 @@ for (const id of plannedBetaIds.filter((id) => !betaPacketIds.includes(id))) {
 }
 for (const file of betaPacketFileChecks.filter((file) => !file.ok)) {
   betaQueueIssues.push(`beta reviewer packet is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
+}
+for (const file of betaPacketFileChecks.filter((file) => file.ok)) {
+  for (const issue of betaPacketMarkdownIssues(file.text, file.packet)) {
+    betaQueueIssues.push(`beta reviewer packet ${file.path}: ${issue}`)
+  }
 }
 for (const file of betaSubmissionTemplateChecks.filter((file) => !file.ok)) {
   betaQueueIssues.push(`beta submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)

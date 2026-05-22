@@ -245,6 +245,17 @@ const requiredCompletedBetaReviewFields = [
   'scorecard',
   'findings',
 ]
+const requiredBetaPacketEvidenceFields = [
+  'reviewerRole',
+  'routeOrShareUrl',
+  'viewport',
+  'device',
+  'completedAt',
+  'firstMinuteOutcome',
+  'mapTrustNotes',
+  'shareFeedbackOutcome',
+  'findings',
+]
 const allowedBetaFindingSeverities = new Set(['P0', 'P1', 'P2', 'P3'])
 const allowedBetaFindingStatuses = new Set(['open', 'closed', 'accepted-risk'])
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
@@ -486,6 +497,40 @@ function betaSubmissionTemplateIssues(template, packet) {
     if (missingScorecardFields.length > 0) {
       issues.push(`scorecard missing fields: ${missingScorecardFields.join(', ')}`)
     }
+  }
+
+  return issues
+}
+
+function betaPacketMarkdownIssues(text, packet) {
+  const issues = []
+  const body = String(text || '')
+  const requiredStrings = [
+    packet.id,
+    packet.destination,
+    packet.audience,
+    packet.style,
+    packet.region,
+    packet.device,
+    packet.viewport,
+    packet.sourceActualId,
+    packet.startUrl,
+    packet.prompt,
+    packet.submissionTemplatePath,
+    'Public launch is blocked by any unresolved P0/P1 finding',
+  ].filter(Boolean)
+
+  for (const value of requiredStrings) {
+    if (!body.includes(value)) issues.push(`packet markdown missing ${value}`)
+  }
+  for (const surface of packet.surfaces || []) {
+    if (!body.includes(`- [ ] ${surface}:`)) issues.push(`packet markdown missing surface task ${surface}`)
+  }
+  for (const field of requiredBetaReviewScorecardFields) {
+    if (!body.includes(`- [ ] ${field}`)) issues.push(`packet markdown missing scorecard field ${field}`)
+  }
+  for (const field of requiredBetaPacketEvidenceFields) {
+    if (!body.includes(`- [ ] ${field}`)) issues.push(`packet markdown missing evidence field ${field}`)
   }
 
   return issues
@@ -1074,15 +1119,27 @@ async function checkBetaHumanReviewRegister() {
       id: packet.id || '(missing id)',
       path: packet.packetPath || null,
       exists: hasMeaningfulText(packet.packetPath) ? await fileExists(packet.packetPath) : false,
+      issues: hasMeaningfulText(packet.packetPath) ? [] : ['packet path is missing'],
       hasStartUrl: hasMeaningfulText(packet.startUrl),
       hasViewport: hasMeaningfulText(packet.viewport),
       hasSurfaces: Array.isArray(packet.surfaces) && packet.surfaces.length > 0,
     })))
+    for (const packetFile of packetFiles) {
+      const packet = packets.find((item) => item.id === packetFile.id)
+      if (!packetFile.exists || !packet) continue
+      try {
+        const packetText = await readText(packetFile.path)
+        packetFile.issues = betaPacketMarkdownIssues(packetText, packet)
+      } catch (error) {
+        packetFile.issues = [`packet is not readable text: ${error instanceof Error ? error.message : String(error)}`]
+      }
+    }
     const badPacketFiles = packetFiles.filter((packet) => (
       !packet.exists ||
       !packet.hasStartUrl ||
       !packet.hasViewport ||
-      !packet.hasSurfaces
+      !packet.hasSurfaces ||
+      packet.issues.length > 0
     ))
 
     addCheck('beta human review reviewer packets cover every planned review', (
