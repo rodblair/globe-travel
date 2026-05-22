@@ -9,7 +9,7 @@ Base URL: `https://globe-travel-two.vercel.app`
 - Checked: `9`
 - Passed: `9`
 - Failed: `0`
-- Signals covered: `12/11`
+- Signals covered: `15/15`
 - Workflow monitors: `2`
 
 ## Live Deployment

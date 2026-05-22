@@ -25,6 +25,7 @@
         "landing",
         "login",
         "signup",
+        "pricing",
         "public-share-page",
         "public-share-api",
         "feedback-api",
@@ -56,6 +57,21 @@
       ]
     },
     {
+      "id": "production-app-surface-accessibility",
+      "name": "Production app surface and accessibility gates",
+      "kind": "release-command",
+      "cadence": "before launch approval and after compatibility route changes",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:app-surfaces-production && QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_A11Y_AUTH_MODE=guest QA_A11Y_ALLOW_REMOTE_GUEST=1 npm run qa:a11y",
+      "signals": [
+        "app-surface-gate",
+        "accessibility-keyboard",
+        "trip-entry-compat",
+        "pricing",
+        "health",
+        "rollback"
+      ]
+    },
+    {
       "id": "health-contract",
       "name": "Production health contract",
       "kind": "release-command",
@@ -84,6 +100,10 @@
     "triggers": [
       "Any 5xx on monitored pages or APIs",
       "/api/health is not ok or reports criticalMissing above 0",
+      "/pricing fails, loses conversion copy, or shows application errors",
+      "/trips or /trips/new fail, redirect to the wrong surface, or show application errors",
+      "app surface gate finds broken compatibility redirects, missing markers, cleanup failures, or horizontal-overflow issues",
+      "accessibility gate finds blocking focus, landmark, skip-link, axe, marker, or cleanup issues",
       "public share route loses trip-specific metadata or itinerary content",
       "public share feedback API stops returning structured JSON",
       "visual gate reports app errors, horizontal overflow, clipped primary text, overlapping controls, or unexpected stable-route diffs",
@@ -105,6 +125,8 @@
     "relatedCommands": [
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:app-surfaces-production",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_A11Y_AUTH_MODE=guest QA_A11Y_ALLOW_REMOTE_GUEST=1 npm run qa:a11y",
       "npm run qa:production-monitoring",
       "QA_LAUNCH_EXPECTED_COMMIT=7cd3c2532dfc81523303a96915171b4c6108ffd7 npm run qa:launch-signoff"
     ],

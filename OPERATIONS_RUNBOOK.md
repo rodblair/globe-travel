@@ -166,6 +166,9 @@ GitHub Actions production visual gate:
 Add external uptime or scheduled checks for:
 
 - `/api/health`
+- `/pricing`
+- `/trips`
+- `/trips/new`
 - `/`
 - `/login`
 - `/signup`
@@ -177,6 +180,10 @@ Alert on:
 
 - Any `5xx`
 - `/api/health` not `ok`
+- `/pricing` fails, loses conversion copy, or shows application errors
+- `/trips` or `/trips/new` fail, redirect to the wrong surface, or show application errors
+- app surface gate reports broken compatibility redirects, missing markers, cleanup failures, or horizontal-overflow issues
+- accessibility gate reports blocking focus, landmark, skip-link, axe, marker, or cleanup issues
 - public share route not returning trip-specific metadata
 - public feedback validation not returning structured JSON
 - production smoke failure
