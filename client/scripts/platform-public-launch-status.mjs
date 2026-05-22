@@ -41,6 +41,36 @@ const requiredBetaPacketEvidenceFields = [
   'shareFeedbackOutcome',
   'findings',
 ]
+const requiredMonitoringSignals = [
+  'health',
+  'landing',
+  'login',
+  'signup',
+  'public-share-page',
+  'public-share-api',
+  'feedback-api',
+  'release-gate',
+  'visual-gate',
+  'launch-signoff',
+  'rollback',
+]
+const requiredMonitoringAlertMarkers = [
+  '5xx',
+  '/api/health',
+  'public share',
+  'visual',
+  'release gate',
+  'launch signoff',
+]
+const requiredMonitoringRunbookMarkers = [
+  'Monitoring Targets',
+  '.github/workflows/production-release-gate.yml',
+  '.github/workflows/production-visual-gate.yml',
+  '/api/health',
+  '/t/x3m2c8cnws',
+  '/api/trips/share/x3m2c8cnws',
+  'Alert on',
+]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
@@ -277,6 +307,52 @@ const [
   })),
 ])
 
+const monitoringMonitors = Array.isArray(monitoringRegister.monitors) ? monitoringRegister.monitors : []
+const coveredMonitoringSignals = unique(monitoringMonitors.flatMap((monitor) => (
+  Array.isArray(monitor.signals) ? monitor.signals : []
+)))
+const missingMonitoringSignals = missingFrom(coveredMonitoringSignals, requiredMonitoringSignals)
+const monitoringWorkflowChecks = await Promise.all(monitoringMonitors
+  .filter((monitor) => monitor.kind === 'github-actions')
+  .map(async (monitor) => {
+    const workflow = await readableText(monitor.workflowFile || '')
+    const workflowText = workflow.text || ''
+    const lowerWorkflowText = workflowText.toLowerCase()
+    const missingMarkers = (Array.isArray(monitor.commandMarkers) ? monitor.commandMarkers : [])
+      .filter((marker) => !lowerWorkflowText.includes(String(marker).toLowerCase()))
+    return {
+      id: monitor.id || null,
+      workflowFile: monitor.workflowFile || null,
+      readable: workflow.ok,
+      hasSchedule: /^  schedule:/m.test(workflowText) || /\n  schedule:\n/m.test(workflowText),
+      missingMarkers,
+      error: workflow.error,
+    }
+  }))
+const monitoringWorkflowIssues = monitoringWorkflowChecks
+  .filter((workflow) => !workflow.readable || !workflow.hasSchedule || workflow.missingMarkers.length > 0)
+const monitoringAlertText = JSON.stringify(monitoringRegister.alertPolicy || {}).toLowerCase()
+const missingMonitoringAlertMarkers = requiredMonitoringAlertMarkers
+  .filter((marker) => !monitoringAlertText.includes(marker.toLowerCase()))
+const monitoringFirstResponseSteps = Array.isArray(monitoringRegister.alertPolicy?.firstResponseSteps)
+  ? monitoringRegister.alertPolicy.firstResponseSteps
+  : []
+const monitoringAlertReady =
+  hasText(monitoringRegister.alertPolicy?.owner) &&
+  Array.isArray(monitoringRegister.alertPolicy?.triggers) &&
+  monitoringRegister.alertPolicy.triggers.length >= requiredMonitoringAlertMarkers.length &&
+  missingMonitoringAlertMarkers.length === 0 &&
+  monitoringFirstResponseSteps.length >= 5
+const monitoringRunbook = await readableText('OPERATIONS_RUNBOOK.md')
+const missingMonitoringRunbookMarkers = requiredMonitoringRunbookMarkers
+  .filter((marker) => !monitoringRunbook.text.includes(marker))
+const monitoringLatestVerificationText = JSON.stringify(monitoringRegister.latestVerification || {}).toLowerCase()
+const monitoringLatestVerificationReady =
+  monitoringLatestVerificationText.includes('qa:production-monitoring') &&
+  monitoringLatestVerificationText.includes('qa:release-production') &&
+  monitoringLatestVerificationText.includes('qa:launch-signoff') &&
+  monitoringRegister.latestVerification?.expectedLiveCommit === liveDeployment?.commit
+
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
   betaQueueIssues.push('beta review expected origin is not configured')
@@ -460,8 +536,29 @@ if (visualQueueIssues.length > 0) guardrailIssues.push('production visual review
 if (incompleteAcceptedP2Risks.length > 0) {
   guardrailIssues.push('open accepted P2 launch risks are missing owner, target month, or accepted-risk notes')
 }
-if (monitoringRegister.latestVerification?.expectedLiveCommit !== liveDeployment?.commit) {
-  guardrailIssues.push('production monitoring latest verification is not tied to the live production commit')
+if (
+  !hasText(monitoringRegister.owner) ||
+  monitoringRegister.status !== 'automation-ready' ||
+  monitoringRegister.baseUrl !== baseUrl ||
+  monitoringRegister.healthEndpoint !== `${baseUrl}/api/health` ||
+  !hasText(monitoringRegister.publicShareSlug)
+) {
+  guardrailIssues.push('production monitoring register is missing owner, automation status, or production targets')
+}
+if (missingMonitoringSignals.length > 0) {
+  guardrailIssues.push('production monitoring does not cover every launch-critical signal')
+}
+if (monitoringWorkflowChecks.length < 2 || monitoringWorkflowIssues.length > 0) {
+  guardrailIssues.push('production monitoring workflows are missing schedules or expected gate commands')
+}
+if (!monitoringAlertReady) {
+  guardrailIssues.push('production monitoring alert policy is not actionable enough for launch operations')
+}
+if (!monitoringRunbook.ok || missingMonitoringRunbookMarkers.length > 0) {
+  guardrailIssues.push('operations runbook does not document production monitoring targets and workflows')
+}
+if (!monitoringLatestVerificationReady) {
+  guardrailIssues.push('production monitoring latest verification is not tied to release gates and live production commit')
 }
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
@@ -545,6 +642,25 @@ const summary = {
       rollbackSteps.length >= 5 &&
       missingRollbackStepMarkers.length === 0,
   },
+  monitoring: {
+    owner: monitoringRegister.owner || null,
+    status: monitoringRegister.status || null,
+    baseUrl: monitoringRegister.baseUrl || null,
+    healthEndpoint: monitoringRegister.healthEndpoint || null,
+    publicShareSlug: monitoringRegister.publicShareSlug || null,
+    coveredSignals: coveredMonitoringSignals,
+    missingSignals: missingMonitoringSignals,
+    workflowCount: monitoringWorkflowChecks.length,
+    workflowIssues: monitoringWorkflowIssues,
+    alertOwner: monitoringRegister.alertPolicy?.owner || null,
+    alertTriggerCount: Array.isArray(monitoringRegister.alertPolicy?.triggers) ? monitoringRegister.alertPolicy.triggers.length : 0,
+    missingAlertMarkers: missingMonitoringAlertMarkers,
+    firstResponseStepCount: monitoringFirstResponseSteps.length,
+    runbookReadable: monitoringRunbook.ok,
+    missingRunbookMarkers: missingMonitoringRunbookMarkers,
+    latestVerificationExpectedLiveCommit: monitoringRegister.latestVerification?.expectedLiveCommit || null,
+    latestVerificationReady: monitoringLatestVerificationReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -584,6 +700,7 @@ Status: ${status}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
 - Rollback plan actionable: ${summary.rollback.actionable ? 'yes' : 'no'}
+- Production monitoring ready: ${summary.monitoring.latestVerificationReady && summary.monitoring.missingSignals.length === 0 && summary.monitoring.workflowIssues.length === 0 && summary.monitoring.missingAlertMarkers.length === 0 && summary.monitoring.missingRunbookMarkers.length === 0 ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 

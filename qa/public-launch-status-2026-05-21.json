@@ -65,6 +65,37 @@
     "missingStepMarkers": [],
     "actionable": true
   },
+  "monitoring": {
+    "owner": "release operator",
+    "status": "automation-ready",
+    "baseUrl": "https://globe-travel-two.vercel.app",
+    "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
+    "publicShareSlug": "x3m2c8cnws",
+    "coveredSignals": [
+      "health",
+      "landing",
+      "login",
+      "signup",
+      "public-share-page",
+      "public-share-api",
+      "feedback-api",
+      "release-gate",
+      "launch-signoff",
+      "rollback",
+      "visual-gate"
+    ],
+    "missingSignals": [],
+    "workflowCount": 2,
+    "workflowIssues": [],
+    "alertOwner": "release operator",
+    "alertTriggerCount": 7,
+    "missingAlertMarkers": [],
+    "firstResponseStepCount": 6,
+    "runbookReadable": true,
+    "missingRunbookMarkers": [],
+    "latestVerificationExpectedLiveCommit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3",
+    "latestVerificationReady": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {

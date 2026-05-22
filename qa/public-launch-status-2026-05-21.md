@@ -19,6 +19,7 @@ Status: beta-ready-public-blocked
 - Open accepted P2 risks: 2
 - Incomplete accepted P2 risks: 0
 - Rollback plan actionable: yes
+- Production monitoring ready: yes
 
 ## Public-Launch Blockers
 
