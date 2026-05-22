@@ -10,7 +10,7 @@ const jsonArtifact = process.env.QA_DESIGN_SYSTEM_JSON || `qa/design-system-read
 const reportArtifact = process.env.QA_DESIGN_SYSTEM_REPORT || `qa/design-system-readiness-${date}.md`
 const responsiveVisualArtifact =
   process.env.QA_DESIGN_SYSTEM_VISUAL_ARTIFACT ||
-  'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
+  'qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json'
 const productionVisualRegister =
   process.env.QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_REGISTER ||
   'qa/production-visual-review-register.json'
@@ -64,6 +64,7 @@ const requiredAtmosphereComponents = [
 
 const requiredResponsiveRoutes = [
   'landing',
+  'pricing',
   'planner',
   'saved-trips',
   'saved-journal',
@@ -74,6 +75,14 @@ const requiredResponsiveRoutes = [
   'public-share',
   'trip-studio',
 ]
+const requiredResponsiveViewports = [
+  'phone',
+  'tablet',
+  'laptop',
+  'desktop',
+  'wide',
+]
+const requiredResponsiveVisualCount = requiredResponsiveRoutes.length * requiredResponsiveViewports.length
 
 const requiredProductionRoutes = [
   'landing',
@@ -251,17 +260,24 @@ let responsiveVisual = null
 try {
   responsiveVisual = await readJson(responsiveVisualArtifact)
   const missingRoutes = missingFrom(responsiveVisual.routes || [], requiredResponsiveRoutes)
+  const actualResponsiveViewports = (responsiveVisual.viewports || []).map((viewport) => (
+    typeof viewport === 'string' ? viewport : viewport?.id
+  )).filter(Boolean)
+  const missingViewports = missingFrom(actualResponsiveViewports, requiredResponsiveViewports)
   addCheck('responsive visual QA covers every design-critical public and protected route', (
-    responsiveVisual.checked === 50 &&
-    responsiveVisual.passed === 50 &&
+    responsiveVisual.checked === requiredResponsiveVisualCount &&
+    responsiveVisual.passed === requiredResponsiveVisualCount &&
     responsiveVisual.failed === 0 &&
-    missingRoutes.length === 0
+    missingRoutes.length === 0 &&
+    missingViewports.length === 0
   ), {
     artifact: responsiveVisualArtifact,
+    expected: requiredResponsiveVisualCount,
     checked: responsiveVisual.checked,
     passed: responsiveVisual.passed,
     failed: responsiveVisual.failed,
     missingRoutes,
+    missingViewports,
   })
 
   const badResponsiveResults = (responsiveVisual.results || []).filter((result) => {

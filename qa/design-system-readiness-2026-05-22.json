@@ -1,7 +1,7 @@
 {
   "date": "2026-05-22",
   "designContext": ".impeccable.md",
-  "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
+  "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
   "productionVisualArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
   "productionVisualArtifactSource": "qa/production-visual-review-register.json",
   "checked": 10,
@@ -79,11 +79,13 @@
     {
       "name": "responsive visual QA covers every design-critical public and protected route",
       "ok": true,
-      "artifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
-      "checked": 50,
-      "passed": 50,
+      "artifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
+      "expected": 55,
+      "checked": 55,
+      "passed": 55,
       "failed": 0,
-      "missingRoutes": []
+      "missingRoutes": [],
+      "missingViewports": []
     },
     {
       "name": "responsive visual QA has no polish blockers",

@@ -14,7 +14,7 @@ const releaseArtifact =
   'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const visualArtifact =
   process.env.QA_LAUNCH_VISUAL_ARTIFACT ||
-  'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
+  'qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json'
 const designSystemArtifact =
   process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
   'qa/design-system-readiness-2026-05-22.json'
@@ -147,6 +147,7 @@ const requiredReleaseTasks = [
 
 const requiredVisualRoutes = [
   'landing',
+  'pricing',
   'planner',
   'saved-trips',
   'saved-journal',
@@ -157,6 +158,14 @@ const requiredVisualRoutes = [
   'public-share',
   'trip-studio',
 ]
+const requiredVisualViewports = [
+  'phone',
+  'tablet',
+  'laptop',
+  'desktop',
+  'wide',
+]
+const requiredVisualCheckCount = requiredVisualRoutes.length * requiredVisualViewports.length
 
 const requiredProtectedRoutes = [
   'planner',
@@ -868,11 +877,24 @@ async function checkVisualArtifact() {
     artifact: visualArtifact,
   })
 
-  addCheck('responsive visual QA passed every route and viewport', summary.checked === 50 && summary.passed === 50 && summary.failed === 0, {
+  const actualVisualViewports = (summary.viewports || []).map((viewport) => (
+    typeof viewport === 'string' ? viewport : viewport?.id
+  )).filter(Boolean)
+  const missingViewports = hasAll(actualVisualViewports, requiredVisualViewports)
+
+  addCheck('responsive visual QA passed every route and viewport', (
+    summary.checked === requiredVisualCheckCount &&
+    summary.passed === requiredVisualCheckCount &&
+    summary.failed === 0 &&
+    missingViewports.length === 0
+  ), {
+    expected: requiredVisualCheckCount,
     checked: summary.checked,
     passed: summary.passed,
     failed: summary.failed,
-    viewportCount: Array.isArray(summary.viewports) ? summary.viewports.length : 0,
+    requiredViewports: requiredVisualViewports,
+    missingViewports,
+    viewportCount: actualVisualViewports.length,
   })
 
   checkEvidenceFreshness('responsive visual QA', evidenceDateFrom(summary, visualArtifact))

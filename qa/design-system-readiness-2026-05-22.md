@@ -2,7 +2,7 @@
 
 Date: 2026-05-22
 Design context: `.impeccable.md`
-Responsive visual artifact: `qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json`
+Responsive visual artifact: `qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json`
 Production visual artifact: `qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json`
 
 ## Result
