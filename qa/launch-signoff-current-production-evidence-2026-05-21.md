@@ -2,6 +2,25 @@
 
 Date: 2026-05-21
 
+## Map-Trust Repair Postdeploy Evidence
+
+Commit `625cdd4fb252c96f99032f062bac8d31c6508a21` deployed to Vercel production.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Production monitoring readiness: `9/9`
+- Public-launch status: `beta-ready-public-blocked` with no guardrail issues.
+- Current production commit: `625cdd4fb252c96f99032f062bac8d31c6508a21`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Issue
 
 `npm run qa:launch-signoff` verified live production health but allowed its default postdeploy evidence artifact to point at an older same-day release note. That older note contained generic Vercel, `11/11`, and `9/9` evidence, so the gate could pass without proving the postdeploy evidence belonged to the currently deployed production commit.

@@ -34,6 +34,7 @@ const visualGuestId = providedGuestId || randomUUID()
 const allowRemoteGuestAuth = process.env.QA_VISUAL_ALLOW_REMOTE_GUEST === '1'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const navigationTimeoutMs = Number(process.env.QA_VISUAL_NAVIGATION_TIMEOUT_MS || (isLocalBaseUrl ? '30000' : '60000'))
+const markerTimeoutMs = Number(process.env.QA_VISUAL_MARKER_TIMEOUT_MS || (isLocalBaseUrl ? '8000' : '30000'))
 const defaultDiffRoutes = ['landing', 'planner', 'account-profile', 'account-billing', 'login', 'signup']
 const diffRouteFilter = (process.env.QA_VISUAL_DIFF_ROUTES || defaultDiffRoutes.join(','))
   .split(',')
@@ -340,18 +341,42 @@ async function collectPageMetrics(page, route, viewport) {
 
   await page.waitForLoadState('networkidle', { timeout: 1500 }).catch(() => {})
   await page.waitForTimeout(Number.isFinite(settleMs) ? Math.max(0, settleMs) : 900)
-  await page.waitForFunction(
-    ({ markerGroups: groups }) => {
-      const text = document.body?.innerText.toLowerCase() || ''
-      const appErrors = ['application error', 'unhandled runtime error', 'hydration failed']
-      return (
-        groups.every((group) => group.some((marker) => text.includes(marker.toLowerCase()))) ||
-        appErrors.some((pattern) => text.includes(pattern))
-      )
-    },
-    { markerGroups },
-    { timeout: 8000 }
-  ).catch(() => {})
+  for (let markerAttempt = 1; markerAttempt <= 3; markerAttempt += 1) {
+    await page.waitForFunction(
+      ({ markerGroups: groups }) => {
+        const text = document.body?.innerText.toLowerCase() || ''
+        const appErrors = ['application error', 'unhandled runtime error', 'hydration failed']
+        return (
+          groups.every((group) => group.some((marker) => text.includes(marker.toLowerCase()))) ||
+          appErrors.some((pattern) => text.includes(pattern))
+        )
+      },
+      { markerGroups },
+      { timeout: markerTimeoutMs }
+    ).catch(() => {})
+
+    const markerState = await page.evaluate(({ markerGroups: groups }) => {
+      const text = document.body?.innerText || ''
+      const lower = text.toLowerCase()
+      const appErrors = ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].filter((pattern) => text.includes(pattern))
+      return {
+        missingMarkers: groups
+          .filter((group) => !group.some((marker) => lower.includes(marker.toLowerCase())))
+          .map((group) => group.join(' or ')),
+        appErrors,
+      }
+    }, { markerGroups })
+
+    if (markerState.missingMarkers.length === 0 || markerState.appErrors.length > 0 || markerAttempt === 3) break
+
+    await sleep(1000 * markerAttempt)
+    response = await page.reload({
+      waitUntil: 'domcontentloaded',
+      timeout: navigationTimeoutMs,
+    }).catch(() => response)
+    await page.waitForLoadState('networkidle', { timeout: 1500 }).catch(() => {})
+    await page.waitForTimeout(Number.isFinite(settleMs) ? Math.max(0, settleMs) : 900)
+  }
 
   const metrics = await page.evaluate(({ markerGroups }) => {
     const text = document.body?.innerText || ''

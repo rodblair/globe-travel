@@ -6,6 +6,11 @@ Status: Active goal in progress
 
 ## Current Readiness Update - 2026-05-21
 
+- After the itinerary map-trust repair deploy, production is verified on commit `625cdd4fb252c96f99032f062bac8d31c6508a21` at deployment `globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`.
+- Hardened the Trip Studio recovery UI smoke so remote missing-trip checks wait for client-rendered recovery copy, retry the rendered route, and record a visible text excerpt on failure.
+- Hardened responsive visual QA for dynamic public-share pages so production captures wait/retry for required page markers before screenshotting; this prevents skeleton-state screenshots from passing or failing the visual gate incorrectly.
+- Full non-mutating production verification passed: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-map-trust-repair-2026-05-21-625cdd4 npm run qa:release-production` passed `10/10`, with production visual QA `20/20`, public-share viral loop `5/5`, stable Athens itinerary/map integrity, production prompt actual export, and prompt-suite validation `60/60`.
+- Refreshed production monitoring and rollback evidence to bind launch operations to the current verified production deployment instead of the previous `f07fbad` deployment.
 - Completed the automated beta representative generated-itinerary/map-trust slice for `GT-P2-001`.
 - Produced 25 representative generated actuals and cross-checked them through the planner prompt suite.
 - `QA_PROMPT_SUITE_ACTUALS=../qa/planner-generated-actuals-beta-representative-2026-05-21.json npm run qa:prompt-suite` passed `60/60` with `25` actuals checked.

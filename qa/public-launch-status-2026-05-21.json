@@ -9,8 +9,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-o0banpfl9-rodney-blairs-projects.vercel.app",
-    "commit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3"
+    "url": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
+    "commit": "625cdd4fb252c96f99032f062bac8d31c6508a21"
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -57,8 +57,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3",
-    "knownGoodDeploymentUrl": "globe-travel-o0banpfl9-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
+    "knownGoodDeploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -93,7 +93,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3",
+    "latestVerificationExpectedLiveCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
     "latestVerificationReady": true
   },
   "paidPath": {

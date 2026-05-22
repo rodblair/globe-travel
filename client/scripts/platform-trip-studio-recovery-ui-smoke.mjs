@@ -3,7 +3,9 @@ import { chromium } from 'playwright-core'
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const missingTripId = process.env.QA_MISSING_TRIP_ID || '00000000-0000-4000-8000-000000000001'
-const navigationTimeoutMs = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl) ? 30000 : 60000
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
+const navigationTimeoutMs = isLocalBaseUrl ? 30000 : 60000
+const recoveryRenderTimeoutMs = isLocalBaseUrl ? 10000 : 30000
 const failures = []
 const results = []
 let browser = null
@@ -26,7 +28,7 @@ async function readPageState(page, markers = []) {
       return ready || appErrors.some((pattern) => text.includes(pattern))
     },
     { expectedMarkers: markers },
-    { timeout: 10000 },
+    { timeout: recoveryRenderTimeoutMs },
   ).catch(() => {})
 
   return page.evaluate(({ expectedMarkers }) => {
@@ -35,6 +37,7 @@ async function readPageState(page, markers = []) {
       url: location.href,
       title: document.title,
       text,
+      textExcerpt: text.replace(/\s+/g, ' ').trim().slice(0, 500),
       missingMarkers: expectedMarkers.filter((marker) => !text.toLowerCase().includes(marker.toLowerCase())),
       mainCount: document.querySelectorAll('main').length,
       hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => text.includes(pattern)),
@@ -70,37 +73,46 @@ async function runMissingTripRecoveryCheck() {
 
   try {
     const path = `/trips/${missingTripId}`
-    const attempts = await gotoWithRetry(page, `${baseUrl}${path}`)
-    const state = await readPageState(page, [
+    const expectedMarkers = [
       'We could not open this trip.',
       'Go to saved trips',
       'Plan a new trip',
-    ])
+    ]
+    let attempts = 0
+    let state = null
 
-    const hasOwnerActions = state.text.includes('Save trip') || state.text.includes('Share with friends')
-    const hasEmptyWorkspaceCopy = state.text.includes('Create a trip to start planning.')
-    const finalUrl = new URL(state.url)
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      attempts += await gotoWithRetry(page, `${baseUrl}${path}`)
+      state = await readPageState(page, expectedMarkers)
+      if (state.missingMarkers.length === 0 || state.hasAppError) break
+      if (attempt < 3) await page.waitForTimeout(750 * attempt)
+    }
+
+    const hasOwnerActions = state?.text.includes('Save trip') || state?.text.includes('Share with friends')
+    const hasEmptyWorkspaceCopy = state?.text.includes('Create a trip to start planning.')
+    const finalUrl = new URL(state?.url || `${baseUrl}${path}`)
 
     record('missing Trip Studio route renders recovery path', (
       finalUrl.pathname === path &&
-      state.missingMarkers.length === 0 &&
+      state?.missingMarkers.length === 0 &&
       !hasOwnerActions &&
       !hasEmptyWorkspaceCopy &&
-      !state.hasAppError &&
-      !state.horizontalOverflow &&
-      state.mainCount === 1
+      !state?.hasAppError &&
+      !state?.horizontalOverflow &&
+      state?.mainCount === 1
     ), {
       path,
-      finalUrl: state.url,
+      finalUrl: state?.url || null,
       attempts,
-      missingMarkers: state.missingMarkers,
+      missingMarkers: state?.missingMarkers || expectedMarkers,
+      textExcerpt: state?.textExcerpt || '',
       hasOwnerActions,
       hasEmptyWorkspaceCopy,
-      hasAppError: state.hasAppError,
-      horizontalOverflow: state.horizontalOverflow,
-      mainCount: state.mainCount,
-      clientWidth: state.clientWidth,
-      scrollWidth: state.scrollWidth,
+      hasAppError: state?.hasAppError || false,
+      horizontalOverflow: state?.horizontalOverflow || false,
+      mainCount: state?.mainCount || 0,
+      clientWidth: state?.clientWidth || null,
+      scrollWidth: state?.scrollWidth || null,
     })
   } finally {
     await context.close().catch(() => {})
@@ -137,4 +149,3 @@ console.log(JSON.stringify(summary, null, 2))
 if (failures.length > 0) {
   process.exitCode = 1
 }
-

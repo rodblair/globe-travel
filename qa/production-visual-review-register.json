@@ -96,10 +96,10 @@
     }
   ],
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-recovery-2026-05-21-f07fbad",
-    "summaryArtifact": "qa/visual-baseline-production-recovery-2026-05-21-f07fbad/summary.json",
-    "productionCommit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3",
-    "deploymentUrl": "globe-travel-o0banpfl9-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4",
+    "summaryArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
+    "productionCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
+    "deploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -122,7 +122,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual gate passed 20/20 on the live f07fbad deployment after the Trip Studio recovery fix. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production visual gate passed 20/20 on the live 625cdd4 deployment after the generated-itinerary map-trust repair. The visual runner was hardened to wait for dynamic public-share markers before screenshotting. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
