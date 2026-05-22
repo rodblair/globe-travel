@@ -52,7 +52,9 @@
     "openAcceptedP2RiskIds": [
       "GT-P2-001",
       "GT-P2-002"
-    ]
+    ],
+    "incompleteAcceptedP2RiskCount": 0,
+    "incompleteAcceptedP2Risks": []
   },
   "guardrailIssues": [],
   "blockers": [

@@ -396,6 +396,11 @@ const openBlockingRisks = (Array.isArray(riskRegister.issues) ? riskRegister.iss
   .filter((issue) => ['P0', 'P1'].includes(String(issue.severity || '').toUpperCase()) && String(issue.status || '').toLowerCase() === 'open')
 const openAcceptedP2Risks = (Array.isArray(riskRegister.issues) ? riskRegister.issues : [])
   .filter((issue) => String(issue.severity || '').toUpperCase() === 'P2' && String(issue.status || '').toLowerCase() === 'open')
+const incompleteAcceptedP2Risks = openAcceptedP2Risks.filter((issue) => (
+  !hasText(issue.owner) ||
+  !hasText(issue.targetMonth) ||
+  !hasText(issue.acceptedRisk, 40)
+))
 
 const blockers = []
 if (completedBetaReviews.length < publicBetaMinimum) {
@@ -433,6 +438,9 @@ if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignme
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
 if (visualQueueIssues.length > 0) guardrailIssues.push('production visual review assignment queue is not fully prepared')
+if (incompleteAcceptedP2Risks.length > 0) {
+  guardrailIssues.push('open accepted P2 launch risks are missing owner, target month, or accepted-risk notes')
+}
 if (monitoringRegister.latestVerification?.expectedLiveCommit !== liveDeployment?.commit) {
   guardrailIssues.push('production monitoring latest verification is not tied to the live production commit')
 }
@@ -492,6 +500,14 @@ const summary = {
     openBlockingRiskCount: openBlockingRisks.length,
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
     openAcceptedP2RiskIds: openAcceptedP2Risks.map((issue) => issue.id),
+    incompleteAcceptedP2RiskCount: incompleteAcceptedP2Risks.length,
+    incompleteAcceptedP2Risks: incompleteAcceptedP2Risks.map((issue) => ({
+      id: issue.id,
+      title: issue.title,
+      hasOwner: hasText(issue.owner),
+      hasTargetMonth: hasText(issue.targetMonth),
+      hasAcceptedRisk: hasText(issue.acceptedRisk, 40),
+    })),
   },
   guardrailIssues,
   blockers,
@@ -530,6 +546,7 @@ Status: ${status}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
+- Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
 
 ## Public-Launch Blockers
 

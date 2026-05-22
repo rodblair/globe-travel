@@ -17,6 +17,7 @@ Status: beta-ready-public-blocked
 - Production visual review assignment queue ready: yes
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
+- Incomplete accepted P2 risks: 0
 
 ## Public-Launch Blockers
 
