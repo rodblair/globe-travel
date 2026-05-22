@@ -303,7 +303,7 @@ function AccountPageContent() {
                       onChange={(event) => setDisplayName(event.target.value)}
                       placeholder="Your name"
                       maxLength={80}
-                      className="w-full rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
+                      className="w-full rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                     />
                     <p className="mt-1 text-xs text-foreground/35">{displayName.length}/80 characters</p>
                   </div>
@@ -324,7 +324,7 @@ function AccountPageContent() {
                         placeholder="yourusername"
                         maxLength={30}
                         aria-describedby="profile-username-help"
-                        className="w-full rounded-xl border border-rule bg-paper/40 py-3 pl-8 pr-4 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
+                        className="w-full rounded-xl border border-rule bg-paper/40 py-3 pl-8 pr-4 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                       />
                     </div>
                     <p id="profile-username-help" className="mt-1 text-xs text-foreground/35">
@@ -343,7 +343,7 @@ function AccountPageContent() {
                       placeholder="A short note friends will recognize when you share itinerary feedback."
                       rows={4}
                       maxLength={240}
-                      className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-foreground/20 transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
+                      className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
                     />
                     <p className="mt-1 text-xs text-foreground/35">{bio.length}/240 characters</p>
                   </div>

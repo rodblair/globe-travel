@@ -146,7 +146,7 @@ export function JournalEditor({
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Note title..."
                     autoFocus
-                    className="w-full bg-transparent text-xl font-serif font-semibold text-foreground placeholder:text-foreground/25 focus:outline-none border-b border-rule pb-2"
+                    className="w-full bg-transparent text-xl font-serif font-semibold text-foreground placeholder:text-[var(--ink-4)] focus:outline-none border-b border-rule pb-2"
                   />
                 </div>
 
@@ -180,7 +180,7 @@ export function JournalEditor({
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       placeholder="City, country"
-                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground placeholder:text-foreground/25 text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors"
+                      className="w-full px-3 py-2 rounded-xl bg-paper-recessed border border-rule text-foreground placeholder:text-[var(--ink-4)] text-sm focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors"
                     />
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export function JournalEditor({
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Capture a decision, reminder, or memory from this trip..."
                     rows={9}
-                    className="w-full px-4 py-3 rounded-xl bg-paper-recessed/60 border border-rule text-foreground placeholder:text-foreground/25 text-sm resize-none focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors leading-relaxed"
+                    className="w-full px-4 py-3 rounded-xl bg-paper-recessed/60 border border-rule text-foreground placeholder:text-[var(--ink-4)] text-sm resize-none focus:outline-none focus:border-[color:var(--brass)]/30 transition-colors leading-relaxed"
                   />
                 </div>
               </div>

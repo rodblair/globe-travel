@@ -739,7 +739,7 @@ export default function ItineraryArtifact({
                                     if (e.key === 'Enter') commitEditing()
                                     if (e.key === 'Escape') setEditingItemId(null)
                                   }}
-                                  className="w-full bg-paper-recessed border border-rule rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-[color:var(--brass)]/30"
+                                  className="w-full bg-paper-recessed border border-rule rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-[var(--ink-4)] focus:outline-none focus:border-[color:var(--brass)]/30"
                                 />
                               ) : (
                                 <p className="truncate text-sm font-medium text-foreground">
