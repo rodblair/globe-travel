@@ -21,6 +21,7 @@ Status: beta-ready-public-blocked
 - Beta review all-wave ops ready: yes (25/25)
 - Beta review wave rehearsal ready: yes (5/5)
 - Beta review matrix rehearsal ready: yes (25/25)
+- Beta review production guest-start rehearsal ready: yes (1 exercised, 0 cleanup failures)
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
@@ -77,6 +78,9 @@ Beta human-review wave rehearsal:
 Beta human-review matrix rehearsal:
 - none
 
+Beta human-review production guest-start rehearsal:
+- none
+
 Production visual-review progress:
 - none
 
@@ -113,6 +117,7 @@ Production authenticated app surfaces:
 - Beta all-wave ops: `qa/beta-human-review-all-wave-ops-2026-05-21.json`, `qa/beta-human-review-all-wave-ops-2026-05-21.md`, and `qa/beta-human-review-all-wave-ops-2026-05-21.csv`
 - Beta wave rehearsal: `qa/beta-human-review-wave-rehearsal-2026-05-22.json` and `qa/beta-human-review-wave-rehearsal-2026-05-22.md`
 - Beta matrix rehearsal: `qa/beta-human-review-matrix-rehearsal-2026-05-22.json` and `qa/beta-human-review-matrix-rehearsal-2026-05-22.md`
+- Beta guest-start rehearsal: `qa/beta-human-review-guest-start-rehearsal-2026-05-22.json` and `qa/beta-human-review-guest-start-rehearsal-2026-05-22.md`
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`

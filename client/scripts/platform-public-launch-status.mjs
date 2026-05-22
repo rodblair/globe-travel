@@ -25,6 +25,9 @@ const betaWaveRehearsalPath = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT
 const betaMatrixRehearsalPath = process.env.QA_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
   process.env.QA_LAUNCH_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
   'qa/beta-human-review-matrix-rehearsal-2026-05-22.json'
+const betaGuestStartRehearsalPath = process.env.QA_BETA_REVIEW_GUEST_START_REHEARSAL_ARTIFACT ||
+  process.env.QA_LAUNCH_BETA_REVIEW_GUEST_START_REHEARSAL_ARTIFACT ||
+  'qa/beta-human-review-guest-start-rehearsal-2026-05-22.json'
 const betaProgressPath = process.env.QA_BETA_REVIEW_PROGRESS || 'qa/beta-human-review-progress-2026-05-21.json'
 const betaIntakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
@@ -431,6 +434,7 @@ const [
   betaAllWaveOpsCsv,
   betaWaveRehearsal,
   betaMatrixRehearsal,
+  betaGuestStartRehearsal,
   betaProgress,
   betaIntake,
   visualRegister,
@@ -467,6 +471,7 @@ const [
   readText(betaAllWaveOpsCsvPath),
   readJson(betaWaveRehearsalPath),
   readJson(betaMatrixRehearsalPath),
+  readJson(betaGuestStartRehearsalPath),
   readJson(betaProgressPath),
   readJson(betaIntakePath),
   readJson(visualRegisterPath),
@@ -1088,6 +1093,95 @@ for (const screenshot of missingBetaMatrixRehearsalScreenshots) {
 }
 const betaMatrixRehearsalReady = betaMatrixRehearsalIssues.length === 0
 
+const betaGuestStartRehearsalIssues = []
+const betaGuestStartRehearsalResults = Array.isArray(betaGuestStartRehearsal.results) ? betaGuestStartRehearsal.results : []
+const betaGuestStartRehearsalFailures = Array.isArray(betaGuestStartRehearsal.failures) ? betaGuestStartRehearsal.failures : []
+const betaGuestStartRehearsalResultIds = betaGuestStartRehearsalResults.map((result) => result.id).filter(Boolean)
+const missingBetaGuestStartRehearsalResults = missingFrom(betaGuestStartRehearsalResultIds, betaWaveReviewIds)
+const badBetaGuestStartRehearsalResults = betaGuestStartRehearsalResults.filter((result) => result.ok !== true)
+const betaGuestStartRehearsalScreenshotChecks = await Promise.all(betaGuestStartRehearsalResults.map(async (result) => {
+  const screenshot = result.start?.screenshot || result.screenshot || ''
+  return {
+    id: result.id || null,
+    screenshot,
+    exists: hasText(screenshot) ? await exists(screenshot) : false,
+  }
+}))
+const missingBetaGuestStartRehearsalScreenshots = betaGuestStartRehearsalScreenshotChecks
+  .filter((check) => !check.exists)
+  .map((check) => `${check.id || 'unknown'}:${check.screenshot || 'missing screenshot'}`)
+const betaGuestStartExerciseResults = betaGuestStartRehearsalResults
+  .filter((result) => result.start?.guestStart?.exercised === true)
+if (betaGuestStartRehearsal.status !== 'pass') betaGuestStartRehearsalIssues.push('beta guest-start rehearsal status is not pass')
+if (betaGuestStartRehearsal.scope !== 'wave') betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal scope ${betaGuestStartRehearsal.scope || 'missing'} is not wave`)
+if (betaGuestStartRehearsal.nonMutating !== false) betaGuestStartRehearsalIssues.push('beta guest-start rehearsal must be marked mutating')
+if (betaGuestStartRehearsal.remoteGuestStartExercised !== true) betaGuestStartRehearsalIssues.push('beta guest-start rehearsal must exercise remote guest start')
+if (Number(betaGuestStartRehearsal.remoteGuestStartExerciseCount) < 1 || betaGuestStartExerciseResults.length < 1) {
+  betaGuestStartRehearsalIssues.push('beta guest-start rehearsal did not exercise any guest starts')
+}
+if (Number(betaGuestStartRehearsal.remoteGuestStartCleanupFailureCount) !== 0) {
+  betaGuestStartRehearsalIssues.push('beta guest-start rehearsal has cleanup failures')
+}
+if (qaDisplayPath(betaGuestStartRehearsal.baseUrl) !== qaDisplayPath(baseUrl)) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal base URL ${betaGuestStartRehearsal.baseUrl || 'missing'} does not match ${baseUrl}`)
+}
+if (qaDisplayPath(betaGuestStartRehearsal.nextWaveOpsArtifact) !== qaDisplayPath(betaNextWaveOpsPath)) {
+  betaGuestStartRehearsalIssues.push('beta guest-start rehearsal does not reference current next-wave ops artifact')
+}
+if (betaGuestStartRehearsal.nextWave?.waveId !== betaNextWave?.waveId) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal wave ${betaGuestStartRehearsal.nextWave?.waveId || 'missing'} does not match ${betaNextWave?.waveId || 'missing'}`)
+}
+if (Number(betaGuestStartRehearsal.expectedReviewCount) !== betaWaveReviewIds.length) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal expected ${betaGuestStartRehearsal.expectedReviewCount ?? 'missing'} reviews but current wave has ${betaWaveReviewIds.length}`)
+}
+if (Number(betaGuestStartRehearsal.checked) < betaWaveReviewIds.length) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal checked ${betaGuestStartRehearsal.checked ?? 'missing'} reviews but expected at least ${betaWaveReviewIds.length}`)
+}
+if (Number(betaGuestStartRehearsal.failed) !== 0 || betaGuestStartRehearsalFailures.length > 0) {
+  betaGuestStartRehearsalIssues.push('beta guest-start rehearsal has failing reviewer start URLs or guest-start checks')
+}
+for (const id of missingBetaGuestStartRehearsalResults) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal missing result for ${id}`)
+}
+for (const result of badBetaGuestStartRehearsalResults) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} failed: ${(result.issues || []).join('; ') || 'unknown issue'}`)
+}
+for (const screenshot of missingBetaGuestStartRehearsalScreenshots) {
+  betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal screenshot missing for ${screenshot}`)
+}
+for (const result of betaGuestStartExerciseResults) {
+  const guestStart = result.start?.guestStart || {}
+  const cleanup = guestStart.cleanup || {}
+  const state = guestStart.state || {}
+  let finalPath = ''
+
+  try {
+    const finalUrl = new URL(guestStart.finalUrl || '')
+    finalPath = finalUrl.pathname
+    if (finalUrl.origin !== baseUrl) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} final URL origin does not match ${baseUrl}`)
+  } catch {
+    betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} final URL is not valid`)
+  }
+
+  if (!(finalPath === '/chat' || finalPath.startsWith('/trips/'))) {
+    betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} did not land on Trip Studio or chat`)
+  }
+  if (!hasText(guestStart.guestId)) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} is missing guest id`)
+  if (cleanup.attempted !== true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} cleanup was not attempted`)
+  if (cleanup.tripsDeleted !== true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} trip cleanup did not complete`)
+  if (cleanup.profileDeleted !== true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} profile cleanup did not complete`)
+  if (cleanup.userDeleted !== true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} user cleanup did not complete`)
+  if (cleanup.error) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} cleanup error: ${cleanup.error}`)
+  if (Array.isArray(guestStart.issues) && guestStart.issues.length > 0) {
+    betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} guest-start issues: ${guestStart.issues.join('; ')}`)
+  }
+  if (state.promptVisible !== true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} did not preserve the prompt`)
+  if (state.hasTripAccessError === true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} hit trip access error`)
+  if (state.hasAppError === true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} hit app error`)
+  if (state.horizontalOverflow === true) betaGuestStartRehearsalIssues.push(`beta guest-start rehearsal ${result.id || 'unknown'} has horizontal overflow`)
+}
+const betaGuestStartRehearsalReady = betaGuestStartRehearsalIssues.length === 0
+
 const visualQueueIssues = []
 for (const file of visualSubmissionTemplateChecks.filter((file) => !file.ok)) {
   visualQueueIssues.push(`visual submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
@@ -1342,6 +1436,7 @@ if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review ne
 if (betaAllWaveOpsIssues.length > 0) guardrailIssues.push('beta human review all-wave ops pack is not fully prepared')
 if (!betaWaveRehearsalReady) guardrailIssues.push('beta human review next-wave browser rehearsal is not passing')
 if (!betaMatrixRehearsalReady) guardrailIssues.push('beta human review full-matrix browser rehearsal is not passing')
+if (!betaGuestStartRehearsalReady) guardrailIssues.push('beta human review production guest-start rehearsal is not passing')
 if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
@@ -1487,6 +1582,23 @@ const summary = {
     matrixRehearsalMissingResults: missingBetaMatrixRehearsalResults,
     matrixRehearsalMissingScreenshots: missingBetaMatrixRehearsalScreenshots,
     matrixRehearsalIssues: betaMatrixRehearsalIssues,
+    guestStartRehearsalArtifact: qaDisplayPath(betaGuestStartRehearsalPath),
+    guestStartRehearsalReport: qaDisplayPath(betaGuestStartRehearsal.reportArtifact),
+    guestStartRehearsalArtifactDir: qaDisplayPath(betaGuestStartRehearsal.artifactDir),
+    guestStartRehearsalReady: betaGuestStartRehearsalReady,
+    guestStartRehearsalStatus: betaGuestStartRehearsal.status || null,
+    guestStartRehearsalIssueCount: betaGuestStartRehearsalIssues.length,
+    guestStartRehearsalChecked: betaGuestStartRehearsal.checked ?? null,
+    guestStartRehearsalPassed: betaGuestStartRehearsal.passed ?? null,
+    guestStartRehearsalFailed: betaGuestStartRehearsal.failed ?? null,
+    guestStartRehearsalNonMutating: betaGuestStartRehearsal.nonMutating ?? null,
+    guestStartRehearsalRemoteGuestStartExercised: betaGuestStartRehearsal.remoteGuestStartExercised ?? null,
+    guestStartRehearsalExerciseCount: betaGuestStartRehearsal.remoteGuestStartExerciseCount ?? null,
+    guestStartRehearsalCleanupFailureCount: betaGuestStartRehearsal.remoteGuestStartCleanupFailureCount ?? null,
+    guestStartRehearsalScreenshotCount: betaGuestStartRehearsalScreenshotChecks.length,
+    guestStartRehearsalMissingResults: missingBetaGuestStartRehearsalResults,
+    guestStartRehearsalMissingScreenshots: missingBetaGuestStartRehearsalScreenshots,
+    guestStartRehearsalIssues: betaGuestStartRehearsalIssues,
     nextWave: betaCommandCenter.nextWave || null,
     dueSoonWaveCount: betaCommandCenterDueSoonWaves.length,
     dueSoonWaves: betaCommandCenterDueSoonWaves,
@@ -1788,6 +1900,7 @@ const summary = {
     productionAppSurfaces: qaDisplayPath(productionAppSurfacesPath),
     betaWaveRehearsal: qaDisplayPath(betaWaveRehearsalPath),
     betaMatrixRehearsal: qaDisplayPath(betaMatrixRehearsalPath),
+    betaGuestStartRehearsal: qaDisplayPath(betaGuestStartRehearsalPath),
     betaAllWaveOps: qaDisplayPath(betaAllWaveOpsPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
@@ -1817,6 +1930,7 @@ Status: ${status}
 - Beta review all-wave ops ready: ${summary.betaHumanReviews.allWaveOpsReady ? 'yes' : 'no'} (${summary.betaHumanReviews.allWaveOpsRowCount || 0}/${summary.betaHumanReviews.planned || 0})
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
 - Beta review matrix rehearsal ready: ${summary.betaHumanReviews.matrixRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.matrixRehearsalChecked || 0}/${summary.betaHumanReviews.planned || 0})
+- Beta review production guest-start rehearsal ready: ${summary.betaHumanReviews.guestStartRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.guestStartRehearsalExerciseCount || 0} exercised, ${summary.betaHumanReviews.guestStartRehearsalCleanupFailureCount || 0} cleanup failures)
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
 - Production visual due-soon reviews: ${summary.productionVisualReviews.dueSoonScheduledReviewCount || 0}
 - Production visual overdue reviews: ${summary.productionVisualReviews.overdueScheduledReviewCount || 0}
@@ -1872,6 +1986,9 @@ ${markdownList(betaWaveRehearsalIssues)}
 Beta human-review matrix rehearsal:
 ${markdownList(betaMatrixRehearsalIssues)}
 
+Beta human-review production guest-start rehearsal:
+${markdownList(betaGuestStartRehearsalIssues)}
+
 Production visual-review progress:
 ${markdownList(visualProgressIssues)}
 
@@ -1907,6 +2024,7 @@ ${markdownList(summary.nextActions)}
 - Beta all-wave ops: \`${summary.betaHumanReviews.allWaveOpsArtifact}\`, \`${summary.betaHumanReviews.allWaveOpsReport}\`, and \`${summary.betaHumanReviews.allWaveOpsCsv}\`
 - Beta wave rehearsal: \`${summary.betaHumanReviews.waveRehearsalArtifact}\` and \`${summary.betaHumanReviews.waveRehearsalReport}\`
 - Beta matrix rehearsal: \`${summary.betaHumanReviews.matrixRehearsalArtifact}\` and \`${summary.betaHumanReviews.matrixRehearsalReport}\`
+- Beta guest-start rehearsal: \`${summary.betaHumanReviews.guestStartRehearsalArtifact}\` and \`${summary.betaHumanReviews.guestStartRehearsalReport}\`
 - Public launch blocker board: \`${summary.publicLaunchBlockerBoard.report}\`, \`${summary.publicLaunchBlockerBoard.csv}\`, and \`${summary.publicLaunchBlockerBoard.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`

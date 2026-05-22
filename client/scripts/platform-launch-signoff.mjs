@@ -56,6 +56,10 @@ const betaHumanReviewMatrixRehearsal =
   process.env.QA_LAUNCH_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
   process.env.QA_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
   'qa/beta-human-review-matrix-rehearsal-2026-05-22.json'
+const betaHumanReviewGuestStartRehearsal =
+  process.env.QA_LAUNCH_BETA_REVIEW_GUEST_START_REHEARSAL_ARTIFACT ||
+  process.env.QA_BETA_REVIEW_GUEST_START_REHEARSAL_ARTIFACT ||
+  'qa/beta-human-review-guest-start-rehearsal-2026-05-22.json'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -2406,6 +2410,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaNextWaveOpsIssues = Array.isArray(betaReviewStatus.nextWaveOpsIssues) ? betaReviewStatus.nextWaveOpsIssues : []
   const betaWaveRehearsalIssues = Array.isArray(betaReviewStatus.waveRehearsalIssues) ? betaReviewStatus.waveRehearsalIssues : []
   const betaMatrixRehearsalIssues = Array.isArray(betaReviewStatus.matrixRehearsalIssues) ? betaReviewStatus.matrixRehearsalIssues : []
+  const betaGuestStartRehearsalIssues = Array.isArray(betaReviewStatus.guestStartRehearsalIssues) ? betaReviewStatus.guestStartRehearsalIssues : []
   const blockerBoardStatus = status.publicLaunchBlockerBoard || {}
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
   const routeInventoryStatus = status.routeInventory || {}
@@ -2639,6 +2644,41 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaMatrixRehearsalIssues,
   })
 
+  addCheck('public launch status includes beta review production guest-start rehearsal', (
+    betaReviewStatus.guestStartRehearsalReady === true &&
+    betaReviewStatus.guestStartRehearsalStatus === 'pass' &&
+    betaReviewStatus.guestStartRehearsalArtifact === betaHumanReviewGuestStartRehearsal &&
+    status.artifacts?.betaGuestStartRehearsal === betaHumanReviewGuestStartRehearsal &&
+    hasMeaningfulText(betaReviewStatus.guestStartRehearsalReport) &&
+    hasMeaningfulText(betaReviewStatus.guestStartRehearsalArtifactDir) &&
+    Number(betaReviewStatus.guestStartRehearsalChecked) >= Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    Number(betaReviewStatus.guestStartRehearsalPassed) >= Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    Number(betaReviewStatus.guestStartRehearsalFailed) === 0 &&
+    betaReviewStatus.guestStartRehearsalNonMutating === false &&
+    betaReviewStatus.guestStartRehearsalRemoteGuestStartExercised === true &&
+    Number(betaReviewStatus.guestStartRehearsalExerciseCount) >= 1 &&
+    Number(betaReviewStatus.guestStartRehearsalCleanupFailureCount) === 0 &&
+    Number(betaReviewStatus.guestStartRehearsalIssueCount) === 0 &&
+    betaGuestStartRehearsalIssues.length === 0
+  ), {
+    betaGuestStartRehearsalArtifact: betaReviewStatus.guestStartRehearsalArtifact || null,
+    expectedBetaGuestStartRehearsalArtifact: betaHumanReviewGuestStartRehearsal,
+    publicStatusArtifact: status.artifacts?.betaGuestStartRehearsal || null,
+    betaGuestStartRehearsalReport: betaReviewStatus.guestStartRehearsalReport || null,
+    betaGuestStartRehearsalArtifactDir: betaReviewStatus.guestStartRehearsalArtifactDir || null,
+    betaGuestStartRehearsalReady: betaReviewStatus.guestStartRehearsalReady ?? null,
+    betaGuestStartRehearsalStatus: betaReviewStatus.guestStartRehearsalStatus || null,
+    betaGuestStartRehearsalChecked: betaReviewStatus.guestStartRehearsalChecked ?? null,
+    betaGuestStartRehearsalPassed: betaReviewStatus.guestStartRehearsalPassed ?? null,
+    betaGuestStartRehearsalFailed: betaReviewStatus.guestStartRehearsalFailed ?? null,
+    betaGuestStartRehearsalNonMutating: betaReviewStatus.guestStartRehearsalNonMutating ?? null,
+    betaGuestStartRehearsalRemoteGuestStartExercised: betaReviewStatus.guestStartRehearsalRemoteGuestStartExercised ?? null,
+    betaGuestStartRehearsalExerciseCount: betaReviewStatus.guestStartRehearsalExerciseCount ?? null,
+    betaGuestStartRehearsalCleanupFailureCount: betaReviewStatus.guestStartRehearsalCleanupFailureCount ?? null,
+    betaGuestStartRehearsalIssueCount: betaReviewStatus.guestStartRehearsalIssueCount ?? null,
+    betaGuestStartRehearsalIssues,
+  })
+
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     betaReviewStatus.executionScheduleReady === true &&
@@ -2647,6 +2687,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaReviewStatus.allWaveOpsReady === true &&
     betaReviewStatus.waveRehearsalReady === true &&
     betaReviewStatus.matrixRehearsalReady === true &&
+    betaReviewStatus.guestStartRehearsalReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
     Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
     hasMeaningfulText(betaReviewStatus.packetManifest) &&
@@ -2674,6 +2715,12 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.matrixRehearsalIssueCount) === 0 &&
     Number(betaReviewStatus.matrixRehearsalChecked) >= Number(betaReviewStatus.planned || 0) &&
     betaReviewStatus.matrixRehearsalNonMutating === true &&
+    Number(betaReviewStatus.guestStartRehearsalIssueCount) === 0 &&
+    Number(betaReviewStatus.guestStartRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
+    betaReviewStatus.guestStartRehearsalNonMutating === false &&
+    betaReviewStatus.guestStartRehearsalRemoteGuestStartExercised === true &&
+    Number(betaReviewStatus.guestStartRehearsalExerciseCount) >= 1 &&
+    Number(betaReviewStatus.guestStartRehearsalCleanupFailureCount) === 0 &&
     hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
@@ -2682,6 +2729,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaNextWaveOpsIssues.length === 0 &&
     betaWaveRehearsalIssues.length === 0 &&
     betaMatrixRehearsalIssues.length === 0 &&
+    betaGuestStartRehearsalIssues.length === 0 &&
     blockerBoardStatus.ready === true &&
     hasMeaningfulText(blockerBoardStatus.artifact) &&
     hasMeaningfulText(blockerBoardStatus.report) &&
@@ -2742,6 +2790,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaMatrixRehearsalArtifact: betaReviewStatus.matrixRehearsalArtifact ?? null,
     betaMatrixRehearsalIssueCount: betaReviewStatus.matrixRehearsalIssueCount ?? null,
     betaMatrixRehearsalChecked: betaReviewStatus.matrixRehearsalChecked ?? null,
+    betaGuestStartRehearsalReady: betaReviewStatus.guestStartRehearsalReady ?? null,
+    betaGuestStartRehearsalArtifact: betaReviewStatus.guestStartRehearsalArtifact ?? null,
+    betaGuestStartRehearsalIssueCount: betaReviewStatus.guestStartRehearsalIssueCount ?? null,
+    betaGuestStartRehearsalChecked: betaReviewStatus.guestStartRehearsalChecked ?? null,
+    betaGuestStartRehearsalRemoteGuestStartExercised: betaReviewStatus.guestStartRehearsalRemoteGuestStartExercised ?? null,
+    betaGuestStartRehearsalExerciseCount: betaReviewStatus.guestStartRehearsalExerciseCount ?? null,
+    betaGuestStartRehearsalCleanupFailureCount: betaReviewStatus.guestStartRehearsalCleanupFailureCount ?? null,
     blockerBoardReady: blockerBoardStatus.ready ?? null,
     blockerBoardArtifact: blockerBoardStatus.artifact ?? null,
     blockerBoardReport: blockerBoardStatus.report ?? null,
@@ -2765,6 +2820,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaNextWaveOpsIssues,
     betaWaveRehearsalIssues,
     betaMatrixRehearsalIssues,
+    betaGuestStartRehearsalIssues,
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,
@@ -3030,6 +3086,7 @@ const summary = {
   betaHumanReviewRegister,
   betaHumanReviewWaveRehearsal,
   betaHumanReviewMatrixRehearsal,
+  betaHumanReviewGuestStartRehearsal,
   productionEvidence,
   visualReviewRegister,
   productionMonitoringRegister,
