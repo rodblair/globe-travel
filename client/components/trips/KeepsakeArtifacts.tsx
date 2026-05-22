@@ -357,7 +357,7 @@ export function ShareLinkCard({
       const copiedToClipboard = await writeShareUrl()
       if (!copiedToClipboard) throw new Error('Copy command failed')
       setCopied(true)
-      setTimeout(() => setCopied(false), 2200)
+      setTimeout(() => setCopied(false), 5000)
     } catch {
       shareUrlInputRef.current?.focus()
       shareUrlInputRef.current?.select()
@@ -403,6 +403,7 @@ export function ShareLinkCard({
         </p>
       )}
       <p
+        role="status"
         aria-live="polite"
         className={cn(
           'mt-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-colors',

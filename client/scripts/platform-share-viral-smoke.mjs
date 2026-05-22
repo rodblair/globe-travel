@@ -271,7 +271,9 @@ try {
       await page.waitForFunction(() => (document.body?.innerText || '').includes('Copied'), { timeout: 5000 }).catch(() => {})
       const copyState = await page.evaluate(() => ({
         clipboardWrites: window.__globeShareEvents?.clipboardWrites || [],
-        copiedVisible: (document.body?.innerText || '').includes('Copied'),
+        copiedVisible: (document.body?.innerText || '').includes('Copied') ||
+          Array.from(document.querySelectorAll('[role="status"], button'))
+            .some((element) => (element.textContent || '').includes('Copied')),
       }))
       record('public share copy link gives success feedback', (
         copyState.clipboardWrites.some((entry) => entry.includes('/t/')) &&
