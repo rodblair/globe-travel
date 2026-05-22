@@ -372,14 +372,13 @@ function unsafeFilesBetween(base, head) {
 }
 
 function inspectRuntimeDeploymentCurrency(liveCommit) {
-  const head = runGit(['rev-parse', 'HEAD'])
-  const shortHead = runGit(['rev-parse', '--short=7', 'HEAD'])
+  const liveCommitKnown = hasRevision(liveCommit)
   const result = {
     enforced: enforceRuntimeDeploymentCurrency,
-    head,
-    shortHead,
+    head: liveCommit || runGit(['rev-parse', 'HEAD']),
+    shortHead: liveCommit ? String(liveCommit).slice(0, 7) : runGit(['rev-parse', '--short=7', 'HEAD']),
     liveCommit: liveCommit || null,
-    liveCommitKnown: hasRevision(liveCommit),
+    liveCommitKnown,
     liveCommitIsAncestor: false,
     runtimeCommitAhead: false,
     latestRuntimeCommit: null,
@@ -418,6 +417,11 @@ function inspectRuntimeDeploymentCurrency(liveCommit) {
     for (const file of files) {
       if (!result.runtimeUnsafeFiles.includes(file)) result.runtimeUnsafeFiles.push(file)
     }
+  }
+
+  if (result.latestRuntimeCommit) {
+    result.head = result.latestRuntimeCommit
+    result.shortHead = result.latestRuntimeCommitShort
   }
 
   result.runtimeUnsafeFiles = result.runtimeUnsafeFiles.slice(0, 12)
