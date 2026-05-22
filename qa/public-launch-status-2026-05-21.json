@@ -345,6 +345,22 @@
     "missingMessageFileCount": 0,
     "issues": []
   },
+  "launchOperatorTodayOverdueRehearsal": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/launch-operator-today-overdue-rehearsal-2026-05-22.json",
+    "report": "qa/launch-operator-today-overdue-rehearsal-2026-05-22.md",
+    "date": "2026-05-22",
+    "overdueToday": "2026-05-23",
+    "checked": 7,
+    "passed": 7,
+    "failed": 0,
+    "launchOperatorExitCode": 1,
+    "rawLaunchArtifactsCleanedUp": true,
+    "detectedOverdueRowCount": 5,
+    "expectedFailureName": "launch today has no overdue launch execution rows",
+    "issues": []
+  },
   "risks": {
     "openBlockingRiskCount": 0,
     "openAcceptedP2RiskCount": 2,
@@ -654,6 +670,7 @@
     "betaFollowUpOutbox": "qa/beta-human-review-follow-up-outbox-2026-05-21.json",
     "betaAllWaveOps": "qa/beta-human-review-all-wave-ops-2026-05-21.json",
     "launchOperatorToday": "qa/launch-operator-today-2026-05-22.json",
+    "launchOperatorTodayOverdueRehearsal": "qa/launch-operator-today-overdue-rehearsal-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

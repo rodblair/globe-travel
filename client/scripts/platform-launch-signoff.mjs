@@ -98,6 +98,13 @@ const launchOperatorTodayReport =
 const launchOperatorTodayCsv =
   process.env.QA_LAUNCH_OPERATOR_TODAY_CSV ||
   'qa/launch-operator-today-2026-05-22.csv'
+const launchOperatorTodayOverdueRehearsalArtifact =
+  process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_ARTIFACT ||
+  process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL ||
+  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.json'
+const launchOperatorTodayOverdueRehearsalReport =
+  process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
+  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
@@ -2483,6 +2490,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
   const launchOperatorStatus = status.launchOperatorToday || {}
   const launchOperatorIssues = Array.isArray(launchOperatorStatus.issues) ? launchOperatorStatus.issues : []
+  const launchOperatorOverdueRehearsalStatus = status.launchOperatorTodayOverdueRehearsal || {}
+  const launchOperatorOverdueRehearsalIssues = Array.isArray(launchOperatorOverdueRehearsalStatus.issues)
+    ? launchOperatorOverdueRehearsalStatus.issues
+    : []
   const routeInventoryStatus = status.routeInventory || {}
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
   const appSurfacesStatus = status.appSurfaces || {}
@@ -2838,6 +2849,34 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorMessageFileCheckCount: launchOperatorStatus.messageFileCheckCount ?? null,
     launchOperatorMissingMessageFileCount: launchOperatorStatus.missingMessageFileCount ?? null,
     launchOperatorIssues,
+  })
+
+  addCheck('public launch status includes daily launch operator overdue rehearsal', (
+    launchOperatorOverdueRehearsalStatus.ready === true &&
+    launchOperatorOverdueRehearsalStatus.artifact === launchOperatorTodayOverdueRehearsalArtifact &&
+    launchOperatorOverdueRehearsalStatus.report === launchOperatorTodayOverdueRehearsalReport &&
+    status.artifacts?.launchOperatorTodayOverdueRehearsal === launchOperatorTodayOverdueRehearsalArtifact &&
+    Number(launchOperatorOverdueRehearsalStatus.checked) >= 7 &&
+    Number(launchOperatorOverdueRehearsalStatus.failed) === 0 &&
+    Number(launchOperatorOverdueRehearsalStatus.launchOperatorExitCode) !== 0 &&
+    Number(launchOperatorOverdueRehearsalStatus.detectedOverdueRowCount) > 0 &&
+    launchOperatorOverdueRehearsalStatus.rawLaunchArtifactsCleanedUp === true &&
+    launchOperatorOverdueRehearsalStatus.expectedFailureName === 'launch today has no overdue launch execution rows' &&
+    launchOperatorOverdueRehearsalIssues.length === 0
+  ), {
+    launchOperatorOverdueRehearsalArtifact: launchOperatorOverdueRehearsalStatus.artifact || null,
+    expectedLaunchOperatorOverdueRehearsalArtifact: launchOperatorTodayOverdueRehearsalArtifact,
+    launchOperatorOverdueRehearsalReport: launchOperatorOverdueRehearsalStatus.report || null,
+    expectedLaunchOperatorOverdueRehearsalReport: launchOperatorTodayOverdueRehearsalReport,
+    publicStatusArtifact: status.artifacts?.launchOperatorTodayOverdueRehearsal || null,
+    launchOperatorOverdueRehearsalReady: launchOperatorOverdueRehearsalStatus.ready ?? null,
+    launchOperatorOverdueRehearsalChecked: launchOperatorOverdueRehearsalStatus.checked ?? null,
+    launchOperatorOverdueRehearsalFailed: launchOperatorOverdueRehearsalStatus.failed ?? null,
+    launchOperatorOverdueRehearsalExitCode: launchOperatorOverdueRehearsalStatus.launchOperatorExitCode ?? null,
+    launchOperatorOverdueRehearsalDetectedOverdueRowCount: launchOperatorOverdueRehearsalStatus.detectedOverdueRowCount ?? null,
+    launchOperatorOverdueRehearsalRawArtifactsCleanedUp: launchOperatorOverdueRehearsalStatus.rawLaunchArtifactsCleanedUp ?? null,
+    launchOperatorOverdueRehearsalExpectedFailureName: launchOperatorOverdueRehearsalStatus.expectedFailureName || null,
+    launchOperatorOverdueRehearsalIssues,
   })
 
   addCheck('public launch status exposes prepared evidence queues', (

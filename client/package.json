@@ -31,6 +31,7 @@
     "qa:guest-race": "node scripts/platform-guest-account-race-smoke.mjs",
     "qa:launch-signoff": "node scripts/platform-launch-signoff.mjs",
     "qa:launch-today": "node scripts/platform-launch-operator-today.mjs",
+    "qa:launch-today-overdue-rehearsal": "node scripts/platform-launch-operator-today-rehearsal.mjs",
     "qa:map-fallback": "node scripts/platform-map-fallback-smoke.mjs",
     "qa:ops": "node scripts/platform-ops-smoke.mjs",
     "qa:paid-path-readiness": "node scripts/platform-paid-path-readiness.mjs",

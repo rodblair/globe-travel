@@ -67,6 +67,10 @@ const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'q
 const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY || 'qa/launch-operator-today-2026-05-22.json'
 const launchOperatorTodayReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT || 'qa/launch-operator-today-2026-05-22.md'
 const launchOperatorTodayCsvPath = process.env.QA_LAUNCH_OPERATOR_TODAY_CSV || 'qa/launch-operator-today-2026-05-22.csv'
+const launchOperatorTodayOverdueRehearsalPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL ||
+  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.json'
+const launchOperatorTodayOverdueRehearsalReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
+  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -506,6 +510,8 @@ const [
   launchOperatorToday,
   launchOperatorTodayReport,
   launchOperatorTodayCsv,
+  launchOperatorTodayOverdueRehearsal,
+  launchOperatorTodayOverdueRehearsalReport,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -556,6 +562,8 @@ const [
   readJson(launchOperatorTodayPath),
   readText(launchOperatorTodayReportPath),
   readText(launchOperatorTodayCsvPath),
+  readJson(launchOperatorTodayOverdueRehearsalPath),
+  readText(launchOperatorTodayOverdueRehearsalReportPath),
   fetchHealth(),
 ])
 
@@ -1645,6 +1653,39 @@ if (!launchOperatorTodayReport.includes('do not treat sent messages as completed
   launchTodayIssues.push('launch operator today report does not restate the beta evidence boundary')
 }
 
+const launchTodayOverdueRehearsalIssues = []
+const expectedLaunchTodayOverdueFailure = 'launch today has no overdue launch execution rows'
+const launchTodayOverdueRowsDetected =
+  Number(launchOperatorTodayOverdueRehearsal.detectedOverdueRows?.betaDispatchOverdueCount || 0) +
+  Number(launchOperatorTodayOverdueRehearsal.detectedOverdueRows?.visualOverdueCount || 0)
+if (launchOperatorTodayOverdueRehearsal.status !== 'pass') {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal status is not pass')
+}
+if (launchOperatorTodayOverdueRehearsal.date !== today) {
+  launchTodayOverdueRehearsalIssues.push(`launch operator overdue rehearsal date ${launchOperatorTodayOverdueRehearsal.date || 'missing'} does not match ${today}`)
+}
+if (launchOperatorTodayOverdueRehearsal.overdueToday === today || !launchOperatorTodayOverdueRehearsal.overdueToday) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal does not use an isolated simulated date')
+}
+if (Number(launchOperatorTodayOverdueRehearsal.launchOperatorExitCode) === 0) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal did not observe a failing daily-board exit')
+}
+if (launchTodayOverdueRowsDetected <= 0) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal did not detect overdue rows')
+}
+if (launchOperatorTodayOverdueRehearsal.expectedFailureName !== expectedLaunchTodayOverdueFailure) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal expected failure name changed')
+}
+if (launchOperatorTodayOverdueRehearsal.rawLaunchArtifactsCleanedUp !== true) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal left raw simulated-date artifacts behind')
+}
+if (launchOperatorTodayOverdueRehearsal.currentLaunchArtifact !== qaDisplayPath(launchOperatorTodayPath)) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal does not reference the current passing board')
+}
+if (!launchOperatorTodayOverdueRehearsalReport.includes('fails when launch execution rows become overdue')) {
+  launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal report does not state the failure-path meaning')
+}
+
 const visualProgressIssues = []
 if (visualProgress.status !== 'pass') {
   visualProgressIssues.push('progress artifact status is not pass')
@@ -1794,6 +1835,7 @@ if (!betaMatrixRehearsalReady) guardrailIssues.push('beta human review full-matr
 if (!betaGuestStartRehearsalReady) guardrailIssues.push('beta human review production guest-start rehearsal is not passing')
 if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
 if (launchTodayIssues.length > 0) guardrailIssues.push('daily launch operator board is not aligned with current blocker evidence')
+if (launchTodayOverdueRehearsalIssues.length > 0) guardrailIssues.push('daily launch operator overdue rehearsal is not proving stale-date failure behavior')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -2113,6 +2155,22 @@ const summary = {
     missingMessageFileCount: launchTodayMissingMessageFiles.length,
     issues: launchTodayIssues,
   },
+  launchOperatorTodayOverdueRehearsal: {
+    ready: launchTodayOverdueRehearsalIssues.length === 0,
+    issueCount: launchTodayOverdueRehearsalIssues.length,
+    artifact: qaDisplayPath(launchOperatorTodayOverdueRehearsalPath),
+    report: qaDisplayPath(launchOperatorTodayOverdueRehearsalReportPath),
+    date: launchOperatorTodayOverdueRehearsal.date || null,
+    overdueToday: launchOperatorTodayOverdueRehearsal.overdueToday || null,
+    checked: launchOperatorTodayOverdueRehearsal.checked ?? null,
+    passed: launchOperatorTodayOverdueRehearsal.passed ?? null,
+    failed: launchOperatorTodayOverdueRehearsal.failed ?? null,
+    launchOperatorExitCode: launchOperatorTodayOverdueRehearsal.launchOperatorExitCode ?? null,
+    rawLaunchArtifactsCleanedUp: launchOperatorTodayOverdueRehearsal.rawLaunchArtifactsCleanedUp ?? null,
+    detectedOverdueRowCount: launchTodayOverdueRowsDetected,
+    expectedFailureName: launchOperatorTodayOverdueRehearsal.expectedFailureName || null,
+    issues: launchTodayOverdueRehearsalIssues,
+  },
   risks: {
     openBlockingRiskCount: openBlockingRisks.length,
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
@@ -2395,6 +2453,7 @@ const summary = {
     betaFollowUpOutbox: qaDisplayPath(betaFollowUpOutboxPath),
     betaAllWaveOps: qaDisplayPath(betaAllWaveOpsPath),
     launchOperatorToday: qaDisplayPath(launchOperatorTodayPath),
+    launchOperatorTodayOverdueRehearsal: qaDisplayPath(launchOperatorTodayOverdueRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -2442,6 +2501,7 @@ Status: ${status}
 - Production visual review dispatch outbox ready: ${summary.productionVisualReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchOutboxMessageFileCount || 0} message files, ${summary.productionVisualReviews.dispatchOutboxRequiredRowCount || 0} required)
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
 - Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual)
+- Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
@@ -2512,6 +2572,9 @@ ${markdownList(blockerBoardIssues)}
 
 Launch operator today:
 ${markdownList(launchTodayIssues)}
+
+Launch operator overdue rehearsal:
+${markdownList(launchTodayOverdueRehearsalIssues)}
 
 Full route inventory:
 ${markdownList(routeInventoryIssues)}

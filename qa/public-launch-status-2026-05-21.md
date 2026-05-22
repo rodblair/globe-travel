@@ -40,6 +40,7 @@ Status: beta-ready-public-blocked
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
 - Launch operator today ready: yes (6 action rows, 5 beta, 1 visual)
+- Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
 - Incomplete accepted P2 risks: 0
@@ -110,6 +111,9 @@ Public launch blocker board:
 - none
 
 Launch operator today:
+- none
+
+Launch operator overdue rehearsal:
 - none
 
 Full route inventory:
