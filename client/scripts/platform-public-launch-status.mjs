@@ -71,6 +71,10 @@ const launchOperatorTodayOverdueRehearsalPath = process.env.QA_LAUNCH_OPERATOR_T
   'qa/launch-operator-today-overdue-rehearsal-2026-05-22.json'
 const launchOperatorTodayOverdueRehearsalReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
   'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
+const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
+  'qa/review-intake-rehearsal-2026-05-22.json'
+const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
+  'qa/review-intake-rehearsal-2026-05-22.md'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -512,6 +516,8 @@ const [
   launchOperatorTodayCsv,
   launchOperatorTodayOverdueRehearsal,
   launchOperatorTodayOverdueRehearsalReport,
+  reviewIntakeRehearsal,
+  reviewIntakeRehearsalReport,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -564,6 +570,8 @@ const [
   readText(launchOperatorTodayCsvPath),
   readJson(launchOperatorTodayOverdueRehearsalPath),
   readText(launchOperatorTodayOverdueRehearsalReportPath),
+  readJson(reviewIntakeRehearsalPath),
+  readText(reviewIntakeRehearsalReportPath),
   fetchHealth(),
 ])
 
@@ -1686,6 +1694,38 @@ if (!launchOperatorTodayOverdueRehearsalReport.includes('fails when launch execu
   launchTodayOverdueRehearsalIssues.push('launch operator overdue rehearsal report does not state the failure-path meaning')
 }
 
+const reviewIntakeRehearsalIssues = []
+if (reviewIntakeRehearsal.status !== 'pass') {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal status is not pass')
+}
+if (reviewIntakeRehearsal.date !== today) {
+  reviewIntakeRehearsalIssues.push(`review intake rehearsal date ${reviewIntakeRehearsal.date || 'missing'} does not match ${today}`)
+}
+if (Number(reviewIntakeRehearsal.betaIntakeExitCode) === 0) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal did not observe beta intake rejection')
+}
+if (Number(reviewIntakeRehearsal.visualIntakeExitCode) === 0) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal did not observe visual intake rejection')
+}
+if (Number(reviewIntakeRehearsal.betaInvalidSubmissionCount || 0) <= 0) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal did not detect invalid beta submission')
+}
+if (Number(reviewIntakeRehearsal.visualInvalidSubmissionCount || 0) <= 0) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal did not detect invalid visual submission')
+}
+if (Number(reviewIntakeRehearsal.betaCompletedBefore) !== Number(reviewIntakeRehearsal.betaCompletedAfter)) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal mutated beta completed-review count')
+}
+if (Number(reviewIntakeRehearsal.visualHistoryBefore) !== Number(reviewIntakeRehearsal.visualHistoryAfter)) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal mutated production visual-review history')
+}
+if (reviewIntakeRehearsal.rawArtifactsCleanedUp !== true) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal left raw temporary artifacts behind')
+}
+if (!reviewIntakeRehearsalReport.includes('reject them as incomplete evidence')) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal report does not state the fake-evidence boundary')
+}
+
 const visualProgressIssues = []
 if (visualProgress.status !== 'pass') {
   visualProgressIssues.push('progress artifact status is not pass')
@@ -1836,6 +1876,7 @@ if (!betaGuestStartRehearsalReady) guardrailIssues.push('beta human review produ
 if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
 if (launchTodayIssues.length > 0) guardrailIssues.push('daily launch operator board is not aligned with current blocker evidence')
 if (launchTodayOverdueRehearsalIssues.length > 0) guardrailIssues.push('daily launch operator overdue rehearsal is not proving stale-date failure behavior')
+if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -2171,6 +2212,26 @@ const summary = {
     expectedFailureName: launchOperatorTodayOverdueRehearsal.expectedFailureName || null,
     issues: launchTodayOverdueRehearsalIssues,
   },
+  reviewIntakeRehearsal: {
+    ready: reviewIntakeRehearsalIssues.length === 0,
+    issueCount: reviewIntakeRehearsalIssues.length,
+    artifact: qaDisplayPath(reviewIntakeRehearsalPath),
+    report: qaDisplayPath(reviewIntakeRehearsalReportPath),
+    date: reviewIntakeRehearsal.date || null,
+    checked: reviewIntakeRehearsal.checked ?? null,
+    passed: reviewIntakeRehearsal.passed ?? null,
+    failed: reviewIntakeRehearsal.failed ?? null,
+    betaIntakeExitCode: reviewIntakeRehearsal.betaIntakeExitCode ?? null,
+    visualIntakeExitCode: reviewIntakeRehearsal.visualIntakeExitCode ?? null,
+    betaInvalidSubmissionCount: reviewIntakeRehearsal.betaInvalidSubmissionCount ?? null,
+    visualInvalidSubmissionCount: reviewIntakeRehearsal.visualInvalidSubmissionCount ?? null,
+    betaCompletedBefore: reviewIntakeRehearsal.betaCompletedBefore ?? null,
+    betaCompletedAfter: reviewIntakeRehearsal.betaCompletedAfter ?? null,
+    visualHistoryBefore: reviewIntakeRehearsal.visualHistoryBefore ?? null,
+    visualHistoryAfter: reviewIntakeRehearsal.visualHistoryAfter ?? null,
+    rawArtifactsCleanedUp: reviewIntakeRehearsal.rawArtifactsCleanedUp ?? null,
+    issues: reviewIntakeRehearsalIssues,
+  },
   risks: {
     openBlockingRiskCount: openBlockingRisks.length,
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
@@ -2454,6 +2515,7 @@ const summary = {
     betaAllWaveOps: qaDisplayPath(betaAllWaveOpsPath),
     launchOperatorToday: qaDisplayPath(launchOperatorTodayPath),
     launchOperatorTodayOverdueRehearsal: qaDisplayPath(launchOperatorTodayOverdueRehearsalPath),
+    reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -2502,6 +2564,7 @@ Status: ${status}
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
 - Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual)
 - Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
+- Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
@@ -2575,6 +2638,9 @@ ${markdownList(launchTodayIssues)}
 
 Launch operator overdue rehearsal:
 ${markdownList(launchTodayOverdueRehearsalIssues)}
+
+Review intake rehearsal:
+${markdownList(reviewIntakeRehearsalIssues)}
 
 Full route inventory:
 ${markdownList(routeInventoryIssues)}

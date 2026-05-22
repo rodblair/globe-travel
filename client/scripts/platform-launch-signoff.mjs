@@ -105,6 +105,13 @@ const launchOperatorTodayOverdueRehearsalArtifact =
 const launchOperatorTodayOverdueRehearsalReport =
   process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
   'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
+const reviewIntakeRehearsalArtifact =
+  process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
+  process.env.QA_REVIEW_INTAKE_REHEARSAL ||
+  'qa/review-intake-rehearsal-2026-05-22.json'
+const reviewIntakeRehearsalReport =
+  process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
+  'qa/review-intake-rehearsal-2026-05-22.md'
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
@@ -2494,6 +2501,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const launchOperatorOverdueRehearsalIssues = Array.isArray(launchOperatorOverdueRehearsalStatus.issues)
     ? launchOperatorOverdueRehearsalStatus.issues
     : []
+  const reviewIntakeRehearsalStatus = status.reviewIntakeRehearsal || {}
+  const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
+    ? reviewIntakeRehearsalStatus.issues
+    : []
   const routeInventoryStatus = status.routeInventory || {}
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
   const appSurfacesStatus = status.appSurfaces || {}
@@ -2877,6 +2888,38 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorOverdueRehearsalRawArtifactsCleanedUp: launchOperatorOverdueRehearsalStatus.rawLaunchArtifactsCleanedUp ?? null,
     launchOperatorOverdueRehearsalExpectedFailureName: launchOperatorOverdueRehearsalStatus.expectedFailureName || null,
     launchOperatorOverdueRehearsalIssues,
+  })
+
+  addCheck('public launch status includes review intake rejection rehearsal', (
+    reviewIntakeRehearsalStatus.ready === true &&
+    reviewIntakeRehearsalStatus.artifact === reviewIntakeRehearsalArtifact &&
+    reviewIntakeRehearsalStatus.report === reviewIntakeRehearsalReport &&
+    status.artifacts?.reviewIntakeRehearsal === reviewIntakeRehearsalArtifact &&
+    Number(reviewIntakeRehearsalStatus.checked) >= 7 &&
+    Number(reviewIntakeRehearsalStatus.failed) === 0 &&
+    Number(reviewIntakeRehearsalStatus.betaIntakeExitCode) !== 0 &&
+    Number(reviewIntakeRehearsalStatus.visualIntakeExitCode) !== 0 &&
+    Number(reviewIntakeRehearsalStatus.betaInvalidSubmissionCount) > 0 &&
+    Number(reviewIntakeRehearsalStatus.visualInvalidSubmissionCount) > 0 &&
+    Number(reviewIntakeRehearsalStatus.betaCompletedBefore) === Number(reviewIntakeRehearsalStatus.betaCompletedAfter) &&
+    Number(reviewIntakeRehearsalStatus.visualHistoryBefore) === Number(reviewIntakeRehearsalStatus.visualHistoryAfter) &&
+    reviewIntakeRehearsalStatus.rawArtifactsCleanedUp === true &&
+    reviewIntakeRehearsalIssues.length === 0
+  ), {
+    reviewIntakeRehearsalArtifact: reviewIntakeRehearsalStatus.artifact || null,
+    expectedReviewIntakeRehearsalArtifact: reviewIntakeRehearsalArtifact,
+    reviewIntakeRehearsalReport: reviewIntakeRehearsalStatus.report || null,
+    expectedReviewIntakeRehearsalReport: reviewIntakeRehearsalReport,
+    publicStatusArtifact: status.artifacts?.reviewIntakeRehearsal || null,
+    reviewIntakeRehearsalReady: reviewIntakeRehearsalStatus.ready ?? null,
+    reviewIntakeRehearsalChecked: reviewIntakeRehearsalStatus.checked ?? null,
+    reviewIntakeRehearsalFailed: reviewIntakeRehearsalStatus.failed ?? null,
+    reviewIntakeRehearsalBetaExitCode: reviewIntakeRehearsalStatus.betaIntakeExitCode ?? null,
+    reviewIntakeRehearsalVisualExitCode: reviewIntakeRehearsalStatus.visualIntakeExitCode ?? null,
+    reviewIntakeRehearsalBetaInvalidSubmissionCount: reviewIntakeRehearsalStatus.betaInvalidSubmissionCount ?? null,
+    reviewIntakeRehearsalVisualInvalidSubmissionCount: reviewIntakeRehearsalStatus.visualInvalidSubmissionCount ?? null,
+    reviewIntakeRehearsalRawArtifactsCleanedUp: reviewIntakeRehearsalStatus.rawArtifactsCleanedUp ?? null,
+    reviewIntakeRehearsalIssues,
   })
 
   addCheck('public launch status exposes prepared evidence queues', (
