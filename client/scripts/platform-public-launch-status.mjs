@@ -75,6 +75,10 @@ const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
   'qa/review-intake-rehearsal-2026-05-22.json'
 const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
   'qa/review-intake-rehearsal-2026-05-22.md'
+const publicLaunchModeRehearsalPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL ||
+  'qa/public-launch-mode-rehearsal-2026-05-22.json'
+const publicLaunchModeRehearsalReportPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
+  'qa/public-launch-mode-rehearsal-2026-05-22.md'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -518,6 +522,8 @@ const [
   launchOperatorTodayOverdueRehearsalReport,
   reviewIntakeRehearsal,
   reviewIntakeRehearsalReport,
+  publicLaunchModeRehearsal,
+  publicLaunchModeRehearsalReport,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -572,6 +578,8 @@ const [
   readText(launchOperatorTodayOverdueRehearsalReportPath),
   readJson(reviewIntakeRehearsalPath),
   readText(reviewIntakeRehearsalReportPath),
+  readJson(publicLaunchModeRehearsalPath),
+  readText(publicLaunchModeRehearsalReportPath),
   fetchHealth(),
 ])
 
@@ -1726,6 +1734,39 @@ if (!reviewIntakeRehearsalReport.includes('reject them as incomplete evidence'))
   reviewIntakeRehearsalIssues.push('review intake rehearsal report does not state the fake-evidence boundary')
 }
 
+const publicLaunchModeRehearsalIssues = []
+const publicLaunchModeBlockers = Array.isArray(publicLaunchModeRehearsal.blockers)
+  ? publicLaunchModeRehearsal.blockers
+  : []
+const publicLaunchModeBlockerIds = publicLaunchModeBlockers.map((blocker) => blocker.id).filter(Boolean)
+if (publicLaunchModeRehearsal.status !== 'pass') {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal status is not pass')
+}
+if (publicLaunchModeRehearsal.date !== today) {
+  publicLaunchModeRehearsalIssues.push(`public launch mode rehearsal date ${publicLaunchModeRehearsal.date || 'missing'} does not match ${today}`)
+}
+if (Number(publicLaunchModeRehearsal.publicLaunchModeExitCode) === 0) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal did not observe strict public-mode failure')
+}
+if (publicLaunchModeRehearsal.publicLaunchStatus !== 'beta-ready-public-blocked') {
+  publicLaunchModeRehearsalIssues.push(`public launch mode rehearsal status ${publicLaunchModeRehearsal.publicLaunchStatus || 'missing'} is not beta-ready-public-blocked`)
+}
+if (publicLaunchModeRehearsal.betaReady !== true || publicLaunchModeRehearsal.publicLaunchReady !== false || publicLaunchModeRehearsal.requirePublicLaunch !== true) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not preserve beta-ready/public-blocked semantics')
+}
+if (!publicLaunchModeBlockerIds.includes('beta-human-review-threshold') || !publicLaunchModeBlockerIds.includes('production-visual-review-history')) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not expose both public blockers')
+}
+if (!Array.isArray(publicLaunchModeRehearsal.guardrailIssues) || publicLaunchModeRehearsal.guardrailIssues.length !== 0) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal has guardrail regressions')
+}
+if (publicLaunchModeRehearsal.canonicalRestored !== true) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal did not restore canonical default status')
+}
+if (!publicLaunchModeRehearsalReport.includes('fails while beta-review and production visual-review blockers remain')) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal report does not state the strict public-mode boundary')
+}
+
 const visualProgressIssues = []
 if (visualProgress.status !== 'pass') {
   visualProgressIssues.push('progress artifact status is not pass')
@@ -1877,6 +1918,7 @@ if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker b
 if (launchTodayIssues.length > 0) guardrailIssues.push('daily launch operator board is not aligned with current blocker evidence')
 if (launchTodayOverdueRehearsalIssues.length > 0) guardrailIssues.push('daily launch operator overdue rehearsal is not proving stale-date failure behavior')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
+if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -2232,6 +2274,25 @@ const summary = {
     rawArtifactsCleanedUp: reviewIntakeRehearsal.rawArtifactsCleanedUp ?? null,
     issues: reviewIntakeRehearsalIssues,
   },
+  publicLaunchModeRehearsal: {
+    ready: publicLaunchModeRehearsalIssues.length === 0,
+    issueCount: publicLaunchModeRehearsalIssues.length,
+    artifact: qaDisplayPath(publicLaunchModeRehearsalPath),
+    report: qaDisplayPath(publicLaunchModeRehearsalReportPath),
+    date: publicLaunchModeRehearsal.date || null,
+    checked: publicLaunchModeRehearsal.checked ?? null,
+    passed: publicLaunchModeRehearsal.passed ?? null,
+    failed: publicLaunchModeRehearsal.failed ?? null,
+    publicLaunchModeExitCode: publicLaunchModeRehearsal.publicLaunchModeExitCode ?? null,
+    publicLaunchStatus: publicLaunchModeRehearsal.publicLaunchStatus || null,
+    betaReady: publicLaunchModeRehearsal.betaReady ?? null,
+    publicLaunchReady: publicLaunchModeRehearsal.publicLaunchReady ?? null,
+    requirePublicLaunch: publicLaunchModeRehearsal.requirePublicLaunch ?? null,
+    blockerIds: publicLaunchModeBlockerIds,
+    guardrailIssueCount: Array.isArray(publicLaunchModeRehearsal.guardrailIssues) ? publicLaunchModeRehearsal.guardrailIssues.length : null,
+    canonicalRestored: publicLaunchModeRehearsal.canonicalRestored ?? null,
+    issues: publicLaunchModeRehearsalIssues,
+  },
   risks: {
     openBlockingRiskCount: openBlockingRisks.length,
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
@@ -2516,6 +2577,7 @@ const summary = {
     launchOperatorToday: qaDisplayPath(launchOperatorTodayPath),
     launchOperatorTodayOverdueRehearsal: qaDisplayPath(launchOperatorTodayOverdueRehearsalPath),
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
+    publicLaunchModeRehearsal: qaDisplayPath(publicLaunchModeRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -2565,6 +2627,7 @@ Status: ${status}
 - Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual)
 - Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
+- Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
@@ -2641,6 +2704,9 @@ ${markdownList(launchTodayOverdueRehearsalIssues)}
 
 Review intake rehearsal:
 ${markdownList(reviewIntakeRehearsalIssues)}
+
+Public launch mode rehearsal:
+${markdownList(publicLaunchModeRehearsalIssues)}
 
 Full route inventory:
 ${markdownList(routeInventoryIssues)}

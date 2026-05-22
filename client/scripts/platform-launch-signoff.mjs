@@ -112,6 +112,13 @@ const reviewIntakeRehearsalArtifact =
 const reviewIntakeRehearsalReport =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
   'qa/review-intake-rehearsal-2026-05-22.md'
+const publicLaunchModeRehearsalArtifact =
+  process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_ARTIFACT ||
+  process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL ||
+  'qa/public-launch-mode-rehearsal-2026-05-22.json'
+const publicLaunchModeRehearsalReport =
+  process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
+  'qa/public-launch-mode-rehearsal-2026-05-22.md'
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
@@ -2505,6 +2512,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
     : []
+  const publicLaunchModeRehearsalStatus = status.publicLaunchModeRehearsal || {}
+  const publicLaunchModeRehearsalIssues = Array.isArray(publicLaunchModeRehearsalStatus.issues)
+    ? publicLaunchModeRehearsalStatus.issues
+    : []
   const routeInventoryStatus = status.routeInventory || {}
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
   const appSurfacesStatus = status.appSurfaces || {}
@@ -2920,6 +2931,40 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     reviewIntakeRehearsalVisualInvalidSubmissionCount: reviewIntakeRehearsalStatus.visualInvalidSubmissionCount ?? null,
     reviewIntakeRehearsalRawArtifactsCleanedUp: reviewIntakeRehearsalStatus.rawArtifactsCleanedUp ?? null,
     reviewIntakeRehearsalIssues,
+  })
+
+  addCheck('public launch status includes strict public-mode blocker rehearsal', (
+    publicLaunchModeRehearsalStatus.ready === true &&
+    publicLaunchModeRehearsalStatus.artifact === publicLaunchModeRehearsalArtifact &&
+    publicLaunchModeRehearsalStatus.report === publicLaunchModeRehearsalReport &&
+    status.artifacts?.publicLaunchModeRehearsal === publicLaunchModeRehearsalArtifact &&
+    Number(publicLaunchModeRehearsalStatus.checked) >= 5 &&
+    Number(publicLaunchModeRehearsalStatus.failed) === 0 &&
+    Number(publicLaunchModeRehearsalStatus.publicLaunchModeExitCode) !== 0 &&
+    publicLaunchModeRehearsalStatus.publicLaunchStatus === 'beta-ready-public-blocked' &&
+    publicLaunchModeRehearsalStatus.betaReady === true &&
+    publicLaunchModeRehearsalStatus.publicLaunchReady === false &&
+    publicLaunchModeRehearsalStatus.requirePublicLaunch === true &&
+    Array.isArray(publicLaunchModeRehearsalStatus.blockerIds) &&
+    publicLaunchModeRehearsalStatus.blockerIds.includes('beta-human-review-threshold') &&
+    publicLaunchModeRehearsalStatus.blockerIds.includes('production-visual-review-history') &&
+    Number(publicLaunchModeRehearsalStatus.guardrailIssueCount) === 0 &&
+    publicLaunchModeRehearsalStatus.canonicalRestored === true &&
+    publicLaunchModeRehearsalIssues.length === 0
+  ), {
+    publicLaunchModeRehearsalArtifact: publicLaunchModeRehearsalStatus.artifact || null,
+    expectedPublicLaunchModeRehearsalArtifact: publicLaunchModeRehearsalArtifact,
+    publicLaunchModeRehearsalReport: publicLaunchModeRehearsalStatus.report || null,
+    expectedPublicLaunchModeRehearsalReport: publicLaunchModeRehearsalReport,
+    publicStatusArtifact: status.artifacts?.publicLaunchModeRehearsal || null,
+    publicLaunchModeRehearsalReady: publicLaunchModeRehearsalStatus.ready ?? null,
+    publicLaunchModeRehearsalChecked: publicLaunchModeRehearsalStatus.checked ?? null,
+    publicLaunchModeRehearsalFailed: publicLaunchModeRehearsalStatus.failed ?? null,
+    publicLaunchModeRehearsalExitCode: publicLaunchModeRehearsalStatus.publicLaunchModeExitCode ?? null,
+    publicLaunchModeRehearsalBlockerIds: publicLaunchModeRehearsalStatus.blockerIds || [],
+    publicLaunchModeRehearsalGuardrailIssueCount: publicLaunchModeRehearsalStatus.guardrailIssueCount ?? null,
+    publicLaunchModeRehearsalCanonicalRestored: publicLaunchModeRehearsalStatus.canonicalRestored ?? null,
+    publicLaunchModeRehearsalIssues,
   })
 
   addCheck('public launch status exposes prepared evidence queues', (

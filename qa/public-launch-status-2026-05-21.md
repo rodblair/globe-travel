@@ -42,6 +42,7 @@ Status: beta-ready-public-blocked
 - Launch operator today ready: yes (6 action rows, 5 beta, 1 visual)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
+- Public launch mode rehearsal ready: yes (1 strict-mode exit)
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
 - Incomplete accepted P2 risks: 0
@@ -118,6 +119,9 @@ Launch operator overdue rehearsal:
 - none
 
 Review intake rehearsal:
+- none
+
+Public launch mode rehearsal:
 - none
 
 Full route inventory:

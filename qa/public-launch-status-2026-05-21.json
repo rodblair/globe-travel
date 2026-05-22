@@ -381,6 +381,28 @@
     "rawArtifactsCleanedUp": true,
     "issues": []
   },
+  "publicLaunchModeRehearsal": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/public-launch-mode-rehearsal-2026-05-22.json",
+    "report": "qa/public-launch-mode-rehearsal-2026-05-22.md",
+    "date": "2026-05-22",
+    "checked": 5,
+    "passed": 5,
+    "failed": 0,
+    "publicLaunchModeExitCode": 1,
+    "publicLaunchStatus": "beta-ready-public-blocked",
+    "betaReady": true,
+    "publicLaunchReady": false,
+    "requirePublicLaunch": true,
+    "blockerIds": [
+      "beta-human-review-threshold",
+      "production-visual-review-history"
+    ],
+    "guardrailIssueCount": 0,
+    "canonicalRestored": true,
+    "issues": []
+  },
   "risks": {
     "openBlockingRiskCount": 0,
     "openAcceptedP2RiskCount": 2,
@@ -692,6 +714,7 @@
     "launchOperatorToday": "qa/launch-operator-today-2026-05-22.json",
     "launchOperatorTodayOverdueRehearsal": "qa/launch-operator-today-overdue-rehearsal-2026-05-22.json",
     "reviewIntakeRehearsal": "qa/review-intake-rehearsal-2026-05-22.json",
+    "publicLaunchModeRehearsal": "qa/public-launch-mode-rehearsal-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }
