@@ -12,7 +12,7 @@ Commit `7cd3c2532dfc81523303a96915171b4c6108ffd7` deployed to Vercel production 
 - Production release gate with visual QA passed `10/10`
 - Production Trip Studio recovery UI: `1/1`
 - Production auth and guest access: `13/13`
-- Production accessibility and keyboard QA: `18/18`, including public `/pricing` across phone and desktop.
+- Production accessibility and keyboard QA: `22/22`, including public `/pricing` plus `/trips` and `/trips/new` compatibility entries across phone and desktop.
 - Production authenticated app surfaces smoke: `22/22`, including `/trips` and `/trips/new` legacy trip entry paths across phone and desktop.
 - Public commercial pricing: `/pricing` renders publicly with `Globe.travel pricing`, `Start 7-day free trial`, and `Adventurer`.
 - Public share viral loop: `5/5`

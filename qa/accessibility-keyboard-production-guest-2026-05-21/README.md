@@ -8,11 +8,11 @@ Auth mode: guest (generated guest id)
 
 ## Result
 
-- Checked: 18
-- Passed: 18
+- Checked: 22
+- Passed: 22
 - Failed: 0
 - Artifact JSON: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
-- Protected routes: planner, saved-trips, account-profile, account-billing
+- Protected routes: planner, saved-trips, account-profile, account-billing, trips-index-compat, new-trip-compat
 - Guest cleanup: attempted (ok)
 
 | Route | Viewport | Axe Critical/Serious | Axe Moderate | Keyboard Issues | Missing Markers | Result |
@@ -23,6 +23,8 @@ Auth mode: guest (generated guest id)
 | account-profile | phone | 0 | 0 | 0 | none | Pass |
 | account-billing | phone | 0 | 0 | 0 | none | Pass |
 | pricing | phone | 0 | 0 | 0 | none | Pass |
+| trips-index-compat | phone | 0 | 0 | 0 | none | Pass |
+| new-trip-compat | phone | 0 | 0 | 0 | none | Pass |
 | login | phone | 0 | 2 | 0 | none | Pass |
 | signup | phone | 0 | 2 | 0 | none | Pass |
 | public-share | phone | 0 | 1 | 0 | none | Pass |
@@ -32,6 +34,8 @@ Auth mode: guest (generated guest id)
 | account-profile | desktop | 0 | 0 | 0 | none | Pass |
 | account-billing | desktop | 0 | 0 | 0 | none | Pass |
 | pricing | desktop | 0 | 0 | 0 | none | Pass |
+| trips-index-compat | desktop | 0 | 0 | 0 | none | Pass |
+| new-trip-compat | desktop | 0 | 1 | 0 | none | Pass |
 | login | desktop | 0 | 2 | 0 | none | Pass |
 | signup | desktop | 0 | 2 | 0 | none | Pass |
 | public-share | desktop | 0 | 1 | 0 | none | Pass |

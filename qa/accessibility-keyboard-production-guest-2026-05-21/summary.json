@@ -8,12 +8,14 @@
   "auth": {
     "requestedMode": "guest",
     "mode": "guest",
-    "guestId": "edbb2695-83f1-450d-bcbb-b14c75822124",
+    "guestId": "e6456d2d-92f9-4fe8-ada5-3aadd3e1897a",
     "protectedRoutes": [
       "planner",
       "saved-trips",
       "account-profile",
-      "account-billing"
+      "account-billing",
+      "trips-index-compat",
+      "new-trip-compat"
     ],
     "externalGuestId": false,
     "allowRemoteGuestAuth": true,
@@ -21,27 +23,27 @@
       {
         "viewportId": "phone",
         "mode": "guest",
-        "guestId": "edbb2695-83f1-450d-bcbb-b14c75822124",
+        "guestId": "e6456d2d-92f9-4fe8-ada5-3aadd3e1897a",
         "cookieSet": true
       },
       {
         "viewportId": "desktop",
         "mode": "guest",
-        "guestId": "edbb2695-83f1-450d-bcbb-b14c75822124",
+        "guestId": "e6456d2d-92f9-4fe8-ada5-3aadd3e1897a",
         "cookieSet": true
       }
     ],
     "cleanup": {
       "attempted": true,
       "reason": null,
-      "guestId": "edbb2695-83f1-450d-bcbb-b14c75822124",
+      "guestId": "e6456d2d-92f9-4fe8-ada5-3aadd3e1897a",
       "profileDeleted": true,
       "userDeleted": true,
       "error": null
     }
   },
-  "checked": 18,
-  "passed": 18,
+  "checked": 22,
+  "passed": 22,
   "failed": 0,
   "routes": [
     "landing",
@@ -50,6 +52,8 @@
     "account-profile",
     "account-billing",
     "pricing",
+    "trips-index-compat",
+    "new-trip-compat",
     "login",
     "signup",
     "public-share"
@@ -243,7 +247,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -2,
+              "y": 5,
               "width": 150,
               "height": 44
             }
@@ -313,7 +317,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -2,
+              "y": 5,
               "width": 150,
               "height": 44
             }
@@ -768,7 +772,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -971,7 +975,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1111,7 +1115,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1174,7 +1178,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1272,7 +1276,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -40,
+              "y": -37,
               "width": 150,
               "height": 44
             }
@@ -1331,6 +1335,412 @@
               "y": 680,
               "width": 358,
               "height": 48
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "trips-index-compat",
+      "path": "/trips",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "https://globe-travel-two.vercel.app/saved",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trips",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 212,
+              "width": 90,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trip notes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 123,
+              "y": 212,
+              "width": 123,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan another trip",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 392,
+              "width": 192,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open Planner",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 107,
+              "y": 631,
+              "width": 177,
+              "height": 48
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trips",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 212,
+              "width": 90,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trip notes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 123,
+              "y": 212,
+              "width": 123,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan another trip",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 16,
+              "y": 204,
+              "width": 192,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "new-trip-compat",
+      "path": "/trips/new",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "https://globe-travel-two.vercel.app/chat",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 01Start with the crewTell us who is going, the pace, budget, and what each person cares about.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 379,
+              "width": 316,
+              "height": 103
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 02Compare the tradeoffsSee which cities fit the group before committing to a full itinerary.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 492,
+              "width": 316,
+              "height": 103
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 03Create the Globe.travel mapMove the plan into a shareable itinerary map your friends can react to.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 578,
+              "width": 316,
+              "height": 103
+            }
+          },
+          {
+            "tag": "button",
+            "label": "City escapeFood, culture, and one memorable night",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 346,
+              "width": 316,
+              "height": 65
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Choose the cityCompare the strongest options",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 421,
+              "width": 316,
+              "height": 65
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Keep it realisticBudget and pace checks",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 496,
+              "width": 316,
+              "height": 65
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Describe your trip idea",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 33,
+              "y": 702,
+              "width": 252,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "body",
+            "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
             }
           }
         ],
@@ -1428,7 +1838,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -2279,7 +2689,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -3,
+              "y": 5,
               "width": 150,
               "height": 44
             }
@@ -2370,7 +2780,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -3294,7 +3704,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 0,
-              "y": -37,
+              "y": -40,
               "width": 150,
               "height": 44
             }
@@ -3339,6 +3749,426 @@
               "y": 20,
               "width": 64,
               "height": 44
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "trips-index-compat",
+      "path": "/trips",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "https://globe-travel-two.vercel.app/saved",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trips",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 305,
+              "y": 120,
+              "width": 90,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Trip notes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 403,
+              "y": 120,
+              "width": 123,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan another trip",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1208,
+              "y": 231,
+              "width": 192,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open Planner",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 760,
+              "y": 641,
+              "width": 177,
+              "height": 48
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "new-trip-compat",
+      "path": "/trips/new",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "https://globe-travel-two.vercel.app/chat",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [
+          {
+            "id": "landmark-unique",
+            "impact": "moderate",
+            "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+            "nodes": [
+              {
+                "target": [
+                  ".h-dvh"
+                ],
+                "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+              }
+            ]
+          }
+        ],
+        "rawViolationCount": 1
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": -40,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 01Start with the crewTell us who is going, the pace, budget, and what each person cares about.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 321,
+              "y": 382,
+              "width": 215,
+              "height": 118
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 02Compare the tradeoffsSee which cities fit the group before committing to a full itinerary.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 546,
+              "y": 382,
+              "width": 215,
+              "height": 118
+            }
+          },
+          {
+            "tag": "button",
+            "label": "STEP 03Create the Globe.travel mapMove the plan into a shareable itinerary map your friends can react to.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 770,
+              "y": 382,
+              "width": 215,
+              "height": 118
+            }
+          },
+          {
+            "tag": "button",
+            "label": "City escapeFood, culture, and one memorable night",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 321,
+              "y": 550,
+              "width": 159,
+              "height": 80
             }
           }
         ],

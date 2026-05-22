@@ -220,6 +220,8 @@ const requiredAccessibilityRoutes = [
   'account-profile',
   'account-billing',
   'pricing',
+  'trips-index-compat',
+  'new-trip-compat',
   'login',
   'signup',
   'public-share',
@@ -230,6 +232,8 @@ const requiredAccessibilityProtectedRoutes = [
   'saved-trips',
   'account-profile',
   'account-billing',
+  'trips-index-compat',
+  'new-trip-compat',
 ]
 
 const requiredAccessibilityViewports = [

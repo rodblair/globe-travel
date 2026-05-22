@@ -43,6 +43,8 @@ const allRoutes = [
   { id: 'account-profile', path: '/account', markers: ['Account'] },
   { id: 'account-billing', path: '/account?tab=billing', markers: ['Plan and billing'] },
   { id: 'pricing', path: '/pricing', markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'] },
+  { id: 'trips-index-compat', path: '/trips', markers: ['Trips', 'Saved itineraries'] },
+  { id: 'new-trip-compat', path: '/trips/new', markers: ['Planner', 'Trip Studio'] },
   { id: 'login', path: '/login', markers: ['Welcome back', 'Continue as guest'] },
   { id: 'signup', path: '/signup', markers: ['Create your account', 'Continue as guest'] },
   { id: 'public-share', path: `/t/${shareSlug}`, markers: ['Start your own trip', 'Friend feedback'] },
@@ -62,7 +64,15 @@ const viewports = viewportFilter.length
 const routes = routeFilter.length
   ? allRoutes.filter((route) => routeFilter.includes(route.id))
   : allRoutes
-const protectedRouteIds = new Set(['planner', 'saved-trips', 'account-profile', 'account-billing', 'trip-studio'])
+const protectedRouteIds = new Set([
+  'planner',
+  'saved-trips',
+  'account-profile',
+  'account-billing',
+  'trips-index-compat',
+  'new-trip-compat',
+  'trip-studio',
+])
 const protectedRoutes = routes.filter((route) => protectedRouteIds.has(route.id)).map((route) => route.id)
 const useGuestAuth = requestedAuthMode === 'guest' || (requestedAuthMode === 'auto' && isLocalBaseUrl && protectedRoutes.length > 0)
 let guestCleanup = {
