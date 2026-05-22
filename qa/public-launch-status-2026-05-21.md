@@ -23,6 +23,7 @@ Status: beta-ready-public-blocked
 - Beta review follow-ups due soon: 5
 - Beta review follow-ups overdue: 0
 - Beta review next-wave ops ready: yes
+- Beta review dispatch outbox ready: yes (5 message files)
 - Beta review all-wave ops ready: yes (25/25)
 - Beta review wave rehearsal ready: yes (5/5)
 - Beta review matrix rehearsal ready: yes (25/25)
@@ -75,6 +76,9 @@ Beta human-review command center:
 Beta human-review next-wave ops:
 - none
 
+Beta human-review dispatch outbox:
+- none
+
 Beta human-review all-wave ops:
 - none
 
@@ -123,6 +127,7 @@ Public share map/itinerary integrity:
 - Beta execution schedule: `qa/beta-human-review-schedule-2026-05-21.json`, `qa/beta-human-review-schedule-2026-05-21.md`, and `qa/beta-human-review-schedule-assignments-2026-05-21.csv`
 - Beta command center: `qa/beta-human-review-command-center-2026-05-21.json` and `qa/beta-human-review-command-center-2026-05-21.md`
 - Beta next-wave ops: `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `qa/beta-human-review-next-wave-ops-2026-05-21.md`, and `qa/beta-human-review-next-wave-ops-2026-05-21.csv`
+- Beta dispatch outbox: `qa/beta-human-review-dispatch-outbox-2026-05-21.json`, `qa/beta-human-review-dispatch-outbox-2026-05-21.md`, `qa/beta-human-review-dispatch-outbox-2026-05-21.csv`, and `qa/beta-human-review-dispatch-outbox-2026-05-21`
 - Beta all-wave ops: `qa/beta-human-review-all-wave-ops-2026-05-21.json`, `qa/beta-human-review-all-wave-ops-2026-05-21.md`, and `qa/beta-human-review-all-wave-ops-2026-05-21.csv`
 - Beta wave rehearsal: `qa/beta-human-review-wave-rehearsal-2026-05-22.json` and `qa/beta-human-review-wave-rehearsal-2026-05-22.md`
 - Beta matrix rehearsal: `qa/beta-human-review-matrix-rehearsal-2026-05-22.json` and `qa/beta-human-review-matrix-rehearsal-2026-05-22.md`

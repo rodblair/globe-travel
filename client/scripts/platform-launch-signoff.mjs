@@ -2755,6 +2755,16 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.nextWaveOpsCsv) &&
     Number(betaReviewStatus.nextWaveOpsIssueCount) === 0 &&
     Number(betaReviewStatus.nextWaveOpsRowCount) === Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    betaReviewStatus.dispatchOutboxReady === true &&
+    hasMeaningfulText(betaReviewStatus.dispatchOutboxArtifact) &&
+    hasMeaningfulText(betaReviewStatus.dispatchOutboxReport) &&
+    hasMeaningfulText(betaReviewStatus.dispatchOutboxCsv) &&
+    hasMeaningfulText(betaReviewStatus.dispatchOutboxArtifactDir) &&
+    Number(betaReviewStatus.dispatchOutboxIssueCount) === 0 &&
+    Number(betaReviewStatus.dispatchOutboxRowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
+    Number(betaReviewStatus.dispatchOutboxMessageFileCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
+    Number(betaReviewStatus.dispatchOutboxOverdueCount) === 0 &&
+    Number(betaReviewStatus.dispatchOutboxFollowUpOverdueCount) === 0 &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsArtifact) &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsReport) &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsCsv) &&
@@ -2839,6 +2849,18 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaNextWaveOpsReport: betaReviewStatus.nextWaveOpsReport ?? null,
     betaNextWaveOpsCsv: betaReviewStatus.nextWaveOpsCsv ?? null,
     betaNextWaveOpsRowCount: betaReviewStatus.nextWaveOpsRowCount ?? null,
+    betaDispatchOutboxReady: betaReviewStatus.dispatchOutboxReady ?? null,
+    betaDispatchOutboxIssueCount: betaReviewStatus.dispatchOutboxIssueCount ?? null,
+    betaDispatchOutboxArtifact: betaReviewStatus.dispatchOutboxArtifact ?? null,
+    betaDispatchOutboxReport: betaReviewStatus.dispatchOutboxReport ?? null,
+    betaDispatchOutboxCsv: betaReviewStatus.dispatchOutboxCsv ?? null,
+    betaDispatchOutboxArtifactDir: betaReviewStatus.dispatchOutboxArtifactDir ?? null,
+    betaDispatchOutboxRowCount: betaReviewStatus.dispatchOutboxRowCount ?? null,
+    betaDispatchOutboxMessageFileCount: betaReviewStatus.dispatchOutboxMessageFileCount ?? null,
+    betaDispatchOutboxDueTodayCount: betaReviewStatus.dispatchOutboxDueTodayCount ?? null,
+    betaDispatchOutboxOverdueCount: betaReviewStatus.dispatchOutboxOverdueCount ?? null,
+    betaDispatchOutboxFollowUpDueSoonCount: betaReviewStatus.dispatchOutboxFollowUpDueSoonCount ?? null,
+    betaDispatchOutboxFollowUpOverdueCount: betaReviewStatus.dispatchOutboxFollowUpOverdueCount ?? null,
     betaAllWaveOpsArtifact: betaReviewStatus.allWaveOpsArtifact ?? null,
     betaAllWaveOpsReport: betaReviewStatus.allWaveOpsReport ?? null,
     betaAllWaveOpsCsv: betaReviewStatus.allWaveOpsCsv ?? null,
