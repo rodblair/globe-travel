@@ -24,6 +24,7 @@ Status: beta-ready-public-blocked
 - Accessibility ready: yes
 - Design system ready: yes
 - Planner map actuals ready: yes
+- Release candidate ready: yes
 
 ## Public-Launch Blockers
 
@@ -66,6 +67,7 @@ Production visual-review queue:
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-05-21.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
+- Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 
 ## Operating Meaning
 

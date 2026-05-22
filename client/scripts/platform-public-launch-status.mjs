@@ -22,6 +22,7 @@ const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.Q
 const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT || 'qa/design-system-readiness-2026-05-21.json'
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -129,6 +130,56 @@ const requiredPlannerActualIds = [
   'marrakech-3-day-markets-riads',
   'cape-town-5-day-outdoors-food',
   'sydney-4-day-beaches-neighborhoods',
+]
+const requiredReleaseTasks = [
+  'lint',
+  'production build',
+  'local ops readiness',
+  'geocode quality smoke',
+  'local route smoke',
+  'Trip Studio missing-trip recovery UI smoke',
+  'auth and guest access smoke',
+  'saved and account smoke',
+  'local commercial smoke',
+  'local accessibility and keyboard smoke',
+  'public share and social preview smoke',
+  'public share recovery smoke',
+  'public share viral loop smoke',
+  'public share map fallback smoke',
+  'planner generated actuals map trust',
+  'planner generated actuals prompt-suite cross-check',
+  'public share fixture sweep',
+  'public share multi-itinerary browser UI smoke',
+  'public share feedback mutation smoke',
+  'public share recipient browser feedback smoke',
+  'public share feedback states browser smoke',
+  'planner handoff smoke',
+  'billing recovery smoke',
+  'Trip Studio action smoke with kept fixture',
+  'Trip Studio recovery smoke on kept fixture',
+  'Trip Studio owner/read-only browser UI smoke on kept fixture',
+  'Trip Studio owner feedback readback smoke',
+  'Trip Studio owner feedback browser UI smoke',
+  'slow-network recovery smoke on kept fixture',
+  'Stripe test-mode readiness',
+  'planner prompt contract suite',
+  'responsive visual QA',
+  'hosted Stripe checkout browser QA',
+  'hosted Stripe billing portal browser QA',
+  'cleanup release-candidate Trip Studio fixture',
+]
+const requiredReleaseFlags = [
+  'includeVisual',
+  'includeStudioFixture',
+  'includeShareFeedback',
+  'includeShareFixtureSweep',
+  'includeShareMultiItinerary',
+  'includeOwnerFeedback',
+  'includePlannerActuals',
+  'includeSlowNetwork',
+  'includeStripeCheckout',
+  'includeStripePortal',
+  'includePromptSuite',
 ]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
@@ -319,6 +370,7 @@ const [
   accessibility,
   designSystem,
   plannerActuals,
+  releaseCandidate,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -335,6 +387,7 @@ const [
   readJson(accessibilityPath),
   readJson(designSystemPath),
   readJson(plannerActualsPath),
+  readJson(releaseCandidatePath),
   fetchHealth(),
 ])
 
@@ -538,6 +591,22 @@ const plannerActualsReady =
   Array.isArray(plannerActuals) &&
   missingPlannerActualIds.length === 0 &&
   badPlannerActuals.length === 0
+const releaseTaskNames = unique((Array.isArray(releaseCandidate.results) ? releaseCandidate.results : [])
+  .map((result) => result.name)
+  .filter(Boolean))
+const missingReleaseTasks = missingFrom(releaseTaskNames, requiredReleaseTasks)
+const failedReleaseTasks = (Array.isArray(releaseCandidate.results) ? releaseCandidate.results : [])
+  .filter((result) => result.ok === false)
+  .map((result) => result.name)
+  .filter(Boolean)
+const missingReleaseFlags = requiredReleaseFlags.filter((flag) => releaseCandidate[flag] !== true)
+const releaseCandidateReady =
+  Number(releaseCandidate.checked) === requiredReleaseTasks.length &&
+  Number(releaseCandidate.passed) === requiredReleaseTasks.length &&
+  Number(releaseCandidate.failed) === 0 &&
+  missingReleaseFlags.length === 0 &&
+  missingReleaseTasks.length === 0 &&
+  failedReleaseTasks.length === 0
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -758,6 +827,9 @@ if (!designSystemReady) {
 if (!plannerActualsReady) {
   guardrailIssues.push('planner generated actuals do not cover regional edge cities with trustworthy map pins')
 }
+if (!releaseCandidateReady) {
+  guardrailIssues.push('full release-candidate artifact does not cover every core journey task and launch option')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -933,6 +1005,22 @@ const summary = {
     })),
     ready: plannerActualsReady,
   },
+  releaseCandidate: {
+    artifact: qaDisplayPath(releaseCandidatePath),
+    checked: releaseCandidate.checked ?? null,
+    passed: releaseCandidate.passed ?? null,
+    failed: releaseCandidate.failed ?? null,
+    requiredTaskCount: requiredReleaseTasks.length,
+    taskCount: releaseTaskNames.length,
+    missingTasks: missingReleaseTasks,
+    failedTasks: failedReleaseTasks,
+    requiredFlags: requiredReleaseFlags,
+    missingFlags: missingReleaseFlags,
+    localOnly: releaseCandidate.localOnly ?? null,
+    plannerActualsPreset: releaseCandidate.plannerActualsPreset || null,
+    shareSlug: releaseCandidate.shareSlug || null,
+    ready: releaseCandidateReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -950,6 +1038,7 @@ const summary = {
     accessibility: qaDisplayPath(accessibilityPath),
     designSystemReadiness: qaDisplayPath(designSystemPath),
     plannerActuals: qaDisplayPath(plannerActualsPath),
+    releaseCandidate: qaDisplayPath(releaseCandidatePath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -981,6 +1070,7 @@ Status: ${status}
 - Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
+- Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -1021,6 +1111,7 @@ ${markdownList(summary.nextActions)}
 - Accessibility: \`${summary.artifacts.accessibility}\`
 - Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
 - Planner actuals: \`${summary.artifacts.plannerActuals}\`
+- Release candidate: \`${summary.artifacts.releaseCandidate}\`
 
 ## Operating Meaning
 
