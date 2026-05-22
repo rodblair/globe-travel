@@ -2,14 +2,16 @@
 
 Date: 2026-05-21
 Base URL: https://globe-travel-two.vercel.app
-Status: beta-ready-public-blocked
+Status: blocked
 
 ## Result
 
-- Beta/release-ops ready: yes
+- Beta/release-ops ready: no
 - Public-launch ready: no
 - Production commit: 98413c3f43be80be1db4ed8b4bae4469eeb633f7
 - Production deployment: globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app
+- Runtime deployment current: no
+- Latest runtime commit awaiting production: 16b30eb
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -67,7 +69,7 @@ Status: beta-ready-public-blocked
 
 ## Guardrail Issues
 
-- none
+- production is behind runtime commit 16b30eb
 
 ## Evidence Queue Issues
 
@@ -144,6 +146,7 @@ Public metadata:
 
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
+- Fix guardrail issues before relying on public-launch status.
 
 ## Evidence
 

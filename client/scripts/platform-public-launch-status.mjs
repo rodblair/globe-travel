@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate } from './qa-date-utils.mjs'
@@ -7,6 +8,9 @@ const requestedDate = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || ''
 const baseUrl = (process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
 const requirePublicLaunch = ['1', 'true', 'yes', 'public'].includes(String(process.env.QA_LAUNCH_STATUS_REQUIRE_PUBLIC || '').toLowerCase())
 const expectedCommit = process.env.QA_LAUNCH_EXPECTED_COMMIT || ''
+const enforceRuntimeDeploymentCurrency = !['0', 'false', 'no'].includes(
+  String(process.env.QA_ENFORCE_RUNTIME_DEPLOYMENT_CURRENCY || '1').toLowerCase(),
+)
 
 const betaRegisterPath = process.env.QA_BETA_REVIEW_REGISTER || 'qa/beta-human-review-register.json'
 const betaPacketManifestPath = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || 'qa/beta-human-review-packet-manifest-2026-05-21.json'
@@ -268,6 +272,16 @@ const requiredReleaseFlags = [
   'includeStripePortal',
   'includePromptSuite',
 ]
+const buildSkipSafePatterns = [
+  /^\.github\/workflows\//,
+  /^client\/scripts\/platform-[^/]+\.mjs$/,
+  /^client\/scripts\/vercel-ignore-build\.mjs$/,
+  /^qa\//,
+  /^README\.md$/,
+  /^OPERATIONS_RUNBOOK\.md$/,
+  /^PLATFORM_[A-Z0-9_]+\.md$/,
+  /^RELEASE_READINESS_MEMO\.md$/,
+]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
@@ -285,6 +299,129 @@ async function readJson(path) {
 
 async function readText(path) {
   return readFile(repoPath(path), 'utf8')
+}
+
+function runGit(args) {
+  return execFileSync('git', args, {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim()
+}
+
+function hasRevision(revision) {
+  if (!revision) return false
+  try {
+    runGit(['rev-parse', '--verify', `${revision}^{commit}`])
+    return true
+  } catch {
+    return false
+  }
+}
+
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`
+  }
+  return JSON.stringify(value)
+}
+
+function readJsonAt(revision, file) {
+  try {
+    return JSON.parse(runGit(['show', `${revision}:${file}`]))
+  } catch {
+    return null
+  }
+}
+
+function withoutQaScripts(pkg) {
+  if (!pkg || typeof pkg !== 'object') return pkg
+  const copy = { ...pkg }
+  const scripts = copy.scripts && typeof copy.scripts === 'object' ? copy.scripts : null
+  if (scripts) {
+    copy.scripts = Object.fromEntries(
+      Object.entries(scripts).filter(([name]) => !String(name).startsWith('qa:')),
+    )
+  }
+  return copy
+}
+
+function isQaScriptsOnlyPackageChange(file, base, head) {
+  if (file !== 'client/package.json') return false
+  const before = readJsonAt(base, file)
+  const after = readJsonAt(head, file)
+  return stableJson(withoutQaScripts(before)) === stableJson(withoutQaScripts(after))
+}
+
+function unsafeFilesBetween(base, head) {
+  let changedFiles = []
+  try {
+    changedFiles = runGit(['diff', '--name-only', '--diff-filter=ACMRT', base, head])
+      .split('\n')
+      .map((file) => file.trim())
+      .filter(Boolean)
+  } catch {
+    return []
+  }
+
+  return changedFiles.filter((file) => (
+    !buildSkipSafePatterns.some((pattern) => pattern.test(file)) &&
+    !isQaScriptsOnlyPackageChange(file, base, head)
+  ))
+}
+
+function inspectRuntimeDeploymentCurrency(liveCommit) {
+  const head = runGit(['rev-parse', 'HEAD'])
+  const shortHead = runGit(['rev-parse', '--short=7', 'HEAD'])
+  const result = {
+    enforced: enforceRuntimeDeploymentCurrency,
+    head,
+    shortHead,
+    liveCommit: liveCommit || null,
+    liveCommitKnown: hasRevision(liveCommit),
+    liveCommitIsAncestor: false,
+    runtimeCommitAhead: false,
+    latestRuntimeCommit: null,
+    latestRuntimeCommitShort: null,
+    runtimeCommitCountAhead: 0,
+    runtimeUnsafeFiles: [],
+    error: null,
+  }
+
+  if (!enforceRuntimeDeploymentCurrency || !liveCommit) return result
+  if (!result.liveCommitKnown) {
+    result.error = 'live production commit is not present in local git history'
+    return result
+  }
+
+  try {
+    runGit(['merge-base', '--is-ancestor', liveCommit, 'HEAD'])
+    result.liveCommitIsAncestor = true
+  } catch {
+    result.error = 'live production commit is not an ancestor of HEAD'
+    return result
+  }
+
+  const commits = runGit(['rev-list', '--reverse', `${liveCommit}..HEAD`])
+    .split('\n')
+    .map((commit) => commit.trim())
+    .filter(Boolean)
+
+  for (const commit of commits) {
+    const files = unsafeFilesBetween(`${commit}^`, commit)
+    if (files.length === 0) continue
+    result.runtimeCommitAhead = true
+    result.latestRuntimeCommit = commit
+    result.latestRuntimeCommitShort = runGit(['rev-parse', '--short=7', commit])
+    result.runtimeCommitCountAhead += 1
+    for (const file of files) {
+      if (!result.runtimeUnsafeFiles.includes(file)) result.runtimeUnsafeFiles.push(file)
+    }
+  }
+
+  result.runtimeUnsafeFiles = result.runtimeUnsafeFiles.slice(0, 12)
+  return result
 }
 
 async function exists(path) {
@@ -618,6 +755,7 @@ const scheduledVisualReviews = Array.isArray(visualRegister.scheduledPublicLaunc
   : []
 
 const liveDeployment = health.body?.deployment || null
+const deploymentCurrency = inspectRuntimeDeploymentCurrency(liveDeployment?.commit)
 const today = currentQaDate()
 const date = requestedDate ||
   dateOnly(betaRegister.reviewedAt) ||
@@ -1931,6 +2069,12 @@ if (!health.ok || health.body?.status !== 'ok' || health.body?.summary?.critical
 if (expectedCommit && liveDeployment?.commit !== expectedCommit) {
   guardrailIssues.push(`production commit ${liveDeployment?.commit || 'missing'} does not match expected ${expectedCommit}`)
 }
+if (deploymentCurrency.enforced && deploymentCurrency.error) {
+  guardrailIssues.push(`production deployment currency could not be verified: ${deploymentCurrency.error}`)
+}
+if (deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead) {
+  guardrailIssues.push(`production is behind runtime commit ${deploymentCurrency.latestRuntimeCommitShort || deploymentCurrency.latestRuntimeCommit}`)
+}
 if (betaProgress.status !== 'pass') guardrailIssues.push('beta human review progress artifact is not passing')
 if (betaIntake.status !== 'pass') guardrailIssues.push('beta human review intake artifact is not passing')
 if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignment queue is not fully prepared')
@@ -2037,6 +2181,7 @@ const summary = {
   publicLaunchReady,
   requirePublicLaunch,
   liveDeployment,
+  deploymentCurrency,
   betaHumanReviews: {
     planned: plannedBetaReviews.length,
     completed: completedBetaReviews.length,
@@ -2654,6 +2799,8 @@ Status: ${status}
 - Public-launch ready: ${publicLaunchReady ? 'yes' : 'no'}
 - Production commit: ${liveDeployment?.commit || 'missing'}
 - Production deployment: ${liveDeployment?.url || 'missing'}
+- Runtime deployment current: ${summary.deploymentCurrency.runtimeCommitAhead ? 'no' : summary.deploymentCurrency.error ? 'unknown' : 'yes'}
+- Latest runtime commit awaiting production: ${summary.deploymentCurrency.latestRuntimeCommitShort || 'none'}
 - Beta reviews: ${completedBetaReviews.length}/${publicBetaMinimum}
 - Beta review origin: ${summary.betaHumanReviews.expectedReviewOrigin || 'missing'}
 - Beta review assignment queue ready: ${summary.betaHumanReviews.assignmentQueueReady ? 'yes' : 'no'}

@@ -2,8 +2,8 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "beta-ready-public-blocked",
-  "betaReady": true,
+  "status": "blocked",
+  "betaReady": false,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
@@ -11,6 +11,30 @@
     "region": "iad1",
     "url": "globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app",
     "commit": "98413c3f43be80be1db4ed8b4bae4469eeb633f7"
+  },
+  "deploymentCurrency": {
+    "enforced": true,
+    "head": "16b30eb4255da0dd7acedcca1a1432ec258bc4ee",
+    "shortHead": "16b30eb",
+    "liveCommit": "98413c3f43be80be1db4ed8b4bae4469eeb633f7",
+    "liveCommitKnown": true,
+    "liveCommitIsAncestor": true,
+    "runtimeCommitAhead": true,
+    "latestRuntimeCommit": "16b30eb4255da0dd7acedcca1a1432ec258bc4ee",
+    "latestRuntimeCommitShort": "16b30eb",
+    "runtimeCommitCountAhead": 1,
+    "runtimeUnsafeFiles": [
+      "client/app/(auth)/login/page.tsx",
+      "client/app/(auth)/reset-password/page.tsx",
+      "client/app/(auth)/signup/page.tsx",
+      "client/app/page.tsx",
+      "client/app/pricing/page.tsx",
+      "client/app/t/[shareSlug]/SharedTripClient.tsx",
+      "client/components/atmosphere/AuthCanvas.tsx",
+      "client/components/atmosphere/GlobeBrand.tsx",
+      "client/components/layout/Sidebar.tsx"
+    ],
+    "error": null
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -699,7 +723,9 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "production is behind runtime commit 16b30eb"
+  ],
   "blockers": [
     {
       "id": "beta-human-review-threshold",
@@ -714,7 +740,8 @@
   ],
   "nextActions": [
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s).",
+    "Fix guardrail issues before relying on public-launch status."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",
