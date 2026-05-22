@@ -2,6 +2,7 @@
   "reviewedAt": "2026-05-21",
   "owner": "Product",
   "status": "intake-ready",
+  "baseUrl": "https://globe-travel-two.vercel.app",
   "sourceActualsArtifact": "qa/planner-generated-actuals-beta-representative-2026-05-21.json",
   "reviewerPacketManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
   "reviewerPacketDirectory": "qa/beta-human-review-packets-2026-05-21",

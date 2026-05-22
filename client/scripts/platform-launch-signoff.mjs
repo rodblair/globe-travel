@@ -7,6 +7,7 @@ const clientDir = resolve(scriptDir, '..')
 const repoRoot = resolve(clientDir, '..')
 
 const baseUrl = (process.env.QA_LAUNCH_BASE_URL || process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
+const expectedBetaReviewOrigin = new URL(baseUrl).origin
 const expectedCommit = process.env.QA_LAUNCH_EXPECTED_COMMIT || ''
 const releaseArtifact =
   process.env.QA_LAUNCH_RELEASE_ARTIFACT ||
@@ -385,6 +386,14 @@ function isLaunchHttpUrl(value) {
   }
 }
 
+function launchUrlOrigin(value) {
+  try {
+    return new URL(value).origin
+  } catch {
+    return ''
+  }
+}
+
 function isLaunchViewport(value) {
   return /^\d{3,4}x\d{3,4}$/.test(String(value || '').trim())
 }
@@ -412,8 +421,12 @@ function completedBetaReviewEvidenceIssues(review) {
     if (!hasMeaningfulText(review[field])) issues.push(field)
   }
 
-  if (hasMeaningfulText(review.routeOrShareUrl) && !isLaunchHttpUrl(review.routeOrShareUrl)) {
-    issues.push('routeOrShareUrl must be http(s)')
+  if (hasMeaningfulText(review.routeOrShareUrl)) {
+    if (!isLaunchHttpUrl(review.routeOrShareUrl)) {
+      issues.push('routeOrShareUrl must be http(s)')
+    } else if (launchUrlOrigin(review.routeOrShareUrl) !== expectedBetaReviewOrigin) {
+      issues.push(`routeOrShareUrl must use expected review origin ${expectedBetaReviewOrigin}`)
+    }
   }
 
   if (hasMeaningfulText(review.viewport) && !isLaunchViewport(review.viewport)) {
@@ -457,7 +470,11 @@ function betaSubmissionTemplateIssues(template, packet) {
   if (template.device !== packet.device) issues.push('device must match packet')
   if (template.viewport !== packet.viewport) issues.push('viewport must match packet')
   if (template.sourceActualId !== packet.sourceActualId) issues.push('sourceActualId must match packet')
-  if (!isLaunchHttpUrl(template.routeOrShareUrl)) issues.push('routeOrShareUrl must be prefilled with http(s) start URL')
+  if (!isLaunchHttpUrl(template.routeOrShareUrl)) {
+    issues.push('routeOrShareUrl must be prefilled with http(s) start URL')
+  } else if (launchUrlOrigin(template.routeOrShareUrl) !== expectedBetaReviewOrigin) {
+    issues.push(`routeOrShareUrl must be prefilled with expected review origin ${expectedBetaReviewOrigin}`)
+  }
   if (!Array.isArray(template.findings)) issues.push('findings must be an array')
   if (!template.scorecard || typeof template.scorecard !== 'object' || Array.isArray(template.scorecard)) {
     issues.push('scorecard must be an object')

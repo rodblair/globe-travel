@@ -3,6 +3,7 @@
   "registerPath": "qa/beta-human-review-register.json",
   "jsonArtifact": "qa/beta-human-review-progress-2026-05-21.json",
   "reportArtifact": "qa/beta-human-review-progress-2026-05-21.md",
+  "expectedReviewOrigin": "https://globe-travel-two.vercel.app",
   "status": "pass",
   "requirePublicProgress": false,
   "checked": 6,

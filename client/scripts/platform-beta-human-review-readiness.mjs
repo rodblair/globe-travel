@@ -7,6 +7,7 @@ const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-re
 const minCompletedReviews = Number(process.env.QA_BETA_REVIEW_MIN_COMPLETED || '0')
 const writeReviewerPackets = ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_PACKETS || '').toLowerCase())
 const reviewerBaseUrl = process.env.QA_BETA_REVIEW_BASE_URL || 'https://globe-travel-two.vercel.app'
+const expectedReviewOrigin = new URL(reviewerBaseUrl).origin
 const writeSubmissionTemplates = writeReviewerPackets || ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_SUBMISSION_TEMPLATES || '').toLowerCase())
 
 const requiredAudiences = ['friend-group', 'couple', 'family', 'solo']
@@ -83,6 +84,14 @@ function isHttpUrl(value) {
   }
 }
 
+function urlOrigin(value) {
+  try {
+    return new URL(value).origin
+  } catch {
+    return ''
+  }
+}
+
 function isViewport(value) {
   return /^\d{3,4}x\d{3,4}$/.test(String(value || '').trim())
 }
@@ -119,8 +128,12 @@ function completedReviewEvidenceIssues(review) {
     if (!isNonEmptyString(review[field])) issues.push(field)
   }
 
-  if (isNonEmptyString(review.routeOrShareUrl) && !isHttpUrl(review.routeOrShareUrl)) {
-    issues.push('routeOrShareUrl must be http(s)')
+  if (isNonEmptyString(review.routeOrShareUrl)) {
+    if (!isHttpUrl(review.routeOrShareUrl)) {
+      issues.push('routeOrShareUrl must be http(s)')
+    } else if (urlOrigin(review.routeOrShareUrl) !== expectedReviewOrigin) {
+      issues.push(`routeOrShareUrl must use expected review origin ${expectedReviewOrigin}`)
+    }
   }
 
   if (isNonEmptyString(review.viewport) && !isViewport(review.viewport)) {
@@ -530,6 +543,7 @@ const summary = {
   failed: failures.length,
   reviewerPacketDir: qaDisplayPath(reviewerPacketDir),
   reviewerPacketManifest: `qa/${reviewerPacketManifestName}`,
+  expectedReviewOrigin,
   reviewerAssignmentCsv: `qa/${reviewerAssignmentCsvName}`,
   reviewerAssignmentReport: `qa/${reviewerAssignmentReportName}`,
   reviewerPacketCount: reviewerPackets.length,
@@ -621,6 +635,7 @@ if (writeReviewerPackets) {
     date,
     registerPath: qaDisplayPath(registerPath),
     reviewerBaseUrl,
+    expectedReviewOrigin,
     packetDir: qaDisplayPath(reviewerPacketDir),
     packetCount: reviewerPackets.length,
     assignmentCsv: `qa/${reviewerAssignmentCsvName}`,

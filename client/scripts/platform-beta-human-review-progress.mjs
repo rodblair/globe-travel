@@ -66,6 +66,14 @@ function isHttpUrl(value) {
   }
 }
 
+function urlOrigin(value) {
+  try {
+    return new URL(value).origin
+  } catch {
+    return ''
+  }
+}
+
 function isViewport(value) {
   return /^\d{3,4}x\d{3,4}$/.test(String(value || '').trim())
 }
@@ -117,8 +125,12 @@ function completedReviewEvidenceIssues(review) {
     if (!hasText(review[field])) issues.push(field)
   }
 
-  if (hasText(review.routeOrShareUrl) && !isHttpUrl(review.routeOrShareUrl)) {
-    issues.push('routeOrShareUrl must be http(s)')
+  if (hasText(review.routeOrShareUrl)) {
+    if (!isHttpUrl(review.routeOrShareUrl)) {
+      issues.push('routeOrShareUrl must be http(s)')
+    } else if (urlOrigin(review.routeOrShareUrl) !== expectedReviewOrigin) {
+      issues.push(`routeOrShareUrl must use expected review origin ${expectedReviewOrigin}`)
+    }
   }
 
   if (hasText(review.viewport) && !isViewport(review.viewport)) {
@@ -166,6 +178,7 @@ function qaDisplayPath(value) {
 
 const raw = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(raw)
+const expectedReviewOrigin = new URL(process.env.QA_BETA_REVIEW_BASE_URL || register.baseUrl || 'https://globe-travel-two.vercel.app').origin
 const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
 const progressSuffix = requirePublicProgress ? '-public' : ''
 const jsonArtifact = process.env.QA_BETA_REVIEW_PROGRESS_JSON || `beta-human-review-progress-${date}${progressSuffix}.json`
@@ -327,6 +340,7 @@ const summary = {
   registerPath: qaDisplayPath(registerPath),
   jsonArtifact: `qa/${jsonArtifact}`,
   reportArtifact: `qa/${reportArtifact}`,
+  expectedReviewOrigin,
   status: failures.length === 0 ? 'pass' : 'fail',
   requirePublicProgress,
   checked: checks.length,

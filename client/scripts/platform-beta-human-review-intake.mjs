@@ -56,6 +56,14 @@ function isHttpUrl(value) {
   }
 }
 
+function urlOrigin(value) {
+  try {
+    return new URL(value).origin
+  } catch {
+    return ''
+  }
+}
+
 function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
 }
@@ -133,8 +141,12 @@ function submissionIssues(submission, plannedReview) {
     issues.push(`viewport must match assigned ${expectedViewport}`)
   }
 
-  if (hasText(submission.routeOrShareUrl) && !isHttpUrl(submission.routeOrShareUrl)) {
-    issues.push('routeOrShareUrl must be http(s)')
+  if (hasText(submission.routeOrShareUrl)) {
+    if (!isHttpUrl(submission.routeOrShareUrl)) {
+      issues.push('routeOrShareUrl must be http(s)')
+    } else if (urlOrigin(submission.routeOrShareUrl) !== expectedReviewOrigin) {
+      issues.push(`routeOrShareUrl must use expected review origin ${expectedReviewOrigin}`)
+    }
   }
 
   if (hasText(submission.completedAt) && !isDate(submission.completedAt)) {
@@ -214,6 +226,7 @@ async function readSubmissions() {
 
 const rawRegister = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(rawRegister)
+const expectedReviewOrigin = new URL(process.env.QA_BETA_REVIEW_BASE_URL || register.baseUrl || 'https://globe-travel-two.vercel.app').origin
 const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
 const submissionDir = process.env.QA_BETA_REVIEW_SUBMISSION_DIR || `../qa/beta-human-review-submissions-${date}`
 const jsonArtifact = process.env.QA_BETA_REVIEW_INTAKE_JSON || `beta-human-review-intake-${date}.json`
@@ -322,6 +335,7 @@ const summary = {
   submissionDir: qaDisplayPath(submissionDir),
   jsonArtifact: `qa/${jsonArtifact}`,
   reportArtifact: `qa/${reportArtifact}`,
+  expectedReviewOrigin,
   status: failures.length === 0 ? 'pass' : 'fail',
   imported,
   importRequested: importValidSubmissions,
