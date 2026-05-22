@@ -1,0 +1,247 @@
+[
+  {
+    "id": "athens-5-day-couples-rest",
+    "shareSlug": "jbgpkm8qmu",
+    "tripId": "0fa422d7-eff4-4b7f-9e7b-b32956f430c9",
+    "tripTitle": "5 Days in Athens",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Acropolis & Plaka",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Acropolis of Athens",
+            "type": "activity",
+            "placeName": "Acropolis of Athens",
+            "latitude": 37.97153,
+            "longitude": 23.72575
+          },
+          {
+            "title": "Mani Mani",
+            "type": "meal",
+            "placeName": "Mani Mani",
+            "latitude": 37.96758,
+            "longitude": 23.72739
+          },
+          {
+            "title": "Acropolis Museum",
+            "type": "activity",
+            "placeName": "Acropolis Museum",
+            "latitude": 37.96845,
+            "longitude": 23.72853
+          },
+          {
+            "title": "Couleur Locale",
+            "type": "meal",
+            "placeName": "Couleur Locale",
+            "latitude": 37.97625,
+            "longitude": 23.72424
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2765
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Ancient Athens & Central Food Stops",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Ancient Agora of Athens",
+            "type": "activity",
+            "placeName": "Ancient Agora of Athens",
+            "latitude": 37.97569,
+            "longitude": 23.72247
+          },
+          {
+            "title": "Karamanlidika",
+            "type": "meal",
+            "placeName": "Karamanlidika",
+            "latitude": 37.97964,
+            "longitude": 23.72454
+          },
+          {
+            "title": "National Garden",
+            "type": "activity",
+            "placeName": "National Garden",
+            "latitude": 37.97393,
+            "longitude": 23.73624
+          },
+          {
+            "title": "Athinaikon Mitropoleos",
+            "type": "meal",
+            "placeName": "Athinaikon Mitropoleos",
+            "latitude": 37.97576,
+            "longitude": 23.73112
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3084
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Rest Day by the Water",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Stavros Niarchos Foundation Cultural Center",
+            "type": "activity",
+            "placeName": "Stavros Niarchos Foundation Cultural Center",
+            "latitude": 37.93952,
+            "longitude": 23.69165
+          },
+          {
+            "title": "Canal Cafe",
+            "type": "meal",
+            "placeName": "Canal Cafe",
+            "latitude": 37.94041,
+            "longitude": 23.69095
+          },
+          {
+            "title": "Flisvos Marina",
+            "type": "activity",
+            "placeName": "Flisvos Marina",
+            "latitude": 37.93183,
+            "longitude": 23.68647
+          },
+          {
+            "title": "Ark",
+            "type": "meal",
+            "placeName": "Ark",
+            "latitude": 37.86186,
+            "longitude": 23.75431
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          13445
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Monuments & Museums",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Temple of Olympian Zeus",
+            "type": "activity",
+            "placeName": "Temple of Olympian Zeus",
+            "latitude": 37.96931,
+            "longitude": 23.7331
+          },
+          {
+            "title": "Panathenaic Stadium",
+            "type": "activity",
+            "placeName": "Panathenaic Stadium",
+            "latitude": 37.96832,
+            "longitude": 23.74168
+          },
+          {
+            "title": "Philos Athens",
+            "type": "meal",
+            "placeName": "Philos Athens",
+            "latitude": 37.97962,
+            "longitude": 23.74146
+          },
+          {
+            "title": "National Archaeological Museum",
+            "type": "activity",
+            "placeName": "National Archaeological Museum",
+            "latitude": 37.98901,
+            "longitude": 23.73276
+          },
+          {
+            "title": "Atitamos",
+            "type": "meal",
+            "placeName": "Atitamos",
+            "latitude": 37.98637,
+            "longitude": 23.7331
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5207
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Easy Finale & Last Night",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Goulandris Natural History Museum",
+            "type": "activity",
+            "placeName": "Goulandris Natural History Museum",
+            "latitude": 38.07412,
+            "longitude": 23.8113
+          },
+          {
+            "title": "Different Beast",
+            "type": "meal",
+            "placeName": "Different Beast",
+            "latitude": 38.07533,
+            "longitude": 23.81127
+          },
+          {
+            "title": "Piatsa Kalamaki Kifisia",
+            "type": "meal",
+            "placeName": "Piatsa Kalamaki Kifisia",
+            "latitude": 38.07454,
+            "longitude": 23.81086
+          },
+          {
+            "title": "Little Kook",
+            "type": "activity",
+            "placeName": "Little Kook",
+            "latitude": 37.97729,
+            "longitude": 23.72426
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          16763
+        ]
+      }
+    ]
+  }
+]

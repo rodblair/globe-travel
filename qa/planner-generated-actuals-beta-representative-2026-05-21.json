@@ -1,77 +1,36 @@
 [
   {
     "id": "athens-5-day-couples-rest",
-    "shareSlug": "kyyqm53uoy",
-    "tripId": "7ef14496-78db-4146-8db5-ca8babd7edb0",
+    "shareSlug": "jbgpkm8qmu",
+    "tripId": "0fa422d7-eff4-4b7f-9e7b-b32956f430c9",
     "tripTitle": "5 Days in Athens",
     "days": [
       {
         "dayIndex": 1,
         "title": "Acropolis & Plaka",
         "itemCount": 4,
-        "mappedItemCount": 2,
+        "mappedItemCount": 4,
         "mappedStops": [
-          {
-            "title": "Acropolis Museum",
-            "type": "activity",
-            "placeName": "Acropolis Museum",
-            "latitude": 37.96845,
-            "longitude": 23.72853
-          },
           {
             "title": "Acropolis of Athens",
             "type": "activity",
             "placeName": "Acropolis of Athens",
             "latitude": 37.97153,
             "longitude": 23.72575
-          }
-        ],
-        "unmappedItems": [
-          {
-            "title": "Yiasemi",
-            "type": "meal"
           },
           {
-            "title": "Klimataria",
-            "type": "meal"
-          }
-        ],
-        "uniqueMappedStopCount": 2,
-        "duplicateMappedStops": [],
-        "countries": [
-          "Greece"
-        ],
-        "usableRouteCount": 1,
-        "routeDistanceMeters": [
-          823
-        ]
-      },
-      {
-        "dayIndex": 2,
-        "title": "Central Athens & Rooftop Evening",
-        "itemCount": 4,
-        "mappedItemCount": 4,
-        "mappedStops": [
-          {
-            "title": "National Archaeological Museum",
-            "type": "activity",
-            "placeName": "National Archaeological Museum",
-            "latitude": 37.98901,
-            "longitude": 23.73276
-          },
-          {
-            "title": "Atitamos",
+            "title": "Mani Mani",
             "type": "meal",
-            "placeName": "Atitamos",
-            "latitude": 37.98637,
-            "longitude": 23.7331
+            "placeName": "Mani Mani",
+            "latitude": 37.96758,
+            "longitude": 23.72739
           },
           {
-            "title": "National Garden",
+            "title": "Acropolis Museum",
             "type": "activity",
-            "placeName": "National Garden",
-            "latitude": 37.97393,
-            "longitude": 23.73624
+            "placeName": "Acropolis Museum",
+            "latitude": 37.96845,
+            "longitude": 23.72853
           },
           {
             "title": "Couleur Locale",
@@ -89,12 +48,58 @@
         ],
         "usableRouteCount": 1,
         "routeDistanceMeters": [
-          3629
+          2765
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Ancient Athens & Central Food Stops",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Ancient Agora of Athens",
+            "type": "activity",
+            "placeName": "Ancient Agora of Athens",
+            "latitude": 37.97569,
+            "longitude": 23.72247
+          },
+          {
+            "title": "Karamanlidika",
+            "type": "meal",
+            "placeName": "Karamanlidika",
+            "latitude": 37.97964,
+            "longitude": 23.72454
+          },
+          {
+            "title": "National Garden",
+            "type": "activity",
+            "placeName": "National Garden",
+            "latitude": 37.97393,
+            "longitude": 23.73624
+          },
+          {
+            "title": "Athinaikon Mitropoleos",
+            "type": "meal",
+            "placeName": "Athinaikon Mitropoleos",
+            "latitude": 37.97576,
+            "longitude": 23.73112
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3084
         ]
       },
       {
         "dayIndex": 3,
-        "title": "Rest Day by the Coast",
+        "title": "Rest Day by the Water",
         "itemCount": 4,
         "mappedItemCount": 4,
         "mappedStops": [
@@ -120,11 +125,11 @@
             "longitude": 23.68647
           },
           {
-            "title": "Psarades",
+            "title": "Ark",
             "type": "meal",
-            "placeName": "Psarades",
-            "latitude": 37.93068,
-            "longitude": 23.68649
+            "placeName": "Ark",
+            "latitude": 37.86186,
+            "longitude": 23.75431
           }
         ],
         "unmappedItems": [],
@@ -135,63 +140,28 @@
         ],
         "usableRouteCount": 1,
         "routeDistanceMeters": [
-          2867
+          13445
         ]
       },
       {
         "dayIndex": 4,
-        "title": "Ancient Agora & Monastiraki",
-        "itemCount": 4,
-        "mappedItemCount": 3,
+        "title": "Monuments & Museums",
+        "itemCount": 5,
+        "mappedItemCount": 5,
         "mappedStops": [
           {
-            "title": "Ancient Agora of Athens",
+            "title": "Temple of Olympian Zeus",
             "type": "activity",
-            "placeName": "Ancient Agora of Athens",
-            "latitude": 37.97569,
-            "longitude": 23.72247
+            "placeName": "Temple of Olympian Zeus",
+            "latitude": 37.96931,
+            "longitude": 23.7331
           },
           {
-            "title": "Avli",
-            "type": "meal",
-            "placeName": "Avli",
-            "latitude": 35.36934,
-            "longitude": 24.47366
-          },
-          {
-            "title": "Temple of Hephaestus",
+            "title": "Panathenaic Stadium",
             "type": "activity",
-            "placeName": "Temple of Hephaestus",
-            "latitude": 37.97564,
-            "longitude": 23.72145
-          }
-        ],
-        "unmappedItems": [
-          {
-            "title": "Maiandros",
-            "type": "meal"
-          }
-        ],
-        "uniqueMappedStopCount": 3,
-        "duplicateMappedStops": [],
-        "countries": [
-          "Greece"
-        ],
-        "usableRouteCount": 0,
-        "routeDistanceMeters": []
-      },
-      {
-        "dayIndex": 5,
-        "title": "Lycabettus & Farewell Dinner",
-        "itemCount": 4,
-        "mappedItemCount": 3,
-        "mappedStops": [
-          {
-            "title": "Benaki Museum",
-            "type": "activity",
-            "placeName": "Benaki Museum",
-            "latitude": 37.97595,
-            "longitude": 23.74029
+            "placeName": "Panathenaic Stadium",
+            "latitude": 37.96832,
+            "longitude": 23.74168
           },
           {
             "title": "Philos Athens",
@@ -201,27 +171,75 @@
             "longitude": 23.74146
           },
           {
-            "title": "Mount Lycabettus",
+            "title": "National Archaeological Museum",
             "type": "activity",
-            "placeName": "Lycabettus Hill",
-            "latitude": 37.98178,
-            "longitude": 23.74306
-          }
-        ],
-        "unmappedItems": [
+            "placeName": "National Archaeological Museum",
+            "latitude": 37.98901,
+            "longitude": 23.73276
+          },
           {
-            "title": "Ama Lachei",
-            "type": "meal"
+            "title": "Atitamos",
+            "type": "meal",
+            "placeName": "Atitamos",
+            "latitude": 37.98637,
+            "longitude": 23.7331
           }
         ],
-        "uniqueMappedStopCount": 3,
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
         "duplicateMappedStops": [],
         "countries": [
           "Greece"
         ],
         "usableRouteCount": 1,
         "routeDistanceMeters": [
-          1566
+          5207
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Easy Finale & Last Night",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Goulandris Natural History Museum",
+            "type": "activity",
+            "placeName": "Goulandris Natural History Museum",
+            "latitude": 38.07412,
+            "longitude": 23.8113
+          },
+          {
+            "title": "Different Beast",
+            "type": "meal",
+            "placeName": "Different Beast",
+            "latitude": 38.07533,
+            "longitude": 23.81127
+          },
+          {
+            "title": "Piatsa Kalamaki Kifisia",
+            "type": "meal",
+            "placeName": "Piatsa Kalamaki Kifisia",
+            "latitude": 38.07454,
+            "longitude": 23.81086
+          },
+          {
+            "title": "Little Kook",
+            "type": "activity",
+            "placeName": "Little Kook",
+            "latitude": 37.97729,
+            "longitude": 23.72426
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          16763
         ]
       }
     ]
@@ -3398,52 +3416,64 @@
   },
   {
     "id": "madrid-seville-5-day-multi-city",
-    "shareSlug": "ufxhyjj8by",
-    "tripId": "00cea0df-3821-4401-8ebc-23c02cdccb77",
+    "shareSlug": "3i72o1tiab",
+    "tripId": "922b7005-804a-483c-91d1-ac3cf1716f58",
     "tripTitle": "5 Days in Madrid & Seville",
     "days": [
       {
         "dayIndex": 1,
-        "title": "Madrid Classics",
+        "title": "Madrid Classics: Art & Vermouth",
         "itemCount": 4,
-        "mappedItemCount": 1,
+        "mappedItemCount": 2,
         "mappedStops": [
           {
-            "title": "Museo del Prado",
+            "title": "Museo Nacional del Prado",
             "type": "activity",
             "placeName": "Museo Nacional del Prado",
             "latitude": 40.41378,
             "longitude": -3.69213
+          },
+          {
+            "title": "Casa Lucas",
+            "type": "meal",
+            "placeName": "Casa Lucas",
+            "latitude": 40.41412,
+            "longitude": -3.70814
           }
         ],
         "unmappedItems": [
           {
-            "title": "El Brillante",
+            "title": "Los Gatos",
             "type": "meal"
           },
           {
-            "title": "Parque de El Retiro",
+            "title": "Parque del Retiro",
             "type": "activity"
-          },
-          {
-            "title": "Casa Revuelta",
-            "type": "meal"
           }
         ],
-        "uniqueMappedStopCount": 1,
+        "uniqueMappedStopCount": 2,
         "duplicateMappedStops": [],
         "countries": [
           "Spain"
         ],
-        "usableRouteCount": 0,
-        "routeDistanceMeters": []
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1897
+        ]
       },
       {
         "dayIndex": 2,
-        "title": "Madrid Art & Old Town",
+        "title": "Royal Madrid & Flamenco Night",
         "itemCount": 4,
-        "mappedItemCount": 2,
+        "mappedItemCount": 3,
         "mappedStops": [
+          {
+            "title": "Palacio Real de Madrid",
+            "type": "activity",
+            "placeName": "Camino Cañada Real Ds",
+            "latitude": 40.311917,
+            "longitude": -3.615167
+          },
           {
             "title": "Mercado de San Miguel",
             "type": "meal",
@@ -3461,43 +3491,32 @@
         ],
         "unmappedItems": [
           {
-            "title": "Museo Nacional Centro de Arte Reina Sofía",
-            "type": "activity"
-          },
-          {
             "title": "Corral de la Morería",
             "type": "activity"
           }
         ],
-        "uniqueMappedStopCount": 2,
+        "uniqueMappedStopCount": 3,
         "duplicateMappedStops": [],
         "countries": [
           "Spain"
         ],
         "usableRouteCount": 1,
         "routeDistanceMeters": [
-          246
+          16829
         ]
       },
       {
         "dayIndex": 3,
-        "title": "Train to Seville",
+        "title": "Train to Seville & Santa Cruz",
         "itemCount": 4,
         "mappedItemCount": 3,
         "mappedStops": [
           {
-            "title": "Madrid Puerta de Atocha",
-            "type": "transport",
+            "title": "Puerta de Atocha-Almudena Grandes",
+            "type": "activity",
             "placeName": "Madrid-Puerta de Atocha-Almudena Grandes",
             "latitude": 40.40659,
             "longitude": -3.68919
-          },
-          {
-            "title": "Bodeguita Romero",
-            "type": "meal",
-            "placeName": "Callejón Del Romero",
-            "latitude": 40.430266,
-            "longitude": -3.871985
           },
           {
             "title": "Real Alcázar de Sevilla",
@@ -3505,11 +3524,18 @@
             "placeName": "Real Alcázar de Sevilla",
             "latitude": 37.38309,
             "longitude": -5.99023
+          },
+          {
+            "title": "Bodega Santa Cruz Las Columnas",
+            "type": "meal",
+            "placeName": "Plaza De Santa Cruz",
+            "latitude": 40.415155,
+            "longitude": -3.70555
           }
         ],
         "unmappedItems": [
           {
-            "title": "La Brunilda Tapas",
+            "title": "El Pinton",
             "type": "meal"
           }
         ],
@@ -3523,30 +3549,16 @@
       },
       {
         "dayIndex": 4,
-        "title": "Seville Heritage & Flamenco",
+        "title": "Seville Monuments & Flamenco",
         "itemCount": 4,
-        "mappedItemCount": 4,
+        "mappedItemCount": 2,
         "mappedStops": [
-          {
-            "title": "Seville Cathedral",
-            "type": "activity",
-            "placeName": "Seville Cathedral",
-            "latitude": 37.38583,
-            "longitude": -5.99311
-          },
-          {
-            "title": "Casa Morales",
-            "type": "meal",
-            "placeName": "Casa Morales",
-            "latitude": 37.38683,
-            "longitude": -5.99573
-          },
           {
             "title": "Plaza de España",
             "type": "activity",
-            "placeName": "Plaza De España",
-            "latitude": 40.423495,
-            "longitude": -3.713445
+            "placeName": "Plaza de España, Seville",
+            "latitude": 37.37722,
+            "longitude": -5.98689
           },
           {
             "title": "Casa de la Memoria",
@@ -3556,44 +3568,60 @@
             "longitude": -5.99265
           }
         ],
-        "unmappedItems": [],
-        "uniqueMappedStopCount": 4,
+        "unmappedItems": [
+          {
+            "title": "Catedral de Sevilla",
+            "type": "activity"
+          },
+          {
+            "title": "La Azotea",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 2,
         "duplicateMappedStops": [],
         "countries": [
           "Spain"
         ],
-        "usableRouteCount": 0,
-        "routeDistanceMeters": []
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2305
+        ]
       },
       {
         "dayIndex": 5,
-        "title": "Triana & Departure",
-        "itemCount": 3,
+        "title": "Triana Morning & Departure",
+        "itemCount": 4,
         "mappedItemCount": 3,
         "mappedStops": [
           {
-            "title": "Centro Cerámica Triana",
+            "title": "Mercado de Triana",
             "type": "activity",
-            "placeName": "Centro Cerámica Triana",
-            "latitude": 37.38564,
-            "longitude": -6.00167
+            "placeName": "Mercado de Triana",
+            "latitude": 37.38594,
+            "longitude": -6.00102
           },
           {
-            "title": "Las Golondrinas",
-            "type": "meal",
-            "placeName": "Las Golondrinas",
-            "latitude": 37.38434,
-            "longitude": -6.00304
+            "title": "Puente de Isabel II",
+            "type": "activity",
+            "placeName": "Puente de Isabel II",
+            "latitude": 37.38651,
+            "longitude": -6.00099
           },
           {
-            "title": "Metropol Parasol",
+            "title": "Setas de Sevilla",
             "type": "activity",
             "placeName": "Metropol Parasol",
             "latitude": 37.39322,
             "longitude": -5.99168
           }
         ],
-        "unmappedItems": [],
+        "unmappedItems": [
+          {
+            "title": "Casa Cuesta",
+            "type": "meal"
+          }
+        ],
         "uniqueMappedStopCount": 3,
         "duplicateMappedStops": [],
         "countries": [
@@ -3601,22 +3629,22 @@
         ],
         "usableRouteCount": 1,
         "routeDistanceMeters": [
-          2106
+          1786
         ]
       }
     ]
   },
   {
     "id": "kyoto-3-day-solo-temples-food",
-    "shareSlug": "1r4x5nrhnt",
-    "tripId": "4dbe8f92-671e-413b-b9b3-dce53a4b9190",
+    "shareSlug": "qyvhqm1rje",
+    "tripId": "fd64d76b-3a16-4445-a932-d5dcc9a0f818",
     "tripTitle": "3 Days in Kyoto",
     "days": [
       {
         "dayIndex": 1,
-        "title": "Eastern Kyoto Temples & Gion",
-        "itemCount": 5,
-        "mappedItemCount": 3,
+        "title": "Eastern Kyoto Temples & Old Streets",
+        "itemCount": 4,
+        "mappedItemCount": 4,
         "mappedStops": [
           {
             "title": "Kiyomizu-dera",
@@ -3626,47 +3654,6 @@
             "longitude": 135.78505
           },
           {
-            "title": "Kodai-ji Temple",
-            "type": "activity",
-            "placeName": "Kodai-ji Temple",
-            "latitude": 35.00004,
-            "longitude": 135.78121
-          },
-          {
-            "title": "Yasaka Shrine",
-            "type": "activity",
-            "placeName": "Yasaka Shrine",
-            "latitude": 35.00366,
-            "longitude": 135.77855
-          }
-        ],
-        "unmappedItems": [
-          {
-            "title": "% Arabica Kyoto Higashiyama",
-            "type": "meal"
-          },
-          {
-            "title": "Gion Tanto",
-            "type": "meal"
-          }
-        ],
-        "uniqueMappedStopCount": 3,
-        "duplicateMappedStops": [],
-        "countries": [
-          "Japan"
-        ],
-        "usableRouteCount": 1,
-        "routeDistanceMeters": [
-          2001
-        ]
-      },
-      {
-        "dayIndex": 2,
-        "title": "Market Food & Central Kyoto",
-        "itemCount": 5,
-        "mappedItemCount": 3,
-        "mappedStops": [
-          {
             "title": "Nishiki Market",
             "type": "meal",
             "placeName": "Nishiki Market",
@@ -3674,40 +3661,38 @@
             "longitude": 135.76477
           },
           {
-            "title": "Kyoto Imperial Palace",
+            "title": "Kodai-ji Temple",
             "type": "activity",
-            "placeName": "Imperial Palace East Gardens",
-            "latitude": 35.68518,
-            "longitude": 139.75445
+            "placeName": "Kodai-ji Temple",
+            "latitude": 35.00004,
+            "longitude": 135.78121
           },
           {
-            "title": "Inoda Coffee Honten",
+            "title": "Omen Kodai-ji",
             "type": "meal",
-            "placeName": "Inoda Coffee Honten",
-            "latitude": 35.00867,
-            "longitude": 135.76246
+            "placeName": "Kodai-ji Temple",
+            "latitude": 35.00004,
+            "longitude": 135.78121
           }
         ],
-        "unmappedItems": [
-          {
-            "title": "Kyoto International Manga Museum",
-            "type": "activity"
-          },
-          {
-            "title": "Honke Owariya Main Branch",
-            "type": "meal"
-          }
-        ],
+        "unmappedItems": [],
         "uniqueMappedStopCount": 3,
-        "duplicateMappedStops": [],
+        "duplicateMappedStops": [
+          {
+            "title": "Omen Kodai-ji",
+            "placeName": "Kodai-ji Temple"
+          }
+        ],
         "countries": [
           "Japan"
         ],
-        "usableRouteCount": 0,
-        "routeDistanceMeters": []
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4980
+        ]
       },
       {
-        "dayIndex": 3,
+        "dayIndex": 2,
         "title": "Arashiyama & Zen Gardens",
         "itemCount": 5,
         "mappedItemCount": 1,
@@ -3726,7 +3711,7 @@
             "type": "activity"
           },
           {
-            "title": "Arabica Kyoto Arashiyama",
+            "title": "Shigetsu",
             "type": "meal"
           },
           {
@@ -3734,12 +3719,80 @@
             "type": "activity"
           },
           {
-            "title": "Shigetsu",
+            "title": "Arabica Kyoto Arashiyama",
             "type": "meal"
           }
         ],
         "uniqueMappedStopCount": 1,
         "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      },
+      {
+        "dayIndex": 3,
+        "title": "Fushimi Inari & Northern Kyoto Calm",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Fushimi Inari Taisha",
+            "type": "activity",
+            "placeName": "Fushimi Inari Taisha",
+            "latitude": 34.96714,
+            "longitude": 135.77267
+          },
+          {
+            "title": "Saryo Tsujiri Kyoto Isetan",
+            "type": "meal",
+            "placeName": "Fushimi Inari Taisha",
+            "latitude": 34.96714,
+            "longitude": 135.77267
+          },
+          {
+            "title": "Ginkaku-ji",
+            "type": "activity",
+            "placeName": "Fushimi Inari Taisha",
+            "latitude": 34.96714,
+            "longitude": 135.77267
+          },
+          {
+            "title": "Honen-in Temple",
+            "type": "activity",
+            "placeName": "Fushimi Inari Taisha",
+            "latitude": 34.96714,
+            "longitude": 135.77267
+          },
+          {
+            "title": "Hyotei Bekkan",
+            "type": "meal",
+            "placeName": "Fushimi Inari Taisha",
+            "latitude": 34.96714,
+            "longitude": 135.77267
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 1,
+        "duplicateMappedStops": [
+          {
+            "title": "Saryo Tsujiri Kyoto Isetan",
+            "placeName": "Fushimi Inari Taisha"
+          },
+          {
+            "title": "Ginkaku-ji",
+            "placeName": "Fushimi Inari Taisha"
+          },
+          {
+            "title": "Honen-in Temple",
+            "placeName": "Fushimi Inari Taisha"
+          },
+          {
+            "title": "Hyotei Bekkan",
+            "placeName": "Fushimi Inari Taisha"
+          }
+        ],
         "countries": [
           "Japan"
         ],

@@ -314,6 +314,41 @@ function normalizeCountry(value) {
   return aliases[normalized] || normalized
 }
 
+function distanceKm(a, b) {
+  const toRad = (value) => (value * Math.PI) / 180
+  const earthRadiusKm = 6371
+  const dLat = toRad(b.latitude - a.latitude)
+  const dLng = toRad(b.longitude - a.longitude)
+  const lat1 = toRad(a.latitude)
+  const lat2 = toRad(b.latitude)
+  const value =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2
+
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value))
+}
+
+function hasGeographicOutlier(day) {
+  const stops = (Array.isArray(day.mappedStops) ? day.mappedStops : [])
+    .map((stop) => ({
+      title: stop.title,
+      type: stop.type,
+      latitude: Number(stop.latitude),
+      longitude: Number(stop.longitude),
+    }))
+    .filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude))
+  const allowsLongTransfer = /train|flight|ferry|transfer|drive|road trip/i.test(`${day.title || ''} ${stops.map((stop) => stop.type).join(' ')}`)
+
+  if (allowsLongTransfer || stops.length < 3) return false
+
+  return stops.some((stop, index) => {
+    const nearestKm = Math.min(...stops
+      .filter((_, otherIndex) => otherIndex !== index)
+      .map((otherStop) => distanceKm(stop, otherStop)))
+    return nearestKm > 150
+  })
+}
+
 function dayHasMapTrust(day, expectedCountry = null) {
   const itemCount = Number(day.itemCount) || 0
   const mappedItemCount = Number(day.mappedItemCount) || 0
@@ -326,6 +361,7 @@ function dayHasMapTrust(day, expectedCountry = null) {
     itemCount > 0 &&
     mappedItemCount >= minimumUniqueStops &&
     uniqueMappedStopCount >= minimumUniqueStops &&
+    !hasGeographicOutlier(day) &&
     countries.length > 0 &&
     (!expected || countries.every((country) => normalizeCountry(country) === expected))
   )

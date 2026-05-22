@@ -354,7 +354,13 @@ async function resolvePlannerPlace({
 }) {
   if (!placeQuery) return null
 
-  const canonicalOverride = PLANNER_PLACE_OVERRIDES.find((entry) => entry.pattern.test(placeQuery))
+  const overrideCandidates = [
+    placeQuery,
+    destinationLabel ? `${placeQuery}, ${destinationLabel}` : '',
+  ].filter(Boolean)
+  const canonicalOverride = PLANNER_PLACE_OVERRIDES.find((entry) => (
+    overrideCandidates.some((candidate) => entry.pattern.test(candidate))
+  ))
   if (canonicalOverride) {
     const { data: place, error } = await db
       .from('places')

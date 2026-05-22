@@ -53,7 +53,7 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /mar do inferno/i, name: 'Mar do Inferno', country: 'Portugal', country_code: 'PT', latitude: 38.69322, longitude: -9.42918, manualId: 'manual:cascais:mar-do-inferno' },
   { pattern: /praia da rainha/i, name: 'Praia da Rainha', country: 'Portugal', country_code: 'PT', latitude: 38.69986, longitude: -9.41819, manualId: 'manual:cascais:praia-da-rainha' },
   { pattern: /boca do inferno/i, name: 'Boca do Inferno', country: 'Portugal', country_code: 'PT', latitude: 38.69161, longitude: -9.43134, manualId: 'manual:cascais:boca-do-inferno' },
-  { pattern: /taberna da rua das flores|farewell dinner/i, name: 'Taberna da Rua das Flores', country: 'Portugal', country_code: 'PT', latitude: 38.70947, longitude: -9.1441, manualId: 'manual:lisbon:taberna-rua-das-flores' },
+  { pattern: /taberna da rua das flores/i, name: 'Taberna da Rua das Flores', country: 'Portugal', country_code: 'PT', latitude: 38.70947, longitude: -9.1441, manualId: 'manual:lisbon:taberna-rua-das-flores' },
   { pattern: /piraeus ferry|piraeus port|port of piraeus|ferry from piraeus to aegina|return ferry to piraeus/i, name: 'Port of Piraeus', country: 'Greece', country_code: 'GR', latitude: 37.94486, longitude: 23.64082, manualId: 'manual:athens:piraeus-port' },
   { pattern: /aegina harbor|aegina port|aegina town|pistachio market/i, name: 'Aegina Town', country: 'Greece', country_code: 'GR', latitude: 37.74679, longitude: 23.42775, manualId: 'manual:aegina:town' },
   { pattern: /temple of aphaia/i, name: 'Temple of Aphaia', country: 'Greece', country_code: 'GR', latitude: 37.75448, longitude: 23.53313, manualId: 'manual:aegina:temple-of-aphaia' },
@@ -282,7 +282,7 @@ function buildQueries(itemTitle: string, dayTitle: string | null, destinationCon
     .trim()
 
   const dayContext = dayTitle?.trim() || ''
-  const canonicalOverride = CANONICAL_PLACE_OVERRIDES.find((entry) => entry.pattern.test(normalized))?.query
+  const canonicalOverride = findCanonicalOverride(normalized, dayContext, destinationContext)?.query
 
   return Array.from(
     new Set(
@@ -296,6 +296,18 @@ function buildQueries(itemTitle: string, dayTitle: string | null, destinationCon
       ].filter(Boolean)
     )
   )
+}
+
+function findCanonicalOverride(itemTitle: string, dayTitle: string | null, destinationContext: string) {
+  const normalized = itemTitle.replace(/\s+/g, ' ').trim()
+  const dayContext = dayTitle?.trim() || ''
+  const candidates = [
+    normalized,
+    destinationContext ? `${normalized}, ${destinationContext}` : '',
+    dayContext && destinationContext ? `${normalized}, ${dayContext}, ${destinationContext}` : '',
+  ].filter(Boolean)
+
+  return CANONICAL_PLACE_OVERRIDES.find((entry) => candidates.some((candidate) => entry.pattern.test(candidate)))
 }
 
 async function upsertCanonicalPlace(supabase: any, override: CanonicalPlaceOverride) {
@@ -474,7 +486,7 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 
     for (const item of items || []) {
       if (!['activity', 'meal', 'lodging', 'transport', 'transit'].includes(item.type)) continue
-      const canonicalOverride = CANONICAL_PLACE_OVERRIDES.find((entry) => entry.pattern.test(item.title))
+      const canonicalOverride = findCanonicalOverride(item.title, day.title, destinationContext)
 
       const currentPlace = Array.isArray(item.place) ? item.place[0] : item.place
       const currentDistanceKm =

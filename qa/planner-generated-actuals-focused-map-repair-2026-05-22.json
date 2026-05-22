@@ -1,0 +1,596 @@
+[
+  {
+    "id": "athens-5-day-couples-rest",
+    "shareSlug": "74hrebna05",
+    "tripId": "cbc02ccc-a1ec-4ba6-914f-5bc3dc8b09ff",
+    "tripTitle": "5 Days in Athens",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Acropolis & Plaka",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Acropolis of Athens",
+            "type": "activity",
+            "placeName": "Acropolis of Athens",
+            "latitude": 37.97153,
+            "longitude": 23.72575
+          },
+          {
+            "title": "Mani Mani",
+            "type": "meal",
+            "placeName": "Mani Mani",
+            "latitude": 37.96758,
+            "longitude": 23.72739
+          },
+          {
+            "title": "Acropolis Museum",
+            "type": "activity",
+            "placeName": "Acropolis Museum",
+            "latitude": 37.96845,
+            "longitude": 23.72853
+          },
+          {
+            "title": "Couleur Locale",
+            "type": "meal",
+            "placeName": "Couleur Locale",
+            "latitude": 37.97625,
+            "longitude": 23.72424
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2765
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Ancient Athens & Central Food Stops",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Ancient Agora of Athens",
+            "type": "activity",
+            "placeName": "Ancient Agora of Athens",
+            "latitude": 37.97569,
+            "longitude": 23.72247
+          },
+          {
+            "title": "Karamanlidika",
+            "type": "meal",
+            "placeName": "Karamanlidika",
+            "latitude": 37.97964,
+            "longitude": 23.72454
+          },
+          {
+            "title": "National Archaeological Museum",
+            "type": "activity",
+            "placeName": "National Archaeological Museum",
+            "latitude": 37.98901,
+            "longitude": 23.73276
+          },
+          {
+            "title": "Atitamos",
+            "type": "meal",
+            "placeName": "Atitamos",
+            "latitude": 37.98637,
+            "longitude": 23.7331
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2994
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Rest Day by the Water",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Stavros Niarchos Foundation Cultural Center",
+            "type": "activity",
+            "placeName": "Stavros Niarchos Foundation Cultural Center",
+            "latitude": 37.93952,
+            "longitude": 23.69165
+          },
+          {
+            "title": "Canal Cafe",
+            "type": "meal",
+            "placeName": "Canal Cafe",
+            "latitude": 37.94041,
+            "longitude": 23.69095
+          },
+          {
+            "title": "Flisvos Marina",
+            "type": "activity",
+            "placeName": "Flisvos Marina",
+            "latitude": 37.93183,
+            "longitude": 23.68647
+          },
+          {
+            "title": "Ark",
+            "type": "meal",
+            "placeName": "Ark",
+            "latitude": 37.86186,
+            "longitude": 23.75431
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          13445
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Monuments, Gardens & Stadium",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Temple of Olympian Zeus",
+            "type": "activity",
+            "placeName": "Temple of Olympian Zeus",
+            "latitude": 37.96931,
+            "longitude": 23.7331
+          },
+          {
+            "title": "National Garden",
+            "type": "activity",
+            "placeName": "National Garden",
+            "latitude": 37.97393,
+            "longitude": 23.73624
+          },
+          {
+            "title": "Athinaikon Mitropoleos",
+            "type": "meal",
+            "placeName": "Athinaikon Mitropoleos",
+            "latitude": 37.97576,
+            "longitude": 23.73112
+          },
+          {
+            "title": "Panathenaic Stadium",
+            "type": "activity",
+            "placeName": "Panathenaic Stadium",
+            "latitude": 37.96832,
+            "longitude": 23.74168
+          },
+          {
+            "title": "Philos Athens",
+            "type": "meal",
+            "placeName": "Philos Athens",
+            "latitude": 37.97962,
+            "longitude": 23.74146
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5034
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Easy Finale in Kifisia",
+        "itemCount": 3,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Goulandris Natural History Museum",
+            "type": "activity",
+            "placeName": "Goulandris Natural History Museum",
+            "latitude": 38.07412,
+            "longitude": 23.8113
+          },
+          {
+            "title": "Different Beast",
+            "type": "meal",
+            "placeName": "Different Beast",
+            "latitude": 38.07533,
+            "longitude": 23.81127
+          },
+          {
+            "title": "Piatsa Kalamaki Kifisia",
+            "type": "meal",
+            "placeName": "Piatsa Kalamaki Kifisia",
+            "latitude": 38.07454,
+            "longitude": 23.81086
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Greece"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          252
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kyoto-3-day-solo-temples-food",
+    "shareSlug": "4agos7udy9",
+    "tripId": "14357755-aa4c-4ccb-b8fe-12e6e84c2b93",
+    "tripTitle": "3 Days in Kyoto",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Higashiyama Temples & Traditional Kyoto",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Kiyomizu-dera",
+            "type": "activity",
+            "placeName": "Kiyomizu-dera",
+            "latitude": 34.99486,
+            "longitude": 135.78505
+          },
+          {
+            "title": "Omen Kodaiji",
+            "type": "meal",
+            "placeName": "Kodai-ji Temple",
+            "latitude": 35.00004,
+            "longitude": 135.78121
+          },
+          {
+            "title": "Kodai-ji Temple",
+            "type": "activity",
+            "placeName": "Kodai-ji Temple",
+            "latitude": 35.00004,
+            "longitude": 135.78121
+          },
+          {
+            "title": "Salon de Muge",
+            "type": "meal",
+            "placeName": "Salon de Muge",
+            "latitude": 35.00474,
+            "longitude": 135.77575
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [
+          {
+            "title": "Kodai-ji Temple",
+            "placeName": "Kodai-ji Temple"
+          }
+        ],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2271
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Market Tastes & Central Kyoto",
+        "itemCount": 4,
+        "mappedItemCount": 2,
+        "mappedStops": [
+          {
+            "title": "Nishiki Market",
+            "type": "activity",
+            "placeName": "Nishiki Market",
+            "latitude": 35.00503,
+            "longitude": 135.76477
+          },
+          {
+            "title": "Inoda Coffee Honten",
+            "type": "meal",
+            "placeName": "Inoda Coffee Honten",
+            "latitude": 35.00867,
+            "longitude": 135.76246
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Nijo Castle",
+            "type": "activity"
+          },
+          {
+            "title": "Nishiki Warai Nishiki",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 2,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          611
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Arashiyama Calm & Riverside Finish",
+        "itemCount": 4,
+        "mappedItemCount": 1,
+        "mappedStops": [
+          {
+            "title": "Tenryu-ji Temple",
+            "type": "activity",
+            "placeName": "Tenryu-ji Temple",
+            "latitude": 35.01596,
+            "longitude": 135.67356
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Yudofu Sagano",
+            "type": "meal"
+          },
+          {
+            "title": "Okochi Sanso Garden",
+            "type": "activity"
+          },
+          {
+            "title": "Arabica Kyoto Arashiyama",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 1,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Japan"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      }
+    ]
+  },
+  {
+    "id": "madrid-seville-5-day-multi-city",
+    "shareSlug": "okfb5apybb",
+    "tripId": "bd39c0f1-0fd7-4f4f-a632-484e7b1f8032",
+    "tripTitle": "5 Days in Madrid & Seville",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Madrid Classics: Art & Tapas",
+        "itemCount": 4,
+        "mappedItemCount": 1,
+        "mappedStops": [
+          {
+            "title": "Museo Nacional del Prado",
+            "type": "activity",
+            "placeName": "Museo Nacional del Prado",
+            "latitude": 40.41378,
+            "longitude": -3.69213
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Los Gatos",
+            "type": "meal"
+          },
+          {
+            "title": "Parque de El Retiro",
+            "type": "activity"
+          },
+          {
+            "title": "Casa Alberto",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 1,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      },
+      {
+        "dayIndex": 2,
+        "title": "Royal Madrid & Flamenco Night",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Palacio Real de Madrid",
+            "type": "activity",
+            "placeName": "Camino Cañada Real Ds",
+            "latitude": 40.311917,
+            "longitude": -3.615167
+          },
+          {
+            "title": "Mercado de San Miguel",
+            "type": "meal",
+            "placeName": "Plaza De San Miguel",
+            "latitude": 40.415474,
+            "longitude": -3.709203
+          },
+          {
+            "title": "Plaza Mayor",
+            "type": "activity",
+            "placeName": "Plaza Mayor",
+            "latitude": 40.415812,
+            "longitude": -3.707338
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Corral de la Morería",
+            "type": "activity"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          16829
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Train to Seville & Old Town",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Madrid-Puerta de Atocha-Almudena Grandes",
+            "type": "transport",
+            "placeName": "Madrid-Puerta de Atocha-Almudena Grandes",
+            "latitude": 40.40659,
+            "longitude": -3.68919
+          },
+          {
+            "title": "Bodeguita Romero",
+            "type": "meal",
+            "placeName": "Bodeguita Romero",
+            "latitude": 37.38581,
+            "longitude": -5.99846
+          },
+          {
+            "title": "Real Alcázar de Sevilla",
+            "type": "activity",
+            "placeName": "Real Alcázar de Sevilla",
+            "latitude": 37.38309,
+            "longitude": -5.99023
+          },
+          {
+            "title": "El Rinconcillo",
+            "type": "meal",
+            "placeName": "El Rinconcillo",
+            "latitude": 37.39326,
+            "longitude": -5.98802
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 0,
+        "routeDistanceMeters": []
+      },
+      {
+        "dayIndex": 4,
+        "title": "Seville Monuments & Flamenco",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Casa Morales",
+            "type": "meal",
+            "placeName": "Casa Morales",
+            "latitude": 37.38683,
+            "longitude": -5.99573
+          },
+          {
+            "title": "Plaza de España",
+            "type": "activity",
+            "placeName": "Plaza de España, Seville",
+            "latitude": 37.37722,
+            "longitude": -5.98689
+          },
+          {
+            "title": "Casa de la Memoria",
+            "type": "activity",
+            "placeName": "Casa de la Memoria",
+            "latitude": 37.39177,
+            "longitude": -5.99265
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "Catedral de Sevilla",
+            "type": "activity"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4031
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Triana & Departure Day",
+        "itemCount": 4,
+        "mappedItemCount": 3,
+        "mappedStops": [
+          {
+            "title": "Centro Cerámica Triana",
+            "type": "activity",
+            "placeName": "Centro Cerámica Triana",
+            "latitude": 37.38564,
+            "longitude": -6.00167
+          },
+          {
+            "title": "Mercado de Triana",
+            "type": "meal",
+            "placeName": "Mercado de Triana",
+            "latitude": 37.38594,
+            "longitude": -6.00102
+          },
+          {
+            "title": "Setas de Sevilla",
+            "type": "activity",
+            "placeName": "Metropol Parasol",
+            "latitude": 37.39322,
+            "longitude": -5.99168
+          }
+        ],
+        "unmappedItems": [
+          {
+            "title": "La Azotea",
+            "type": "meal"
+          }
+        ],
+        "uniqueMappedStopCount": 3,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Spain"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2274
+        ]
+      }
+    ]
+  }
+]

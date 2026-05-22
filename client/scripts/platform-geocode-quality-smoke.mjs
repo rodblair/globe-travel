@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { geocodePlace } from '../app/api/trips/_mapbox.ts'
+import { REGIONAL_PLACE_OVERRIDES } from '../lib/planner/regional-place-overrides.ts'
 
 const root = process.cwd()
 const failures = []
@@ -128,6 +129,55 @@ const weakStrictCases = [
     reason: 'should not accept a distant Bellas Artes locality for the landmark',
   },
 ]
+
+const overrideCases = [
+  {
+    query: 'Avli, Athens',
+    expectedManualId: 'manual:athens:avli',
+    reason: 'generic Avli in an Athens itinerary must not resolve to the Crete restaurant',
+  },
+  {
+    query: 'Avli, Crete',
+    expectedManualId: 'manual:crete:avli-rethymno',
+    reason: 'Crete itineraries still keep the Rethymno Avli anchor',
+  },
+  {
+    query: 'Kyoto Imperial Palace, Kyoto',
+    expectedManualId: 'manual:kyoto:imperial-palace',
+    reason: 'Kyoto palace stops must not resolve to Tokyo Imperial Palace',
+  },
+  {
+    query: 'Plaza de España, Seville',
+    expectedManualId: 'manual:seville:plaza-de-espana',
+    reason: 'Seville Plaza de España must not resolve to the Madrid square',
+  },
+  {
+    query: 'Bodeguita Romero, Seville',
+    expectedManualId: 'manual:seville:bodeguita-romero',
+    reason: 'Seville tapas stops must not resolve to Madrid street names',
+  },
+  {
+    query: 'Athinaikon, Athens',
+    expectedManualId: 'manual:athens:athinaikon-mitropoleos',
+    reason: 'Athens farewell meals must not inherit Lisbon farewell-dinner overrides',
+  },
+]
+
+for (const testCase of overrideCases) {
+  const override = REGIONAL_PLACE_OVERRIDES.find((entry) => entry.pattern.test(testCase.query))
+  record(`regional override resolves contextually: ${testCase.query}`, override?.manualId === testCase.expectedManualId, {
+    reason: testCase.reason,
+    expectedManualId: testCase.expectedManualId,
+    actualManualId: override?.manualId || null,
+    override: override
+      ? {
+          name: override.name,
+          latitude: override.latitude,
+          longitude: override.longitude,
+        }
+      : null,
+  })
+}
 
 if (token) {
   for (const testCase of destinationCases) {

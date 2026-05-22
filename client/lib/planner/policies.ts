@@ -125,6 +125,15 @@ When planning Lisbon, strongly prefer these routeable known-good places for mapp
 Use the exact place name in both title and place_query for meals; do not substitute obscure restaurants when a trusted routeable venue fits the day.`)
   }
 
+  if (/\bathens\b/i.test(destinationText)) {
+    guidance.push(`TRUSTED_ATHENS_PLACE_SET:
+When planning Athens, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
+- Historic center: Acropolis of Athens, Acropolis Museum, Ancient Agora of Athens, Temple of Olympian Zeus, Panathenaic Stadium, National Garden, National Archaeological Museum.
+- Food and evenings: Kuzina, Karamanlidika, Couleur Locale, Athinaikon Mitropoleos, Mani Mani, Philos Athens, Little Kook, Atitamos.
+- Rest/coast/Kifisia: Stavros Niarchos Foundation Cultural Center, Canal Cafe, Flisvos Marina, Ark, Goulandris Natural History Museum, Different Beast, Piatsa Kalamaki Kifisia.
+Use the exact trusted place name in both title and place_query for meals and activities; do not use generic "farewell dinner" or ambiguous restaurant names as place_query values.`)
+  }
+
   if (/\bporto\b/i.test(destinationText)) {
     guidance.push(`TRUSTED_PORTO_PLACE_SET:
 When planning Porto, strongly prefer these routeable known-good places for mapped items unless the user asks for something else:
