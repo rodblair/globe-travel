@@ -95,6 +95,22 @@ const surfaces = [
     intent: 'Pricing renders a public commercial plan page for guest and signed-in contexts.',
   },
   {
+    id: 'trips-index-compat',
+    path: '/trips',
+    expectedPath: '/saved',
+    expectedSearch: '',
+    markers: ['Trips', 'Saved itineraries'],
+    intent: 'Trips index compatibility path lands in the saved workspace.',
+  },
+  {
+    id: 'new-trip-compat',
+    path: '/trips/new',
+    expectedPath: '/chat',
+    expectedSearch: '',
+    markers: ['Planner', 'Trip Studio'],
+    intent: 'New trip compatibility path opens the Planner.',
+  },
+  {
     id: 'onboarding-fullscreen',
     path: '/onboarding',
     expectedPath: '/onboarding',
@@ -473,7 +489,7 @@ ${markdownList(failures.map((failure) => `${failure.routeId} @ ${failure.viewpor
 
 ## Operating Meaning
 
-This gate verifies that Globe.travel's secondary authenticated routes and compatibility aliases still land on useful user-facing surfaces after login or guest entry. It is intentionally smaller than the full release candidate suite, but catches broken redirects, empty pages, app errors, same-origin request failures, horizontal overflow, and missing core copy across phone and desktop.
+This gate verifies that Globe.travel's secondary authenticated routes, legacy trip entry paths, and compatibility aliases still land on useful user-facing surfaces after login or guest entry. It is intentionally smaller than the full release candidate suite, but catches broken redirects, empty pages, app errors, same-origin request failures, horizontal overflow, and missing core copy across phone and desktop.
 `
 
 await writeFile(repoPath(`qa/${jsonArtifact}`), `${JSON.stringify(summary, null, 2)}\n`)

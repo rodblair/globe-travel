@@ -2533,6 +2533,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     'profile-alias',
     'settings-alias',
     'pricing-alias',
+    'trips-index-compat',
+    'new-trip-compat',
     'onboarding-fullscreen',
   ]
   const requiredAppSurfaceViewports = ['phone', 'desktop']

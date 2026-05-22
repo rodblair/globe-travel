@@ -7,10 +7,10 @@ Auth mode: guest
 
 ## Result
 
-- Checked: 18
-- Passed: 18
+- Checked: 22
+- Passed: 22
 - Failed: 0
-- Routes: 9
+- Routes: 11
 - Viewports: 2
 - Guest cleanup: attempted (ok)
 
@@ -26,6 +26,8 @@ Auth mode: guest
 | profile-alias | phone | `/account` | https://globe-travel-two.vercel.app/account | Pass |
 | settings-alias | phone | `/account` | https://globe-travel-two.vercel.app/account | Pass |
 | pricing-alias | phone | `/pricing` | https://globe-travel-two.vercel.app/pricing | Pass |
+| trips-index-compat | phone | `/saved` | https://globe-travel-two.vercel.app/saved | Pass |
+| new-trip-compat | phone | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | onboarding-fullscreen | phone | `/onboarding` | https://globe-travel-two.vercel.app/onboarding | Pass |
 | explore-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | globe-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
@@ -35,6 +37,8 @@ Auth mode: guest
 | profile-alias | desktop | `/account` | https://globe-travel-two.vercel.app/account | Pass |
 | settings-alias | desktop | `/account` | https://globe-travel-two.vercel.app/account | Pass |
 | pricing-alias | desktop | `/pricing` | https://globe-travel-two.vercel.app/pricing | Pass |
+| trips-index-compat | desktop | `/saved` | https://globe-travel-two.vercel.app/saved | Pass |
+| new-trip-compat | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | onboarding-fullscreen | desktop | `/onboarding` | https://globe-travel-two.vercel.app/onboarding | Pass |
 
 ## Failures
@@ -43,4 +47,4 @@ Auth mode: guest
 
 ## Operating Meaning
 
-This gate verifies that Globe.travel's secondary authenticated routes and compatibility aliases still land on useful user-facing surfaces after login or guest entry. It is intentionally smaller than the full release candidate suite, but catches broken redirects, empty pages, app errors, same-origin request failures, horizontal overflow, and missing core copy across phone and desktop.
+This gate verifies that Globe.travel's secondary authenticated routes, legacy trip entry paths, and compatibility aliases still land on useful user-facing surfaces after login or guest entry. It is intentionally smaller than the full release candidate suite, but catches broken redirects, empty pages, app errors, same-origin request failures, horizontal overflow, and missing core copy across phone and desktop.

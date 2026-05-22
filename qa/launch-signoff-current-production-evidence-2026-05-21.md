@@ -13,6 +13,7 @@ Commit `7cd3c2532dfc81523303a96915171b4c6108ffd7` deployed to Vercel production 
 - Production Trip Studio recovery UI: `1/1`
 - Production auth and guest access: `13/13`
 - Production accessibility and keyboard QA: `18/18`, including public `/pricing` across phone and desktop.
+- Production authenticated app surfaces smoke: `22/22`, including `/trips` and `/trips/new` legacy trip entry paths across phone and desktop.
 - Public commercial pricing: `/pricing` renders publicly with `Globe.travel pricing`, `Start 7-day free trial`, and `Adventurer`.
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
@@ -173,7 +174,7 @@ Commit `ead2d81425eaef5f38dd81a95d469d5a1bc0e301` deployed to Vercel production 
 - Public share viral loop: `5/5`
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/`
-- Authenticated app surfaces smoke: `18/18`
+- Authenticated app surfaces smoke: `22/22`, including `/trips` and `/trips/new` legacy trip entry paths.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `60/60`
 - Public launch status includes full route inventory and authenticated app surfaces with no guardrail issues.
