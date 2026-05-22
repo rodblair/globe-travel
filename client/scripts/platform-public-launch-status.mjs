@@ -666,10 +666,11 @@ const missingDesignSystemChecks = missingFrom(designSystemCheckNames, requiredDe
 const failedDesignSystemChecks = Array.isArray(designSystem.checks)
   ? designSystem.checks.filter((check) => check.ok === false).map((check) => check.name)
   : []
+const expectedDesignSystemProductionVisualArtifact = visualRegister.latestProductionReview?.summaryArtifact || ''
 const designSystemVisualEvidenceReady =
   designSystem.responsiveVisualArtifact === responsiveVisualArtifactPath &&
-  typeof designSystem.productionVisualArtifact === 'string' &&
-  designSystem.productionVisualArtifact.includes('qa/visual-baseline-production-') &&
+  hasText(expectedDesignSystemProductionVisualArtifact) &&
+  designSystem.productionVisualArtifact === expectedDesignSystemProductionVisualArtifact &&
   Array.isArray(designSystem.failures) &&
   designSystem.failures.length === 0
 const designSystemReady =
@@ -1620,6 +1621,7 @@ const summary = {
     responsiveVisualArtifact: qaDisplayPath(designSystem.responsiveVisualArtifact),
     expectedResponsiveVisualArtifact: qaDisplayPath(responsiveVisualArtifactPath),
     productionVisualArtifact: qaDisplayPath(designSystem.productionVisualArtifact),
+    expectedProductionVisualArtifact: qaDisplayPath(expectedDesignSystemProductionVisualArtifact),
     failureCount: Array.isArray(designSystem.failures) ? designSystem.failures.length : null,
     visualEvidenceReady: designSystemVisualEvidenceReady,
     ready: designSystemReady,

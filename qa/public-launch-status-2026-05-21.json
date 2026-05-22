@@ -242,7 +242,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-05-22/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-05-22-2897c3a/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-release-2026-05-22-2897c3a/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true

@@ -949,17 +949,28 @@ async function checkDesignSystemArtifact() {
     failedChecks,
   })
 
+  let expectedProductionVisualArtifact = ''
+  let visualRegisterError = null
+  try {
+    const productionVisualRegisterSummary = await readJson(visualReviewRegister)
+    expectedProductionVisualArtifact = productionVisualRegisterSummary.latestProductionReview?.summaryArtifact || ''
+  } catch (error) {
+    visualRegisterError = error instanceof Error ? error.message : String(error)
+  }
+
   const visualEvidenceOk =
     summary.responsiveVisualArtifact === visualArtifact &&
-    typeof summary.productionVisualArtifact === 'string' &&
-    summary.productionVisualArtifact.includes('qa/visual-baseline-production-') &&
+    hasMeaningfulText(expectedProductionVisualArtifact) &&
+    summary.productionVisualArtifact === expectedProductionVisualArtifact &&
     Array.isArray(summary.failures) &&
     summary.failures.length === 0
   addCheck('design-system readiness is tied to current visual QA evidence', visualEvidenceOk, {
     expectedResponsiveVisualArtifact: visualArtifact,
+    expectedProductionVisualArtifact,
     responsiveVisualArtifact: summary.responsiveVisualArtifact || null,
     productionVisualArtifact: summary.productionVisualArtifact || null,
     failureCount: Array.isArray(summary.failures) ? summary.failures.length : null,
+    visualRegisterError,
   })
 
   return summary
