@@ -2,7 +2,7 @@
   "date": "2026-05-22",
   "designContext": ".impeccable.md",
   "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
-  "productionVisualArtifact": "qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/summary.json",
+  "productionVisualArtifact": "qa/visual-baseline-production-beta-wave-rehearsal-2026-05-22-cae3bf7/summary.json",
   "productionVisualArtifactSource": "qa/production-visual-review-register.json",
   "checked": 10,
   "passed": 10,

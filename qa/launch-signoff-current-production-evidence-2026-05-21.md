@@ -2,6 +2,26 @@
 
 Date: 2026-05-21
 
+## Beta Review Wave Rehearsal Gate Postdeploy Evidence
+
+Commit `cae3bf7aea0aa0fb4234639708d7c9ced66e3d08` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-2g8ag2diq-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Production auth and guest access: `13/13`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-beta-wave-rehearsal-2026-05-22-cae3bf7/`
+- Beta review wave rehearsal: `5/5`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Public launch status includes beta review wave rehearsal with no guardrail issues.
+- Current production commit: `cae3bf7aea0aa0fb4234639708d7c9ced66e3d08`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Authenticated App Surface Gate Postdeploy Evidence
 
 Commit `ead2d81425eaef5f38dd81a95d469d5a1bc0e301` deployed to Vercel production on 2026-05-22.

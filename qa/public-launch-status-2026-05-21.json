@@ -9,8 +9,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-m4cdqdg6m-rodney-blairs-projects.vercel.app",
-    "commit": "ead2d81425eaef5f38dd81a95d469d5a1bc0e301"
+    "url": "globe-travel-2g8ag2diq-rodney-blairs-projects.vercel.app",
+    "commit": "cae3bf7aea0aa0fb4234639708d7c9ced66e3d08"
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -90,10 +90,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/summary.json",
-    "latestProductionCommit": "ead2d81425eaef5f38dd81a95d469d5a1bc0e301",
-    "latestProductionDeploymentUrl": "globe-travel-m4cdqdg6m-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-beta-wave-rehearsal-2026-05-22-cae3bf7",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-beta-wave-rehearsal-2026-05-22-cae3bf7/summary.json",
+    "latestProductionCommit": "cae3bf7aea0aa0fb4234639708d7c9ced66e3d08",
+    "latestProductionDeploymentUrl": "globe-travel-2g8ag2diq-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "nextReviewDueAt": "2026-05-28",
     "intakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
@@ -134,8 +134,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "ead2d81425eaef5f38dd81a95d469d5a1bc0e301",
-    "knownGoodDeploymentUrl": "globe-travel-m4cdqdg6m-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "cae3bf7aea0aa0fb4234639708d7c9ced66e3d08",
+    "knownGoodDeploymentUrl": "globe-travel-2g8ag2diq-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -170,7 +170,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "ead2d81425eaef5f38dd81a95d469d5a1bc0e301",
+    "latestVerificationExpectedLiveCommit": "cae3bf7aea0aa0fb4234639708d7c9ced66e3d08",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -219,7 +219,7 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-beta-wave-rehearsal-2026-05-22-cae3bf7/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
