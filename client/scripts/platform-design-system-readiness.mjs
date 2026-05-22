@@ -11,9 +11,13 @@ const reportArtifact = process.env.QA_DESIGN_SYSTEM_REPORT || `qa/design-system-
 const responsiveVisualArtifact =
   process.env.QA_DESIGN_SYSTEM_VISUAL_ARTIFACT ||
   'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
-const productionVisualArtifact =
-  process.env.QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_ARTIFACT ||
-  'qa/visual-baseline-production-monitoring-gate-2026-05-21-acf72d1/summary.json'
+const productionVisualRegister =
+  process.env.QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_REGISTER ||
+  'qa/production-visual-review-register.json'
+let productionVisualArtifact = process.env.QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_ARTIFACT || ''
+let productionVisualArtifactSource = process.env.QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_ARTIFACT
+  ? 'QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_ARTIFACT'
+  : productionVisualRegister
 
 const requiredContextMarkers = [
   'Primary users are friend groups planning trips together',
@@ -160,6 +164,15 @@ function dateOnly(value) {
   return match?.[0] || null
 }
 
+if (!productionVisualArtifact) {
+  try {
+    const visualRegister = await readJson(productionVisualRegister)
+    productionVisualArtifact = visualRegister.latestProductionReview?.summaryArtifact || ''
+  } catch {
+    productionVisualArtifact = ''
+  }
+}
+
 const designContext = await readText('.impeccable.md')
 const globals = await readText('client/app/globals.css')
 const sourceFiles = [
@@ -271,6 +284,9 @@ try {
 
 let productionVisual = null
 try {
+  if (!productionVisualArtifact) {
+    throw new Error(`No production visual summary found in ${productionVisualArtifactSource}`)
+  }
   productionVisual = await readJson(productionVisualArtifact)
   const missingRoutes = missingFrom(productionVisual.routes || [], requiredProductionRoutes)
   addCheck('production visual QA covers public acquisition and sharing surfaces', (
@@ -280,6 +296,7 @@ try {
     missingRoutes.length === 0
   ), {
     artifact: productionVisualArtifact,
+    artifactSource: productionVisualArtifactSource,
     checked: productionVisual.checked,
     passed: productionVisual.passed,
     failed: productionVisual.failed,
@@ -289,6 +306,7 @@ try {
 } catch (error) {
   addCheck('production visual QA covers public acquisition and sharing surfaces', false, {
     artifact: productionVisualArtifact,
+    artifactSource: productionVisualArtifactSource,
     error: error instanceof Error ? error.message : String(error),
   })
 }
@@ -299,6 +317,7 @@ const summary = {
   designContext: '.impeccable.md',
   responsiveVisualArtifact,
   productionVisualArtifact,
+  productionVisualArtifactSource,
   checked: checks.length,
   passed: checks.length - failures.length,
   failed: failures.length,
