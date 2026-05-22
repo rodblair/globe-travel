@@ -13,8 +13,81 @@ const failures = []
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+const cityCountryReplacements = [
+  [/\bAthens Greece\b/gi, 'Athens, Greece'],
+  [/\bLisbon Portugal\b/gi, 'Lisbon, Portugal'],
+  [/\bBarcelona Spain\b/gi, 'Barcelona, Spain'],
+  [/\bParis France\b/gi, 'Paris, France'],
+  [/\bIstanbul Turkey\b/gi, 'Istanbul, Turkey'],
+  [/\bSeoul South Korea\b/gi, 'Seoul, South Korea'],
+  [/\bBangkok Thailand\b/gi, 'Bangkok, Thailand'],
+  [/\bMarrakech Morocco\b/gi, 'Marrakech, Morocco'],
+  [/\bCape Town South Africa\b/gi, 'Cape Town, South Africa'],
+  [/\bSydney Australia\b/gi, 'Sydney, Australia'],
+  [/\bVancouver Canada\b/gi, 'Vancouver, Canada'],
+  [/\bRio de Janeiro Brazil\b/gi, 'Rio de Janeiro, Brazil'],
+  [/\bReykjavik Iceland\b/gi, 'Reykjavik, Iceland'],
+  [/\bCrete Greece\b/gi, 'Crete, Greece'],
+  [/\bDubai UAE\b/gi, 'Dubai, UAE'],
+  [/\bDubai United Arab Emirates\b/gi, 'Dubai, United Arab Emirates'],
+  [/\bKyoto Japan\b/gi, 'Kyoto, Japan'],
+  [/\bBali Indonesia\b/gi, 'Bali, Indonesia'],
+  [/\bNairobi Kenya\b/gi, 'Nairobi, Kenya'],
+  [/\bWashington DC\b/gi, 'Washington, DC'],
+  [/\bMexico City Mexico\b/gi, 'Mexico City, Mexico'],
+  [/\bLondon England\b/gi, 'London, England'],
+  [/\bLondon UK\b/gi, 'London, UK'],
+  [/\bRome Italy\b/gi, 'Rome, Italy'],
+  [/\bTokyo Japan\b/gi, 'Tokyo, Japan'],
+  [/\bCopenhagen Denmark\b/gi, 'Copenhagen, Denmark'],
+  [/\bBerlin Germany\b/gi, 'Berlin, Germany'],
+]
+
+const monthNames = {
+  jan: 'January',
+  january: 'January',
+  feb: 'February',
+  february: 'February',
+  mar: 'March',
+  march: 'March',
+  apr: 'April',
+  april: 'April',
+  may: 'May',
+  jun: 'June',
+  june: 'June',
+  jul: 'July',
+  july: 'July',
+  aug: 'August',
+  august: 'August',
+  sep: 'September',
+  sept: 'September',
+  september: 'September',
+  oct: 'October',
+  october: 'October',
+  nov: 'November',
+  november: 'November',
+  dec: 'December',
+  december: 'December',
+}
+
 function hasMeta(html, matcher) {
   return matcher.test(html)
+}
+
+function formatShareDisplayTitle(title) {
+  let formatted = String(title || 'Trip').replace(/\s+/g, ' ').trim()
+  for (const [pattern, replacement] of cityCountryReplacements) {
+    formatted = formatted.replace(pattern, replacement)
+  }
+  formatted = formatted
+    .replace(/\b(early|mid|late)\s+(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t)?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b/gi, (_match, modifier, month) => {
+      const monthName = monthNames[String(month).toLowerCase()] || month
+      const cleanModifier = String(modifier).toLowerCase()
+      return cleanModifier === 'mid' ? `mid\u2011${monthName}` : `${cleanModifier} ${monthName}`
+    })
+    .replace(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t)?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b/gi, (match) => monthNames[String(match).toLowerCase()] || match)
+    .replace(/\b(in\s+[^,]+,\s+(?:Greece|Portugal|Spain|France|Turkey|South Korea|Thailand|Morocco|South Africa|Australia|Canada|Brazil|Iceland|UAE|United Arab Emirates|Japan|Indonesia|Kenya|DC|Mexico|England|UK|Italy|Denmark|Germany))\s+in\s+((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)/g, '$1, in $2')
+  return formatted.replace(/\s+/g, ' ').trim()
 }
 
 function fail(shareSlug, name, details) {
@@ -156,7 +229,8 @@ async function checkShareSlug(shareSlug) {
 
   const pageResponse = await fetchWithRetry(`/t/${shareSlug}`)
   const html = await pageResponse.text()
-  const escapedTitle = tripTitle?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const displayTitle = formatShareDisplayTitle(tripTitle)
+  const escapedTitle = displayTitle?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const metaChecks = [
     ['trip title tag', escapedTitle ? new RegExp(`<title[^>]*>[^<]*${escapedTitle}[^<]*Globe\\.travel`, 'i') : /$a/],
     ['meta description', /<meta\s+name=["']description["'][^>]+content=["'][^"']*Review the/i],

@@ -9,6 +9,9 @@ Base URL: https://globe-travel-two.vercel.app
 - Checked viewports: 2
 - Passed shares: 1
 - Failed shares: 0
+- Discovery mode: yes
+- Discovered public shares: 1/1
+- Requires usable route lines: yes
 
 | Share | Result | Trip | Days | Expected country | Rendered viewports |
 | --- | --- | --- | ---: | --- | ---: |

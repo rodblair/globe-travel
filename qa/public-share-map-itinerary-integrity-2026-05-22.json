@@ -4,6 +4,26 @@
   "shareSlugs": [
     "x3m2c8cnws"
   ],
+  "requestedShareSlugs": [
+    "x3m2c8cnws"
+  ],
+  "discovery": {
+    "enabled": true,
+    "limit": 25,
+    "totalPublicShares": 1,
+    "shareCount": 1,
+    "shares": [
+      {
+        "tripId": "0746a2c6-2b9b-4753-bbb7-8c3e9b193d38",
+        "title": "5 Days in Athens Greece in mid september",
+        "shareSlug": "x3m2c8cnws",
+        "updatedAt": "2026-05-11T21:13:40.825+00:00",
+        "createdAt": "2026-05-11T20:51:04.578378+00:00"
+      }
+    ],
+    "includeRequestedSlugs": true
+  },
+  "requireUsableRoutes": true,
   "expectedCountryMap": {
     "x3m2c8cnws": "Greece"
   },
@@ -123,7 +143,7 @@
           "issues": [],
           "state": {
             "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
-            "title": "5 Days in Athens Greece in mid september | Globe.travel",
+            "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel",
             "hasSharedMapLabel": true,
             "hasItineraryHeading": true,
             "hasDayPlanHeading": true,
@@ -160,7 +180,7 @@
           "issues": [],
           "state": {
             "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
-            "title": "5 Days in Athens Greece in mid september | Globe.travel",
+            "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel",
             "hasSharedMapLabel": true,
             "hasItineraryHeading": true,
             "hasDayPlanHeading": true,
