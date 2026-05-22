@@ -2,24 +2,25 @@
 
 Date: 2026-05-21
 
-## Beta Review Wave Rehearsal Gate Postdeploy Evidence
+## Full Beta Review Matrix Rehearsal Gate Postdeploy Evidence
 
-Commit `cae3bf7aea0aa0fb4234639708d7c9ced66e3d08` deployed to Vercel production on 2026-05-22.
+Commit `b635e5bce19319306d7f3103dcc5c552774ba811` deployed to Vercel production on 2026-05-22.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-2g8ag2diq-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-6rqed3a1p-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production Trip Studio recovery UI: `1/1`
 - Production auth and guest access: `13/13`
 - Public share viral loop: `5/5`
 - Production visual QA: `20/20`
-- Production visual artifact: `qa/visual-baseline-production-beta-wave-rehearsal-2026-05-22-cae3bf7/`
+- Production visual artifact: `qa/visual-baseline-production-release-2026-05-22/`
 - Beta review wave rehearsal: `5/5`
+- Beta review matrix rehearsal: `25/25`
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `60/60`
-- Public launch status includes beta review wave rehearsal with no guardrail issues.
-- Current production commit: `cae3bf7aea0aa0fb4234639708d7c9ced66e3d08`
+- Public launch status includes beta review wave and full-matrix rehearsal with no guardrail issues.
+- Current production commit: `b635e5bce19319306d7f3103dcc5c552774ba811`
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Authenticated App Surface Gate Postdeploy Evidence
