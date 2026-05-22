@@ -570,6 +570,31 @@
     "issues": [],
     "ready": true
   },
+  "publicMetadata": {
+    "artifact": "qa/public-metadata-smoke-2026-05-22.json",
+    "report": "",
+    "artifactReadable": false,
+    "artifactError": "ENOENT: no such file or directory, open '/Users/rodneyblair/Documents/GitHub/globe-travel/qa/public-metadata-smoke-2026-05-22.json'",
+    "pending": true,
+    "baseUrl": null,
+    "shareSlug": null,
+    "status": null,
+    "checked": null,
+    "passed": null,
+    "failed": null,
+    "sourceMissingCount": null,
+    "requiredCheckCount": 4,
+    "resultIds": [],
+    "missingChecks": [
+      "root-html",
+      "manifest",
+      "robots",
+      "sitemap"
+    ],
+    "failedResults": [],
+    "issues": [],
+    "ready": false
+  },
   "releaseCandidate": {
     "artifact": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "checked": 35,
@@ -686,6 +711,7 @@
     }
   ],
   "nextActions": [
+    "Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.",
     "Collect and import 25 completed beta review submission(s).",
     "Run, review, and import 2 scheduled production visual review date(s)."
   ],
@@ -701,6 +727,7 @@
     "designSystemReadiness": "qa/design-system-readiness-2026-05-22.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-22.json",
+    "publicMetadata": "qa/public-metadata-smoke-2026-05-22.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-05-22.json",
     "appSurfaces": "qa/app-surfaces-smoke-2026-05-22.json",

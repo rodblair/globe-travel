@@ -54,6 +54,7 @@ Status: beta-ready-public-blocked
 - Design system ready: yes
 - Planner map actuals ready: yes
 - Public share map/itinerary catalog ready: yes (1/1 public shares, 2 viewports)
+- Public metadata ready: no (0/4)
 - Release candidate ready: yes
 - Full route inventory ready: yes
 - Authenticated app surfaces ready: yes
@@ -136,8 +137,12 @@ Production authenticated app surfaces:
 Public share map/itinerary integrity:
 - none
 
+Public metadata:
+- none
+
 ## Next Actions
 
+- Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
 
@@ -175,6 +180,7 @@ Public share map/itinerary integrity:
 - Design-system readiness: `qa/design-system-readiness-2026-05-22.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-22.json` and `qa/public-share-map-catalog-2026-05-22.md`
+- Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-22.json` and ``
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-05-22.json`
 - Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-22.json`

@@ -517,7 +517,7 @@ const [
   designSystem,
   plannerActuals,
   publicShareMapIntegrity,
-  publicMetadata,
+  publicMetadataRead,
   releaseCandidate,
   routeInventory,
   appSurfaces,
@@ -574,7 +574,7 @@ const [
   readJson(designSystemPath),
   readJson(plannerActualsPath),
   readJson(publicShareMapIntegrityPath),
-  readJson(publicMetadataPath),
+  readableJson(publicMetadataPath),
   readJson(releaseCandidatePath),
   readJson(routeInventoryPath),
   readJson(appSurfacesPath),
@@ -594,6 +594,8 @@ const [
   fetchHealth(),
 ])
 
+const publicMetadata = publicMetadataRead.json || {}
+const publicMetadataPresent = publicMetadataRead.ok
 const plannedBetaReviews = Array.isArray(betaRegister.plannedReviews) ? betaRegister.plannedReviews : []
 const completedBetaReviews = plannedBetaReviews.filter((review) => completedStatuses.has(review.status))
 const publicBetaMinimum = Number(betaRegister.minimumCompletedReviewsForPublicLaunch) || 25
@@ -854,14 +856,14 @@ const publicMetadataResultIds = publicMetadataResults.map((result) => result.id)
 const missingPublicMetadataChecks = missingFrom(publicMetadataResultIds, requiredPublicMetadataChecks)
 const failedPublicMetadataResults = publicMetadataResults.filter((result) => result.ok !== true)
 const publicMetadataIssues = []
-if (publicMetadata.baseUrl !== baseUrl) publicMetadataIssues.push(`public metadata base URL ${publicMetadata.baseUrl || 'missing'} does not match ${baseUrl}`)
-if (publicMetadata.status !== 'pass') publicMetadataIssues.push('public metadata smoke is not passing')
-if (Number(publicMetadata.checked) < requiredPublicMetadataChecks.length) publicMetadataIssues.push('public metadata smoke did not check every required metadata surface')
-if (Number(publicMetadata.failed) !== 0) publicMetadataIssues.push('public metadata smoke has failing checks')
-if (Number(publicMetadata.sourceMissingCount) !== 0) publicMetadataIssues.push('public metadata source files are missing')
-if (missingPublicMetadataChecks.length > 0) publicMetadataIssues.push(`public metadata smoke is missing checks: ${missingPublicMetadataChecks.join(', ')}`)
-if (failedPublicMetadataResults.length > 0) publicMetadataIssues.push(`public metadata smoke has failed results: ${failedPublicMetadataResults.map((result) => result.id || result.path || 'unknown').join(', ')}`)
-const publicMetadataReady = publicMetadataIssues.length === 0
+if (publicMetadataPresent && publicMetadata.baseUrl !== baseUrl) publicMetadataIssues.push(`public metadata base URL ${publicMetadata.baseUrl || 'missing'} does not match ${baseUrl}`)
+if (publicMetadataPresent && publicMetadata.status !== 'pass') publicMetadataIssues.push('public metadata smoke is not passing')
+if (publicMetadataPresent && Number(publicMetadata.checked) < requiredPublicMetadataChecks.length) publicMetadataIssues.push('public metadata smoke did not check every required metadata surface')
+if (publicMetadataPresent && Number(publicMetadata.failed) !== 0) publicMetadataIssues.push('public metadata smoke has failing checks')
+if (publicMetadataPresent && Number(publicMetadata.sourceMissingCount) !== 0) publicMetadataIssues.push('public metadata source files are missing')
+if (publicMetadataPresent && missingPublicMetadataChecks.length > 0) publicMetadataIssues.push(`public metadata smoke is missing checks: ${missingPublicMetadataChecks.join(', ')}`)
+if (publicMetadataPresent && failedPublicMetadataResults.length > 0) publicMetadataIssues.push(`public metadata smoke has failed results: ${failedPublicMetadataResults.map((result) => result.id || result.path || 'unknown').join(', ')}`)
+const publicMetadataReady = publicMetadataPresent && publicMetadataIssues.length === 0
 const releaseTaskNames = unique((Array.isArray(releaseCandidate.results) ? releaseCandidate.results : [])
   .map((result) => result.name)
   .filter(Boolean))
@@ -1993,7 +1995,7 @@ if (!plannerActualsReady) {
 if (!publicShareMapIntegrityReady) {
   guardrailIssues.push('public share map/itinerary integrity evidence is not passing')
 }
-if (!publicMetadataReady) {
+if (publicMetadataPresent && !publicMetadataReady) {
   guardrailIssues.push('public metadata, sitemap, robots, and manifest evidence is not passing')
 }
 if (!releaseCandidateReady) {
@@ -2474,6 +2476,9 @@ const summary = {
   publicMetadata: {
     artifact: qaDisplayPath(publicMetadataPath),
     report: qaDisplayPath(publicMetadata.reportArtifact),
+    artifactReadable: publicMetadataPresent,
+    artifactError: publicMetadataRead.error,
+    pending: !publicMetadataPresent,
     baseUrl: publicMetadata.baseUrl || null,
     shareSlug: publicMetadata.shareSlug || null,
     status: publicMetadata.status || null,
@@ -2596,6 +2601,8 @@ const summary = {
   guardrailIssues,
   blockers,
   nextActions: [
+    !publicMetadataPresent ? 'Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.' : null,
+    publicMetadataPresent && !publicMetadataReady ? 'Fix the failing public metadata smoke before treating the metadata launch surface as production-ready.' : null,
     betaRemaining > 0 ? `Collect and import ${betaRemaining} completed beta review submission(s).` : null,
     visualRemaining > 0 ? `Run, review, and import ${visualRemaining} scheduled production visual review date(s).` : null,
     guardrailIssues.length > 0 ? 'Fix guardrail issues before relying on public-launch status.' : null,

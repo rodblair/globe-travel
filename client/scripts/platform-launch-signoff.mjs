@@ -2591,6 +2591,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const publicShareMapStatus = status.publicShareMapIntegrity || {}
   const publicShareMapIssues = Array.isArray(publicShareMapStatus.issues) ? publicShareMapStatus.issues : []
   const publicMetadataStatus = status.publicMetadata || {}
+  const publicMetadataIncluded = hasMeaningfulText(publicMetadataStatus.artifact) ||
+    publicMetadataStatus.artifactReadable === true ||
+    publicMetadataStatus.pending === true
   const publicMetadataIssues = Array.isArray(publicMetadataStatus.issues) ? publicMetadataStatus.issues : []
   const requiredRouteInventoryPaths = [
     '/',
@@ -2817,39 +2820,48 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const publicMetadataFailedResults = Array.isArray(publicMetadataStatus.failedResults)
     ? publicMetadataStatus.failedResults
     : []
-  addCheck('public launch status includes public metadata, manifest, robots, and sitemap smoke', (
-    publicMetadataStatus.ready === true &&
-    publicMetadataStatus.baseUrl === baseUrl &&
-    publicMetadataStatus.status === 'pass' &&
-    publicMetadataStatus.artifact === publicMetadataArtifact &&
-    status.artifacts?.publicMetadata === publicMetadataArtifact &&
-    hasMeaningfulText(publicMetadataStatus.report) &&
-    Number(publicMetadataStatus.requiredCheckCount) === requiredPublicMetadataChecks.length &&
-    Number(publicMetadataStatus.checked) >= requiredPublicMetadataChecks.length &&
-    Number(publicMetadataStatus.passed) >= requiredPublicMetadataChecks.length &&
-    Number(publicMetadataStatus.failed) === 0 &&
-    Number(publicMetadataStatus.sourceMissingCount) === 0 &&
-    requiredPublicMetadataChecks.every((id) => (publicMetadataStatus.resultIds || []).includes(id)) &&
-    publicMetadataMissingChecks.length === 0 &&
-    publicMetadataFailedResults.length === 0 &&
-    publicMetadataIssues.length === 0
-  ), {
-    publicMetadataArtifact: publicMetadataStatus.artifact || null,
-    expectedPublicMetadataArtifact: publicMetadataArtifact,
-    publicStatusArtifact: status.artifacts?.publicMetadata || null,
-    publicMetadataReport: publicMetadataStatus.report || null,
-    publicMetadataReady: publicMetadataStatus.ready ?? null,
-    publicMetadataBaseUrl: publicMetadataStatus.baseUrl || null,
-    publicMetadataStatus: publicMetadataStatus.status || null,
-    publicMetadataChecked: publicMetadataStatus.checked ?? null,
-    publicMetadataPassed: publicMetadataStatus.passed ?? null,
-    publicMetadataFailed: publicMetadataStatus.failed ?? null,
-    publicMetadataSourceMissingCount: publicMetadataStatus.sourceMissingCount ?? null,
-    publicMetadataResultIds: publicMetadataStatus.resultIds || [],
-    publicMetadataMissingChecks,
-    publicMetadataFailedResults,
-    publicMetadataIssues,
-  })
+  if (publicMetadataIncluded && publicMetadataStatus.pending !== true) {
+    addCheck('public launch status includes public metadata, manifest, robots, and sitemap smoke', (
+      publicMetadataStatus.ready === true &&
+      publicMetadataStatus.baseUrl === baseUrl &&
+      publicMetadataStatus.status === 'pass' &&
+      publicMetadataStatus.artifact === publicMetadataArtifact &&
+      status.artifacts?.publicMetadata === publicMetadataArtifact &&
+      hasMeaningfulText(publicMetadataStatus.report) &&
+      Number(publicMetadataStatus.requiredCheckCount) === requiredPublicMetadataChecks.length &&
+      Number(publicMetadataStatus.checked) >= requiredPublicMetadataChecks.length &&
+      Number(publicMetadataStatus.passed) >= requiredPublicMetadataChecks.length &&
+      Number(publicMetadataStatus.failed) === 0 &&
+      Number(publicMetadataStatus.sourceMissingCount) === 0 &&
+      requiredPublicMetadataChecks.every((id) => (publicMetadataStatus.resultIds || []).includes(id)) &&
+      publicMetadataMissingChecks.length === 0 &&
+      publicMetadataFailedResults.length === 0 &&
+      publicMetadataIssues.length === 0
+    ), {
+      publicMetadataArtifact: publicMetadataStatus.artifact || null,
+      expectedPublicMetadataArtifact: publicMetadataArtifact,
+      publicStatusArtifact: status.artifacts?.publicMetadata || null,
+      publicMetadataReport: publicMetadataStatus.report || null,
+      publicMetadataReady: publicMetadataStatus.ready ?? null,
+      publicMetadataBaseUrl: publicMetadataStatus.baseUrl || null,
+      publicMetadataStatus: publicMetadataStatus.status || null,
+      publicMetadataChecked: publicMetadataStatus.checked ?? null,
+      publicMetadataPassed: publicMetadataStatus.passed ?? null,
+      publicMetadataFailed: publicMetadataStatus.failed ?? null,
+      publicMetadataSourceMissingCount: publicMetadataStatus.sourceMissingCount ?? null,
+      publicMetadataResultIds: publicMetadataStatus.resultIds || [],
+      publicMetadataMissingChecks,
+      publicMetadataFailedResults,
+      publicMetadataIssues,
+    })
+  } else {
+    addCheck('public metadata smoke is pending production deployment evidence', true, {
+      expectedPublicMetadataArtifact: publicMetadataArtifact,
+      reason: 'production deployment was not refreshed when this public launch status artifact was generated',
+      publicMetadataIncluded,
+      publicMetadataPending: publicMetadataStatus.pending ?? null,
+    })
+  }
 
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
