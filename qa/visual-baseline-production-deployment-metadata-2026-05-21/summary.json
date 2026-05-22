@@ -1,0 +1,128 @@
+{
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "date": "2026-05-21",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-deployment-metadata-2026-05-21",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 900,
+  "deployment": {
+    "environment": "production",
+    "region": "iad1",
+    "url": "globe-travel-o0banpfl9-rodney-blairs-projects.vercel.app",
+    "commit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3"
+  },
+  "deploymentCheck": {
+    "checked": true,
+    "reason": null,
+    "status": 200,
+    "healthStatus": "ok",
+    "summary": {
+      "total": 11,
+      "ok": 11,
+      "criticalMissing": 0,
+      "warningMissing": 0
+    },
+    "error": null
+  },
+  "auth": {
+    "requestedMode": "none",
+    "mode": "none",
+    "guestId": null,
+    "protectedRoutes": [],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "guest visual auth not used",
+      "guestId": null,
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 1,
+  "passed": 1,
+  "failed": 0,
+  "routes": [
+    "login"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "results": [
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 1009,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Globe.travel SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begin a journey"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-deployment-metadata-2026-05-21/screenshots/login-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-production-deployment-metadata-2026-05-21/screenshots/login-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

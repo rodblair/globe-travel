@@ -40,6 +40,13 @@ function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
 }
 
+function normalizeDeploymentUrl(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/+$/, '')
+}
+
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(root, path), 'utf8'))
 }
@@ -116,6 +123,9 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
   }
 
   if (summary) {
+    const summaryDeployment = summary.deployment && typeof summary.deployment === 'object' ? summary.deployment : null
+    const summaryDeploymentUrl = normalizeDeploymentUrl(summaryDeployment?.url)
+    const reviewDeploymentUrl = normalizeDeploymentUrl(review.deploymentUrl)
     const summaryMissingRoutes = missingFrom(summary.routes || [], requiredRoutes)
     const summaryMissingDiffRoutes = missingFrom(summary.diffRoutes || [], requiredDiffRoutes)
     if (summary.checked !== 20 || summary.passed !== 20 || summary.failed !== 0) {
@@ -129,8 +139,14 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
     }
     if (summaryMissingRoutes.length > 0) issues.push(`summaryArtifact missing routes: ${summaryMissingRoutes.join(', ')}`)
     if (summaryMissingDiffRoutes.length > 0) issues.push(`summaryArtifact missing diff routes: ${summaryMissingDiffRoutes.join(', ')}`)
-    if (summary.deployment?.commit && summary.deployment.commit !== review.productionCommit) {
+    if (!summaryDeployment?.commit || !summaryDeploymentUrl) {
+      issues.push('summaryArtifact must include production deployment metadata')
+    }
+    if (summaryDeployment?.commit && summaryDeployment.commit !== review.productionCommit) {
       issues.push('summaryArtifact deployment commit must match productionCommit')
+    }
+    if (summaryDeploymentUrl && reviewDeploymentUrl && summaryDeploymentUrl !== reviewDeploymentUrl) {
+      issues.push('summaryArtifact deployment url must match deploymentUrl')
     }
 
     const badResults = Array.isArray(summary.results)

@@ -111,6 +111,51 @@ async function loadDotEnv() {
   }
 }
 
+async function readDeploymentMetadata() {
+  if (isLocalBaseUrl) {
+    return {
+      checked: false,
+      reason: 'local visual target',
+      status: null,
+      deployment: null,
+      healthStatus: null,
+      summary: null,
+      error: null,
+    }
+  }
+
+  try {
+    const response = await fetch(`${baseUrl}/api/health`, {
+      headers: { 'user-agent': 'globe-travel-visual-baseline/1.0' },
+      cache: 'no-store',
+    })
+    const body = await response.json().catch(() => null)
+    const deployment = body && typeof body === 'object' && body.deployment && typeof body.deployment === 'object'
+      ? body.deployment
+      : null
+
+    return {
+      checked: true,
+      reason: null,
+      status: response.status,
+      deployment,
+      healthStatus: body?.status || null,
+      summary: body?.summary || null,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      checked: true,
+      reason: null,
+      status: null,
+      deployment: null,
+      healthStatus: null,
+      summary: null,
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
+}
+
 function markdownTable(rows) {
   return [
     '| Route | Viewport | Width | Overflow | Small App Targets | Small Map Controls | Clipped Text | Overlaps | Visual Diff | Screenshot | Result |',
@@ -666,6 +711,7 @@ for (const viewport of viewports) {
 }
 
 await cleanupGeneratedGuest()
+const deploymentMetadata = await readDeploymentMetadata()
 
 const summary = {
   baseUrl,
@@ -679,6 +725,15 @@ const summary = {
   diffFailureThreshold,
   pixelmatchThreshold,
   settleMs,
+  deployment: deploymentMetadata.deployment,
+  deploymentCheck: {
+    checked: deploymentMetadata.checked,
+    reason: deploymentMetadata.reason,
+    status: deploymentMetadata.status,
+    healthStatus: deploymentMetadata.healthStatus,
+    summary: deploymentMetadata.summary,
+    error: deploymentMetadata.error,
+  },
   auth: {
     requestedMode: requestedAuthMode,
     mode: useGuestAuth ? 'guest' : 'none',
@@ -718,6 +773,7 @@ const md = `# Full Responsive Visual Baseline
 
 Date: ${date}
 Environment: ${baseUrl}
+Deployment: ${summary.deployment?.commit ? `${summary.deployment.commit} (${summary.deployment.url || 'unknown deployment URL'})` : deploymentMetadata.checked ? 'not available' : deploymentMetadata.reason}
 Public share slug: ${shareSlug}
 Trip Studio fixture: ${tripId || 'not included'}
 Auth mode: ${useGuestAuth ? `guest (${providedGuestId ? 'external' : 'generated'} guest id)` : 'none'}
@@ -783,6 +839,8 @@ console.log(JSON.stringify({
   baselineDir: baselineDir || null,
   diffRoutes: baselineDir ? diffRouteFilter : [],
   diffFailureThreshold,
+  deployment: summary.deployment,
+  deploymentCheck: summary.deploymentCheck,
 }, null, 2))
 
 if (failures.length > 0) {
