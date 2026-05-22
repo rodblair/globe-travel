@@ -2,6 +2,25 @@
 
 Date: 2026-05-21
 
+## Visual-Progress QA Tooling Postdeploy Evidence
+
+Commit `f61c9a486be361fb1045c84632e2350bfd8ecc8d` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Production auth and guest access: `13/13`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Production visual review progress artifact: `qa/production-visual-review-progress-2026-05-21.json`
+- Current production commit: `f61c9a486be361fb1045c84632e2350bfd8ecc8d`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Map-Trust Repair Postdeploy Evidence
 
 Commit `625cdd4fb252c96f99032f062bac8d31c6508a21` deployed to Vercel production.

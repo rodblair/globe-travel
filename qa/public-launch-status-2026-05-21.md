@@ -8,12 +8,12 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 625cdd4fb252c96f99032f062bac8d31c6508a21
-- Production deployment: globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app
+- Production commit: f61c9a486be361fb1045c84632e2350bfd8ecc8d
+- Production deployment: globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
-- Production visual review history: 1/4
+- Production visual review history: 2/4
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Open P0/P1 risks: 0
@@ -30,7 +30,7 @@ Status: beta-ready-public-blocked
 ## Public-Launch Blockers
 
 - beta-human-review-threshold: 0/25 completed; 25 remaining.
-- production-visual-review-history: 1/4 distinct review dates recorded; 3 remaining.
+- production-visual-review-history: 2/4 distinct review dates recorded; 2 remaining.
 
 ## Guardrail Issues
 
@@ -50,7 +50,7 @@ Production visual-review queue:
 ## Next Actions
 
 - Collect and import 25 completed beta review submission(s).
-- Run, review, and import 3 scheduled production visual review date(s).
+- Run, review, and import 2 scheduled production visual review date(s).
 
 ## Evidence
 

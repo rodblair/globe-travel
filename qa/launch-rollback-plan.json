@@ -1,14 +1,14 @@
 {
-  "reviewedAt": "2026-05-21",
+  "reviewedAt": "2026-05-22",
   "owner": "release operator",
   "production": {
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
-      "url": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "QA_LAUNCH_EXPECTED_COMMIT=625cdd4fb252c96f99032f062bac8d31c6508a21 npm run qa:launch-signoff",
-      "verifiedAt": "2026-05-21"
+      "commit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
+      "url": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "QA_LAUNCH_EXPECTED_COMMIT=f61c9a486be361fb1045c84632e2350bfd8ecc8d npm run qa:launch-signoff",
+      "verifiedAt": "2026-05-22"
     }
   },
   "rollbackTriggers": [

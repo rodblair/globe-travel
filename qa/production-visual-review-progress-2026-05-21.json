@@ -9,22 +9,23 @@
   "passed": 5,
   "failed": 0,
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4",
-    "summaryArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
-    "productionCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
-    "deploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4",
+    "summaryArtifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/summary.json",
+    "productionCommit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
+    "deploymentUrl": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "issueCount": 0,
     "issues": []
   },
-  "reviewHistoryCount": 1,
-  "distinctHistoryDateCount": 1,
+  "reviewHistoryCount": 2,
+  "distinctHistoryDateCount": 2,
   "historyDates": [
-    "2026-05-21"
+    "2026-05-21",
+    "2026-05-22"
   ],
   "minimumPublicLaunchReviewHistory": 4,
-  "remainingRequiredReviewDates": 3,
+  "remainingRequiredReviewDates": 2,
   "scheduledReviewCount": 3,
   "distinctScheduledDateCount": 3,
   "scheduledDates": [
@@ -66,7 +67,7 @@
   "publicLaunchReadiness": {
     "status": "blocked",
     "blockers": [
-      "3 more distinct passing production visual-review date(s) required"
+      "2 more distinct passing production visual-review date(s) required"
     ]
   },
   "checks": [
@@ -80,17 +81,17 @@
     {
       "name": "latest production visual review is complete and evidence-backed",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4",
-      "summaryArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
-      "productionCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
-      "deploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4",
+      "summaryArtifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/summary.json",
+      "productionCommit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
+      "deploymentUrl": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
       "issues": []
     },
     {
       "name": "completed production visual-review history is valid and distinct",
       "ok": true,
-      "historyCount": 1,
-      "distinctHistoryDateCount": 1,
+      "historyCount": 2,
+      "distinctHistoryDateCount": 2,
       "invalidHistoryReviewCount": 0,
       "duplicateHistoryDates": [],
       "invalidHistoryReviews": []
@@ -100,7 +101,7 @@
       "ok": true,
       "scheduledReviewCount": 3,
       "distinctScheduledDateCount": 3,
-      "remainingRequiredReviewDates": 3,
+      "remainingRequiredReviewDates": 2,
       "nextReviewDueAt": "2026-05-28"
     },
     {
@@ -108,7 +109,8 @@
       "ok": true,
       "latestReviewDate": "2026-05-22",
       "historyDates": [
-        "2026-05-21"
+        "2026-05-21",
+        "2026-05-22"
       ]
     }
   ],

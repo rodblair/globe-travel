@@ -9,10 +9,10 @@ Status: pass
 - Checked: 5
 - Passed: 5
 - Failed: 0
-- Latest production artifact: `qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4`
+- Latest production artifact: `qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4`
 - Latest production review issues: 0
-- Completed history dates: 1/4
-- Remaining required review dates: 3
+- Completed history dates: 2/4
+- Remaining required review dates: 2
 - Scheduled review dates: 3
 - Next review due: 2026-05-28
 
@@ -22,13 +22,13 @@ Status: pass
 - Require public-progress mode: no
 
 Blockers:
-- 3 more distinct passing production visual-review date(s) required
+- 2 more distinct passing production visual-review date(s) required
 
 ## Latest Production Review
 
-- Summary: `qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json`
-- Production commit: 625cdd4fb252c96f99032f062bac8d31c6508a21
-- Deployment: globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app
+- Summary: `qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/summary.json`
+- Production commit: f61c9a486be361fb1045c84632e2350bfd8ecc8d
+- Deployment: globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app
 - Verdict: pass
 
 Issues:
@@ -37,6 +37,7 @@ Issues:
 ## History
 
 - 2026-05-21: pass - `qa/visual-baseline-production-release-2026-05-21-539506d`
+- 2026-05-22: pass - `qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4`
 
 ## Scheduled Queue
 

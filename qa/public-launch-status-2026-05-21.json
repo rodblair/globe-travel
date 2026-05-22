@@ -9,8 +9,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
-    "commit": "625cdd4fb252c96f99032f062bac8d31c6508a21"
+    "url": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
+    "commit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d"
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -30,10 +30,10 @@
     "queueIssues": []
   },
   "productionVisualReviews": {
-    "historyCount": 1,
-    "distinctHistoryDateCount": 1,
+    "historyCount": 2,
+    "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
-    "remainingDistinctDates": 3,
+    "remainingDistinctDates": 2,
     "scheduledReviewCount": 3,
     "nextReviewDueAt": "2026-05-28",
     "intakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
@@ -60,8 +60,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
-    "knownGoodDeploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
+    "knownGoodDeploymentUrl": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -96,7 +96,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
+    "latestVerificationExpectedLiveCommit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -145,7 +145,7 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -212,12 +212,12 @@
     {
       "id": "production-visual-review-history",
       "title": "Complete production visual-review history",
-      "detail": "1/4 distinct review dates recorded; 3 remaining."
+      "detail": "2/4 distinct review dates recorded; 2 remaining."
     }
   ],
   "nextActions": [
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 3 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s)."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",

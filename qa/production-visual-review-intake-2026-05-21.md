@@ -11,8 +11,8 @@ Status: pass
 - Passed: 4
 - Failed: 0
 - Scheduled reviews: 3
-- Review history before intake: 1
-- Review history after intake: 1
+- Review history before intake: 2
+- Review history after intake: 2
 - Submission files: 0
 - Valid submissions: 0
 - Invalid submissions: 0
