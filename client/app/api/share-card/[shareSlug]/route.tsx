@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { createClient } from '@/lib/supabase-server'
+import { formatDestinationForDisplay, formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
 
 export const alt = 'Globe.travel shared itinerary preview'
 export const size = {
@@ -9,14 +10,12 @@ export const size = {
 export const contentType = 'image/png'
 
 function compactTitle(title: string) {
-  return title.replace(/\s+/g, ' ').trim().slice(0, 92)
+  return formatTripTitleForDisplay(title).slice(0, 92)
 }
 
 function titleDestination(title: string) {
-  const normalized = title.replace(/^QA\s+/i, '').replace(/\s+[a-f0-9]{8}$/i, '').trim()
-  const match = normalized.match(/\bin\s+(.+)$/i)
-  if (match?.[1]) return match[1].replace(/\s+in\s+mid\s+september/i, '').trim()
-  return normalized
+  const normalized = formatTripTitleForDisplay(title).replace(/^QA\s+/i, '').replace(/\s+[a-f0-9]{8}$/i, '').trim()
+  return formatDestinationForDisplay(getTripKeepsakeMeta(normalized).destination)
 }
 
 export async function GET(_request: Request, ctx: { params: Promise<{ shareSlug: string }> }) {

@@ -17,6 +17,7 @@ import {
 import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { formatTripTitleForDisplay } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
 type Trip = {
@@ -101,10 +102,11 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
 
   const trip = data?.trip
   const days = data?.days || []
-  const meta = useMemo(() => getTripKeepsakeMeta(trip?.title || 'Trip'), [trip?.title])
+  const displayTitle = useMemo(() => formatTripTitleForDisplay(trip?.title || 'Trip'), [trip?.title])
+  const meta = useMemo(() => getTripKeepsakeMeta(displayTitle), [displayTitle])
   const starterPrompt = useMemo(
-    () => buildStarterPrompt(meta, trip?.title || 'this trip'),
-    [meta, trip?.title]
+    () => buildStarterPrompt(meta, displayTitle || 'this trip'),
+    [displayTitle, meta]
   )
   const starterHref = `/api/guest/start?q=${encodeURIComponent(starterPrompt)}`
   const shareUrl = typeof window !== 'undefined' ? window.location.href : null
@@ -211,10 +213,10 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     Shared Globe.travel map
                   </p>
                   <h1 className="mt-3 break-words font-serif text-4xl font-semibold leading-[1.02] text-foreground md:text-6xl">
-                    {trip.title}
+                    {displayTitle}
                   </h1>
                   <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-2">
-                    Review the route, react to the day plan, and help the group turn this {meta.destination} idea into the trip everyone can say yes to.
+                    Review the route, react to the day plan, and help the group turn the {meta.destination} plan into the trip everyone can say yes to.
                   </p>
                 </div>
                 <TripPosterPreview trip={trip} days={days} forceStaticMap={qaForceMapFallback} />
@@ -343,7 +345,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                 </section>
               )}
               <FriendFeedbackPanel feedback={feedback} />
-              <ShareLinkCard shareUrl={shareUrl} title={trip.title} />
+              <ShareLinkCard shareUrl={shareUrl} title={displayTitle} />
 
               <section className="overflow-hidden rounded-[26px] border border-[color:var(--brass)]/30 bg-[linear-gradient(135deg,var(--brass-subtle),var(--paper-raised))] p-5 shadow-[var(--panel-shadow)] md:p-6">
                 <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-[var(--brass)]">

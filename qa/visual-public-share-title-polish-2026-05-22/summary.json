@@ -1,0 +1,209 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-22",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-public-share-title-polish-2026-05-22",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 900,
+  "deployment": null,
+  "deploymentCheck": {
+    "checked": false,
+    "reason": "local visual target",
+    "status": null,
+    "healthStatus": null,
+    "summary": null,
+    "error": null
+  },
+  "auth": {
+    "requestedMode": "auto",
+    "mode": "none",
+    "guestId": null,
+    "protectedRoutes": [],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "guest visual auth not used",
+      "guestId": null,
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 2,
+  "passed": 2,
+  "failed": 0,
+  "routes": [
+    "public-share"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "results": [
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 6107,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens, Greece, in mid‑September",
+          "Athens, Greece",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 3,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens, Greece, in mid‑September Review the route, react to the day plan, and help the group turn the Athens, Greece, in mid‑September plan into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS, GREECE IN MID‑SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP M"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-public-share-title-polish-2026-05-22/screenshots/public-share-phone-390x844.png",
+        "relativePath": "qa/visual-public-share-title-polish-2026-05-22/screenshots/public-share-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/t/x3m2c8cnws",
+        "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens, Greece, in mid‑September",
+          "Athens, Greece",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 470,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens, Greece, in mid‑September Review the route, react to the day plan, and help the group turn the Athens, Greece, in mid‑September plan into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS, GREECE IN MID‑SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP M"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-public-share-title-polish-2026-05-22/screenshots/public-share-desktop-1440x950.png",
+        "relativePath": "qa/visual-public-share-title-polish-2026-05-22/screenshots/public-share-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

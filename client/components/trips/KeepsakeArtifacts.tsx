@@ -7,7 +7,10 @@ import { CalendarDays, Check, Copy, Heart, MessageCircleQuestion, Route, Share2,
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
+
+export { getTripKeepsakeMeta } from '@/lib/trip-copy'
 
 type KeepsakeTrip = {
   id?: string
@@ -35,23 +38,6 @@ const toneClass: Record<FeedbackTone, string> = {
   love_it: 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
   curious: 'border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]',
   practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
-}
-
-export function getTripKeepsakeMeta(title: string) {
-  const dayMatch = title.match(/(\d+)[-\s]?(?:day|days)\b/i)
-  const days = dayMatch ? Number(dayMatch[1]) : null
-  const destinationPatterns = [
-    /^\d+\s+Days?\s+in\s+(.+?)(?:\s*[-–—].*)?$/i,
-    /^Trip to\s+(.+)$/i,
-    /^(.+?)\s+(?:City\s+Break|Escape|Trip)$/i,
-  ]
-
-  for (const pattern of destinationPatterns) {
-    const match = title.match(pattern)
-    if (match?.[1]) return { days, destination: match[1].trim() }
-  }
-
-  return { days, destination: title }
 }
 
 export function ArtifactFrame({
@@ -173,7 +159,11 @@ export function TripPosterPreview({
   className?: string
   forceStaticMap?: boolean
 }) {
-  const meta = getTripKeepsakeMeta(trip.title)
+  const displayTitle = formatTripTitleForDisplay(trip.title)
+  const meta = getTripKeepsakeMeta(displayTitle)
+  const destinationTimingMatch = meta.destination.match(/^(.+?),\s+in\s+(.+)$/i)
+  const posterDestination = destinationTimingMatch?.[1] || meta.destination
+  const posterTiming = destinationTimingMatch?.[2] || null
   const firstDay = days[0]
   const stopCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
   const body = (
@@ -185,9 +175,14 @@ export function TripPosterPreview({
               {meta.days || days.length || 3} days
             </div>
             <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Globe.travel map</p>
-            <h2 className="mt-3 max-w-[9ch] font-serif text-4xl font-semibold uppercase leading-[0.98] tracking-[0.12em] text-foreground">
-              {meta.destination}
+            <h2 className="mt-3 max-w-[11ch] text-wrap font-serif text-3xl font-semibold uppercase leading-[0.98] tracking-[0.08em] text-foreground sm:text-4xl">
+              {posterDestination}
             </h2>
+            {posterTiming && (
+              <p className="mt-3 t-mono text-[0.625rem] uppercase tracking-[0.18em] text-[var(--brass)]">
+                In {posterTiming}
+              </p>
+            )}
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-2">
               A shareable route, day-by-day plan, and friend feedback in one calm trip artifact.
             </p>
@@ -325,6 +320,7 @@ export function ShareLinkCard({
   const [copied, setCopied] = useState(false)
   const [shareError, setShareError] = useState<string | null>(null)
   const shareUrlInputRef = useRef<HTMLInputElement | null>(null)
+  const displayTitle = formatTripTitleForDisplay(title)
 
   const writeShareUrl = async () => {
     if (!shareUrl) return false
@@ -370,7 +366,7 @@ export function ShareLinkCard({
     try {
       setShareError(null)
       if (navigator.share) {
-        await navigator.share({ title, text: `Review this Globe.travel itinerary: ${title}`, url: shareUrl })
+        await navigator.share({ title: displayTitle, text: `Review this Globe.travel itinerary: ${displayTitle}`, url: shareUrl })
         return
       }
       await copyLink()
