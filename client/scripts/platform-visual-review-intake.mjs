@@ -2,11 +2,8 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
-const date = process.env.QA_VISUAL_REVIEW_INTAKE_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_VISUAL_REVIEW_INTAKE_DATE || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || '../qa/production-visual-review-register.json'
-const submissionDir = process.env.QA_VISUAL_REVIEW_SUBMISSION_DIR || `../qa/production-visual-review-submissions-${date}`
-const jsonArtifact = process.env.QA_VISUAL_REVIEW_INTAKE_JSON || `production-visual-review-intake-${date}.json`
-const reportArtifact = process.env.QA_VISUAL_REVIEW_INTAKE_REPORT || `production-visual-review-intake-${date}.md`
 const importValidSubmissions = ['1', 'true', 'yes'].includes(String(process.env.QA_VISUAL_REVIEW_IMPORT || '').toLowerCase())
 
 const requiredRoutes = ['landing', 'login', 'signup', 'public-share']
@@ -24,6 +21,10 @@ function isDate(value) {
 function dateOnly(value) {
   const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
   return match ? match[0] : ''
+}
+
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function missingFrom(values, required) {
@@ -196,6 +197,10 @@ async function readSubmissions() {
 
 const rawRegister = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(rawRegister)
+const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
+const submissionDir = process.env.QA_VISUAL_REVIEW_SUBMISSION_DIR || `../qa/production-visual-review-submissions-${date}`
+const jsonArtifact = process.env.QA_VISUAL_REVIEW_INTAKE_JSON || `production-visual-review-intake-${date}.json`
+const reportArtifact = process.env.QA_VISUAL_REVIEW_INTAKE_REPORT || `production-visual-review-intake-${date}.md`
 const scheduledReviews = Array.isArray(register.scheduledPublicLaunchReviews) ? register.scheduledPublicLaunchReviews : []
 const scheduledById = new Map(scheduledReviews.map((review) => [review.id, review]))
 const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
