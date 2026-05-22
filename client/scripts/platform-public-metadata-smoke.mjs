@@ -12,8 +12,10 @@ const reportArtifact = process.env.QA_PUBLIC_METADATA_REPORT || `public-metadata
 const sourceFiles = [
   'client/app/layout.tsx',
   'client/app/manifest.ts',
+  'client/app/opengraph-image.tsx',
   'client/app/robots.ts',
   'client/app/sitemap.ts',
+  'client/app/twitter-image.tsx',
 ]
 
 const rootHtmlMarkers = [
@@ -251,6 +253,39 @@ async function checkSitemap() {
   }
 }
 
+async function checkImageRoute(id, path) {
+  const fetched = await fetchWithRetry(path)
+  if (!fetched.response) {
+    return {
+      id,
+      path,
+      ok: false,
+      status: null,
+      attempts: fetched.attempts,
+      issues: [fetched.error || 'fetch failed'],
+    }
+  }
+
+  const issues = []
+  const contentType = fetched.response.headers.get('content-type') || ''
+  const bytes = new Uint8Array(await fetched.response.arrayBuffer())
+  if (!fetched.response.ok) issues.push(`HTTP ${fetched.response.status}`)
+  if (!contentType.includes('image/png')) issues.push(`expected image/png, got ${contentType || 'missing'}`)
+  if (bytes.length < 5000) issues.push(`image response is too small: ${bytes.length} bytes`)
+
+  return {
+    id,
+    path,
+    ok: issues.length === 0,
+    status: fetched.response.status,
+    finalUrl: fetched.response.url,
+    attempts: fetched.attempts,
+    contentType,
+    byteLength: bytes.length,
+    issues,
+  }
+}
+
 const sourceResults = []
 for (const sourceFile of sourceFiles) {
   sourceResults.push({
@@ -265,6 +300,8 @@ const results = [
   await checkManifest(),
   await checkRobots(),
   await checkSitemap(),
+  await checkImageRoute('opengraph-image', '/opengraph-image'),
+  await checkImageRoute('twitter-image', '/twitter-image'),
 ]
 
 for (const sourceFailure of sourceFailures) {

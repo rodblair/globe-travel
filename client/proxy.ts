@@ -45,7 +45,9 @@ export async function proxy(request: NextRequest) {
     '/auth',
     '/t',
     '/manifest.webmanifest',
+    '/opengraph-image',
     '/sitemap.xml',
+    '/twitter-image',
   ]
   const pathname = request.nextUrl.pathname
   const isPublicPath = publicPaths.some((path) => {

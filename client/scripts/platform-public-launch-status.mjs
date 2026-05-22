@@ -214,6 +214,8 @@ const requiredPublicMetadataChecks = [
   'manifest',
   'robots',
   'sitemap',
+  'opengraph-image',
+  'twitter-image',
 ]
 const requiredReleaseTasks = [
   'lint',

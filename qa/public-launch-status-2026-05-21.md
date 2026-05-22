@@ -54,7 +54,7 @@ Status: beta-ready-public-blocked
 - Design system ready: yes
 - Planner map actuals ready: yes
 - Public share map/itinerary catalog ready: yes (1/1 public shares, 2 viewports)
-- Public metadata ready: no (0/4)
+- Public metadata ready: no (0/6)
 - Release candidate ready: yes
 - Full route inventory ready: yes
 - Authenticated app surfaces ready: yes

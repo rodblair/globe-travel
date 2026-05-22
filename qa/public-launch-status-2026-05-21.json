@@ -583,13 +583,15 @@
     "passed": null,
     "failed": null,
     "sourceMissingCount": null,
-    "requiredCheckCount": 4,
+    "requiredCheckCount": 6,
     "resultIds": [],
     "missingChecks": [
       "root-html",
       "manifest",
       "robots",
-      "sitemap"
+      "sitemap",
+      "opengraph-image",
+      "twitter-image"
     ],
     "failedResults": [],
     "issues": [],

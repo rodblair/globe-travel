@@ -2813,6 +2813,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     'manifest',
     'robots',
     'sitemap',
+    'opengraph-image',
+    'twitter-image',
   ]
   const publicMetadataMissingChecks = Array.isArray(publicMetadataStatus.missingChecks)
     ? publicMetadataStatus.missingChecks
