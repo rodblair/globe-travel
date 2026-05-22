@@ -39,6 +39,7 @@ Status: beta-ready-public-blocked
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
+- Launch operator today ready: yes (6 action rows, 5 beta, 1 visual)
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
 - Incomplete accepted P2 risks: 0
@@ -108,6 +109,9 @@ Production visual-review dispatch outbox:
 Public launch blocker board:
 - none
 
+Launch operator today:
+- none
+
 Full route inventory:
 - none
 
@@ -142,6 +146,7 @@ Public share map/itinerary integrity:
 - Beta matrix rehearsal: `qa/beta-human-review-matrix-rehearsal-2026-05-22.json` and `qa/beta-human-review-matrix-rehearsal-2026-05-22.md`
 - Beta guest-start rehearsal: `qa/beta-human-review-guest-start-rehearsal-2026-05-22.json` and `qa/beta-human-review-guest-start-rehearsal-2026-05-22.md`
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
+- Launch operator today: `qa/launch-operator-today-2026-05-22.md`, `qa/launch-operator-today-2026-05-22.csv`, and `qa/launch-operator-today-2026-05-22.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
 - Latest production visual artifact: `qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d` and `qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json`

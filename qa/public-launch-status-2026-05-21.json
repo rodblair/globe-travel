@@ -322,6 +322,29 @@
     "betaFollowUpOverdueCount": 0,
     "issues": []
   },
+  "launchOperatorToday": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/launch-operator-today-2026-05-22.json",
+    "report": "qa/launch-operator-today-2026-05-22.md",
+    "csv": "qa/launch-operator-today-2026-05-22.csv",
+    "today": "2026-05-22",
+    "checked": 4,
+    "passed": 4,
+    "failed": 0,
+    "actionRowCount": 6,
+    "betaActionRowCount": 5,
+    "visualActionRowCount": 1,
+    "betaDispatchDueTodayCount": 5,
+    "betaDispatchOverdueCount": 0,
+    "betaFollowUpsDueSoonCount": 5,
+    "betaReviewsDueSoonCount": 5,
+    "visualDueSoonCount": 1,
+    "visualOverdueCount": 0,
+    "messageFileCheckCount": 5,
+    "missingMessageFileCount": 0,
+    "issues": []
+  },
   "risks": {
     "openBlockingRiskCount": 0,
     "openAcceptedP2RiskCount": 2,
@@ -630,6 +653,7 @@
     "betaDispatchOutbox": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
     "betaFollowUpOutbox": "qa/beta-human-review-follow-up-outbox-2026-05-21.json",
     "betaAllWaveOps": "qa/beta-human-review-all-wave-ops-2026-05-21.json",
+    "launchOperatorToday": "qa/launch-operator-today-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

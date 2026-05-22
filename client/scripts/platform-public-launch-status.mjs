@@ -64,6 +64,9 @@ const productionAppSurfacesPath = process.env.QA_PRODUCTION_APP_SURFACES_ARTIFAC
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
 const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
 const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
+const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY || 'qa/launch-operator-today-2026-05-22.json'
+const launchOperatorTodayReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT || 'qa/launch-operator-today-2026-05-22.md'
+const launchOperatorTodayCsvPath = process.env.QA_LAUNCH_OPERATOR_TODAY_CSV || 'qa/launch-operator-today-2026-05-22.csv'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -500,6 +503,9 @@ const [
   blockerBoard,
   blockerBoardReport,
   blockerBoardCsv,
+  launchOperatorToday,
+  launchOperatorTodayReport,
+  launchOperatorTodayCsv,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -547,6 +553,9 @@ const [
   readJson(blockerBoardPath),
   readText(blockerBoardReportPath),
   readText(blockerBoardCsvPath),
+  readJson(launchOperatorTodayPath),
+  readText(launchOperatorTodayReportPath),
+  readText(launchOperatorTodayCsvPath),
   fetchHealth(),
 ])
 
@@ -1579,6 +1588,63 @@ if (!blockerBoardReport.includes('prepared-not-sent')) {
   blockerBoardIssues.push('public launch blocker board report does not expose beta dispatch status')
 }
 
+const launchTodayIssues = []
+const launchTodayRows = Array.isArray(launchOperatorToday.actionRows) ? launchOperatorToday.actionRows : []
+const launchTodayBetaRows = launchTodayRows.filter((row) => row.workType === 'beta-human-review')
+const launchTodayVisualRows = launchTodayRows.filter((row) => row.workType === 'production-visual-review')
+const launchTodayMessageFileChecks = Array.isArray(launchOperatorToday.messageFileChecks)
+  ? launchOperatorToday.messageFileChecks
+  : []
+const launchTodayMissingMessageFiles = launchTodayMessageFileChecks.filter((check) => check.exists !== true)
+if (launchOperatorToday.status !== 'pass') launchTodayIssues.push('launch operator today status is not pass')
+if (launchOperatorToday.today !== today) {
+  launchTodayIssues.push(`launch operator today date ${launchOperatorToday.today || 'missing'} does not match ${today}`)
+}
+if (launchOperatorToday.publicStatusArtifact !== `qa/${jsonArtifact}`) {
+  launchTodayIssues.push(`launch operator today public status ${launchOperatorToday.publicStatusArtifact || 'missing'} does not match qa/${jsonArtifact}`)
+}
+if (launchOperatorToday.blockerBoardArtifact !== qaDisplayPath(blockerBoardPath)) {
+  launchTodayIssues.push('launch operator today does not reference current blocker board')
+}
+if (launchOperatorToday.betaDispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
+  launchTodayIssues.push('launch operator today does not reference current beta dispatch outbox')
+}
+if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaDispatchDueTodayRows.length) {
+  launchTodayIssues.push(`launch operator today beta invites due today ${launchOperatorToday.betaDispatchDueTodayCount ?? 'missing'} does not match ${betaDispatchDueTodayRows.length}`)
+}
+if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaDispatchOverdueRows.length) {
+  launchTodayIssues.push('launch operator today beta overdue count does not match blocker board')
+}
+if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0) {
+  launchTodayIssues.push(`launch operator today has ${launchOperatorToday.betaDispatchOverdueCount} overdue beta dispatch row(s)`)
+}
+if (Number(launchOperatorToday.visualOverdueCount) !== 0) {
+  launchTodayIssues.push(`launch operator today has ${launchOperatorToday.visualOverdueCount} overdue production visual row(s)`)
+}
+if (launchTodayBetaRows.length < betaDispatchDueTodayRows.length) {
+  launchTodayIssues.push('launch operator today does not include every beta invite due today')
+}
+if (launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
+  launchTodayIssues.push('launch operator today does not include every due-soon production visual review')
+}
+if (launchTodayMessageFileChecks.length !== launchTodayBetaRows.length) {
+  launchTodayIssues.push('launch operator today message-file checks do not cover every beta action row')
+}
+for (const check of launchTodayMissingMessageFiles) {
+  launchTodayIssues.push(`launch operator today message file is missing for ${check.id || 'unknown'}`)
+}
+for (const row of launchTodayRows) {
+  if (!row.id || !row.submissionPath || !launchOperatorTodayCsv.includes(row.id) || !launchOperatorTodayCsv.includes(row.submissionPath)) {
+    launchTodayIssues.push(`launch operator today CSV missing row ${row.id || 'unknown'}`)
+  }
+}
+if (!launchOperatorTodayReport.includes('## Do Today')) {
+  launchTodayIssues.push('launch operator today report is missing the action table')
+}
+if (!launchOperatorTodayReport.includes('do not treat sent messages as completed review evidence')) {
+  launchTodayIssues.push('launch operator today report does not restate the beta evidence boundary')
+}
+
 const visualProgressIssues = []
 if (visualProgress.status !== 'pass') {
   visualProgressIssues.push('progress artifact status is not pass')
@@ -1727,6 +1793,7 @@ if (!betaWaveRehearsalReady) guardrailIssues.push('beta human review next-wave b
 if (!betaMatrixRehearsalReady) guardrailIssues.push('beta human review full-matrix browser rehearsal is not passing')
 if (!betaGuestStartRehearsalReady) guardrailIssues.push('beta human review production guest-start rehearsal is not passing')
 if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
+if (launchTodayIssues.length > 0) guardrailIssues.push('daily launch operator board is not aligned with current blocker evidence')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -2023,6 +2090,29 @@ const summary = {
     betaFollowUpOverdueCount: betaFollowUpOverdueRows.length,
     issues: blockerBoardIssues,
   },
+  launchOperatorToday: {
+    ready: launchTodayIssues.length === 0,
+    issueCount: launchTodayIssues.length,
+    artifact: qaDisplayPath(launchOperatorTodayPath),
+    report: qaDisplayPath(launchOperatorTodayReportPath),
+    csv: qaDisplayPath(launchOperatorTodayCsvPath),
+    today: launchOperatorToday.today || null,
+    checked: launchOperatorToday.checked ?? null,
+    passed: launchOperatorToday.passed ?? null,
+    failed: launchOperatorToday.failed ?? null,
+    actionRowCount: launchTodayRows.length,
+    betaActionRowCount: launchTodayBetaRows.length,
+    visualActionRowCount: launchTodayVisualRows.length,
+    betaDispatchDueTodayCount: launchOperatorToday.betaDispatchDueTodayCount ?? null,
+    betaDispatchOverdueCount: launchOperatorToday.betaDispatchOverdueCount ?? null,
+    betaFollowUpsDueSoonCount: launchOperatorToday.betaFollowUpsDueSoonCount ?? null,
+    betaReviewsDueSoonCount: launchOperatorToday.betaReviewsDueSoonCount ?? null,
+    visualDueSoonCount: launchOperatorToday.visualDueSoonCount ?? null,
+    visualOverdueCount: launchOperatorToday.visualOverdueCount ?? null,
+    messageFileCheckCount: launchTodayMessageFileChecks.length,
+    missingMessageFileCount: launchTodayMissingMessageFiles.length,
+    issues: launchTodayIssues,
+  },
   risks: {
     openBlockingRiskCount: openBlockingRisks.length,
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
@@ -2304,6 +2394,7 @@ const summary = {
     betaDispatchOutbox: qaDisplayPath(betaDispatchOutboxPath),
     betaFollowUpOutbox: qaDisplayPath(betaFollowUpOutboxPath),
     betaAllWaveOps: qaDisplayPath(betaAllWaveOpsPath),
+    launchOperatorToday: qaDisplayPath(launchOperatorTodayPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -2350,6 +2441,7 @@ Status: ${status}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Production visual review dispatch outbox ready: ${summary.productionVisualReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchOutboxMessageFileCount || 0} message files, ${summary.productionVisualReviews.dispatchOutboxRequiredRowCount || 0} required)
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
+- Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
@@ -2418,6 +2510,9 @@ ${markdownList(visualDispatchOutboxIssues)}
 Public launch blocker board:
 ${markdownList(blockerBoardIssues)}
 
+Launch operator today:
+${markdownList(launchTodayIssues)}
+
 Full route inventory:
 ${markdownList(routeInventoryIssues)}
 
@@ -2451,6 +2546,7 @@ ${markdownList(summary.nextActions)}
 - Beta matrix rehearsal: \`${summary.betaHumanReviews.matrixRehearsalArtifact}\` and \`${summary.betaHumanReviews.matrixRehearsalReport}\`
 - Beta guest-start rehearsal: \`${summary.betaHumanReviews.guestStartRehearsalArtifact}\` and \`${summary.betaHumanReviews.guestStartRehearsalReport}\`
 - Public launch blocker board: \`${summary.publicLaunchBlockerBoard.report}\`, \`${summary.publicLaunchBlockerBoard.csv}\`, and \`${summary.publicLaunchBlockerBoard.artifact}\`
+- Launch operator today: \`${summary.launchOperatorToday.report}\`, \`${summary.launchOperatorToday.csv}\`, and \`${summary.launchOperatorToday.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

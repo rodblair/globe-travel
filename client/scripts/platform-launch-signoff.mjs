@@ -88,6 +88,16 @@ const vercelIgnoreArtifact =
 const publicLaunchStatusArtifact =
   process.env.QA_LAUNCH_PUBLIC_STATUS_ARTIFACT ||
   'qa/public-launch-status-2026-05-21.json'
+const launchOperatorTodayArtifact =
+  process.env.QA_LAUNCH_OPERATOR_TODAY_ARTIFACT ||
+  process.env.QA_LAUNCH_OPERATOR_TODAY ||
+  'qa/launch-operator-today-2026-05-22.json'
+const launchOperatorTodayReport =
+  process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT ||
+  'qa/launch-operator-today-2026-05-22.md'
+const launchOperatorTodayCsv =
+  process.env.QA_LAUNCH_OPERATOR_TODAY_CSV ||
+  'qa/launch-operator-today-2026-05-22.csv'
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
@@ -2471,6 +2481,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaGuestStartRehearsalIssues = Array.isArray(betaReviewStatus.guestStartRehearsalIssues) ? betaReviewStatus.guestStartRehearsalIssues : []
   const blockerBoardStatus = status.publicLaunchBlockerBoard || {}
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
+  const launchOperatorStatus = status.launchOperatorToday || {}
+  const launchOperatorIssues = Array.isArray(launchOperatorStatus.issues) ? launchOperatorStatus.issues : []
   const routeInventoryStatus = status.routeInventory || {}
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
   const appSurfacesStatus = status.appSurfaces || {}
@@ -2786,6 +2798,46 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaGuestStartRehearsalCleanupFailureCount: betaReviewStatus.guestStartRehearsalCleanupFailureCount ?? null,
     betaGuestStartRehearsalIssueCount: betaReviewStatus.guestStartRehearsalIssueCount ?? null,
     betaGuestStartRehearsalIssues,
+  })
+
+  addCheck('public launch status includes daily launch operator board', (
+    launchOperatorStatus.ready === true &&
+    launchOperatorStatus.artifact === launchOperatorTodayArtifact &&
+    launchOperatorStatus.report === launchOperatorTodayReport &&
+    launchOperatorStatus.csv === launchOperatorTodayCsv &&
+    status.artifacts?.launchOperatorToday === launchOperatorTodayArtifact &&
+    Number(launchOperatorStatus.checked) >= 4 &&
+    Number(launchOperatorStatus.failed) === 0 &&
+    Number(launchOperatorStatus.actionRowCount) >= Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaActionRowCount) >= Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
+    Number(launchOperatorStatus.visualActionRowCount) >= Number(visualReviewStatus.dueSoonScheduledReviewCount || 0) &&
+    Number(launchOperatorStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaDispatchOverdueCount) === 0 &&
+    Number(launchOperatorStatus.visualOverdueCount) === 0 &&
+    Number(launchOperatorStatus.messageFileCheckCount) >= Number(launchOperatorStatus.betaActionRowCount || 0) &&
+    Number(launchOperatorStatus.missingMessageFileCount) === 0 &&
+    launchOperatorIssues.length === 0
+  ), {
+    launchOperatorArtifact: launchOperatorStatus.artifact || null,
+    expectedLaunchOperatorArtifact: launchOperatorTodayArtifact,
+    launchOperatorReport: launchOperatorStatus.report || null,
+    expectedLaunchOperatorReport: launchOperatorTodayReport,
+    launchOperatorCsv: launchOperatorStatus.csv || null,
+    expectedLaunchOperatorCsv: launchOperatorTodayCsv,
+    publicStatusArtifact: status.artifacts?.launchOperatorToday || null,
+    launchOperatorReady: launchOperatorStatus.ready ?? null,
+    launchOperatorChecked: launchOperatorStatus.checked ?? null,
+    launchOperatorPassed: launchOperatorStatus.passed ?? null,
+    launchOperatorFailed: launchOperatorStatus.failed ?? null,
+    launchOperatorActionRowCount: launchOperatorStatus.actionRowCount ?? null,
+    launchOperatorBetaActionRowCount: launchOperatorStatus.betaActionRowCount ?? null,
+    launchOperatorVisualActionRowCount: launchOperatorStatus.visualActionRowCount ?? null,
+    launchOperatorBetaDispatchDueTodayCount: launchOperatorStatus.betaDispatchDueTodayCount ?? null,
+    launchOperatorBetaDispatchOverdueCount: launchOperatorStatus.betaDispatchOverdueCount ?? null,
+    launchOperatorVisualOverdueCount: launchOperatorStatus.visualOverdueCount ?? null,
+    launchOperatorMessageFileCheckCount: launchOperatorStatus.messageFileCheckCount ?? null,
+    launchOperatorMissingMessageFileCount: launchOperatorStatus.missingMessageFileCount ?? null,
+    launchOperatorIssues,
   })
 
   addCheck('public launch status exposes prepared evidence queues', (
