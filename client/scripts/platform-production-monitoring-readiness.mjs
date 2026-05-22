@@ -9,7 +9,7 @@ const repoRoot = resolve(clientDir, '..')
 const registerPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const baseUrl = (process.env.QA_MONITORING_BASE_URL || process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_MONITORING_MAX_EVIDENCE_AGE_DAYS || '14', 10)
-const reportPath = process.env.QA_PRODUCTION_MONITORING_REPORT || `qa/production-monitoring-readiness-${new Date().toISOString().slice(0, 10)}.md`
+const requestedDate = process.env.QA_PRODUCTION_MONITORING_DATE || ''
 
 const requiredSignals = [
   'health',
@@ -63,6 +63,10 @@ function dateOnly(value) {
   return match?.[0] || null
 }
 
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 function ageInDays(dateValue) {
   const parsed = Date.parse(`${dateValue}T00:00:00Z`)
   if (!Number.isFinite(parsed)) return null
@@ -105,6 +109,8 @@ async function fetchHealth(healthEndpoint) {
 }
 
 const register = await readJson(registerPath)
+const date = requestedDate || dateOnly(register.reviewedAt) || currentUtcDate()
+const reportPath = process.env.QA_PRODUCTION_MONITORING_REPORT || `qa/production-monitoring-readiness-${date}.md`
 addCheck('production monitoring register is readable', true, {
   artifact: registerPath,
   reviewedAt: register.reviewedAt || null,
@@ -228,16 +234,21 @@ addCheck('production monitoring latest verification is fresh and tied to release
   latestVerificationAgeDays <= maxEvidenceAgeDays &&
   latestVerificationText.includes('qa:production-monitoring') &&
   latestVerificationText.includes('qa:release-production') &&
-  latestVerificationText.includes('qa:launch-signoff')
+  latestVerificationText.includes('qa:launch-signoff') &&
+  (!health.body?.deployment?.commit || latestVerification.expectedLiveCommit === health.body.deployment.commit)
 ), {
   verifiedAt: latestVerification.verifiedAt || null,
   ageDays: latestVerificationAgeDays,
   command: latestVerification.command || null,
   relatedCommands: latestVerification.relatedCommands || [],
+  expectedLiveCommit: latestVerification.expectedLiveCommit || null,
+  liveCommit: health.body?.deployment?.commit || null,
 })
 
 const failures = checks.filter((check) => !check.ok)
 const summary = {
+  date,
+  dateSource: requestedDate ? 'QA_PRODUCTION_MONITORING_DATE' : 'monitoring register',
   baseUrl,
   register: registerPath,
   checked: checks.length,
@@ -253,7 +264,7 @@ const summary = {
 await mkdir(dirname(repoPath(reportPath)), { recursive: true })
 await writeFile(repoPath(reportPath), `# Production Monitoring Readiness
 
-Date: ${new Date().toISOString().slice(0, 10)}
+Date: ${date}
 Register: \`${registerPath}\`
 Base URL: \`${baseUrl}\`
 

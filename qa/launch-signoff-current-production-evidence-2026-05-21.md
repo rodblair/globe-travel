@@ -73,6 +73,7 @@ Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production.
 - Paid-path readiness: `6/6`
 - Paid-path readiness artifact: `qa/paid-path-readiness-2026-05-21.json`
 - Production monitoring readiness: `9/9`
+- Production monitoring latest-verification commit linkage: expected live commit matches live `/api/health` deployment commit.
 - Design-system readiness: `10/10`
 - Current launch signoff gate passed `90/90`
 - Public-launch status: `beta-ready-public-blocked`
