@@ -3130,6 +3130,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.dispatchOutboxMessageFileCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     Number(betaReviewStatus.dispatchOutboxOverdueCount) === 0 &&
     Number(betaReviewStatus.dispatchOutboxFollowUpOverdueCount) === 0 &&
+    betaReviewStatus.dispatchLogReady === true &&
+    hasMeaningfulText(betaReviewStatus.dispatchLogArtifact) &&
+    hasMeaningfulText(betaReviewStatus.dispatchLogReport) &&
+    hasMeaningfulText(betaReviewStatus.dispatchLogCsv) &&
+    Number(betaReviewStatus.dispatchLogIssueCount) === 0 &&
+    Number(betaReviewStatus.dispatchLogRowCount) === Number(betaReviewStatus.dispatchOutboxRowCount || 0) &&
+    Number(betaReviewStatus.dispatchLogPreparedOverdueCount) === 0 &&
     betaReviewStatus.followUpOutboxReady === true &&
     hasMeaningfulText(betaReviewStatus.followUpOutboxArtifact) &&
     hasMeaningfulText(betaReviewStatus.followUpOutboxReport) &&
@@ -3246,6 +3253,16 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaDispatchOutboxOverdueCount: betaReviewStatus.dispatchOutboxOverdueCount ?? null,
     betaDispatchOutboxFollowUpDueSoonCount: betaReviewStatus.dispatchOutboxFollowUpDueSoonCount ?? null,
     betaDispatchOutboxFollowUpOverdueCount: betaReviewStatus.dispatchOutboxFollowUpOverdueCount ?? null,
+    betaDispatchLogReady: betaReviewStatus.dispatchLogReady ?? null,
+    betaDispatchLogIssueCount: betaReviewStatus.dispatchLogIssueCount ?? null,
+    betaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact ?? null,
+    betaDispatchLogReport: betaReviewStatus.dispatchLogReport ?? null,
+    betaDispatchLogCsv: betaReviewStatus.dispatchLogCsv ?? null,
+    betaDispatchLogRowCount: betaReviewStatus.dispatchLogRowCount ?? null,
+    betaDispatchLogSentCount: betaReviewStatus.dispatchLogSentCount ?? null,
+    betaDispatchLogPreparedNotSentCount: betaReviewStatus.dispatchLogPreparedNotSentCount ?? null,
+    betaDispatchLogPreparedDueTodayCount: betaReviewStatus.dispatchLogPreparedDueTodayCount ?? null,
+    betaDispatchLogPreparedOverdueCount: betaReviewStatus.dispatchLogPreparedOverdueCount ?? null,
     betaFollowUpOutboxReady: betaReviewStatus.followUpOutboxReady ?? null,
     betaFollowUpOutboxIssueCount: betaReviewStatus.followUpOutboxIssueCount ?? null,
     betaFollowUpOutboxArtifact: betaReviewStatus.followUpOutboxArtifact ?? null,

@@ -24,6 +24,9 @@ const betaNextWaveOpsCsvPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || '
 const betaDispatchOutboxPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX || 'qa/beta-human-review-dispatch-outbox-2026-05-21.json'
 const betaDispatchOutboxReportPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_REPORT || 'qa/beta-human-review-dispatch-outbox-2026-05-21.md'
 const betaDispatchOutboxCsvPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_CSV || 'qa/beta-human-review-dispatch-outbox-2026-05-21.csv'
+const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
+const betaDispatchLogReportPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG_REPORT || 'qa/beta-human-review-dispatch-log-2026-05-21.md'
+const betaDispatchLogCsvPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG_CSV || 'qa/beta-human-review-dispatch-log-2026-05-21.csv'
 const betaFollowUpOutboxPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX || 'qa/beta-human-review-follow-up-outbox-2026-05-21.json'
 const betaFollowUpOutboxReportPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_REPORT || 'qa/beta-human-review-follow-up-outbox-2026-05-21.md'
 const betaFollowUpOutboxCsvPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_CSV || 'qa/beta-human-review-follow-up-outbox-2026-05-21.csv'
@@ -635,6 +638,9 @@ const [
   betaDispatchOutbox,
   betaDispatchOutboxReport,
   betaDispatchOutboxCsv,
+  betaDispatchLog,
+  betaDispatchLogReport,
+  betaDispatchLogCsv,
   betaFollowUpOutbox,
   betaFollowUpOutboxReport,
   betaFollowUpOutboxCsv,
@@ -692,6 +698,9 @@ const [
   readJson(betaDispatchOutboxPath),
   readText(betaDispatchOutboxReportPath),
   readText(betaDispatchOutboxCsvPath),
+  readJson(betaDispatchLogPath),
+  readText(betaDispatchLogReportPath),
+  readText(betaDispatchLogCsvPath),
   readJson(betaFollowUpOutboxPath),
   readText(betaFollowUpOutboxReportPath),
   readText(betaFollowUpOutboxCsvPath),
@@ -1326,6 +1335,38 @@ for (const check of betaDispatchOutboxChecks) {
 if (!betaDispatchOutboxReport.includes('Status: pass')) betaDispatchOutboxIssues.push('beta dispatch outbox report is not passing')
 if (!betaDispatchOutboxReport.includes('This dispatch outbox is assignment and outreach evidence, not completed review evidence')) {
   betaDispatchOutboxIssues.push('beta dispatch outbox report does not restate the evidence boundary')
+}
+
+const betaDispatchLogIssues = []
+const betaDispatchLogRows = Array.isArray(betaDispatchLog.dispatchRows) ? betaDispatchLog.dispatchRows : []
+const betaDispatchLogChecks = Array.isArray(betaDispatchLog.checks) ? betaDispatchLog.checks : []
+if (betaDispatchLog.status !== 'pass') betaDispatchLogIssues.push('beta dispatch log status is not pass')
+if (betaDispatchLog.dispatchOutboxArtifact && betaDispatchLog.dispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
+  betaDispatchLogIssues.push(`beta dispatch log source ${betaDispatchLog.dispatchOutboxArtifact} does not match ${qaDisplayPath(betaDispatchOutboxPath)}`)
+}
+if (Number(betaDispatchLog.dispatchRowCount) !== Number(betaDispatchOutbox.outboxRowCount || 0)) {
+  betaDispatchLogIssues.push(`beta dispatch log row count ${betaDispatchLog.dispatchRowCount ?? 'missing'} does not match dispatch outbox row count ${betaDispatchOutbox.outboxRowCount ?? 0}`)
+}
+if (Number(betaDispatchLog.sentCount || 0) + Number(betaDispatchLog.preparedNotSentCount || 0) !== betaDispatchLogRows.length) {
+  betaDispatchLogIssues.push('beta dispatch log sent and prepared counts do not match dispatch rows')
+}
+if (Number(betaDispatchLog.preparedOverdueCount || 0) > 0) {
+  betaDispatchLogIssues.push(`beta dispatch log has ${betaDispatchLog.preparedOverdueCount} prepared row(s) past sendBy`)
+}
+for (const row of betaDispatchLogRows) {
+  if (!row.id || !betaDispatchOutboxCsv.includes(row.id)) betaDispatchLogIssues.push(`beta dispatch log row ${row.id || 'unknown'} is not present in the dispatch outbox CSV`)
+  if (row.messageFile && !betaDispatchOutboxCsv.includes(row.messageFile)) betaDispatchLogIssues.push(`beta dispatch log row ${row.id || 'unknown'} message file is not present in the dispatch outbox CSV`)
+  if (row.completedSubmissionPath && !betaDispatchOutboxCsv.includes(row.completedSubmissionPath)) betaDispatchLogIssues.push(`beta dispatch log row ${row.id || 'unknown'} completed submission path is not present in the dispatch outbox CSV`)
+}
+for (const check of betaDispatchLogChecks) {
+  if (!check.ok) betaDispatchLogIssues.push(`beta dispatch log check failed: ${check.name || 'unknown'}`)
+}
+if (!betaDispatchLogReport.includes('Status: pass')) betaDispatchLogIssues.push('beta dispatch log report is not passing')
+if (!betaDispatchLogReport.includes('This dispatch log is send-proof workflow evidence, not completed review evidence')) {
+  betaDispatchLogIssues.push('beta dispatch log report does not restate the evidence boundary')
+}
+for (const row of betaDispatchLogRows) {
+  if (row.id && !betaDispatchLogCsv.includes(row.id)) betaDispatchLogIssues.push(`beta dispatch log CSV missing row ${row.id}`)
 }
 
 const betaFollowUpOutboxIssues = []
@@ -2086,6 +2127,7 @@ if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execu
 if (betaCommandCenterIssues.length > 0) guardrailIssues.push('beta human review command center is not fully prepared')
 if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review next-wave ops pack is not fully prepared')
 if (betaDispatchOutboxIssues.length > 0) guardrailIssues.push('beta human review dispatch outbox is not fully prepared')
+if (betaDispatchLogIssues.length > 0) guardrailIssues.push('beta human review dispatch log is not fully prepared')
 if (betaFollowUpOutboxIssues.length > 0) guardrailIssues.push('beta human review follow-up outbox is not fully prepared')
 if (betaAllWaveOpsIssues.length > 0) guardrailIssues.push('beta human review all-wave ops pack is not fully prepared')
 if (!betaWaveRehearsalReady) guardrailIssues.push('beta human review next-wave browser rehearsal is not passing')
@@ -2204,6 +2246,8 @@ const summary = {
     nextWaveOpsIssueCount: betaNextWaveOpsIssues.length,
     dispatchOutboxReady: betaDispatchOutboxIssues.length === 0,
     dispatchOutboxIssueCount: betaDispatchOutboxIssues.length,
+    dispatchLogReady: betaDispatchLogIssues.length === 0,
+    dispatchLogIssueCount: betaDispatchLogIssues.length,
     followUpOutboxReady: betaFollowUpOutboxIssues.length === 0,
     followUpOutboxIssueCount: betaFollowUpOutboxIssues.length,
     allWaveOpsReady: betaAllWaveOpsIssues.length === 0,
@@ -2223,6 +2267,15 @@ const summary = {
     dispatchOutboxArtifactDir: qaDisplayPath(betaDispatchOutbox.artifactDir),
     dispatchOutboxRowCount: betaDispatchOutbox.outboxRowCount ?? null,
     dispatchOutboxMessageFileCount: betaDispatchOutbox.messageFileCount ?? null,
+    dispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
+    dispatchLogReport: qaDisplayPath(betaDispatchLogReportPath),
+    dispatchLogCsv: qaDisplayPath(betaDispatchLogCsvPath),
+    dispatchLogRowCount: betaDispatchLog.dispatchRowCount ?? null,
+    dispatchLogSentCount: betaDispatchLog.sentCount ?? null,
+    dispatchLogPreparedNotSentCount: betaDispatchLog.preparedNotSentCount ?? null,
+    dispatchLogPreparedDueTodayCount: betaDispatchLog.preparedDueTodayCount ?? null,
+    dispatchLogPreparedOverdueCount: betaDispatchLog.preparedOverdueCount ?? null,
+    dispatchLogRequireSent: betaDispatchLog.requireSent ?? null,
     followUpOutboxArtifact: qaDisplayPath(betaFollowUpOutboxPath),
     followUpOutboxReport: qaDisplayPath(betaFollowUpOutboxReportPath),
     followUpOutboxCsv: qaDisplayPath(betaFollowUpOutboxCsvPath),
@@ -2336,6 +2389,7 @@ const summary = {
     commandCenterIssues: betaCommandCenterIssues,
     nextWaveOpsIssues: betaNextWaveOpsIssues,
     dispatchOutboxIssues: betaDispatchOutboxIssues,
+    dispatchLogIssues: betaDispatchLogIssues,
     followUpOutboxIssues: betaFollowUpOutboxIssues,
     allWaveOpsIssues: betaAllWaveOpsIssues,
   },
@@ -2819,6 +2873,7 @@ Status: ${status}
 - Beta review follow-ups overdue: ${summary.betaHumanReviews.followUpOverdueCount || 0}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Beta review dispatch outbox ready: ${summary.betaHumanReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.dispatchOutboxMessageFileCount || 0} message files)
+- Beta review dispatch log ready: ${summary.betaHumanReviews.dispatchLogReady ? 'yes' : 'no'} (${summary.betaHumanReviews.dispatchLogSentCount || 0} sent, ${summary.betaHumanReviews.dispatchLogPreparedNotSentCount || 0} prepared not sent)
 - Beta review follow-up outbox ready: ${summary.betaHumanReviews.followUpOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.followUpOutboxMessageFileCount || 0} message files)
 - Beta review all-wave ops ready: ${summary.betaHumanReviews.allWaveOpsReady ? 'yes' : 'no'} (${summary.betaHumanReviews.allWaveOpsRowCount || 0}/${summary.betaHumanReviews.planned || 0})
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
@@ -2879,6 +2934,9 @@ ${markdownList(betaNextWaveOpsIssues)}
 
 Beta human-review dispatch outbox:
 ${markdownList(betaDispatchOutboxIssues)}
+
+Beta human-review dispatch log:
+${markdownList(betaDispatchLogIssues)}
 
 Beta human-review follow-up outbox:
 ${markdownList(betaFollowUpOutboxIssues)}
@@ -2949,6 +3007,7 @@ ${markdownList(summary.nextActions)}
 - Beta command center: \`${summary.betaHumanReviews.commandCenterArtifact}\` and \`${summary.betaHumanReviews.commandCenterReport}\`
 - Beta next-wave ops: \`${summary.betaHumanReviews.nextWaveOpsArtifact}\`, \`${summary.betaHumanReviews.nextWaveOpsReport}\`, and \`${summary.betaHumanReviews.nextWaveOpsCsv}\`
 - Beta dispatch outbox: \`${summary.betaHumanReviews.dispatchOutboxArtifact}\`, \`${summary.betaHumanReviews.dispatchOutboxReport}\`, \`${summary.betaHumanReviews.dispatchOutboxCsv}\`, and \`${summary.betaHumanReviews.dispatchOutboxArtifactDir}\`
+- Beta dispatch log: \`${summary.betaHumanReviews.dispatchLogArtifact}\`, \`${summary.betaHumanReviews.dispatchLogReport}\`, and \`${summary.betaHumanReviews.dispatchLogCsv}\`
 - Beta follow-up outbox: \`${summary.betaHumanReviews.followUpOutboxArtifact}\`, \`${summary.betaHumanReviews.followUpOutboxReport}\`, \`${summary.betaHumanReviews.followUpOutboxCsv}\`, and \`${summary.betaHumanReviews.followUpOutboxArtifactDir}\`
 - Beta all-wave ops: \`${summary.betaHumanReviews.allWaveOpsArtifact}\`, \`${summary.betaHumanReviews.allWaveOpsReport}\`, and \`${summary.betaHumanReviews.allWaveOpsCsv}\`
 - Beta wave rehearsal: \`${summary.betaHumanReviews.waveRehearsalArtifact}\` and \`${summary.betaHumanReviews.waveRehearsalReport}\`
