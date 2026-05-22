@@ -846,6 +846,43 @@ async function checkRequiredDocs(productionHealth) {
     missingDocMarkers,
     currencyIssues,
   })
+
+  const currentReadinessMatch = releaseMemo.match(/## Current Readiness Update[^\n]*\n([\s\S]*?)(?=\n## )/)
+  const currentReadinessSection = currentReadinessMatch?.[1] || ''
+  const currentReadinessLines = currentReadinessSection
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+  const currentProductionStatements = currentReadinessLines
+    .filter((line) => line.startsWith('- Production is verified on commit '))
+  const currentLatestVisualStatements = currentReadinessLines
+    .filter((line) => /^- The latest production visual evidence is /i.test(line))
+  const staleCurrentProductionStatements = currentProductionStatements
+    .filter((line) => !line.includes(liveDeployment.commit || '') || !line.includes(liveDeployment.url || ''))
+  const staleCurrentVisualStatements = currentLatestVisualStatements
+    .filter((line) => (
+      !line.includes(visualStatus.latestProductionArtifact || '') ||
+      !line.includes(visualStatus.latestProductionCommit || '') ||
+      !line.includes(visualStatus.latestProductionDeploymentUrl || '')
+    ))
+  addCheck('release readiness current section has one current production summary', (
+    Boolean(currentReadinessMatch) &&
+    currentProductionStatements.length === 1 &&
+    currentLatestVisualStatements.length === 1 &&
+    staleCurrentProductionStatements.length === 0 &&
+    staleCurrentVisualStatements.length === 0
+  ), {
+    currentReadinessFound: Boolean(currentReadinessMatch),
+    currentProductionStatementCount: currentProductionStatements.length,
+    currentLatestVisualStatementCount: currentLatestVisualStatements.length,
+    expectedCommit: liveDeployment.commit || null,
+    expectedDeploymentUrl: liveDeployment.url || null,
+    expectedLatestVisualArtifact: visualStatus.latestProductionArtifact || null,
+    expectedLatestVisualCommit: visualStatus.latestProductionCommit || null,
+    expectedLatestVisualDeploymentUrl: visualStatus.latestProductionDeploymentUrl || null,
+    staleCurrentProductionStatements,
+    staleCurrentVisualStatements,
+  })
 }
 
 async function checkReleaseArtifact() {
