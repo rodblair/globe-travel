@@ -8,6 +8,7 @@ type HealthCheck = {
   label: string
   status: HealthStatus
   severity: HealthSeverity
+  source?: string
 }
 
 const PLACEHOLDER_VALUES = new Set([
@@ -35,6 +36,35 @@ function checkEnv(
   }
 }
 
+function checkSiteUrl(): HealthCheck {
+  if (isConfigured(process.env.NEXT_PUBLIC_SITE_URL)) {
+    return {
+      name: 'site_url',
+      label: 'Public site URL',
+      status: 'ok',
+      severity: 'warning',
+      source: 'NEXT_PUBLIC_SITE_URL',
+    }
+  }
+
+  if (process.env.VERCEL_ENV !== 'production') {
+    return {
+      name: 'site_url',
+      label: 'Public site URL',
+      status: 'ok',
+      severity: 'warning',
+      source: process.env.VERCEL_URL ? 'VERCEL_URL' : 'local-origin',
+    }
+  }
+
+  return {
+    name: 'site_url',
+    label: 'Public site URL',
+    status: 'missing',
+    severity: 'warning',
+  }
+}
+
 export function GET() {
   const checks: HealthCheck[] = [
     checkEnv('supabase_url', 'Supabase URL', 'NEXT_PUBLIC_SUPABASE_URL'),
@@ -47,7 +77,7 @@ export function GET() {
     checkEnv('stripe_webhook_secret', 'Stripe webhook secret', 'STRIPE_WEBHOOK_SECRET'),
     checkEnv('stripe_monthly_price', 'Stripe monthly price ID', 'STRIPE_PRO_MONTHLY_PRICE_ID'),
     checkEnv('stripe_yearly_price', 'Stripe yearly price ID', 'STRIPE_PRO_YEARLY_PRICE_ID'),
-    checkEnv('site_url', 'Public site URL', 'NEXT_PUBLIC_SITE_URL', 'warning'),
+    checkSiteUrl(),
   ]
 
   const criticalMissing = checks.filter(
