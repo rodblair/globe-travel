@@ -395,10 +395,10 @@
   },
   "accessibility": {
     "artifact": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
-    "checked": 16,
-    "passed": 16,
+    "checked": 18,
+    "passed": 18,
     "failed": 0,
-    "resultCount": 16,
+    "resultCount": 18,
     "missingRoutes": [],
     "missingProtectedRoutes": [],
     "missingViewports": [],

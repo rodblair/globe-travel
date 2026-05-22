@@ -210,6 +210,7 @@ const requiredAccessibilityRoutes = [
   'saved-trips',
   'account-profile',
   'account-billing',
+  'pricing',
   'login',
   'signup',
   'public-share',
@@ -226,6 +227,8 @@ const requiredAccessibilityViewports = [
   'phone',
   'desktop',
 ]
+const requiredAccessibilityCheckCount =
+  requiredAccessibilityRoutes.length * requiredAccessibilityViewports.length
 
 const requiredMonitoringSignals = [
   'health',
@@ -1013,10 +1016,10 @@ async function checkAccessibilityArtifact() {
   const missingViewports = hasAll(viewportIds, requiredAccessibilityViewports)
 
   addCheck('accessibility and keyboard QA passed every required route and viewport', (
-    summary.checked === 16 &&
-    summary.passed === 16 &&
+    summary.checked === requiredAccessibilityCheckCount &&
+    summary.passed === requiredAccessibilityCheckCount &&
     summary.failed === 0 &&
-    resultCount === 16 &&
+    resultCount === requiredAccessibilityCheckCount &&
     missingRoutes.length === 0 &&
     missingProtectedRoutes.length === 0 &&
     missingViewports.length === 0
@@ -1025,6 +1028,7 @@ async function checkAccessibilityArtifact() {
     passed: summary.passed,
     failed: summary.failed,
     resultCount,
+    requiredCheckCount: requiredAccessibilityCheckCount,
     requiredRoutes: requiredAccessibilityRoutes,
     missingRoutes,
     requiredProtectedRoutes: requiredAccessibilityProtectedRoutes,

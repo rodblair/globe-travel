@@ -42,6 +42,7 @@ const allRoutes = [
   { id: 'saved-trips', path: '/saved', markers: ['Trips'] },
   { id: 'account-profile', path: '/account', markers: ['Account'] },
   { id: 'account-billing', path: '/account?tab=billing', markers: ['Plan and billing'] },
+  { id: 'pricing', path: '/pricing', markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'] },
   { id: 'login', path: '/login', markers: ['Welcome back', 'Continue as guest'] },
   { id: 'signup', path: '/signup', markers: ['Create your account', 'Continue as guest'] },
   { id: 'public-share', path: `/t/${shareSlug}`, markers: ['Start your own trip', 'Friend feedback'] },

@@ -1,6 +1,6 @@
 # Accessibility And Keyboard Smoke
 
-Date: 2026-05-21
+Date: 2026-05-22
 Environment: https://globe-travel-two.vercel.app
 Public share slug: x3m2c8cnws
 Trip Studio fixture: not included
@@ -8,8 +8,8 @@ Auth mode: guest (generated guest id)
 
 ## Result
 
-- Checked: 16
-- Passed: 16
+- Checked: 18
+- Passed: 18
 - Failed: 0
 - Artifact JSON: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 - Protected routes: planner, saved-trips, account-profile, account-billing
@@ -22,6 +22,7 @@ Auth mode: guest (generated guest id)
 | saved-trips | phone | 0 | 0 | 0 | none | Pass |
 | account-profile | phone | 0 | 0 | 0 | none | Pass |
 | account-billing | phone | 0 | 0 | 0 | none | Pass |
+| pricing | phone | 0 | 0 | 0 | none | Pass |
 | login | phone | 0 | 2 | 0 | none | Pass |
 | signup | phone | 0 | 2 | 0 | none | Pass |
 | public-share | phone | 0 | 1 | 0 | none | Pass |
@@ -30,6 +31,7 @@ Auth mode: guest (generated guest id)
 | saved-trips | desktop | 0 | 0 | 0 | none | Pass |
 | account-profile | desktop | 0 | 0 | 0 | none | Pass |
 | account-billing | desktop | 0 | 0 | 0 | none | Pass |
+| pricing | desktop | 0 | 0 | 0 | none | Pass |
 | login | desktop | 0 | 2 | 0 | none | Pass |
 | signup | desktop | 0 | 2 | 0 | none | Pass |
 | public-share | desktop | 0 | 1 | 0 | none | Pass |

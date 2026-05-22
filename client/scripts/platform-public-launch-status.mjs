@@ -138,6 +138,7 @@ const requiredAccessibilityRoutes = [
   'saved-trips',
   'account-profile',
   'account-billing',
+  'pricing',
   'login',
   'signup',
   'public-share',
@@ -152,6 +153,8 @@ const requiredAccessibilityViewports = [
   'phone',
   'desktop',
 ]
+const requiredAccessibilityCheckCount =
+  requiredAccessibilityRoutes.length * requiredAccessibilityViewports.length
 const requiredDesignSystemChecks = [
   'design context documents users, tone, aesthetic, and principles',
   'global design tokens expose the Globe.travel atmosphere palette and interaction system',
@@ -692,10 +695,10 @@ const accessibilityGuestAuthReady =
   accessibility.auth?.cleanup?.userDeleted === true &&
   !accessibility.auth?.cleanup?.error
 const accessibilityReady =
-  Number(accessibility.checked) === 16 &&
-  Number(accessibility.passed) === 16 &&
+  Number(accessibility.checked) === requiredAccessibilityCheckCount &&
+  Number(accessibility.passed) === requiredAccessibilityCheckCount &&
   Number(accessibility.failed) === 0 &&
-  (Array.isArray(accessibility.results) ? accessibility.results.length : 0) === 16 &&
+  (Array.isArray(accessibility.results) ? accessibility.results.length : 0) === requiredAccessibilityCheckCount &&
   missingAccessibilityRoutes.length === 0 &&
   missingAccessibilityProtectedRoutes.length === 0 &&
   missingAccessibilityViewports.length === 0 &&
