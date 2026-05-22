@@ -20,6 +20,7 @@ Status: beta-ready-public-blocked
 - Incomplete accepted P2 risks: 0
 - Rollback plan actionable: yes
 - Production monitoring ready: yes
+- Paid path ready: yes
 
 ## Public-Launch Blockers
 
@@ -58,6 +59,7 @@ Production visual-review queue:
 - Monitoring register: `qa/production-monitoring-register.json`
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`
+- Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
 
 ## Operating Meaning
 

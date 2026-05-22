@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
@@ -17,6 +17,7 @@ const visualSchedulePath = process.env.QA_VISUAL_REVIEW_SCHEDULE || 'qa/producti
 const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
+const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS || process.env.QA_LAUNCH_PAID_PATH_ARTIFACT || 'qa/paid-path-readiness-2026-05-21.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -71,6 +72,20 @@ const requiredMonitoringRunbookMarkers = [
   '/api/trips/share/x3m2c8cnws',
   'Alert on',
 ]
+const requiredPaidPathTasks = [
+  'local commercial smoke',
+  'billing recovery smoke',
+  'Stripe test-mode readiness',
+  'hosted Stripe checkout browser QA',
+  'hosted Stripe billing portal browser QA',
+]
+const requiredStripeScreenshots = [
+  'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-loaded.png',
+  'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-filled.png',
+  'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-returned.png',
+  'qa/stripe-portal-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-portal-loaded.png',
+  'qa/stripe-portal-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-portal-returned.png',
+]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
@@ -88,6 +103,15 @@ async function readJson(path) {
 
 async function readText(path) {
   return readFile(repoPath(path), 'utf8')
+}
+
+async function exists(path) {
+  try {
+    await access(repoPath(path))
+    return true
+  } catch {
+    return false
+  }
 }
 
 function dateOnly(value) {
@@ -218,6 +242,7 @@ const [
   monitoringRegister,
   rollbackPlan,
   riskRegister,
+  paidPathReadiness,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -230,6 +255,7 @@ const [
   readJson(monitoringRegisterPath),
   readJson(rollbackPath),
   readJson(riskRegisterPath),
+  readJson(paidPathReadinessPath),
   fetchHealth(),
 ])
 
@@ -352,6 +378,21 @@ const monitoringLatestVerificationReady =
   monitoringLatestVerificationText.includes('qa:release-production') &&
   monitoringLatestVerificationText.includes('qa:launch-signoff') &&
   monitoringRegister.latestVerification?.expectedLiveCommit === liveDeployment?.commit
+const missingPaidPathTasks = missingFrom(paidPathReadiness.requiredReleaseTasks, requiredPaidPathTasks)
+const paidPathScreenshotChecks = await Promise.all(requiredStripeScreenshots.map(async (path) => ({
+  path,
+  exists: await exists(path),
+})))
+const missingPaidPathScreenshots = paidPathScreenshotChecks
+  .filter((screenshot) => !screenshot.exists)
+  .map((screenshot) => screenshot.path)
+const paidPathReady =
+  paidPathReadiness.status === 'pass' &&
+  Number(paidPathReadiness.checked) >= 6 &&
+  Number(paidPathReadiness.failed) === 0 &&
+  missingPaidPathTasks.length === 0 &&
+  Number(paidPathReadiness.screenshotCount) >= requiredStripeScreenshots.length &&
+  missingPaidPathScreenshots.length === 0
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -560,6 +601,9 @@ if (!monitoringRunbook.ok || missingMonitoringRunbookMarkers.length > 0) {
 if (!monitoringLatestVerificationReady) {
   guardrailIssues.push('production monitoring latest verification is not tied to release gates and live production commit')
 }
+if (!paidPathReady) {
+  guardrailIssues.push('paid-path readiness does not cover commercial, subscription, checkout, portal, and screenshot evidence')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -661,6 +705,18 @@ const summary = {
     latestVerificationExpectedLiveCommit: monitoringRegister.latestVerification?.expectedLiveCommit || null,
     latestVerificationReady: monitoringLatestVerificationReady,
   },
+  paidPath: {
+    artifact: qaDisplayPath(paidPathReadinessPath),
+    status: paidPathReadiness.status || null,
+    checked: paidPathReadiness.checked ?? null,
+    failed: paidPathReadiness.failed ?? null,
+    requiredTasks: requiredPaidPathTasks,
+    missingTasks: missingPaidPathTasks,
+    screenshotCount: paidPathReadiness.screenshotCount ?? null,
+    requiredScreenshotCount: requiredStripeScreenshots.length,
+    missingScreenshots: missingPaidPathScreenshots,
+    ready: paidPathReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -674,6 +730,7 @@ const summary = {
     monitoringRegister: qaDisplayPath(monitoringRegisterPath),
     rollbackPlan: qaDisplayPath(rollbackPath),
     riskRegister: qaDisplayPath(riskRegisterPath),
+    paidPathReadiness: qaDisplayPath(paidPathReadinessPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -701,6 +758,7 @@ Status: ${status}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
 - Rollback plan actionable: ${summary.rollback.actionable ? 'yes' : 'no'}
 - Production monitoring ready: ${summary.monitoring.latestVerificationReady && summary.monitoring.missingSignals.length === 0 && summary.monitoring.workflowIssues.length === 0 && summary.monitoring.missingAlertMarkers.length === 0 && summary.monitoring.missingRunbookMarkers.length === 0 ? 'yes' : 'no'}
+- Paid path ready: ${summary.paidPath.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -737,6 +795,7 @@ ${markdownList(summary.nextActions)}
 - Monitoring register: \`${summary.artifacts.monitoringRegister}\`
 - Rollback plan: \`${summary.artifacts.rollbackPlan}\`
 - Risk register: \`${summary.artifacts.riskRegister}\`
+- Paid-path readiness: \`${summary.artifacts.paidPathReadiness}\`
 
 ## Operating Meaning
 

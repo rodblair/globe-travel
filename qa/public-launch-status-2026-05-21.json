@@ -96,6 +96,24 @@
     "latestVerificationExpectedLiveCommit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3",
     "latestVerificationReady": true
   },
+  "paidPath": {
+    "artifact": "qa/paid-path-readiness-2026-05-21.json",
+    "status": "pass",
+    "checked": 6,
+    "failed": 0,
+    "requiredTasks": [
+      "local commercial smoke",
+      "billing recovery smoke",
+      "Stripe test-mode readiness",
+      "hosted Stripe checkout browser QA",
+      "hosted Stripe billing portal browser QA"
+    ],
+    "missingTasks": [],
+    "screenshotCount": 6,
+    "requiredScreenshotCount": 5,
+    "missingScreenshots": [],
+    "ready": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {
@@ -119,6 +137,7 @@
     "monitoringRegister": "qa/production-monitoring-register.json",
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
+    "paidPathReadiness": "qa/paid-path-readiness-2026-05-21.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }
