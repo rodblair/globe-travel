@@ -54,6 +54,8 @@
     "qa:share-feedback-states-ui": "node scripts/platform-share-feedback-states-ui-smoke.mjs",
     "qa:share-fixtures": "node scripts/platform-share-fixtures.mjs",
     "qa:share-fixture-sweep": "node scripts/platform-share-fixture-sweep.mjs",
+    "qa:share-catalog-quarantine": "node scripts/platform-public-share-catalog-quarantine.mjs",
+    "qa:share-map-catalog": "node scripts/platform-public-share-map-itinerary-integrity.mjs --discover",
     "qa:share-map-integrity": "node scripts/platform-public-share-map-itinerary-integrity.mjs",
     "qa:share-multi-itinerary-ui": "node scripts/platform-share-multi-itinerary-ui-smoke.mjs",
     "qa:share-owner-feedback-ui": "node scripts/platform-share-owner-feedback-ui-smoke.mjs",

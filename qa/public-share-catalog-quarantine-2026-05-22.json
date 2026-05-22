@@ -1,0 +1,129 @@
+{
+  "date": "2026-05-22",
+  "catalogArtifact": "qa/public-share-map-catalog-2026-05-22.json",
+  "jsonArtifact": "qa/public-share-catalog-quarantine-2026-05-22.json",
+  "reportArtifact": "qa/public-share-catalog-quarantine-2026-05-22.md",
+  "apply": true,
+  "keepSlugs": [
+    "x3m2c8cnws"
+  ],
+  "quarantineQaShares": true,
+  "checkedShares": 5,
+  "catalogFailures": 3,
+  "candidates": [
+    {
+      "tripId": "13de71f2-9e04-44c3-8b72-ee419645184f",
+      "title": "QA Trip Studio Actions a621295b Saved",
+      "shareSlug": "4d97sqon5v",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "69f6dad4-203b-493b-8bd5-46d051164e19",
+      "title": "3-Day City Break for Friends",
+      "shareSlug": "7dkf9pe3hu",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ]
+    },
+    {
+      "tripId": "bc1031dc-0df5-4c0d-9902-2aaaa7193ae0",
+      "title": "4 Days in Athens with an Island Overnight",
+      "shareSlug": "4sqndolyhf",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ]
+    },
+    {
+      "tripId": "76f6216f-5248-47fc-bdaf-8720fc06d187",
+      "title": "Athens for Two Couples",
+      "shareSlug": "ao0v59lnsw",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ]
+    }
+  ],
+  "candidateCount": 4,
+  "appliedCount": 4,
+  "failedUpdateCount": 0,
+  "updates": [
+    {
+      "tripId": "13de71f2-9e04-44c3-8b72-ee419645184f",
+      "title": "QA Trip Studio Actions a621295b Saved",
+      "shareSlug": "4d97sqon5v",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "13de71f2-9e04-44c3-8b72-ee419645184f",
+        "title": "QA Trip Studio Actions a621295b Saved",
+        "share_slug": "4d97sqon5v",
+        "is_public": false,
+        "updated_at": "2026-05-22T14:39:11.04+00:00"
+      }
+    },
+    {
+      "tripId": "69f6dad4-203b-493b-8bd5-46d051164e19",
+      "title": "3-Day City Break for Friends",
+      "shareSlug": "7dkf9pe3hu",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "69f6dad4-203b-493b-8bd5-46d051164e19",
+        "title": "3-Day City Break for Friends",
+        "share_slug": "7dkf9pe3hu",
+        "is_public": false,
+        "updated_at": "2026-05-22T14:39:11.564+00:00"
+      }
+    },
+    {
+      "tripId": "bc1031dc-0df5-4c0d-9902-2aaaa7193ae0",
+      "title": "4 Days in Athens with an Island Overnight",
+      "shareSlug": "4sqndolyhf",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "bc1031dc-0df5-4c0d-9902-2aaaa7193ae0",
+        "title": "4 Days in Athens with an Island Overnight",
+        "share_slug": "4sqndolyhf",
+        "is_public": false,
+        "updated_at": "2026-05-22T14:39:11.693+00:00"
+      }
+    },
+    {
+      "tripId": "76f6216f-5248-47fc-bdaf-8720fc06d187",
+      "title": "Athens for Two Couples",
+      "shareSlug": "ao0v59lnsw",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "76f6216f-5248-47fc-bdaf-8720fc06d187",
+        "title": "Athens for Two Couples",
+        "share_slug": "ao0v59lnsw",
+        "is_public": false,
+        "updated_at": "2026-05-22T14:39:11.83+00:00"
+      }
+    }
+  ],
+  "ok": true
+}

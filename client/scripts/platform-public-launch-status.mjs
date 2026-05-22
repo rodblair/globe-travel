@@ -44,7 +44,7 @@ const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'q
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
-  'qa/public-share-map-itinerary-integrity-2026-05-22.json'
+  'qa/public-share-map-catalog-2026-05-22.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
 const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT || process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT || 'qa/app-surfaces-smoke-2026-05-22.json'
@@ -708,6 +708,8 @@ const publicShareMapIntegrityIssues = []
 const publicShareMapResults = Array.isArray(publicShareMapIntegrity.shareResults) ? publicShareMapIntegrity.shareResults : []
 const publicShareMapSlugs = Array.isArray(publicShareMapIntegrity.shareSlugs) ? publicShareMapIntegrity.shareSlugs : []
 const publicShareMapFailures = Array.isArray(publicShareMapIntegrity.failures) ? publicShareMapIntegrity.failures : []
+const publicShareMapDiscovery = publicShareMapIntegrity.discovery || {}
+const publicShareMapDiscoveredShares = Array.isArray(publicShareMapDiscovery.shares) ? publicShareMapDiscovery.shares : []
 const badPublicShareMapResults = publicShareMapResults.filter((result) => result.ok !== true)
 const badPublicShareMapRenderedResults = publicShareMapResults.flatMap((result) => (
   Array.isArray(result.rendered)
@@ -739,6 +741,11 @@ const missingPublicShareMapScreenshots = publicShareMapScreenshotChecks
 if (publicShareMapIntegrity.baseUrl !== baseUrl) publicShareMapIntegrityIssues.push(`public share map integrity base URL ${publicShareMapIntegrity.baseUrl || 'missing'} does not match ${baseUrl}`)
 if (!publicShareMapSlugs.includes('x3m2c8cnws')) publicShareMapIntegrityIssues.push('public share map integrity does not include stable Athens share x3m2c8cnws')
 if (Number(publicShareMapIntegrity.checked) < 1) publicShareMapIntegrityIssues.push('public share map integrity did not check any shares')
+if (publicShareMapDiscovery.enabled !== true) publicShareMapIntegrityIssues.push('public share map integrity did not discover the live public share catalog')
+if (Number(publicShareMapDiscovery.totalPublicShares) < 1) publicShareMapIntegrityIssues.push('public share map integrity discovered no public shares')
+if (Number(publicShareMapDiscovery.shareCount) !== publicShareMapDiscoveredShares.length) publicShareMapIntegrityIssues.push('public share map integrity discovery count does not match discovered shares')
+if (Number(publicShareMapIntegrity.checked) < Number(publicShareMapDiscovery.totalPublicShares || 0)) publicShareMapIntegrityIssues.push('public share map integrity did not check every discovered public share')
+if (publicShareMapSlugs.length !== publicShareMapDiscoveredShares.length) publicShareMapIntegrityIssues.push('public share map integrity checked share count does not match discovered public share count')
 if (Number(publicShareMapIntegrity.passed) !== publicShareMapResults.length || Number(publicShareMapIntegrity.failed) !== 0 || publicShareMapFailures.length > 0) {
   publicShareMapIntegrityIssues.push('public share map integrity has failing share checks')
 }
@@ -1838,6 +1845,17 @@ const summary = {
     failed: publicShareMapIntegrity.failed ?? null,
     shareSlugs: publicShareMapSlugs,
     shareCount: publicShareMapResults.length,
+    discovery: {
+      enabled: publicShareMapDiscovery.enabled ?? null,
+      limit: publicShareMapDiscovery.limit ?? null,
+      totalPublicShares: publicShareMapDiscovery.totalPublicShares ?? null,
+      shareCount: publicShareMapDiscovery.shareCount ?? null,
+      shares: publicShareMapDiscoveredShares.map((share) => ({
+        shareSlug: share.shareSlug || null,
+        title: share.title || null,
+        updatedAt: share.updatedAt || null,
+      })),
+    },
     badShareCount: badPublicShareMapResults.length,
     badRenderedResults: badPublicShareMapRenderedResults,
     badDays: badPublicShareMapDays,
@@ -2022,7 +2040,7 @@ Status: ${status}
 - Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
-- Public share map/itinerary integrity ready: ${summary.publicShareMapIntegrity.ready ? 'yes' : 'no'} (${summary.publicShareMapIntegrity.shareCount || 0} share, ${summary.publicShareMapIntegrity.checkedViewports || 0} viewports)
+- Public share map/itinerary catalog ready: ${summary.publicShareMapIntegrity.ready ? 'yes' : 'no'} (${summary.publicShareMapIntegrity.shareCount || 0}/${summary.publicShareMapIntegrity.discovery.totalPublicShares || 0} public shares, ${summary.publicShareMapIntegrity.checkedViewports || 0} viewports)
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
 - Full route inventory ready: ${summary.routeInventory.ready ? 'yes' : 'no'}
 - Authenticated app surfaces ready: ${summary.appSurfaces.ready ? 'yes' : 'no'}

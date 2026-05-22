@@ -27,7 +27,7 @@ const plannerActualsArtifact =
 const publicShareMapIntegrityArtifact =
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
-  'qa/public-share-map-itinerary-integrity-2026-05-22.json'
+  'qa/public-share-map-catalog-2026-05-22.json'
 const betaHumanReviewRegister =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_REGISTER ||
   'qa/beta-human-review-register.json'
@@ -2601,6 +2601,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     publicShareMapStatus.shareSlugs.includes('x3m2c8cnws') &&
     Number(publicShareMapStatus.shareCount) >= 1 &&
     Number(publicShareMapStatus.checked) >= 1 &&
+    publicShareMapStatus.discovery?.enabled === true &&
+    Number(publicShareMapStatus.discovery?.totalPublicShares) >= 1 &&
+    Number(publicShareMapStatus.checked) >= Number(publicShareMapStatus.discovery?.totalPublicShares || 0) &&
+    Number(publicShareMapStatus.discovery?.shareCount) === Number(publicShareMapStatus.shareCount || 0) &&
     Number(publicShareMapStatus.checkedViewports) >= Number(publicShareMapStatus.shareCount || 0) * 2 &&
     Number(publicShareMapStatus.passed) === Number(publicShareMapStatus.shareCount || 0) &&
     Number(publicShareMapStatus.failed) === 0 &&
@@ -2619,6 +2623,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     publicShareMapIntegrityBaseUrl: publicShareMapStatus.baseUrl || null,
     publicShareMapIntegrityShareSlugs: publicShareMapStatus.shareSlugs || [],
     publicShareMapIntegrityShareCount: publicShareMapStatus.shareCount ?? null,
+    publicShareMapIntegrityDiscovery: publicShareMapStatus.discovery || null,
     publicShareMapIntegrityChecked: publicShareMapStatus.checked ?? null,
     publicShareMapIntegrityCheckedViewports: publicShareMapStatus.checkedViewports ?? null,
     publicShareMapIntegrityPassed: publicShareMapStatus.passed ?? null,

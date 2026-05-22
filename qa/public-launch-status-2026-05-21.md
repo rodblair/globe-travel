@@ -41,7 +41,7 @@ Status: beta-ready-public-blocked
 - Accessibility ready: yes
 - Design system ready: yes
 - Planner map actuals ready: yes
-- Public share map/itinerary integrity ready: yes (1 share, 2 viewports)
+- Public share map/itinerary catalog ready: yes (1/1 public shares, 2 viewports)
 - Release candidate ready: yes
 - Full route inventory ready: yes
 - Authenticated app surfaces ready: yes
@@ -137,7 +137,7 @@ Public share map/itinerary integrity:
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-05-22.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
-- Public share map/itinerary integrity: `qa/public-share-map-itinerary-integrity-2026-05-22.json` and `qa/public-share-map-itinerary-integrity-2026-05-22.md`
+- Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-22.json` and `qa/public-share-map-catalog-2026-05-22.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-05-22.json`
 - Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-22.json`

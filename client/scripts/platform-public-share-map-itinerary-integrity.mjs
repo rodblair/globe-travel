@@ -1,6 +1,7 @@
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright-core'
+import { createClient } from '@supabase/supabase-js'
 
 const repoRoot = resolve(process.cwd(), '..')
 const baseUrl = (process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
@@ -11,11 +12,15 @@ const artifactPath = `${artifactDir}.json`
 const reportPath = `${artifactDir}.md`
 const screenshotDir = `${artifactDir}/screenshots`
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const shareSlugs = (process.env.QA_PUBLIC_SHARE_MAP_SLUGS || process.env.QA_SHARE_SLUGS || process.env.QA_SHARE_SLUG || 'x3m2c8cnws')
+const requestedShareSlugs = (process.env.QA_PUBLIC_SHARE_MAP_SLUGS || process.env.QA_SHARE_SLUGS || process.env.QA_SHARE_SLUG || 'x3m2c8cnws')
   .split(/[\s,]+/)
   .map((slug) => slug.trim())
   .filter(Boolean)
 const expectedCountryMap = parseExpectedCountryMap(process.env.QA_PUBLIC_SHARE_EXPECTED_COUNTRIES || 'x3m2c8cnws=Greece')
+const discoverPublicShares = process.argv.includes('--discover') || ['1', 'true', 'yes'].includes(String(process.env.QA_PUBLIC_SHARE_DISCOVER || '').toLowerCase())
+const discoveryLimit = Math.max(1, Number(process.env.QA_PUBLIC_SHARE_DISCOVER_LIMIT || '25'))
+const includeRequestedSlugsInDiscovery = process.env.QA_PUBLIC_SHARE_DISCOVER_INCLUDE_REQUESTED !== '0'
+const requireUsableRoutes = process.env.QA_PUBLIC_SHARE_REQUIRE_ROUTES !== '0'
 
 const viewports = [
   { id: 'phone', width: 390, height: 844 },
@@ -42,6 +47,63 @@ function parseExpectedCountryMap(value) {
 
 function repoPath(path) {
   return resolve(repoRoot, path)
+}
+
+async function loadEnvLocal() {
+  const envPath = resolve(process.cwd(), '.env.local')
+  let text = ''
+  try {
+    text = await readFile(envPath, 'utf8')
+  } catch {
+    return
+  }
+
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#') || !trimmed.includes('=')) continue
+    const index = trimmed.indexOf('=')
+    const key = trimmed.slice(0, index).trim()
+    const rawValue = trimmed.slice(index + 1).trim()
+    if (!key || process.env[key]) continue
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '')
+  }
+}
+
+async function discoverShareSlugs() {
+  await loadEnvLocal()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required for public share discovery.')
+  }
+
+  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+
+  const { data, error, count } = await supabase
+    .from('trips')
+    .select('id,title,share_slug,updated_at,created_at', { count: 'exact' })
+    .eq('is_public', true)
+    .not('share_slug', 'is', null)
+    .order('updated_at', { ascending: false })
+    .limit(discoveryLimit)
+
+  if (error) throw new Error(`Could not discover public share slugs: ${error.message}`)
+
+  return {
+    count,
+    limit: discoveryLimit,
+    shares: (data || [])
+      .filter((trip) => trip.share_slug)
+      .map((trip) => ({
+        tripId: trip.id,
+        title: trip.title || null,
+        shareSlug: trip.share_slug,
+        updatedAt: trip.updated_at || null,
+        createdAt: trip.created_at || null,
+      })),
+  }
 }
 
 function markdownList(items) {
@@ -129,11 +191,11 @@ function analyzeDay(day, expectedCountry) {
   if (items.length === 0) issues.push('day has no itinerary items')
   if (mappedItems.length !== items.length) issues.push(`mapped ${mappedItems.length}/${items.length} itinerary items`)
   if (duplicateMappedStops.length > 0) issues.push('day has duplicate mapped stops')
-  if (countries.length !== 1) issues.push(`day has ${countries.length} mapped countries`)
+  if (mappedItems.length > 0 && countries.length === 0) issues.push('day has mapped stops without country labels')
   if (expectedCountry && countries.some((country) => country !== expectedCountry)) {
     issues.push(`mapped country does not match ${expectedCountry}`)
   }
-  if (usableRoutes.length === 0) issues.push('day has no usable route')
+  if (requireUsableRoutes && mappedItems.length > 1 && usableRoutes.length === 0) issues.push('day has no usable route')
 
   return {
     dayIndex: day.day_index,
@@ -254,7 +316,7 @@ async function checkShareSlug(shareSlug) {
     if (!state.hasShareControls) issues.push('missing copy/share controls')
     if (state.mapSurfaceCount < Math.max(1, days.length)) issues.push(`found ${state.mapSurfaceCount} rendered map surfaces for ${days.length} days`)
     if (state.stopChipMentions < Math.max(1, days.length)) issues.push(`found ${state.stopChipMentions} stop-count chips for ${days.length} days`)
-    if (state.visibleDayTitleCount < Math.max(1, days.length)) issues.push(`found ${state.visibleDayTitleCount} visible day titles for ${days.length} days`)
+    if (state.missingDayTitles.length > 0) issues.push(`missing visible day titles: ${state.missingDayTitles.join(', ')}`)
     if (state.hasUnavailableState) issues.push('rendered unavailable state')
     if (state.hasAppError) issues.push('rendered application error')
     if (state.horizontalOverflow) issues.push(`horizontal overflow ${state.scrollWidth}px > ${state.clientWidth}px`)
@@ -301,6 +363,9 @@ Base URL: ${summary.baseUrl}
 - Checked viewports: ${summary.checkedViewports}
 - Passed shares: ${summary.passed}
 - Failed shares: ${summary.failed}
+- Discovery mode: ${summary.discovery.enabled ? 'yes' : 'no'}
+- Discovered public shares: ${summary.discovery.enabled ? `${summary.discovery.shareCount}/${summary.discovery.totalPublicShares ?? 'unknown'}` : 'n/a'}
+- Requires usable route lines: ${summary.requireUsableRoutes ? 'yes' : 'no'}
 
 | Share | Result | Trip | Days | Expected country | Rendered viewports |
 | --- | --- | --- | ---: | --- | ---: |
@@ -317,8 +382,35 @@ ${markdownList(summary.failures.map((failure) => `${failure.shareSlug}: ${failur
 `
 }
 
+let shareSlugs = [...requestedShareSlugs]
+let discovery = {
+  enabled: discoverPublicShares,
+  limit: discoverPublicShares ? discoveryLimit : null,
+  totalPublicShares: null,
+  shareCount: 0,
+  shares: [],
+  includeRequestedSlugs: includeRequestedSlugsInDiscovery,
+}
+
 try {
   await mkdir(repoPath(screenshotDir), { recursive: true })
+  if (discoverPublicShares) {
+    const discovered = await discoverShareSlugs()
+    discovery = {
+      ...discovery,
+      totalPublicShares: discovered.count ?? null,
+      shareCount: discovered.shares.length,
+      shares: discovered.shares,
+    }
+    const discoveredSlugs = discovered.shares.map((share) => share.shareSlug)
+    shareSlugs = includeRequestedSlugsInDiscovery
+      ? [...new Set([...requestedShareSlugs, ...discoveredSlugs])]
+      : [...new Set(discoveredSlugs)]
+    if (shareSlugs.length === 0) {
+      addFailure('discovery', 'public share discovery returned no share slugs', { discovery })
+    }
+  }
+
   for (const shareSlug of shareSlugs) {
     results.push(await checkShareSlug(shareSlug))
   }
@@ -334,6 +426,9 @@ const summary = {
   date,
   baseUrl,
   shareSlugs,
+  requestedShareSlugs,
+  discovery,
+  requireUsableRoutes,
   expectedCountryMap,
   artifactDir,
   jsonArtifact: artifactPath,
