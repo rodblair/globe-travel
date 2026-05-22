@@ -7,8 +7,8 @@ Status: pass
 
 ## Result
 
-- Checked: 4
-- Passed: 4
+- Checked: 5
+- Passed: 5
 - Failed: 0
 - Next wave: BETA-WAVE-01
 - Waves covered: 5/5
@@ -211,6 +211,7 @@ You are assigned BETA-HR-025 for wave BETA-WAVE-05. Please use desktop 1440x950,
 - Pass: all-waves ops inputs are passing and aligned
 - Pass: all-waves ops exposes the expected review scope
 - Pass: all-waves ops has one actionable row per remaining scoped review
+- Pass: all-waves ops due math matches each review due date
 - Pass: all-waves ops CSV includes every scoped review id
 
 ## Failures

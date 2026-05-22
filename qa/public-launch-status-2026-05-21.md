@@ -15,6 +15,8 @@ Status: beta-ready-public-blocked
 - Beta review assignment queue ready: yes
 - Beta review execution schedule ready: yes
 - Beta review command center ready: yes
+- Beta review overdue waves: 0
+- Beta review due-soon waves: 1
 - Beta review next-wave ops ready: yes
 - Beta review all-wave ops ready: yes (25/25)
 - Beta review wave rehearsal ready: yes (5/5)

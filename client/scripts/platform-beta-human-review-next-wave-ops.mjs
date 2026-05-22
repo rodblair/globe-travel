@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_DATE || ''
+const requestedToday = process.env.QA_BETA_REVIEW_TODAY || ''
 const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-review-register.json'
 const opsScope = process.env.QA_BETA_REVIEW_OPS_SCOPE || 'next-wave'
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
@@ -22,6 +23,17 @@ function dateOnly(value) {
 
 function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
+}
+
+function currentReviewDate() {
+  return isDate(requestedToday) ? requestedToday : currentUtcDate()
+}
+
+function daysBetween(startDate, endDate) {
+  const start = Date.parse(`${startDate}T00:00:00Z`)
+  const end = Date.parse(`${endDate}T00:00:00Z`)
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null
+  return Math.round((end - start) / 86400000)
 }
 
 function qaDisplayPath(value) {
@@ -88,6 +100,7 @@ const date = requestedDate || dateOnly(register.reviewedAt) || currentUtcDate()
 const opsJsonName = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_JSON || `beta-human-review-next-wave-ops-${date}.json`
 const opsReportName = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_REPORT || `beta-human-review-next-wave-ops-${date}.md`
 const opsCsvName = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || `beta-human-review-next-wave-ops-${date}.csv`
+const today = currentReviewDate()
 const commandCenterPath = register.reviewCommandCenterArtifact || `qa/beta-human-review-command-center-${date}.json`
 const schedulePath = register.reviewScheduleArtifact || `qa/beta-human-review-schedule-${date}.json`
 const packetManifestPath = register.reviewerPacketManifest || `qa/beta-human-review-packet-manifest-${date}.json`
@@ -112,7 +125,7 @@ const operatorRows = incompleteRows.map((review) => {
     waveId: review.waveId,
     kickoffAt: review.kickoffAt,
     dueAt: review.dueAt,
-    daysUntilDue: nextWave?.daysUntilDue ?? null,
+    daysUntilDue: daysBetween(today, review.dueAt),
     reviewerCohort: review.reviewerCohort,
     reviewerRole: review.reviewerRole,
     destination: review.destination,
@@ -199,6 +212,12 @@ addCheck(`${opsScope} ops has one actionable row per remaining scoped review`, (
   malformedRows: malformedRows.map((row) => row.id || '(missing id)'),
 })
 
+const rowsWithBadDueMath = operatorRows.filter((row) => row.daysUntilDue !== daysBetween(today, row.dueAt))
+addCheck(`${opsScope} ops due math matches each review due date`, rowsWithBadDueMath.length === 0, {
+  today,
+  rowsWithBadDueMath: rowsWithBadDueMath.map((row) => row.id || '(missing id)'),
+})
+
 addCheck(`${opsScope} ops CSV includes every scoped review id`, (
   operatorRows.every((row) => csvText.includes(row.id)) &&
   operatorRows.every((row) => csvText.includes(row.completedSubmissionPath))
@@ -209,7 +228,7 @@ addCheck(`${opsScope} ops CSV includes every scoped review id`, (
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
-  today: currentUtcDate(),
+  today,
   registerPath: qaDisplayPath(registerPath),
   commandCenterArtifact: qaDisplayPath(commandCenterPath),
   scheduleArtifact: qaDisplayPath(schedulePath),

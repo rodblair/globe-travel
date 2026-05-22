@@ -6,8 +6,8 @@ Status: pass
 
 ## Result
 
-- Checked: 4
-- Passed: 4
+- Checked: 5
+- Passed: 5
 - Failed: 0
 - Planned reviews: 25
 - Completed reviews: 0
@@ -48,6 +48,7 @@ Immediate workflow:
 - Pass: beta command center inputs are passing and aligned
 - Pass: beta command center has one scheduled packet-backed row per planned review
 - Pass: beta command center exposes the next executable wave
+- Pass: beta command center has no overdue review waves
 - Pass: beta command center keeps launch blockers explicit
 
 ## Evidence Inputs

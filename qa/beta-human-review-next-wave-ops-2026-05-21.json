@@ -10,8 +10,8 @@
   "csvArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.csv",
   "scope": "next-wave",
   "status": "pass",
-  "checked": 4,
-  "passed": 4,
+  "checked": 5,
+  "passed": 5,
   "failed": 0,
   "nextWave": {
     "waveId": "BETA-WAVE-01",
@@ -241,6 +241,12 @@
       "operatorRowCount": 5,
       "expectedRemainingReviewCount": 5,
       "malformedRows": []
+    },
+    {
+      "name": "next-wave ops due math matches each review due date",
+      "ok": true,
+      "today": "2026-05-22",
+      "rowsWithBadDueMath": []
     },
     {
       "name": "next-wave ops CSV includes every scoped review id",

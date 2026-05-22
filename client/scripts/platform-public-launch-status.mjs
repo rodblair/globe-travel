@@ -918,6 +918,8 @@ for (const review of scheduledBetaReviews) {
 }
 
 const betaCommandCenterIssues = []
+const betaCommandCenterOverdueWaves = Array.isArray(betaCommandCenter.overdueWaves) ? betaCommandCenter.overdueWaves : []
+const betaCommandCenterDueSoonWaves = Array.isArray(betaCommandCenter.dueSoonWaves) ? betaCommandCenter.dueSoonWaves : []
 if (betaCommandCenter.status !== 'pass') betaCommandCenterIssues.push('beta review command center status is not pass')
 if (Number(betaCommandCenter.plannedReviewCount) !== plannedBetaReviews.length) {
   betaCommandCenterIssues.push(`beta review command center planned count ${betaCommandCenter.plannedReviewCount ?? 'missing'} does not match ${plannedBetaReviews.length}`)
@@ -933,6 +935,9 @@ if (!Array.isArray(betaCommandCenter.waves) || betaCommandCenter.waves.length < 
 }
 if (completedBetaReviews.length < publicBetaMinimum && !betaCommandCenter.nextWave?.waveId) {
   betaCommandCenterIssues.push('beta review command center does not expose the next open wave')
+}
+if (Number(betaCommandCenter.overdueWaveCount || 0) > 0 || betaCommandCenterOverdueWaves.length > 0) {
+  betaCommandCenterIssues.push(`beta review command center has ${Number(betaCommandCenter.overdueWaveCount || betaCommandCenterOverdueWaves.length)} overdue wave(s)`)
 }
 if (!betaCommandCenterReport.includes('Status: pass')) betaCommandCenterIssues.push('beta review command center report is not passing')
 if (!betaCommandCenterReport.includes('This command center is an operating artifact, not completed review evidence')) {
@@ -1480,6 +1485,10 @@ const summary = {
     matrixRehearsalMissingScreenshots: missingBetaMatrixRehearsalScreenshots,
     matrixRehearsalIssues: betaMatrixRehearsalIssues,
     nextWave: betaCommandCenter.nextWave || null,
+    dueSoonWaveCount: betaCommandCenterDueSoonWaves.length,
+    dueSoonWaves: betaCommandCenterDueSoonWaves,
+    overdueWaveCount: betaCommandCenterOverdueWaves.length,
+    overdueWaves: betaCommandCenterOverdueWaves,
     nextWaveOpsRowCount: betaNextWaveOpsRows.length,
     scheduleWaveCount: scheduleWaveIds.length,
     packetCount: betaPacketRecords.length,
@@ -1795,6 +1804,8 @@ Status: ${status}
 - Beta review assignment queue ready: ${summary.betaHumanReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Beta review execution schedule ready: ${summary.betaHumanReviews.executionScheduleReady ? 'yes' : 'no'}
 - Beta review command center ready: ${summary.betaHumanReviews.commandCenterReady ? 'yes' : 'no'}
+- Beta review overdue waves: ${summary.betaHumanReviews.overdueWaveCount || 0}
+- Beta review due-soon waves: ${summary.betaHumanReviews.dueSoonWaveCount || 0}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Beta review all-wave ops ready: ${summary.betaHumanReviews.allWaveOpsReady ? 'yes' : 'no'} (${summary.betaHumanReviews.allWaveOpsRowCount || 0}/${summary.betaHumanReviews.planned || 0})
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})

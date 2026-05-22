@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_BETA_REVIEW_COMMAND_CENTER_DATE || ''
+const requestedToday = process.env.QA_BETA_REVIEW_TODAY || ''
 const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-review-register.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
@@ -23,6 +24,10 @@ function dateOnly(value) {
 
 function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
+}
+
+function currentReviewDate() {
+  return isDate(requestedToday) ? requestedToday : currentUtcDate()
 }
 
 function qaDisplayPath(value) {
@@ -99,7 +104,7 @@ function nextOpenWave(waves) {
 
 const register = JSON.parse(await readFile(resolve(process.cwd(), registerPath), 'utf8'))
 const date = requestedDate || dateOnly(register.reviewedAt) || currentUtcDate()
-const today = currentUtcDate()
+const today = currentReviewDate()
 const commandCenterName = process.env.QA_BETA_REVIEW_COMMAND_CENTER_JSON || `beta-human-review-command-center-${date}.json`
 const reportName = process.env.QA_BETA_REVIEW_COMMAND_CENTER_REPORT || `beta-human-review-command-center-${date}.md`
 const schedulePath = register.reviewScheduleArtifact || `qa/beta-human-review-schedule-${date}.json`
@@ -195,6 +200,12 @@ addCheck('beta command center exposes the next executable wave', (
   completedReviewCount: completedReviews.length,
   publicLaunchMinimum,
   nextWave,
+})
+
+addCheck('beta command center has no overdue review waves', overdueWaves.length === 0, {
+  today,
+  overdueWaveCount: overdueWaves.length,
+  overdueWaves,
 })
 
 addCheck('beta command center keeps launch blockers explicit', (

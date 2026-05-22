@@ -9,8 +9,8 @@
   "jsonArtifact": "qa/beta-human-review-command-center-2026-05-21.json",
   "reportArtifact": "qa/beta-human-review-command-center-2026-05-21.md",
   "status": "pass",
-  "checked": 4,
-  "passed": 4,
+  "checked": 5,
+  "passed": 5,
   "failed": 0,
   "plannedReviewCount": 25,
   "completedReviewCount": 0,
@@ -231,6 +231,13 @@
           "BETA-HR-005"
         ]
       }
+    },
+    {
+      "name": "beta command center has no overdue review waves",
+      "ok": true,
+      "today": "2026-05-22",
+      "overdueWaveCount": 0,
+      "overdueWaves": []
     },
     {
       "name": "beta command center keeps launch blockers explicit",

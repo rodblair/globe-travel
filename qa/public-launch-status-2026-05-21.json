@@ -96,6 +96,33 @@
         "BETA-HR-005"
       ]
     },
+    "dueSoonWaveCount": 1,
+    "dueSoonWaves": [
+      {
+        "waveId": "BETA-WAVE-01",
+        "kickoffAt": "2026-05-22",
+        "dueAt": "2026-05-25",
+        "daysUntilDue": 3,
+        "status": "open",
+        "scheduledReviewCount": 5,
+        "completedReviewCount": 0,
+        "remainingReviewCount": 5,
+        "reviewerCohorts": [
+          "continuity reviewer",
+          "share-feedback reviewer",
+          "mobile planner reviewer"
+        ],
+        "reviewIds": [
+          "BETA-HR-001",
+          "BETA-HR-002",
+          "BETA-HR-003",
+          "BETA-HR-004",
+          "BETA-HR-005"
+        ]
+      }
+    ],
+    "overdueWaveCount": 0,
+    "overdueWaves": [],
     "nextWaveOpsRowCount": 5,
     "scheduleWaveCount": 5,
     "packetCount": 25,

@@ -7,8 +7,8 @@ Status: pass
 
 ## Result
 
-- Checked: 4
-- Passed: 4
+- Checked: 5
+- Passed: 5
 - Failed: 0
 - Next wave: BETA-WAVE-01
 - Waves covered: 1/5
@@ -71,6 +71,7 @@ You are assigned BETA-HR-005 for the Globe.travel beta review wave BETA-WAVE-01.
 - Pass: next-wave ops inputs are passing and aligned
 - Pass: next-wave ops exposes the expected review scope
 - Pass: next-wave ops has one actionable row per remaining scoped review
+- Pass: next-wave ops due math matches each review due date
 - Pass: next-wave ops CSV includes every scoped review id
 
 ## Failures
