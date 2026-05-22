@@ -44,6 +44,7 @@
     "qa:public-launch-status": "node scripts/platform-public-launch-status.mjs",
     "qa:release-production": "node scripts/platform-production-release-smoke.mjs",
     "qa:production-monitoring": "node scripts/platform-production-monitoring-readiness.mjs",
+    "qa:visual-review-dispatch-outbox": "node scripts/platform-visual-review-dispatch-outbox.mjs",
     "qa:visual-review-intake": "node scripts/platform-visual-review-intake.mjs",
     "qa:visual-review-progress": "node scripts/platform-visual-review-progress.mjs",
     "qa:visual-review-schedule": "node scripts/platform-visual-review-schedule.mjs",

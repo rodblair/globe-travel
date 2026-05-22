@@ -37,6 +37,9 @@ const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/producti
 const visualIntakePath = process.env.QA_VISUAL_REVIEW_INTAKE || 'qa/production-visual-review-intake-2026-05-21.json'
 const visualProgressPath = process.env.QA_VISUAL_REVIEW_PROGRESS || 'qa/production-visual-review-progress-2026-05-21.json'
 const visualSchedulePath = process.env.QA_VISUAL_REVIEW_SCHEDULE || 'qa/production-visual-review-schedule-2026-05-21.md'
+const visualDispatchOutboxPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX || 'qa/production-visual-review-dispatch-outbox-2026-05-21.json'
+const visualDispatchOutboxReportPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_REPORT || 'qa/production-visual-review-dispatch-outbox-2026-05-21.md'
+const visualDispatchOutboxCsvPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_CSV || 'qa/production-visual-review-dispatch-outbox-2026-05-21.csv'
 const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
@@ -457,6 +460,9 @@ const [
   visualIntake,
   visualProgress,
   visualScheduleReport,
+  visualDispatchOutbox,
+  visualDispatchOutboxReport,
+  visualDispatchOutboxCsv,
   monitoringRegister,
   rollbackPlan,
   riskRegister,
@@ -498,6 +504,9 @@ const [
   readJson(visualIntakePath),
   readJson(visualProgressPath),
   readText(visualSchedulePath),
+  readJson(visualDispatchOutboxPath),
+  readText(visualDispatchOutboxReportPath),
+  readText(visualDispatchOutboxCsvPath),
   readJson(monitoringRegisterPath),
   readJson(rollbackPath),
   readJson(riskRegisterPath),
@@ -1338,6 +1347,55 @@ if (visualAssignmentReport.ok && !visualAssignmentReport.text.includes('Public l
   visualQueueIssues.push('visual assignment report does not restate the public-launch visual-history rule')
 }
 
+const visualDispatchOutboxIssues = []
+const visualDispatchOutboxRows = Array.isArray(visualDispatchOutbox.messageRows) ? visualDispatchOutbox.messageRows : []
+const visualDispatchOutboxChecks = Array.isArray(visualDispatchOutbox.messageFileChecks) ? visualDispatchOutbox.messageFileChecks : []
+if (visualDispatchOutbox.status !== 'pass') visualDispatchOutboxIssues.push('visual dispatch outbox status is not pass')
+if (visualDispatchOutbox.progressArtifact && visualDispatchOutbox.progressArtifact !== qaDisplayPath(visualProgressPath)) {
+  visualDispatchOutboxIssues.push(`visual dispatch outbox progress artifact ${visualDispatchOutbox.progressArtifact} does not match ${qaDisplayPath(visualProgressPath)}`)
+}
+if (Number(visualDispatchOutbox.outboxRowCount) !== scheduledVisualReviews.length) {
+  visualDispatchOutboxIssues.push(`visual dispatch outbox row count ${visualDispatchOutbox.outboxRowCount ?? 'missing'} does not match scheduled reviews ${scheduledVisualReviews.length}`)
+}
+if (Number(visualDispatchOutbox.requiredOutboxRowCount) !== visualRemaining) {
+  visualDispatchOutboxIssues.push(`visual dispatch outbox required row count ${visualDispatchOutbox.requiredOutboxRowCount ?? 'missing'} does not match remaining visual dates ${visualRemaining}`)
+}
+if (Number(visualDispatchOutbox.messageFileCount) !== scheduledVisualReviews.length || visualDispatchOutboxChecks.length !== scheduledVisualReviews.length) {
+  visualDispatchOutboxIssues.push('visual dispatch outbox does not include one message file check per scheduled review')
+}
+if (Number(visualDispatchOutbox.overdueCount) > 0) {
+  visualDispatchOutboxIssues.push(`visual dispatch outbox has ${visualDispatchOutbox.overdueCount} overdue scheduled review(s)`)
+}
+for (const review of scheduledVisualReviews) {
+  if (!visualDispatchOutboxCsv.includes(review.id)) visualDispatchOutboxIssues.push(`visual dispatch outbox CSV missing scheduled review ${review.id || 'unknown'}`)
+  if (review.command && !visualDispatchOutboxCsv.includes(review.command)) {
+    visualDispatchOutboxIssues.push(`visual dispatch outbox CSV missing command for ${review.id || 'unknown'}`)
+  }
+}
+for (const row of visualDispatchOutboxRows) {
+  if (!row.id || !visualDispatchOutboxCsv.includes(row.completedSubmissionPath || '')) {
+    visualDispatchOutboxIssues.push(`visual dispatch outbox CSV missing completed submission path for ${row.id || 'unknown'}`)
+  }
+}
+for (const check of visualDispatchOutboxChecks) {
+  if (
+    !check.exists ||
+    !check.hasSubject ||
+    !check.hasCommand ||
+    !check.hasArtifact ||
+    !check.hasTemplate ||
+    !check.hasCompletedSubmission ||
+    !check.hasIntakeCommand ||
+    !check.hasLaunchBoundary
+  ) {
+    visualDispatchOutboxIssues.push(`visual dispatch outbox message file is incomplete for ${check.id || check.messageFile || 'unknown'}`)
+  }
+}
+if (!visualDispatchOutboxReport.includes('Status: pass')) visualDispatchOutboxIssues.push('visual dispatch outbox report is not passing')
+if (!visualDispatchOutboxReport.includes('This dispatch outbox is assignment and outreach evidence, not completed visual-review history')) {
+  visualDispatchOutboxIssues.push('visual dispatch outbox report does not restate the evidence boundary')
+}
+
 const blockerBoardIssues = []
 const blockerBoardRows = Array.isArray(blockerBoard.rows) ? blockerBoard.rows : []
 const blockerBoardBetaRows = blockerBoardRows.filter((row) => row.workType === 'beta-human-review')
@@ -1595,6 +1653,7 @@ if (visualIntake.status !== 'pass') guardrailIssues.push('production visual revi
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
 if (visualQueueIssues.length > 0) guardrailIssues.push('production visual review assignment queue is not fully prepared')
+if (visualDispatchOutboxIssues.length > 0) guardrailIssues.push('production visual review dispatch outbox is not fully prepared')
 if (incompleteAcceptedP2Risks.length > 0) {
   guardrailIssues.push('open accepted P2 launch risks are missing owner, target month, or accepted-risk notes')
 }
@@ -1839,12 +1898,24 @@ const summary = {
     progressIssueCount: visualProgressIssues.length,
     assignmentQueueReady: visualQueueIssues.length === 0,
     assignmentQueueIssueCount: visualQueueIssues.length,
+    dispatchOutboxReady: visualDispatchOutboxIssues.length === 0,
+    dispatchOutboxIssueCount: visualDispatchOutboxIssues.length,
+    dispatchOutboxArtifact: qaDisplayPath(visualDispatchOutboxPath),
+    dispatchOutboxReport: qaDisplayPath(visualDispatchOutboxReportPath),
+    dispatchOutboxCsv: qaDisplayPath(visualDispatchOutboxCsvPath),
+    dispatchOutboxArtifactDir: qaDisplayPath(visualDispatchOutbox.artifactDir),
+    dispatchOutboxRowCount: visualDispatchOutbox.outboxRowCount ?? null,
+    dispatchOutboxRequiredRowCount: visualDispatchOutbox.requiredOutboxRowCount ?? null,
+    dispatchOutboxMessageFileCount: visualDispatchOutbox.messageFileCount ?? null,
+    dispatchOutboxDueSoonCount: visualDispatchOutbox.dueSoonCount ?? null,
+    dispatchOutboxOverdueCount: visualDispatchOutbox.overdueCount ?? null,
     assignmentCsv: qaDisplayPath(visualAssignmentCsvPath),
     assignmentReport: qaDisplayPath(visualAssignmentReportPath),
     submissionTemplateDir: qaDisplayPath(visualSubmissionDir),
     submissionTemplateCount: visualSubmissionTemplateChecks.length,
     progressIssues: visualProgressIssues,
     queueIssues: visualQueueIssues,
+    dispatchOutboxIssues: visualDispatchOutboxIssues,
   },
   publicLaunchBlockerBoard: {
     ready: blockerBoardIssues.length === 0,
@@ -2125,6 +2196,7 @@ const summary = {
   artifacts: {
     betaRegister: qaDisplayPath(betaRegisterPath),
     visualRegister: qaDisplayPath(visualRegisterPath),
+    visualDispatchOutbox: qaDisplayPath(visualDispatchOutboxPath),
     monitoringRegister: qaDisplayPath(monitoringRegisterPath),
     rollbackPlan: qaDisplayPath(rollbackPath),
     riskRegister: qaDisplayPath(riskRegisterPath),
@@ -2185,6 +2257,7 @@ Status: ${status}
 - Latest production visual deployment: ${summary.productionVisualReviews.latestProductionDeploymentUrl || 'missing'}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
+- Production visual review dispatch outbox ready: ${summary.productionVisualReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchOutboxMessageFileCount || 0} message files, ${summary.productionVisualReviews.dispatchOutboxRequiredRowCount || 0} required)
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
@@ -2245,6 +2318,9 @@ ${markdownList(visualProgressIssues)}
 Production visual-review queue:
 ${markdownList(visualQueueIssues)}
 
+Production visual-review dispatch outbox:
+${markdownList(visualDispatchOutboxIssues)}
+
 Public launch blocker board:
 ${markdownList(blockerBoardIssues)}
 
@@ -2286,6 +2362,7 @@ ${markdownList(summary.nextActions)}
 - Visual schedule: \`${summary.productionVisualReviews.scheduleArtifact}\`
 - Visual intake: \`${summary.productionVisualReviews.intakeArtifact}\`
 - Visual assignment board: \`${summary.productionVisualReviews.assignmentReport}\` and \`${summary.productionVisualReviews.assignmentCsv}\`
+- Visual dispatch outbox: \`${summary.productionVisualReviews.dispatchOutboxArtifact}\`, \`${summary.productionVisualReviews.dispatchOutboxReport}\`, \`${summary.productionVisualReviews.dispatchOutboxCsv}\`, and \`${summary.productionVisualReviews.dispatchOutboxArtifactDir}\`
 - Visual submission templates: \`${summary.productionVisualReviews.submissionTemplateDir}\`
 - Monitoring register: \`${summary.artifacts.monitoringRegister}\`
 - Rollback plan: \`${summary.artifacts.rollbackPlan}\`

@@ -2638,6 +2638,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
 
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
+  const visualDispatchOutboxIssues = Array.isArray(visualReviewStatus.dispatchOutboxIssues) ? visualReviewStatus.dispatchOutboxIssues : []
   addCheck('public launch status includes beta review wave browser rehearsal', (
     betaReviewStatus.waveRehearsalReady === true &&
     betaReviewStatus.waveRehearsalStatus === 'pass' &&
@@ -2824,7 +2825,18 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(visualReviewStatus.submissionTemplateDir) &&
     hasMeaningfulText(visualReviewStatus.progressArtifact) &&
     Number(visualReviewStatus.progressIssueCount) === 0 &&
+    visualReviewStatus.dispatchOutboxReady === true &&
+    hasMeaningfulText(visualReviewStatus.dispatchOutboxArtifact) &&
+    hasMeaningfulText(visualReviewStatus.dispatchOutboxReport) &&
+    hasMeaningfulText(visualReviewStatus.dispatchOutboxCsv) &&
+    hasMeaningfulText(visualReviewStatus.dispatchOutboxArtifactDir) &&
+    Number(visualReviewStatus.dispatchOutboxIssueCount) === 0 &&
+    Number(visualReviewStatus.dispatchOutboxRowCount) === Number(visualReviewStatus.scheduledReviewCount || 0) &&
+    Number(visualReviewStatus.dispatchOutboxRequiredRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
+    Number(visualReviewStatus.dispatchOutboxMessageFileCount) === Number(visualReviewStatus.dispatchOutboxRowCount || 0) &&
+    Number(visualReviewStatus.dispatchOutboxOverdueCount) === 0 &&
     visualProgressIssues.length === 0 &&
+    visualDispatchOutboxIssues.length === 0 &&
     visualQueueIssues.length === 0
   ), {
     betaAssignmentQueueReady: betaReviewStatus.assignmentQueueReady ?? null,
@@ -2927,6 +2939,17 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     visualProgressArtifact: visualReviewStatus.progressArtifact ?? null,
     visualProgressIssueCount: visualReviewStatus.progressIssueCount ?? null,
     visualProgressIssues,
+    visualDispatchOutboxReady: visualReviewStatus.dispatchOutboxReady ?? null,
+    visualDispatchOutboxIssueCount: visualReviewStatus.dispatchOutboxIssueCount ?? null,
+    visualDispatchOutboxArtifact: visualReviewStatus.dispatchOutboxArtifact ?? null,
+    visualDispatchOutboxReport: visualReviewStatus.dispatchOutboxReport ?? null,
+    visualDispatchOutboxCsv: visualReviewStatus.dispatchOutboxCsv ?? null,
+    visualDispatchOutboxArtifactDir: visualReviewStatus.dispatchOutboxArtifactDir ?? null,
+    visualDispatchOutboxRowCount: visualReviewStatus.dispatchOutboxRowCount ?? null,
+    visualDispatchOutboxRequiredRowCount: visualReviewStatus.dispatchOutboxRequiredRowCount ?? null,
+    visualDispatchOutboxMessageFileCount: visualReviewStatus.dispatchOutboxMessageFileCount ?? null,
+    visualDispatchOutboxOverdueCount: visualReviewStatus.dispatchOutboxOverdueCount ?? null,
+    visualDispatchOutboxIssues,
     visualQueueIssues,
   })
 

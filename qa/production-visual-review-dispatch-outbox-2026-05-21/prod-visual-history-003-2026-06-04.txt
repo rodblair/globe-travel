@@ -1,0 +1,36 @@
+Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04
+
+You are assigned PROD-VISUAL-HISTORY-003, a scheduled Globe.travel production visual review for 2026-06-04.
+
+Run command:
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production
+
+Expected artifact:
+qa/visual-baseline-production-review-2026-06-04
+
+Submission template:
+qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json
+
+Completed submission filename:
+qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json
+
+Acceptance criteria:
+Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.
+
+Reviewer checklist:
+- Run the production visual command on or after 2026-06-04.
+- Review all 20 screenshots across landing, login, signup, public-share and phone, tablet, laptop, desktop, wide.
+- Confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs.
+- Replace production commit and deployment placeholders with the current /api/health deployment metadata.
+- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json.
+- Validate with npm run qa:visual-review-intake before import.
+
+Operator checklist:
+- Assign a named visual reviewer and record their contact outside this repo.
+- Send this message file, the command, and the submission template path to the reviewer.
+- Confirm the review is not imported until screenshots have actually been inspected.
+- Import only after validation is clean: QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.
+- Re-run npm run qa:visual-review-progress, npm run qa:public-launch-status, and npm run qa:launch-signoff after import.
+
+Launch rule:
+This message is visual-review outreach, not completed visual-review history. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported into reviewHistory.

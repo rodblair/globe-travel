@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: bc6e9890e0b761538c138636d4f11428748a35b4
-- Production deployment: globe-travel-8v7u1dnvs-rodney-blairs-projects.vercel.app
+- Production commit: 7dc0fabaec1a55846f84dbef62d188a875ed4bbb
+- Production deployment: globe-travel-7prjrftcj-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -31,11 +31,12 @@ Status: beta-ready-public-blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-release-2026-05-22-bc6e989
-- Latest production visual commit: bc6e9890e0b761538c138636d4f11428748a35b4
-- Latest production visual deployment: globe-travel-8v7u1dnvs-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-release-2026-05-22-7dc0fab
+- Latest production visual commit: 7dc0fabaec1a55846f84dbef62d188a875ed4bbb
+- Latest production visual deployment: globe-travel-7prjrftcj-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
+- Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
@@ -97,6 +98,9 @@ Production visual-review progress:
 Production visual-review queue:
 - none
 
+Production visual-review dispatch outbox:
+- none
+
 Public launch blocker board:
 - none
 
@@ -135,10 +139,11 @@ Public share map/itinerary integrity:
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-release-2026-05-22-bc6e989` and `qa/visual-baseline-production-release-2026-05-22-bc6e989/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-release-2026-05-22-7dc0fab` and `qa/visual-baseline-production-release-2026-05-22-7dc0fab/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
+- Visual dispatch outbox: `qa/production-visual-review-dispatch-outbox-2026-05-21.json`, `qa/production-visual-review-dispatch-outbox-2026-05-21.md`, `qa/production-visual-review-dispatch-outbox-2026-05-21.csv`, and `qa/production-visual-review-dispatch-outbox-2026-05-21`
 - Visual submission templates: `qa/production-visual-review-submissions-2026-05-21`
 - Monitoring register: `qa/production-monitoring-register.json`
 - Rollback plan: `qa/launch-rollback-plan.json`
