@@ -3,7 +3,7 @@
 Date: 2026-05-22
 Design context: `.impeccable.md`
 Responsive visual artifact: `qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json`
-Production visual artifact: `qa/visual-baseline-production-route-inventory-2026-05-22-5d6e9a/summary.json`
+Production visual artifact: `qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/summary.json`
 
 ## Result
 

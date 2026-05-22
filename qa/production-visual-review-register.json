@@ -97,10 +97,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-route-inventory-2026-05-22-5d6e9a",
-    "summaryArtifact": "qa/visual-baseline-production-route-inventory-2026-05-22-5d6e9a/summary.json",
-    "productionCommit": "5d6e9a0935ddd49d4bad86a7f88ed1111e24b9ef",
-    "deploymentUrl": "globe-travel-2qm8wuinv-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81",
+    "summaryArtifact": "qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/summary.json",
+    "productionCommit": "ead2d81425eaef5f38dd81a95d469d5a1bc0e301",
+    "deploymentUrl": "globe-travel-m4cdqdg6m-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -123,7 +123,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live 5d6e9a deployment after the full route-inventory launch gate deploy. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live ead2d81 deployment after the authenticated app-surface launch gate deploy. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {

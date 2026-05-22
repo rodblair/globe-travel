@@ -2,6 +2,26 @@
 
 Date: 2026-05-21
 
+## Authenticated App Surface Gate Postdeploy Evidence
+
+Commit `ead2d81425eaef5f38dd81a95d469d5a1bc0e301` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-m4cdqdg6m-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Production auth and guest access: `13/13`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81/`
+- Authenticated app surfaces smoke: `18/18`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Public launch status includes full route inventory and authenticated app surfaces with no guardrail issues.
+- Current production commit: `ead2d81425eaef5f38dd81a95d469d5a1bc0e301`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Full Route Inventory Gate Postdeploy Evidence
 
 Commit `5d6e9a0935ddd49d4bad86a7f88ed1111e24b9ef` deployed to Vercel production on 2026-05-22.
