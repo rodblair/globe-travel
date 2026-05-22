@@ -16,6 +16,7 @@ Status: beta-ready-public-blocked
 - Beta review execution schedule ready: yes
 - Beta review command center ready: yes
 - Beta review next-wave ops ready: yes
+- Beta review wave rehearsal ready: yes (5/5)
 - Production visual review history: 2/4
 - Latest production visual artifact: qa/visual-baseline-production-app-surfaces-2026-05-22-ead2d81
 - Latest production visual commit: ead2d81425eaef5f38dd81a95d469d5a1bc0e301
@@ -60,6 +61,9 @@ Beta human-review command center:
 Beta human-review next-wave ops:
 - none
 
+Beta human-review wave rehearsal:
+- none
+
 Production visual-review progress:
 - none
 
@@ -90,6 +94,7 @@ Authenticated app surfaces:
 - Beta execution schedule: `qa/beta-human-review-schedule-2026-05-21.json`, `qa/beta-human-review-schedule-2026-05-21.md`, and `qa/beta-human-review-schedule-assignments-2026-05-21.csv`
 - Beta command center: `qa/beta-human-review-command-center-2026-05-21.json` and `qa/beta-human-review-command-center-2026-05-21.md`
 - Beta next-wave ops: `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `qa/beta-human-review-next-wave-ops-2026-05-21.md`, and `qa/beta-human-review-next-wave-ops-2026-05-21.csv`
+- Beta wave rehearsal: `qa/beta-human-review-wave-rehearsal-2026-05-22.json` and `qa/beta-human-review-wave-rehearsal-2026-05-22.md`
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`

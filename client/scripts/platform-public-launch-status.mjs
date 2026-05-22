@@ -16,6 +16,9 @@ const betaCommandCenterReportPath = process.env.QA_BETA_REVIEW_COMMAND_CENTER_RE
 const betaNextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
 const betaNextWaveOpsReportPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_REPORT || 'qa/beta-human-review-next-wave-ops-2026-05-21.md'
 const betaNextWaveOpsCsvPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || 'qa/beta-human-review-next-wave-ops-2026-05-21.csv'
+const betaWaveRehearsalPath = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
+  process.env.QA_LAUNCH_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
+  'qa/beta-human-review-wave-rehearsal-2026-05-22.json'
 const betaProgressPath = process.env.QA_BETA_REVIEW_PROGRESS || 'qa/beta-human-review-progress-2026-05-21.json'
 const betaIntakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
@@ -414,6 +417,7 @@ const [
   betaNextWaveOps,
   betaNextWaveOpsReport,
   betaNextWaveOpsCsv,
+  betaWaveRehearsal,
   betaProgress,
   betaIntake,
   visualRegister,
@@ -444,6 +448,7 @@ const [
   readJson(betaNextWaveOpsPath),
   readText(betaNextWaveOpsReportPath),
   readText(betaNextWaveOpsCsvPath),
+  readJson(betaWaveRehearsalPath),
   readJson(betaProgressPath),
   readJson(betaIntakePath),
   readJson(visualRegisterPath),
@@ -911,6 +916,53 @@ if (!betaNextWaveOpsReport.includes('This next-wave ops pack is an assignment an
   betaNextWaveOpsIssues.push('beta next-wave ops report does not restate the evidence boundary')
 }
 
+const betaWaveRehearsalIssues = []
+const betaWaveRehearsalResults = Array.isArray(betaWaveRehearsal.results) ? betaWaveRehearsal.results : []
+const betaWaveRehearsalFailures = Array.isArray(betaWaveRehearsal.failures) ? betaWaveRehearsal.failures : []
+const betaWaveReviewIds = Array.isArray(betaNextWave?.reviewIds) ? betaNextWave.reviewIds : betaNextWaveOpsRows.map((row) => row.id).filter(Boolean)
+const betaWaveRehearsalResultIds = betaWaveRehearsalResults.map((result) => result.id).filter(Boolean)
+const missingBetaWaveRehearsalResults = missingFrom(betaWaveRehearsalResultIds, betaWaveReviewIds)
+const badBetaWaveRehearsalResults = betaWaveRehearsalResults.filter((result) => result.ok !== true)
+const betaWaveRehearsalScreenshotChecks = await Promise.all(betaWaveRehearsalResults.map(async (result) => {
+  const screenshot = result.start?.screenshot || result.screenshot || ''
+  return {
+    id: result.id || null,
+    screenshot,
+    exists: hasText(screenshot) ? await exists(screenshot) : false,
+  }
+}))
+const missingBetaWaveRehearsalScreenshots = betaWaveRehearsalScreenshotChecks
+  .filter((check) => !check.exists)
+  .map((check) => `${check.id || 'unknown'}:${check.screenshot || 'missing screenshot'}`)
+if (betaWaveRehearsal.status !== 'pass') betaWaveRehearsalIssues.push('beta wave rehearsal status is not pass')
+if (betaWaveRehearsal.nonMutating !== true) betaWaveRehearsalIssues.push('beta wave rehearsal must be non-mutating by default')
+if (betaWaveRehearsal.remoteGuestStartExercised !== false) betaWaveRehearsalIssues.push('beta wave rehearsal must not exercise remote guest start by default')
+if (qaDisplayPath(betaWaveRehearsal.nextWaveOpsArtifact) !== qaDisplayPath(betaNextWaveOpsPath)) {
+  betaWaveRehearsalIssues.push('beta wave rehearsal does not reference current next-wave ops artifact')
+}
+if (betaWaveRehearsal.nextWave?.waveId !== betaNextWave?.waveId) {
+  betaWaveRehearsalIssues.push(`beta wave rehearsal wave ${betaWaveRehearsal.nextWave?.waveId || 'missing'} does not match ${betaNextWave?.waveId || 'missing'}`)
+}
+if (Number(betaWaveRehearsal.expectedReviewCount) !== betaWaveReviewIds.length) {
+  betaWaveRehearsalIssues.push(`beta wave rehearsal expected ${betaWaveRehearsal.expectedReviewCount ?? 'missing'} reviews but current wave has ${betaWaveReviewIds.length}`)
+}
+if (Number(betaWaveRehearsal.checked) < betaWaveReviewIds.length) {
+  betaWaveRehearsalIssues.push(`beta wave rehearsal checked ${betaWaveRehearsal.checked ?? 'missing'} reviews but expected at least ${betaWaveReviewIds.length}`)
+}
+if (Number(betaWaveRehearsal.failed) !== 0 || betaWaveRehearsalFailures.length > 0) {
+  betaWaveRehearsalIssues.push('beta wave rehearsal has failing reviewer start URLs or packet/template checks')
+}
+for (const id of missingBetaWaveRehearsalResults) {
+  betaWaveRehearsalIssues.push(`beta wave rehearsal missing result for ${id}`)
+}
+for (const result of badBetaWaveRehearsalResults) {
+  betaWaveRehearsalIssues.push(`beta wave rehearsal ${result.id || 'unknown'} failed: ${(result.issues || []).join('; ') || 'unknown issue'}`)
+}
+for (const screenshot of missingBetaWaveRehearsalScreenshots) {
+  betaWaveRehearsalIssues.push(`beta wave rehearsal screenshot missing for ${screenshot}`)
+}
+const betaWaveRehearsalReady = betaWaveRehearsalIssues.length === 0
+
 const visualQueueIssues = []
 for (const file of visualSubmissionTemplateChecks.filter((file) => !file.ok)) {
   visualQueueIssues.push(`visual submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
@@ -1153,6 +1205,7 @@ if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignme
 if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execution schedule is not fully prepared')
 if (betaCommandCenterIssues.length > 0) guardrailIssues.push('beta human review command center is not fully prepared')
 if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review next-wave ops pack is not fully prepared')
+if (!betaWaveRehearsalReady) guardrailIssues.push('beta human review next-wave browser rehearsal is not passing')
 if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
@@ -1258,6 +1311,21 @@ const summary = {
     nextWaveOpsArtifact: qaDisplayPath(betaNextWaveOpsPath),
     nextWaveOpsReport: qaDisplayPath(betaNextWaveOpsReportPath),
     nextWaveOpsCsv: qaDisplayPath(betaNextWaveOpsCsvPath),
+    waveRehearsalArtifact: qaDisplayPath(betaWaveRehearsalPath),
+    waveRehearsalReport: qaDisplayPath(betaWaveRehearsal.reportArtifact),
+    waveRehearsalArtifactDir: qaDisplayPath(betaWaveRehearsal.artifactDir),
+    waveRehearsalReady: betaWaveRehearsalReady,
+    waveRehearsalStatus: betaWaveRehearsal.status || null,
+    waveRehearsalIssueCount: betaWaveRehearsalIssues.length,
+    waveRehearsalChecked: betaWaveRehearsal.checked ?? null,
+    waveRehearsalPassed: betaWaveRehearsal.passed ?? null,
+    waveRehearsalFailed: betaWaveRehearsal.failed ?? null,
+    waveRehearsalNonMutating: betaWaveRehearsal.nonMutating ?? null,
+    waveRehearsalRemoteGuestStartExercised: betaWaveRehearsal.remoteGuestStartExercised ?? null,
+    waveRehearsalScreenshotCount: betaWaveRehearsalScreenshotChecks.length,
+    waveRehearsalMissingResults: missingBetaWaveRehearsalResults,
+    waveRehearsalMissingScreenshots: missingBetaWaveRehearsalScreenshots,
+    waveRehearsalIssues: betaWaveRehearsalIssues,
     nextWave: betaCommandCenter.nextWave || null,
     nextWaveOpsRowCount: betaNextWaveOpsRows.length,
     scheduleWaveCount: scheduleWaveIds.length,
@@ -1511,6 +1579,7 @@ const summary = {
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
     routeInventory: qaDisplayPath(routeInventoryPath),
     appSurfaces: qaDisplayPath(appSurfacesPath),
+    betaWaveRehearsal: qaDisplayPath(betaWaveRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -1534,6 +1603,7 @@ Status: ${status}
 - Beta review execution schedule ready: ${summary.betaHumanReviews.executionScheduleReady ? 'yes' : 'no'}
 - Beta review command center ready: ${summary.betaHumanReviews.commandCenterReady ? 'yes' : 'no'}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
+- Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
 - Latest production visual artifact: ${summary.productionVisualReviews.latestProductionArtifact || 'missing'}
 - Latest production visual commit: ${summary.productionVisualReviews.latestProductionCommit || 'missing'}
@@ -1577,6 +1647,9 @@ ${markdownList(betaCommandCenterIssues)}
 Beta human-review next-wave ops:
 ${markdownList(betaNextWaveOpsIssues)}
 
+Beta human-review wave rehearsal:
+${markdownList(betaWaveRehearsalIssues)}
+
 Production visual-review progress:
 ${markdownList(visualProgressIssues)}
 
@@ -1606,6 +1679,7 @@ ${markdownList(summary.nextActions)}
 - Beta execution schedule: \`${summary.betaHumanReviews.scheduleArtifact}\`, \`${summary.betaHumanReviews.scheduleReport}\`, and \`${summary.betaHumanReviews.scheduleCsv}\`
 - Beta command center: \`${summary.betaHumanReviews.commandCenterArtifact}\` and \`${summary.betaHumanReviews.commandCenterReport}\`
 - Beta next-wave ops: \`${summary.betaHumanReviews.nextWaveOpsArtifact}\`, \`${summary.betaHumanReviews.nextWaveOpsReport}\`, and \`${summary.betaHumanReviews.nextWaveOpsCsv}\`
+- Beta wave rehearsal: \`${summary.betaHumanReviews.waveRehearsalArtifact}\` and \`${summary.betaHumanReviews.waveRehearsalReport}\`
 - Public launch blocker board: \`${summary.publicLaunchBlockerBoard.report}\`, \`${summary.publicLaunchBlockerBoard.csv}\`, and \`${summary.publicLaunchBlockerBoard.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`

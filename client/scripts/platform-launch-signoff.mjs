@@ -48,6 +48,10 @@ const betaHumanReviewNextWaveOpsReport =
 const betaHumanReviewNextWaveOpsCsv =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_NEXT_WAVE_OPS_CSV ||
   'qa/beta-human-review-next-wave-ops-2026-05-21.csv'
+const betaHumanReviewWaveRehearsal =
+  process.env.QA_LAUNCH_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
+  process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
+  'qa/beta-human-review-wave-rehearsal-2026-05-22.json'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -733,6 +737,7 @@ async function checkRequiredDocs(productionHealth) {
     `${Number(betaStatus.remaining ?? 0)} remaining`,
     betaStatus.nextWave?.waveId,
     betaStatus.nextWaveOpsArtifact,
+    betaStatus.waveRehearsalArtifact,
     publicStatus?.publicLaunchBlockerBoard?.artifact,
     `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
@@ -2311,6 +2316,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaScheduleIssues = Array.isArray(betaReviewStatus.scheduleIssues) ? betaReviewStatus.scheduleIssues : []
   const betaCommandCenterIssues = Array.isArray(betaReviewStatus.commandCenterIssues) ? betaReviewStatus.commandCenterIssues : []
   const betaNextWaveOpsIssues = Array.isArray(betaReviewStatus.nextWaveOpsIssues) ? betaReviewStatus.nextWaveOpsIssues : []
+  const betaWaveRehearsalIssues = Array.isArray(betaReviewStatus.waveRehearsalIssues) ? betaReviewStatus.waveRehearsalIssues : []
   const blockerBoardStatus = status.publicLaunchBlockerBoard || {}
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
   const routeInventoryStatus = status.routeInventory || {}
@@ -2433,11 +2439,41 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
 
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
+  addCheck('public launch status includes beta review wave browser rehearsal', (
+    betaReviewStatus.waveRehearsalReady === true &&
+    betaReviewStatus.waveRehearsalStatus === 'pass' &&
+    betaReviewStatus.waveRehearsalArtifact === betaHumanReviewWaveRehearsal &&
+    hasMeaningfulText(betaReviewStatus.waveRehearsalReport) &&
+    hasMeaningfulText(betaReviewStatus.waveRehearsalArtifactDir) &&
+    Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    Number(betaReviewStatus.waveRehearsalPassed) >= Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    Number(betaReviewStatus.waveRehearsalFailed) === 0 &&
+    betaReviewStatus.waveRehearsalNonMutating === true &&
+    betaReviewStatus.waveRehearsalRemoteGuestStartExercised === false &&
+    Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
+    betaWaveRehearsalIssues.length === 0
+  ), {
+    betaWaveRehearsalArtifact: betaReviewStatus.waveRehearsalArtifact || null,
+    expectedBetaWaveRehearsalArtifact: betaHumanReviewWaveRehearsal,
+    betaWaveRehearsalReport: betaReviewStatus.waveRehearsalReport || null,
+    betaWaveRehearsalArtifactDir: betaReviewStatus.waveRehearsalArtifactDir || null,
+    betaWaveRehearsalReady: betaReviewStatus.waveRehearsalReady ?? null,
+    betaWaveRehearsalStatus: betaReviewStatus.waveRehearsalStatus || null,
+    betaWaveRehearsalChecked: betaReviewStatus.waveRehearsalChecked ?? null,
+    betaWaveRehearsalPassed: betaReviewStatus.waveRehearsalPassed ?? null,
+    betaWaveRehearsalFailed: betaReviewStatus.waveRehearsalFailed ?? null,
+    betaWaveRehearsalNonMutating: betaReviewStatus.waveRehearsalNonMutating ?? null,
+    betaWaveRehearsalRemoteGuestStartExercised: betaReviewStatus.waveRehearsalRemoteGuestStartExercised ?? null,
+    betaWaveRehearsalIssueCount: betaReviewStatus.waveRehearsalIssueCount ?? null,
+    betaWaveRehearsalIssues,
+  })
+
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     betaReviewStatus.executionScheduleReady === true &&
     betaReviewStatus.commandCenterReady === true &&
     betaReviewStatus.nextWaveOpsReady === true &&
+    betaReviewStatus.waveRehearsalReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
     Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
     hasMeaningfulText(betaReviewStatus.packetManifest) &&
@@ -2453,12 +2489,16 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.nextWaveOpsCsv) &&
     Number(betaReviewStatus.nextWaveOpsIssueCount) === 0 &&
     Number(betaReviewStatus.nextWaveOpsRowCount) === Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
+    Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
+    betaReviewStatus.waveRehearsalNonMutating === true &&
     hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
     betaScheduleIssues.length === 0 &&
     betaCommandCenterIssues.length === 0 &&
     betaNextWaveOpsIssues.length === 0 &&
+    betaWaveRehearsalIssues.length === 0 &&
     blockerBoardStatus.ready === true &&
     hasMeaningfulText(blockerBoardStatus.artifact) &&
     hasMeaningfulText(blockerBoardStatus.report) &&
@@ -2502,6 +2542,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaNextWaveOpsReport: betaReviewStatus.nextWaveOpsReport ?? null,
     betaNextWaveOpsCsv: betaReviewStatus.nextWaveOpsCsv ?? null,
     betaNextWaveOpsRowCount: betaReviewStatus.nextWaveOpsRowCount ?? null,
+    betaWaveRehearsalReady: betaReviewStatus.waveRehearsalReady ?? null,
+    betaWaveRehearsalArtifact: betaReviewStatus.waveRehearsalArtifact ?? null,
+    betaWaveRehearsalIssueCount: betaReviewStatus.waveRehearsalIssueCount ?? null,
+    betaWaveRehearsalChecked: betaReviewStatus.waveRehearsalChecked ?? null,
     blockerBoardReady: blockerBoardStatus.ready ?? null,
     blockerBoardArtifact: blockerBoardStatus.artifact ?? null,
     blockerBoardReport: blockerBoardStatus.report ?? null,
@@ -2520,6 +2564,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaScheduleIssues,
     betaCommandCenterIssues,
     betaNextWaveOpsIssues,
+    betaWaveRehearsalIssues,
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,
@@ -2782,6 +2827,7 @@ const summary = {
   accessibilityArtifact,
   plannerActualsArtifact,
   betaHumanReviewRegister,
+  betaHumanReviewWaveRehearsal,
   productionEvidence,
   visualReviewRegister,
   productionMonitoringRegister,
