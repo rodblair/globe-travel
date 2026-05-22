@@ -57,9 +57,13 @@ function rowsToCsv(rows) {
     'blockerId',
     'workType',
     'id',
+    'sendBy',
+    'followUpAt',
     'dueAt',
     'owner',
     'reviewerRole',
+    'dispatchStatus',
+    'timeboxMinutes',
     'status',
     'action',
     'urlOrCommand',
@@ -79,11 +83,15 @@ function betaRows(betaOps) {
     blockerId: 'beta-human-review-threshold',
     workType: 'beta-human-review',
     id: row.id,
+    sendBy: row.sendBy,
+    followUpAt: row.followUpAt,
     dueAt: row.dueAt,
     owner: 'Product',
     reviewerRole: row.reviewerRole || row.reviewerCohort || '',
+    dispatchStatus: row.dispatchStatus || '',
+    timeboxMinutes: row.timeboxMinutes ?? '',
     status: 'needs completed review submission',
-    action: `Complete ${row.id} using ${row.device} ${row.viewport}, then validate intake.`,
+    action: `Send ${row.id} by ${row.sendBy}, follow up by ${row.followUpAt}, then validate completed intake.`,
     urlOrCommand: row.startUrl,
     packetOrArtifact: row.packetPath,
     submissionPath: row.completedSubmissionPath,
@@ -96,6 +104,8 @@ function betaRows(betaOps) {
       submissionTemplatePath: row.submissionTemplatePath,
       completedSubmissionPath: row.completedSubmissionPath,
       messageSubject: row.messageSubject,
+      reviewerChecklist: row.reviewerChecklist || [],
+      operatorChecklist: row.operatorChecklist || [],
     },
   }))
 }
@@ -108,9 +118,13 @@ function visualRows(visualRegister, visualRemaining) {
     blockerId: 'production-visual-review-history',
     workType: 'production-visual-review',
     id: review.id,
+    sendBy: '',
+    followUpAt: '',
     dueAt: review.dueAt,
     owner: review.owner || 'Product',
     reviewerRole: review.reviewerRole || 'visual QA reviewer',
+    dispatchStatus: review.status || 'planned',
+    timeboxMinutes: '',
     status: index < visualRemaining ? 'required for public launch history' : 'scheduled buffer review',
     action: `Run production visual review ${review.id}, inspect screenshots, then validate intake.`,
     urlOrCommand: review.command,
@@ -171,6 +185,16 @@ const missingRowEvidence = rowEvidenceChecks.filter((row) => (
   !row.hasValidationCommand ||
   !row.hasImportCommand
 ))
+const betaRowsMissingDispatchOps = betaWorkRows.filter((row) => (
+  !hasText(row.sendBy) ||
+  !hasText(row.followUpAt) ||
+  row.dispatchStatus !== 'prepared-not-sent' ||
+  !Number.isFinite(Number(row.timeboxMinutes)) ||
+  !Array.isArray(row.source?.reviewerChecklist) ||
+  row.source.reviewerChecklist.length < 6 ||
+  !Array.isArray(row.source?.operatorChecklist) ||
+  row.source.operatorChecklist.length < 6
+))
 
 const checks = []
 function addCheck(name, ok, detail = {}) {
@@ -197,7 +221,15 @@ addCheck('public launch blocker board covers all remaining beta review rows', (
   Number(betaAllWaveOps.operatorRowCount) === betaWorkRows.length &&
   betaWorkRows.length === Number(betaStatus.remaining || 0) &&
   Number(betaAllWaveOps.operatorWaveCount) >= Number(betaStatus.scheduleWaveCount || 0) &&
-  betaWorkRows.every((row) => hasText(row.urlOrCommand) && hasText(row.packetOrArtifact) && hasText(row.submissionPath) && !row.submissionPath.endsWith('.template.json'))
+  betaWorkRows.every((row) => (
+    hasText(row.urlOrCommand) &&
+    hasText(row.packetOrArtifact) &&
+    hasText(row.submissionPath) &&
+    !row.submissionPath.endsWith('.template.json') &&
+    hasText(row.sendBy) &&
+    hasText(row.followUpAt) &&
+    row.dispatchStatus === 'prepared-not-sent'
+  ))
 ), {
   betaNextWaveOpsStatus: betaNextWaveOps.status || null,
   betaAllWaveOpsStatus: betaAllWaveOps.status || null,
@@ -206,6 +238,14 @@ addCheck('public launch blocker board covers all remaining beta review rows', (
   expectedRemainingBetaReviews: betaStatus.remaining ?? null,
   betaAllWaveOpsWaveCount: betaAllWaveOps.operatorWaveCount ?? null,
   scheduleWaveCount: betaStatus.scheduleWaveCount ?? null,
+})
+
+addCheck('public launch blocker board exposes beta dispatch operations', (
+  betaWorkRows.length > 0 &&
+  betaRowsMissingDispatchOps.length === 0
+), {
+  rowsMissingDispatchOps: betaRowsMissingDispatchOps.map((row) => row.id || '(missing id)'),
+  betaDispatchRowCount: betaWorkRows.length,
 })
 
 addCheck('public launch blocker board covers scheduled visual history work', (
@@ -281,7 +321,11 @@ function markdownRowDetail(row) {
     return [
       `### ${row.id}: ${row.source?.messageSubject || row.id}`,
       '',
+      `- Dispatch status: ${row.dispatchStatus || 'missing'}`,
+      `- Send by: ${row.sendBy || 'missing'}`,
+      `- Follow up: ${row.followUpAt || 'missing'}`,
       `- Due: ${row.dueAt}`,
+      `- Timebox: ${row.timeboxMinutes || 'missing'} minutes`,
       `- Reviewer role: ${row.reviewerRole || 'missing'}`,
       `- Start URL: ${row.source?.startUrl || 'missing'}`,
       `- Packet: \`${row.source?.packetPath || 'missing'}\``,
@@ -290,6 +334,12 @@ function markdownRowDetail(row) {
       `- Validate: \`${row.validationCommand}\``,
       `- Import when clean: \`${row.importCommand}\``,
       `- Rule: ${row.evidenceRule}`,
+      '',
+      'Reviewer checklist:',
+      markdownList(row.source?.reviewerChecklist || []),
+      '',
+      'Operator checklist:',
+      markdownList(row.source?.operatorChecklist || []),
     ].join('\n')
   }
 
@@ -332,9 +382,9 @@ Status: ${summary.status}
 
 ## Work Rows
 
-| Blocker | Type | ID | Due | Owner | Status | Evidence Path |
-| --- | --- | --- | --- | --- | --- | --- |
-${rows.map((row) => `| ${row.blockerId} | ${row.workType} | ${row.id} | ${row.dueAt} | ${row.owner} | ${row.status} | \`${row.submissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none |'}
+| Blocker | Type | ID | Send By | Follow Up | Due | Owner | Dispatch | Status | Evidence Path |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${rows.map((row) => `| ${row.blockerId} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.followUpAt || 'n/a'} | ${row.dueAt} | ${row.owner} | ${row.dispatchStatus || 'n/a'} | ${row.status} | \`${row.submissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none | none | none | none |'}
 
 ## Next Evidence Actions
 
@@ -343,6 +393,7 @@ ${rows.map(markdownRowDetail).join('\n\n') || '- none'}
 ## Operator Rules
 
 - Beta review rows are outreach assignments, not completed review evidence.
+- Beta rows marked \`prepared-not-sent\` must be sent by \`sendBy\`, followed up by \`followUpAt\`, and then imported only after completed human evidence arrives.
 - Production visual rows are scheduled review work, not completed visual history.
 - Keep template files unchanged; completed evidence must be non-template JSON.
 - Validate beta evidence with \`npm run qa:beta-review-intake\`; import only with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\`.
