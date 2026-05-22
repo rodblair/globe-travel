@@ -100,14 +100,14 @@
   },
   "latestVerification": {
     "verifiedAt": "2026-05-22",
-    "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-22 npm run qa:release-production",
+    "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-22-2897c3a npm run qa:release-production",
     "relatedCommands": [
       "QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:studio-recovery-ui",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share-viral",
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-22 npm run qa:release-production",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-05-22-2897c3a npm run qa:release-production",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=b635e5bce19319306d7f3103dcc5c552774ba811 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=2897c3a16d72c49852ace8763f0840972a647f31 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "b635e5bce19319306d7f3103dcc5c552774ba811"
+    "expectedLiveCommit": "2897c3a16d72c49852ace8763f0840972a647f31"
   }
 }

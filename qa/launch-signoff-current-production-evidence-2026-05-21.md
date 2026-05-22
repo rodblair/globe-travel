@@ -2,6 +2,25 @@
 
 Date: 2026-05-21
 
+## Public Share Copy Feedback Fix Postdeploy Evidence
+
+Commit `2897c3a16d72c49852ace8763f0840972a647f31` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-dhghg8wn2-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Production auth and guest access: `13/13`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-release-2026-05-22-2897c3a/`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Public launch status remains `beta-ready-public-blocked` with no guardrail issues.
+- Current production commit: `2897c3a16d72c49852ace8763f0840972a647f31`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Full Beta Review Matrix Rehearsal Gate Postdeploy Evidence
 
 Commit `b635e5bce19319306d7f3103dcc5c552774ba811` deployed to Vercel production on 2026-05-22.

@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: b635e5bce19319306d7f3103dcc5c552774ba811
-- Production deployment: globe-travel-6rqed3a1p-rodney-blairs-projects.vercel.app
+- Production commit: 2897c3a16d72c49852ace8763f0840972a647f31
+- Production deployment: globe-travel-dhghg8wn2-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -20,9 +20,9 @@ Status: beta-ready-public-blocked
 - Beta review wave rehearsal ready: yes (5/5)
 - Beta review matrix rehearsal ready: yes (25/25)
 - Production visual review history: 2/4
-- Latest production visual artifact: qa/visual-baseline-production-release-2026-05-22
-- Latest production visual commit: b635e5bce19319306d7f3103dcc5c552774ba811
-- Latest production visual deployment: globe-travel-6rqed3a1p-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-release-2026-05-22-2897c3a
+- Latest production visual commit: 2897c3a16d72c49852ace8763f0840972a647f31
+- Latest production visual deployment: globe-travel-dhghg8wn2-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
@@ -112,7 +112,7 @@ Production authenticated app surfaces:
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-release-2026-05-22` and `qa/visual-baseline-production-release-2026-05-22/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-release-2026-05-22-2897c3a` and `qa/visual-baseline-production-release-2026-05-22-2897c3a/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
