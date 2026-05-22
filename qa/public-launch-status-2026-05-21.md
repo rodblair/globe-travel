@@ -11,7 +11,9 @@ Status: beta-ready-public-blocked
 - Production commit: 539506d829bdc4b7c66cb546e39b92a925e098e0
 - Production deployment: globe-travel-7sx1pv1h0-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
+- Beta review assignment queue ready: yes
 - Production visual review history: 1/4
+- Production visual review assignment queue ready: yes
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
 
@@ -24,6 +26,14 @@ Status: beta-ready-public-blocked
 
 - none
 
+## Evidence Queue Issues
+
+Beta human-review queue:
+- none
+
+Production visual-review queue:
+- none
+
 ## Next Actions
 
 - Collect and import 25 completed beta review submission(s).
@@ -34,9 +44,13 @@ Status: beta-ready-public-blocked
 - Beta register: `qa/beta-human-review-register.json`
 - Beta progress: `qa/beta-human-review-progress-2026-05-21.json`
 - Beta intake: `qa/beta-human-review-intake-2026-05-21.json`
+- Beta packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
+- Beta assignment board: `qa/beta-human-review-assignments-2026-05-21.md` and `qa/beta-human-review-assignments-2026-05-21.csv`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
+- Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
+- Visual submission templates: `qa/production-visual-review-submissions-2026-05-21`
 - Monitoring register: `qa/production-monitoring-register.json`
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`

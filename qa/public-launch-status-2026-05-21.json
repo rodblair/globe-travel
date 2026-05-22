@@ -18,7 +18,15 @@
     "minimumForPublicLaunch": 25,
     "remaining": 25,
     "progressArtifact": "qa/beta-human-review-progress-2026-05-21.json",
-    "intakeArtifact": "qa/beta-human-review-intake-2026-05-21.json"
+    "intakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
+    "assignmentQueueReady": true,
+    "assignmentQueueIssueCount": 0,
+    "packetManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
+    "packetCount": 25,
+    "assignmentCsv": "qa/beta-human-review-assignments-2026-05-21.csv",
+    "assignmentReport": "qa/beta-human-review-assignments-2026-05-21.md",
+    "submissionTemplateCount": 25,
+    "queueIssues": []
   },
   "productionVisualReviews": {
     "historyCount": 1,
@@ -28,7 +36,14 @@
     "scheduledReviewCount": 3,
     "nextReviewDueAt": "2026-05-28",
     "intakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
-    "scheduleArtifact": "qa/production-visual-review-schedule-2026-05-21.md"
+    "scheduleArtifact": "qa/production-visual-review-schedule-2026-05-21.md",
+    "assignmentQueueReady": true,
+    "assignmentQueueIssueCount": 0,
+    "assignmentCsv": "qa/production-visual-review-assignments-2026-05-21.csv",
+    "assignmentReport": "qa/production-visual-review-assignments-2026-05-21.md",
+    "submissionTemplateDir": "qa/production-visual-review-submissions-2026-05-21",
+    "submissionTemplateCount": 3,
+    "queueIssues": []
   },
   "risks": {
     "openBlockingRiskCount": 0,

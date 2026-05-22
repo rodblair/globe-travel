@@ -1897,6 +1897,36 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     guardrailIssues,
   })
 
+  const betaReviewStatus = status.betaHumanReviews || {}
+  const visualReviewStatus = status.productionVisualReviews || {}
+  const betaQueueIssues = Array.isArray(betaReviewStatus.queueIssues) ? betaReviewStatus.queueIssues : []
+  const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
+  addCheck('public launch status exposes prepared evidence queues', (
+    betaReviewStatus.assignmentQueueReady === true &&
+    Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
+    Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
+    hasMeaningfulText(betaReviewStatus.packetManifest) &&
+    hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
+    hasMeaningfulText(betaReviewStatus.assignmentReport) &&
+    betaQueueIssues.length === 0 &&
+    visualReviewStatus.assignmentQueueReady === true &&
+    Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
+    hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
+    hasMeaningfulText(visualReviewStatus.assignmentReport) &&
+    hasMeaningfulText(visualReviewStatus.submissionTemplateDir) &&
+    visualQueueIssues.length === 0
+  ), {
+    betaAssignmentQueueReady: betaReviewStatus.assignmentQueueReady ?? null,
+    betaPacketCount: betaReviewStatus.packetCount ?? null,
+    betaSubmissionTemplateCount: betaReviewStatus.submissionTemplateCount ?? null,
+    betaPlanned: betaReviewStatus.planned ?? null,
+    betaQueueIssues,
+    visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
+    visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
+    visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,
+    visualQueueIssues,
+  })
+
   if (requirePublicLaunchReadiness) {
     addCheck('public launch status is ready for public launch', (
       status.publicLaunchReady === true &&
