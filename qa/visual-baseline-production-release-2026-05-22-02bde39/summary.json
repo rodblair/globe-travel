@@ -1,0 +1,1344 @@
+{
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "date": "2026-05-22",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39",
+  "baselineDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18",
+  "diffRoutes": [
+    "landing",
+    "login",
+    "signup"
+  ],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 1200,
+  "deployment": {
+    "environment": "production",
+    "region": "iad1",
+    "url": "globe-travel-nchzs0kz3-rodney-blairs-projects.vercel.app",
+    "commit": "02bde394355dd8f02483b903714cef896eb3db51"
+  },
+  "deploymentCheck": {
+    "checked": true,
+    "reason": null,
+    "status": 200,
+    "healthStatus": "ok",
+    "summary": {
+      "total": 11,
+      "ok": 11,
+      "criticalMissing": 0,
+      "warningMissing": 0
+    },
+    "error": null
+  },
+  "auth": {
+    "requestedMode": "none",
+    "mode": "none",
+    "guestId": null,
+    "protectedRoutes": [],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "tablet",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "wide",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "guest visual auth not used",
+      "guestId": null,
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 20,
+  "passed": 20,
+  "failed": 0,
+  "routes": [
+    "landing",
+    "login",
+    "signup",
+    "public-share"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    },
+    {
+      "id": "wide",
+      "width": 1728,
+      "height": 1050
+    }
+  ],
+  "results": [
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 3717,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Plan the trip everyone can say yes to.",
+          "Three steps from group chat to shared itinerary.",
+          "Set the crew",
+          "Read a real plan",
+          "Share & lock in",
+          "A brass thread connects the day.",
+          "Your next group trip begins here."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 4,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary with a map people want to share. HOW IT WORKS Three steps "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/landing-phone-390x844.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/landing-phone-390x844.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 329160,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 1009,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Globe.travel SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begin a journey"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/login-phone-390x844.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/login-phone-390x844.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 329160,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 1050,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 8,
+        "bodyPreview": "Skip to content Globe.travel BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agree to our Terms of Service and Privacy Policy. Already booked? Sign in"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/signup-phone-390x844.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/signup-phone-390x844.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 329160,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 6159,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 3,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 3753,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Plan the trip everyone can say yes to.",
+          "Three steps from group chat to shared itinerary.",
+          "Set the crew",
+          "Read a real plan",
+          "Share & lock in",
+          "A brass thread connects the day.",
+          "Your next group trip begins here."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 7,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/landing-tablet-768x1024.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/landing-tablet-768x1024.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 786432,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begin a journey"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/login-tablet-768x1024.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/login-tablet-768x1024.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 786432,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 1034,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Globe.travel BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agree to our Terms of Service and Privacy Policy. Already booked? Sign in"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/signup-tablet-768x1024.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/signup-tablet-768x1024.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 786432,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 5528,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 348,
+            "y": 588,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 6,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 3151,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Plan the trip everyone can say yes to.",
+          "Three steps from group chat to shared itinerary.",
+          "Set the crew",
+          "Read a real plan",
+          "Share & lock in",
+          "A brass thread connects the day.",
+          "Your next group trip begins here."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 7,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/landing-laptop-1280x800.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/landing-laptop-1280x800.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1024000,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 937,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/login-laptop-1280x800.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/login-laptop-1280x800.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1024000,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 962,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 9,
+        "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/signup-laptop-1280x800.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/signup-laptop-1280x800.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1024000,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 390,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 3295,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Plan the trip everyone can say yes to.",
+          "Three steps from group chat to shared itinerary.",
+          "Set the crew",
+          "Read a real plan",
+          "Share & lock in",
+          "A brass thread connects the day.",
+          "Your next group trip begins here."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 7,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/landing-desktop-1440x950.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/landing-desktop-1440x950.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1368000,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/login-desktop-1440x950.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/login-desktop-1440x950.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1368000,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 962,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/signup-desktop-1440x950.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/signup-desktop-1440x950.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1368000,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 470,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "landing",
+      "path": "/",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 3383,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Plan the trip everyone can say yes to.",
+          "Three steps from group chat to shared itinerary.",
+          "Set the crew",
+          "Read a real plan",
+          "Share & lock in",
+          "A brass thread connects the day.",
+          "Your next group trip begins here."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 7,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/landing-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/landing-wide-1728x1050.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/landing-wide-1728x1050.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1814400,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "login",
+      "path": "/login",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/login",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 1050,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Welcome back to the journey.",
+          "Welcome back.",
+          "Try Globe without an account"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 11,
+        "bodyPreview": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/login-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/login-wide-1728x1050.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/login-wide-1728x1050.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1814400,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "signup",
+      "path": "/signup",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/signup",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 1050,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Pick the crew, pick the city.",
+          "Create your account.",
+          "Start as a guest first"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agr"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/signup-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": true,
+        "ok": true,
+        "baselinePath": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-2026-05-18/screenshots/signup-wide-1728x1050.png",
+        "baselineRelativePath": "qa/visual-baseline-production-2026-05-18/screenshots/signup-wide-1728x1050.png",
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 1814400,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "public-share",
+      "path": "/t/x3m2c8cnws",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+        "title": "5 Days in Athens Greece in mid september | Globe.travel",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 2762,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "5 Days in Athens Greece in mid september",
+          "Athens Greece in mid september",
+          "Plaka arrival",
+          "What the group will actually do",
+          "Plaka arrival",
+          "Acropolis essentials",
+          "Museums & hill views",
+          "Coastal culture"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [
+          {
+            "tag": "a",
+            "label": "Mapbox homepage",
+            "x": 614,
+            "y": 592,
+            "width": 88,
+            "height": 23,
+            "inViewport": true,
+            "hitTestable": true,
+            "disabled": false,
+            "thirdParty": true,
+            "attribution": true
+          }
+        ],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens Greece in mid september Review the route, react to the day plan, and help the group turn this Athens Greece in mid september idea into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS GREECE IN MID SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture TRIP MAP 3 "
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-production-release-2026-05-22-02bde39/screenshots/public-share-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}
