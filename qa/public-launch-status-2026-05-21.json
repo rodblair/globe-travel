@@ -9,8 +9,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
-    "commit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1"
+    "url": "globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app",
+    "commit": "98413c3f43be80be1db4ed8b4bae4469eeb633f7"
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -262,10 +262,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json",
-    "latestProductionCommit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1",
-    "latestProductionDeploymentUrl": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-social-preview-2026-05-22-98413c3",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-social-preview-2026-05-22-98413c3/summary.json",
+    "latestProductionCommit": "98413c3f43be80be1db4ed8b4bae4469eeb633f7",
+    "latestProductionDeploymentUrl": "globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -416,8 +416,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1",
-    "knownGoodDeploymentUrl": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "98413c3f43be80be1db4ed8b4bae4469eeb633f7",
+    "knownGoodDeploymentUrl": "globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -456,7 +456,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1",
+    "latestVerificationExpectedLiveCommit": "98413c3f43be80be1db4ed8b4bae4469eeb633f7",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -505,8 +505,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-social-preview-2026-05-22-98413c3/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-social-preview-2026-05-22-98413c3/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -572,20 +572,19 @@
   },
   "publicMetadata": {
     "artifact": "qa/public-metadata-smoke-2026-05-22.json",
-    "report": "",
-    "artifactReadable": false,
-    "artifactError": "ENOENT: no such file or directory, open '/Users/rodneyblair/Documents/GitHub/globe-travel/qa/public-metadata-smoke-2026-05-22.json'",
-    "pending": true,
-    "baseUrl": null,
-    "shareSlug": null,
-    "status": null,
-    "checked": null,
-    "passed": null,
-    "failed": null,
-    "sourceMissingCount": null,
+    "report": "qa/public-metadata-smoke-2026-05-22.md",
+    "artifactReadable": true,
+    "artifactError": null,
+    "pending": false,
+    "baseUrl": "https://globe-travel-two.vercel.app",
+    "shareSlug": "x3m2c8cnws",
+    "status": "pass",
+    "checked": 6,
+    "passed": 6,
+    "failed": 0,
+    "sourceMissingCount": 0,
     "requiredCheckCount": 6,
-    "resultIds": [],
-    "missingChecks": [
+    "resultIds": [
       "root-html",
       "manifest",
       "robots",
@@ -593,9 +592,10 @@
       "opengraph-image",
       "twitter-image"
     ],
+    "missingChecks": [],
     "failedResults": [],
     "issues": [],
-    "ready": false
+    "ready": true
   },
   "releaseCandidate": {
     "artifact": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
@@ -713,7 +713,6 @@
     }
   ],
   "nextActions": [
-    "Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.",
     "Collect and import 25 completed beta review submission(s).",
     "Run, review, and import 2 scheduled production visual review date(s)."
   ],

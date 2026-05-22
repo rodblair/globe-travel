@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1
-- Production deployment: globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app
+- Production commit: 98413c3f43be80be1db4ed8b4bae4469eeb633f7
+- Production deployment: globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -32,9 +32,9 @@ Status: beta-ready-public-blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d
-- Latest production visual commit: 368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1
-- Latest production visual deployment: globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-social-preview-2026-05-22-98413c3
+- Latest production visual commit: 98413c3f43be80be1db4ed8b4bae4469eeb633f7
+- Latest production visual deployment: globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
@@ -54,7 +54,7 @@ Status: beta-ready-public-blocked
 - Design system ready: yes
 - Planner map actuals ready: yes
 - Public share map/itinerary catalog ready: yes (1/1 public shares, 2 viewports)
-- Public metadata ready: no (0/6)
+- Public metadata ready: yes (6/6)
 - Release candidate ready: yes
 - Full route inventory ready: yes
 - Authenticated app surfaces ready: yes
@@ -142,7 +142,6 @@ Public metadata:
 
 ## Next Actions
 
-- Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
 
@@ -166,7 +165,7 @@ Public metadata:
 - Launch operator today: `qa/launch-operator-today-2026-05-22.md`, `qa/launch-operator-today-2026-05-22.csv`, and `qa/launch-operator-today-2026-05-22.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d` and `qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-social-preview-2026-05-22-98413c3` and `qa/visual-baseline-production-social-preview-2026-05-22-98413c3/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
@@ -180,7 +179,7 @@ Public metadata:
 - Design-system readiness: `qa/design-system-readiness-2026-05-22.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-22.json` and `qa/public-share-map-catalog-2026-05-22.md`
-- Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-22.json` and ``
+- Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-22.json` and `qa/public-metadata-smoke-2026-05-22.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-05-22.json`
 - Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-22.json`
