@@ -13,6 +13,9 @@ const betaSchedulePath = process.env.QA_BETA_REVIEW_SCHEDULE || 'qa/beta-human-r
 const betaScheduleReportPath = process.env.QA_BETA_REVIEW_SCHEDULE_REPORT || 'qa/beta-human-review-schedule-2026-05-21.md'
 const betaCommandCenterPath = process.env.QA_BETA_REVIEW_COMMAND_CENTER || 'qa/beta-human-review-command-center-2026-05-21.json'
 const betaCommandCenterReportPath = process.env.QA_BETA_REVIEW_COMMAND_CENTER_REPORT || 'qa/beta-human-review-command-center-2026-05-21.md'
+const betaNextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
+const betaNextWaveOpsReportPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_REPORT || 'qa/beta-human-review-next-wave-ops-2026-05-21.md'
+const betaNextWaveOpsCsvPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || 'qa/beta-human-review-next-wave-ops-2026-05-21.csv'
 const betaProgressPath = process.env.QA_BETA_REVIEW_PROGRESS || 'qa/beta-human-review-progress-2026-05-21.json'
 const betaIntakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
@@ -403,6 +406,9 @@ const [
   betaScheduleReport,
   betaCommandCenter,
   betaCommandCenterReport,
+  betaNextWaveOps,
+  betaNextWaveOpsReport,
+  betaNextWaveOpsCsv,
   betaProgress,
   betaIntake,
   visualRegister,
@@ -425,6 +431,9 @@ const [
   readText(betaScheduleReportPath),
   readJson(betaCommandCenterPath),
   readText(betaCommandCenterReportPath),
+  readJson(betaNextWaveOpsPath),
+  readText(betaNextWaveOpsReportPath),
+  readText(betaNextWaveOpsCsvPath),
   readJson(betaProgressPath),
   readJson(betaIntakePath),
   readJson(visualRegisterPath),
@@ -791,6 +800,30 @@ if (!betaCommandCenterReport.includes('This command center is an operating artif
   betaCommandCenterIssues.push('beta review command center report does not restate the evidence boundary')
 }
 
+const betaNextWaveOpsIssues = []
+const betaNextWaveOpsRows = Array.isArray(betaNextWaveOps.operatorRows) ? betaNextWaveOps.operatorRows : []
+const betaNextWave = betaCommandCenter.nextWave || null
+if (betaNextWaveOps.status !== 'pass') betaNextWaveOpsIssues.push('beta next-wave ops artifact status is not pass')
+if (betaNextWave?.waveId && betaNextWaveOps.nextWave?.waveId !== betaNextWave.waveId) {
+  betaNextWaveOpsIssues.push(`beta next-wave ops wave ${betaNextWaveOps.nextWave?.waveId || 'missing'} does not match command center ${betaNextWave.waveId}`)
+}
+if (Number(betaNextWaveOps.operatorRowCount) !== betaNextWaveOpsRows.length) {
+  betaNextWaveOpsIssues.push('beta next-wave ops operator row count does not match rows')
+}
+if (betaNextWave?.remainingReviewCount != null && Number(betaNextWaveOps.operatorRowCount) !== Number(betaNextWave.remainingReviewCount)) {
+  betaNextWaveOpsIssues.push(`beta next-wave ops row count ${betaNextWaveOps.operatorRowCount ?? 'missing'} does not match remaining wave reviews ${betaNextWave.remainingReviewCount}`)
+}
+for (const row of betaNextWaveOpsRows) {
+  if (!row.id || !betaNextWaveOpsCsv.includes(row.id)) betaNextWaveOpsIssues.push(`beta next-wave ops CSV missing row ${row.id || 'unknown'}`)
+  if (!row.completedSubmissionPath || row.completedSubmissionPath.endsWith('.template.json')) betaNextWaveOpsIssues.push(`beta next-wave ops ${row.id || 'unknown'} completed submission path is not a non-template JSON path`)
+  if (!row.packetPath || !row.submissionTemplatePath || !row.startUrl) betaNextWaveOpsIssues.push(`beta next-wave ops ${row.id || 'unknown'} missing packet, template, or start URL`)
+  if (row.startUrl && urlOrigin(row.startUrl) !== expectedBetaReviewOrigin) betaNextWaveOpsIssues.push(`beta next-wave ops ${row.id || 'unknown'} start URL origin does not match ${expectedBetaReviewOrigin}`)
+}
+if (!betaNextWaveOpsReport.includes('Status: pass')) betaNextWaveOpsIssues.push('beta next-wave ops report is not passing')
+if (!betaNextWaveOpsReport.includes('This next-wave ops pack is an assignment and outreach artifact, not completed review evidence')) {
+  betaNextWaveOpsIssues.push('beta next-wave ops report does not restate the evidence boundary')
+}
+
 const visualQueueIssues = []
 for (const file of visualSubmissionTemplateChecks.filter((file) => !file.ok)) {
   visualQueueIssues.push(`visual submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
@@ -941,6 +974,7 @@ if (betaIntake.status !== 'pass') guardrailIssues.push('beta human review intake
 if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignment queue is not fully prepared')
 if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execution schedule is not fully prepared')
 if (betaCommandCenterIssues.length > 0) guardrailIssues.push('beta human review command center is not fully prepared')
+if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review next-wave ops pack is not fully prepared')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -1028,13 +1062,19 @@ const summary = {
     executionScheduleIssueCount: betaScheduleIssues.length,
     commandCenterReady: betaCommandCenterIssues.length === 0,
     commandCenterIssueCount: betaCommandCenterIssues.length,
+    nextWaveOpsReady: betaNextWaveOpsIssues.length === 0,
+    nextWaveOpsIssueCount: betaNextWaveOpsIssues.length,
     packetManifest: qaDisplayPath(betaPacketManifestPath),
     scheduleArtifact: qaDisplayPath(betaSchedulePath),
     scheduleReport: qaDisplayPath(betaScheduleReportPath),
     scheduleCsv: qaDisplayPath(betaScheduleCsvPath),
     commandCenterArtifact: qaDisplayPath(betaCommandCenterPath),
     commandCenterReport: qaDisplayPath(betaCommandCenterReportPath),
+    nextWaveOpsArtifact: qaDisplayPath(betaNextWaveOpsPath),
+    nextWaveOpsReport: qaDisplayPath(betaNextWaveOpsReportPath),
+    nextWaveOpsCsv: qaDisplayPath(betaNextWaveOpsCsvPath),
     nextWave: betaCommandCenter.nextWave || null,
+    nextWaveOpsRowCount: betaNextWaveOpsRows.length,
     scheduleWaveCount: scheduleWaveIds.length,
     packetCount: betaPacketRecords.length,
     assignmentCsv: qaDisplayPath(betaAssignmentCsvPath),
@@ -1043,6 +1083,7 @@ const summary = {
     queueIssues: betaQueueIssues,
     scheduleIssues: betaScheduleIssues,
     commandCenterIssues: betaCommandCenterIssues,
+    nextWaveOpsIssues: betaNextWaveOpsIssues,
   },
   productionVisualReviews: {
     historyCount: visualHistory.length,
@@ -1239,6 +1280,7 @@ Status: ${status}
 - Beta review assignment queue ready: ${summary.betaHumanReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Beta review execution schedule ready: ${summary.betaHumanReviews.executionScheduleReady ? 'yes' : 'no'}
 - Beta review command center ready: ${summary.betaHumanReviews.commandCenterReady ? 'yes' : 'no'}
+- Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
@@ -1272,6 +1314,9 @@ ${markdownList(betaScheduleIssues)}
 
 Beta human-review command center:
 ${markdownList(betaCommandCenterIssues)}
+
+Beta human-review next-wave ops:
+${markdownList(betaNextWaveOpsIssues)}
 
 Production visual-review progress:
 ${markdownList(visualProgressIssues)}

@@ -39,6 +39,15 @@ const betaHumanReviewCommandCenter =
 const betaHumanReviewCommandCenterReport =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_COMMAND_CENTER_REPORT ||
   'qa/beta-human-review-command-center-2026-05-21.md'
+const betaHumanReviewNextWaveOps =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_NEXT_WAVE_OPS ||
+  'qa/beta-human-review-next-wave-ops-2026-05-21.json'
+const betaHumanReviewNextWaveOpsReport =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_NEXT_WAVE_OPS_REPORT ||
+  'qa/beta-human-review-next-wave-ops-2026-05-21.md'
+const betaHumanReviewNextWaveOpsCsv =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_NEXT_WAVE_OPS_CSV ||
+  'qa/beta-human-review-next-wave-ops-2026-05-21.csv'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -1423,6 +1432,80 @@ async function checkBetaHumanReviewRegister() {
     commandCenterReportHasBoundary,
   })
 
+  let nextWaveOps = null
+  let nextWaveOpsReport = ''
+  let nextWaveOpsCsv = ''
+  let nextWaveOpsError = null
+  let nextWaveOpsReportError = null
+  let nextWaveOpsCsvError = null
+  const nextWaveOpsPath = register.nextWaveOpsArtifact || betaHumanReviewNextWaveOps
+  const nextWaveOpsReportPath = register.nextWaveOpsReport || betaHumanReviewNextWaveOpsReport
+  const nextWaveOpsCsvPath = register.nextWaveOpsCsv || betaHumanReviewNextWaveOpsCsv
+
+  try {
+    nextWaveOps = await readJson(nextWaveOpsPath)
+  } catch (error) {
+    nextWaveOpsError = error instanceof Error ? error.message : String(error)
+  }
+
+  if (hasMeaningfulText(nextWaveOpsReportPath)) {
+    try {
+      nextWaveOpsReport = await readText(nextWaveOpsReportPath)
+    } catch (error) {
+      nextWaveOpsReportError = error instanceof Error ? error.message : String(error)
+    }
+  }
+
+  if (hasMeaningfulText(nextWaveOpsCsvPath)) {
+    try {
+      nextWaveOpsCsv = await readText(nextWaveOpsCsvPath)
+    } catch (error) {
+      nextWaveOpsCsvError = error instanceof Error ? error.message : String(error)
+    }
+  }
+
+  const nextWaveOpsRows = Array.isArray(nextWaveOps?.operatorRows) ? nextWaveOps.operatorRows : []
+  const nextWaveOpsMalformedRows = nextWaveOpsRows.filter((row) => (
+    !hasMeaningfulText(row.id) ||
+    !hasMeaningfulText(row.waveId) ||
+    !hasMeaningfulText(row.packetPath) ||
+    !hasMeaningfulText(row.submissionTemplatePath) ||
+    !hasMeaningfulText(row.completedSubmissionPath) ||
+    String(row.completedSubmissionPath || '').endsWith('.template.json') ||
+    !hasMeaningfulText(row.startUrl) ||
+    !hasMeaningfulText(row.messageSubject, 20) ||
+    !hasMeaningfulText(row.reviewerMessage, 120) ||
+    !nextWaveOpsCsv.includes(row.id) ||
+    !nextWaveOpsCsv.includes(row.completedSubmissionPath)
+  ))
+  const nextWaveOpsReportHasBoundary = nextWaveOpsReport.includes('This next-wave ops pack is an assignment and outreach artifact, not completed review evidence')
+  addCheck('beta human review next-wave ops pack is ready for reviewer outreach', (
+    nextWaveOps &&
+    !nextWaveOpsError &&
+    !nextWaveOpsReportError &&
+    !nextWaveOpsCsvError &&
+    nextWaveOps.status === 'pass' &&
+    nextWaveOps.nextWave?.waveId === commandCenter?.nextWave?.waveId &&
+    Number(nextWaveOps.operatorRowCount) === nextWaveOpsRows.length &&
+    Number(nextWaveOps.operatorRowCount) === Number(commandCenter?.nextWave?.remainingReviewCount || 0) &&
+    nextWaveOpsMalformedRows.length === 0 &&
+    nextWaveOpsReportHasBoundary
+  ), {
+    nextWaveOpsArtifact: nextWaveOpsPath,
+    nextWaveOpsReport: nextWaveOpsReportPath,
+    nextWaveOpsCsv: nextWaveOpsCsvPath,
+    nextWaveOpsError,
+    nextWaveOpsReportError,
+    nextWaveOpsCsvError,
+    nextWaveOpsStatus: nextWaveOps?.status ?? null,
+    nextWaveOpsWaveId: nextWaveOps?.nextWave?.waveId ?? null,
+    commandCenterNextWaveId: commandCenter?.nextWave?.waveId ?? null,
+    nextWaveOpsRowCount: nextWaveOps?.operatorRowCount ?? null,
+    commandCenterRemainingReviewCount: commandCenter?.nextWave?.remainingReviewCount ?? null,
+    malformedRows: nextWaveOpsMalformedRows.map((row) => row.id || '(missing id)'),
+    nextWaveOpsReportHasBoundary,
+  })
+
   const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
   const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
   const completedReviewEvidenceGaps = completedReviews
@@ -2173,12 +2256,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaQueueIssues = Array.isArray(betaReviewStatus.queueIssues) ? betaReviewStatus.queueIssues : []
   const betaScheduleIssues = Array.isArray(betaReviewStatus.scheduleIssues) ? betaReviewStatus.scheduleIssues : []
   const betaCommandCenterIssues = Array.isArray(betaReviewStatus.commandCenterIssues) ? betaReviewStatus.commandCenterIssues : []
+  const betaNextWaveOpsIssues = Array.isArray(betaReviewStatus.nextWaveOpsIssues) ? betaReviewStatus.nextWaveOpsIssues : []
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     betaReviewStatus.executionScheduleReady === true &&
     betaReviewStatus.commandCenterReady === true &&
+    betaReviewStatus.nextWaveOpsReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
     Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
     hasMeaningfulText(betaReviewStatus.packetManifest) &&
@@ -2189,11 +2274,17 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.commandCenterArtifact) &&
     hasMeaningfulText(betaReviewStatus.commandCenterReport) &&
     Number(betaReviewStatus.commandCenterIssueCount) === 0 &&
+    hasMeaningfulText(betaReviewStatus.nextWaveOpsArtifact) &&
+    hasMeaningfulText(betaReviewStatus.nextWaveOpsReport) &&
+    hasMeaningfulText(betaReviewStatus.nextWaveOpsCsv) &&
+    Number(betaReviewStatus.nextWaveOpsIssueCount) === 0 &&
+    Number(betaReviewStatus.nextWaveOpsRowCount) === Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
     hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
     betaScheduleIssues.length === 0 &&
     betaCommandCenterIssues.length === 0 &&
+    betaNextWaveOpsIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2209,6 +2300,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaExecutionScheduleIssueCount: betaReviewStatus.executionScheduleIssueCount ?? null,
     betaCommandCenterReady: betaReviewStatus.commandCenterReady ?? null,
     betaCommandCenterIssueCount: betaReviewStatus.commandCenterIssueCount ?? null,
+    betaNextWaveOpsReady: betaReviewStatus.nextWaveOpsReady ?? null,
+    betaNextWaveOpsIssueCount: betaReviewStatus.nextWaveOpsIssueCount ?? null,
     betaPacketCount: betaReviewStatus.packetCount ?? null,
     betaSubmissionTemplateCount: betaReviewStatus.submissionTemplateCount ?? null,
     betaPlanned: betaReviewStatus.planned ?? null,
@@ -2218,9 +2311,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaCommandCenterArtifact: betaReviewStatus.commandCenterArtifact ?? null,
     betaCommandCenterReport: betaReviewStatus.commandCenterReport ?? null,
     betaCommandCenterNextWave: betaReviewStatus.nextWave ?? null,
+    betaNextWaveOpsArtifact: betaReviewStatus.nextWaveOpsArtifact ?? null,
+    betaNextWaveOpsReport: betaReviewStatus.nextWaveOpsReport ?? null,
+    betaNextWaveOpsCsv: betaReviewStatus.nextWaveOpsCsv ?? null,
+    betaNextWaveOpsRowCount: betaReviewStatus.nextWaveOpsRowCount ?? null,
     betaQueueIssues,
     betaScheduleIssues,
     betaCommandCenterIssues,
+    betaNextWaveOpsIssues,
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,

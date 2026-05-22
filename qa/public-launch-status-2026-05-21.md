@@ -15,6 +15,7 @@ Status: beta-ready-public-blocked
 - Beta review assignment queue ready: yes
 - Beta review execution schedule ready: yes
 - Beta review command center ready: yes
+- Beta review next-wave ops ready: yes
 - Production visual review history: 2/4
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
@@ -48,6 +49,9 @@ Beta human-review schedule:
 - none
 
 Beta human-review command center:
+- none
+
+Beta human-review next-wave ops:
 - none
 
 Production visual-review progress:
