@@ -247,6 +247,8 @@ const requiredCompletedBetaReviewFields = [
 ]
 const allowedBetaFindingSeverities = new Set(['P0', 'P1', 'P2', 'P3'])
 const allowedBetaFindingStatuses = new Set(['open', 'closed', 'accepted-risk'])
+const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
+const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
 const checks = []
 
@@ -506,8 +508,12 @@ function visualReviewSubmissionTemplateIssues(template, scheduledReview) {
   if (dateOnly(template.reviewedAt) !== expectedReviewedAt) issues.push('reviewedAt must match scheduled dueAt')
   if (template.artifact !== expectedArtifact) issues.push('artifact must match expectedArtifactPrefix')
   if (template.summaryArtifact !== expectedSummaryArtifact) issues.push('summaryArtifact must match expected artifact summary')
-  if (!hasMeaningfulText(template.productionCommit)) issues.push('productionCommit placeholder is missing')
-  if (!hasMeaningfulText(template.deploymentUrl)) issues.push('deploymentUrl placeholder is missing')
+  if (template.productionCommit !== visualReviewTemplateProductionCommitPlaceholder) {
+    issues.push('productionCommit must use the scheduled-review placeholder')
+  }
+  if (template.deploymentUrl !== visualReviewTemplateDeploymentUrlPlaceholder) {
+    issues.push('deploymentUrl must use the scheduled-review placeholder')
+  }
   if (!hasMeaningfulText(template.reviewedBy)) issues.push('reviewedBy is missing')
   if (template.verdict !== 'pass') issues.push('verdict must default to pass')
   if (!Array.isArray(template.blockingFindings)) issues.push('blockingFindings must be an array')

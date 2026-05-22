@@ -19,6 +19,8 @@ const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.js
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
+const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
+const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
 function repoPath(path) {
   return resolve(root, path)
@@ -263,9 +265,17 @@ for (const file of visualSubmissionTemplateChecks.filter((file) => !file.ok)) {
   visualQueueIssues.push(`visual submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
 }
 for (const file of visualSubmissionTemplateChecks.filter((file) => file.ok)) {
+  const expectedSummaryArtifact = `${file.expectedArtifact}/summary.json`
   if (file.json?.scheduledReviewId !== file.id) visualQueueIssues.push(`visual template ${file.path} does not match scheduled id ${file.id}`)
   if (dateOnly(file.json?.reviewedAt) !== file.expectedDueAt) visualQueueIssues.push(`visual template ${file.path} does not match due date ${file.expectedDueAt}`)
   if (file.json?.artifact !== file.expectedArtifact) visualQueueIssues.push(`visual template ${file.path} does not match expected artifact ${file.expectedArtifact}`)
+  if (file.json?.summaryArtifact !== expectedSummaryArtifact) visualQueueIssues.push(`visual template ${file.path} does not match expected summary artifact ${expectedSummaryArtifact}`)
+  if (file.json?.productionCommit !== visualReviewTemplateProductionCommitPlaceholder) {
+    visualQueueIssues.push(`visual template ${file.path} productionCommit must use the scheduled-review placeholder`)
+  }
+  if (file.json?.deploymentUrl !== visualReviewTemplateDeploymentUrlPlaceholder) {
+    visualQueueIssues.push(`visual template ${file.path} deploymentUrl must use the scheduled-review placeholder`)
+  }
 }
 if (!visualAssignmentCsv.ok) visualQueueIssues.push(`visual assignment CSV is not readable at ${visualAssignmentCsvPath}`)
 if (!visualAssignmentReport.ok) visualQueueIssues.push(`visual assignment report is not readable at ${visualAssignmentReportPath}`)
