@@ -57,6 +57,8 @@
       "GT-P2-002"
     ],
     "incompleteAcceptedP2RiskCount": 0,
+    "acceptedRiskEvidenceIssueCount": 0,
+    "acceptedRiskEvidenceIssues": [],
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {

@@ -4,9 +4,18 @@ Date: 2026-05-17
 Owner: Codex release audit
 Status: Active goal in progress
 
-## Current Readiness Update - 2026-05-21
+## Current Readiness Update - 2026-05-22
 
-- After the itinerary map-trust repair deploy, production is verified on commit `625cdd4fb252c96f99032f062bac8d31c6508a21` at deployment `globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`.
+- Production is verified on commit `f61c9a486be361fb1045c84632e2350bfd8ecc8d` at deployment `globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`.
+- Production release verification passed on the live alias: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-visual-progress-2026-05-22-f61c9a4 npm run qa:release-production` passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens five-day public-share map integrity passed `5/5`, and prompt-suite validation passed `60/60`.
+- Launch signoff now verifies that accepted-risk P2 notes match current launch evidence counts, so stale risk narratives cannot silently disagree with `qa/public-launch-status-2026-05-21.json`.
+- Current launch signoff passes `90/90` against commit `f61c9a486be361fb1045c84632e2350bfd8ecc8d`.
+- Public launch remains intentionally blocked by real evidence only: `0/25` completed beta human reviews with `25` remaining, and `2/4` distinct production visual-review dates with `2` remaining.
+- The in-app Browser backend was unavailable again in this run (`iab` not available), so production verification used the repo's Playwright-backed Browser QA runners.
+
+## Prior Readiness Update - 2026-05-21
+
+- After the itinerary map-trust repair deploy, production was verified on commit `625cdd4fb252c96f99032f062bac8d31c6508a21` at deployment `globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`.
 - Hardened the Trip Studio recovery UI smoke so remote missing-trip checks wait for client-rendered recovery copy, retry the rendered route, and record a visible text excerpt on failure.
 - Hardened responsive visual QA for dynamic public-share pages so production captures wait/retry for required page markers before screenshotting; this prevents skeleton-state screenshots from passing or failing the visual gate incorrectly.
 - Full non-mutating production verification passed: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-map-trust-repair-2026-05-21-625cdd4 npm run qa:release-production` passed `10/10`, with production visual QA `20/20`, public-share viral loop `5/5`, stable Athens itinerary/map integrity, production prompt actual export, and prompt-suite validation `60/60`.

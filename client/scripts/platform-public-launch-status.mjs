@@ -794,6 +794,28 @@ const incompleteAcceptedP2Risks = openAcceptedP2Risks.filter((issue) => (
   !hasText(issue.targetMonth) ||
   !hasText(issue.acceptedRisk, 40)
 ))
+const acceptedRiskEvidenceIssues = []
+for (const issue of openAcceptedP2Risks) {
+  const note = String(issue.acceptedRisk || '')
+  if (issue.id === 'GT-P2-001') {
+    const expectedReviewCount = `${completedBetaReviews.length}/${publicBetaMinimum}`
+    if (!note.includes(expectedReviewCount)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review progress ${expectedReviewCount}`)
+    }
+    if (betaRemaining > 0 && !note.includes(`${betaRemaining} remaining`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review remaining count ${betaRemaining}`)
+    }
+  }
+  if (issue.id === 'GT-P2-002') {
+    const expectedVisualCount = `${visualHistoryDates.length}/${visualMinimum}`
+    if (!note.includes(expectedVisualCount)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review history ${expectedVisualCount}`)
+    }
+    if (visualRemaining > 0 && !note.includes(`${visualRemaining} remaining`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review remaining count ${visualRemaining}`)
+    }
+  }
+}
 const rollbackVerificationCommands = Array.isArray(rollbackPlan.verificationCommands) ? rollbackPlan.verificationCommands : []
 const rollbackVerificationText = rollbackVerificationCommands.join('\n')
 const requiredRollbackCommandMarkers = [
@@ -853,6 +875,9 @@ if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('produc
 if (visualQueueIssues.length > 0) guardrailIssues.push('production visual review assignment queue is not fully prepared')
 if (incompleteAcceptedP2Risks.length > 0) {
   guardrailIssues.push('open accepted P2 launch risks are missing owner, target month, or accepted-risk notes')
+}
+if (acceptedRiskEvidenceIssues.length > 0) {
+  guardrailIssues.push('open accepted P2 launch risks are not aligned with current launch evidence counts')
 }
 if (
   !hasText(monitoringRegister.owner) ||
@@ -959,6 +984,8 @@ const summary = {
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
     openAcceptedP2RiskIds: openAcceptedP2Risks.map((issue) => issue.id),
     incompleteAcceptedP2RiskCount: incompleteAcceptedP2Risks.length,
+    acceptedRiskEvidenceIssueCount: acceptedRiskEvidenceIssues.length,
+    acceptedRiskEvidenceIssues,
     incompleteAcceptedP2Risks: incompleteAcceptedP2Risks.map((issue) => ({
       id: issue.id,
       title: issue.title,
@@ -1131,6 +1158,7 @@ Status: ${status}
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
+- Accepted P2 evidence-count issues: ${acceptedRiskEvidenceIssues.length}
 - Rollback plan actionable: ${summary.rollback.actionable ? 'yes' : 'no'}
 - Production monitoring ready: ${summary.monitoring.latestVerificationReady && summary.monitoring.missingSignals.length === 0 && summary.monitoring.workflowIssues.length === 0 && summary.monitoring.missingAlertMarkers.length === 0 && summary.monitoring.missingRunbookMarkers.length === 0 ? 'yes' : 'no'}
 - Paid path ready: ${summary.paidPath.ready ? 'yes' : 'no'}

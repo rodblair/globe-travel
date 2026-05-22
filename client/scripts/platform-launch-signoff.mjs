@@ -2140,6 +2140,44 @@ async function checkRiskRegister() {
       hasAcceptedRisk: hasMeaningfulText(issue.acceptedRisk, 40),
     })),
   })
+
+  let status = null
+  try {
+    status = await readJson(publicLaunchStatusArtifact)
+  } catch {
+    status = null
+  }
+  const betaStatus = status?.betaHumanReviews || {}
+  const visualStatus = status?.productionVisualReviews || {}
+  const acceptedRiskEvidenceIssues = []
+  for (const issue of openP2Issues) {
+    const note = String(issue.acceptedRisk || '')
+    if (issue.id === 'GT-P2-001') {
+      const expectedReviewCount = `${Number(betaStatus.completed ?? 0)}/${Number(betaStatus.minimumForPublicLaunch ?? 0)}`
+      if (!note.includes(expectedReviewCount)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review progress ${expectedReviewCount}`)
+      }
+      if (Number(betaStatus.remaining) > 0 && !note.includes(`${Number(betaStatus.remaining)} remaining`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review remaining count ${Number(betaStatus.remaining)}`)
+      }
+    }
+    if (issue.id === 'GT-P2-002') {
+      const expectedVisualCount = `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`
+      if (!note.includes(expectedVisualCount)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review history ${expectedVisualCount}`)
+      }
+      if (Number(visualStatus.remainingDistinctDates) > 0 && !note.includes(`${Number(visualStatus.remainingDistinctDates)} remaining`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review remaining count ${Number(visualStatus.remainingDistinctDates)}`)
+      }
+    }
+  }
+  addCheck('launch risk register accepted P2 notes match current evidence counts', (
+    status &&
+    acceptedRiskEvidenceIssues.length === 0
+  ), {
+    publicLaunchStatusArtifact,
+    acceptedRiskEvidenceIssues,
+  })
 }
 
 async function checkRollbackPlan(productionHealth) {
