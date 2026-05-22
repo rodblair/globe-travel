@@ -9,6 +9,8 @@ const expectedCommit = process.env.QA_LAUNCH_EXPECTED_COMMIT || ''
 
 const betaRegisterPath = process.env.QA_BETA_REVIEW_REGISTER || 'qa/beta-human-review-register.json'
 const betaPacketManifestPath = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || 'qa/beta-human-review-packet-manifest-2026-05-21.json'
+const betaSchedulePath = process.env.QA_BETA_REVIEW_SCHEDULE || 'qa/beta-human-review-schedule-2026-05-21.json'
+const betaScheduleReportPath = process.env.QA_BETA_REVIEW_SCHEDULE_REPORT || 'qa/beta-human-review-schedule-2026-05-21.md'
 const betaProgressPath = process.env.QA_BETA_REVIEW_PROGRESS || 'qa/beta-human-review-progress-2026-05-21.json'
 const betaIntakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
@@ -395,6 +397,8 @@ function betaPacketMarkdownIssues(text, packet) {
 const [
   betaRegister,
   betaPacketManifest,
+  betaSchedule,
+  betaScheduleReport,
   betaProgress,
   betaIntake,
   visualRegister,
@@ -413,6 +417,8 @@ const [
 ] = await Promise.all([
   readJson(betaRegisterPath),
   readJson(betaPacketManifestPath),
+  readJson(betaSchedulePath),
+  readText(betaScheduleReportPath),
   readJson(betaProgressPath),
   readJson(betaIntakePath),
   readJson(visualRegisterPath),
@@ -460,6 +466,7 @@ const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-
 const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${date}.md`
 const betaAssignmentCsvPath = betaPacketManifest.assignmentCsv || `qa/beta-human-review-assignments-${date}.csv`
 const betaAssignmentReportPath = betaPacketManifest.assignmentReport || `qa/beta-human-review-assignments-${date}.md`
+const betaScheduleCsvPath = betaSchedule.assignmentCsv || betaRegister.reviewScheduleCsv || `qa/beta-human-review-schedule-assignments-${date}.csv`
 const visualSubmissionDir = visualRegister.reviewSubmissionDirectory || `qa/production-visual-review-submissions-${date}`
 const visualAssignmentCsvPath = visualRegister.reviewAssignmentCsv || `qa/production-visual-review-assignments-${date}.csv`
 const visualAssignmentReportPath = visualRegister.reviewAssignmentReport || `qa/production-visual-review-assignments-${date}.md`
@@ -467,6 +474,7 @@ const visualAssignmentReportPath = visualRegister.reviewAssignmentReport || `qa/
 const [
   betaAssignmentCsv,
   betaAssignmentReport,
+  betaScheduleCsv,
   visualAssignmentCsv,
   visualAssignmentReport,
   betaPacketFileChecks,
@@ -475,6 +483,7 @@ const [
 ] = await Promise.all([
   readableText(betaAssignmentCsvPath),
   readableText(betaAssignmentReportPath),
+  readableText(betaScheduleCsvPath),
   readableText(visualAssignmentCsvPath),
   readableText(visualAssignmentReportPath),
   Promise.all(betaPacketRecords.map(async (packet) => ({
@@ -721,6 +730,39 @@ if (betaAssignmentReport.ok && !betaAssignmentReport.text.includes('Public launc
   betaQueueIssues.push('beta assignment report does not restate the public-launch completion rule')
 }
 
+const betaScheduleIssues = []
+const scheduledBetaReviews = Array.isArray(betaSchedule.scheduledReviews) ? betaSchedule.scheduledReviews : []
+const scheduledBetaIds = scheduledBetaReviews.map((review) => review.id).filter(Boolean)
+const missingScheduledBetaIds = missingFrom(scheduledBetaIds, plannedBetaIds)
+const scheduleWaveIds = unique(scheduledBetaReviews.map((review) => review.waveId).filter(Boolean))
+if (betaSchedule.status !== 'pass') betaScheduleIssues.push('beta review schedule artifact status is not pass')
+if (Number(betaSchedule.plannedReviewCount) !== plannedBetaReviews.length) {
+  betaScheduleIssues.push(`beta review schedule planned count ${betaSchedule.plannedReviewCount ?? 'missing'} does not match ${plannedBetaReviews.length}`)
+}
+if (Number(betaSchedule.scheduledReviewCount) !== plannedBetaReviews.length) {
+  betaScheduleIssues.push(`beta review schedule count ${betaSchedule.scheduledReviewCount ?? 'missing'} does not match ${plannedBetaReviews.length}`)
+}
+if (missingScheduledBetaIds.length > 0) {
+  betaScheduleIssues.push(`beta review schedule missing planned ids: ${missingScheduledBetaIds.join(', ')}`)
+}
+if (scheduleWaveIds.length < 5) {
+  betaScheduleIssues.push(`beta review schedule has only ${scheduleWaveIds.length} wave(s)`)
+}
+if (!betaScheduleCsv.ok) betaScheduleIssues.push(`beta review schedule CSV is not readable at ${betaScheduleCsvPath}`)
+if (!betaScheduleReport.includes('Status: pass')) betaScheduleIssues.push('beta review schedule report is not passing')
+if (!betaScheduleReport.includes('Public launch still requires 25 completed reviews')) {
+  betaScheduleIssues.push('beta review schedule report does not restate the public-launch completion rule')
+}
+for (const review of scheduledBetaReviews) {
+  if (betaScheduleCsv.ok && !betaScheduleCsv.text.includes(review.id)) betaScheduleIssues.push(`beta review schedule CSV does not include ${review.id}`)
+  if (!review.startUrl || urlOrigin(review.startUrl) !== expectedBetaReviewOrigin) {
+    betaScheduleIssues.push(`beta review schedule ${review.id || 'unknown'} start URL origin ${urlOrigin(review.startUrl) || 'missing'} does not match ${expectedBetaReviewOrigin}`)
+  }
+  if (!review.packetPath || !review.submissionTemplatePath) {
+    betaScheduleIssues.push(`beta review schedule ${review.id || 'unknown'} missing packet or submission template path`)
+  }
+}
+
 const visualQueueIssues = []
 for (const file of visualSubmissionTemplateChecks.filter((file) => !file.ok)) {
   visualQueueIssues.push(`visual submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
@@ -869,6 +911,7 @@ if (expectedCommit && liveDeployment?.commit !== expectedCommit) {
 if (betaProgress.status !== 'pass') guardrailIssues.push('beta human review progress artifact is not passing')
 if (betaIntake.status !== 'pass') guardrailIssues.push('beta human review intake artifact is not passing')
 if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignment queue is not fully prepared')
+if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execution schedule is not fully prepared')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -952,12 +995,19 @@ const summary = {
     expectedReviewOrigin: expectedBetaReviewOrigin,
     assignmentQueueReady: betaQueueIssues.length === 0,
     assignmentQueueIssueCount: betaQueueIssues.length,
+    executionScheduleReady: betaScheduleIssues.length === 0,
+    executionScheduleIssueCount: betaScheduleIssues.length,
     packetManifest: qaDisplayPath(betaPacketManifestPath),
+    scheduleArtifact: qaDisplayPath(betaSchedulePath),
+    scheduleReport: qaDisplayPath(betaScheduleReportPath),
+    scheduleCsv: qaDisplayPath(betaScheduleCsvPath),
+    scheduleWaveCount: scheduleWaveIds.length,
     packetCount: betaPacketRecords.length,
     assignmentCsv: qaDisplayPath(betaAssignmentCsvPath),
     assignmentReport: qaDisplayPath(betaAssignmentReportPath),
     submissionTemplateCount: betaSubmissionTemplateChecks.length,
     queueIssues: betaQueueIssues,
+    scheduleIssues: betaScheduleIssues,
   },
   productionVisualReviews: {
     historyCount: visualHistory.length,
@@ -1152,6 +1202,7 @@ Status: ${status}
 - Beta reviews: ${completedBetaReviews.length}/${publicBetaMinimum}
 - Beta review origin: ${summary.betaHumanReviews.expectedReviewOrigin || 'missing'}
 - Beta review assignment queue ready: ${summary.betaHumanReviews.assignmentQueueReady ? 'yes' : 'no'}
+- Beta review execution schedule ready: ${summary.betaHumanReviews.executionScheduleReady ? 'yes' : 'no'}
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
@@ -1180,6 +1231,9 @@ ${markdownList(guardrailIssues)}
 Beta human-review queue:
 ${markdownList(betaQueueIssues)}
 
+Beta human-review schedule:
+${markdownList(betaScheduleIssues)}
+
 Production visual-review progress:
 ${markdownList(visualProgressIssues)}
 
@@ -1197,6 +1251,7 @@ ${markdownList(summary.nextActions)}
 - Beta intake: \`${summary.betaHumanReviews.intakeArtifact}\`
 - Beta packet manifest: \`${summary.betaHumanReviews.packetManifest}\`
 - Beta assignment board: \`${summary.betaHumanReviews.assignmentReport}\` and \`${summary.betaHumanReviews.assignmentCsv}\`
+- Beta execution schedule: \`${summary.betaHumanReviews.scheduleArtifact}\`, \`${summary.betaHumanReviews.scheduleReport}\`, and \`${summary.betaHumanReviews.scheduleCsv}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Visual schedule: \`${summary.productionVisualReviews.scheduleArtifact}\`

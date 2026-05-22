@@ -22,12 +22,19 @@
     "expectedReviewOrigin": "https://globe-travel-two.vercel.app",
     "assignmentQueueReady": true,
     "assignmentQueueIssueCount": 0,
+    "executionScheduleReady": true,
+    "executionScheduleIssueCount": 0,
     "packetManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
+    "scheduleArtifact": "qa/beta-human-review-schedule-2026-05-21.json",
+    "scheduleReport": "qa/beta-human-review-schedule-2026-05-21.md",
+    "scheduleCsv": "qa/beta-human-review-schedule-assignments-2026-05-21.csv",
+    "scheduleWaveCount": 5,
     "packetCount": 25,
     "assignmentCsv": "qa/beta-human-review-assignments-2026-05-21.csv",
     "assignmentReport": "qa/beta-human-review-assignments-2026-05-21.md",
     "submissionTemplateCount": 25,
-    "queueIssues": []
+    "queueIssues": [],
+    "scheduleIssues": []
   },
   "productionVisualReviews": {
     "historyCount": 2,

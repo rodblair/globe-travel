@@ -27,6 +27,12 @@ const plannerActualsArtifact =
 const betaHumanReviewRegister =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_REGISTER ||
   'qa/beta-human-review-register.json'
+const betaHumanReviewSchedule =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_SCHEDULE ||
+  'qa/beta-human-review-schedule-2026-05-21.json'
+const betaHumanReviewScheduleReport =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_SCHEDULE_REPORT ||
+  'qa/beta-human-review-schedule-2026-05-21.md'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -1278,6 +1284,90 @@ async function checkBetaHumanReviewRegister() {
     })
   }
 
+  let reviewSchedule = null
+  let reviewScheduleReport = ''
+  let reviewScheduleCsv = ''
+  let reviewScheduleError = null
+  let reviewScheduleReportError = null
+  let reviewScheduleCsvError = null
+  const reviewSchedulePath = register.reviewScheduleArtifact || betaHumanReviewSchedule
+  const reviewScheduleReportPath = register.reviewScheduleReport || betaHumanReviewScheduleReport
+
+  try {
+    reviewSchedule = await readJson(reviewSchedulePath)
+  } catch (error) {
+    reviewScheduleError = error instanceof Error ? error.message : String(error)
+  }
+
+  if (hasMeaningfulText(reviewScheduleReportPath)) {
+    try {
+      reviewScheduleReport = await readText(reviewScheduleReportPath)
+    } catch (error) {
+      reviewScheduleReportError = error instanceof Error ? error.message : String(error)
+    }
+  }
+
+  const reviewScheduleCsvPath = reviewSchedule?.assignmentCsv || register.reviewScheduleCsv || ''
+  if (hasMeaningfulText(reviewScheduleCsvPath)) {
+    try {
+      reviewScheduleCsv = await readText(reviewScheduleCsvPath)
+    } catch (error) {
+      reviewScheduleCsvError = error instanceof Error ? error.message : String(error)
+    }
+  }
+
+  const scheduledReviews = Array.isArray(reviewSchedule?.scheduledReviews) ? reviewSchedule.scheduledReviews : []
+  const scheduledIds = unique(scheduledReviews.map((review) => review.id).filter(Boolean))
+  const missingScheduledIds = hasAll(scheduledIds, plannedReviews.map((review) => review.id).filter(Boolean))
+  const scheduleWaveIds = unique(scheduledReviews.map((review) => review.waveId).filter(Boolean))
+  const malformedScheduledReviews = scheduledReviews.filter((review) => (
+    !hasMeaningfulText(review.id) ||
+    !hasMeaningfulText(review.waveId) ||
+    !hasMeaningfulText(review.kickoffAt) ||
+    !hasMeaningfulText(review.dueAt) ||
+    !hasMeaningfulText(review.status) ||
+    !hasMeaningfulText(review.owner) ||
+    !hasMeaningfulText(review.reviewerCohort) ||
+    !hasMeaningfulText(review.reviewerRole) ||
+    !hasMeaningfulText(review.startUrl) ||
+    !hasMeaningfulText(review.packetPath) ||
+    !hasMeaningfulText(review.submissionTemplatePath) ||
+    !hasMeaningfulText(review.acceptanceCriteria, 120)
+  ))
+  const scheduleCsvMissingIds = scheduledReviews
+    .filter((review) => hasMeaningfulText(review.id) && !reviewScheduleCsv.includes(review.id))
+    .map((review) => review.id)
+  const scheduleReportHasLaunchRule = reviewScheduleReport.includes('Public launch still requires 25 completed reviews') &&
+    reviewScheduleReport.includes('not completed review evidence')
+
+  addCheck('beta human review execution schedule covers every planned review', (
+    reviewSchedule &&
+    !reviewScheduleError &&
+    !reviewScheduleReportError &&
+    !reviewScheduleCsvError &&
+    reviewSchedule.status === 'pass' &&
+    Number(reviewSchedule.scheduledReviewCount) >= plannedReviews.length &&
+    missingScheduledIds.length === 0 &&
+    scheduleWaveIds.length >= 5 &&
+    malformedScheduledReviews.length === 0 &&
+    scheduleCsvMissingIds.length === 0 &&
+    scheduleReportHasLaunchRule
+  ), {
+    scheduleArtifact: reviewSchedulePath,
+    scheduleReport: reviewScheduleReportPath,
+    scheduleCsv: reviewScheduleCsvPath,
+    reviewScheduleError,
+    reviewScheduleReportError,
+    reviewScheduleCsvError,
+    scheduledReviewCount: reviewSchedule?.scheduledReviewCount ?? null,
+    plannedReviewCount: plannedReviews.length,
+    waveCount: scheduleWaveIds.length,
+    missingScheduledIds,
+    malformedScheduledReviews: malformedScheduledReviews.map((review) => review.id || '(missing id)'),
+    scheduleCsvMissingIds,
+    scheduleReportHasLaunchRule,
+  })
+
   const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
   const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
   const completedReviewEvidenceGaps = completedReviews
@@ -2026,16 +2116,23 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaReviewStatus = status.betaHumanReviews || {}
   const visualReviewStatus = status.productionVisualReviews || {}
   const betaQueueIssues = Array.isArray(betaReviewStatus.queueIssues) ? betaReviewStatus.queueIssues : []
+  const betaScheduleIssues = Array.isArray(betaReviewStatus.scheduleIssues) ? betaReviewStatus.scheduleIssues : []
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
+    betaReviewStatus.executionScheduleReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
     Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
     hasMeaningfulText(betaReviewStatus.packetManifest) &&
+    hasMeaningfulText(betaReviewStatus.scheduleArtifact) &&
+    hasMeaningfulText(betaReviewStatus.scheduleReport) &&
+    hasMeaningfulText(betaReviewStatus.scheduleCsv) &&
+    Number(betaReviewStatus.executionScheduleIssueCount) === 0 &&
     hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
+    betaScheduleIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2047,10 +2144,16 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     visualQueueIssues.length === 0
   ), {
     betaAssignmentQueueReady: betaReviewStatus.assignmentQueueReady ?? null,
+    betaExecutionScheduleReady: betaReviewStatus.executionScheduleReady ?? null,
+    betaExecutionScheduleIssueCount: betaReviewStatus.executionScheduleIssueCount ?? null,
     betaPacketCount: betaReviewStatus.packetCount ?? null,
     betaSubmissionTemplateCount: betaReviewStatus.submissionTemplateCount ?? null,
     betaPlanned: betaReviewStatus.planned ?? null,
+    betaScheduleArtifact: betaReviewStatus.scheduleArtifact ?? null,
+    betaScheduleReport: betaReviewStatus.scheduleReport ?? null,
+    betaScheduleCsv: betaReviewStatus.scheduleCsv ?? null,
     betaQueueIssues,
+    betaScheduleIssues,
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,

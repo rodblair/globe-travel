@@ -13,6 +13,7 @@ Status: beta-ready-public-blocked
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
+- Beta review execution schedule ready: yes
 - Production visual review history: 2/4
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
@@ -42,6 +43,9 @@ Status: beta-ready-public-blocked
 Beta human-review queue:
 - none
 
+Beta human-review schedule:
+- none
+
 Production visual-review progress:
 - none
 
@@ -60,6 +64,7 @@ Production visual-review queue:
 - Beta intake: `qa/beta-human-review-intake-2026-05-21.json`
 - Beta packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
 - Beta assignment board: `qa/beta-human-review-assignments-2026-05-21.md` and `qa/beta-human-review-assignments-2026-05-21.csv`
+- Beta execution schedule: `qa/beta-human-review-schedule-2026-05-21.json`, `qa/beta-human-review-schedule-2026-05-21.md`, and `qa/beta-human-review-schedule-assignments-2026-05-21.csv`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
