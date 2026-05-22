@@ -35,6 +35,14 @@ const cases = [
     expectedText: 'Skipping build',
   },
   {
+    id: 'qa-package-script-release-ops-skip',
+    intent: 'QA script-only package.json updates with release evidence skip Vercel production build.',
+    previous: '7dc0fabaec1a55846f84dbef62d188a875ed4bbb',
+    head: '9a910f92b0933e296cc1cfba4bfeea3095ce4e99',
+    expectedExitCode: 0,
+    expectedText: 'Skipping build',
+  },
+  {
     id: 'runtime-billing-builds',
     intent: 'Known runtime billing change still continues Vercel production build.',
     previous: '0bf1e7402b360e29fd73398e8caebbaa9ec745bb',

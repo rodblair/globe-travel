@@ -28,6 +28,41 @@ function hasRevision(revision) {
   }
 }
 
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`
+  }
+  return JSON.stringify(value)
+}
+
+function readJsonAt(revision, file) {
+  try {
+    return JSON.parse(runGit(['show', `${revision}:${file}`]))
+  } catch {
+    return null
+  }
+}
+
+function withoutQaScripts(pkg) {
+  if (!pkg || typeof pkg !== 'object') return pkg
+  const copy = { ...pkg }
+  const scripts = copy.scripts && typeof copy.scripts === 'object' ? copy.scripts : null
+  if (scripts) {
+    copy.scripts = Object.fromEntries(
+      Object.entries(scripts).filter(([name]) => !String(name).startsWith('qa:')),
+    )
+  }
+  return copy
+}
+
+function isQaScriptsOnlyPackageChange(file, base, head) {
+  if (file !== 'client/package.json') return false
+  const before = readJsonAt(base, file)
+  const after = readJsonAt(head, file)
+  return stableJson(withoutQaScripts(before)) === stableJson(withoutQaScripts(after))
+}
+
 function isUsableSha(value) {
   return Boolean(value && !/^0+$/.test(value))
 }
@@ -63,7 +98,10 @@ if (changedFiles.length === 0) {
   process.exit(1)
 }
 
-const unsafeFiles = changedFiles.filter((file) => !BUILD_SKIP_SAFE_PATTERNS.some((pattern) => pattern.test(file)))
+const unsafeFiles = changedFiles.filter((file) => (
+  !BUILD_SKIP_SAFE_PATTERNS.some((pattern) => pattern.test(file)) &&
+  !isQaScriptsOnlyPackageChange(file, base, head)
+))
 
 if (unsafeFiles.length === 0) {
   console.log(`[vercel-ignore] Skipping build: ${changedFiles.length} release-ops/documentation/evidence file(s) changed.`)

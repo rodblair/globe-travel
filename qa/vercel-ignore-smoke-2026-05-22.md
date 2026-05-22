@@ -5,10 +5,10 @@ Status: pass
 
 ## Result
 
-- Checked: 4
-- Passed: 4
+- Checked: 5
+- Passed: 5
 - Failed: 0
-- Safe skip cases: 3
+- Safe skip cases: 4
 - Runtime build cases: 1
 
 ## Cases
@@ -16,6 +16,7 @@ Status: pass
 - Pass: qa-only-probe-skips - QA evidence-only probe commit skips Vercel production build.
 - Pass: workflow-and-ignore-policy-skips - Release-ops workflow and ignore-policy commit stays skip-safe.
 - Pass: current-release-ops-scripts-skip - Current release-ops QA script and evidence updates skip Vercel production build.
+- Pass: qa-package-script-release-ops-skip - QA script-only package.json updates with release evidence skip Vercel production build.
 - Pass: runtime-billing-builds - Known runtime billing change still continues Vercel production build.
 
 ## Failures

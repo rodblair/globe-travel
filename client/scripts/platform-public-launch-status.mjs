@@ -19,6 +19,9 @@ const betaNextWaveOpsCsvPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || '
 const betaDispatchOutboxPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX || 'qa/beta-human-review-dispatch-outbox-2026-05-21.json'
 const betaDispatchOutboxReportPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_REPORT || 'qa/beta-human-review-dispatch-outbox-2026-05-21.md'
 const betaDispatchOutboxCsvPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_CSV || 'qa/beta-human-review-dispatch-outbox-2026-05-21.csv'
+const betaFollowUpOutboxPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX || 'qa/beta-human-review-follow-up-outbox-2026-05-21.json'
+const betaFollowUpOutboxReportPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_REPORT || 'qa/beta-human-review-follow-up-outbox-2026-05-21.md'
+const betaFollowUpOutboxCsvPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_CSV || 'qa/beta-human-review-follow-up-outbox-2026-05-21.csv'
 const betaAllWaveOpsPath = process.env.QA_BETA_REVIEW_ALL_WAVE_OPS || 'qa/beta-human-review-all-wave-ops-2026-05-21.json'
 const betaAllWaveOpsReportPath = process.env.QA_BETA_REVIEW_ALL_WAVE_OPS_REPORT || 'qa/beta-human-review-all-wave-ops-2026-05-21.md'
 const betaAllWaveOpsCsvPath = process.env.QA_BETA_REVIEW_ALL_WAVE_OPS_CSV || 'qa/beta-human-review-all-wave-ops-2026-05-21.csv'
@@ -448,6 +451,9 @@ const [
   betaDispatchOutbox,
   betaDispatchOutboxReport,
   betaDispatchOutboxCsv,
+  betaFollowUpOutbox,
+  betaFollowUpOutboxReport,
+  betaFollowUpOutboxCsv,
   betaAllWaveOps,
   betaAllWaveOpsReport,
   betaAllWaveOpsCsv,
@@ -492,6 +498,9 @@ const [
   readJson(betaDispatchOutboxPath),
   readText(betaDispatchOutboxReportPath),
   readText(betaDispatchOutboxCsvPath),
+  readJson(betaFollowUpOutboxPath),
+  readText(betaFollowUpOutboxReportPath),
+  readText(betaFollowUpOutboxCsvPath),
   readJson(betaAllWaveOpsPath),
   readText(betaAllWaveOpsReportPath),
   readText(betaAllWaveOpsCsvPath),
@@ -1097,6 +1106,53 @@ if (!betaDispatchOutboxReport.includes('This dispatch outbox is assignment and o
   betaDispatchOutboxIssues.push('beta dispatch outbox report does not restate the evidence boundary')
 }
 
+const betaFollowUpOutboxIssues = []
+const betaFollowUpOutboxRows = Array.isArray(betaFollowUpOutbox.messageRows) ? betaFollowUpOutbox.messageRows : []
+const betaFollowUpOutboxChecks = Array.isArray(betaFollowUpOutbox.messageFileChecks) ? betaFollowUpOutbox.messageFileChecks : []
+if (betaFollowUpOutbox.status !== 'pass') betaFollowUpOutboxIssues.push('beta follow-up outbox status is not pass')
+if (betaFollowUpOutbox.dispatchOutboxArtifact && betaFollowUpOutbox.dispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
+  betaFollowUpOutboxIssues.push(`beta follow-up outbox source ${betaFollowUpOutbox.dispatchOutboxArtifact} does not match ${qaDisplayPath(betaDispatchOutboxPath)}`)
+}
+if (betaFollowUpOutbox.intakeArtifact && betaFollowUpOutbox.intakeArtifact !== qaDisplayPath(betaIntakePath)) {
+  betaFollowUpOutboxIssues.push(`beta follow-up outbox intake ${betaFollowUpOutbox.intakeArtifact} does not match ${qaDisplayPath(betaIntakePath)}`)
+}
+if (Number(betaFollowUpOutbox.followUpRowCount) !== Number(betaDispatchOutbox.followUpDueSoonCount || 0)) {
+  betaFollowUpOutboxIssues.push(`beta follow-up outbox row count ${betaFollowUpOutbox.followUpRowCount ?? 'missing'} does not match due-soon follow-ups ${betaDispatchOutbox.followUpDueSoonCount ?? 0}`)
+}
+if (Number(betaFollowUpOutbox.messageFileCount) !== betaFollowUpOutboxRows.length || betaFollowUpOutboxChecks.length !== betaFollowUpOutboxRows.length) {
+  betaFollowUpOutboxIssues.push('beta follow-up outbox does not include one message file check per follow-up row')
+}
+if (Number(betaFollowUpOutbox.followUpOverdueCount) > 0) {
+  betaFollowUpOutboxIssues.push(`beta follow-up outbox has ${betaFollowUpOutbox.followUpOverdueCount} overdue follow-up message(s)`)
+}
+for (const row of betaFollowUpOutboxRows) {
+  if (!row.id || !betaFollowUpOutboxCsv.includes(row.id)) betaFollowUpOutboxIssues.push(`beta follow-up outbox CSV missing row ${row.id || 'unknown'}`)
+  if (row.followUpFile && !betaFollowUpOutboxCsv.includes(row.followUpFile)) {
+    betaFollowUpOutboxIssues.push(`beta follow-up outbox CSV missing message file for ${row.id || 'unknown'}`)
+  }
+  if (row.completedSubmissionPath && !betaFollowUpOutboxCsv.includes(row.completedSubmissionPath)) {
+    betaFollowUpOutboxIssues.push(`beta follow-up outbox CSV missing completed submission path for ${row.id || 'unknown'}`)
+  }
+}
+for (const check of betaFollowUpOutboxChecks) {
+  if (
+    !check.exists ||
+    !check.hasSubject ||
+    !check.hasStartUrl ||
+    !check.hasPacket ||
+    !check.hasTemplate ||
+    !check.hasCompletedSubmission ||
+    !check.hasIntakeCommand ||
+    !check.hasLaunchBoundary
+  ) {
+    betaFollowUpOutboxIssues.push(`beta follow-up outbox message file is incomplete for ${check.id || check.followUpFile || 'unknown'}`)
+  }
+}
+if (!betaFollowUpOutboxReport.includes('Status: pass')) betaFollowUpOutboxIssues.push('beta follow-up outbox report is not passing')
+if (!betaFollowUpOutboxReport.includes('This follow-up outbox is outreach evidence, not completed review evidence')) {
+  betaFollowUpOutboxIssues.push('beta follow-up outbox report does not restate the evidence boundary')
+}
+
 const betaAllWaveOpsIssues = []
 const betaAllWaveOpsRows = Array.isArray(betaAllWaveOps.operatorRows) ? betaAllWaveOps.operatorRows : []
 const betaAllWaveOpsIds = betaAllWaveOpsRows.map((row) => row.id).filter(Boolean)
@@ -1644,6 +1700,7 @@ if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execu
 if (betaCommandCenterIssues.length > 0) guardrailIssues.push('beta human review command center is not fully prepared')
 if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review next-wave ops pack is not fully prepared')
 if (betaDispatchOutboxIssues.length > 0) guardrailIssues.push('beta human review dispatch outbox is not fully prepared')
+if (betaFollowUpOutboxIssues.length > 0) guardrailIssues.push('beta human review follow-up outbox is not fully prepared')
 if (betaAllWaveOpsIssues.length > 0) guardrailIssues.push('beta human review all-wave ops pack is not fully prepared')
 if (!betaWaveRehearsalReady) guardrailIssues.push('beta human review next-wave browser rehearsal is not passing')
 if (!betaMatrixRehearsalReady) guardrailIssues.push('beta human review full-matrix browser rehearsal is not passing')
@@ -1753,6 +1810,8 @@ const summary = {
     nextWaveOpsIssueCount: betaNextWaveOpsIssues.length,
     dispatchOutboxReady: betaDispatchOutboxIssues.length === 0,
     dispatchOutboxIssueCount: betaDispatchOutboxIssues.length,
+    followUpOutboxReady: betaFollowUpOutboxIssues.length === 0,
+    followUpOutboxIssueCount: betaFollowUpOutboxIssues.length,
     allWaveOpsReady: betaAllWaveOpsIssues.length === 0,
     allWaveOpsIssueCount: betaAllWaveOpsIssues.length,
     packetManifest: qaDisplayPath(betaPacketManifestPath),
@@ -1770,6 +1829,12 @@ const summary = {
     dispatchOutboxArtifactDir: qaDisplayPath(betaDispatchOutbox.artifactDir),
     dispatchOutboxRowCount: betaDispatchOutbox.outboxRowCount ?? null,
     dispatchOutboxMessageFileCount: betaDispatchOutbox.messageFileCount ?? null,
+    followUpOutboxArtifact: qaDisplayPath(betaFollowUpOutboxPath),
+    followUpOutboxReport: qaDisplayPath(betaFollowUpOutboxReportPath),
+    followUpOutboxCsv: qaDisplayPath(betaFollowUpOutboxCsvPath),
+    followUpOutboxArtifactDir: qaDisplayPath(betaFollowUpOutbox.artifactDir),
+    followUpOutboxRowCount: betaFollowUpOutbox.followUpRowCount ?? null,
+    followUpOutboxMessageFileCount: betaFollowUpOutbox.messageFileCount ?? null,
     allWaveOpsArtifact: qaDisplayPath(betaAllWaveOpsPath),
     allWaveOpsReport: qaDisplayPath(betaAllWaveOpsReportPath),
     allWaveOpsCsv: qaDisplayPath(betaAllWaveOpsCsvPath),
@@ -1864,6 +1929,8 @@ const summary = {
     dispatchOutboxOverdueCount: betaDispatchOutbox.dispatchOverdueCount ?? null,
     dispatchOutboxFollowUpDueSoonCount: betaDispatchOutbox.followUpDueSoonCount ?? null,
     dispatchOutboxFollowUpOverdueCount: betaDispatchOutbox.followUpOverdueCount ?? null,
+    followUpOutboxDueSoonCount: betaFollowUpOutbox.dueSoonCount ?? null,
+    followUpOutboxOverdueCount: betaFollowUpOutbox.followUpOverdueCount ?? null,
     nextWaveOpsRowCount: betaNextWaveOpsRows.length,
     scheduleWaveCount: scheduleWaveIds.length,
     packetCount: betaPacketRecords.length,
@@ -1875,6 +1942,7 @@ const summary = {
     commandCenterIssues: betaCommandCenterIssues,
     nextWaveOpsIssues: betaNextWaveOpsIssues,
     dispatchOutboxIssues: betaDispatchOutboxIssues,
+    followUpOutboxIssues: betaFollowUpOutboxIssues,
     allWaveOpsIssues: betaAllWaveOpsIssues,
   },
   productionVisualReviews: {
@@ -2213,6 +2281,7 @@ const summary = {
     betaMatrixRehearsal: qaDisplayPath(betaMatrixRehearsalPath),
     betaGuestStartRehearsal: qaDisplayPath(betaGuestStartRehearsalPath),
     betaDispatchOutbox: qaDisplayPath(betaDispatchOutboxPath),
+    betaFollowUpOutbox: qaDisplayPath(betaFollowUpOutboxPath),
     betaAllWaveOps: qaDisplayPath(betaAllWaveOpsPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
@@ -2245,6 +2314,7 @@ Status: ${status}
 - Beta review follow-ups overdue: ${summary.betaHumanReviews.followUpOverdueCount || 0}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Beta review dispatch outbox ready: ${summary.betaHumanReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.dispatchOutboxMessageFileCount || 0} message files)
+- Beta review follow-up outbox ready: ${summary.betaHumanReviews.followUpOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.followUpOutboxMessageFileCount || 0} message files)
 - Beta review all-wave ops ready: ${summary.betaHumanReviews.allWaveOpsReady ? 'yes' : 'no'} (${summary.betaHumanReviews.allWaveOpsRowCount || 0}/${summary.betaHumanReviews.planned || 0})
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
 - Beta review matrix rehearsal ready: ${summary.betaHumanReviews.matrixRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.matrixRehearsalChecked || 0}/${summary.betaHumanReviews.planned || 0})
@@ -2300,6 +2370,9 @@ ${markdownList(betaNextWaveOpsIssues)}
 Beta human-review dispatch outbox:
 ${markdownList(betaDispatchOutboxIssues)}
 
+Beta human-review follow-up outbox:
+${markdownList(betaFollowUpOutboxIssues)}
+
 Beta human-review all-wave ops:
 ${markdownList(betaAllWaveOpsIssues)}
 
@@ -2351,6 +2424,7 @@ ${markdownList(summary.nextActions)}
 - Beta command center: \`${summary.betaHumanReviews.commandCenterArtifact}\` and \`${summary.betaHumanReviews.commandCenterReport}\`
 - Beta next-wave ops: \`${summary.betaHumanReviews.nextWaveOpsArtifact}\`, \`${summary.betaHumanReviews.nextWaveOpsReport}\`, and \`${summary.betaHumanReviews.nextWaveOpsCsv}\`
 - Beta dispatch outbox: \`${summary.betaHumanReviews.dispatchOutboxArtifact}\`, \`${summary.betaHumanReviews.dispatchOutboxReport}\`, \`${summary.betaHumanReviews.dispatchOutboxCsv}\`, and \`${summary.betaHumanReviews.dispatchOutboxArtifactDir}\`
+- Beta follow-up outbox: \`${summary.betaHumanReviews.followUpOutboxArtifact}\`, \`${summary.betaHumanReviews.followUpOutboxReport}\`, \`${summary.betaHumanReviews.followUpOutboxCsv}\`, and \`${summary.betaHumanReviews.followUpOutboxArtifactDir}\`
 - Beta all-wave ops: \`${summary.betaHumanReviews.allWaveOpsArtifact}\`, \`${summary.betaHumanReviews.allWaveOpsReport}\`, and \`${summary.betaHumanReviews.allWaveOpsCsv}\`
 - Beta wave rehearsal: \`${summary.betaHumanReviews.waveRehearsalArtifact}\` and \`${summary.betaHumanReviews.waveRehearsalReport}\`
 - Beta matrix rehearsal: \`${summary.betaHumanReviews.matrixRehearsalArtifact}\` and \`${summary.betaHumanReviews.matrixRehearsalReport}\`
