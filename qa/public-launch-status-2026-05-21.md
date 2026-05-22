@@ -22,6 +22,8 @@ Status: beta-ready-public-blocked
 - Beta review wave rehearsal ready: yes (5/5)
 - Beta review matrix rehearsal ready: yes (25/25)
 - Production visual review history: 2/4
+- Production visual due-soon reviews: 1
+- Production visual overdue reviews: 0
 - Latest production visual artifact: qa/visual-baseline-production-release-2026-05-22-2897c3a
 - Latest production visual commit: 2897c3a16d72c49852ace8763f0840972a647f31
 - Latest production visual deployment: globe-travel-dhghg8wn2-rodney-blairs-projects.vercel.app

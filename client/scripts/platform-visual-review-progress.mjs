@@ -6,6 +6,7 @@ const scriptDir = dirname(fileURLToPath(import.meta.url))
 const clientDir = resolve(scriptDir, '..')
 const repoRoot = resolve(clientDir, '..')
 const requestedDate = process.env.QA_VISUAL_REVIEW_PROGRESS_DATE || ''
+const requestedToday = process.env.QA_VISUAL_REVIEW_TODAY || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
 const requirePublicProgress = ['1', 'true', 'yes', 'public'].includes(String(process.env.QA_VISUAL_REVIEW_PROGRESS_REQUIRE_PUBLIC || '').toLowerCase())
 
@@ -39,9 +40,24 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isDate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+}
+
+function currentReviewDate() {
+  return isDate(requestedToday) ? requestedToday : currentUtcDate()
+}
+
+function daysBetween(startDate, endDate) {
+  const start = Date.parse(`${startDate}T00:00:00Z`)
+  const end = Date.parse(`${endDate}T00:00:00Z`)
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null
+  return Math.round((end - start) / 86400000)
+}
+
 function isFutureDate(value) {
   const date = dateOnly(value)
-  return Boolean(date) && date > currentUtcDate()
+  return Boolean(date) && date > currentReviewDate()
 }
 
 function unique(values) {
@@ -177,6 +193,7 @@ const jsonArtifact = process.env.QA_VISUAL_REVIEW_PROGRESS_JSON || `production-v
 const reportArtifact = process.env.QA_VISUAL_REVIEW_PROGRESS_REPORT || `production-visual-review-progress-${date}.md`
 const historyDates = unique(reviewHistory.map((review) => dateOnly(review.reviewedAt)))
 const remainingRequiredReviewDates = Math.max(0, minimumPublicLaunchReviewHistory - historyDates.length)
+const today = currentReviewDate()
 const latestIssues = publicReviewIssues(latestProductionReview, latestSummary)
 const latestMissingScreenshots = await missingScreenshots(latestSummary)
 if (latestMissingScreenshots.length > 0) {
@@ -206,6 +223,29 @@ const duplicateHistoryDates = historyDates.filter((dateValue) => (
 const invalidHistoryReviews = historyResults.filter((result) => !result.ok)
 const scheduledDates = unique(scheduledReviews.map((review) => dateOnly(review.dueAt)))
 const nextScheduledReview = scheduledReviews.find((review) => dateOnly(review.dueAt) === dateOnly(register.nextReviewDueAt)) || scheduledReviews[0] || null
+const scheduledReviewStatus = scheduledReviews.map((review) => {
+  const dueAt = dateOnly(review.dueAt)
+  const daysUntilDue = daysBetween(today, dueAt)
+  const completed = historyDates.includes(dueAt)
+  return {
+    id: review.id || null,
+    dueAt,
+    daysUntilDue,
+    completed,
+    status: completed
+      ? 'complete'
+      : daysUntilDue != null && daysUntilDue < 0
+        ? 'overdue'
+        : 'planned',
+  }
+})
+const overdueScheduledReviews = scheduledReviewStatus.filter((review) => review.status === 'overdue')
+const dueSoonScheduledReviews = scheduledReviewStatus.filter((review) => (
+  review.status === 'planned' &&
+  Number.isFinite(review.daysUntilDue) &&
+  review.daysUntilDue >= 0 &&
+  review.daysUntilDue <= 7
+))
 const scheduledCoverageReady = scheduledReviews.length >= remainingRequiredReviewDates &&
   scheduledDates.length >= remainingRequiredReviewDates
 const publicLaunchReadiness = historyDates.length >= minimumPublicLaunchReviewHistory &&
@@ -254,6 +294,12 @@ addCheck('scheduled production visual-review queue covers remaining launch dates
   nextReviewDueAt: register.nextReviewDueAt || null,
 })
 
+addCheck('scheduled production visual-review queue has no overdue review dates', overdueScheduledReviews.length === 0, {
+  today,
+  overdueScheduledReviewCount: overdueScheduledReviews.length,
+  overdueScheduledReviews,
+})
+
 addCheck('latest production review does not inflate dated public-launch history', (
   !dateOnly(latestProductionReview.reviewedAt) ||
   historyDates.includes(dateOnly(latestProductionReview.reviewedAt)) ||
@@ -274,6 +320,7 @@ if (requirePublicProgress) {
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
+  today,
   registerPath: normalizeArtifactPath(registerPath),
   jsonArtifact: `qa/${jsonArtifact}`,
   reportArtifact: `qa/${reportArtifact}`,
@@ -300,6 +347,11 @@ const summary = {
   scheduledReviewCount: scheduledReviews.length,
   distinctScheduledDateCount: scheduledDates.length,
   scheduledDates,
+  scheduledReviewStatus,
+  dueSoonScheduledReviewCount: dueSoonScheduledReviews.length,
+  dueSoonScheduledReviews,
+  overdueScheduledReviewCount: overdueScheduledReviews.length,
+  overdueScheduledReviews,
   nextReviewDueAt: register.nextReviewDueAt || null,
   nextScheduledReview,
   invalidHistoryReviewCount: invalidHistoryReviews.length,
@@ -319,6 +371,7 @@ const summary = {
 const report = `# Production Visual Review Progress
 
 Date: ${date}
+Today: ${summary.today}
 Register: \`${summary.registerPath}\`
 Status: ${summary.status}
 
@@ -332,6 +385,8 @@ Status: ${summary.status}
 - Completed history dates: ${summary.distinctHistoryDateCount}/${summary.minimumPublicLaunchReviewHistory}
 - Remaining required review dates: ${summary.remainingRequiredReviewDates}
 - Scheduled review dates: ${summary.distinctScheduledDateCount}
+- Due-soon scheduled reviews: ${summary.dueSoonScheduledReviewCount}
+- Overdue scheduled reviews: ${summary.overdueScheduledReviewCount}
 - Next review due: ${summary.nextReviewDueAt || 'missing'}
 
 ## Launch Readiness
@@ -358,7 +413,10 @@ ${historyResults.map((review) => `- ${review.reviewedAt || 'missing date'}: ${re
 
 ## Scheduled Queue
 
-${scheduledReviews.map((review) => `- ${review.id}: ${dateOnly(review.dueAt)} - \`${review.expectedArtifactPrefix}\``).join('\n') || '- none'}
+${scheduledReviews.map((review) => {
+  const status = scheduledReviewStatus.find((item) => item.id === review.id)
+  return `- ${review.id}: ${dateOnly(review.dueAt)} (${status?.status || 'planned'}, ${status?.daysUntilDue ?? 'n/a'} day(s)) - \`${review.expectedArtifactPrefix}\``
+}).join('\n') || '- none'}
 
 ## Checks
 

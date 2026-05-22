@@ -145,6 +145,18 @@
     "latestProductionCommit": "2897c3a16d72c49852ace8763f0840972a647f31",
     "latestProductionDeploymentUrl": "globe-travel-dhghg8wn2-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
+    "dueSoonScheduledReviewCount": 1,
+    "dueSoonScheduledReviews": [
+      {
+        "id": "PROD-VISUAL-HISTORY-002",
+        "dueAt": "2026-05-28",
+        "daysUntilDue": 6,
+        "completed": false,
+        "status": "planned"
+      }
+    ],
+    "overdueScheduledReviewCount": 0,
+    "overdueScheduledReviews": [],
     "nextReviewDueAt": "2026-05-28",
     "intakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
     "progressArtifact": "qa/production-visual-review-progress-2026-05-21.json",

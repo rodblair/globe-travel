@@ -1217,6 +1217,9 @@ if (Number(visualProgress.remainingRequiredReviewDates) !== visualRemaining) {
 if (Number(visualProgress.scheduledReviewCount) !== scheduledVisualReviews.length) {
   visualProgressIssues.push(`progress scheduled review count ${visualProgress.scheduledReviewCount ?? 'missing'} does not match ${scheduledVisualReviews.length}`)
 }
+if (Number(visualProgress.overdueScheduledReviewCount || 0) > 0) {
+  visualProgressIssues.push(`progress has ${Number(visualProgress.overdueScheduledReviewCount || 0)} overdue scheduled visual review(s)`)
+}
 if (Number(visualProgress.latestProductionReview?.issueCount) !== 0) {
   visualProgressIssues.push('progress latest production review has unresolved evidence issues')
 }
@@ -1511,6 +1514,10 @@ const summary = {
     latestProductionCommit: visualProgress.latestProductionReview?.productionCommit || null,
     latestProductionDeploymentUrl: visualProgress.latestProductionReview?.deploymentUrl || null,
     scheduledReviewCount: scheduledVisualReviews.length,
+    dueSoonScheduledReviewCount: Number(visualProgress.dueSoonScheduledReviewCount) || 0,
+    dueSoonScheduledReviews: Array.isArray(visualProgress.dueSoonScheduledReviews) ? visualProgress.dueSoonScheduledReviews : [],
+    overdueScheduledReviewCount: Number(visualProgress.overdueScheduledReviewCount) || 0,
+    overdueScheduledReviews: Array.isArray(visualProgress.overdueScheduledReviews) ? visualProgress.overdueScheduledReviews : [],
     nextReviewDueAt: visualRegister.nextReviewDueAt || null,
     intakeArtifact: qaDisplayPath(visualIntakePath),
     progressArtifact: qaDisplayPath(visualProgressPath),
@@ -1811,6 +1818,8 @@ Status: ${status}
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
 - Beta review matrix rehearsal ready: ${summary.betaHumanReviews.matrixRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.matrixRehearsalChecked || 0}/${summary.betaHumanReviews.planned || 0})
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
+- Production visual due-soon reviews: ${summary.productionVisualReviews.dueSoonScheduledReviewCount || 0}
+- Production visual overdue reviews: ${summary.productionVisualReviews.overdueScheduledReviewCount || 0}
 - Latest production visual artifact: ${summary.productionVisualReviews.latestProductionArtifact || 'missing'}
 - Latest production visual commit: ${summary.productionVisualReviews.latestProductionCommit || 'missing'}
 - Latest production visual deployment: ${summary.productionVisualReviews.latestProductionDeploymentUrl || 'missing'}

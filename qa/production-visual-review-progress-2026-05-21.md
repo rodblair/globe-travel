@@ -1,19 +1,22 @@
 # Production Visual Review Progress
 
 Date: 2026-05-21
+Today: 2026-05-22
 Register: `qa/production-visual-review-register.json`
 Status: pass
 
 ## Result
 
-- Checked: 5
-- Passed: 5
+- Checked: 6
+- Passed: 6
 - Failed: 0
 - Latest production artifact: `qa/visual-baseline-production-release-2026-05-22-2897c3a`
 - Latest production review issues: 0
 - Completed history dates: 2/4
 - Remaining required review dates: 2
 - Scheduled review dates: 3
+- Due-soon scheduled reviews: 1
+- Overdue scheduled reviews: 0
 - Next review due: 2026-05-28
 
 ## Launch Readiness
@@ -41,9 +44,9 @@ Issues:
 
 ## Scheduled Queue
 
-- PROD-VISUAL-HISTORY-002: 2026-05-28 - `qa/visual-baseline-production-review-2026-05-28`
-- PROD-VISUAL-HISTORY-003: 2026-06-04 - `qa/visual-baseline-production-review-2026-06-04`
-- PROD-VISUAL-HISTORY-004: 2026-06-11 - `qa/visual-baseline-production-review-2026-06-11`
+- PROD-VISUAL-HISTORY-002: 2026-05-28 (planned, 6 day(s)) - `qa/visual-baseline-production-review-2026-05-28`
+- PROD-VISUAL-HISTORY-003: 2026-06-04 (planned, 13 day(s)) - `qa/visual-baseline-production-review-2026-06-04`
+- PROD-VISUAL-HISTORY-004: 2026-06-11 (planned, 20 day(s)) - `qa/visual-baseline-production-review-2026-06-11`
 
 ## Checks
 
@@ -51,4 +54,5 @@ Issues:
 - Pass: latest production visual review is complete and evidence-backed
 - Pass: completed production visual-review history is valid and distinct
 - Pass: scheduled production visual-review queue covers remaining launch dates
+- Pass: scheduled production visual-review queue has no overdue review dates
 - Pass: latest production review does not inflate dated public-launch history

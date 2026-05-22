@@ -1,12 +1,13 @@
 {
   "date": "2026-05-21",
+  "today": "2026-05-22",
   "registerPath": "qa/production-visual-review-register.json",
   "jsonArtifact": "qa/production-visual-review-progress-2026-05-21.json",
   "reportArtifact": "qa/production-visual-review-progress-2026-05-21.md",
   "status": "pass",
   "requirePublicProgress": false,
-  "checked": 5,
-  "passed": 5,
+  "checked": 6,
+  "passed": 6,
   "failed": 0,
   "latestProductionReview": {
     "artifact": "qa/visual-baseline-production-release-2026-05-22-2897c3a",
@@ -33,6 +34,41 @@
     "2026-06-04",
     "2026-06-11"
   ],
+  "scheduledReviewStatus": [
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "dueAt": "2026-05-28",
+      "daysUntilDue": 6,
+      "completed": false,
+      "status": "planned"
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-003",
+      "dueAt": "2026-06-04",
+      "daysUntilDue": 13,
+      "completed": false,
+      "status": "planned"
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "daysUntilDue": 20,
+      "completed": false,
+      "status": "planned"
+    }
+  ],
+  "dueSoonScheduledReviewCount": 1,
+  "dueSoonScheduledReviews": [
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "dueAt": "2026-05-28",
+      "daysUntilDue": 6,
+      "completed": false,
+      "status": "planned"
+    }
+  ],
+  "overdueScheduledReviewCount": 0,
+  "overdueScheduledReviews": [],
   "nextReviewDueAt": "2026-05-28",
   "nextScheduledReview": {
     "id": "PROD-VISUAL-HISTORY-002",
@@ -103,6 +139,13 @@
       "distinctScheduledDateCount": 3,
       "remainingRequiredReviewDates": 2,
       "nextReviewDueAt": "2026-05-28"
+    },
+    {
+      "name": "scheduled production visual-review queue has no overdue review dates",
+      "ok": true,
+      "today": "2026-05-22",
+      "overdueScheduledReviewCount": 0,
+      "overdueScheduledReviews": []
     },
     {
       "name": "latest production review does not inflate dated public-launch history",
