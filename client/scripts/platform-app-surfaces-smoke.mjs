@@ -149,7 +149,7 @@ async function cleanupGeneratedGuest() {
     }
   }
 
-  if (!isLocalBaseUrl) {
+  if (!isLocalBaseUrl && !allowRemoteGuest) {
     return {
       attempted: false,
       reason: 'remote guest cleanup skipped',
@@ -228,9 +228,11 @@ async function collectSurface(page, surface, viewport) {
   const requestFailedHandler = (request) => {
     const url = request.url()
     if (url.startsWith(baseUrl)) {
+      const error = request.failure()?.errorText || 'request failed'
+      if (error === 'net::ERR_ABORTED') return
       failedRequests.push({
         url,
-        error: request.failure()?.errorText || 'request failed',
+        error,
       })
     }
   }

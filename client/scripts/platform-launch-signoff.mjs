@@ -2459,6 +2459,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     productionAppSurfacesStatus.status === 'pass' &&
     productionAppSurfacesStatus.authMode === 'guest' &&
     productionAppSurfacesStatus.localOnly === false &&
+    productionAppSurfacesStatus.guestCleanupAttempted === true &&
+    productionAppSurfacesStatus.guestCleanupProfileDeleted === true &&
+    productionAppSurfacesStatus.guestCleanupUserDeleted === true &&
+    !productionAppSurfacesStatus.guestCleanupError &&
     Number(productionAppSurfacesStatus.requiredRouteCount) === requiredAppSurfaceRoutes.length &&
     Number(productionAppSurfacesStatus.requiredViewportCount) === requiredAppSurfaceViewports.length &&
     Number(productionAppSurfacesStatus.expectedCheckCount) === requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
@@ -2481,6 +2485,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     productionAppSurfacesBaseUrl: productionAppSurfacesStatus.baseUrl || null,
     productionAppSurfacesAuthMode: productionAppSurfacesStatus.authMode || null,
     productionAppSurfacesLocalOnly: productionAppSurfacesStatus.localOnly ?? null,
+    productionAppSurfacesGuestCleanupAttempted: productionAppSurfacesStatus.guestCleanupAttempted ?? null,
+    productionAppSurfacesGuestCleanupProfileDeleted: productionAppSurfacesStatus.guestCleanupProfileDeleted ?? null,
+    productionAppSurfacesGuestCleanupUserDeleted: productionAppSurfacesStatus.guestCleanupUserDeleted ?? null,
+    productionAppSurfacesGuestCleanupError: productionAppSurfacesStatus.guestCleanupError || null,
     productionAppSurfacesChecked: productionAppSurfacesStatus.checked ?? null,
     productionAppSurfacesPassed: productionAppSurfacesStatus.passed ?? null,
     productionAppSurfacesFailed: productionAppSurfacesStatus.failed ?? null,

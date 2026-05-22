@@ -791,11 +791,16 @@ const productionAppSurfaceViewportIds = Array.isArray(productionAppSurfaces.view
 const missingProductionAppSurfaceRoutes = missingFrom(productionAppSurfaceRouteIds, requiredAppSurfaceRoutes)
 const missingProductionAppSurfaceViewports = missingFrom(productionAppSurfaceViewportIds, requiredAppSurfaceViewports)
 const badProductionAppSurfaceResults = productionAppSurfaceResults.filter((result) => result.ok !== true)
+const productionAppSurfaceCleanup = productionAppSurfaces.auth?.cleanup || {}
 const productionAppSurfaceIssues = [
   ...(productionAppSurfaces.status === 'pass' ? [] : ['production authenticated app surfaces status is not pass']),
   ...(productionAppSurfaces.baseUrl === baseUrl ? [] : [`production authenticated app surfaces baseUrl ${productionAppSurfaces.baseUrl || 'missing'} does not match ${baseUrl}`]),
   ...(productionAppSurfaces.localOnly === false ? [] : ['production authenticated app surfaces should run against the live alias with remote guest enabled']),
   ...(productionAppSurfaces.auth?.mode === 'guest' ? [] : ['production authenticated app surfaces did not run in guest auth mode']),
+  ...(productionAppSurfaceCleanup.attempted === true ? [] : ['production authenticated app surfaces did not attempt generated guest cleanup']),
+  ...(productionAppSurfaceCleanup.profileDeleted === true ? [] : ['production authenticated app surfaces did not delete the generated guest profile']),
+  ...(productionAppSurfaceCleanup.userDeleted === true ? [] : ['production authenticated app surfaces did not delete the generated guest auth user']),
+  ...(productionAppSurfaceCleanup.error ? [`production authenticated app surfaces cleanup error: ${productionAppSurfaceCleanup.error}`] : []),
   ...(Number(productionAppSurfaces.checked) >= expectedAppSurfaceChecks ? [] : [`production authenticated app surfaces checked ${productionAppSurfaces.checked ?? 'missing'} route/viewport pairs but expected at least ${expectedAppSurfaceChecks}`]),
   ...(Number(productionAppSurfaces.failed) === 0 ? [] : [`production authenticated app surfaces has ${productionAppSurfaces.failed ?? 'missing'} failed route/viewport pair(s)`]),
   ...missingProductionAppSurfaceRoutes.map((route) => `production authenticated app surfaces missing ${route}`),
@@ -1695,6 +1700,10 @@ const summary = {
     routeCount: appSurfaces.routeCount ?? appSurfaceRouteIds.length,
     viewportCount: appSurfaces.viewportCount ?? appSurfaceViewportIds.length,
     authMode: appSurfaces.auth?.mode || null,
+    guestCleanupAttempted: appSurfaces.auth?.cleanup?.attempted ?? null,
+    guestCleanupProfileDeleted: appSurfaces.auth?.cleanup?.profileDeleted ?? null,
+    guestCleanupUserDeleted: appSurfaces.auth?.cleanup?.userDeleted ?? null,
+    guestCleanupError: appSurfaces.auth?.cleanup?.error || null,
     localOnly: appSurfaces.localOnly ?? null,
     missingRoutes: missingAppSurfaceRoutes,
     missingViewports: missingAppSurfaceViewports,
@@ -1722,6 +1731,10 @@ const summary = {
     routeCount: productionAppSurfaces.routeCount ?? productionAppSurfaceRouteIds.length,
     viewportCount: productionAppSurfaces.viewportCount ?? productionAppSurfaceViewportIds.length,
     authMode: productionAppSurfaces.auth?.mode || null,
+    guestCleanupAttempted: productionAppSurfaceCleanup.attempted ?? null,
+    guestCleanupProfileDeleted: productionAppSurfaceCleanup.profileDeleted ?? null,
+    guestCleanupUserDeleted: productionAppSurfaceCleanup.userDeleted ?? null,
+    guestCleanupError: productionAppSurfaceCleanup.error || null,
     localOnly: productionAppSurfaces.localOnly ?? null,
     missingRoutes: missingProductionAppSurfaceRoutes,
     missingViewports: missingProductionAppSurfaceViewports,

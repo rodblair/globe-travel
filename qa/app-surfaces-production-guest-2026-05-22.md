@@ -12,7 +12,7 @@ Auth mode: guest
 - Failed: 0
 - Routes: 9
 - Viewports: 2
-- Guest cleanup: remote guest cleanup skipped
+- Guest cleanup: attempted (ok)
 
 ## Coverage
 
