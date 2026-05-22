@@ -24,17 +24,44 @@
     "assignmentQueueIssueCount": 0,
     "executionScheduleReady": true,
     "executionScheduleIssueCount": 0,
+    "commandCenterReady": true,
+    "commandCenterIssueCount": 0,
     "packetManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
     "scheduleArtifact": "qa/beta-human-review-schedule-2026-05-21.json",
     "scheduleReport": "qa/beta-human-review-schedule-2026-05-21.md",
     "scheduleCsv": "qa/beta-human-review-schedule-assignments-2026-05-21.csv",
+    "commandCenterArtifact": "qa/beta-human-review-command-center-2026-05-21.json",
+    "commandCenterReport": "qa/beta-human-review-command-center-2026-05-21.md",
+    "nextWave": {
+      "waveId": "BETA-WAVE-01",
+      "kickoffAt": "2026-05-22",
+      "dueAt": "2026-05-25",
+      "daysUntilDue": 3,
+      "status": "open",
+      "scheduledReviewCount": 5,
+      "completedReviewCount": 0,
+      "remainingReviewCount": 5,
+      "reviewerCohorts": [
+        "continuity reviewer",
+        "share-feedback reviewer",
+        "mobile planner reviewer"
+      ],
+      "reviewIds": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ]
+    },
     "scheduleWaveCount": 5,
     "packetCount": 25,
     "assignmentCsv": "qa/beta-human-review-assignments-2026-05-21.csv",
     "assignmentReport": "qa/beta-human-review-assignments-2026-05-21.md",
     "submissionTemplateCount": 25,
     "queueIssues": [],
-    "scheduleIssues": []
+    "scheduleIssues": [],
+    "commandCenterIssues": []
   },
   "productionVisualReviews": {
     "historyCount": 2,

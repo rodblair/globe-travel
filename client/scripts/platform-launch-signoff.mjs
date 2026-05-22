@@ -33,6 +33,12 @@ const betaHumanReviewSchedule =
 const betaHumanReviewScheduleReport =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_SCHEDULE_REPORT ||
   'qa/beta-human-review-schedule-2026-05-21.md'
+const betaHumanReviewCommandCenter =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_COMMAND_CENTER ||
+  'qa/beta-human-review-command-center-2026-05-21.json'
+const betaHumanReviewCommandCenterReport =
+  process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_COMMAND_CENTER_REPORT ||
+  'qa/beta-human-review-command-center-2026-05-21.md'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -1368,6 +1374,55 @@ async function checkBetaHumanReviewRegister() {
     scheduleReportHasLaunchRule,
   })
 
+  let commandCenter = null
+  let commandCenterReport = ''
+  let commandCenterError = null
+  let commandCenterReportError = null
+  const commandCenterPath = register.reviewCommandCenterArtifact || betaHumanReviewCommandCenter
+  const commandCenterReportPath = register.reviewCommandCenterReport || betaHumanReviewCommandCenterReport
+
+  try {
+    commandCenter = await readJson(commandCenterPath)
+  } catch (error) {
+    commandCenterError = error instanceof Error ? error.message : String(error)
+  }
+
+  if (hasMeaningfulText(commandCenterReportPath)) {
+    try {
+      commandCenterReport = await readText(commandCenterReportPath)
+    } catch (error) {
+      commandCenterReportError = error instanceof Error ? error.message : String(error)
+    }
+  }
+
+  const commandCenterReportHasBoundary = commandCenterReport.includes('This command center is an operating artifact, not completed review evidence')
+  addCheck('beta human review command center aligns schedule, progress, and intake', (
+    commandCenter &&
+    !commandCenterError &&
+    !commandCenterReportError &&
+    commandCenter.status === 'pass' &&
+    Number(commandCenter.plannedReviewCount) === plannedReviews.length &&
+    Number(commandCenter.completedReviewCount) === plannedReviews.filter((review) => ['passed', 'failed', 'accepted-risk'].includes(String(review.status || '').toLowerCase())).length &&
+    Number(commandCenter.remainingReviewsForMinimum) === Math.max(0, (Number(register.minimumCompletedReviewsForPublicLaunch) || 25) - plannedReviews.filter((review) => ['passed', 'failed', 'accepted-risk'].includes(String(review.status || '').toLowerCase())).length) &&
+    Array.isArray(commandCenter.waves) &&
+    commandCenter.waves.length >= 5 &&
+    (commandCenter.completedReviewCount >= (Number(register.minimumCompletedReviewsForPublicLaunch) || 25) || hasMeaningfulText(commandCenter.nextWave?.waveId)) &&
+    commandCenterReportHasBoundary
+  ), {
+    commandCenterArtifact: commandCenterPath,
+    commandCenterReport: commandCenterReportPath,
+    commandCenterError,
+    commandCenterReportError,
+    commandCenterStatus: commandCenter?.status ?? null,
+    plannedReviewCount: plannedReviews.length,
+    commandCenterPlannedReviewCount: commandCenter?.plannedReviewCount ?? null,
+    commandCenterCompletedReviewCount: commandCenter?.completedReviewCount ?? null,
+    commandCenterRemainingReviewsForMinimum: commandCenter?.remainingReviewsForMinimum ?? null,
+    commandCenterWaveCount: Array.isArray(commandCenter?.waves) ? commandCenter.waves.length : null,
+    commandCenterNextWave: commandCenter?.nextWave || null,
+    commandCenterReportHasBoundary,
+  })
+
   const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
   const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
   const completedReviewEvidenceGaps = completedReviews
@@ -2117,11 +2172,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const visualReviewStatus = status.productionVisualReviews || {}
   const betaQueueIssues = Array.isArray(betaReviewStatus.queueIssues) ? betaReviewStatus.queueIssues : []
   const betaScheduleIssues = Array.isArray(betaReviewStatus.scheduleIssues) ? betaReviewStatus.scheduleIssues : []
+  const betaCommandCenterIssues = Array.isArray(betaReviewStatus.commandCenterIssues) ? betaReviewStatus.commandCenterIssues : []
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     betaReviewStatus.executionScheduleReady === true &&
+    betaReviewStatus.commandCenterReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
     Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
     hasMeaningfulText(betaReviewStatus.packetManifest) &&
@@ -2129,10 +2186,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.scheduleReport) &&
     hasMeaningfulText(betaReviewStatus.scheduleCsv) &&
     Number(betaReviewStatus.executionScheduleIssueCount) === 0 &&
+    hasMeaningfulText(betaReviewStatus.commandCenterArtifact) &&
+    hasMeaningfulText(betaReviewStatus.commandCenterReport) &&
+    Number(betaReviewStatus.commandCenterIssueCount) === 0 &&
     hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
     betaScheduleIssues.length === 0 &&
+    betaCommandCenterIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2146,14 +2207,20 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaAssignmentQueueReady: betaReviewStatus.assignmentQueueReady ?? null,
     betaExecutionScheduleReady: betaReviewStatus.executionScheduleReady ?? null,
     betaExecutionScheduleIssueCount: betaReviewStatus.executionScheduleIssueCount ?? null,
+    betaCommandCenterReady: betaReviewStatus.commandCenterReady ?? null,
+    betaCommandCenterIssueCount: betaReviewStatus.commandCenterIssueCount ?? null,
     betaPacketCount: betaReviewStatus.packetCount ?? null,
     betaSubmissionTemplateCount: betaReviewStatus.submissionTemplateCount ?? null,
     betaPlanned: betaReviewStatus.planned ?? null,
     betaScheduleArtifact: betaReviewStatus.scheduleArtifact ?? null,
     betaScheduleReport: betaReviewStatus.scheduleReport ?? null,
     betaScheduleCsv: betaReviewStatus.scheduleCsv ?? null,
+    betaCommandCenterArtifact: betaReviewStatus.commandCenterArtifact ?? null,
+    betaCommandCenterReport: betaReviewStatus.commandCenterReport ?? null,
+    betaCommandCenterNextWave: betaReviewStatus.nextWave ?? null,
     betaQueueIssues,
     betaScheduleIssues,
+    betaCommandCenterIssues,
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,
