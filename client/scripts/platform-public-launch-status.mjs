@@ -1,5 +1,6 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { currentQaDate } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || ''
@@ -252,10 +253,6 @@ async function exists(path) {
 function dateOnly(value) {
   const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
   return match ? match[0] : ''
-}
-
-function currentUtcDate() {
-  return new Date().toISOString().slice(0, 10)
 }
 
 function daysBetween(startDate, endDate) {
@@ -553,7 +550,7 @@ const scheduledVisualReviews = Array.isArray(visualRegister.scheduledPublicLaunc
   : []
 
 const liveDeployment = health.body?.deployment || null
-const today = currentUtcDate()
+const today = currentQaDate()
 const date = requestedDate ||
   dateOnly(betaRegister.reviewedAt) ||
   dateOnly(visualRegister.reviewedAt) ||

@@ -1,5 +1,6 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
+import { currentQaDate, dateOnly, daysBetween, isDate, requestedOrCurrentDate } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_DATE || ''
@@ -11,28 +12,8 @@ function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
 }
 
-function isDate(value) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
-}
-
-function dateOnly(value) {
-  const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
-  return match && isDate(match[0]) ? match[0] : ''
-}
-
-function currentUtcDate() {
-  return new Date().toISOString().slice(0, 10)
-}
-
 function currentReviewDate() {
-  return isDate(requestedToday) ? requestedToday : currentUtcDate()
-}
-
-function daysBetween(startDate, endDate) {
-  const start = Date.parse(`${startDate}T00:00:00Z`)
-  const end = Date.parse(`${endDate}T00:00:00Z`)
-  if (!Number.isFinite(start) || !Number.isFinite(end)) return null
-  return Math.round((end - start) / 86400000)
+  return requestedOrCurrentDate(requestedToday)
 }
 
 function qaDisplayPath(value) {
@@ -142,7 +123,7 @@ function rowsToCsv(rows) {
 
 const register = await readJson(registerPath)
 const progress = await readJson(progressPath)
-const date = requestedDate || dateOnly(register.reviewedAt) || currentUtcDate()
+const date = requestedDate || dateOnly(register.reviewedAt) || currentQaDate()
 const today = currentReviewDate()
 const jsonName = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_JSON || `production-visual-review-dispatch-outbox-${date}.json`
 const reportName = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_REPORT || `production-visual-review-dispatch-outbox-${date}.md`

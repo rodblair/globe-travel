@@ -1,5 +1,6 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { currentQaDate, dateOnly } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_DATE || ''
@@ -11,15 +12,6 @@ const visualProgressPath = process.env.QA_VISUAL_REVIEW_PROGRESS || 'qa/producti
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
-}
-
-function dateOnly(value) {
-  const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
-  return match ? match[0] : ''
-}
-
-function currentUtcDate() {
-  return new Date().toISOString().slice(0, 10)
 }
 
 function qaDisplayPath(value) {
@@ -151,7 +143,7 @@ const visualProgress = await readJson(visualProgressPath)
 const date = requestedDate ||
   dateOnly(publicStatus.date) ||
   dateOnly(publicStatus.artifacts?.json) ||
-  currentUtcDate()
+  currentQaDate()
 const jsonName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_JSON || `public-launch-blocker-board-${date}.json`
 const reportName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || `public-launch-blocker-board-${date}.md`
 const csvName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || `public-launch-blocker-board-${date}.csv`
@@ -279,7 +271,7 @@ addCheck('public launch blocker board evidence paths and commands are executable
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
-  today: currentUtcDate(),
+  today: currentQaDate(),
   status: failures.length === 0 ? 'pass' : 'fail',
   checked: checks.length,
   passed: checks.length - failures.length,

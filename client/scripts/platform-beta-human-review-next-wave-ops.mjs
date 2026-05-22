@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { currentQaDate, dateOnly, daysBetween, isDate, requestedOrCurrentDate, subtractDays } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_DATE || ''
@@ -12,34 +13,8 @@ function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
 }
 
-function isDate(value) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
-}
-
-function dateOnly(value) {
-  const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
-  return match && isDate(match[0]) ? match[0] : ''
-}
-
-function currentUtcDate() {
-  return new Date().toISOString().slice(0, 10)
-}
-
 function currentReviewDate() {
-  return isDate(requestedToday) ? requestedToday : currentUtcDate()
-}
-
-function daysBetween(startDate, endDate) {
-  const start = Date.parse(`${startDate}T00:00:00Z`)
-  const end = Date.parse(`${endDate}T00:00:00Z`)
-  if (!Number.isFinite(start) || !Number.isFinite(end)) return null
-  return Math.round((end - start) / 86400000)
-}
-
-function subtractDays(dateValue, days) {
-  const parsed = Date.parse(`${dateValue}T00:00:00Z`)
-  if (!Number.isFinite(parsed)) return ''
-  return new Date(parsed - days * 86400000).toISOString().slice(0, 10)
+  return requestedOrCurrentDate(requestedToday)
 }
 
 function maxDate(firstDate, secondDate) {
@@ -140,7 +115,7 @@ function rowsToCsv(rows) {
 }
 
 const register = JSON.parse(await readFile(resolve(process.cwd(), registerPath), 'utf8'))
-const date = requestedDate || dateOnly(register.reviewedAt) || currentUtcDate()
+const date = requestedDate || dateOnly(register.reviewedAt) || currentQaDate()
 const opsJsonName = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_JSON || `beta-human-review-next-wave-ops-${date}.json`
 const opsReportName = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_REPORT || `beta-human-review-next-wave-ops-${date}.md`
 const opsCsvName = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || `beta-human-review-next-wave-ops-${date}.csv`

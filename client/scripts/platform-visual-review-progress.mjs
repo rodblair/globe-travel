@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { currentQaDate, daysBetween, requestedOrCurrentDate } from './qa-date-utils.mjs'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const clientDir = resolve(scriptDir, '..')
@@ -36,23 +37,8 @@ function dateOnly(value) {
   return match ? match[0] : ''
 }
 
-function currentUtcDate() {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function isDate(value) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
-}
-
 function currentReviewDate() {
-  return isDate(requestedToday) ? requestedToday : currentUtcDate()
-}
-
-function daysBetween(startDate, endDate) {
-  const start = Date.parse(`${startDate}T00:00:00Z`)
-  const end = Date.parse(`${endDate}T00:00:00Z`)
-  if (!Number.isFinite(start) || !Number.isFinite(end)) return null
-  return Math.round((end - start) / 86400000)
+  return requestedOrCurrentDate(requestedToday)
 }
 
 function isFutureDate(value) {
@@ -188,7 +174,7 @@ const minimumPublicLaunchReviewHistory = Number(register.minimumPublicLaunchRevi
 const date = dateOnly(requestedDate) ||
   dateOnly(register.reviewedAt) ||
   dateOnly(latestSummary?.date) ||
-  currentUtcDate()
+  currentQaDate()
 const jsonArtifact = process.env.QA_VISUAL_REVIEW_PROGRESS_JSON || `production-visual-review-progress-${date}.json`
 const reportArtifact = process.env.QA_VISUAL_REVIEW_PROGRESS_REPORT || `production-visual-review-progress-${date}.md`
 const historyDates = unique(reviewHistory.map((review) => dateOnly(review.reviewedAt)))
