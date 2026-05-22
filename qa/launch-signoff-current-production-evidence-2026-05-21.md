@@ -58,6 +58,23 @@ Result: `5/5` passed.
 
 Launch signoff now proves that postdeploy production evidence is tied to the exact production commit under test, instead of accepting a fresh but unrelated same-day deployment note.
 
+## Recovery-Fix Postdeploy Evidence
+
+Commit `f07fbadc7fdad3c54d23123d2e0e9473609c5dc3` deployed to Vercel production.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-o0banpfl9-rodney-blairs-projects.vercel.app`
+- Vercel deployment id: `dpl_9hYAuv4LGR9euCHyrC9y1yjHYaeb`
+- Production health: `ok`, `11/11`
+- Production release gate passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-recovery-2026-05-21-f07fbad/`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Postdeploy Evidence
 
 Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production.

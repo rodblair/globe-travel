@@ -544,6 +544,7 @@ The next execution slice is Phase 1 launch-candidate maintenance and regional co
    - Latest May 20 check: the production viral-loop copy-feedback issue is closed; the Athens production share viral gate now passes `5/5`, including phone, desktop, copy feedback, native share payload, and safe remote guest-start behavior.
    - Latest May 21 check: the full production release gate passed `9/9` after the copy-feedback deployment, and in-app Browser verified a denied-copy recovery path that focuses and selects the public URL for manual copy.
    - Latest May 21 auth harness check: production guest-start mutation is skipped by default unless explicitly enabled, local guest-start remains covered with cleanup, and the full production release gate passes `9/9` with the corrected non-mutating auth smoke.
+   - Latest May 21 recovery check: commit `f07fbad` is live on Vercel production; missing Trip Studio routes now render recovery instead of lingering on the loading skeleton, the Athens public-share viral loop passes `5/5`, and full production `qa:release-production` passes `10/10` with production visual QA `20/20`.
 3. Clean-browser launch matrix:
    - run Browser as a first-time guest, returning owner, logged-out recipient, paid candidate, and recovery user;
    - cover phone, tablet, laptop, desktop, and wide desktop for the primary public and protected routes;
@@ -560,6 +561,8 @@ The next execution slice is Phase 1 launch-candidate maintenance and regional co
 Phase 1 is complete only when the broadened regional generated-actuals pass, the clean-browser matrix has no open P0/P1 issues, the visual gate has no launch-blocking diffs, local release-candidate remains green, and production release verification remains green after deployment.
 
 Current signoff checkpoint: `npm run qa:launch-signoff` now provides the fast evidence audit for release meetings. It passed `32/32` on 2026-05-21, proving production health `11/11`, full local release-candidate evidence `35/35`, responsive visual QA `50/50`, all `50` visual screenshots present, hosted Stripe evidence, launch docs, fresh postdeploy production evidence, current launch risk register, current rollback plan, and fresh regional generated-itinerary map-trust evidence for Istanbul, Seoul, Bangkok, Marrakech, Cape Town, and Sydney. Use `QA_LAUNCH_EXPECTED_COMMIT=<sha>` when a launch meeting needs the audit to prove a specific production commit is live.
+
+Current production checkpoint: commit `f07fbad` (`f07fbadc7fdad3c54d23123d2e0e9473609c5dc3`) is the live production deployment for the latest recovery fix. Production `qa:release-production` passed `10/10`, production visual QA passed `20/20` in `qa/visual-baseline-production-recovery-2026-05-21-f07fbad/`, and the fast launch audit should be run with `QA_LAUNCH_EXPECTED_COMMIT=f07fbadc7fdad3c54d23123d2e0e9473609c5dc3`.
 
 Planner actuals checkpoint: `npm run qa:release-candidate` now supports `QA_RELEASE_INCLUDE_PLANNER_ACTUALS=1`, which inserts live generated-itinerary map-trust checks and a prompt-suite cross-check into the predeploy release-candidate orchestrator. This gives Phase 1 and beta releases a repeatable way to prove real planner output, mapped stops, unique pins, country consistency, usable routes, and cleanup inside the same release-candidate evidence packet.
 
