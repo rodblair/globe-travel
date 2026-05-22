@@ -1,6 +1,8 @@
 {
   "date": "2026-05-22",
+  "scope": "wave",
   "nextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
+  "packetManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
   "nextWave": {
     "waveId": "BETA-WAVE-01",
     "kickoffAt": "2026-05-22",

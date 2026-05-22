@@ -1,8 +1,10 @@
 # Beta Human Review Wave Rehearsal
 
 Date: 2026-05-22
+Scope: wave
 Status: pass
 Next-wave ops: `qa/beta-human-review-next-wave-ops-2026-05-21.json`
+Packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
 
 ## Result
 

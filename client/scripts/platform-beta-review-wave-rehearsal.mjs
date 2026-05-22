@@ -5,8 +5,13 @@ import { chromium } from 'playwright-core'
 
 const root = resolve(process.cwd(), '..')
 const nextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
+const packetManifestPath = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || 'qa/beta-human-review-packet-manifest-2026-05-21.json'
+const rehearsalScope = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_SCOPE || 'wave'
 const requestedDate = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_DATE || new Date().toISOString().slice(0, 10)
-const artifactName = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT_NAME || `beta-human-review-wave-rehearsal-${requestedDate}`
+const defaultArtifactPrefix = rehearsalScope === 'matrix'
+  ? 'beta-human-review-matrix-rehearsal'
+  : 'beta-human-review-wave-rehearsal'
+const artifactName = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT_NAME || `${defaultArtifactPrefix}-${requestedDate}`
 const jsonArtifact = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_JSON || `${artifactName}.json`
 const reportArtifact = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_REPORT || `${artifactName}.md`
 const artifactDir = resolve(root, 'qa', artifactName)
@@ -47,6 +52,13 @@ function startUrlForRow(row) {
   source.protocol = target.protocol
   source.host = target.host
   return source.toString()
+}
+
+function completedSubmissionPathForPacket(packet) {
+  const templatePath = packet.submissionTemplatePath || ''
+  return templatePath.endsWith('.template.json')
+    ? templatePath.replace(/\.template\.json$/, '.json')
+    : templatePath
 }
 
 async function readJson(path) {
@@ -195,7 +207,15 @@ if (!existsSync(chromePath)) {
 }
 
 const nextWaveOps = await readJson(nextWaveOpsPath)
-const rows = Array.isArray(nextWaveOps.operatorRows) ? nextWaveOps.operatorRows : []
+const packetManifest = await readJson(packetManifestPath)
+const rows = rehearsalScope === 'matrix'
+  ? (Array.isArray(packetManifest.packets) ? packetManifest.packets : [])
+    .map((packet) => ({
+      ...packet,
+      waveId: null,
+      completedSubmissionPath: completedSubmissionPathForPacket(packet),
+    }))
+  : Array.isArray(nextWaveOps.operatorRows) ? nextWaveOps.operatorRows : []
 
 await mkdir(screenshotDir, { recursive: true })
 const browser = await chromium.launch({
@@ -251,13 +271,17 @@ await browser.close()
 const failures = results.filter((result) => !result.ok)
 const summary = {
   date: requestedDate,
+  scope: rehearsalScope,
   nextWaveOpsArtifact: qaDisplayPath(nextWaveOpsPath),
+  packetManifest: qaDisplayPath(packetManifestPath),
   nextWave: nextWaveOps.nextWave || null,
   status: failures.length === 0 ? 'pass' : 'fail',
   checked: results.length,
   passed: results.length - failures.length,
   failed: failures.length,
-  expectedReviewCount: Number(nextWaveOps.nextWave?.remainingReviewCount || nextWaveOps.operatorRowCount || rows.length),
+  expectedReviewCount: rehearsalScope === 'matrix'
+    ? Number(packetManifest.packetCount || rows.length)
+    : Number(nextWaveOps.nextWave?.remainingReviewCount || nextWaveOps.operatorRowCount || rows.length),
   jsonArtifact: `qa/${jsonArtifact}`,
   reportArtifact: `qa/${reportArtifact}`,
   artifactDir: `qa/${artifactName}`,
@@ -271,8 +295,10 @@ const summary = {
 const report = `# Beta Human Review Wave Rehearsal
 
 Date: ${summary.date}
+Scope: ${summary.scope}
 Status: ${summary.status}
 Next-wave ops: \`${summary.nextWaveOpsArtifact}\`
+Packet manifest: \`${summary.packetManifest}\`
 
 ## Result
 
@@ -295,7 +321,7 @@ ${markdownList(failures.map((failure) => `${failure.id}: ${failure.issues.join('
 
 ## Operating Meaning
 
-This preflight does not count as a completed beta review and does not replace human evidence. It proves the active reviewer wave opens cleanly in a browser, every start URL preserves the assigned prompt through auth and guest-entry handoff, and each reviewer packet/template pair matches the operator row before people spend time on the review.
+This preflight does not count as a completed beta review and does not replace human evidence. It proves the ${summary.scope === 'matrix' ? 'planned beta reviewer matrix' : 'active reviewer wave'} opens cleanly in a browser, every start URL preserves the assigned prompt through auth and guest-entry handoff, and each reviewer packet/template pair matches the ${summary.scope === 'matrix' ? 'packet manifest record' : 'operator row'} before people spend time on the review.
 `
 
 await writeFile(repoPath(`qa/${jsonArtifact}`), `${JSON.stringify(summary, null, 2)}\n`)

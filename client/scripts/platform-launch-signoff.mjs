@@ -52,6 +52,10 @@ const betaHumanReviewWaveRehearsal =
   process.env.QA_LAUNCH_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
   process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
   'qa/beta-human-review-wave-rehearsal-2026-05-22.json'
+const betaHumanReviewMatrixRehearsal =
+  process.env.QA_LAUNCH_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
+  process.env.QA_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
+  'qa/beta-human-review-matrix-rehearsal-2026-05-22.json'
 const accessibilityArtifact =
   process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
   'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
@@ -738,6 +742,7 @@ async function checkRequiredDocs(productionHealth) {
     betaStatus.nextWave?.waveId,
     betaStatus.nextWaveOpsArtifact,
     betaStatus.waveRehearsalArtifact,
+    betaStatus.matrixRehearsalArtifact,
     publicStatus?.publicLaunchBlockerBoard?.artifact,
     `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
@@ -2317,6 +2322,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaCommandCenterIssues = Array.isArray(betaReviewStatus.commandCenterIssues) ? betaReviewStatus.commandCenterIssues : []
   const betaNextWaveOpsIssues = Array.isArray(betaReviewStatus.nextWaveOpsIssues) ? betaReviewStatus.nextWaveOpsIssues : []
   const betaWaveRehearsalIssues = Array.isArray(betaReviewStatus.waveRehearsalIssues) ? betaReviewStatus.waveRehearsalIssues : []
+  const betaMatrixRehearsalIssues = Array.isArray(betaReviewStatus.matrixRehearsalIssues) ? betaReviewStatus.matrixRehearsalIssues : []
   const blockerBoardStatus = status.publicLaunchBlockerBoard || {}
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
   const routeInventoryStatus = status.routeInventory || {}
@@ -2468,12 +2474,42 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaWaveRehearsalIssues,
   })
 
+  addCheck('public launch status includes beta review full-matrix browser rehearsal', (
+    betaReviewStatus.matrixRehearsalReady === true &&
+    betaReviewStatus.matrixRehearsalStatus === 'pass' &&
+    betaReviewStatus.matrixRehearsalArtifact === betaHumanReviewMatrixRehearsal &&
+    hasMeaningfulText(betaReviewStatus.matrixRehearsalReport) &&
+    hasMeaningfulText(betaReviewStatus.matrixRehearsalArtifactDir) &&
+    Number(betaReviewStatus.matrixRehearsalChecked) >= Number(betaReviewStatus.planned || 0) &&
+    Number(betaReviewStatus.matrixRehearsalPassed) >= Number(betaReviewStatus.planned || 0) &&
+    Number(betaReviewStatus.matrixRehearsalFailed) === 0 &&
+    betaReviewStatus.matrixRehearsalNonMutating === true &&
+    betaReviewStatus.matrixRehearsalRemoteGuestStartExercised === false &&
+    Number(betaReviewStatus.matrixRehearsalIssueCount) === 0 &&
+    betaMatrixRehearsalIssues.length === 0
+  ), {
+    betaMatrixRehearsalArtifact: betaReviewStatus.matrixRehearsalArtifact || null,
+    expectedBetaMatrixRehearsalArtifact: betaHumanReviewMatrixRehearsal,
+    betaMatrixRehearsalReport: betaReviewStatus.matrixRehearsalReport || null,
+    betaMatrixRehearsalArtifactDir: betaReviewStatus.matrixRehearsalArtifactDir || null,
+    betaMatrixRehearsalReady: betaReviewStatus.matrixRehearsalReady ?? null,
+    betaMatrixRehearsalStatus: betaReviewStatus.matrixRehearsalStatus || null,
+    betaMatrixRehearsalChecked: betaReviewStatus.matrixRehearsalChecked ?? null,
+    betaMatrixRehearsalPassed: betaReviewStatus.matrixRehearsalPassed ?? null,
+    betaMatrixRehearsalFailed: betaReviewStatus.matrixRehearsalFailed ?? null,
+    betaMatrixRehearsalNonMutating: betaReviewStatus.matrixRehearsalNonMutating ?? null,
+    betaMatrixRehearsalRemoteGuestStartExercised: betaReviewStatus.matrixRehearsalRemoteGuestStartExercised ?? null,
+    betaMatrixRehearsalIssueCount: betaReviewStatus.matrixRehearsalIssueCount ?? null,
+    betaMatrixRehearsalIssues,
+  })
+
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     betaReviewStatus.executionScheduleReady === true &&
     betaReviewStatus.commandCenterReady === true &&
     betaReviewStatus.nextWaveOpsReady === true &&
     betaReviewStatus.waveRehearsalReady === true &&
+    betaReviewStatus.matrixRehearsalReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
     Number(betaReviewStatus.submissionTemplateCount) >= Number(betaReviewStatus.planned || 0) &&
     hasMeaningfulText(betaReviewStatus.packetManifest) &&
@@ -2492,6 +2528,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     betaReviewStatus.waveRehearsalNonMutating === true &&
+    Number(betaReviewStatus.matrixRehearsalIssueCount) === 0 &&
+    Number(betaReviewStatus.matrixRehearsalChecked) >= Number(betaReviewStatus.planned || 0) &&
+    betaReviewStatus.matrixRehearsalNonMutating === true &&
     hasMeaningfulText(betaReviewStatus.assignmentCsv) &&
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
@@ -2499,6 +2538,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaCommandCenterIssues.length === 0 &&
     betaNextWaveOpsIssues.length === 0 &&
     betaWaveRehearsalIssues.length === 0 &&
+    betaMatrixRehearsalIssues.length === 0 &&
     blockerBoardStatus.ready === true &&
     hasMeaningfulText(blockerBoardStatus.artifact) &&
     hasMeaningfulText(blockerBoardStatus.report) &&
@@ -2546,6 +2586,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaWaveRehearsalArtifact: betaReviewStatus.waveRehearsalArtifact ?? null,
     betaWaveRehearsalIssueCount: betaReviewStatus.waveRehearsalIssueCount ?? null,
     betaWaveRehearsalChecked: betaReviewStatus.waveRehearsalChecked ?? null,
+    betaMatrixRehearsalReady: betaReviewStatus.matrixRehearsalReady ?? null,
+    betaMatrixRehearsalArtifact: betaReviewStatus.matrixRehearsalArtifact ?? null,
+    betaMatrixRehearsalIssueCount: betaReviewStatus.matrixRehearsalIssueCount ?? null,
+    betaMatrixRehearsalChecked: betaReviewStatus.matrixRehearsalChecked ?? null,
     blockerBoardReady: blockerBoardStatus.ready ?? null,
     blockerBoardArtifact: blockerBoardStatus.artifact ?? null,
     blockerBoardReport: blockerBoardStatus.report ?? null,
@@ -2565,6 +2609,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaCommandCenterIssues,
     betaNextWaveOpsIssues,
     betaWaveRehearsalIssues,
+    betaMatrixRehearsalIssues,
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,
@@ -2828,6 +2873,7 @@ const summary = {
   plannerActualsArtifact,
   betaHumanReviewRegister,
   betaHumanReviewWaveRehearsal,
+  betaHumanReviewMatrixRehearsal,
   productionEvidence,
   visualReviewRegister,
   productionMonitoringRegister,

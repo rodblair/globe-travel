@@ -19,6 +19,9 @@ const betaNextWaveOpsCsvPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV || '
 const betaWaveRehearsalPath = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
   process.env.QA_LAUNCH_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT ||
   'qa/beta-human-review-wave-rehearsal-2026-05-22.json'
+const betaMatrixRehearsalPath = process.env.QA_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
+  process.env.QA_LAUNCH_BETA_REVIEW_MATRIX_REHEARSAL_ARTIFACT ||
+  'qa/beta-human-review-matrix-rehearsal-2026-05-22.json'
 const betaProgressPath = process.env.QA_BETA_REVIEW_PROGRESS || 'qa/beta-human-review-progress-2026-05-21.json'
 const betaIntakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
@@ -418,6 +421,7 @@ const [
   betaNextWaveOpsReport,
   betaNextWaveOpsCsv,
   betaWaveRehearsal,
+  betaMatrixRehearsal,
   betaProgress,
   betaIntake,
   visualRegister,
@@ -449,6 +453,7 @@ const [
   readText(betaNextWaveOpsReportPath),
   readText(betaNextWaveOpsCsvPath),
   readJson(betaWaveRehearsalPath),
+  readJson(betaMatrixRehearsalPath),
   readJson(betaProgressPath),
   readJson(betaIntakePath),
   readJson(visualRegisterPath),
@@ -963,6 +968,50 @@ for (const screenshot of missingBetaWaveRehearsalScreenshots) {
 }
 const betaWaveRehearsalReady = betaWaveRehearsalIssues.length === 0
 
+const betaMatrixRehearsalIssues = []
+const betaMatrixRehearsalResults = Array.isArray(betaMatrixRehearsal.results) ? betaMatrixRehearsal.results : []
+const betaMatrixRehearsalFailures = Array.isArray(betaMatrixRehearsal.failures) ? betaMatrixRehearsal.failures : []
+const betaMatrixRehearsalResultIds = betaMatrixRehearsalResults.map((result) => result.id).filter(Boolean)
+const missingBetaMatrixRehearsalResults = missingFrom(betaMatrixRehearsalResultIds, plannedBetaIds)
+const badBetaMatrixRehearsalResults = betaMatrixRehearsalResults.filter((result) => result.ok !== true)
+const betaMatrixRehearsalScreenshotChecks = await Promise.all(betaMatrixRehearsalResults.map(async (result) => {
+  const screenshot = result.start?.screenshot || result.screenshot || ''
+  return {
+    id: result.id || null,
+    screenshot,
+    exists: hasText(screenshot) ? await exists(screenshot) : false,
+  }
+}))
+const missingBetaMatrixRehearsalScreenshots = betaMatrixRehearsalScreenshotChecks
+  .filter((check) => !check.exists)
+  .map((check) => `${check.id || 'unknown'}:${check.screenshot || 'missing screenshot'}`)
+if (betaMatrixRehearsal.status !== 'pass') betaMatrixRehearsalIssues.push('beta matrix rehearsal status is not pass')
+if (betaMatrixRehearsal.scope !== 'matrix') betaMatrixRehearsalIssues.push(`beta matrix rehearsal scope ${betaMatrixRehearsal.scope || 'missing'} is not matrix`)
+if (betaMatrixRehearsal.nonMutating !== true) betaMatrixRehearsalIssues.push('beta matrix rehearsal must be non-mutating by default')
+if (betaMatrixRehearsal.remoteGuestStartExercised !== false) betaMatrixRehearsalIssues.push('beta matrix rehearsal must not exercise remote guest start by default')
+if (qaDisplayPath(betaMatrixRehearsal.packetManifest) !== qaDisplayPath(betaPacketManifestPath)) {
+  betaMatrixRehearsalIssues.push('beta matrix rehearsal does not reference current packet manifest')
+}
+if (Number(betaMatrixRehearsal.expectedReviewCount) !== plannedBetaReviews.length) {
+  betaMatrixRehearsalIssues.push(`beta matrix rehearsal expected ${betaMatrixRehearsal.expectedReviewCount ?? 'missing'} reviews but register has ${plannedBetaReviews.length}`)
+}
+if (Number(betaMatrixRehearsal.checked) < plannedBetaReviews.length) {
+  betaMatrixRehearsalIssues.push(`beta matrix rehearsal checked ${betaMatrixRehearsal.checked ?? 'missing'} reviews but expected at least ${plannedBetaReviews.length}`)
+}
+if (Number(betaMatrixRehearsal.failed) !== 0 || betaMatrixRehearsalFailures.length > 0) {
+  betaMatrixRehearsalIssues.push('beta matrix rehearsal has failing reviewer start URLs or packet/template checks')
+}
+for (const id of missingBetaMatrixRehearsalResults) {
+  betaMatrixRehearsalIssues.push(`beta matrix rehearsal missing result for ${id}`)
+}
+for (const result of badBetaMatrixRehearsalResults) {
+  betaMatrixRehearsalIssues.push(`beta matrix rehearsal ${result.id || 'unknown'} failed: ${(result.issues || []).join('; ') || 'unknown issue'}`)
+}
+for (const screenshot of missingBetaMatrixRehearsalScreenshots) {
+  betaMatrixRehearsalIssues.push(`beta matrix rehearsal screenshot missing for ${screenshot}`)
+}
+const betaMatrixRehearsalReady = betaMatrixRehearsalIssues.length === 0
+
 const visualQueueIssues = []
 for (const file of visualSubmissionTemplateChecks.filter((file) => !file.ok)) {
   visualQueueIssues.push(`visual submission template is not readable for ${file.id || 'unknown'} at ${file.path || 'missing path'}`)
@@ -1206,6 +1255,7 @@ if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execu
 if (betaCommandCenterIssues.length > 0) guardrailIssues.push('beta human review command center is not fully prepared')
 if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review next-wave ops pack is not fully prepared')
 if (!betaWaveRehearsalReady) guardrailIssues.push('beta human review next-wave browser rehearsal is not passing')
+if (!betaMatrixRehearsalReady) guardrailIssues.push('beta human review full-matrix browser rehearsal is not passing')
 if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
@@ -1326,6 +1376,21 @@ const summary = {
     waveRehearsalMissingResults: missingBetaWaveRehearsalResults,
     waveRehearsalMissingScreenshots: missingBetaWaveRehearsalScreenshots,
     waveRehearsalIssues: betaWaveRehearsalIssues,
+    matrixRehearsalArtifact: qaDisplayPath(betaMatrixRehearsalPath),
+    matrixRehearsalReport: qaDisplayPath(betaMatrixRehearsal.reportArtifact),
+    matrixRehearsalArtifactDir: qaDisplayPath(betaMatrixRehearsal.artifactDir),
+    matrixRehearsalReady: betaMatrixRehearsalReady,
+    matrixRehearsalStatus: betaMatrixRehearsal.status || null,
+    matrixRehearsalIssueCount: betaMatrixRehearsalIssues.length,
+    matrixRehearsalChecked: betaMatrixRehearsal.checked ?? null,
+    matrixRehearsalPassed: betaMatrixRehearsal.passed ?? null,
+    matrixRehearsalFailed: betaMatrixRehearsal.failed ?? null,
+    matrixRehearsalNonMutating: betaMatrixRehearsal.nonMutating ?? null,
+    matrixRehearsalRemoteGuestStartExercised: betaMatrixRehearsal.remoteGuestStartExercised ?? null,
+    matrixRehearsalScreenshotCount: betaMatrixRehearsalScreenshotChecks.length,
+    matrixRehearsalMissingResults: missingBetaMatrixRehearsalResults,
+    matrixRehearsalMissingScreenshots: missingBetaMatrixRehearsalScreenshots,
+    matrixRehearsalIssues: betaMatrixRehearsalIssues,
     nextWave: betaCommandCenter.nextWave || null,
     nextWaveOpsRowCount: betaNextWaveOpsRows.length,
     scheduleWaveCount: scheduleWaveIds.length,
@@ -1580,6 +1645,7 @@ const summary = {
     routeInventory: qaDisplayPath(routeInventoryPath),
     appSurfaces: qaDisplayPath(appSurfacesPath),
     betaWaveRehearsal: qaDisplayPath(betaWaveRehearsalPath),
+    betaMatrixRehearsal: qaDisplayPath(betaMatrixRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -1604,6 +1670,7 @@ Status: ${status}
 - Beta review command center ready: ${summary.betaHumanReviews.commandCenterReady ? 'yes' : 'no'}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
+- Beta review matrix rehearsal ready: ${summary.betaHumanReviews.matrixRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.matrixRehearsalChecked || 0}/${summary.betaHumanReviews.planned || 0})
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
 - Latest production visual artifact: ${summary.productionVisualReviews.latestProductionArtifact || 'missing'}
 - Latest production visual commit: ${summary.productionVisualReviews.latestProductionCommit || 'missing'}
@@ -1650,6 +1717,9 @@ ${markdownList(betaNextWaveOpsIssues)}
 Beta human-review wave rehearsal:
 ${markdownList(betaWaveRehearsalIssues)}
 
+Beta human-review matrix rehearsal:
+${markdownList(betaMatrixRehearsalIssues)}
+
 Production visual-review progress:
 ${markdownList(visualProgressIssues)}
 
@@ -1680,6 +1750,7 @@ ${markdownList(summary.nextActions)}
 - Beta command center: \`${summary.betaHumanReviews.commandCenterArtifact}\` and \`${summary.betaHumanReviews.commandCenterReport}\`
 - Beta next-wave ops: \`${summary.betaHumanReviews.nextWaveOpsArtifact}\`, \`${summary.betaHumanReviews.nextWaveOpsReport}\`, and \`${summary.betaHumanReviews.nextWaveOpsCsv}\`
 - Beta wave rehearsal: \`${summary.betaHumanReviews.waveRehearsalArtifact}\` and \`${summary.betaHumanReviews.waveRehearsalReport}\`
+- Beta matrix rehearsal: \`${summary.betaHumanReviews.matrixRehearsalArtifact}\` and \`${summary.betaHumanReviews.matrixRehearsalReport}\`
 - Public launch blocker board: \`${summary.publicLaunchBlockerBoard.report}\`, \`${summary.publicLaunchBlockerBoard.csv}\`, and \`${summary.publicLaunchBlockerBoard.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`

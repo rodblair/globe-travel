@@ -15,6 +15,7 @@
     "qa:beta-review-command-center": "node scripts/platform-beta-human-review-command-center.mjs",
     "qa:beta-review-next-wave-ops": "node scripts/platform-beta-human-review-next-wave-ops.mjs",
     "qa:beta-review-wave-rehearsal": "node scripts/platform-beta-review-wave-rehearsal.mjs",
+    "qa:beta-review-matrix-rehearsal": "QA_BETA_REVIEW_WAVE_REHEARSAL_SCOPE=matrix QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT_NAME=beta-human-review-matrix-rehearsal-2026-05-22 node scripts/platform-beta-review-wave-rehearsal.mjs",
     "qa:beta-review-intake": "node scripts/platform-beta-human-review-intake.mjs",
     "qa:beta-review-progress": "node scripts/platform-beta-human-review-progress.mjs",
     "qa:beta-review-readiness": "node scripts/platform-beta-human-review-readiness.mjs",
