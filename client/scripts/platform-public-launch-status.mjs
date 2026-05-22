@@ -19,6 +19,17 @@ const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.js
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
+const requiredBetaReviewScorecardFields = [
+  'firstMinuteClarity',
+  'itineraryUsefulness',
+  'mapTrust',
+  'editAndSwapConfidence',
+  'saveReopenConfidence',
+  'shareRecipientClarity',
+  'feedbackLoopClarity',
+  'mobileUsability',
+  'paidValueCredibility',
+]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
@@ -201,6 +212,7 @@ const [
   }))),
   Promise.all(betaPacketRecords.map(async (packet) => ({
     id: packet.id || null,
+    packet,
     path: packet.submissionTemplatePath || null,
     ...(await readableJson(packet.submissionTemplatePath || '')),
   }))),
@@ -251,6 +263,22 @@ for (const file of betaSubmissionTemplateChecks.filter((file) => !file.ok)) {
 }
 for (const file of betaSubmissionTemplateChecks.filter((file) => file.ok && file.json?.id !== file.id)) {
   betaQueueIssues.push(`beta submission template ${file.path} does not match review id ${file.id}`)
+}
+for (const file of betaSubmissionTemplateChecks.filter((file) => file.ok)) {
+  if (file.json?.prompt !== file.packet.prompt) betaQueueIssues.push(`beta submission template ${file.path} prompt must match assigned packet`)
+  if (file.json?.device !== file.packet.device) betaQueueIssues.push(`beta submission template ${file.path} device must match assigned packet`)
+  if (file.json?.viewport !== file.packet.viewport) betaQueueIssues.push(`beta submission template ${file.path} viewport must match assigned packet`)
+  if (file.json?.sourceActualId !== file.packet.sourceActualId) betaQueueIssues.push(`beta submission template ${file.path} sourceActualId must match assigned packet`)
+  if (file.json?.routeOrShareUrl !== file.packet.startUrl) betaQueueIssues.push(`beta submission template ${file.path} route URL must match assigned packet start URL`)
+  if (!Array.isArray(file.json?.findings)) betaQueueIssues.push(`beta submission template ${file.path} findings must be an array`)
+  if (!file.json?.scorecard || typeof file.json.scorecard !== 'object' || Array.isArray(file.json.scorecard)) {
+    betaQueueIssues.push(`beta submission template ${file.path} scorecard must be an object`)
+  } else {
+    const missingScorecardFields = missingFrom(Object.keys(file.json.scorecard), requiredBetaReviewScorecardFields)
+    if (missingScorecardFields.length > 0) {
+      betaQueueIssues.push(`beta submission template ${file.path} scorecard missing fields: ${missingScorecardFields.join(', ')}`)
+    }
+  }
 }
 for (const packet of betaPacketRecords) {
   if (urlOrigin(packet.startUrl) !== expectedBetaReviewOrigin) {

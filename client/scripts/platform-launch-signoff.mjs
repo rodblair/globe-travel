@@ -472,6 +472,7 @@ function betaSubmissionTemplateIssues(template, packet) {
   if (template.device !== packet.device) issues.push('device must match packet')
   if (template.viewport !== packet.viewport) issues.push('viewport must match packet')
   if (template.sourceActualId !== packet.sourceActualId) issues.push('sourceActualId must match packet')
+  if (template.routeOrShareUrl !== packet.startUrl) issues.push('routeOrShareUrl must match packet start URL')
   if (!isLaunchHttpUrl(template.routeOrShareUrl)) {
     issues.push('routeOrShareUrl must be prefilled with http(s) start URL')
   } else if (launchUrlOrigin(template.routeOrShareUrl) !== expectedBetaReviewOrigin) {
