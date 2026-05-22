@@ -53,6 +53,14 @@ function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
 
+function urlOrigin(value) {
+  try {
+    return new URL(value).origin
+  } catch {
+    return ''
+  }
+}
+
 async function readableText(path) {
   try {
     return { ok: true, text: await readText(path), error: null }
@@ -135,6 +143,8 @@ const betaRemaining = Math.max(0, publicBetaMinimum - completedBetaReviews.lengt
 const plannedBetaIds = plannedBetaReviews.map((review) => review.id).filter(Boolean)
 const betaPacketRecords = Array.isArray(betaPacketManifest.packets) ? betaPacketManifest.packets : []
 const betaPacketIds = betaPacketRecords.map((packet) => packet.id).filter(Boolean)
+const expectedBetaReviewOrigin = urlOrigin(betaRegister.baseUrl || baseUrl)
+const statusOrigin = urlOrigin(baseUrl)
 
 const visualHistory = Array.isArray(visualRegister.reviewHistory) ? visualRegister.reviewHistory : []
 const visualHistoryDates = unique(visualHistory.map((review) => dateOnly(review.reviewedAt)))
@@ -196,6 +206,20 @@ const [
 ])
 
 const betaQueueIssues = []
+if (!expectedBetaReviewOrigin) {
+  betaQueueIssues.push('beta review expected origin is not configured')
+} else if (expectedBetaReviewOrigin !== statusOrigin) {
+  betaQueueIssues.push(`beta review register origin ${expectedBetaReviewOrigin} does not match status origin ${statusOrigin}`)
+}
+if (urlOrigin(betaPacketManifest.reviewerBaseUrl) !== expectedBetaReviewOrigin) {
+  betaQueueIssues.push(`beta packet manifest reviewer origin ${urlOrigin(betaPacketManifest.reviewerBaseUrl) || 'missing'} does not match ${expectedBetaReviewOrigin}`)
+}
+if (betaProgress.expectedReviewOrigin && betaProgress.expectedReviewOrigin !== expectedBetaReviewOrigin) {
+  betaQueueIssues.push(`beta progress expected review origin ${betaProgress.expectedReviewOrigin} does not match ${expectedBetaReviewOrigin}`)
+}
+if (betaIntake.expectedReviewOrigin && betaIntake.expectedReviewOrigin !== expectedBetaReviewOrigin) {
+  betaQueueIssues.push(`beta intake expected review origin ${betaIntake.expectedReviewOrigin} does not match ${expectedBetaReviewOrigin}`)
+}
 if (Number(betaPacketManifest.packetCount) !== plannedBetaReviews.length) {
   betaQueueIssues.push(`packet manifest count ${betaPacketManifest.packetCount || 0} does not match ${plannedBetaReviews.length} planned beta reviews`)
 }
@@ -213,6 +237,16 @@ for (const file of betaSubmissionTemplateChecks.filter((file) => !file.ok)) {
 }
 for (const file of betaSubmissionTemplateChecks.filter((file) => file.ok && file.json?.id !== file.id)) {
   betaQueueIssues.push(`beta submission template ${file.path} does not match review id ${file.id}`)
+}
+for (const packet of betaPacketRecords) {
+  if (urlOrigin(packet.startUrl) !== expectedBetaReviewOrigin) {
+    betaQueueIssues.push(`beta packet ${packet.id || 'unknown'} start URL origin ${urlOrigin(packet.startUrl) || 'missing'} does not match ${expectedBetaReviewOrigin}`)
+  }
+}
+for (const file of betaSubmissionTemplateChecks.filter((file) => file.ok)) {
+  if (urlOrigin(file.json?.routeOrShareUrl) !== expectedBetaReviewOrigin) {
+    betaQueueIssues.push(`beta submission template ${file.path} route URL origin ${urlOrigin(file.json?.routeOrShareUrl) || 'missing'} does not match ${expectedBetaReviewOrigin}`)
+  }
 }
 if (!betaAssignmentCsv.ok) betaQueueIssues.push(`beta assignment CSV is not readable at ${betaAssignmentCsvPath}`)
 if (!betaAssignmentReport.ok) betaQueueIssues.push(`beta assignment report is not readable at ${betaAssignmentReportPath}`)
@@ -315,6 +349,7 @@ const summary = {
     remaining: betaRemaining,
     progressArtifact: qaDisplayPath(betaProgressPath),
     intakeArtifact: qaDisplayPath(betaIntakePath),
+    expectedReviewOrigin: expectedBetaReviewOrigin,
     assignmentQueueReady: betaQueueIssues.length === 0,
     assignmentQueueIssueCount: betaQueueIssues.length,
     packetManifest: qaDisplayPath(betaPacketManifestPath),
@@ -377,6 +412,7 @@ Status: ${status}
 - Production commit: ${liveDeployment?.commit || 'missing'}
 - Production deployment: ${liveDeployment?.url || 'missing'}
 - Beta reviews: ${completedBetaReviews.length}/${publicBetaMinimum}
+- Beta review origin: ${summary.betaHumanReviews.expectedReviewOrigin || 'missing'}
 - Beta review assignment queue ready: ${summary.betaHumanReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}

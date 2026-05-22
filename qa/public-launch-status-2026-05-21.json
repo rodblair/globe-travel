@@ -19,6 +19,7 @@
     "remaining": 25,
     "progressArtifact": "qa/beta-human-review-progress-2026-05-21.json",
     "intakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
+    "expectedReviewOrigin": "https://globe-travel-two.vercel.app",
     "assignmentQueueReady": true,
     "assignmentQueueIssueCount": 0,
     "packetManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
