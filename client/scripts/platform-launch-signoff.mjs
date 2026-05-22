@@ -883,6 +883,31 @@ async function checkRequiredDocs(productionHealth) {
     staleCurrentProductionStatements,
     staleCurrentVisualStatements,
   })
+
+  const currentCheckpointMatch = platformPlan.match(/## Current Checkpoint[^\n]*\n([\s\S]*?)(?=\n## )/)
+  const currentCheckpointSection = currentCheckpointMatch?.[1] || ''
+  const currentDeploymentRefreshStatements = currentCheckpointSection
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('Deployment refresh:'))
+  const staleCurrentCheckpointDeploymentStatements = currentDeploymentRefreshStatements
+    .filter((line) => (
+      !line.includes(liveDeployment.commit || '') ||
+      !line.includes(liveDeployment.url || '') ||
+      !line.includes(visualStatus.latestProductionArtifact || '')
+    ))
+  addCheck('platform plan current checkpoint has one current deployment summary', (
+    Boolean(currentCheckpointMatch) &&
+    currentDeploymentRefreshStatements.length === 1 &&
+    staleCurrentCheckpointDeploymentStatements.length === 0
+  ), {
+    currentCheckpointFound: Boolean(currentCheckpointMatch),
+    currentDeploymentRefreshStatementCount: currentDeploymentRefreshStatements.length,
+    expectedCommit: liveDeployment.commit || null,
+    expectedDeploymentUrl: liveDeployment.url || null,
+    expectedLatestVisualArtifact: visualStatus.latestProductionArtifact || null,
+    staleCurrentCheckpointDeploymentStatements,
+  })
 }
 
 async function checkReleaseArtifact() {
