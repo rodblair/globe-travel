@@ -4,8 +4,8 @@
   "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
   "productionVisualArtifact": "qa/visual-baseline-production-social-preview-2026-05-22-98413c3/summary.json",
   "productionVisualArtifactSource": "qa/production-visual-review-register.json",
-  "checked": 10,
-  "passed": 10,
+  "checked": 11,
+  "passed": 11,
   "failed": 0,
   "checks": [
     {
@@ -57,7 +57,7 @@
         "client/components/atmosphere/HorizonHero.tsx",
         "client/components/atmosphere/ItineraryThread.tsx",
         "client/components/atmosphere/DestinationPin.tsx",
-        "client/components/atmosphere/AlbatrossBrand.tsx"
+        "client/components/atmosphere/GlobeBrand.tsx"
       ],
       "missingAtmosphereComponents": []
     },
@@ -75,6 +75,11 @@
       "name": "user-facing copy avoids generic AI-travel marketing filler",
       "ok": true,
       "aiSlopTextMatches": []
+    },
+    {
+      "name": "production UI source has no stale Globe.travel brand labels",
+      "ok": true,
+      "staleBrandMatches": []
     },
     {
       "name": "responsive visual QA covers every design-critical public and protected route",

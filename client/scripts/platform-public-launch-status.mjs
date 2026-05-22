@@ -197,6 +197,7 @@ const requiredDesignSystemChecks = [
   'production UI and API source has no debug console.log calls',
   'production UI source has no placeholder TODO or lorem copy',
   'user-facing copy avoids generic AI-travel marketing filler',
+  'production UI source has no stale Globe.travel brand labels',
   'responsive visual QA covers every design-critical public and protected route',
   'responsive visual QA has no polish blockers',
   'production visual QA covers public acquisition and sharing surfaces',

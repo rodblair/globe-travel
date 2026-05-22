@@ -6,7 +6,7 @@ import { ArrowRight, Eye, EyeOff, Lock, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
-import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
+import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -53,7 +53,7 @@ export default function ResetPasswordPage() {
 
       <div className="relative w-full max-w-md card-paper p-8 shadow-[var(--shadow-md)]">
         <Link href="/" className="mb-7 inline-flex">
-          <AlbatrossBrand textClassName="text-[1rem]" compact />
+          <GlobeBrand textClassName="text-[1rem]" compact />
         </Link>
 
         <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-ink-3 mb-3">

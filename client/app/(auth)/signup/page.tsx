@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase-browser'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { AuthCanvas } from '@/components/atmosphere/AuthCanvas'
-import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
+import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -111,7 +111,7 @@ export default function SignupPage() {
       panelSubtitle="Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember."
     >
       <div className="lg:hidden mb-10 flex items-center gap-2.5">
-        <AlbatrossBrand textClassName="text-[1.125rem]" compact />
+        <GlobeBrand textClassName="text-[1.125rem]" compact />
       </div>
 
       <div className="mb-8">

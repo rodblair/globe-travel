@@ -14,7 +14,7 @@ import {
   TripPosterPreview,
   getTripKeepsakeMeta,
 } from '@/components/trips/KeepsakeArtifacts'
-import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
+import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { formatTripTitleForDisplay } from '@/lib/trip-copy'
@@ -169,7 +169,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
 
       <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 md:px-6 md:py-6">
         <Link href="/" className="touch-target inline-flex items-center">
-          <AlbatrossBrand compact />
+          <GlobeBrand compact />
         </Link>
         <Link
           href={trip ? starterHref : '/chat'}

@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ContourOverlay } from "./ContourOverlay";
-import { AlbatrossBrand } from "./AlbatrossBrand";
+import { GlobeBrand } from "./GlobeBrand";
 
 /**
  * Two-column auth canvas. Shared by login / signup / reset.
@@ -55,7 +55,7 @@ export function AuthCanvas({
 
       <div className="relative z-10 flex flex-col justify-between w-full p-12">
         <Link href="/" className="inline-flex min-h-11 items-center group">
-          <AlbatrossBrand compact />
+          <GlobeBrand compact />
         </Link>
 
         <div className="max-w-md">

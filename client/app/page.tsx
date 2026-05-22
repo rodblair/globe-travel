@@ -7,7 +7,7 @@ import { ArrowRight, Sparkles, Users, MessageSquare } from "lucide-react";
 import { HorizonHero } from "@/components/atmosphere/HorizonHero";
 import { ContourOverlay } from "@/components/atmosphere/ContourOverlay";
 import { CompassRose } from "@/components/atmosphere/CompassRose";
-import { AlbatrossBrand } from "@/components/atmosphere/AlbatrossBrand";
+import { GlobeBrand } from "@/components/atmosphere/GlobeBrand";
 import { ItineraryThread } from "@/components/atmosphere/ItineraryThread";
 import { DestinationPin } from "@/components/atmosphere/DestinationPin";
 import { MeridianFrame } from "@/components/atmosphere/MeridianFrame";
@@ -39,7 +39,7 @@ export default function Home() {
           {/* Top bar */}
           <header className="relative z-10 mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-4 pt-5 md:items-center md:px-6 md:pt-6">
             <Link href="/" className="flex min-h-11 items-center justify-self-start">
-              <AlbatrossBrand />
+              <GlobeBrand />
             </Link>
             <nav className="hidden items-center gap-7 pt-1 t-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-2 md:flex">
               <Link href="#how" className="flex min-h-11 items-center hover:text-foreground transition-colors">
@@ -289,7 +289,7 @@ export default function Home() {
 
       <footer className="relative border-t border-rule bg-paper px-4 py-8 md:px-6">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
-          <AlbatrossBrand textClassName="text-[0.9375rem]" />
+          <GlobeBrand textClassName="text-[0.9375rem]" />
           <p className="t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
             © 2026 · BUILT FOR FRIENDS
           </p>

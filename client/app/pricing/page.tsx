@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Check, Crown, Map, MessageSquare, ShieldCheck, Sparkles, Users } from 'lucide-react'
-import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
+import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
 import { CompassRose } from '@/components/atmosphere/CompassRose'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { MeridianFrame } from '@/components/atmosphere/MeridianFrame'
@@ -52,7 +52,7 @@ export default function PricingPage() {
 
         <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
           <Link href="/" className="flex min-h-11 items-center">
-            <AlbatrossBrand />
+            <GlobeBrand />
           </Link>
           <nav className="hidden items-center gap-6 t-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-2 md:flex">
             <Link href="/#how" className="flex min-h-11 items-center transition-colors hover:text-foreground">

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAuth } from '@/components/providers/AuthProvider'
-import { AlbatrossBrand } from '@/components/atmosphere/AlbatrossBrand'
+import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -74,7 +74,7 @@ export function Sidebar() {
       {/* Brand */}
       <div className="relative px-6 pt-6 pb-5">
         <Link href="/chat" className="inline-flex min-h-11 items-center group">
-          <AlbatrossBrand compact />
+          <GlobeBrand compact />
         </Link>
       </div>
 

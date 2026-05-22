@@ -1,17 +1,17 @@
 import { cn } from '@/lib/utils'
 
-type AlbatrossBrandProps = {
+type GlobeBrandProps = {
   className?: string
   textClassName?: string
   markClassName?: string
   compact?: boolean
 }
 
-function AlbatrossMark({ className, compact = false }: { className?: string; compact?: boolean }) {
+function GlobeMark({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
     <svg
       role="img"
-      aria-label="Albatross logo mark"
+      aria-label="Globe.travel logo mark"
       viewBox="0 0 64 64"
       fill="none"
       className={cn(
@@ -67,15 +67,15 @@ function AlbatrossMark({ className, compact = false }: { className?: string; com
   )
 }
 
-export function AlbatrossBrand({
+export function GlobeBrand({
   className,
   textClassName,
   markClassName,
   compact = false,
-}: AlbatrossBrandProps) {
+}: GlobeBrandProps) {
   return (
     <span className={cn('inline-flex items-center leading-none', compact ? 'gap-2' : 'gap-2.5', className)}>
-      <AlbatrossMark className={markClassName} compact={compact} />
+      <GlobeMark className={markClassName} compact={compact} />
       <span className={cn('inline-flex flex-col', compact ? 'gap-0.5' : 'gap-1')}>
         <span
           className={cn(

@@ -497,10 +497,10 @@
   },
   "designSystem": {
     "artifact": "qa/design-system-readiness-2026-05-22.json",
-    "checked": 10,
-    "passed": 10,
+    "checked": 11,
+    "passed": 11,
     "failed": 0,
-    "requiredCheckCount": 10,
+    "requiredCheckCount": 11,
     "missingChecks": [],
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",

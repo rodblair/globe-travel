@@ -59,7 +59,7 @@ const requiredAtmosphereComponents = [
   'client/components/atmosphere/HorizonHero.tsx',
   'client/components/atmosphere/ItineraryThread.tsx',
   'client/components/atmosphere/DestinationPin.tsx',
-  'client/components/atmosphere/AlbatrossBrand.tsx',
+  'client/components/atmosphere/GlobeBrand.tsx',
 ]
 
 const requiredResponsiveRoutes = [
@@ -254,6 +254,11 @@ const aiSlopTextMatches = summarizeBadMatches(
 )
 addCheck('user-facing copy avoids generic AI-travel marketing filler', aiSlopTextMatches.length === 0, {
   aiSlopTextMatches,
+})
+
+const staleBrandMatches = summarizeBadMatches(sourceHygieneFiles, /\b(Albatross|Arcki)\b/i)
+addCheck('production UI source has no stale Globe.travel brand labels', staleBrandMatches.length === 0, {
+  staleBrandMatches,
 })
 
 let responsiveVisual = null
