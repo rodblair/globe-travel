@@ -35,6 +35,7 @@ Status: beta-ready-public-blocked
 - Planner map actuals ready: yes
 - Release candidate ready: yes
 - Full route inventory ready: yes
+- Authenticated app surfaces ready: yes
 
 ## Public-Launch Blockers
 
@@ -71,6 +72,9 @@ Public launch blocker board:
 Full route inventory:
 - none
 
+Authenticated app surfaces:
+- none
+
 ## Next Actions
 
 - Collect and import 25 completed beta review submission(s).
@@ -103,6 +107,7 @@ Full route inventory:
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-05-22.json`
+- Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-22.json`
 
 ## Operating Meaning
 

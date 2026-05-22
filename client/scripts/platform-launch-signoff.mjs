@@ -69,6 +69,9 @@ const productionMonitoringRegister =
 const publicLaunchStatusArtifact =
   process.env.QA_LAUNCH_PUBLIC_STATUS_ARTIFACT ||
   'qa/public-launch-status-2026-05-21.json'
+const appSurfacesArtifact =
+  process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
+  'qa/app-surfaces-smoke-2026-05-22.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 const requirePublicBetaReviews = ['1', 'true', 'yes', 'public'].includes(
   String(process.env.QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS || process.env.QA_LAUNCH_MODE || '').toLowerCase(),
@@ -2312,6 +2315,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
   const routeInventoryStatus = status.routeInventory || {}
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
+  const appSurfacesStatus = status.appSurfaces || {}
+  const appSurfacesIssues = Array.isArray(appSurfacesStatus.issues) ? appSurfacesStatus.issues : []
   const requiredRouteInventoryPaths = [
     '/',
     '/login',
@@ -2373,6 +2378,59 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     routeInventoryIssues,
   })
 
+  const requiredAppSurfaceRoutes = [
+    'explore-alias',
+    'globe-alias',
+    'map-alias',
+    'bucket-list-alias',
+    'journal-alias',
+    'profile-alias',
+    'settings-alias',
+    'pricing-alias',
+    'onboarding-fullscreen',
+  ]
+  const requiredAppSurfaceViewports = ['phone', 'desktop']
+  const appSurfacesMissingRoutes = Array.isArray(appSurfacesStatus.missingRoutes) ? appSurfacesStatus.missingRoutes : []
+  const appSurfacesMissingViewports = Array.isArray(appSurfacesStatus.missingViewports) ? appSurfacesStatus.missingViewports : []
+  const appSurfacesBadResults = Array.isArray(appSurfacesStatus.badResults) ? appSurfacesStatus.badResults : []
+  addCheck('public launch status includes authenticated app surfaces smoke', (
+    appSurfacesStatus.ready === true &&
+    appSurfacesStatus.status === 'pass' &&
+    appSurfacesStatus.authMode === 'guest' &&
+    appSurfacesStatus.localOnly === true &&
+    Number(appSurfacesStatus.requiredRouteCount) === requiredAppSurfaceRoutes.length &&
+    Number(appSurfacesStatus.requiredViewportCount) === requiredAppSurfaceViewports.length &&
+    Number(appSurfacesStatus.expectedCheckCount) === requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
+    Number(appSurfacesStatus.checked) >= requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
+    Number(appSurfacesStatus.passed) >= requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
+    Number(appSurfacesStatus.failed) === 0 &&
+    hasMeaningfulText(appSurfacesStatus.artifact) &&
+    hasMeaningfulText(status.artifacts?.appSurfaces) &&
+    appSurfacesStatus.artifact === status.artifacts.appSurfaces &&
+    appSurfacesStatus.artifact === appSurfacesArtifact &&
+    appSurfacesMissingRoutes.length === 0 &&
+    appSurfacesMissingViewports.length === 0 &&
+    appSurfacesBadResults.length === 0 &&
+    appSurfacesIssues.length === 0
+  ), {
+    appSurfacesArtifact: appSurfacesStatus.artifact || null,
+    appSurfacesReport: appSurfacesStatus.report || null,
+    appSurfacesStatus: appSurfacesStatus.status || null,
+    appSurfacesReady: appSurfacesStatus.ready ?? null,
+    appSurfacesAuthMode: appSurfacesStatus.authMode || null,
+    appSurfacesLocalOnly: appSurfacesStatus.localOnly ?? null,
+    appSurfacesChecked: appSurfacesStatus.checked ?? null,
+    appSurfacesPassed: appSurfacesStatus.passed ?? null,
+    appSurfacesFailed: appSurfacesStatus.failed ?? null,
+    appSurfacesRequiredRouteCount: appSurfacesStatus.requiredRouteCount ?? null,
+    appSurfacesRequiredViewportCount: appSurfacesStatus.requiredViewportCount ?? null,
+    appSurfacesExpectedCheckCount: appSurfacesStatus.expectedCheckCount ?? null,
+    appSurfacesMissingRoutes,
+    appSurfacesMissingViewports,
+    appSurfacesBadResults,
+    appSurfacesIssues,
+  })
+
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
@@ -2412,6 +2470,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     blockerBoardIssues.length === 0 &&
     routeInventoryStatus.ready === true &&
     routeInventoryIssues.length === 0 &&
+    appSurfacesStatus.ready === true &&
+    appSurfacesIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2453,6 +2513,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     routeInventoryReady: routeInventoryStatus.ready ?? null,
     routeInventoryArtifact: routeInventoryStatus.artifact ?? null,
     routeInventoryIssues,
+    appSurfacesReady: appSurfacesStatus.ready ?? null,
+    appSurfacesArtifact: appSurfacesStatus.artifact ?? null,
+    appSurfacesIssues,
     betaQueueIssues,
     betaScheduleIssues,
     betaCommandCenterIssues,

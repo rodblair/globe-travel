@@ -10,6 +10,7 @@
     "qa:auth-access": "node scripts/platform-auth-access-smoke.mjs",
     "qa:billing-recovery": "node scripts/platform-billing-recovery-smoke.mjs",
     "qa:a11y": "node scripts/platform-accessibility-smoke.mjs",
+    "qa:app-surfaces": "node scripts/platform-app-surfaces-smoke.mjs",
     "qa:beta-review-packets": "QA_BETA_REVIEW_WRITE_PACKETS=1 node scripts/platform-beta-human-review-readiness.mjs",
     "qa:beta-review-command-center": "node scripts/platform-beta-human-review-command-center.mjs",
     "qa:beta-review-next-wave-ops": "node scripts/platform-beta-human-review-next-wave-ops.mjs",

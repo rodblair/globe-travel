@@ -1,0 +1,772 @@
+{
+  "date": "2026-05-22",
+  "baseUrl": "http://localhost:3000",
+  "localOnly": true,
+  "status": "pass",
+  "checked": 18,
+  "passed": 18,
+  "failed": 0,
+  "routeCount": 9,
+  "viewportCount": 2,
+  "requiredRoutes": [
+    "explore-alias",
+    "globe-alias",
+    "map-alias",
+    "bucket-list-alias",
+    "journal-alias",
+    "profile-alias",
+    "settings-alias",
+    "pricing-alias",
+    "onboarding-fullscreen"
+  ],
+  "viewports": [
+    "phone",
+    "desktop"
+  ],
+  "auth": {
+    "mode": "guest",
+    "guestId": "752d1fff-274b-4a91-9913-fb6a2d5d65ac",
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "752d1fff-274b-4a91-9913-fb6a2d5d65ac",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "752d1fff-274b-4a91-9913-fb6a2d5d65ac",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": true,
+      "reason": null,
+      "guestId": "752d1fff-274b-4a91-9913-fb6a2d5d65ac",
+      "profileDeleted": true,
+      "userDeleted": true,
+      "error": null
+    }
+  },
+  "artifactDir": "qa/app-surfaces-smoke-2026-05-22",
+  "jsonArtifact": "qa/app-surfaces-smoke-2026-05-22.json",
+  "reportArtifact": "qa/app-surfaces-smoke-2026-05-22.md",
+  "results": [
+    {
+      "routeId": "explore-alias",
+      "path": "/explore",
+      "expectedPath": "/chat",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Explore remains a working compatibility path into Planner.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/chat",
+      "elapsedMs": 2779,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/explore-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/chat",
+        "pathname": "/chat",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 1101,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "globe-alias",
+      "path": "/globe",
+      "expectedPath": "/chat",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Globe remains a working compatibility path into Planner.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/chat",
+      "elapsedMs": 2035,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/globe-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/chat",
+        "pathname": "/chat",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 1101,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "map-alias",
+      "path": "/map",
+      "expectedPath": "/saved",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Map compatibility path lands in the saved workspace.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/saved",
+      "elapsedMs": 2897,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/map-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved",
+        "pathname": "/saved",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 480,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "bucket-list-alias",
+      "path": "/bucket-list",
+      "expectedPath": "/saved",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Bucket list compatibility path lands in the saved workspace.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/saved",
+      "elapsedMs": 2099,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/bucket-list-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved",
+        "pathname": "/saved",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 480,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "journal-alias",
+      "path": "/journal",
+      "expectedPath": "/saved",
+      "expectedSearch": "?tab=journal",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Journal compatibility path opens the notes tab.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/saved?tab=journal",
+      "elapsedMs": 1930,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/journal-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved?tab=journal",
+        "pathname": "/saved",
+        "search": "?tab=journal",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 344,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "profile-alias",
+      "path": "/profile",
+      "expectedPath": "/account",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Profile compatibility path opens account profile settings.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/account",
+      "elapsedMs": 1763,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/profile-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account",
+        "pathname": "/account",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 606,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "settings-alias",
+      "path": "/settings",
+      "expectedPath": "/account",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Settings compatibility path opens account profile settings.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/account",
+      "elapsedMs": 1771,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/settings-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account",
+        "pathname": "/account",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 606,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "pricing-alias",
+      "path": "/pricing",
+      "expectedPath": "/account",
+      "expectedSearch": "?tab=billing",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Pricing compatibility path opens the commercial billing surface.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/account?tab=billing",
+      "elapsedMs": 1798,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/pricing-alias-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account?tab=billing",
+        "pathname": "/account",
+        "search": "?tab=billing",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 920,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "onboarding-fullscreen",
+      "path": "/onboarding",
+      "expectedPath": "/onboarding",
+      "expectedSearch": "",
+      "viewportId": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "intent": "Onboarding renders as the first-run trip-starting experience.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/onboarding",
+      "elapsedMs": 2848,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/onboarding-fullscreen-phone.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/onboarding",
+        "pathname": "/onboarding",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 279,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "explore-alias",
+      "path": "/explore",
+      "expectedPath": "/chat",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Explore remains a working compatibility path into Planner.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/chat",
+      "elapsedMs": 2848,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/explore-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/chat",
+        "pathname": "/chat",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 1264,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "globe-alias",
+      "path": "/globe",
+      "expectedPath": "/chat",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Globe remains a working compatibility path into Planner.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/chat",
+      "elapsedMs": 2126,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/globe-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/chat",
+        "pathname": "/chat",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 1264,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "map-alias",
+      "path": "/map",
+      "expectedPath": "/saved",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Map compatibility path lands in the saved workspace.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/saved",
+      "elapsedMs": 2152,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/map-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved",
+        "pathname": "/saved",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 607,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "bucket-list-alias",
+      "path": "/bucket-list",
+      "expectedPath": "/saved",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Bucket list compatibility path lands in the saved workspace.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/saved",
+      "elapsedMs": 1937,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/bucket-list-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved",
+        "pathname": "/saved",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 607,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "journal-alias",
+      "path": "/journal",
+      "expectedPath": "/saved",
+      "expectedSearch": "?tab=journal",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Journal compatibility path opens the notes tab.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/saved?tab=journal",
+      "elapsedMs": 2068,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/journal-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/saved?tab=journal",
+        "pathname": "/saved",
+        "search": "?tab=journal",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 471,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "profile-alias",
+      "path": "/profile",
+      "expectedPath": "/account",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Profile compatibility path opens account profile settings.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/account",
+      "elapsedMs": 1807,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/profile-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account",
+        "pathname": "/account",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 733,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "settings-alias",
+      "path": "/settings",
+      "expectedPath": "/account",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Settings compatibility path opens account profile settings.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/account",
+      "elapsedMs": 1849,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/settings-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account",
+        "pathname": "/account",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 733,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "pricing-alias",
+      "path": "/pricing",
+      "expectedPath": "/account",
+      "expectedSearch": "?tab=billing",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Pricing compatibility path opens the commercial billing surface.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/account?tab=billing",
+      "elapsedMs": 1939,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/pricing-alias-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/account?tab=billing",
+        "pathname": "/account",
+        "search": "?tab=billing",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 1047,
+        "missingMarkers": [],
+        "tinyTargets": []
+      },
+      "ok": true,
+      "issues": []
+    },
+    {
+      "routeId": "onboarding-fullscreen",
+      "path": "/onboarding",
+      "expectedPath": "/onboarding",
+      "expectedSearch": "",
+      "viewportId": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 950
+      },
+      "intent": "Onboarding renders as the first-run trip-starting experience.",
+      "status": 200,
+      "finalUrl": "http://localhost:3000/onboarding",
+      "elapsedMs": 2903,
+      "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/onboarding-fullscreen-desktop.png",
+      "missingMarkers": [],
+      "pageErrors": [],
+      "consoleErrorCount": 1,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "failedRequests": [],
+      "tinyTargets": [
+        {
+          "label": "Mapbox homepage",
+          "width": 88,
+          "height": 23
+        }
+      ],
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/onboarding",
+        "pathname": "/onboarding",
+        "search": "",
+        "hasMainLandmark": true,
+        "hasHeading": true,
+        "horizontalOverflow": false,
+        "appError": false,
+        "textLength": 458,
+        "missingMarkers": [],
+        "tinyTargets": [
+          {
+            "label": "Mapbox homepage",
+            "width": 88,
+            "height": 23
+          }
+        ]
+      },
+      "ok": true,
+      "issues": []
+    }
+  ],
+  "failures": []
+}

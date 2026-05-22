@@ -32,6 +32,7 @@ const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'q
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
+const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT || process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT || 'qa/app-surfaces-smoke-2026-05-22.json'
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
 const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
 const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
@@ -428,6 +429,7 @@ const [
   plannerActuals,
   releaseCandidate,
   routeInventory,
+  appSurfaces,
   blockerBoard,
   blockerBoardReport,
   blockerBoardCsv,
@@ -457,6 +459,7 @@ const [
   readJson(plannerActualsPath),
   readJson(releaseCandidatePath),
   readJson(routeInventoryPath),
+  readJson(appSurfacesPath),
   readJson(blockerBoardPath),
   readText(blockerBoardReportPath),
   readText(blockerBoardCsvPath),
@@ -720,6 +723,40 @@ const routeInventoryIssues = [
   ...badInventoryRoutes.map((route) => `route inventory route ${route.path || 'unknown'} failed: ${(route.issues || []).join('; ') || 'unknown issue'}`),
 ]
 const routeInventoryReady = routeInventoryIssues.length === 0
+const requiredAppSurfaceRoutes = [
+  'explore-alias',
+  'globe-alias',
+  'map-alias',
+  'bucket-list-alias',
+  'journal-alias',
+  'profile-alias',
+  'settings-alias',
+  'pricing-alias',
+  'onboarding-fullscreen',
+]
+const requiredAppSurfaceViewports = ['phone', 'desktop']
+const appSurfaceResults = Array.isArray(appSurfaces.results) ? appSurfaces.results : []
+const appSurfaceRouteIds = Array.isArray(appSurfaces.requiredRoutes)
+  ? appSurfaces.requiredRoutes
+  : unique(appSurfaceResults.map((result) => result.routeId))
+const appSurfaceViewportIds = Array.isArray(appSurfaces.viewports)
+  ? appSurfaces.viewports
+  : unique(appSurfaceResults.map((result) => result.viewportId))
+const missingAppSurfaceRoutes = missingFrom(appSurfaceRouteIds, requiredAppSurfaceRoutes)
+const missingAppSurfaceViewports = missingFrom(appSurfaceViewportIds, requiredAppSurfaceViewports)
+const badAppSurfaceResults = appSurfaceResults.filter((result) => result.ok !== true)
+const expectedAppSurfaceChecks = requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length
+const appSurfaceIssues = [
+  ...(appSurfaces.status === 'pass' ? [] : ['authenticated app surfaces status is not pass']),
+  ...(appSurfaces.localOnly === true ? [] : ['authenticated app surfaces should run as a local guest-only gate by default']),
+  ...(appSurfaces.auth?.mode === 'guest' ? [] : ['authenticated app surfaces did not run in guest auth mode']),
+  ...(Number(appSurfaces.checked) >= expectedAppSurfaceChecks ? [] : [`authenticated app surfaces checked ${appSurfaces.checked ?? 'missing'} route/viewport pairs but expected at least ${expectedAppSurfaceChecks}`]),
+  ...(Number(appSurfaces.failed) === 0 ? [] : [`authenticated app surfaces has ${appSurfaces.failed ?? 'missing'} failed route/viewport pair(s)`]),
+  ...missingAppSurfaceRoutes.map((route) => `authenticated app surfaces missing ${route}`),
+  ...missingAppSurfaceViewports.map((viewport) => `authenticated app surfaces missing ${viewport} viewport`),
+  ...badAppSurfaceResults.map((result) => `authenticated app surface ${result.routeId || 'unknown'} @ ${result.viewportId || 'unknown'} failed: ${(result.issues || []).join('; ') || 'unknown issue'}`),
+]
+const appSurfacesReady = appSurfaceIssues.length === 0
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -1169,6 +1206,9 @@ if (!releaseCandidateReady) {
 if (!routeInventoryReady) {
   guardrailIssues.push('full route inventory smoke does not cover every top-level public, protected, and compatibility route')
 }
+if (!appSurfacesReady) {
+  guardrailIssues.push('authenticated app surfaces smoke does not cover every secondary route, compatibility alias, and responsive destination')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -1424,6 +1464,33 @@ const summary = {
     issues: routeInventoryIssues,
     ready: routeInventoryReady,
   },
+  appSurfaces: {
+    artifact: qaDisplayPath(appSurfacesPath),
+    report: qaDisplayPath(appSurfaces.reportArtifact),
+    artifactDir: qaDisplayPath(appSurfaces.artifactDir),
+    baseUrl: appSurfaces.baseUrl || null,
+    status: appSurfaces.status || null,
+    checked: appSurfaces.checked ?? null,
+    passed: appSurfaces.passed ?? null,
+    failed: appSurfaces.failed ?? null,
+    requiredRouteCount: requiredAppSurfaceRoutes.length,
+    requiredViewportCount: requiredAppSurfaceViewports.length,
+    expectedCheckCount: expectedAppSurfaceChecks,
+    routeCount: appSurfaces.routeCount ?? appSurfaceRouteIds.length,
+    viewportCount: appSurfaces.viewportCount ?? appSurfaceViewportIds.length,
+    authMode: appSurfaces.auth?.mode || null,
+    localOnly: appSurfaces.localOnly ?? null,
+    missingRoutes: missingAppSurfaceRoutes,
+    missingViewports: missingAppSurfaceViewports,
+    badResultCount: badAppSurfaceResults.length,
+    badResults: badAppSurfaceResults.map((result) => ({
+      routeId: result.routeId || null,
+      viewportId: result.viewportId || null,
+      issues: result.issues || [],
+    })),
+    issues: appSurfaceIssues,
+    ready: appSurfacesReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -1443,6 +1510,7 @@ const summary = {
     plannerActuals: qaDisplayPath(plannerActualsPath),
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
     routeInventory: qaDisplayPath(routeInventoryPath),
+    appSurfaces: qaDisplayPath(appSurfacesPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -1485,6 +1553,7 @@ Status: ${status}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
 - Full route inventory ready: ${summary.routeInventory.ready ? 'yes' : 'no'}
+- Authenticated app surfaces ready: ${summary.appSurfaces.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -1520,6 +1589,9 @@ ${markdownList(blockerBoardIssues)}
 Full route inventory:
 ${markdownList(routeInventoryIssues)}
 
+Authenticated app surfaces:
+${markdownList(appSurfaceIssues)}
+
 ## Next Actions
 
 ${markdownList(summary.nextActions)}
@@ -1551,6 +1623,7 @@ ${markdownList(summary.nextActions)}
 - Planner actuals: \`${summary.artifacts.plannerActuals}\`
 - Release candidate: \`${summary.artifacts.releaseCandidate}\`
 - Full route inventory: \`${summary.artifacts.routeInventory}\`
+- Authenticated app surfaces: \`${summary.artifacts.appSurfaces}\`
 
 ## Operating Meaning
 
