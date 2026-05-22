@@ -33,6 +33,7 @@ const providedGuestId = process.env.QA_VISUAL_GUEST_ID || process.env.QA_GUEST_I
 const visualGuestId = providedGuestId || randomUUID()
 const allowRemoteGuestAuth = process.env.QA_VISUAL_ALLOW_REMOTE_GUEST === '1'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
+const navigationTimeoutMs = Number(process.env.QA_VISUAL_NAVIGATION_TIMEOUT_MS || (isLocalBaseUrl ? '30000' : '60000'))
 const defaultDiffRoutes = ['landing', 'planner', 'account-profile', 'account-billing', 'login', 'signup']
 const diffRouteFilter = (process.env.QA_VISUAL_DIFF_ROUTES || defaultDiffRoutes.join(','))
   .split(',')
@@ -86,6 +87,8 @@ let guestCleanup = {
   userDeleted: false,
   error: null,
 }
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 async function loadDotEnv() {
   const envPath = resolve(process.cwd(), '.env.local')
@@ -268,10 +271,27 @@ async function compareScreenshot({ routeId, screenshotName, screenshotPath }) {
 async function collectPageMetrics(page, route, viewport) {
   await page.setViewportSize({ width: viewport.width, height: viewport.height })
   const markerGroups = route.markers.map((marker) => Array.isArray(marker) ? marker : [marker])
-  const response = await page.goto(`${baseUrl}${route.path}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 30000,
-  })
+  let response = null
+  let lastNavigationError = null
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      response = await page.goto(`${baseUrl}${route.path}`, {
+        waitUntil: 'domcontentloaded',
+        timeout: navigationTimeoutMs,
+      })
+      lastNavigationError = null
+      break
+    } catch (error) {
+      lastNavigationError = error
+      if (attempt === 3) break
+      await sleep(750 * attempt)
+    }
+  }
+
+  if (lastNavigationError) {
+    throw lastNavigationError
+  }
 
   await page.waitForLoadState('networkidle', { timeout: 1500 }).catch(() => {})
   await page.waitForTimeout(Number.isFinite(settleMs) ? Math.max(0, settleMs) : 900)

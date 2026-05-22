@@ -30,6 +30,11 @@ type TripLoadError = Error & {
 }
 
 const EMPTY_DAYS: TripDay[] = []
+const TRIP_LOAD_TIMEOUT_MS = 12000
+
+function isTerminalTripLoadStatus(status?: number) {
+  return status === 401 || status === 403 || status === 404 || status === 408
+}
 const INITIAL_PROMPT_PREFIX = 'globe-travel:trip:initial-prompt:'
 const GROUP_BRIEF_KEY = 'globe-travel:trip:group-brief:'
 
@@ -103,8 +108,9 @@ function coerceCoordinate(value: unknown) {
   return null
 }
 
-function TripStudioRecovery({ status }: { status?: number }) {
+function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: () => void }) {
   const isAuthProblem = status === 401 || status === 403
+  const isTimeout = status === 408
 
   return (
     <section
@@ -122,12 +128,29 @@ function TripStudioRecovery({ status }: { status?: number }) {
           We could not open this trip.
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/62 md:text-base">
-          {isAuthProblem
-            ? 'This itinerary needs the account or guest session that created it. Sign in, return to saved trips, or start a fresh plan.'
-            : 'The trip may have been deleted, made private, or created in a different guest session. Your saved trips and planner are still available.'}
+          {isTimeout
+            ? 'This itinerary took too long to respond. Try again, return to saved trips, or start a fresh plan while the service finishes responding.'
+            : isAuthProblem
+              ? 'This itinerary needs the account or guest session that created it. Sign in, return to saved trips, or start a fresh plan.'
+              : 'The trip may have been deleted, made private, or created in a different guest session. Your saved trips and planner are still available.'}
         </p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          {onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="touch-target group rounded-[24px] border border-[color:var(--moss)]/25 bg-[color:var(--pillar-nature-wash)] p-4 text-left text-[var(--moss)] transition-colors hover:bg-[color:var(--moss)] hover:text-white sm:col-span-2"
+            >
+              <span className="flex items-center gap-3 text-sm font-semibold">
+                <RefreshCcw className="h-4 w-4" />
+                Try again
+              </span>
+              <span className="mt-2 block text-xs leading-relaxed opacity-78">
+                Reload the itinerary without losing your place.
+              </span>
+            </button>
+          )}
           <Link
             href="/saved"
             className="touch-target group rounded-[24px] border border-[color:var(--brass)]/30 bg-[var(--brass)] p-4 text-[var(--brass-text)] shadow-[0_16px_42px_rgba(245,158,11,0.18)] transition-colors hover:bg-[var(--brass-hover)]"
@@ -222,15 +245,35 @@ function TripStudioPageContent() {
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['trip', tripId],
     queryFn: async () => {
-      const res = await fetch(`/api/trips/${tripId}`, { cache: 'no-store' })
-      if (!res.ok) {
-        const loadError = new Error('Failed to load trip') as TripLoadError
-        loadError.status = res.status
-        throw loadError
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), TRIP_LOAD_TIMEOUT_MS)
+
+      try {
+        const res = await fetch(`/api/trips/${tripId}`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        })
+        if (!res.ok) {
+          const loadError = new Error('Failed to load trip') as TripLoadError
+          loadError.status = res.status
+          throw loadError
+        }
+        return res.json() as Promise<TripPayload>
+      } catch (fetchError) {
+        if (controller.signal.aborted) {
+          const loadError = new Error('Trip load timed out') as TripLoadError
+          loadError.status = 408
+          throw loadError
+        }
+        throw fetchError
+      } finally {
+        clearTimeout(timeoutId)
       }
-      return res.json() as Promise<TripPayload>
     },
-    retry: 1,
+    retry: (failureCount, loadError) => {
+      const status = (loadError as TripLoadError | null)?.status
+      return !isTerminalTripLoadStatus(status) && failureCount < 1
+    },
   })
 
   const resolvedPayload = data
@@ -721,7 +764,7 @@ function TripStudioPageContent() {
   }
 
   if (isError && !resolvedPayload) {
-    return <TripStudioRecovery status={(error as TripLoadError | null)?.status} />
+    return <TripStudioRecovery status={(error as TripLoadError | null)?.status} onRetry={() => refetch()} />
   }
 
   return (
