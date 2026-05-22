@@ -2,18 +2,11 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
-const date = process.env.QA_BETA_REVIEW_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_BETA_REVIEW_DATE || ''
 const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-review-register.json'
 const minCompletedReviews = Number(process.env.QA_BETA_REVIEW_MIN_COMPLETED || '0')
-const thresholdSuffix = minCompletedReviews > 0 ? `-min-${minCompletedReviews}` : ''
-const reportName = process.env.QA_BETA_REVIEW_REPORT || `beta-human-review-readiness-${date}${thresholdSuffix}.md`
 const writeReviewerPackets = ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_PACKETS || '').toLowerCase())
-const reviewerPacketDir = process.env.QA_BETA_REVIEW_PACKET_DIR || `../qa/beta-human-review-packets-${date}`
-const reviewerPacketManifestName = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || `beta-human-review-packet-manifest-${date}.json`
-const reviewerAssignmentCsvName = process.env.QA_BETA_REVIEW_ASSIGNMENT_CSV || `beta-human-review-assignments-${date}.csv`
-const reviewerAssignmentReportName = process.env.QA_BETA_REVIEW_ASSIGNMENT_REPORT || `beta-human-review-assignments-${date}.md`
 const reviewerBaseUrl = process.env.QA_BETA_REVIEW_BASE_URL || 'https://globe-travel-two.vercel.app'
-const submissionTemplateDir = process.env.QA_BETA_REVIEW_SUBMISSION_TEMPLATE_DIR || `../qa/beta-human-review-submissions-${date}`
 const writeSubmissionTemplates = writeReviewerPackets || ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_WRITE_SUBMISSION_TEMPLATES || '').toLowerCase())
 
 const requiredAudiences = ['friend-group', 'couple', 'family', 'solo']
@@ -96,6 +89,15 @@ function isViewport(value) {
 
 function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+}
+
+function dateOnly(value) {
+  const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
+  return match && isDate(match[0]) ? match[0] : ''
+}
+
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function completedReviewEvidenceIssues(review) {
@@ -371,6 +373,14 @@ Public launch still requires 25 completed reviews, zero unresolved P0/P1 finding
 
 const raw = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(raw)
+const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
+const thresholdSuffix = minCompletedReviews > 0 ? `-min-${minCompletedReviews}` : ''
+const reportName = process.env.QA_BETA_REVIEW_REPORT || `beta-human-review-readiness-${date}${thresholdSuffix}.md`
+const reviewerPacketDir = process.env.QA_BETA_REVIEW_PACKET_DIR || `../qa/beta-human-review-packets-${date}`
+const reviewerPacketManifestName = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || `beta-human-review-packet-manifest-${date}.json`
+const reviewerAssignmentCsvName = process.env.QA_BETA_REVIEW_ASSIGNMENT_CSV || `beta-human-review-assignments-${date}.csv`
+const reviewerAssignmentReportName = process.env.QA_BETA_REVIEW_ASSIGNMENT_REPORT || `beta-human-review-assignments-${date}.md`
+const submissionTemplateDir = process.env.QA_BETA_REVIEW_SUBMISSION_TEMPLATE_DIR || `../qa/beta-human-review-submissions-${date}`
 const plannedReviews = Array.isArray(register.plannedReviews) ? register.plannedReviews : []
 const completedReviews = plannedReviews.filter(isReviewComplete)
 const unresolvedBlockingReviews = completedReviews.filter((review) => {

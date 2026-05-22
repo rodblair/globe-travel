@@ -2,12 +2,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
-const date = process.env.QA_BETA_REVIEW_PROGRESS_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_BETA_REVIEW_PROGRESS_DATE || ''
 const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-review-register.json'
 const requirePublicProgress = ['1', 'true', 'yes', 'public'].includes(String(process.env.QA_BETA_REVIEW_PROGRESS_REQUIRE_PUBLIC || '').toLowerCase())
-const progressSuffix = requirePublicProgress ? '-public' : ''
-const jsonArtifact = process.env.QA_BETA_REVIEW_PROGRESS_JSON || `beta-human-review-progress-${date}${progressSuffix}.json`
-const reportArtifact = process.env.QA_BETA_REVIEW_PROGRESS_REPORT || `beta-human-review-progress-${date}${progressSuffix}.md`
 
 const requiredAudiences = ['friend-group', 'couple', 'family', 'solo']
 const requiredStyles = ['budget', 'premium', 'food', 'nightlife', 'outdoors', 'culture']
@@ -75,6 +72,15 @@ function isViewport(value) {
 
 function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+}
+
+function dateOnly(value) {
+  const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
+  return match && isDate(match[0]) ? match[0] : ''
+}
+
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function round(value) {
@@ -160,6 +166,10 @@ function qaDisplayPath(value) {
 
 const raw = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(raw)
+const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
+const progressSuffix = requirePublicProgress ? '-public' : ''
+const jsonArtifact = process.env.QA_BETA_REVIEW_PROGRESS_JSON || `beta-human-review-progress-${date}${progressSuffix}.json`
+const reportArtifact = process.env.QA_BETA_REVIEW_PROGRESS_REPORT || `beta-human-review-progress-${date}${progressSuffix}.md`
 const plannedReviews = Array.isArray(register.plannedReviews) ? register.plannedReviews : []
 const completedReviews = plannedReviews.filter((review) => completedStatuses.has(review.status))
 const publicLaunchMinimum = Number(register.minimumCompletedReviewsForPublicLaunch) || 25

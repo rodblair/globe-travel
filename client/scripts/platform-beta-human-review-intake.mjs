@@ -2,11 +2,8 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
-const date = process.env.QA_BETA_REVIEW_INTAKE_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_BETA_REVIEW_INTAKE_DATE || ''
 const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-review-register.json'
-const submissionDir = process.env.QA_BETA_REVIEW_SUBMISSION_DIR || `../qa/beta-human-review-submissions-${date}`
-const jsonArtifact = process.env.QA_BETA_REVIEW_INTAKE_JSON || `beta-human-review-intake-${date}.json`
-const reportArtifact = process.env.QA_BETA_REVIEW_INTAKE_REPORT || `beta-human-review-intake-${date}.md`
 const importValidSubmissions = ['1', 'true', 'yes'].includes(String(process.env.QA_BETA_REVIEW_IMPORT || '').toLowerCase())
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
@@ -61,6 +58,15 @@ function isHttpUrl(value) {
 
 function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+}
+
+function dateOnly(value) {
+  const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
+  return match && isDate(match[0]) ? match[0] : ''
+}
+
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function markdownList(items) {
@@ -208,6 +214,10 @@ async function readSubmissions() {
 
 const rawRegister = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(rawRegister)
+const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
+const submissionDir = process.env.QA_BETA_REVIEW_SUBMISSION_DIR || `../qa/beta-human-review-submissions-${date}`
+const jsonArtifact = process.env.QA_BETA_REVIEW_INTAKE_JSON || `beta-human-review-intake-${date}.json`
+const reportArtifact = process.env.QA_BETA_REVIEW_INTAKE_REPORT || `beta-human-review-intake-${date}.md`
 const plannedReviews = Array.isArray(register.plannedReviews) ? register.plannedReviews : []
 const plannedById = new Map(plannedReviews.map((review) => [review.id, review]))
 const completedBefore = plannedReviews.filter((review) => completedStatuses.has(review.status)).length

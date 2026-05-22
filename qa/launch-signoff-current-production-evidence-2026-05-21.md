@@ -88,6 +88,7 @@ Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production.
 - Beta human-review progress status: intake passed `6/6`; public-progress mode fails as expected until completed beta reviews reach `25/25` and completed-review matrix coverage is present.
 - Beta human-review submission directory: `qa/beta-human-review-submissions-2026-05-21`
 - Beta human-review intake status: dry-run intake passed `4/4`; no completed submission files are currently imported.
+- Beta human-review artifact-date stability: readiness, packet generation, progress, and intake reruns default to the beta register date `2026-05-21`, preventing stray current-date artifacts unless an explicit date override is supplied.
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-release-2026-05-21-539506d/`
 - Production visual review schedule: `3/3`, covering the remaining planned public-launch visual-review dates for 2026-05-28, 2026-06-04, and 2026-06-11.
