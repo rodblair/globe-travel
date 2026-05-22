@@ -249,6 +249,13 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function daysBetween(startDate, endDate) {
+  const start = Date.parse(`${startDate}T00:00:00Z`)
+  const end = Date.parse(`${endDate}T00:00:00Z`)
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null
+  return Math.round((end - start) / 86400000)
+}
+
 function unique(values) {
   return [...new Set(values.filter(Boolean))]
 }
@@ -519,13 +526,14 @@ const scheduledVisualReviews = Array.isArray(visualRegister.scheduledPublicLaunc
   : []
 
 const liveDeployment = health.body?.deployment || null
+const today = currentUtcDate()
 const date = requestedDate ||
   dateOnly(betaRegister.reviewedAt) ||
   dateOnly(visualRegister.reviewedAt) ||
   dateOnly(monitoringRegister.reviewedAt) ||
   dateOnly(rollbackPlan.reviewedAt) ||
   dateOnly(riskRegister.reviewedAt) ||
-  currentUtcDate()
+  today
 const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-status-${date}.json`
 const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${date}.md`
 const betaAssignmentCsvPath = betaPacketManifest.assignmentCsv || `qa/beta-human-review-assignments-${date}.csv`
@@ -1286,8 +1294,33 @@ const blockerBoardRequiredVisualRows = blockerBoardRows.filter((row) => (
   row.status === 'required for public launch history'
 ))
 const blockerBoardEvidenceChecks = Array.isArray(blockerBoard.rowEvidenceChecks) ? blockerBoard.rowEvidenceChecks : []
+const blockerBoardBetaRowsMissingDispatch = blockerBoardBetaRows.filter((row) => (
+  !hasText(row.sendBy) ||
+  !hasText(row.followUpAt) ||
+  row.dispatchStatus !== 'prepared-not-sent' ||
+  !Number.isFinite(Number(row.timeboxMinutes)) ||
+  !Array.isArray(row.source?.reviewerChecklist) ||
+  row.source.reviewerChecklist.length < 6 ||
+  !Array.isArray(row.source?.operatorChecklist) ||
+  row.source.operatorChecklist.length < 6
+))
+const blockerBoardBetaRowsWithDueMath = blockerBoardBetaRows.map((row) => ({
+  ...row,
+  sendInDays: daysBetween(today, row.sendBy),
+  followUpInDays: daysBetween(today, row.followUpAt),
+  dueInDays: daysBetween(today, row.dueAt),
+}))
+const betaDispatchRowsPrepared = blockerBoardBetaRowsWithDueMath.filter((row) => row.dispatchStatus === 'prepared-not-sent')
+const betaDispatchDueTodayRows = betaDispatchRowsPrepared.filter((row) => row.sendInDays === 0)
+const betaDispatchOverdueRows = betaDispatchRowsPrepared.filter((row) => Number.isFinite(row.sendInDays) && row.sendInDays < 0)
+const betaFollowUpDueSoonRows = betaDispatchRowsPrepared.filter((row) => (
+  Number.isFinite(row.followUpInDays) &&
+  row.followUpInDays >= 0 &&
+  row.followUpInDays <= 2
+))
+const betaFollowUpOverdueRows = betaDispatchRowsPrepared.filter((row) => Number.isFinite(row.followUpInDays) && row.followUpInDays < 0)
 if (blockerBoard.status !== 'pass') blockerBoardIssues.push('public launch blocker board status is not pass')
-if (Number(blockerBoard.checked) < 5) blockerBoardIssues.push('public launch blocker board is missing executable evidence-path checks')
+if (Number(blockerBoard.checked) < 6) blockerBoardIssues.push('public launch blocker board is missing executable evidence-path and dispatch checks')
 if (blockerBoard.publicStatusArtifact !== `qa/${jsonArtifact}`) {
   blockerBoardIssues.push(`public launch blocker board public status ${blockerBoard.publicStatusArtifact || 'missing'} does not match qa/${jsonArtifact}`)
 }
@@ -1311,6 +1344,15 @@ if (Number(blockerBoard.betaReviewProgress?.allWaveCount) < Number(betaSchedule.
 }
 if (blockerBoardBetaRows.length !== betaAllWaveOpsRows.length) {
   blockerBoardIssues.push('public launch blocker board beta work rows do not match all-wave ops rows')
+}
+if (blockerBoardBetaRowsMissingDispatch.length > 0) {
+  blockerBoardIssues.push(`public launch blocker board has ${blockerBoardBetaRowsMissingDispatch.length} beta row(s) missing dispatch operations`)
+}
+if (betaDispatchOverdueRows.length > 0) {
+  blockerBoardIssues.push(`public launch blocker board has ${betaDispatchOverdueRows.length} beta dispatch row(s) past sendBy`)
+}
+if (betaFollowUpOverdueRows.length > 0) {
+  blockerBoardIssues.push(`public launch blocker board has ${betaFollowUpOverdueRows.length} beta dispatch row(s) past followUpAt`)
 }
 if (Number(blockerBoard.productionVisualProgress?.remainingDistinctDates) !== visualRemaining) {
   blockerBoardIssues.push(`public launch blocker board visual remaining ${blockerBoard.productionVisualProgress?.remainingDistinctDates ?? 'missing'} does not match ${visualRemaining}`)
@@ -1345,6 +1387,9 @@ if (!blockerBoardReport.includes('This blocker board does not satisfy public lau
 }
 if (!blockerBoardReport.includes('## Next Evidence Actions')) {
   blockerBoardIssues.push('public launch blocker board report does not include per-row next evidence actions')
+}
+if (!blockerBoardReport.includes('prepared-not-sent')) {
+  blockerBoardIssues.push('public launch blocker board report does not expose beta dispatch status')
 }
 
 const visualProgressIssues = []
@@ -1662,6 +1707,39 @@ const summary = {
     dueSoonWaves: betaCommandCenterDueSoonWaves,
     overdueWaveCount: betaCommandCenterOverdueWaves.length,
     overdueWaves: betaCommandCenterOverdueWaves,
+    dispatchPreparedRowCount: betaDispatchRowsPrepared.length,
+    dispatchDueTodayCount: betaDispatchDueTodayRows.length,
+    dispatchDueTodayRows: betaDispatchDueTodayRows.map((row) => ({
+      id: row.id,
+      sendBy: row.sendBy,
+      followUpAt: row.followUpAt,
+      dueAt: row.dueAt,
+      submissionPath: row.submissionPath,
+    })),
+    dispatchOverdueCount: betaDispatchOverdueRows.length,
+    dispatchOverdueRows: betaDispatchOverdueRows.map((row) => ({
+      id: row.id,
+      sendBy: row.sendBy,
+      followUpAt: row.followUpAt,
+      dueAt: row.dueAt,
+      submissionPath: row.submissionPath,
+    })),
+    followUpDueSoonCount: betaFollowUpDueSoonRows.length,
+    followUpDueSoonRows: betaFollowUpDueSoonRows.map((row) => ({
+      id: row.id,
+      sendBy: row.sendBy,
+      followUpAt: row.followUpAt,
+      dueAt: row.dueAt,
+      submissionPath: row.submissionPath,
+    })),
+    followUpOverdueCount: betaFollowUpOverdueRows.length,
+    followUpOverdueRows: betaFollowUpOverdueRows.map((row) => ({
+      id: row.id,
+      sendBy: row.sendBy,
+      followUpAt: row.followUpAt,
+      dueAt: row.dueAt,
+      submissionPath: row.submissionPath,
+    })),
     nextWaveOpsRowCount: betaNextWaveOpsRows.length,
     scheduleWaveCount: scheduleWaveIds.length,
     packetCount: betaPacketRecords.length,
@@ -1712,6 +1790,11 @@ const summary = {
     betaRowCount: blockerBoardBetaRows.length,
     requiredVisualRowCount: blockerBoardRequiredVisualRows.length,
     evidenceCheckCount: blockerBoardEvidenceChecks.length,
+    betaDispatchRowCount: betaDispatchRowsPrepared.length,
+    betaDispatchDueTodayCount: betaDispatchDueTodayRows.length,
+    betaDispatchOverdueCount: betaDispatchOverdueRows.length,
+    betaFollowUpDueSoonCount: betaFollowUpDueSoonRows.length,
+    betaFollowUpOverdueCount: betaFollowUpOverdueRows.length,
     issues: blockerBoardIssues,
   },
   risks: {
@@ -2016,6 +2099,11 @@ Status: ${status}
 - Beta review command center ready: ${summary.betaHumanReviews.commandCenterReady ? 'yes' : 'no'}
 - Beta review overdue waves: ${summary.betaHumanReviews.overdueWaveCount || 0}
 - Beta review due-soon waves: ${summary.betaHumanReviews.dueSoonWaveCount || 0}
+- Beta review dispatch prepared rows: ${summary.betaHumanReviews.dispatchPreparedRowCount || 0}
+- Beta review dispatch due today: ${summary.betaHumanReviews.dispatchDueTodayCount || 0}
+- Beta review dispatch overdue: ${summary.betaHumanReviews.dispatchOverdueCount || 0}
+- Beta review follow-ups due soon: ${summary.betaHumanReviews.followUpDueSoonCount || 0}
+- Beta review follow-ups overdue: ${summary.betaHumanReviews.followUpOverdueCount || 0}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Beta review all-wave ops ready: ${summary.betaHumanReviews.allWaveOpsReady ? 'yes' : 'no'} (${summary.betaHumanReviews.allWaveOpsRowCount || 0}/${summary.betaHumanReviews.planned || 0})
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})

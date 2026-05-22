@@ -2761,6 +2761,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.allWaveOpsIssueCount) === 0 &&
     Number(betaReviewStatus.allWaveOpsRowCount) === Number(betaReviewStatus.planned || 0) - Number(betaReviewStatus.completed || 0) &&
     Number(betaReviewStatus.allWaveOpsWaveCount) >= Number(betaReviewStatus.scheduleWaveCount || 0) &&
+    Number(betaReviewStatus.dispatchPreparedRowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) &&
+    Number(betaReviewStatus.dispatchOverdueCount) === 0 &&
+    Number(betaReviewStatus.followUpOverdueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     betaReviewStatus.waveRehearsalNonMutating === true &&
@@ -2790,6 +2793,11 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(blockerBoardStatus.rowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) + Number(blockerBoardStatus.requiredVisualRowCount || 0) + Math.max(0, Number(visualReviewStatus.scheduledReviewCount || 0) - Number(blockerBoardStatus.requiredVisualRowCount || 0)) &&
     Number(blockerBoardStatus.betaRowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) &&
     Number(blockerBoardStatus.requiredVisualRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
+    Number(blockerBoardStatus.betaDispatchRowCount) === Number(betaReviewStatus.dispatchPreparedRowCount || 0) &&
+    Number(blockerBoardStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
+    Number(blockerBoardStatus.betaDispatchOverdueCount) === 0 &&
+    Number(blockerBoardStatus.betaFollowUpDueSoonCount) === Number(betaReviewStatus.followUpDueSoonCount || 0) &&
+    Number(blockerBoardStatus.betaFollowUpOverdueCount) === 0 &&
     blockerBoardIssues.length === 0 &&
     routeInventoryStatus.ready === true &&
     routeInventoryIssues.length === 0 &&
@@ -2836,6 +2844,11 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaAllWaveOpsCsv: betaReviewStatus.allWaveOpsCsv ?? null,
     betaAllWaveOpsRowCount: betaReviewStatus.allWaveOpsRowCount ?? null,
     betaAllWaveOpsWaveCount: betaReviewStatus.allWaveOpsWaveCount ?? null,
+    betaDispatchPreparedRowCount: betaReviewStatus.dispatchPreparedRowCount ?? null,
+    betaDispatchDueTodayCount: betaReviewStatus.dispatchDueTodayCount ?? null,
+    betaDispatchOverdueCount: betaReviewStatus.dispatchOverdueCount ?? null,
+    betaFollowUpDueSoonCount: betaReviewStatus.followUpDueSoonCount ?? null,
+    betaFollowUpOverdueCount: betaReviewStatus.followUpOverdueCount ?? null,
     betaWaveRehearsalReady: betaReviewStatus.waveRehearsalReady ?? null,
     betaWaveRehearsalArtifact: betaReviewStatus.waveRehearsalArtifact ?? null,
     betaWaveRehearsalIssueCount: betaReviewStatus.waveRehearsalIssueCount ?? null,
@@ -2858,6 +2871,11 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     blockerBoardRowCount: blockerBoardStatus.rowCount ?? null,
     blockerBoardBetaRowCount: blockerBoardStatus.betaRowCount ?? null,
     blockerBoardRequiredVisualRowCount: blockerBoardStatus.requiredVisualRowCount ?? null,
+    blockerBoardBetaDispatchRowCount: blockerBoardStatus.betaDispatchRowCount ?? null,
+    blockerBoardBetaDispatchDueTodayCount: blockerBoardStatus.betaDispatchDueTodayCount ?? null,
+    blockerBoardBetaDispatchOverdueCount: blockerBoardStatus.betaDispatchOverdueCount ?? null,
+    blockerBoardBetaFollowUpDueSoonCount: blockerBoardStatus.betaFollowUpDueSoonCount ?? null,
+    blockerBoardBetaFollowUpOverdueCount: blockerBoardStatus.betaFollowUpOverdueCount ?? null,
     blockerBoardIssues,
     routeInventoryReady: routeInventoryStatus.ready ?? null,
     routeInventoryArtifact: routeInventoryStatus.artifact ?? null,

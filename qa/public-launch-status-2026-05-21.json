@@ -140,6 +140,87 @@
     ],
     "overdueWaveCount": 0,
     "overdueWaves": [],
+    "dispatchPreparedRowCount": 25,
+    "dispatchDueTodayCount": 5,
+    "dispatchDueTodayRows": [
+      {
+        "id": "BETA-HR-001",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json"
+      },
+      {
+        "id": "BETA-HR-002",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json"
+      },
+      {
+        "id": "BETA-HR-003",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json"
+      },
+      {
+        "id": "BETA-HR-004",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json"
+      },
+      {
+        "id": "BETA-HR-005",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json"
+      }
+    ],
+    "dispatchOverdueCount": 0,
+    "dispatchOverdueRows": [],
+    "followUpDueSoonCount": 5,
+    "followUpDueSoonRows": [
+      {
+        "id": "BETA-HR-001",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json"
+      },
+      {
+        "id": "BETA-HR-002",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json"
+      },
+      {
+        "id": "BETA-HR-003",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json"
+      },
+      {
+        "id": "BETA-HR-004",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json"
+      },
+      {
+        "id": "BETA-HR-005",
+        "sendBy": "2026-05-22",
+        "followUpAt": "2026-05-24",
+        "dueAt": "2026-05-25",
+        "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json"
+      }
+    ],
+    "followUpOverdueCount": 0,
+    "followUpOverdueRows": [],
     "nextWaveOpsRowCount": 5,
     "scheduleWaveCount": 5,
     "packetCount": 25,
@@ -198,6 +279,11 @@
     "betaRowCount": 25,
     "requiredVisualRowCount": 2,
     "evidenceCheckCount": 28,
+    "betaDispatchRowCount": 25,
+    "betaDispatchDueTodayCount": 5,
+    "betaDispatchOverdueCount": 0,
+    "betaFollowUpDueSoonCount": 5,
+    "betaFollowUpOverdueCount": 0,
     "issues": []
   },
   "risks": {

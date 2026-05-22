@@ -17,6 +17,11 @@ Status: beta-ready-public-blocked
 - Beta review command center ready: yes
 - Beta review overdue waves: 0
 - Beta review due-soon waves: 1
+- Beta review dispatch prepared rows: 25
+- Beta review dispatch due today: 5
+- Beta review dispatch overdue: 0
+- Beta review follow-ups due soon: 5
+- Beta review follow-ups overdue: 0
 - Beta review next-wave ops ready: yes
 - Beta review all-wave ops ready: yes (25/25)
 - Beta review wave rehearsal ready: yes (5/5)
