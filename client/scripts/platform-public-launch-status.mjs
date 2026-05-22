@@ -51,6 +51,15 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))]
 }
 
+function missingFrom(actual, expected) {
+  const actualSet = new Set(Array.isArray(actual) ? actual : [])
+  return expected.filter((item) => !actualSet.has(item))
+}
+
+function hasText(value, minLength = 1) {
+  return typeof value === 'string' && value.trim().length >= minLength
+}
+
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
@@ -202,6 +211,9 @@ const [
       path: templatePath,
       expectedDueAt: dateOnly(review.dueAt),
       expectedArtifact: review.expectedArtifactPrefix,
+      expectedRoutes: Array.isArray(review.routes) ? review.routes : [],
+      expectedViewports: Array.isArray(review.viewports) ? review.viewports : [],
+      expectedDiffRoutes: Array.isArray(review.diffRoutes) ? review.diffRoutes : [],
       ...(await readableJson(templatePath)),
     }
   })),
@@ -276,6 +288,17 @@ for (const file of visualSubmissionTemplateChecks.filter((file) => file.ok)) {
   if (file.json?.deploymentUrl !== visualReviewTemplateDeploymentUrlPlaceholder) {
     visualQueueIssues.push(`visual template ${file.path} deploymentUrl must use the scheduled-review placeholder`)
   }
+  const missingRoutes = missingFrom(file.json?.routesReviewed, file.expectedRoutes)
+  const missingViewports = missingFrom(file.json?.viewportsReviewed, file.expectedViewports)
+  const missingDiffRoutes = missingFrom(file.json?.diffRoutesReviewed, file.expectedDiffRoutes)
+  if (!hasText(file.json?.reviewedBy)) visualQueueIssues.push(`visual template ${file.path} reviewedBy is missing`)
+  if (file.json?.verdict !== 'pass') visualQueueIssues.push(`visual template ${file.path} verdict must default to pass`)
+  if (!Array.isArray(file.json?.blockingFindings)) visualQueueIssues.push(`visual template ${file.path} blockingFindings must be an array`)
+  if (Number(file.json?.screenshotsReviewed) < 20) visualQueueIssues.push(`visual template ${file.path} screenshotsReviewed must be at least 20`)
+  if (missingRoutes.length > 0) visualQueueIssues.push(`visual template ${file.path} routesReviewed missing: ${missingRoutes.join(', ')}`)
+  if (missingViewports.length > 0) visualQueueIssues.push(`visual template ${file.path} viewportsReviewed missing: ${missingViewports.join(', ')}`)
+  if (missingDiffRoutes.length > 0) visualQueueIssues.push(`visual template ${file.path} diffRoutesReviewed missing: ${missingDiffRoutes.join(', ')}`)
+  if (!hasText(file.json?.notes, 40)) visualQueueIssues.push(`visual template ${file.path} notes must include review guidance`)
 }
 if (!visualAssignmentCsv.ok) visualQueueIssues.push(`visual assignment CSV is not readable at ${visualAssignmentCsvPath}`)
 if (!visualAssignmentReport.ok) visualQueueIssues.push(`visual assignment report is not readable at ${visualAssignmentReportPath}`)

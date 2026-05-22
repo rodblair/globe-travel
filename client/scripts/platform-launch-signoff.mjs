@@ -500,9 +500,18 @@ function visualReviewSubmissionTemplateIssues(template, scheduledReview) {
   const expectedReviewedAt = dateOnly(scheduledReview.dueAt)
   const expectedArtifact = scheduledReview.expectedArtifactPrefix || ''
   const expectedSummaryArtifact = `${expectedArtifact}/summary.json`
-  const missingRoutes = hasAll(template.routesReviewed || [], requiredProductionVisualRoutes)
-  const missingViewports = hasAll(template.viewportsReviewed || [], requiredProductionVisualViewports)
-  const missingDiffRoutes = hasAll(template.diffRoutesReviewed || [], requiredProductionVisualDiffRoutes)
+  const expectedRoutes = Array.isArray(scheduledReview.routes) && scheduledReview.routes.length > 0
+    ? scheduledReview.routes
+    : requiredProductionVisualRoutes
+  const expectedViewports = Array.isArray(scheduledReview.viewports) && scheduledReview.viewports.length > 0
+    ? scheduledReview.viewports
+    : requiredProductionVisualViewports
+  const expectedDiffRoutes = Array.isArray(scheduledReview.diffRoutes) && scheduledReview.diffRoutes.length > 0
+    ? scheduledReview.diffRoutes
+    : requiredProductionVisualDiffRoutes
+  const missingRoutes = hasAll(template.routesReviewed || [], expectedRoutes)
+  const missingViewports = hasAll(template.viewportsReviewed || [], expectedViewports)
+  const missingDiffRoutes = hasAll(template.diffRoutesReviewed || [], expectedDiffRoutes)
 
   if (template.scheduledReviewId !== scheduledReview.id) issues.push('scheduledReviewId must match scheduled review')
   if (dateOnly(template.reviewedAt) !== expectedReviewedAt) issues.push('reviewedAt must match scheduled dueAt')
