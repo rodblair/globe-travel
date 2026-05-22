@@ -1,0 +1,356 @@
+import { mkdir, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { chromium } from 'playwright-core'
+
+const repoRoot = resolve(process.cwd(), '..')
+const baseUrl = (process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
+const date = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_DATE || new Date().toISOString().slice(0, 10)
+const artifactName = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT_NAME || `public-share-map-itinerary-integrity-${date}`
+const artifactDir = `qa/${artifactName}`
+const artifactPath = `${artifactDir}.json`
+const reportPath = `${artifactDir}.md`
+const screenshotDir = `${artifactDir}/screenshots`
+const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const shareSlugs = (process.env.QA_PUBLIC_SHARE_MAP_SLUGS || process.env.QA_SHARE_SLUGS || process.env.QA_SHARE_SLUG || 'x3m2c8cnws')
+  .split(/[\s,]+/)
+  .map((slug) => slug.trim())
+  .filter(Boolean)
+const expectedCountryMap = parseExpectedCountryMap(process.env.QA_PUBLIC_SHARE_EXPECTED_COUNTRIES || 'x3m2c8cnws=Greece')
+
+const viewports = [
+  { id: 'phone', width: 390, height: 844 },
+  { id: 'desktop', width: 1280, height: 900 },
+]
+
+const results = []
+const failures = []
+let browser = null
+
+const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms))
+
+function parseExpectedCountryMap(value) {
+  return Object.fromEntries(String(value || '')
+    .split(/[\s,]+/)
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map((entry) => {
+      const [slug, country] = entry.split(/[=:]/).map((part) => part?.trim())
+      return [slug, country]
+    })
+    .filter(([slug, country]) => slug && country))
+}
+
+function repoPath(path) {
+  return resolve(repoRoot, path)
+}
+
+function markdownList(items) {
+  return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
+}
+
+function addFailure(shareSlug, name, details = {}) {
+  failures.push({ shareSlug, name, ...details })
+}
+
+async function fetchWithRetry(path, options = {}) {
+  const url = path.startsWith('http') ? path : `${baseUrl}${path}`
+  let lastError = null
+  let lastResponse = null
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'user-agent': 'globe-travel-public-share-map-integrity/1.0',
+          ...(options.headers || {}),
+        },
+      })
+      lastResponse = response
+      if (response.status < 500 || attempt === 3) return response
+    } catch (error) {
+      lastError = error
+      if (attempt === 3) throw error
+    }
+
+    await sleep(500 * attempt)
+  }
+
+  if (lastResponse) return lastResponse
+  throw lastError || new Error(`Failed to fetch ${url}`)
+}
+
+async function fetchJson(path) {
+  const response = await fetchWithRetry(path)
+  const text = await response.text()
+  let json = null
+  try {
+    json = JSON.parse(text)
+  } catch {
+    // Callers validate JSON shape.
+  }
+
+  return { response, text, json }
+}
+
+function analyzeDay(day, expectedCountry) {
+  const items = Array.isArray(day.items) ? day.items : []
+  const mappedItems = items.filter((item) => (
+    item.place &&
+    Number.isFinite(Number(item.place.latitude)) &&
+    Number.isFinite(Number(item.place.longitude))
+  ))
+  const countries = [...new Set(mappedItems.map((item) => item.place.country).filter(Boolean))]
+  const routes = Array.isArray(day.routes) ? day.routes : []
+  const usableRoutes = routes.filter((route) => (
+    Number.isFinite(Number(route.distance_m)) &&
+    Number(route.distance_m) > 0 &&
+    Number(route.distance_m) <= 25000
+  ))
+  const mappedStopKeys = mappedItems.map((item) => {
+    const latitude = Number(item.place.latitude).toFixed(5)
+    const longitude = Number(item.place.longitude).toFixed(5)
+    return `${latitude},${longitude}`
+  })
+  const seenStopKeys = new Set()
+  const duplicateMappedStops = mappedItems
+    .filter((item, index) => {
+      const key = mappedStopKeys[index]
+      if (seenStopKeys.has(key)) return true
+      seenStopKeys.add(key)
+      return false
+    })
+    .map((item) => ({
+      title: item.title,
+      placeName: item.place?.name || null,
+    }))
+  const issues = []
+
+  if (items.length === 0) issues.push('day has no itinerary items')
+  if (mappedItems.length !== items.length) issues.push(`mapped ${mappedItems.length}/${items.length} itinerary items`)
+  if (duplicateMappedStops.length > 0) issues.push('day has duplicate mapped stops')
+  if (countries.length !== 1) issues.push(`day has ${countries.length} mapped countries`)
+  if (expectedCountry && countries.some((country) => country !== expectedCountry)) {
+    issues.push(`mapped country does not match ${expectedCountry}`)
+  }
+  if (usableRoutes.length === 0) issues.push('day has no usable route')
+
+  return {
+    dayIndex: day.day_index,
+    title: day.title || null,
+    itemCount: items.length,
+    mappedItemCount: mappedItems.length,
+    uniqueMappedStopCount: seenStopKeys.size,
+    duplicateMappedStops,
+    countries,
+    expectedCountry: expectedCountry || null,
+    usableRouteCount: usableRoutes.length,
+    routeDistanceMeters: usableRoutes.map((route) => route.distance_m),
+    issues,
+    ok: issues.length === 0,
+  }
+}
+
+async function readRenderedShareState(page, shareSlug, expectedDayTitles) {
+  await page.goto(`${baseUrl}/t/${shareSlug}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+  await page.waitForFunction(() => {
+    const text = document.body?.innerText || ''
+    return (
+      text.includes('Day-by-day itinerary') ||
+      text.includes('This itinerary link is unavailable.') ||
+      text.includes('Application error')
+    )
+  }, { timeout: 18000 }).catch(() => {})
+  await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
+
+  return page.evaluate((dayTitles) => {
+    const text = document.body?.innerText || ''
+    const normalized = text.toLowerCase()
+    const compact = text.replace(/\s+/g, '').toLowerCase()
+    const routeLabels = Array.from(document.querySelectorAll('*'))
+      .map((element) => ({
+        spaced: (element.textContent || '').trim().replace(/\s+/g, ' '),
+        compact: (element.textContent || '').replace(/\s+/g, '').toLowerCase(),
+      }))
+      .filter((value) => (
+        ['Live route', 'Static Route', 'Static route preview', 'Route ready to review', 'Trip map'].includes(value.spaced) ||
+        ['liveroute', 'staticroute', 'staticroutepreview', 'routereadytoreview', 'tripmap'].includes(value.compact)
+      ))
+      .map((value) => value.spaced)
+    const visibleDayTitles = dayTitles.filter((title) => title && text.includes(title))
+    const stopChipMentions = (text.match(/\b\d+\s+stops?\b/gi) || []).length
+    const buttons = Array.from(document.querySelectorAll('button'))
+      .map((button) => (button.textContent || '').trim().replace(/\s+/g, ' '))
+      .filter(Boolean)
+    const mapboxCanvasCount = document.querySelectorAll('.mapboxgl-canvas').length
+
+    return {
+      url: location.href,
+      title: document.title,
+      hasSharedMapLabel: compact.includes('sharedglobe.travelmap'),
+      hasItineraryHeading: compact.includes('day-by-dayitinerary'),
+      hasDayPlanHeading: text.includes('What the group will actually do'),
+      hasStartCta: normalized.includes('start your own trip'),
+      hasFeedback: normalized.includes('add your reaction') && normalized.includes('friend feedback'),
+      hasShareControls: buttons.includes('Copy link') && buttons.includes('Share'),
+      routeLabelCount: routeLabels.length,
+      routeLabels,
+      mapboxCanvasCount,
+      mapSurfaceCount: Math.max(mapboxCanvasCount, routeLabels.length),
+      stopChipMentions,
+      visibleDayTitleCount: visibleDayTitles.length,
+      missingDayTitles: dayTitles.filter((title) => title && !text.includes(title)),
+      hasUnavailableState: text.includes('This itinerary link is unavailable.'),
+      hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => text.includes(pattern)),
+      horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }
+  }, expectedDayTitles)
+}
+
+async function checkShareSlug(shareSlug) {
+  const expectedCountry = expectedCountryMap[shareSlug] || null
+  const tripApi = await fetchJson(`/api/trips/share/${shareSlug}`)
+  const trip = tripApi.json?.trip || null
+  const days = Array.isArray(tripApi.json?.days) ? tripApi.json.days : []
+  const apiIssues = []
+
+  if (!tripApi.response.ok) apiIssues.push(`API returned HTTP ${tripApi.response.status}`)
+  if (!trip?.title) apiIssues.push('API did not return a trip title')
+  if (days.length === 0) apiIssues.push('API did not return itinerary days')
+
+  const dayIntegrity = days.map((day) => analyzeDay(day, expectedCountry))
+  const badDays = dayIntegrity.filter((day) => !day.ok)
+  const apiOk = apiIssues.length === 0 && badDays.length === 0
+  if (!apiOk) addFailure(shareSlug, 'public share API map/itinerary integrity', { apiIssues, badDays })
+
+  const rendered = []
+  if (!browser) {
+    browser = await chromium.launch({
+      executablePath: chromePath,
+      headless: true,
+      args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
+    })
+  }
+
+  for (const viewport of viewports) {
+    const context = await browser.newContext({
+      viewport: { width: viewport.width, height: viewport.height },
+      deviceScaleFactor: 1,
+      isMobile: viewport.id === 'phone',
+    })
+    const page = await context.newPage()
+    const state = await readRenderedShareState(page, shareSlug, dayIntegrity.map((day) => day.title).filter(Boolean))
+    const screenshot = `${screenshotDir}/${shareSlug}-${viewport.id}.png`
+    await page.screenshot({ path: repoPath(screenshot), fullPage: true })
+    const issues = []
+
+    if (!state.hasSharedMapLabel) issues.push('missing shared map label')
+    if (!state.hasItineraryHeading) issues.push('missing itinerary heading')
+    if (!state.hasDayPlanHeading) issues.push('missing day plan heading')
+    if (!state.hasStartCta) issues.push('missing recipient start CTA')
+    if (!state.hasFeedback) issues.push('missing feedback surfaces')
+    if (!state.hasShareControls) issues.push('missing copy/share controls')
+    if (state.mapSurfaceCount < Math.max(1, days.length)) issues.push(`found ${state.mapSurfaceCount} rendered map surfaces for ${days.length} days`)
+    if (state.stopChipMentions < Math.max(1, days.length)) issues.push(`found ${state.stopChipMentions} stop-count chips for ${days.length} days`)
+    if (state.visibleDayTitleCount < Math.max(1, days.length)) issues.push(`found ${state.visibleDayTitleCount} visible day titles for ${days.length} days`)
+    if (state.hasUnavailableState) issues.push('rendered unavailable state')
+    if (state.hasAppError) issues.push('rendered application error')
+    if (state.horizontalOverflow) issues.push(`horizontal overflow ${state.scrollWidth}px > ${state.clientWidth}px`)
+
+    const ok = issues.length === 0
+    if (!ok) addFailure(shareSlug, `public share rendered map/itinerary ${viewport.id}`, { issues, state })
+    rendered.push({
+      viewport: viewport.id,
+      width: viewport.width,
+      height: viewport.height,
+      screenshot,
+      ok,
+      issues,
+      state,
+    })
+    await context.close().catch(() => {})
+  }
+
+  return {
+    shareSlug,
+    expectedCountry,
+    tripTitle: trip?.title || null,
+    apiStatus: tripApi.response.status,
+    dayCount: days.length,
+    dayIntegrity,
+    rendered,
+    ok: apiOk && rendered.every((result) => result.ok),
+  }
+}
+
+function markdownReport(summary) {
+  const rows = summary.shareResults.map((result) => (
+    `| ${result.shareSlug} | ${result.ok ? 'Pass' : 'Fail'} | ${result.tripTitle || 'n/a'} | ${result.dayCount} | ${result.expectedCountry || 'any'} | ${result.rendered.length} |`
+  ))
+
+  return `# Public Share Map Itinerary Integrity
+
+Date: ${summary.date}
+Base URL: ${summary.baseUrl}
+
+## Result
+
+- Checked shares: ${summary.shareResults.length}
+- Checked viewports: ${summary.checkedViewports}
+- Passed shares: ${summary.passed}
+- Failed shares: ${summary.failed}
+
+| Share | Result | Trip | Days | Expected country | Rendered viewports |
+| --- | --- | --- | ---: | --- | ---: |
+${rows.join('\n')}
+
+## Failures
+
+${markdownList(summary.failures.map((failure) => `${failure.shareSlug}: ${failure.name}`))}
+
+## Evidence
+
+- JSON: \`${summary.jsonArtifact}\`
+- Screenshots: \`${summary.artifactDir}/screenshots\`
+`
+}
+
+try {
+  await mkdir(repoPath(screenshotDir), { recursive: true })
+  for (const shareSlug of shareSlugs) {
+    results.push(await checkShareSlug(shareSlug))
+  }
+} catch (error) {
+  addFailure('run', 'public share map itinerary integrity completed without exception', {
+    error: error instanceof Error ? error.message : String(error),
+  })
+} finally {
+  await browser?.close().catch(() => {})
+}
+
+const summary = {
+  date,
+  baseUrl,
+  shareSlugs,
+  expectedCountryMap,
+  artifactDir,
+  jsonArtifact: artifactPath,
+  reportArtifact: reportPath,
+  checked: results.length,
+  checkedViewports: results.reduce((total, result) => total + result.rendered.length, 0),
+  passed: results.filter((result) => result.ok).length,
+  failed: failures.length,
+  shareResults: results,
+  failures,
+}
+
+await writeFile(repoPath(artifactPath), `${JSON.stringify(summary, null, 2)}\n`)
+await writeFile(repoPath(reportPath), markdownReport(summary))
+
+console.log(JSON.stringify(summary, null, 2))
+
+if (failures.length > 0) {
+  process.exitCode = 1
+}

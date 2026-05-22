@@ -24,6 +24,10 @@ const paidPathReadinessArtifact =
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const publicShareMapIntegrityArtifact =
+  process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
+  process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
+  'qa/public-share-map-itinerary-integrity-2026-05-22.json'
 const betaHumanReviewRegister =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_REGISTER ||
   'qa/beta-human-review-register.json'
@@ -2419,6 +2423,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const appSurfacesIssues = Array.isArray(appSurfacesStatus.issues) ? appSurfacesStatus.issues : []
   const productionAppSurfacesStatus = status.productionAppSurfaces || {}
   const productionAppSurfacesIssues = Array.isArray(productionAppSurfacesStatus.issues) ? productionAppSurfacesStatus.issues : []
+  const publicShareMapStatus = status.publicShareMapIntegrity || {}
+  const publicShareMapIssues = Array.isArray(publicShareMapStatus.issues) ? publicShareMapStatus.issues : []
   const requiredRouteInventoryPaths = [
     '/',
     '/login',
@@ -2584,6 +2590,47 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     productionAppSurfacesIssues,
   })
 
+  addCheck('public launch status includes public share map/itinerary integrity evidence', (
+    publicShareMapStatus.ready === true &&
+    publicShareMapStatus.baseUrl === baseUrl &&
+    publicShareMapStatus.artifact === publicShareMapIntegrityArtifact &&
+    status.artifacts?.publicShareMapIntegrity === publicShareMapIntegrityArtifact &&
+    hasMeaningfulText(publicShareMapStatus.report) &&
+    hasMeaningfulText(publicShareMapStatus.artifactDir) &&
+    Array.isArray(publicShareMapStatus.shareSlugs) &&
+    publicShareMapStatus.shareSlugs.includes('x3m2c8cnws') &&
+    Number(publicShareMapStatus.shareCount) >= 1 &&
+    Number(publicShareMapStatus.checked) >= 1 &&
+    Number(publicShareMapStatus.checkedViewports) >= Number(publicShareMapStatus.shareCount || 0) * 2 &&
+    Number(publicShareMapStatus.passed) === Number(publicShareMapStatus.shareCount || 0) &&
+    Number(publicShareMapStatus.failed) === 0 &&
+    Number(publicShareMapStatus.badShareCount) === 0 &&
+    Number(publicShareMapStatus.failureCount) === 0 &&
+    publicShareMapIssues.length === 0 &&
+    (Array.isArray(publicShareMapStatus.badRenderedResults) ? publicShareMapStatus.badRenderedResults.length === 0 : true) &&
+    (Array.isArray(publicShareMapStatus.badDays) ? publicShareMapStatus.badDays.length === 0 : true) &&
+    (Array.isArray(publicShareMapStatus.missingScreenshots) ? publicShareMapStatus.missingScreenshots.length === 0 : true)
+  ), {
+    publicShareMapIntegrityArtifact: publicShareMapStatus.artifact || null,
+    expectedPublicShareMapIntegrityArtifact: publicShareMapIntegrityArtifact,
+    publicStatusArtifact: status.artifacts?.publicShareMapIntegrity || null,
+    publicShareMapIntegrityReport: publicShareMapStatus.report || null,
+    publicShareMapIntegrityReady: publicShareMapStatus.ready ?? null,
+    publicShareMapIntegrityBaseUrl: publicShareMapStatus.baseUrl || null,
+    publicShareMapIntegrityShareSlugs: publicShareMapStatus.shareSlugs || [],
+    publicShareMapIntegrityShareCount: publicShareMapStatus.shareCount ?? null,
+    publicShareMapIntegrityChecked: publicShareMapStatus.checked ?? null,
+    publicShareMapIntegrityCheckedViewports: publicShareMapStatus.checkedViewports ?? null,
+    publicShareMapIntegrityPassed: publicShareMapStatus.passed ?? null,
+    publicShareMapIntegrityFailed: publicShareMapStatus.failed ?? null,
+    publicShareMapIntegrityBadShareCount: publicShareMapStatus.badShareCount ?? null,
+    publicShareMapIntegrityFailureCount: publicShareMapStatus.failureCount ?? null,
+    publicShareMapIntegrityIssues: publicShareMapIssues,
+    publicShareMapIntegrityBadRenderedResults: publicShareMapStatus.badRenderedResults || [],
+    publicShareMapIntegrityBadDays: publicShareMapStatus.badDays || [],
+    publicShareMapIntegrityMissingScreenshots: publicShareMapStatus.missingScreenshots || [],
+  })
+
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status includes beta review wave browser rehearsal', (
@@ -2745,6 +2792,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     appSurfacesIssues.length === 0 &&
     productionAppSurfacesStatus.ready === true &&
     productionAppSurfacesIssues.length === 0 &&
+    publicShareMapStatus.ready === true &&
+    publicShareMapIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2814,6 +2863,12 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     productionAppSurfacesReady: productionAppSurfacesStatus.ready ?? null,
     productionAppSurfacesArtifact: productionAppSurfacesStatus.artifact ?? null,
     productionAppSurfacesIssues,
+    publicShareMapIntegrityReady: publicShareMapStatus.ready ?? null,
+    publicShareMapIntegrityArtifact: publicShareMapStatus.artifact ?? null,
+    publicShareMapIntegrityIssueCount: publicShareMapStatus.issues?.length ?? null,
+    publicShareMapIntegrityShareCount: publicShareMapStatus.shareCount ?? null,
+    publicShareMapIntegrityCheckedViewports: publicShareMapStatus.checkedViewports ?? null,
+    publicShareMapIntegrityIssues: publicShareMapIssues,
     betaQueueIssues,
     betaScheduleIssues,
     betaCommandCenterIssues,
@@ -3083,6 +3138,7 @@ const summary = {
   paidPathReadinessArtifact,
   accessibilityArtifact,
   plannerActualsArtifact,
+  publicShareMapIntegrityArtifact,
   betaHumanReviewRegister,
   betaHumanReviewWaveRehearsal,
   betaHumanReviewMatrixRehearsal,

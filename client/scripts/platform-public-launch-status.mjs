@@ -42,6 +42,9 @@ const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.Q
 const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT || 'qa/design-system-readiness-2026-05-22.json'
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
+  process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
+  'qa/public-share-map-itinerary-integrity-2026-05-22.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
 const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT || process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT || 'qa/app-surfaces-smoke-2026-05-22.json'
@@ -448,6 +451,7 @@ const [
   accessibility,
   designSystem,
   plannerActuals,
+  publicShareMapIntegrity,
   releaseCandidate,
   routeInventory,
   appSurfaces,
@@ -485,6 +489,7 @@ const [
   readJson(accessibilityPath),
   readJson(designSystemPath),
   readJson(plannerActualsPath),
+  readJson(publicShareMapIntegrityPath),
   readJson(releaseCandidatePath),
   readJson(routeInventoryPath),
   readJson(appSurfacesPath),
@@ -699,6 +704,49 @@ const plannerActualsReady =
   Array.isArray(plannerActuals) &&
   missingPlannerActualIds.length === 0 &&
   badPlannerActuals.length === 0
+const publicShareMapIntegrityIssues = []
+const publicShareMapResults = Array.isArray(publicShareMapIntegrity.shareResults) ? publicShareMapIntegrity.shareResults : []
+const publicShareMapSlugs = Array.isArray(publicShareMapIntegrity.shareSlugs) ? publicShareMapIntegrity.shareSlugs : []
+const publicShareMapFailures = Array.isArray(publicShareMapIntegrity.failures) ? publicShareMapIntegrity.failures : []
+const badPublicShareMapResults = publicShareMapResults.filter((result) => result.ok !== true)
+const badPublicShareMapRenderedResults = publicShareMapResults.flatMap((result) => (
+  Array.isArray(result.rendered)
+    ? result.rendered
+      .filter((rendered) => rendered.ok !== true)
+      .map((rendered) => `${result.shareSlug || 'unknown'}:${rendered.viewport || 'unknown'}`)
+    : [`${result.shareSlug || 'unknown'}:missing rendered results`]
+))
+const badPublicShareMapDays = publicShareMapResults.flatMap((result) => (
+  Array.isArray(result.dayIntegrity)
+    ? result.dayIntegrity
+      .filter((day) => day.ok !== true)
+      .map((day) => `${result.shareSlug || 'unknown'}:day ${day.dayIndex || 'unknown'}`)
+    : [`${result.shareSlug || 'unknown'}:missing day integrity`]
+))
+const publicShareMapScreenshotChecks = await Promise.all(publicShareMapResults.flatMap((result) => (
+  Array.isArray(result.rendered)
+    ? result.rendered.map(async (rendered) => ({
+      shareSlug: result.shareSlug || null,
+      viewport: rendered.viewport || null,
+      screenshot: rendered.screenshot || '',
+      exists: hasText(rendered.screenshot) ? await exists(rendered.screenshot) : false,
+    }))
+    : []
+)))
+const missingPublicShareMapScreenshots = publicShareMapScreenshotChecks
+  .filter((check) => !check.exists)
+  .map((check) => `${check.shareSlug || 'unknown'}:${check.viewport || 'unknown'}:${check.screenshot || 'missing screenshot'}`)
+if (publicShareMapIntegrity.baseUrl !== baseUrl) publicShareMapIntegrityIssues.push(`public share map integrity base URL ${publicShareMapIntegrity.baseUrl || 'missing'} does not match ${baseUrl}`)
+if (!publicShareMapSlugs.includes('x3m2c8cnws')) publicShareMapIntegrityIssues.push('public share map integrity does not include stable Athens share x3m2c8cnws')
+if (Number(publicShareMapIntegrity.checked) < 1) publicShareMapIntegrityIssues.push('public share map integrity did not check any shares')
+if (Number(publicShareMapIntegrity.passed) !== publicShareMapResults.length || Number(publicShareMapIntegrity.failed) !== 0 || publicShareMapFailures.length > 0) {
+  publicShareMapIntegrityIssues.push('public share map integrity has failing share checks')
+}
+if (badPublicShareMapResults.length > 0) publicShareMapIntegrityIssues.push('public share map integrity has failing share results')
+if (badPublicShareMapRenderedResults.length > 0) publicShareMapIntegrityIssues.push(`public share map integrity rendered failures: ${badPublicShareMapRenderedResults.join(', ')}`)
+if (badPublicShareMapDays.length > 0) publicShareMapIntegrityIssues.push(`public share map integrity day failures: ${badPublicShareMapDays.join(', ')}`)
+if (missingPublicShareMapScreenshots.length > 0) publicShareMapIntegrityIssues.push(`public share map integrity missing screenshots: ${missingPublicShareMapScreenshots.join(', ')}`)
+const publicShareMapIntegrityReady = publicShareMapIntegrityIssues.length === 0
 const releaseTaskNames = unique((Array.isArray(releaseCandidate.results) ? releaseCandidate.results : [])
   .map((result) => result.name)
   .filter(Boolean))
@@ -1484,6 +1532,9 @@ if (!designSystemReady) {
 if (!plannerActualsReady) {
   guardrailIssues.push('planner generated actuals do not cover regional edge cities with trustworthy map pins')
 }
+if (!publicShareMapIntegrityReady) {
+  guardrailIssues.push('public share map/itinerary integrity evidence is not passing')
+}
 if (!releaseCandidateReady) {
   guardrailIssues.push('full release-candidate artifact does not cover every core journey task and launch option')
 }
@@ -1776,6 +1827,26 @@ const summary = {
     })),
     ready: plannerActualsReady,
   },
+  publicShareMapIntegrity: {
+    artifact: qaDisplayPath(publicShareMapIntegrityPath),
+    report: qaDisplayPath(publicShareMapIntegrity.reportArtifact),
+    artifactDir: qaDisplayPath(publicShareMapIntegrity.artifactDir),
+    baseUrl: publicShareMapIntegrity.baseUrl || null,
+    checked: publicShareMapIntegrity.checked ?? null,
+    checkedViewports: publicShareMapIntegrity.checkedViewports ?? null,
+    passed: publicShareMapIntegrity.passed ?? null,
+    failed: publicShareMapIntegrity.failed ?? null,
+    shareSlugs: publicShareMapSlugs,
+    shareCount: publicShareMapResults.length,
+    badShareCount: badPublicShareMapResults.length,
+    badRenderedResults: badPublicShareMapRenderedResults,
+    badDays: badPublicShareMapDays,
+    screenshotCount: publicShareMapScreenshotChecks.length,
+    missingScreenshots: missingPublicShareMapScreenshots,
+    failureCount: publicShareMapFailures.length,
+    issues: publicShareMapIntegrityIssues,
+    ready: publicShareMapIntegrityReady,
+  },
   releaseCandidate: {
     artifact: qaDisplayPath(releaseCandidatePath),
     checked: releaseCandidate.checked ?? null,
@@ -1894,6 +1965,7 @@ const summary = {
     accessibility: qaDisplayPath(accessibilityPath),
     designSystemReadiness: qaDisplayPath(designSystemPath),
     plannerActuals: qaDisplayPath(plannerActualsPath),
+    publicShareMapIntegrity: qaDisplayPath(publicShareMapIntegrityPath),
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
     routeInventory: qaDisplayPath(routeInventoryPath),
     appSurfaces: qaDisplayPath(appSurfacesPath),
@@ -1950,6 +2022,7 @@ Status: ${status}
 - Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
+- Public share map/itinerary integrity ready: ${summary.publicShareMapIntegrity.ready ? 'yes' : 'no'} (${summary.publicShareMapIntegrity.shareCount || 0} share, ${summary.publicShareMapIntegrity.checkedViewports || 0} viewports)
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
 - Full route inventory ready: ${summary.routeInventory.ready ? 'yes' : 'no'}
 - Authenticated app surfaces ready: ${summary.appSurfaces.ready ? 'yes' : 'no'}
@@ -2007,6 +2080,9 @@ ${markdownList(appSurfaceIssues)}
 Production authenticated app surfaces:
 ${markdownList(productionAppSurfaceIssues)}
 
+Public share map/itinerary integrity:
+${markdownList(publicShareMapIntegrityIssues)}
+
 ## Next Actions
 
 ${markdownList(summary.nextActions)}
@@ -2040,6 +2116,7 @@ ${markdownList(summary.nextActions)}
 - Accessibility: \`${summary.artifacts.accessibility}\`
 - Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
 - Planner actuals: \`${summary.artifacts.plannerActuals}\`
+- Public share map/itinerary integrity: \`${summary.artifacts.publicShareMapIntegrity}\` and \`${summary.publicShareMapIntegrity.report}\`
 - Release candidate: \`${summary.artifacts.releaseCandidate}\`
 - Full route inventory: \`${summary.artifacts.routeInventory}\`
 - Authenticated app surfaces: \`${summary.artifacts.appSurfaces}\`

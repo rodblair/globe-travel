@@ -328,6 +328,28 @@
     "badActuals": [],
     "ready": true
   },
+  "publicShareMapIntegrity": {
+    "artifact": "qa/public-share-map-itinerary-integrity-2026-05-22.json",
+    "report": "qa/public-share-map-itinerary-integrity-2026-05-22.md",
+    "artifactDir": "qa/public-share-map-itinerary-integrity-2026-05-22",
+    "baseUrl": "https://globe-travel-two.vercel.app",
+    "checked": 1,
+    "checkedViewports": 2,
+    "passed": 1,
+    "failed": 0,
+    "shareSlugs": [
+      "x3m2c8cnws"
+    ],
+    "shareCount": 1,
+    "badShareCount": 0,
+    "badRenderedResults": [],
+    "badDays": [],
+    "screenshotCount": 2,
+    "missingScreenshots": [],
+    "failureCount": 0,
+    "issues": [],
+    "ready": true
+  },
   "releaseCandidate": {
     "artifact": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "checked": 35,
@@ -457,6 +479,7 @@
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-05-22.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
+    "publicShareMapIntegrity": "qa/public-share-map-itinerary-integrity-2026-05-22.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-05-22.json",
     "appSurfaces": "qa/app-surfaces-smoke-2026-05-22.json",
