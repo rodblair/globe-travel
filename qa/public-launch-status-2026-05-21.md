@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 1f630f3af43ad431643fa800948ee21b73f2a359
-- Production deployment: globe-travel-c2m43ctna-rodney-blairs-projects.vercel.app
+- Production commit: d03a9051276aaecdcfd8b6e8b8366d90928d378f
+- Production deployment: globe-travel-5ofl2iqgi-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes

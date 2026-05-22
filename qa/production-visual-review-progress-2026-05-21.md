@@ -9,7 +9,7 @@ Status: pass
 - Checked: 5
 - Passed: 5
 - Failed: 0
-- Latest production artifact: `qa/visual-baseline-production-command-center-2026-05-22-1f630f3`
+- Latest production artifact: `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905`
 - Latest production review issues: 0
 - Completed history dates: 2/4
 - Remaining required review dates: 2
@@ -26,9 +26,9 @@ Blockers:
 
 ## Latest Production Review
 
-- Summary: `qa/visual-baseline-production-command-center-2026-05-22-1f630f3/summary.json`
-- Production commit: 1f630f3af43ad431643fa800948ee21b73f2a359
-- Deployment: globe-travel-c2m43ctna-rodney-blairs-projects.vercel.app
+- Summary: `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905/summary.json`
+- Production commit: d03a9051276aaecdcfd8b6e8b8366d90928d378f
+- Deployment: globe-travel-5ofl2iqgi-rodney-blairs-projects.vercel.app
 - Verdict: pass
 
 Issues:
