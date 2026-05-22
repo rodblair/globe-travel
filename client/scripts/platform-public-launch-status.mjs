@@ -42,6 +42,9 @@ const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.en
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
 const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT || process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT || 'qa/app-surfaces-smoke-2026-05-22.json'
+const productionAppSurfacesPath = process.env.QA_PRODUCTION_APP_SURFACES_ARTIFACT ||
+  process.env.QA_LAUNCH_PRODUCTION_APP_SURFACES_ARTIFACT ||
+  'qa/app-surfaces-production-guest-2026-05-22.json'
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
 const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
 const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
@@ -444,6 +447,7 @@ const [
   releaseCandidate,
   routeInventory,
   appSurfaces,
+  productionAppSurfaces,
   blockerBoard,
   blockerBoardReport,
   blockerBoardCsv,
@@ -479,6 +483,7 @@ const [
   readJson(releaseCandidatePath),
   readJson(routeInventoryPath),
   readJson(appSurfacesPath),
+  readJson(productionAppSurfacesPath),
   readJson(blockerBoardPath),
   readText(blockerBoardReportPath),
   readText(blockerBoardCsvPath),
@@ -776,6 +781,28 @@ const appSurfaceIssues = [
   ...badAppSurfaceResults.map((result) => `authenticated app surface ${result.routeId || 'unknown'} @ ${result.viewportId || 'unknown'} failed: ${(result.issues || []).join('; ') || 'unknown issue'}`),
 ]
 const appSurfacesReady = appSurfaceIssues.length === 0
+const productionAppSurfaceResults = Array.isArray(productionAppSurfaces.results) ? productionAppSurfaces.results : []
+const productionAppSurfaceRouteIds = Array.isArray(productionAppSurfaces.requiredRoutes)
+  ? productionAppSurfaces.requiredRoutes
+  : unique(productionAppSurfaceResults.map((result) => result.routeId))
+const productionAppSurfaceViewportIds = Array.isArray(productionAppSurfaces.viewports)
+  ? productionAppSurfaces.viewports
+  : unique(productionAppSurfaceResults.map((result) => result.viewportId))
+const missingProductionAppSurfaceRoutes = missingFrom(productionAppSurfaceRouteIds, requiredAppSurfaceRoutes)
+const missingProductionAppSurfaceViewports = missingFrom(productionAppSurfaceViewportIds, requiredAppSurfaceViewports)
+const badProductionAppSurfaceResults = productionAppSurfaceResults.filter((result) => result.ok !== true)
+const productionAppSurfaceIssues = [
+  ...(productionAppSurfaces.status === 'pass' ? [] : ['production authenticated app surfaces status is not pass']),
+  ...(productionAppSurfaces.baseUrl === baseUrl ? [] : [`production authenticated app surfaces baseUrl ${productionAppSurfaces.baseUrl || 'missing'} does not match ${baseUrl}`]),
+  ...(productionAppSurfaces.localOnly === false ? [] : ['production authenticated app surfaces should run against the live alias with remote guest enabled']),
+  ...(productionAppSurfaces.auth?.mode === 'guest' ? [] : ['production authenticated app surfaces did not run in guest auth mode']),
+  ...(Number(productionAppSurfaces.checked) >= expectedAppSurfaceChecks ? [] : [`production authenticated app surfaces checked ${productionAppSurfaces.checked ?? 'missing'} route/viewport pairs but expected at least ${expectedAppSurfaceChecks}`]),
+  ...(Number(productionAppSurfaces.failed) === 0 ? [] : [`production authenticated app surfaces has ${productionAppSurfaces.failed ?? 'missing'} failed route/viewport pair(s)`]),
+  ...missingProductionAppSurfaceRoutes.map((route) => `production authenticated app surfaces missing ${route}`),
+  ...missingProductionAppSurfaceViewports.map((viewport) => `production authenticated app surfaces missing ${viewport} viewport`),
+  ...badProductionAppSurfaceResults.map((result) => `production authenticated app surface ${result.routeId || 'unknown'} @ ${result.viewportId || 'unknown'} failed: ${(result.issues || []).join('; ') || 'unknown issue'}`),
+]
+const productionAppSurfacesReady = productionAppSurfaceIssues.length === 0
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -1357,6 +1384,9 @@ if (!routeInventoryReady) {
 if (!appSurfacesReady) {
   guardrailIssues.push('authenticated app surfaces smoke does not cover every secondary route, compatibility alias, and responsive destination')
 }
+if (!productionAppSurfacesReady) {
+  guardrailIssues.push('production authenticated app surfaces smoke does not cover every secondary route, compatibility alias, and responsive destination on the live alias')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -1677,6 +1707,33 @@ const summary = {
     issues: appSurfaceIssues,
     ready: appSurfacesReady,
   },
+  productionAppSurfaces: {
+    artifact: qaDisplayPath(productionAppSurfacesPath),
+    report: qaDisplayPath(productionAppSurfaces.reportArtifact),
+    artifactDir: qaDisplayPath(productionAppSurfaces.artifactDir),
+    baseUrl: productionAppSurfaces.baseUrl || null,
+    status: productionAppSurfaces.status || null,
+    checked: productionAppSurfaces.checked ?? null,
+    passed: productionAppSurfaces.passed ?? null,
+    failed: productionAppSurfaces.failed ?? null,
+    requiredRouteCount: requiredAppSurfaceRoutes.length,
+    requiredViewportCount: requiredAppSurfaceViewports.length,
+    expectedCheckCount: expectedAppSurfaceChecks,
+    routeCount: productionAppSurfaces.routeCount ?? productionAppSurfaceRouteIds.length,
+    viewportCount: productionAppSurfaces.viewportCount ?? productionAppSurfaceViewportIds.length,
+    authMode: productionAppSurfaces.auth?.mode || null,
+    localOnly: productionAppSurfaces.localOnly ?? null,
+    missingRoutes: missingProductionAppSurfaceRoutes,
+    missingViewports: missingProductionAppSurfaceViewports,
+    badResultCount: badProductionAppSurfaceResults.length,
+    badResults: badProductionAppSurfaceResults.map((result) => ({
+      routeId: result.routeId || null,
+      viewportId: result.viewportId || null,
+      issues: result.issues || [],
+    })),
+    issues: productionAppSurfaceIssues,
+    ready: productionAppSurfacesReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -1697,6 +1754,7 @@ const summary = {
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
     routeInventory: qaDisplayPath(routeInventoryPath),
     appSurfaces: qaDisplayPath(appSurfacesPath),
+    productionAppSurfaces: qaDisplayPath(productionAppSurfacesPath),
     betaWaveRehearsal: qaDisplayPath(betaWaveRehearsalPath),
     betaMatrixRehearsal: qaDisplayPath(betaMatrixRehearsalPath),
     betaAllWaveOps: qaDisplayPath(betaAllWaveOpsPath),
@@ -1746,6 +1804,7 @@ Status: ${status}
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
 - Full route inventory ready: ${summary.routeInventory.ready ? 'yes' : 'no'}
 - Authenticated app surfaces ready: ${summary.appSurfaces.ready ? 'yes' : 'no'}
+- Production authenticated app surfaces ready: ${summary.productionAppSurfaces.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -1793,6 +1852,9 @@ ${markdownList(routeInventoryIssues)}
 Authenticated app surfaces:
 ${markdownList(appSurfaceIssues)}
 
+Production authenticated app surfaces:
+${markdownList(productionAppSurfaceIssues)}
+
 ## Next Actions
 
 ${markdownList(summary.nextActions)}
@@ -1828,6 +1890,7 @@ ${markdownList(summary.nextActions)}
 - Release candidate: \`${summary.artifacts.releaseCandidate}\`
 - Full route inventory: \`${summary.artifacts.routeInventory}\`
 - Authenticated app surfaces: \`${summary.artifacts.appSurfaces}\`
+- Production authenticated app surfaces: \`${summary.artifacts.productionAppSurfaces}\`
 
 ## Operating Meaning
 

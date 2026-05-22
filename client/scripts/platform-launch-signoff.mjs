@@ -80,6 +80,10 @@ const publicLaunchStatusArtifact =
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
+const productionAppSurfacesArtifact =
+  process.env.QA_LAUNCH_PRODUCTION_APP_SURFACES_ARTIFACT ||
+  process.env.QA_PRODUCTION_APP_SURFACES_ARTIFACT ||
+  'qa/app-surfaces-production-guest-2026-05-22.json'
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 const requirePublicBetaReviews = ['1', 'true', 'yes', 'public'].includes(
   String(process.env.QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS || process.env.QA_LAUNCH_MODE || '').toLowerCase(),
@@ -2330,6 +2334,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
   const appSurfacesStatus = status.appSurfaces || {}
   const appSurfacesIssues = Array.isArray(appSurfacesStatus.issues) ? appSurfacesStatus.issues : []
+  const productionAppSurfacesStatus = status.productionAppSurfaces || {}
+  const productionAppSurfacesIssues = Array.isArray(productionAppSurfacesStatus.issues) ? productionAppSurfacesStatus.issues : []
   const requiredRouteInventoryPaths = [
     '/',
     '/login',
@@ -2442,6 +2448,49 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     appSurfacesMissingViewports,
     appSurfacesBadResults,
     appSurfacesIssues,
+  })
+
+  const productionAppSurfacesMissingRoutes = Array.isArray(productionAppSurfacesStatus.missingRoutes) ? productionAppSurfacesStatus.missingRoutes : []
+  const productionAppSurfacesMissingViewports = Array.isArray(productionAppSurfacesStatus.missingViewports) ? productionAppSurfacesStatus.missingViewports : []
+  const productionAppSurfacesBadResults = Array.isArray(productionAppSurfacesStatus.badResults) ? productionAppSurfacesStatus.badResults : []
+  addCheck('public launch status includes production authenticated app surfaces smoke', (
+    productionAppSurfacesStatus.ready === true &&
+    productionAppSurfacesStatus.baseUrl === baseUrl &&
+    productionAppSurfacesStatus.status === 'pass' &&
+    productionAppSurfacesStatus.authMode === 'guest' &&
+    productionAppSurfacesStatus.localOnly === false &&
+    Number(productionAppSurfacesStatus.requiredRouteCount) === requiredAppSurfaceRoutes.length &&
+    Number(productionAppSurfacesStatus.requiredViewportCount) === requiredAppSurfaceViewports.length &&
+    Number(productionAppSurfacesStatus.expectedCheckCount) === requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
+    Number(productionAppSurfacesStatus.checked) >= requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
+    Number(productionAppSurfacesStatus.passed) >= requiredAppSurfaceRoutes.length * requiredAppSurfaceViewports.length &&
+    Number(productionAppSurfacesStatus.failed) === 0 &&
+    hasMeaningfulText(productionAppSurfacesStatus.artifact) &&
+    hasMeaningfulText(status.artifacts?.productionAppSurfaces) &&
+    productionAppSurfacesStatus.artifact === status.artifacts.productionAppSurfaces &&
+    productionAppSurfacesStatus.artifact === productionAppSurfacesArtifact &&
+    productionAppSurfacesMissingRoutes.length === 0 &&
+    productionAppSurfacesMissingViewports.length === 0 &&
+    productionAppSurfacesBadResults.length === 0 &&
+    productionAppSurfacesIssues.length === 0
+  ), {
+    productionAppSurfacesArtifact: productionAppSurfacesStatus.artifact || null,
+    productionAppSurfacesReport: productionAppSurfacesStatus.report || null,
+    productionAppSurfacesStatus: productionAppSurfacesStatus.status || null,
+    productionAppSurfacesReady: productionAppSurfacesStatus.ready ?? null,
+    productionAppSurfacesBaseUrl: productionAppSurfacesStatus.baseUrl || null,
+    productionAppSurfacesAuthMode: productionAppSurfacesStatus.authMode || null,
+    productionAppSurfacesLocalOnly: productionAppSurfacesStatus.localOnly ?? null,
+    productionAppSurfacesChecked: productionAppSurfacesStatus.checked ?? null,
+    productionAppSurfacesPassed: productionAppSurfacesStatus.passed ?? null,
+    productionAppSurfacesFailed: productionAppSurfacesStatus.failed ?? null,
+    productionAppSurfacesRequiredRouteCount: productionAppSurfacesStatus.requiredRouteCount ?? null,
+    productionAppSurfacesRequiredViewportCount: productionAppSurfacesStatus.requiredViewportCount ?? null,
+    productionAppSurfacesExpectedCheckCount: productionAppSurfacesStatus.expectedCheckCount ?? null,
+    productionAppSurfacesMissingRoutes,
+    productionAppSurfacesMissingViewports,
+    productionAppSurfacesBadResults,
+    productionAppSurfacesIssues,
   })
 
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
@@ -2560,6 +2609,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     routeInventoryIssues.length === 0 &&
     appSurfacesStatus.ready === true &&
     appSurfacesIssues.length === 0 &&
+    productionAppSurfacesStatus.ready === true &&
+    productionAppSurfacesIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2619,6 +2670,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     appSurfacesReady: appSurfacesStatus.ready ?? null,
     appSurfacesArtifact: appSurfacesStatus.artifact ?? null,
     appSurfacesIssues,
+    productionAppSurfacesReady: productionAppSurfacesStatus.ready ?? null,
+    productionAppSurfacesArtifact: productionAppSurfacesStatus.artifact ?? null,
+    productionAppSurfacesIssues,
     betaQueueIssues,
     betaScheduleIssues,
     betaCommandCenterIssues,

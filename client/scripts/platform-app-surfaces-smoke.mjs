@@ -219,13 +219,13 @@ async function collectSurface(page, surface, viewport) {
   const consoleErrors = []
   const failedRequests = []
 
-  page.on('pageerror', (error) => {
+  const pageErrorHandler = (error) => {
     pageErrors.push(error.message)
-  })
-  page.on('console', (message) => {
+  }
+  const consoleHandler = (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text())
-  })
-  page.on('requestfailed', (request) => {
+  }
+  const requestFailedHandler = (request) => {
     const url = request.url()
     if (url.startsWith(baseUrl)) {
       failedRequests.push({
@@ -233,7 +233,11 @@ async function collectSurface(page, surface, viewport) {
         error: request.failure()?.errorText || 'request failed',
       })
     }
-  })
+  }
+
+  page.on('pageerror', pageErrorHandler)
+  page.on('console', consoleHandler)
+  page.on('requestfailed', requestFailedHandler)
 
   let response = null
   let navigationError = null
@@ -323,6 +327,9 @@ async function collectSurface(page, surface, viewport) {
 
   const screenshotPath = resolve(screenshotDir, screenshotName(surface.id, viewport.id))
   await page.screenshot({ path: screenshotPath, fullPage: false }).catch(() => {})
+  page.off('pageerror', pageErrorHandler)
+  page.off('console', consoleHandler)
+  page.off('requestfailed', requestFailedHandler)
 
   const issues = []
   if (navigationError) issues.push(`navigation failed: ${navigationError}`)

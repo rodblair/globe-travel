@@ -342,6 +342,29 @@
     "issues": [],
     "ready": true
   },
+  "productionAppSurfaces": {
+    "artifact": "qa/app-surfaces-production-guest-2026-05-22.json",
+    "report": "qa/app-surfaces-production-guest-2026-05-22.md",
+    "artifactDir": "qa/app-surfaces-production-guest-2026-05-22",
+    "baseUrl": "https://globe-travel-two.vercel.app",
+    "status": "pass",
+    "checked": 18,
+    "passed": 18,
+    "failed": 0,
+    "requiredRouteCount": 9,
+    "requiredViewportCount": 2,
+    "expectedCheckCount": 18,
+    "routeCount": 9,
+    "viewportCount": 2,
+    "authMode": "guest",
+    "localOnly": false,
+    "missingRoutes": [],
+    "missingViewports": [],
+    "badResultCount": 0,
+    "badResults": [],
+    "issues": [],
+    "ready": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {
@@ -372,6 +395,7 @@
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-05-22.json",
     "appSurfaces": "qa/app-surfaces-smoke-2026-05-22.json",
+    "productionAppSurfaces": "qa/app-surfaces-production-guest-2026-05-22.json",
     "betaWaveRehearsal": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
     "betaMatrixRehearsal": "qa/beta-human-review-matrix-rehearsal-2026-05-22.json",
     "betaAllWaveOps": "qa/beta-human-review-all-wave-ops-2026-05-21.json",
