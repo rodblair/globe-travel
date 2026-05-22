@@ -43,7 +43,7 @@ Status: beta-ready-public-blocked
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Production visual review dispatch log ready: yes (0 sent, 3 prepared not sent)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
-- Launch operator today ready: yes (6 action rows, 5 beta, 1 visual)
+- Launch operator today ready: yes (6 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
 - Public launch mode rehearsal ready: yes (1 strict-mode exit)

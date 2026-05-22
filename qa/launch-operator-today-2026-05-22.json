@@ -2,12 +2,14 @@
   "date": "2026-05-22",
   "today": "2026-05-22",
   "status": "pass",
-  "checked": 4,
-  "passed": 4,
+  "checked": 7,
+  "passed": 7,
   "failed": 0,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
   "publicLaunchStatus": "beta-ready-public-blocked",
   "betaReviews": {
     "completed": 0,
@@ -22,10 +24,18 @@
   },
   "betaDispatchDueTodayCount": 5,
   "betaDispatchOverdueCount": 0,
+  "betaDispatchLogPreparedDueTodayCount": 5,
+  "betaDispatchLogPreparedOverdueCount": 0,
+  "betaDispatchLogPreparedNotSentCount": 5,
+  "betaDispatchLogSentCount": 0,
   "betaFollowUpsDueSoonCount": 5,
   "betaReviewsDueSoonCount": 5,
   "visualDueSoonCount": 1,
   "visualOverdueCount": 0,
+  "visualDispatchLogPreparedDueSoonCount": 1,
+  "visualDispatchLogPreparedOverdueCount": 0,
+  "visualDispatchLogRequiredPreparedNotSentCount": 2,
+  "visualDispatchLogSentCount": 0,
   "actionRows": [
     {
       "priority": "P0",
@@ -37,6 +47,9 @@
       "followUpAt": "2026-05-24",
       "dueAt": "2026-05-25",
       "daysUntilDue": 3,
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "contactRecordLocation": "",
       "action": "Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
@@ -57,6 +70,9 @@
       "followUpAt": "2026-05-24",
       "dueAt": "2026-05-25",
       "daysUntilDue": 3,
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "contactRecordLocation": "",
       "action": "Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
@@ -77,6 +93,9 @@
       "followUpAt": "2026-05-24",
       "dueAt": "2026-05-25",
       "daysUntilDue": 3,
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "contactRecordLocation": "",
       "action": "Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
@@ -97,6 +116,9 @@
       "followUpAt": "2026-05-24",
       "dueAt": "2026-05-25",
       "daysUntilDue": 3,
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "contactRecordLocation": "",
       "action": "Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
@@ -117,6 +139,9 @@
       "followUpAt": "2026-05-24",
       "dueAt": "2026-05-25",
       "daysUntilDue": 3,
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "contactRecordLocation": "",
       "action": "Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
@@ -137,8 +162,11 @@
       "followUpAt": "",
       "dueAt": "2026-05-28",
       "daysUntilDue": 6,
-      "action": "Schedule reviewer time and prepare production visual-review run.",
-      "messageFile": "",
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "contactRecordLocation": "",
+      "action": "Send visual-review assignment or confirm scheduled reviewer time.",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
       "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
       "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
       "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
@@ -175,6 +203,13 @@
       "exists": true
     }
   ],
+  "visualMessageFileChecks": [
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
+      "exists": true
+    }
+  ],
   "checks": [
     {
       "name": "launch today reads current blocked release status",
@@ -189,9 +224,52 @@
       "actionRowCount": 6
     },
     {
+      "name": "launch today reads aligned dispatch logs",
+      "ok": true,
+      "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+      "betaDispatchLogStatus": "pass",
+      "betaDispatchLogRowCount": 5,
+      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+      "visualDispatchLogStatus": "pass",
+      "visualDispatchLogRowCount": 3
+    },
+    {
       "name": "launch today beta actions have message files",
       "ok": true,
       "missingMessageFiles": []
+    },
+    {
+      "name": "launch today visual actions have message files",
+      "ok": true,
+      "missingVisualMessageFiles": []
+    },
+    {
+      "name": "launch today send actions match dispatch logs",
+      "ok": true,
+      "betaDispatchDueToday": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ],
+      "betaDispatchLogDueToday": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ],
+      "betaDispatchOverdue": [],
+      "betaDispatchLogOverdue": [],
+      "visualDueSoon": [
+        "PROD-VISUAL-HISTORY-002"
+      ],
+      "visualDispatchLogDueSoon": [
+        "PROD-VISUAL-HISTORY-002"
+      ],
+      "visualOverdue": [],
+      "visualDispatchLogOverdue": []
     },
     {
       "name": "launch today has no overdue launch execution rows",

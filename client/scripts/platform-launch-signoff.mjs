@@ -2969,16 +2969,24 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorStatus.report === launchOperatorTodayReport &&
     launchOperatorStatus.csv === launchOperatorTodayCsv &&
     status.artifacts?.launchOperatorToday === launchOperatorTodayArtifact &&
-    Number(launchOperatorStatus.checked) >= 4 &&
+    Number(launchOperatorStatus.checked) >= 7 &&
     Number(launchOperatorStatus.failed) === 0 &&
-    Number(launchOperatorStatus.actionRowCount) >= Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
-    Number(launchOperatorStatus.betaActionRowCount) >= Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
+    launchOperatorStatus.betaDispatchLogArtifact === betaReviewStatus.dispatchLogArtifact &&
+    launchOperatorStatus.visualDispatchLogArtifact === visualReviewStatus.dispatchLogArtifact &&
+    Number(launchOperatorStatus.actionRowCount) >= Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaActionRowCount) >= Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
     Number(launchOperatorStatus.visualActionRowCount) >= Number(visualReviewStatus.dueSoonScheduledReviewCount || 0) &&
-    Number(launchOperatorStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount) === 0 &&
     Number(launchOperatorStatus.betaDispatchOverdueCount) === 0 &&
+    Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount) === Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
+    Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount) === 0 &&
     Number(launchOperatorStatus.visualOverdueCount) === 0 &&
     Number(launchOperatorStatus.messageFileCheckCount) >= Number(launchOperatorStatus.betaActionRowCount || 0) &&
     Number(launchOperatorStatus.missingMessageFileCount) === 0 &&
+    Number(launchOperatorStatus.visualMessageFileCheckCount) >= Number(launchOperatorStatus.visualActionRowCount || 0) &&
+    Number(launchOperatorStatus.missingVisualMessageFileCount) === 0 &&
     launchOperatorIssues.length === 0
   ), {
     launchOperatorArtifact: launchOperatorStatus.artifact || null,
@@ -2997,9 +3005,23 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorVisualActionRowCount: launchOperatorStatus.visualActionRowCount ?? null,
     launchOperatorBetaDispatchDueTodayCount: launchOperatorStatus.betaDispatchDueTodayCount ?? null,
     launchOperatorBetaDispatchOverdueCount: launchOperatorStatus.betaDispatchOverdueCount ?? null,
+    launchOperatorBetaDispatchLogArtifact: launchOperatorStatus.betaDispatchLogArtifact ?? null,
+    expectedBetaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact ?? null,
+    launchOperatorBetaDispatchLogPreparedDueTodayCount: launchOperatorStatus.betaDispatchLogPreparedDueTodayCount ?? null,
+    launchOperatorBetaDispatchLogPreparedOverdueCount: launchOperatorStatus.betaDispatchLogPreparedOverdueCount ?? null,
+    launchOperatorBetaDispatchLogPreparedNotSentCount: launchOperatorStatus.betaDispatchLogPreparedNotSentCount ?? null,
+    launchOperatorBetaDispatchLogSentCount: launchOperatorStatus.betaDispatchLogSentCount ?? null,
+    launchOperatorVisualDispatchLogArtifact: launchOperatorStatus.visualDispatchLogArtifact ?? null,
+    expectedVisualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact ?? null,
+    launchOperatorVisualDispatchLogPreparedDueSoonCount: launchOperatorStatus.visualDispatchLogPreparedDueSoonCount ?? null,
+    launchOperatorVisualDispatchLogPreparedOverdueCount: launchOperatorStatus.visualDispatchLogPreparedOverdueCount ?? null,
+    launchOperatorVisualDispatchLogRequiredPreparedNotSentCount: launchOperatorStatus.visualDispatchLogRequiredPreparedNotSentCount ?? null,
+    launchOperatorVisualDispatchLogSentCount: launchOperatorStatus.visualDispatchLogSentCount ?? null,
     launchOperatorVisualOverdueCount: launchOperatorStatus.visualOverdueCount ?? null,
     launchOperatorMessageFileCheckCount: launchOperatorStatus.messageFileCheckCount ?? null,
     launchOperatorMissingMessageFileCount: launchOperatorStatus.missingMessageFileCount ?? null,
+    launchOperatorVisualMessageFileCheckCount: launchOperatorStatus.visualMessageFileCheckCount ?? null,
+    launchOperatorMissingVisualMessageFileCount: launchOperatorStatus.missingVisualMessageFileCount ?? null,
     launchOperatorIssues,
   })
 

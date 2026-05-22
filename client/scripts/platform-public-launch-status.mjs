@@ -1876,7 +1876,24 @@ const launchTodayVisualRows = launchTodayRows.filter((row) => row.workType === '
 const launchTodayMessageFileChecks = Array.isArray(launchOperatorToday.messageFileChecks)
   ? launchOperatorToday.messageFileChecks
   : []
+const launchTodayVisualMessageFileChecks = Array.isArray(launchOperatorToday.visualMessageFileChecks)
+  ? launchOperatorToday.visualMessageFileChecks
+  : []
 const launchTodayMissingMessageFiles = launchTodayMessageFileChecks.filter((check) => check.exists !== true)
+const launchTodayMissingVisualMessageFiles = launchTodayVisualMessageFileChecks.filter((check) => check.exists !== true)
+const betaDispatchLogDueTodayRows = betaDispatchLogRows.filter((row) => row.sendStatus !== 'sent' && daysBetween(today, row.expectedSendBy) === 0)
+const betaDispatchLogOverdueRows = betaDispatchLogRows.filter((row) => {
+  const delta = daysBetween(today, row.expectedSendBy)
+  return row.sendStatus !== 'sent' && Number.isFinite(delta) && delta < 0
+})
+const visualDispatchLogRequiredDueSoonRows = visualDispatchLogRows.filter((row) => {
+  const delta = daysBetween(today, row.dueAt)
+  return row.sendStatus !== 'sent' && row.requiredForPublicLaunch === true && Number.isFinite(delta) && delta >= 0 && delta <= 7
+})
+const visualDispatchLogRequiredOverdueRows = visualDispatchLogRows.filter((row) => {
+  const delta = daysBetween(today, row.dueAt)
+  return row.sendStatus !== 'sent' && row.requiredForPublicLaunch === true && Number.isFinite(delta) && delta < 0
+})
 if (launchOperatorToday.status !== 'pass') launchTodayIssues.push('launch operator today status is not pass')
 if (launchOperatorToday.today !== today) {
   launchTodayIssues.push(`launch operator today date ${launchOperatorToday.today || 'missing'} does not match ${today}`)
@@ -1890,11 +1907,23 @@ if (launchOperatorToday.blockerBoardArtifact !== qaDisplayPath(blockerBoardPath)
 if (launchOperatorToday.betaDispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
   launchTodayIssues.push('launch operator today does not reference current beta dispatch outbox')
 }
-if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaDispatchDueTodayRows.length) {
-  launchTodayIssues.push(`launch operator today beta invites due today ${launchOperatorToday.betaDispatchDueTodayCount ?? 'missing'} does not match ${betaDispatchDueTodayRows.length}`)
+if (launchOperatorToday.betaDispatchLogArtifact !== qaDisplayPath(betaDispatchLogPath)) {
+  launchTodayIssues.push('launch operator today does not reference current beta dispatch log')
 }
-if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaDispatchOverdueRows.length) {
-  launchTodayIssues.push('launch operator today beta overdue count does not match blocker board')
+if (launchOperatorToday.visualDispatchLogArtifact !== qaDisplayPath(visualDispatchLogPath)) {
+  launchTodayIssues.push('launch operator today does not reference current visual dispatch log')
+}
+if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaDispatchLogDueTodayRows.length) {
+  launchTodayIssues.push(`launch operator today beta invites due today ${launchOperatorToday.betaDispatchDueTodayCount ?? 'missing'} does not match dispatch log ${betaDispatchLogDueTodayRows.length}`)
+}
+if (Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount) !== betaDispatchLogDueTodayRows.length) {
+  launchTodayIssues.push('launch operator today beta dispatch-log due-today count does not match dispatch log')
+}
+if (Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount) !== betaDispatchLogOverdueRows.length) {
+  launchTodayIssues.push('launch operator today beta dispatch-log overdue count does not match dispatch log')
+}
+if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaDispatchLogOverdueRows.length) {
+  launchTodayIssues.push('launch operator today beta overdue count does not match dispatch log')
 }
 if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0) {
   launchTodayIssues.push(`launch operator today has ${launchOperatorToday.betaDispatchOverdueCount} overdue beta dispatch row(s)`)
@@ -1902,8 +1931,14 @@ if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0) {
 if (Number(launchOperatorToday.visualOverdueCount) !== 0) {
   launchTodayIssues.push(`launch operator today has ${launchOperatorToday.visualOverdueCount} overdue production visual row(s)`)
 }
-if (launchTodayBetaRows.length < betaDispatchDueTodayRows.length) {
-  launchTodayIssues.push('launch operator today does not include every beta invite due today')
+if (Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount) !== visualDispatchLogRequiredDueSoonRows.length) {
+  launchTodayIssues.push('launch operator today visual dispatch-log due-soon count does not match required visual dispatch log rows')
+}
+if (Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount) !== visualDispatchLogRequiredOverdueRows.length) {
+  launchTodayIssues.push('launch operator today visual dispatch-log overdue count does not match required visual dispatch log rows')
+}
+if (launchTodayBetaRows.length < betaDispatchLogDueTodayRows.length) {
+  launchTodayIssues.push('launch operator today does not include every unsent beta invite due today')
 }
 if (launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
   launchTodayIssues.push('launch operator today does not include every due-soon production visual review')
@@ -1914,9 +1949,18 @@ if (launchTodayMessageFileChecks.length !== launchTodayBetaRows.length) {
 for (const check of launchTodayMissingMessageFiles) {
   launchTodayIssues.push(`launch operator today message file is missing for ${check.id || 'unknown'}`)
 }
+if (launchTodayVisualMessageFileChecks.length !== launchTodayVisualRows.length) {
+  launchTodayIssues.push('launch operator today visual message-file checks do not cover every visual action row')
+}
+for (const check of launchTodayMissingVisualMessageFiles) {
+  launchTodayIssues.push(`launch operator today visual message file is missing for ${check.id || 'unknown'}`)
+}
 for (const row of launchTodayRows) {
   if (!row.id || !row.submissionPath || !launchOperatorTodayCsv.includes(row.id) || !launchOperatorTodayCsv.includes(row.submissionPath)) {
     launchTodayIssues.push(`launch operator today CSV missing row ${row.id || 'unknown'}`)
+  }
+  if (!row.sendStatus || !launchOperatorTodayCsv.includes(row.sendStatus)) {
+    launchTodayIssues.push(`launch operator today CSV missing send status for ${row.id || 'unknown'}`)
   }
 }
 if (!launchOperatorTodayReport.includes('## Do Today')) {
@@ -1924,6 +1968,9 @@ if (!launchOperatorTodayReport.includes('## Do Today')) {
 }
 if (!launchOperatorTodayReport.includes('do not treat sent messages as completed review evidence')) {
   launchTodayIssues.push('launch operator today report does not restate the beta evidence boundary')
+}
+if (!launchOperatorTodayReport.includes('After sending an invite or visual-review assignment')) {
+  launchTodayIssues.push('launch operator today report does not describe dispatch-log update workflow')
 }
 
 const launchTodayOverdueRehearsalIssues = []
@@ -2525,12 +2572,24 @@ const summary = {
     visualActionRowCount: launchTodayVisualRows.length,
     betaDispatchDueTodayCount: launchOperatorToday.betaDispatchDueTodayCount ?? null,
     betaDispatchOverdueCount: launchOperatorToday.betaDispatchOverdueCount ?? null,
+    betaDispatchLogArtifact: launchOperatorToday.betaDispatchLogArtifact ?? null,
+    betaDispatchLogPreparedDueTodayCount: launchOperatorToday.betaDispatchLogPreparedDueTodayCount ?? null,
+    betaDispatchLogPreparedOverdueCount: launchOperatorToday.betaDispatchLogPreparedOverdueCount ?? null,
+    betaDispatchLogPreparedNotSentCount: launchOperatorToday.betaDispatchLogPreparedNotSentCount ?? null,
+    betaDispatchLogSentCount: launchOperatorToday.betaDispatchLogSentCount ?? null,
     betaFollowUpsDueSoonCount: launchOperatorToday.betaFollowUpsDueSoonCount ?? null,
     betaReviewsDueSoonCount: launchOperatorToday.betaReviewsDueSoonCount ?? null,
     visualDueSoonCount: launchOperatorToday.visualDueSoonCount ?? null,
     visualOverdueCount: launchOperatorToday.visualOverdueCount ?? null,
+    visualDispatchLogArtifact: launchOperatorToday.visualDispatchLogArtifact ?? null,
+    visualDispatchLogPreparedDueSoonCount: launchOperatorToday.visualDispatchLogPreparedDueSoonCount ?? null,
+    visualDispatchLogPreparedOverdueCount: launchOperatorToday.visualDispatchLogPreparedOverdueCount ?? null,
+    visualDispatchLogRequiredPreparedNotSentCount: launchOperatorToday.visualDispatchLogRequiredPreparedNotSentCount ?? null,
+    visualDispatchLogSentCount: launchOperatorToday.visualDispatchLogSentCount ?? null,
     messageFileCheckCount: launchTodayMessageFileChecks.length,
     missingMessageFileCount: launchTodayMissingMessageFiles.length,
+    visualMessageFileCheckCount: launchTodayVisualMessageFileChecks.length,
+    missingVisualMessageFileCount: launchTodayMissingVisualMessageFiles.length,
     issues: launchTodayIssues,
   },
   launchOperatorTodayOverdueRehearsal: {
@@ -2950,7 +3009,7 @@ Status: ${status}
 - Production visual review dispatch outbox ready: ${summary.productionVisualReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchOutboxMessageFileCount || 0} message files, ${summary.productionVisualReviews.dispatchOutboxRequiredRowCount || 0} required)
 - Production visual review dispatch log ready: ${summary.productionVisualReviews.dispatchLogReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchLogSentCount || 0} sent, ${summary.productionVisualReviews.dispatchLogPreparedNotSentCount || 0} prepared not sent)
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
-- Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual)
+- Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual, ${summary.launchOperatorToday.betaDispatchLogPreparedNotSentCount || 0} beta unsent, ${summary.launchOperatorToday.visualDispatchLogRequiredPreparedNotSentCount || 0} required visual unsent)
 - Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
