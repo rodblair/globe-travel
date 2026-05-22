@@ -14,6 +14,7 @@ Status: Active goal in progress
 - Public launch remains intentionally blocked by real evidence only: `0/25` completed beta human reviews with `25 remaining`, and `2/4` distinct production visual-review dates with `2 remaining`.
 - The current invite-beta operating wave is `BETA-WAVE-01`; `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `.md`, and `.csv` expose 5 next-wave operator rows for outreach without counting them as completed review evidence.
 - `qa/public-launch-blocker-board-2026-05-21.json`, `.md`, and `.csv` now combine the two remaining public-launch blockers into one operator board: 5 beta review rows for `BETA-WAVE-01` plus 3 scheduled production visual-review rows, with 2 visual rows marked required for public-launch history.
+- The blocker board now exposes per-row next evidence actions, start URLs or production commands, packet/template paths, completed evidence paths, validation commands, and explicit import commands; `npm run qa:public-launch-blockers` verifies all 8 row packet/template paths and commands are executable.
 - The public launch blocker-board commit was pushed to `main`, deployed by Vercel, and re-verified on the production alias with refreshed monitoring, rollback, risk, design-system, visual-review, and public-launch status evidence.
 - The in-app Browser backend was unavailable again in this run (`iab` not available), so production verification used the repo's Playwright-backed Browser QA runners.
 

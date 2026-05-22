@@ -103,6 +103,7 @@
     "rowCount": 8,
     "betaRowCount": 5,
     "requiredVisualRowCount": 2,
+    "evidenceCheckCount": 8,
     "issues": []
   },
   "risks": {

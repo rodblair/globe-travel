@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
@@ -31,6 +31,15 @@ function repoPath(path) {
 
 async function readJson(path) {
   return JSON.parse(await readFile(repoPath(path), 'utf8'))
+}
+
+async function fileExists(path) {
+  try {
+    await access(repoPath(path))
+    return true
+  } catch {
+    return false
+  }
 }
 
 function csvEscape(value) {
@@ -77,6 +86,8 @@ function betaRows(betaNextWaveOps) {
     urlOrCommand: row.startUrl,
     packetOrArtifact: row.packetPath,
     submissionPath: row.completedSubmissionPath,
+    validationCommand: 'npm run qa:beta-review-intake',
+    importCommand: 'QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake',
     evidenceRule: 'Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.',
     source: {
       startUrl: row.startUrl,
@@ -104,8 +115,11 @@ function visualRows(visualRegister, visualRemaining) {
     urlOrCommand: review.command,
     packetOrArtifact: review.expectedArtifactPrefix,
     submissionPath: `qa/production-visual-review-submissions-2026-05-21/${review.id}.json`,
+    validationCommand: 'npm run qa:visual-review-intake',
+    importCommand: 'QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake',
     evidenceRule: 'Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.',
     source: {
+      submissionTemplatePath: `qa/production-visual-review-submissions-2026-05-21/${review.id}.template.json`,
       routes: review.routes || [],
       viewports: review.viewports || [],
       diffRoutes: review.diffRoutes || [],
@@ -134,6 +148,27 @@ const visualWorkRows = visualRows(visualRegister, visualRemaining)
 const rows = [...betaWorkRows, ...visualWorkRows]
 const requiredVisualRows = visualWorkRows.filter((row) => row.status === 'required for public launch history')
 const csvText = rowsToCsv(rows)
+const rowEvidenceChecks = []
+for (const row of rows) {
+  const packetPath = row.workType === 'beta-human-review' ? row.packetOrArtifact : ''
+  const templatePath = row.source?.submissionTemplatePath || ''
+  rowEvidenceChecks.push({
+    id: row.id,
+    workType: row.workType,
+    packetPath,
+    packetExists: packetPath ? await fileExists(packetPath) : true,
+    templatePath,
+    templateExists: templatePath ? await fileExists(templatePath) : false,
+    hasValidationCommand: hasText(row.validationCommand),
+    hasImportCommand: hasText(row.importCommand),
+  })
+}
+const missingRowEvidence = rowEvidenceChecks.filter((row) => (
+  !row.packetExists ||
+  !row.templateExists ||
+  !row.hasValidationCommand ||
+  !row.hasImportCommand
+))
 
 const checks = []
 function addCheck(name, ok, detail = {}) {
@@ -184,6 +219,14 @@ addCheck('public launch blocker board CSV includes every open work row', (
   csvArtifact: `qa/${csvName}`,
 })
 
+addCheck('public launch blocker board evidence paths and commands are executable', (
+  rows.length > 0 &&
+  missingRowEvidence.length === 0
+), {
+  rowEvidenceChecks,
+  missingRowEvidence,
+})
+
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
@@ -216,8 +259,44 @@ const summary = {
   },
   rowCount: rows.length,
   rows,
+  rowEvidenceChecks,
   checks,
   failures,
+}
+
+function markdownRowDetail(row) {
+  if (row.workType === 'beta-human-review') {
+    return [
+      `### ${row.id}: ${row.source?.messageSubject || row.id}`,
+      '',
+      `- Due: ${row.dueAt}`,
+      `- Reviewer role: ${row.reviewerRole || 'missing'}`,
+      `- Start URL: ${row.source?.startUrl || 'missing'}`,
+      `- Packet: \`${row.source?.packetPath || 'missing'}\``,
+      `- Template: \`${row.source?.submissionTemplatePath || 'missing'}\``,
+      `- Completed evidence path: \`${row.submissionPath}\``,
+      `- Validate: \`${row.validationCommand}\``,
+      `- Import when clean: \`${row.importCommand}\``,
+      `- Rule: ${row.evidenceRule}`,
+    ].join('\n')
+  }
+
+  return [
+    `### ${row.id}: ${row.status}`,
+    '',
+    `- Due: ${row.dueAt}`,
+    `- Reviewer role: ${row.reviewerRole || 'missing'}`,
+    `- Run: \`${row.urlOrCommand || 'missing'}\``,
+    `- Expected artifact prefix: \`${row.packetOrArtifact || 'missing'}\``,
+    `- Template: \`${row.source?.submissionTemplatePath || 'missing'}\``,
+    `- Completed evidence path: \`${row.submissionPath}\``,
+    `- Validate: \`${row.validationCommand}\``,
+    `- Import when clean: \`${row.importCommand}\``,
+    `- Routes: ${(row.source?.routes || []).join(', ') || 'missing'}`,
+    `- Viewports: ${(row.source?.viewports || []).join(', ') || 'missing'}`,
+    `- Diff routes: ${(row.source?.diffRoutes || []).join(', ') || 'missing'}`,
+    `- Rule: ${row.evidenceRule}`,
+  ].join('\n')
 }
 
 const report = `# Public Launch Blocker Board
@@ -243,6 +322,10 @@ Status: ${summary.status}
 | Blocker | Type | ID | Due | Owner | Status | Evidence Path |
 | --- | --- | --- | --- | --- | --- | --- |
 ${rows.map((row) => `| ${row.blockerId} | ${row.workType} | ${row.id} | ${row.dueAt} | ${row.owner} | ${row.status} | \`${row.submissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none |'}
+
+## Next Evidence Actions
+
+${rows.map(markdownRowDetail).join('\n\n') || '- none'}
 
 ## Operator Rules
 

@@ -2,8 +2,8 @@
   "date": "2026-05-21",
   "today": "2026-05-22",
   "status": "pass",
-  "checked": 4,
-  "passed": 4,
+  "checked": 5,
+  "passed": 5,
   "failed": 0,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "betaNextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
@@ -62,6 +62,8 @@
       "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
       "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json",
+      "validationCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
       "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
       "source": {
         "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
@@ -83,6 +85,8 @@
       "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
       "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json",
+      "validationCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
       "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
       "source": {
         "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
@@ -104,6 +108,8 @@
       "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
       "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json",
+      "validationCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
       "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
       "source": {
         "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
@@ -125,6 +131,8 @@
       "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
       "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json",
+      "validationCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
       "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
       "source": {
         "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
@@ -146,6 +154,8 @@
       "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
       "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json",
+      "validationCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
       "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
       "source": {
         "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
@@ -167,8 +177,11 @@
       "urlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
       "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
       "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
+      "validationCommand": "npm run qa:visual-review-intake",
+      "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
       "evidenceRule": "Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.",
       "source": {
+        "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
         "routes": [
           "landing",
           "login",
@@ -202,8 +215,11 @@
       "urlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
       "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-04",
       "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json",
+      "validationCommand": "npm run qa:visual-review-intake",
+      "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
       "evidenceRule": "Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.",
       "source": {
+        "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
         "routes": [
           "landing",
           "login",
@@ -237,8 +253,11 @@
       "urlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
       "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-11",
       "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
+      "validationCommand": "npm run qa:visual-review-intake",
+      "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
       "evidenceRule": "Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.",
       "source": {
+        "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
         "routes": [
           "landing",
           "login",
@@ -259,6 +278,88 @@
         ],
         "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
       }
+    }
+  ],
+  "rowEvidenceChecks": [
+    {
+      "id": "BETA-HR-001",
+      "workType": "beta-human-review",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
+      "packetExists": true,
+      "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "BETA-HR-002",
+      "workType": "beta-human-review",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
+      "packetExists": true,
+      "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "BETA-HR-003",
+      "workType": "beta-human-review",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
+      "packetExists": true,
+      "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "BETA-HR-004",
+      "workType": "beta-human-review",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
+      "packetExists": true,
+      "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "BETA-HR-005",
+      "workType": "beta-human-review",
+      "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
+      "packetExists": true,
+      "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "workType": "production-visual-review",
+      "packetPath": "",
+      "packetExists": true,
+      "templatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-003",
+      "workType": "production-visual-review",
+      "packetPath": "",
+      "packetExists": true,
+      "templatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "workType": "production-visual-review",
+      "packetPath": "",
+      "packetExists": true,
+      "templatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
+      "templateExists": true,
+      "hasValidationCommand": true,
+      "hasImportCommand": true
     }
   ],
   "checks": [
@@ -301,6 +402,93 @@
       "ok": true,
       "rowCount": 8,
       "csvArtifact": "qa/public-launch-blocker-board-2026-05-21.csv"
+    },
+    {
+      "name": "public launch blocker board evidence paths and commands are executable",
+      "ok": true,
+      "rowEvidenceChecks": [
+        {
+          "id": "BETA-HR-001",
+          "workType": "beta-human-review",
+          "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
+          "packetExists": true,
+          "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "BETA-HR-002",
+          "workType": "beta-human-review",
+          "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
+          "packetExists": true,
+          "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "BETA-HR-003",
+          "workType": "beta-human-review",
+          "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
+          "packetExists": true,
+          "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "BETA-HR-004",
+          "workType": "beta-human-review",
+          "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
+          "packetExists": true,
+          "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "BETA-HR-005",
+          "workType": "beta-human-review",
+          "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
+          "packetExists": true,
+          "templatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "PROD-VISUAL-HISTORY-002",
+          "workType": "production-visual-review",
+          "packetPath": "",
+          "packetExists": true,
+          "templatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "PROD-VISUAL-HISTORY-003",
+          "workType": "production-visual-review",
+          "packetPath": "",
+          "packetExists": true,
+          "templatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        },
+        {
+          "id": "PROD-VISUAL-HISTORY-004",
+          "workType": "production-visual-review",
+          "packetPath": "",
+          "packetExists": true,
+          "templatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
+          "templateExists": true,
+          "hasValidationCommand": true,
+          "hasImportCommand": true
+        }
+      ],
+      "missingRowEvidence": []
     }
   ],
   "failures": []

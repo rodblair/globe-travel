@@ -881,7 +881,9 @@ const blockerBoardRequiredVisualRows = blockerBoardRows.filter((row) => (
   row.workType === 'production-visual-review' &&
   row.status === 'required for public launch history'
 ))
+const blockerBoardEvidenceChecks = Array.isArray(blockerBoard.rowEvidenceChecks) ? blockerBoard.rowEvidenceChecks : []
 if (blockerBoard.status !== 'pass') blockerBoardIssues.push('public launch blocker board status is not pass')
+if (Number(blockerBoard.checked) < 5) blockerBoardIssues.push('public launch blocker board is missing executable evidence-path checks')
 if (blockerBoard.publicStatusArtifact !== `qa/${jsonArtifact}`) {
   blockerBoardIssues.push(`public launch blocker board public status ${blockerBoard.publicStatusArtifact || 'missing'} does not match qa/${jsonArtifact}`)
 }
@@ -910,9 +912,29 @@ for (const row of blockerBoardRows) {
   if (!row.id || !row.submissionPath || !blockerBoardCsv.includes(row.id) || !blockerBoardCsv.includes(row.submissionPath)) {
     blockerBoardIssues.push(`public launch blocker board CSV missing row ${row.id || 'unknown'}`)
   }
+  if (!hasText(row.validationCommand) || !hasText(row.importCommand)) {
+    blockerBoardIssues.push(`public launch blocker board row ${row.id || 'unknown'} is missing validation or import command`)
+  }
+}
+if (blockerBoardEvidenceChecks.length !== blockerBoardRows.length) {
+  blockerBoardIssues.push('public launch blocker board evidence checks do not cover every row')
+}
+for (const check of blockerBoardEvidenceChecks) {
+  if (check.packetPath && !(await exists(check.packetPath))) {
+    blockerBoardIssues.push(`public launch blocker board packet path is missing for ${check.id}: ${check.packetPath}`)
+  }
+  if (!check.templatePath || !(await exists(check.templatePath))) {
+    blockerBoardIssues.push(`public launch blocker board template path is missing for ${check.id || 'unknown'}: ${check.templatePath || 'missing'}`)
+  }
+  if (check.hasValidationCommand !== true || check.hasImportCommand !== true) {
+    blockerBoardIssues.push(`public launch blocker board evidence commands are missing for ${check.id || 'unknown'}`)
+  }
 }
 if (!blockerBoardReport.includes('This blocker board does not satisfy public launch by itself')) {
   blockerBoardIssues.push('public launch blocker board report does not restate the evidence boundary')
+}
+if (!blockerBoardReport.includes('## Next Evidence Actions')) {
+  blockerBoardIssues.push('public launch blocker board report does not include per-row next evidence actions')
 }
 
 const visualProgressIssues = []
@@ -1197,6 +1219,7 @@ const summary = {
     rowCount: blockerBoardRows.length,
     betaRowCount: blockerBoardBetaRows.length,
     requiredVisualRowCount: blockerBoardRequiredVisualRows.length,
+    evidenceCheckCount: blockerBoardEvidenceChecks.length,
     issues: blockerBoardIssues,
   },
   risks: {
