@@ -35,7 +35,7 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Public routes that don't require auth
-  const publicPaths = ['/', '/login', '/signup', '/reset-password', '/callback', '/auth', '/t']
+  const publicPaths = ['/', '/pricing', '/login', '/signup', '/reset-password', '/callback', '/auth', '/t']
   const pathname = request.nextUrl.pathname
   const isPublicPath = publicPaths.some((path) => {
     if (path === '/auth') return pathname.startsWith('/auth')

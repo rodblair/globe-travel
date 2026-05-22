@@ -123,10 +123,10 @@ const routes = [
   },
   {
     path: '/pricing',
-    sourceFile: 'client/app/(app)/pricing/page.tsx',
-    access: 'protected',
-    expectation: 'login-redirect',
-    expectedNext: '/pricing',
+    sourceFile: 'client/app/pricing/page.tsx',
+    access: 'public',
+    expectation: 'renders',
+    markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'],
   },
   {
     path: '/profile',

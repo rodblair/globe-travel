@@ -58,24 +58,24 @@ async function checkJsonPost({ name, path, body, expectedStatuses }) {
   return result
 }
 
-async function checkRedirect({ name, path, expectedDestinations }) {
+async function checkPage({ name, path, markers, disallowedFinalPathnames = [] }) {
   const response = await fetch(`${baseUrl}${path}`, {
     redirect: 'follow',
     headers: { 'user-agent': 'globe-travel-commercial-smoke/1.0' },
   })
   const finalUrl = new URL(response.url)
-  const matchedDestination = expectedDestinations.find((destination) => (
-    finalUrl.pathname === destination.pathname &&
-    (!destination.search || finalUrl.search === destination.search)
-  ))
-  const ok = response.ok && Boolean(matchedDestination)
+  const body = await response.text()
+  const missingMarkers = markers.filter((marker) => !body.includes(marker))
+  const redirectedToDisallowedPath = disallowedFinalPathnames.includes(finalUrl.pathname)
+  const ok = response.ok && missingMarkers.length === 0 && !redirectedToDisallowedPath
   const result = {
     name,
     path,
     status: response.status,
     ok,
     finalUrl: response.url,
-    expectedDestinations,
+    missingMarkers,
+    disallowedFinalPathnames,
   }
 
   if (!ok) recordFailure(name, result)
@@ -84,13 +84,16 @@ async function checkRedirect({ name, path, expectedDestinations }) {
 
 const results = []
 
-results.push(await checkRedirect({
-  name: 'pricing resolves to billing or protected login',
+results.push(await checkPage({
+  name: 'public pricing page renders conversion-ready plan details',
   path: '/pricing',
-  expectedDestinations: [
-    { pathname: '/account', search: '?tab=billing' },
-    { pathname: '/login' },
+  markers: [
+    'Globe.travel pricing',
+    'Start 7-day free trial',
+    'Adventurer',
+    'No charge today',
   ],
+  disallowedFinalPathnames: ['/login'],
 }))
 
 results.push(await checkJsonPost({

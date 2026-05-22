@@ -2460,8 +2460,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(routeInventoryStatus.passed) >= requiredRouteInventoryPaths.length &&
     Number(routeInventoryStatus.failed) === 0 &&
     Number(routeInventoryStatus.sourceMissingCount) === 0 &&
-    Number(routeInventoryStatus.publicRouteCount) >= 7 &&
-    Number(routeInventoryStatus.protectedRouteCount) >= 15 &&
+    Number(routeInventoryStatus.publicRouteCount) >= 8 &&
+    Number(routeInventoryStatus.protectedRouteCount) >= 14 &&
     hasMeaningfulText(routeInventoryStatus.artifact) &&
     hasMeaningfulText(status.artifacts?.routeInventory) &&
     routeInventoryStatus.artifact === status.artifacts.routeInventory &&

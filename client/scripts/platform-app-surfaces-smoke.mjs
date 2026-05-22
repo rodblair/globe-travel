@@ -89,10 +89,10 @@ const surfaces = [
   {
     id: 'pricing-alias',
     path: '/pricing',
-    expectedPath: '/account',
-    expectedSearch: '?tab=billing',
-    markers: ['Plan and billing', 'Plan comparison'],
-    intent: 'Pricing compatibility path opens the commercial billing surface.',
+    expectedPath: '/pricing',
+    expectedSearch: '',
+    markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'],
+    intent: 'Pricing renders a public commercial plan page for guest and signed-in contexts.',
   },
   {
     id: 'onboarding-fullscreen',
