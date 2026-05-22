@@ -1107,17 +1107,23 @@ if (blockerBoard.publicStatusArtifact !== `qa/${jsonArtifact}`) {
 if (blockerBoard.betaNextWaveOpsArtifact !== qaDisplayPath(betaNextWaveOpsPath)) {
   blockerBoardIssues.push('public launch blocker board does not reference current beta next-wave ops artifact')
 }
+if (blockerBoard.betaAllWaveOpsArtifact !== qaDisplayPath(betaAllWaveOpsPath)) {
+  blockerBoardIssues.push('public launch blocker board does not reference current beta all-wave ops artifact')
+}
 if (blockerBoard.visualProgressArtifact !== qaDisplayPath(visualProgressPath)) {
   blockerBoardIssues.push('public launch blocker board does not reference current production visual progress artifact')
 }
 if (Number(blockerBoard.betaReviewProgress?.remaining) !== betaRemaining) {
   blockerBoardIssues.push(`public launch blocker board beta remaining ${blockerBoard.betaReviewProgress?.remaining ?? 'missing'} does not match ${betaRemaining}`)
 }
-if (Number(blockerBoard.betaReviewProgress?.openRowCount) !== betaNextWaveOpsRows.length) {
-  blockerBoardIssues.push('public launch blocker board beta row count does not match next-wave ops rows')
+if (Number(blockerBoard.betaReviewProgress?.openRowCount) !== betaAllWaveOpsRows.length) {
+  blockerBoardIssues.push('public launch blocker board beta row count does not match all-wave ops rows')
 }
-if (blockerBoardBetaRows.length !== betaNextWaveOpsRows.length) {
-  blockerBoardIssues.push('public launch blocker board beta work rows do not match next-wave ops rows')
+if (Number(blockerBoard.betaReviewProgress?.allWaveCount) < Number(betaSchedule.waveCount || 0)) {
+  blockerBoardIssues.push('public launch blocker board beta wave count does not cover all scheduled beta waves')
+}
+if (blockerBoardBetaRows.length !== betaAllWaveOpsRows.length) {
+  blockerBoardIssues.push('public launch blocker board beta work rows do not match all-wave ops rows')
 }
 if (Number(blockerBoard.productionVisualProgress?.remainingDistinctDates) !== visualRemaining) {
   blockerBoardIssues.push(`public launch blocker board visual remaining ${blockerBoard.productionVisualProgress?.remainingDistinctDates ?? 'missing'} does not match ${visualRemaining}`)
@@ -1726,7 +1732,7 @@ Status: ${status}
 - Latest production visual deployment: ${summary.productionVisualReviews.latestProductionDeploymentUrl || 'missing'}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
-- Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'}
+- Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}

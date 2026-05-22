@@ -5,6 +5,7 @@ const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_DATE || ''
 const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS || 'qa/public-launch-status-2026-05-21.json'
 const betaNextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
+const betaAllWaveOpsPath = process.env.QA_BETA_REVIEW_ALL_WAVE_OPS || 'qa/beta-human-review-all-wave-ops-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
 const visualProgressPath = process.env.QA_VISUAL_REVIEW_PROGRESS || 'qa/production-visual-review-progress-2026-05-21.json'
 
@@ -72,8 +73,8 @@ function rowsToCsv(rows) {
   ].join('\n')
 }
 
-function betaRows(betaNextWaveOps) {
-  const rows = Array.isArray(betaNextWaveOps.operatorRows) ? betaNextWaveOps.operatorRows : []
+function betaRows(betaOps) {
+  const rows = Array.isArray(betaOps.operatorRows) ? betaOps.operatorRows : []
   return rows.map((row) => ({
     blockerId: 'beta-human-review-threshold',
     workType: 'beta-human-review',
@@ -130,6 +131,7 @@ function visualRows(visualRegister, visualRemaining) {
 
 const publicStatus = await readJson(publicStatusPath)
 const betaNextWaveOps = await readJson(betaNextWaveOpsPath)
+const betaAllWaveOps = await readJson(betaAllWaveOpsPath)
 const visualRegister = await readJson(visualRegisterPath)
 const visualProgress = await readJson(visualProgressPath)
 const date = requestedDate ||
@@ -142,7 +144,7 @@ const csvName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || `public-launch
 const betaStatus = publicStatus.betaHumanReviews || {}
 const visualStatus = publicStatus.productionVisualReviews || {}
 const blockers = Array.isArray(publicStatus.blockers) ? publicStatus.blockers : []
-const betaWorkRows = betaRows(betaNextWaveOps)
+const betaWorkRows = betaRows(betaAllWaveOps)
 const visualRemaining = Number(visualStatus.remainingDistinctDates) || 0
 const visualWorkRows = visualRows(visualRegister, visualRemaining)
 const rows = [...betaWorkRows, ...visualWorkRows]
@@ -188,15 +190,22 @@ addCheck('public launch blocker board reads current blocked status', (
   blockers,
 })
 
-addCheck('public launch blocker board covers beta next wave', (
+addCheck('public launch blocker board covers all remaining beta review rows', (
   betaNextWaveOps.status === 'pass' &&
-  Number(betaNextWaveOps.operatorRowCount) === betaWorkRows.length &&
-  betaWorkRows.length === Number(betaStatus.nextWave?.remainingReviewCount || 0) &&
+  betaAllWaveOps.status === 'pass' &&
+  betaAllWaveOps.scope === 'all-waves' &&
+  Number(betaAllWaveOps.operatorRowCount) === betaWorkRows.length &&
+  betaWorkRows.length === Number(betaStatus.remaining || 0) &&
+  Number(betaAllWaveOps.operatorWaveCount) >= Number(betaStatus.scheduleWaveCount || 0) &&
   betaWorkRows.every((row) => hasText(row.urlOrCommand) && hasText(row.packetOrArtifact) && hasText(row.submissionPath) && !row.submissionPath.endsWith('.template.json'))
 ), {
   betaNextWaveOpsStatus: betaNextWaveOps.status || null,
-  betaNextWaveOpsRows: betaWorkRows.length,
-  expectedRemainingWaveReviews: betaStatus.nextWave?.remainingReviewCount ?? null,
+  betaAllWaveOpsStatus: betaAllWaveOps.status || null,
+  betaAllWaveOpsScope: betaAllWaveOps.scope || null,
+  betaAllWaveOpsRows: betaWorkRows.length,
+  expectedRemainingBetaReviews: betaStatus.remaining ?? null,
+  betaAllWaveOpsWaveCount: betaAllWaveOps.operatorWaveCount ?? null,
+  scheduleWaveCount: betaStatus.scheduleWaveCount ?? null,
 })
 
 addCheck('public launch blocker board covers scheduled visual history work', (
@@ -237,6 +246,7 @@ const summary = {
   failed: failures.length,
   publicStatusArtifact: qaDisplayPath(publicStatusPath),
   betaNextWaveOpsArtifact: qaDisplayPath(betaNextWaveOpsPath),
+  betaAllWaveOpsArtifact: qaDisplayPath(betaAllWaveOpsPath),
   visualRegisterArtifact: qaDisplayPath(visualRegisterPath),
   visualProgressArtifact: qaDisplayPath(visualProgressPath),
   jsonArtifact: `qa/${jsonName}`,
@@ -247,6 +257,8 @@ const summary = {
     minimumForPublicLaunch: Number(betaStatus.minimumForPublicLaunch) || 0,
     remaining: Number(betaStatus.remaining) || 0,
     nextWave: betaStatus.nextWave || null,
+    scheduleWaveCount: Number(betaStatus.scheduleWaveCount) || 0,
+    allWaveCount: Number(betaAllWaveOps.operatorWaveCount) || 0,
     openRowCount: betaWorkRows.length,
   },
   productionVisualProgress: {
@@ -312,7 +324,8 @@ Status: ${summary.status}
 - Failed: ${summary.failed}
 - Beta reviews: ${summary.betaReviewProgress.completed}/${summary.betaReviewProgress.minimumForPublicLaunch}, ${summary.betaReviewProgress.remaining} remaining
 - Beta next wave: ${summary.betaReviewProgress.nextWave?.waveId || 'none'}
-- Beta rows ready: ${summary.betaReviewProgress.openRowCount}
+- Beta rows ready across all waves: ${summary.betaReviewProgress.openRowCount}
+- Beta waves covered: ${summary.betaReviewProgress.allWaveCount}/${summary.betaReviewProgress.scheduleWaveCount}
 - Visual review history: ${summary.productionVisualProgress.distinctHistoryDateCount}/${summary.productionVisualProgress.minimumForPublicLaunch}, ${summary.productionVisualProgress.remainingDistinctDates} remaining
 - Visual rows scheduled: ${summary.productionVisualProgress.openRowCount}
 - Next visual review due: ${summary.productionVisualProgress.nextReviewDueAt || 'missing'}

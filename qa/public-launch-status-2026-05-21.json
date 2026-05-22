@@ -138,10 +138,10 @@
     "artifact": "qa/public-launch-blocker-board-2026-05-21.json",
     "report": "qa/public-launch-blocker-board-2026-05-21.md",
     "csv": "qa/public-launch-blocker-board-2026-05-21.csv",
-    "rowCount": 8,
-    "betaRowCount": 5,
+    "rowCount": 28,
+    "betaRowCount": 25,
     "requiredVisualRowCount": 2,
-    "evidenceCheckCount": 8,
+    "evidenceCheckCount": 28,
     "issues": []
   },
   "risks": {

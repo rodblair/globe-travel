@@ -2552,8 +2552,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(blockerBoardStatus.report) &&
     hasMeaningfulText(blockerBoardStatus.csv) &&
     Number(blockerBoardStatus.issueCount) === 0 &&
-    Number(blockerBoardStatus.rowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) + Number(blockerBoardStatus.requiredVisualRowCount || 0) + Math.max(0, Number(visualReviewStatus.scheduledReviewCount || 0) - Number(blockerBoardStatus.requiredVisualRowCount || 0)) &&
-    Number(blockerBoardStatus.betaRowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
+    Number(blockerBoardStatus.rowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) + Number(blockerBoardStatus.requiredVisualRowCount || 0) + Math.max(0, Number(visualReviewStatus.scheduledReviewCount || 0) - Number(blockerBoardStatus.requiredVisualRowCount || 0)) &&
+    Number(blockerBoardStatus.betaRowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) &&
     Number(blockerBoardStatus.requiredVisualRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
     blockerBoardIssues.length === 0 &&
     routeInventoryStatus.ready === true &&

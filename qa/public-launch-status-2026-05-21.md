@@ -25,7 +25,7 @@ Status: beta-ready-public-blocked
 - Latest production visual deployment: globe-travel-6rqed3a1p-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
-- Public launch blocker board ready: yes
+- Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
 - Incomplete accepted P2 risks: 0
