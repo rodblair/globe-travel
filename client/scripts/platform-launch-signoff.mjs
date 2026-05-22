@@ -688,7 +688,7 @@ async function checkProductionHealth() {
   return body
 }
 
-async function checkRequiredDocs() {
+async function checkRequiredDocs(productionHealth) {
   const missing = []
   for (const doc of requiredDocs) {
     if (!(await fileExists(doc))) missing.push(doc)
@@ -696,6 +696,56 @@ async function checkRequiredDocs() {
   addCheck('launch readiness docs exist', missing.length === 0, {
     requiredDocs,
     missing,
+  })
+
+  let publicStatus = null
+  let releaseMemo = ''
+  let platformPlan = ''
+  const currencyIssues = []
+  try {
+    publicStatus = await readJson(publicLaunchStatusArtifact)
+  } catch (error) {
+    currencyIssues.push(`public launch status is not readable for doc currency: ${error instanceof Error ? error.message : String(error)}`)
+  }
+  try {
+    releaseMemo = await readText('RELEASE_READINESS_MEMO.md')
+  } catch (error) {
+    currencyIssues.push(`release readiness memo is not readable: ${error instanceof Error ? error.message : String(error)}`)
+  }
+  try {
+    platformPlan = await readText('PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md')
+  } catch (error) {
+    currencyIssues.push(`platform plan is not readable: ${error instanceof Error ? error.message : String(error)}`)
+  }
+
+  const combinedDocs = `${releaseMemo}\n${platformPlan}`
+  const liveDeployment = productionHealth?.deployment || {}
+  const betaStatus = publicStatus?.betaHumanReviews || {}
+  const visualStatus = publicStatus?.productionVisualReviews || {}
+  const requiredDocMarkers = [
+    liveDeployment.commit,
+    liveDeployment.url,
+    publicStatus?.status,
+    `${Number(betaStatus.completed ?? 0)}/${Number(betaStatus.minimumForPublicLaunch ?? 0)}`,
+    `${Number(betaStatus.remaining ?? 0)} remaining`,
+    betaStatus.nextWave?.waveId,
+    betaStatus.nextWaveOpsArtifact,
+    `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
+    `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
+    visualStatus.latestProductionArtifact,
+    visualStatus.latestProductionCommit,
+    visualStatus.latestProductionDeploymentUrl,
+  ].filter(hasMeaningfulText)
+  const missingDocMarkers = requiredDocMarkers.filter((marker) => !combinedDocs.includes(marker))
+  addCheck('launch readiness docs match current public launch evidence', (
+    currencyIssues.length === 0 &&
+    missingDocMarkers.length === 0
+  ), {
+    publicLaunchStatusArtifact,
+    liveDeployment,
+    requiredDocMarkers,
+    missingDocMarkers,
+    currencyIssues,
   })
 }
 
@@ -2554,7 +2604,7 @@ async function checkRollbackPlan(productionHealth) {
 }
 
 const productionHealth = await checkProductionHealth()
-await checkRequiredDocs()
+await checkRequiredDocs(productionHealth)
 await checkReleaseArtifact()
 await checkVisualArtifact()
 await checkDesignSystemArtifact()
