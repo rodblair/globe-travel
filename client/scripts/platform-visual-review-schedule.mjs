@@ -2,11 +2,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
-const date = process.env.QA_VISUAL_REVIEW_SCHEDULE_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_VISUAL_REVIEW_SCHEDULE_DATE || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || '../qa/production-visual-review-register.json'
-const reportName = process.env.QA_VISUAL_REVIEW_SCHEDULE_REPORT || `production-visual-review-schedule-${date}.md`
-const assignmentCsvName = process.env.QA_VISUAL_REVIEW_ASSIGNMENT_CSV || `production-visual-review-assignments-${date}.csv`
-const assignmentReportName = process.env.QA_VISUAL_REVIEW_ASSIGNMENT_REPORT || `production-visual-review-assignments-${date}.md`
 const writeSubmissionTemplates = !['0', 'false', 'no'].includes(String(process.env.QA_VISUAL_REVIEW_WRITE_SUBMISSION_TEMPLATES || '1').toLowerCase())
 
 const requiredRoutes = ['landing', 'login', 'signup', 'public-share']
@@ -20,6 +17,10 @@ function unique(values) {
 function dateOnly(value) {
   const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
   return match ? match[0] : ''
+}
+
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function isDate(value) {
@@ -150,6 +151,10 @@ Public launch still requires four distinct dated passing visual-review history e
 
 const raw = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(raw)
+const date = requestedDate || dateOnly(register.reviewedAt) || currentUtcDate()
+const reportName = process.env.QA_VISUAL_REVIEW_SCHEDULE_REPORT || `production-visual-review-schedule-${date}.md`
+const assignmentCsvName = process.env.QA_VISUAL_REVIEW_ASSIGNMENT_CSV || `production-visual-review-assignments-${date}.csv`
+const assignmentReportName = process.env.QA_VISUAL_REVIEW_ASSIGNMENT_REPORT || `production-visual-review-assignments-${date}.md`
 const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
 const scheduledReviews = Array.isArray(register.scheduledPublicLaunchReviews) ? register.scheduledPublicLaunchReviews : []
 const submissionDir = register.reviewSubmissionDirectory || qaDisplayPath(`../qa/production-visual-review-submissions-${date}`)
@@ -222,6 +227,7 @@ addCheck('production visual review schedule keeps the next review due date align
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
+  dateSource: requestedDate ? 'QA_VISUAL_REVIEW_SCHEDULE_DATE' : 'visual review register',
   registerPath: qaDisplayPath(registerPath),
   reportPath: `qa/${reportName}`,
   assignmentCsv: `qa/${assignmentCsvName}`,

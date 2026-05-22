@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const root = resolve(process.cwd(), '..')
-const date = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || ''
 const baseUrl = (process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
 const requirePublicLaunch = ['1', 'true', 'yes', 'public'].includes(String(process.env.QA_LAUNCH_STATUS_REQUIRE_PUBLIC || '').toLowerCase())
 const expectedCommit = process.env.QA_LAUNCH_EXPECTED_COMMIT || ''
@@ -16,8 +16,6 @@ const visualSchedulePath = process.env.QA_VISUAL_REVIEW_SCHEDULE || 'qa/producti
 const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
-const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-status-${date}.json`
-const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${date}.md`
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 
@@ -40,6 +38,10 @@ async function readText(path) {
 function dateOnly(value) {
   const match = String(value || '').match(/\d{4}-\d{2}-\d{2}/)
   return match ? match[0] : ''
+}
+
+function currentUtcDate() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function unique(values) {
@@ -113,6 +115,15 @@ const scheduledVisualReviews = Array.isArray(visualRegister.scheduledPublicLaunc
   : []
 
 const liveDeployment = health.body?.deployment || null
+const date = requestedDate ||
+  dateOnly(betaRegister.reviewedAt) ||
+  dateOnly(visualRegister.reviewedAt) ||
+  dateOnly(monitoringRegister.reviewedAt) ||
+  dateOnly(rollbackPlan.reviewedAt) ||
+  dateOnly(riskRegister.reviewedAt) ||
+  currentUtcDate()
+const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-status-${date}.json`
+const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${date}.md`
 const openBlockingRisks = (Array.isArray(riskRegister.issues) ? riskRegister.issues : [])
   .filter((issue) => ['P0', 'P1'].includes(String(issue.severity || '').toUpperCase()) && String(issue.status || '').toLowerCase() === 'open')
 const openAcceptedP2Risks = (Array.isArray(riskRegister.issues) ? riskRegister.issues : [])
@@ -166,6 +177,7 @@ const shouldFail = guardrailIssues.length > 0 || (requirePublicLaunch && !public
 
 const summary = {
   date,
+  dateSource: requestedDate ? 'QA_PUBLIC_LAUNCH_STATUS_DATE' : 'release evidence',
   baseUrl,
   status,
   betaReady,

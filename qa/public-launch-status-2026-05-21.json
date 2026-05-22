@@ -1,5 +1,6 @@
 {
   "date": "2026-05-21",
+  "dateSource": "release evidence",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
