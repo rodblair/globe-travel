@@ -902,20 +902,48 @@ for (const issue of openAcceptedP2Risks) {
   const note = String(issue.acceptedRisk || '')
   if (issue.id === 'GT-P2-001') {
     const expectedReviewCount = `${completedBetaReviews.length}/${publicBetaMinimum}`
+    const nextWaveOpsDisplayPath = qaDisplayPath(betaNextWaveOpsPath)
     if (!note.includes(expectedReviewCount)) {
       acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review progress ${expectedReviewCount}`)
     }
     if (betaRemaining > 0 && !note.includes(`${betaRemaining} remaining`)) {
       acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review remaining count ${betaRemaining}`)
     }
+    if (hasText(nextWaveOpsDisplayPath) && !note.includes(nextWaveOpsDisplayPath)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next-wave ops artifact ${nextWaveOpsDisplayPath}`)
+    }
+    if (hasText(betaNextWave?.waveId) && !note.includes(betaNextWave.waveId)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next wave ${betaNextWave.waveId}`)
+    }
+    if (betaNextWaveOpsRows.length > 0 && !note.includes(`${betaNextWaveOpsRows.length} next-wave operator rows`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next-wave operator row count ${betaNextWaveOpsRows.length}`)
+    }
   }
   if (issue.id === 'GT-P2-002') {
     const expectedVisualCount = `${visualHistoryDates.length}/${visualMinimum}`
+    const latestProductionReview = visualProgress.latestProductionReview || {}
+    const latestArtifact = qaDisplayPath(latestProductionReview.artifact)
+    const latestSummaryArtifact = qaDisplayPath(latestProductionReview.summaryArtifact)
+    const latestCommit = String(latestProductionReview.productionCommit || '')
+    const latestShortCommit = latestCommit.slice(0, 7)
+    const latestDeploymentUrl = latestProductionReview.deploymentUrl || ''
     if (!note.includes(expectedVisualCount)) {
       acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review history ${expectedVisualCount}`)
     }
     if (visualRemaining > 0 && !note.includes(`${visualRemaining} remaining`)) {
       acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review remaining count ${visualRemaining}`)
+    }
+    if (hasText(latestArtifact) && !note.includes(latestArtifact)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual artifact ${latestArtifact}`)
+    }
+    if (hasText(latestSummaryArtifact) && !note.includes(latestSummaryArtifact)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual summary ${latestSummaryArtifact}`)
+    }
+    if (hasText(latestShortCommit) && !note.includes(latestShortCommit)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual commit ${latestShortCommit}`)
+    }
+    if (hasText(latestDeploymentUrl) && !note.includes(latestDeploymentUrl)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual deployment ${latestDeploymentUrl}`)
     }
   }
 }
@@ -1090,6 +1118,10 @@ const summary = {
     distinctHistoryDateCount: visualHistoryDates.length,
     minimumForPublicLaunch: visualMinimum,
     remainingDistinctDates: visualRemaining,
+    latestProductionArtifact: qaDisplayPath(visualProgress.latestProductionReview?.artifact),
+    latestProductionSummaryArtifact: qaDisplayPath(visualProgress.latestProductionReview?.summaryArtifact),
+    latestProductionCommit: visualProgress.latestProductionReview?.productionCommit || null,
+    latestProductionDeploymentUrl: visualProgress.latestProductionReview?.deploymentUrl || null,
     scheduledReviewCount: scheduledVisualReviews.length,
     nextReviewDueAt: visualRegister.nextReviewDueAt || null,
     intakeArtifact: qaDisplayPath(visualIntakePath),
@@ -1282,6 +1314,9 @@ Status: ${status}
 - Beta review command center ready: ${summary.betaHumanReviews.commandCenterReady ? 'yes' : 'no'}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
+- Latest production visual artifact: ${summary.productionVisualReviews.latestProductionArtifact || 'missing'}
+- Latest production visual commit: ${summary.productionVisualReviews.latestProductionCommit || 'missing'}
+- Latest production visual deployment: ${summary.productionVisualReviews.latestProductionDeploymentUrl || 'missing'}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Open P0/P1 risks: ${openBlockingRisks.length}
@@ -1337,8 +1372,10 @@ ${markdownList(summary.nextActions)}
 - Beta assignment board: \`${summary.betaHumanReviews.assignmentReport}\` and \`${summary.betaHumanReviews.assignmentCsv}\`
 - Beta execution schedule: \`${summary.betaHumanReviews.scheduleArtifact}\`, \`${summary.betaHumanReviews.scheduleReport}\`, and \`${summary.betaHumanReviews.scheduleCsv}\`
 - Beta command center: \`${summary.betaHumanReviews.commandCenterArtifact}\` and \`${summary.betaHumanReviews.commandCenterReport}\`
+- Beta next-wave ops: \`${summary.betaHumanReviews.nextWaveOpsArtifact}\`, \`${summary.betaHumanReviews.nextWaveOpsReport}\`, and \`${summary.betaHumanReviews.nextWaveOpsCsv}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
+- Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`
 - Visual schedule: \`${summary.productionVisualReviews.scheduleArtifact}\`
 - Visual intake: \`${summary.productionVisualReviews.intakeArtifact}\`
 - Visual assignment board: \`${summary.productionVisualReviews.assignmentReport}\` and \`${summary.productionVisualReviews.assignmentCsv}\`

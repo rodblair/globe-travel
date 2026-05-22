@@ -17,6 +17,9 @@ Status: beta-ready-public-blocked
 - Beta review command center ready: yes
 - Beta review next-wave ops ready: yes
 - Production visual review history: 2/4
+- Latest production visual artifact: qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905
+- Latest production visual commit: d03a9051276aaecdcfd8b6e8b8366d90928d378f
+- Latest production visual deployment: globe-travel-5ofl2iqgi-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Open P0/P1 risks: 0
@@ -74,8 +77,10 @@ Production visual-review queue:
 - Beta assignment board: `qa/beta-human-review-assignments-2026-05-21.md` and `qa/beta-human-review-assignments-2026-05-21.csv`
 - Beta execution schedule: `qa/beta-human-review-schedule-2026-05-21.json`, `qa/beta-human-review-schedule-2026-05-21.md`, and `qa/beta-human-review-schedule-assignments-2026-05-21.csv`
 - Beta command center: `qa/beta-human-review-command-center-2026-05-21.json` and `qa/beta-human-review-command-center-2026-05-21.md`
+- Beta next-wave ops: `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `qa/beta-human-review-next-wave-ops-2026-05-21.md`, and `qa/beta-human-review-next-wave-ops-2026-05-21.csv`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
+- Latest production visual artifact: `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905` and `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`

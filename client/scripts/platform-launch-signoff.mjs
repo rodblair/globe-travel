@@ -2428,6 +2428,15 @@ async function checkRiskRegister() {
       if (Number(betaStatus.remaining) > 0 && !note.includes(`${Number(betaStatus.remaining)} remaining`)) {
         acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta review remaining count ${Number(betaStatus.remaining)}`)
       }
+      if (hasMeaningfulText(betaStatus.nextWaveOpsArtifact) && !note.includes(betaStatus.nextWaveOpsArtifact)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next-wave ops artifact ${betaStatus.nextWaveOpsArtifact}`)
+      }
+      if (hasMeaningfulText(betaStatus.nextWave?.waveId) && !note.includes(betaStatus.nextWave.waveId)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next wave ${betaStatus.nextWave.waveId}`)
+      }
+      if (Number(betaStatus.nextWaveOpsRowCount) > 0 && !note.includes(`${Number(betaStatus.nextWaveOpsRowCount)} next-wave operator rows`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next-wave operator row count ${Number(betaStatus.nextWaveOpsRowCount)}`)
+      }
     }
     if (issue.id === 'GT-P2-002') {
       const expectedVisualCount = `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`
@@ -2436,6 +2445,19 @@ async function checkRiskRegister() {
       }
       if (Number(visualStatus.remainingDistinctDates) > 0 && !note.includes(`${Number(visualStatus.remainingDistinctDates)} remaining`)) {
         acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review remaining count ${Number(visualStatus.remainingDistinctDates)}`)
+      }
+      if (hasMeaningfulText(visualStatus.latestProductionArtifact) && !note.includes(visualStatus.latestProductionArtifact)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual artifact ${visualStatus.latestProductionArtifact}`)
+      }
+      if (hasMeaningfulText(visualStatus.latestProductionSummaryArtifact) && !note.includes(visualStatus.latestProductionSummaryArtifact)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual summary ${visualStatus.latestProductionSummaryArtifact}`)
+      }
+      const latestShortCommit = String(visualStatus.latestProductionCommit || '').slice(0, 7)
+      if (hasMeaningfulText(latestShortCommit) && !note.includes(latestShortCommit)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual commit ${latestShortCommit}`)
+      }
+      if (hasMeaningfulText(visualStatus.latestProductionDeploymentUrl) && !note.includes(visualStatus.latestProductionDeploymentUrl)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual deployment ${visualStatus.latestProductionDeploymentUrl}`)
       }
     }
   }
