@@ -56,6 +56,15 @@
     "incompleteAcceptedP2RiskCount": 0,
     "incompleteAcceptedP2Risks": []
   },
+  "rollback": {
+    "knownGoodDeploymentCommit": "f07fbadc7fdad3c54d23123d2e0e9473609c5dc3",
+    "knownGoodDeploymentUrl": "globe-travel-o0banpfl9-rodney-blairs-projects.vercel.app",
+    "verificationCommandCount": 2,
+    "missingCommandMarkers": [],
+    "rollbackStepCount": 6,
+    "missingStepMarkers": [],
+    "actionable": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {

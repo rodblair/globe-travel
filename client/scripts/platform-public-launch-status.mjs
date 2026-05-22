@@ -401,6 +401,25 @@ const incompleteAcceptedP2Risks = openAcceptedP2Risks.filter((issue) => (
   !hasText(issue.targetMonth) ||
   !hasText(issue.acceptedRisk, 40)
 ))
+const rollbackVerificationCommands = Array.isArray(rollbackPlan.verificationCommands) ? rollbackPlan.verificationCommands : []
+const rollbackVerificationText = rollbackVerificationCommands.join('\n')
+const requiredRollbackCommandMarkers = [
+  'npm run qa:release-production',
+  'npm run qa:launch-signoff',
+]
+const missingRollbackCommandMarkers = requiredRollbackCommandMarkers
+  .filter((marker) => !rollbackVerificationText.includes(marker))
+const rollbackSteps = Array.isArray(rollbackPlan.rollbackSteps) ? rollbackPlan.rollbackSteps : []
+const rollbackStepText = rollbackSteps.join('\n').toLowerCase()
+const requiredRollbackStepMarkers = [
+  'identify',
+  'promote',
+  'production',
+  'health',
+  'record',
+]
+const missingRollbackStepMarkers = requiredRollbackStepMarkers
+  .filter((marker) => !rollbackStepText.includes(marker))
 
 const blockers = []
 if (completedBetaReviews.length < publicBetaMinimum) {
@@ -446,6 +465,12 @@ if (monitoringRegister.latestVerification?.expectedLiveCommit !== liveDeployment
 }
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
+}
+if (missingRollbackCommandMarkers.length > 0) {
+  guardrailIssues.push('rollback plan is missing required post-rollback verification commands')
+}
+if (rollbackSteps.length < 5 || missingRollbackStepMarkers.length > 0) {
+  guardrailIssues.push('rollback plan restore steps are not actionable enough for launch operations')
 }
 
 const publicLaunchReady = blockers.length === 0 && guardrailIssues.length === 0
@@ -509,6 +534,17 @@ const summary = {
       hasAcceptedRisk: hasText(issue.acceptedRisk, 40),
     })),
   },
+  rollback: {
+    knownGoodDeploymentCommit: rollbackPlan.production?.knownGoodDeployment?.commit || null,
+    knownGoodDeploymentUrl: rollbackPlan.production?.knownGoodDeployment?.url || null,
+    verificationCommandCount: rollbackVerificationCommands.length,
+    missingCommandMarkers: missingRollbackCommandMarkers,
+    rollbackStepCount: rollbackSteps.length,
+    missingStepMarkers: missingRollbackStepMarkers,
+    actionable: missingRollbackCommandMarkers.length === 0 &&
+      rollbackSteps.length >= 5 &&
+      missingRollbackStepMarkers.length === 0,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -547,6 +583,7 @@ Status: ${status}
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
+- Rollback plan actionable: ${summary.rollback.actionable ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
