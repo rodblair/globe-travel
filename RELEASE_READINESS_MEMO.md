@@ -6,15 +6,15 @@ Status: Active goal in progress
 
 ## Current Readiness Update - 2026-05-22
 
-- Production is verified on commit `d03a9051276aaecdcfd8b6e8b8366d90928d378f` at deployment `globe-travel-5ofl2iqgi-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`; public-launch status is `beta-ready-public-blocked`.
-- Production release verification passed on the live alias: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-next-wave-ops-2026-05-22-d03a905 npm run qa:release-production` passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens five-day public-share map integrity passed `5/5`, and prompt-suite validation passed `60/60`.
-- The latest production visual evidence is `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905` with summary `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905/summary.json`, bound to commit `d03a9051276aaecdcfd8b6e8b8366d90928d378f` and deployment `globe-travel-5ofl2iqgi-rodney-blairs-projects.vercel.app`.
+- Production is verified on commit `de1a3fe0716cbe22105f5b1e6ae13d6c27a61a0b` at deployment `globe-travel-m338y89ll-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`; public-launch status is `beta-ready-public-blocked`.
+- Production release verification passed on the live alias: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-blocker-board-2026-05-22-de1a3fe npm run qa:release-production` passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens five-day public-share map integrity passed `5/5`, and prompt-suite validation passed `60/60`.
+- The latest production visual evidence is `qa/visual-baseline-production-blocker-board-2026-05-22-de1a3fe` with summary `qa/visual-baseline-production-blocker-board-2026-05-22-de1a3fe/summary.json`, bound to commit `de1a3fe0716cbe22105f5b1e6ae13d6c27a61a0b` and deployment `globe-travel-m338y89ll-rodney-blairs-projects.vercel.app`.
 - Launch signoff now verifies that accepted-risk P2 notes and the human-facing release docs match current launch evidence, so stale risk narratives or stale operator memos cannot silently disagree with `qa/public-launch-status-2026-05-21.json`.
-- Current launch signoff passes `95/95` against commit `d03a9051276aaecdcfd8b6e8b8366d90928d378f`.
+- Current launch signoff passes `95/95` against commit `de1a3fe0716cbe22105f5b1e6ae13d6c27a61a0b`.
 - Public launch remains intentionally blocked by real evidence only: `0/25` completed beta human reviews with `25 remaining`, and `2/4` distinct production visual-review dates with `2 remaining`.
 - The current invite-beta operating wave is `BETA-WAVE-01`; `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `.md`, and `.csv` expose 5 next-wave operator rows for outreach without counting them as completed review evidence.
 - `qa/public-launch-blocker-board-2026-05-21.json`, `.md`, and `.csv` now combine the two remaining public-launch blockers into one operator board: 5 beta review rows for `BETA-WAVE-01` plus 3 scheduled production visual-review rows, with 2 visual rows marked required for public-launch history.
-- Recent release-ops-only commits were pushed to `main`; Vercel canceled the resulting production builds via the ignored-build policy, so the live alias correctly remains on the verified `d03a9051276aaecdcfd8b6e8b8366d90928d378f` deployment.
+- The public launch blocker-board commit was pushed to `main`, deployed by Vercel, and re-verified on the production alias with refreshed monitoring, rollback, risk, design-system, visual-review, and public-launch status evidence.
 - The in-app Browser backend was unavailable again in this run (`iab` not available), so production verification used the repo's Playwright-backed Browser QA runners.
 
 ## Prior Readiness Update - 2026-05-21

@@ -2,6 +2,26 @@
 
 Date: 2026-05-21
 
+## Public Launch Blocker Board Gate Postdeploy Evidence
+
+Commit `de1a3fe0716cbe22105f5b1e6ae13d6c27a61a0b` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-m338y89ll-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Production auth and guest access: `13/13`
+- Public share viral loop: `5/5`
+- Production visual QA: `20/20`
+- Production visual artifact: `qa/visual-baseline-production-blocker-board-2026-05-22-de1a3fe/`
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Production visual review progress artifact: `qa/production-visual-review-progress-2026-05-21.json`
+- Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.json`
+- Current production commit: `de1a3fe0716cbe22105f5b1e6ae13d6c27a61a0b`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Beta Next-Wave Ops Gate Postdeploy Evidence
 
 Commit `d03a9051276aaecdcfd8b6e8b8366d90928d378f` deployed to Vercel production on 2026-05-22.
