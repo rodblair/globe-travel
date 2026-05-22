@@ -2,16 +2,16 @@
 
 Date: 2026-05-21
 Base URL: https://globe-travel-two.vercel.app
-Status: blocked
+Status: beta-ready-public-blocked
 
 ## Result
 
-- Beta/release-ops ready: no
+- Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 98413c3f43be80be1db4ed8b4bae4469eeb633f7
-- Production deployment: globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app
-- Runtime deployment current: no
-- Latest runtime commit awaiting production: 16b30eb
+- Production commit: e6294047034a653f45f489cfa5d0c6e45d601bcf
+- Production deployment: globe-travel-oftzu4ak3-rodney-blairs-projects.vercel.app
+- Runtime deployment current: yes
+- Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -34,9 +34,9 @@ Status: blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-social-preview-2026-05-22-98413c3
-- Latest production visual commit: 98413c3f43be80be1db4ed8b4bae4469eeb633f7
-- Latest production visual deployment: globe-travel-oa7q4lzn2-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-22-e629404
+- Latest production visual commit: e6294047034a653f45f489cfa5d0c6e45d601bcf
+- Latest production visual deployment: globe-travel-oftzu4ak3-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
@@ -69,7 +69,7 @@ Status: blocked
 
 ## Guardrail Issues
 
-- production is behind runtime commit 16b30eb
+- none
 
 ## Evidence Queue Issues
 
@@ -146,7 +146,6 @@ Public metadata:
 
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
-- Fix guardrail issues before relying on public-launch status.
 
 ## Evidence
 
@@ -168,7 +167,7 @@ Public metadata:
 - Launch operator today: `qa/launch-operator-today-2026-05-22.md`, `qa/launch-operator-today-2026-05-22.csv`, and `qa/launch-operator-today-2026-05-22.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-social-preview-2026-05-22-98413c3` and `qa/visual-baseline-production-social-preview-2026-05-22-98413c3/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-e629404` and `qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
