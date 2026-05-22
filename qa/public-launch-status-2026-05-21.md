@@ -34,6 +34,7 @@ Status: beta-ready-public-blocked
 - Design system ready: yes
 - Planner map actuals ready: yes
 - Release candidate ready: yes
+- Full route inventory ready: yes
 
 ## Public-Launch Blockers
 
@@ -67,6 +68,9 @@ Production visual-review queue:
 Public launch blocker board:
 - none
 
+Full route inventory:
+- none
+
 ## Next Actions
 
 - Collect and import 25 completed beta review submission(s).
@@ -98,6 +102,7 @@ Public launch blocker board:
 - Design-system readiness: `qa/design-system-readiness-2026-05-22.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
+- Full route inventory: `qa/route-inventory-smoke-2026-05-22.json`
 
 ## Operating Meaning
 

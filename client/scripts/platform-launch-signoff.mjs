@@ -2310,6 +2310,69 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaNextWaveOpsIssues = Array.isArray(betaReviewStatus.nextWaveOpsIssues) ? betaReviewStatus.nextWaveOpsIssues : []
   const blockerBoardStatus = status.publicLaunchBlockerBoard || {}
   const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
+  const routeInventoryStatus = status.routeInventory || {}
+  const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
+  const requiredRouteInventoryPaths = [
+    '/',
+    '/login',
+    '/signup',
+    '/reset-password',
+    '/callback',
+    '/auth/callback-client',
+    `/t/${routeInventoryStatus.shareSlug || 'x3m2c8cnws'}`,
+    '/chat',
+    '/explore',
+    '/globe',
+    '/map',
+    '/bucket-list',
+    '/journal',
+    '/saved',
+    '/account',
+    '/account?tab=billing',
+    '/pricing',
+    '/profile',
+    '/settings',
+    '/trips',
+    '/trips/new',
+    '/onboarding',
+  ]
+  const routeInventoryMissingRoutes = Array.isArray(routeInventoryStatus.missingRoutes) ? routeInventoryStatus.missingRoutes : []
+  const routeInventoryBadRoutes = Array.isArray(routeInventoryStatus.badRoutes) ? routeInventoryStatus.badRoutes : []
+  addCheck('public launch status includes full route inventory smoke', (
+    routeInventoryStatus.ready === true &&
+    routeInventoryStatus.baseUrl === baseUrl &&
+    routeInventoryStatus.status === 'pass' &&
+    Number(routeInventoryStatus.requiredRouteCount) === requiredRouteInventoryPaths.length &&
+    Number(routeInventoryStatus.checked) >= requiredRouteInventoryPaths.length &&
+    Number(routeInventoryStatus.passed) >= requiredRouteInventoryPaths.length &&
+    Number(routeInventoryStatus.failed) === 0 &&
+    Number(routeInventoryStatus.sourceMissingCount) === 0 &&
+    Number(routeInventoryStatus.publicRouteCount) >= 7 &&
+    Number(routeInventoryStatus.protectedRouteCount) >= 15 &&
+    hasMeaningfulText(routeInventoryStatus.artifact) &&
+    hasMeaningfulText(status.artifacts?.routeInventory) &&
+    routeInventoryStatus.artifact === status.artifacts.routeInventory &&
+    routeInventoryMissingRoutes.length === 0 &&
+    routeInventoryBadRoutes.length === 0 &&
+    routeInventoryIssues.length === 0
+  ), {
+    routeInventoryArtifact: routeInventoryStatus.artifact || null,
+    routeInventoryReport: routeInventoryStatus.report || null,
+    routeInventoryStatus: routeInventoryStatus.status || null,
+    routeInventoryReady: routeInventoryStatus.ready ?? null,
+    routeInventoryChecked: routeInventoryStatus.checked ?? null,
+    routeInventoryPassed: routeInventoryStatus.passed ?? null,
+    routeInventoryFailed: routeInventoryStatus.failed ?? null,
+    routeInventoryRequiredRouteCount: routeInventoryStatus.requiredRouteCount ?? null,
+    routeInventoryRouteCount: routeInventoryStatus.routeCount ?? null,
+    routeInventoryPublicRouteCount: routeInventoryStatus.publicRouteCount ?? null,
+    routeInventoryProtectedRouteCount: routeInventoryStatus.protectedRouteCount ?? null,
+    routeInventorySourceMissingCount: routeInventoryStatus.sourceMissingCount ?? null,
+    routeInventoryMissingRoutes,
+    routeInventoryBadRoutes,
+    routeInventoryIssues,
+  })
+
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
@@ -2347,6 +2410,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(blockerBoardStatus.betaRowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     Number(blockerBoardStatus.requiredVisualRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
     blockerBoardIssues.length === 0 &&
+    routeInventoryStatus.ready === true &&
+    routeInventoryIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2385,6 +2450,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     blockerBoardBetaRowCount: blockerBoardStatus.betaRowCount ?? null,
     blockerBoardRequiredVisualRowCount: blockerBoardStatus.requiredVisualRowCount ?? null,
     blockerBoardIssues,
+    routeInventoryReady: routeInventoryStatus.ready ?? null,
+    routeInventoryArtifact: routeInventoryStatus.artifact ?? null,
+    routeInventoryIssues,
     betaQueueIssues,
     betaScheduleIssues,
     betaCommandCenterIssues,

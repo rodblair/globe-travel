@@ -261,6 +261,26 @@
     "shareSlug": "x3m2c8cnws",
     "ready": true
   },
+  "routeInventory": {
+    "artifact": "qa/route-inventory-smoke-2026-05-22.json",
+    "report": "qa/route-inventory-smoke-2026-05-22.md",
+    "baseUrl": "https://globe-travel-two.vercel.app",
+    "status": "pass",
+    "checked": 22,
+    "passed": 22,
+    "failed": 0,
+    "requiredRouteCount": 22,
+    "routeCount": 22,
+    "publicRouteCount": 7,
+    "protectedRouteCount": 15,
+    "sourceMissingCount": 0,
+    "shareSlug": "x3m2c8cnws",
+    "missingRoutes": [],
+    "badRouteCount": 0,
+    "badRoutes": [],
+    "issues": [],
+    "ready": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {
@@ -289,6 +309,7 @@
     "designSystemReadiness": "qa/design-system-readiness-2026-05-22.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
+    "routeInventory": "qa/route-inventory-smoke-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

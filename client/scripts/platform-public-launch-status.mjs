@@ -31,6 +31,7 @@ const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.Q
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
+const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
 const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
 const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
@@ -426,6 +427,7 @@ const [
   designSystem,
   plannerActuals,
   releaseCandidate,
+  routeInventory,
   blockerBoard,
   blockerBoardReport,
   blockerBoardCsv,
@@ -454,6 +456,7 @@ const [
   readJson(designSystemPath),
   readJson(plannerActualsPath),
   readJson(releaseCandidatePath),
+  readJson(routeInventoryPath),
   readJson(blockerBoardPath),
   readText(blockerBoardReportPath),
   readText(blockerBoardCsvPath),
@@ -679,6 +682,44 @@ const releaseCandidateReady =
   missingReleaseFlags.length === 0 &&
   missingReleaseTasks.length === 0 &&
   failedReleaseTasks.length === 0
+const requiredInventoryRoutes = [
+  '/',
+  '/login',
+  '/signup',
+  '/reset-password',
+  '/callback',
+  '/auth/callback-client',
+  `/t/${routeInventory.shareSlug || 'x3m2c8cnws'}`,
+  '/chat',
+  '/explore',
+  '/globe',
+  '/map',
+  '/bucket-list',
+  '/journal',
+  '/saved',
+  '/account',
+  '/account?tab=billing',
+  '/pricing',
+  '/profile',
+  '/settings',
+  '/trips',
+  '/trips/new',
+  '/onboarding',
+]
+const routeInventoryRoutes = Array.isArray(routeInventory.routes) ? routeInventory.routes : []
+const routeInventoryPaths = routeInventoryRoutes.map((route) => route.path).filter(Boolean)
+const missingInventoryRoutes = missingFrom(routeInventoryPaths, requiredInventoryRoutes)
+const badInventoryRoutes = routeInventoryRoutes.filter((route) => route.ok !== true)
+const routeInventoryIssues = [
+  ...(routeInventory.status === 'pass' ? [] : ['route inventory status is not pass']),
+  ...(routeInventory.baseUrl === baseUrl ? [] : [`route inventory baseUrl ${routeInventory.baseUrl || 'missing'} does not match ${baseUrl}`]),
+  ...(Number(routeInventory.checked) >= requiredInventoryRoutes.length ? [] : [`route inventory checked ${routeInventory.checked ?? 'missing'} routes but expected at least ${requiredInventoryRoutes.length}`]),
+  ...(Number(routeInventory.failed) === 0 ? [] : [`route inventory has ${routeInventory.failed ?? 'missing'} failed route(s)`]),
+  ...(Number(routeInventory.sourceMissingCount) === 0 ? [] : [`route inventory has ${routeInventory.sourceMissingCount ?? 'missing'} missing source file(s)`]),
+  ...missingInventoryRoutes.map((route) => `route inventory missing ${route}`),
+  ...badInventoryRoutes.map((route) => `route inventory route ${route.path || 'unknown'} failed: ${(route.issues || []).join('; ') || 'unknown issue'}`),
+]
+const routeInventoryReady = routeInventoryIssues.length === 0
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -1125,6 +1166,9 @@ if (!plannerActualsReady) {
 if (!releaseCandidateReady) {
   guardrailIssues.push('full release-candidate artifact does not cover every core journey task and launch option')
 }
+if (!routeInventoryReady) {
+  guardrailIssues.push('full route inventory smoke does not cover every top-level public, protected, and compatibility route')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -1357,6 +1401,29 @@ const summary = {
     shareSlug: releaseCandidate.shareSlug || null,
     ready: releaseCandidateReady,
   },
+  routeInventory: {
+    artifact: qaDisplayPath(routeInventoryPath),
+    report: qaDisplayPath(routeInventory.reportArtifact),
+    baseUrl: routeInventory.baseUrl || null,
+    status: routeInventory.status || null,
+    checked: routeInventory.checked ?? null,
+    passed: routeInventory.passed ?? null,
+    failed: routeInventory.failed ?? null,
+    requiredRouteCount: requiredInventoryRoutes.length,
+    routeCount: routeInventoryRoutes.length,
+    publicRouteCount: routeInventory.publicRouteCount ?? null,
+    protectedRouteCount: routeInventory.protectedRouteCount ?? null,
+    sourceMissingCount: routeInventory.sourceMissingCount ?? null,
+    shareSlug: routeInventory.shareSlug || null,
+    missingRoutes: missingInventoryRoutes,
+    badRouteCount: badInventoryRoutes.length,
+    badRoutes: badInventoryRoutes.map((route) => ({
+      path: route.path || null,
+      issues: route.issues || [],
+    })),
+    issues: routeInventoryIssues,
+    ready: routeInventoryReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -1375,6 +1442,7 @@ const summary = {
     designSystemReadiness: qaDisplayPath(designSystemPath),
     plannerActuals: qaDisplayPath(plannerActualsPath),
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
+    routeInventory: qaDisplayPath(routeInventoryPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -1416,6 +1484,7 @@ Status: ${status}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
+- Full route inventory ready: ${summary.routeInventory.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -1448,6 +1517,9 @@ ${markdownList(visualQueueIssues)}
 Public launch blocker board:
 ${markdownList(blockerBoardIssues)}
 
+Full route inventory:
+${markdownList(routeInventoryIssues)}
+
 ## Next Actions
 
 ${markdownList(summary.nextActions)}
@@ -1478,6 +1550,7 @@ ${markdownList(summary.nextActions)}
 - Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
 - Planner actuals: \`${summary.artifacts.plannerActuals}\`
 - Release candidate: \`${summary.artifacts.releaseCandidate}\`
+- Full route inventory: \`${summary.artifacts.routeInventory}\`
 
 ## Operating Meaning
 

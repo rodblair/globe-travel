@@ -33,6 +33,7 @@
     "qa:planner-actuals:regional-edge": "QA_GENERATED_ACTUAL_PRESET=regional-edge-cities QA_GENERATED_ACTUALS_OUT=../qa/planner-generated-actuals-regional-edge-cities-2026-05-20.json node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/platform-planner-generated-actuals.mjs",
     "qa:planner-actuals:beta-representative": "QA_GENERATED_ACTUAL_PRESET=beta-representative QA_GENERATED_ACTUALS_OUT=../qa/planner-generated-actuals-beta-representative-2026-05-21.json node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/platform-planner-generated-actuals.mjs",
     "qa:release-candidate": "node scripts/platform-release-candidate-smoke.mjs",
+    "qa:route-inventory": "node scripts/platform-route-inventory-smoke.mjs",
     "qa:public-launch-blockers": "node scripts/platform-public-launch-blocker-board.mjs",
     "qa:public-launch-status": "node scripts/platform-public-launch-status.mjs",
     "qa:release-production": "node scripts/platform-production-release-smoke.mjs",
