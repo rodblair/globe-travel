@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { X, Check, Zap, Crown, AlertCircle } from 'lucide-react'
+import { X, Check, Zap, Crown, AlertCircle, ShieldCheck } from 'lucide-react'
 import { PLANS } from '@/lib/plans'
 import { startCheckout } from '@/hooks/useSubscription'
 import { useDialogFocus } from '@/hooks/useDialogFocus'
@@ -50,6 +50,8 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
     ? (PLANS.pro.yearlyPrice / 12).toFixed(2)
     : PLANS.pro.monthlyPrice
 
+  const trustItems = ['No charge today', 'Cancel anytime', 'Private by default']
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -72,50 +74,51 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
             aria-describedby={descriptionId}
             ref={dialogRef}
             tabIndex={-1}
-            className="fixed inset-x-4 bottom-4 z-50 max-h-[calc(100dvh-2rem)] overflow-y-auto md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2"
+            className="fixed inset-x-3 bottom-3 z-50 max-h-[calc(100dvh-1.5rem)] overflow-y-auto sm:inset-x-4 sm:bottom-4 md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-xl md:-translate-x-1/2 md:-translate-y-1/2"
           >
             <div className="relative overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)]">
-              {/* Glow */}
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.08)_0%,transparent_60%)] pointer-events-none" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,var(--brass-subtle),transparent)]" />
 
-              {/* Header */}
-              <div className="relative flex items-start justify-between p-6 pb-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Crown className="w-5 h-5 text-[var(--brass)]" />
-                    <span className="text-xs font-semibold text-[var(--brass)] uppercase tracking-widest">Adventurer</span>
+              <div className="relative flex items-start justify-between gap-4 p-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="min-w-0">
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/25 bg-[color:var(--brass-subtle)] px-3 py-1">
+                    <Crown className="h-4 w-4 text-[var(--brass)]" />
+                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brass)]">Adventurer</span>
                   </div>
-                  <h2 id={titleId} className="text-2xl font-serif font-bold text-foreground">
+                  <h2 id={titleId} className="text-2xl font-serif font-bold leading-tight text-foreground">
                     Unlock the full planning workspace
                   </h2>
-                  <p id={descriptionId} className="text-sm text-foreground/55 mt-1">
+                  <p id={descriptionId} className="mt-2 max-w-md text-sm leading-relaxed text-ink-2">
                     {reason || 'Upgrade for unlimited trip notes, friend feedback, and richer planning tools.'}
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={onClose}
                   aria-label="Close upgrade dialog"
-                  className="p-2 rounded-xl bg-paper-recessed hover:bg-paper-recessed text-foreground/40 hover:text-foreground transition-colors"
+                  className="touch-target flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-paper-recessed text-ink-3 transition-colors hover:bg-paper-sumi hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
 
-              {/* Interval toggle */}
-              <div className="relative px-6 pb-4">
-                <div className="flex items-center gap-1 p-1 rounded-xl bg-paper-recessed border border-rule w-fit">
+              <div className="relative px-5 pb-4 sm:px-6">
+                <div className="grid grid-cols-2 gap-1 rounded-xl border border-rule bg-paper-recessed p-1">
                   {(['month', 'year'] as const).map((i) => (
                     <button
+                      type="button"
                       key={i}
                       onClick={() => setInterval(i)}
+                      aria-pressed={interval === i}
+                      aria-label={i === 'year' ? 'Yearly, save 27 percent' : 'Monthly'}
                       className={cn(
-                        'relative px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200',
-                        interval === i ? 'bg-[var(--brass)] text-[var(--brass-text)]' : 'text-foreground/50 hover:text-foreground'
+                        'touch-target relative flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]',
+                        interval === i ? 'bg-[var(--brass)] text-[var(--brass-text)] shadow-sm' : 'text-ink-2 hover:bg-paper-hover hover:text-foreground'
                       )}
                     >
                       {i === 'year' ? 'Yearly' : 'Monthly'}
                       {i === 'year' && (
-                        <span className="ml-1.5 rounded-full bg-[color:var(--pillar-nature-wash)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--moss)]">
+                        <span className="rounded-full bg-[color:var(--pillar-nature-wash)] px-2 py-0.5 text-[10px] font-bold text-[var(--moss)]">
                           Save 27%
                         </span>
                       )}
@@ -124,36 +127,34 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                 </div>
               </div>
 
-              {/* Pricing */}
-              <div className="relative px-6 pb-4">
-                <div className="flex items-baseline gap-1.5">
+              <div className="relative border-y border-rule bg-paper/45 px-5 py-4 sm:px-6">
+                <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
                   <span className="text-5xl font-bold text-foreground">${monthlyCost}</span>
-                  <span className="text-foreground/40 text-sm">/ month</span>
+                  <span className="pb-1 text-sm font-medium text-ink-2">/ month</span>
                 </div>
                 {interval === 'year' && (
-                  <p className="text-xs text-foreground/40 mt-0.5">
-                    Billed ${PLANS.pro.yearlyPrice}/year — 7-day free trial
+                  <p className="mt-1 text-sm text-ink-2">
+                    Billed ${PLANS.pro.yearlyPrice}/year after your 7-day free trial.
                   </p>
                 )}
                 {interval === 'month' && (
-                  <p className="text-xs text-foreground/40 mt-0.5">7-day free trial, cancel anytime</p>
+                  <p className="mt-1 text-sm text-ink-2">7-day free trial, then ${PLANS.pro.monthlyPrice}/month.</p>
                 )}
               </div>
 
-              {/* Features */}
-              <div className="relative px-6 pb-5">
-                <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+              <div className="relative px-5 py-5 sm:px-6">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-4">
                   {PLANS.pro.features.map((f) => (
-                    <div key={f} className="flex items-start gap-2 text-sm text-foreground/70">
-                      <Check className="w-3.5 h-3.5 text-[var(--brass)] mt-0.5 shrink-0" />
-                      <span>{f}</span>
+                    <div key={f} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-ink-2">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--brass)]" />
+                      <span className="min-w-0">{f}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {billingError && (
-                <div className="relative mx-6 mb-4 rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
+                <div role="alert" aria-live="polite" className="relative mx-5 mb-4 rounded-xl border border-[color:var(--terracotta)]/25 bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)] sm:mx-6">
                   <div className="flex items-start gap-2">
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                     <div>
@@ -171,19 +172,24 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                 </div>
               )}
 
-              {/* CTA */}
-              <div className="relative px-6 pb-6">
+              <div className="relative px-5 pb-5 sm:px-6 sm:pb-6">
                 <button
+                  type="button"
                   onClick={handleUpgrade}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[var(--brass)] hover:bg-[var(--brass)] text-[var(--brass-text)] font-bold text-base transition-all duration-200 hover:scale-[1.02] disabled:opacity-60 disabled:scale-100 shadow-lg shadow-[color:var(--brass-glow)]"
+                  className="touch-target flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--brass)] px-4 py-3.5 text-base font-bold text-[var(--brass-text)] shadow-lg shadow-[color:var(--brass-glow)] transition-all duration-200 hover:scale-[1.01] hover:bg-[var(--brass-hover)] disabled:scale-100 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised"
                 >
-                  <Zap className="w-4 h-4" />
+                  <Zap className="h-4 w-4" />
                   {loading ? 'Redirecting to checkout…' : 'Start 7-day free trial'}
                 </button>
-                <p className="text-center text-[11px] text-foreground/25 mt-2">
-                  No charge during trial · Cancel anytime
-                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[11px] font-medium text-ink-3">
+                  {trustItems.map((item) => (
+                    <span key={item} className="inline-flex items-center gap-1">
+                      <ShieldCheck className="h-3.5 w-3.5 text-[var(--moss)]" />
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
