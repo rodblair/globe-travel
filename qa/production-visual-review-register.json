@@ -97,10 +97,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-placeholder-contrast-2026-05-22-dc17938",
-    "summaryArtifact": "qa/visual-baseline-production-placeholder-contrast-2026-05-22-dc17938/summary.json",
-    "productionCommit": "dc179383fdfc4b9aec0bc5b17b254bbc29eb79a8",
-    "deploymentUrl": "globe-travel-6cyq03b9v-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0",
+    "summaryArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json",
+    "productionCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd",
+    "deploymentUrl": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -123,7 +123,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live dc17938 deployment after form placeholder contrast was normalized and deployed. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live 45b64b0 deployment after the upgrade dialog conversion surface was polished and deployed. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {

@@ -4,21 +4,21 @@ Date: 2026-05-21
 
 ## Public Share Title Polish Deploy Postdeploy Evidence
 
-Commit `dc179383fdfc4b9aec0bc5b17b254bbc29eb79a8` deployed to Vercel production on 2026-05-22.
+Commit `45b64b0e1d3d96dda640a74229b484bb30d07afd` deployed to Vercel production on 2026-05-22.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-6cyq03b9v-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production Trip Studio recovery UI: `1/1`
 - Production auth and guest access: `13/13`
 - Public share viral loop: `5/5`
 - Production visual QA: `20/20`
-- Production visual artifact: `qa/visual-baseline-production-placeholder-contrast-2026-05-22-dc17938/`
+- Production visual artifact: `qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/`
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `60/60`
 - Public launch status remains `beta-ready-public-blocked` with no guardrail issues.
-- Current production commit: `dc179383fdfc4b9aec0bc5b17b254bbc29eb79a8`
+- Current production commit: `45b64b0e1d3d96dda640a74229b484bb30d07afd`
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Beta Dispatch Evidence Deploy Postdeploy Evidence

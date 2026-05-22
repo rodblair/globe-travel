@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: dc179383fdfc4b9aec0bc5b17b254bbc29eb79a8
-- Production deployment: globe-travel-6cyq03b9v-rodney-blairs-projects.vercel.app
+- Production commit: 45b64b0e1d3d96dda640a74229b484bb30d07afd
+- Production deployment: globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -32,9 +32,9 @@ Status: beta-ready-public-blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-placeholder-contrast-2026-05-22-dc17938
-- Latest production visual commit: dc179383fdfc4b9aec0bc5b17b254bbc29eb79a8
-- Latest production visual deployment: globe-travel-6cyq03b9v-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0
+- Latest production visual commit: 45b64b0e1d3d96dda640a74229b484bb30d07afd
+- Latest production visual deployment: globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
@@ -144,7 +144,7 @@ Public share map/itinerary integrity:
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-placeholder-contrast-2026-05-22-dc17938` and `qa/visual-baseline-production-placeholder-contrast-2026-05-22-dc17938/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0` and `qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
