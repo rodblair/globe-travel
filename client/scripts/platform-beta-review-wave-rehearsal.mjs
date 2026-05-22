@@ -1,8 +1,11 @@
 import { existsSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright-core'
+import { createClient } from '@supabase/supabase-js'
 
+const GUEST_SESSION_COOKIE = 'globe_travel_guest'
 const root = resolve(process.cwd(), '..')
 const nextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
 const packetManifestPath = process.env.QA_BETA_REVIEW_PACKET_MANIFEST || 'qa/beta-human-review-packet-manifest-2026-05-21.json'
@@ -19,6 +22,8 @@ const screenshotDir = resolve(artifactDir, 'screenshots')
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const baseUrl = (process.env.QA_BASE_URL || '').replace(/\/$/, '')
 const allowRemoteGuestStart = process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_ALLOW_REMOTE_GUEST_START === '1'
+const guestStartExerciseLimit = Number(process.env.QA_BETA_REVIEW_WAVE_REHEARSAL_GUEST_START_LIMIT || '1')
+let guestStartExerciseCount = 0
 
 function repoPath(path) {
   return resolve(root, path)
@@ -70,6 +75,72 @@ async function readTextOrEmpty(path) {
     return await readFile(repoPath(qaDisplayPath(path)), 'utf8')
   } catch {
     return ''
+  }
+}
+
+async function loadDotEnv() {
+  const envPath = resolve(process.cwd(), '.env.local')
+  let text = ''
+
+  try {
+    text = await readFile(envPath, 'utf8')
+  } catch {
+    return
+  }
+
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/)
+    if (!match) continue
+    const [, key, rawValue] = match
+    if (process.env[key]) continue
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '')
+  }
+}
+
+async function cleanupGuestAccount(guestId) {
+  if (!guestId) {
+    return {
+      attempted: false,
+      guestId: null,
+      profileDeleted: false,
+      userDeleted: false,
+      error: null,
+      reason: 'no guest id observed',
+    }
+  }
+
+  await loadDotEnv()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!supabaseUrl || !supabaseKey) {
+    return {
+      attempted: false,
+      guestId,
+      profileDeleted: false,
+      userDeleted: false,
+      error: null,
+      reason: 'missing Supabase service role cleanup credentials',
+    }
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false },
+  })
+  const { error: tripError } = await supabase.from('trips').delete().eq('user_id', guestId)
+  const { error: profileError } = await supabase.from('profiles').delete().eq('id', guestId)
+  const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+  const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
+
+  return {
+    attempted: true,
+    guestId,
+    tripsDeleted: !tripError,
+    profileDeleted: !profileError,
+    userDeleted: !userError || Boolean(userAlreadyAbsent),
+    error: tripError?.message || profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
+    reason: null,
   }
 }
 
@@ -186,16 +257,151 @@ async function inspectStartPage(page, row, startUrl) {
     issues.push(`unexpected start-page path ${state.pathname}`)
   }
 
-  if (allowRemoteGuestStart && state.guestHref) {
-    issues.push('remote guest-start exercise is intentionally not implemented in this non-mutating preflight')
-  }
-
   const screenshot = `qa/${artifactName}/screenshots/${slug(row.id)}-${slug(row.destination)}.png`
   await page.screenshot({ path: repoPath(screenshot), fullPage: false }).catch(() => {})
+
+  const guestStart = await exerciseGuestStart(page, row, state).catch((error) => ({
+    exercised: false,
+    skipped: false,
+    guestId: null,
+    finalUrl: null,
+    cleanup: {
+      attempted: false,
+      guestId: null,
+      profileDeleted: false,
+      userDeleted: false,
+      error: null,
+      reason: 'guest-start exercise failed before cleanup',
+    },
+    state: null,
+    issues: [error instanceof Error ? error.message : String(error)],
+  }))
+  issues.push(...guestStart.issues)
 
   return {
     status: response?.status() || 0,
     screenshot,
+    state,
+    guestStart,
+    issues,
+  }
+}
+
+async function exerciseGuestStart(page, row, startState) {
+  if (!allowRemoteGuestStart) {
+    return {
+      exercised: false,
+      skipped: true,
+      guestId: null,
+      finalUrl: null,
+      cleanup: {
+        attempted: false,
+        guestId: null,
+        profileDeleted: false,
+        userDeleted: false,
+        error: null,
+        reason: 'remote guest-start exercise disabled by default',
+      },
+      state: null,
+      issues: [],
+    }
+  }
+
+  if (guestStartExerciseCount >= guestStartExerciseLimit) {
+    return {
+      exercised: false,
+      skipped: true,
+      guestId: null,
+      finalUrl: null,
+      cleanup: {
+        attempted: false,
+        guestId: null,
+        profileDeleted: false,
+        userDeleted: false,
+        error: null,
+        reason: `guest-start exercise limit reached (${guestStartExerciseLimit})`,
+      },
+      state: null,
+      issues: [],
+    }
+  }
+
+  if (!startState?.guestHref) {
+    return {
+      exercised: false,
+      skipped: false,
+      guestId: null,
+      finalUrl: null,
+      cleanup: {
+        attempted: false,
+        guestId: null,
+        profileDeleted: false,
+        userDeleted: false,
+        error: null,
+        reason: 'guest-start link missing',
+      },
+      state: null,
+      issues: ['guest-start exercise requested but no guest link was found'],
+    }
+  }
+
+  guestStartExerciseCount += 1
+  const guestUrl = new URL(startState.guestHref)
+  if (guestUrl.hostname === 'localhost' || guestUrl.hostname === '127.0.0.1') {
+    guestUrl.searchParams.set('id', randomUUID())
+  }
+
+  const response = await page.goto(guestUrl.toString(), { waitUntil: 'domcontentloaded', timeout: 30000 })
+  await page.waitForFunction(() => location.pathname === '/chat' || location.pathname.startsWith('/trips/'), { timeout: 20000 }).catch(() => {})
+  await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {})
+  await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
+  await page.waitForTimeout(600)
+
+  const state = await page.evaluate(({ expectedPromptValue }) => {
+    const text = document.body?.innerText || ''
+    const current = new URL(location.href)
+    const promptValue = current.searchParams.get('q') || current.searchParams.get('prompt') || ''
+    return {
+      url: location.href,
+      pathname: location.pathname,
+      promptValue,
+      hasPlanner: text.includes('Planner'),
+      hasTripStudio: text.includes('Trip Studio'),
+      promptVisible: text.includes(expectedPromptValue) || promptValue.includes(expectedPromptValue.slice(0, 30)),
+      hasTripAccessError: /needs the account or guest session|different guest session|trip may have been deleted/i.test(text),
+      hasAppError: /Application error|Unhandled Runtime Error|Hydration failed|Something went wrong/i.test(text),
+      horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      textLength: text.trim().length,
+    }
+  }, { expectedPromptValue: expectedPrompt(row) })
+
+  const cookies = await page.context().cookies(new URL(startState.guestHref).origin)
+  const guestCookie = cookies.find((cookie) => cookie.name === GUEST_SESSION_COOKIE)
+  const guestId = guestCookie?.value || null
+
+  const cleanup = await cleanupGuestAccount(guestId)
+  const issues = []
+  const landedOnPlanner = state.pathname === '/chat' && state.hasPlanner
+  const landedOnTrip = state.pathname.startsWith('/trips/') && state.promptVisible && !state.hasTripAccessError
+  if (!response || response.status() >= 500) issues.push(`guest start HTTP ${response?.status() || 'missing'}`)
+  if (!landedOnPlanner && !landedOnTrip) issues.push(`guest start expected Planner or Trip Studio handoff, got ${state.pathname}`)
+  if (state.pathname === '/chat' && (!state.hasPlanner || !state.hasTripStudio)) issues.push('guest start did not land on Planner/Trip Studio')
+  if (state.pathname.startsWith('/trips/') && state.hasTripAccessError) issues.push('guest start landed on an inaccessible trip')
+  if (!guestId) issues.push('guest start did not set guest cookie')
+  if (state.hasAppError) issues.push('guest start page showed application error text')
+  if (state.horizontalOverflow) issues.push('guest start page had horizontal overflow')
+  if (cleanup.attempted !== true) issues.push(`guest cleanup was not attempted: ${cleanup.reason || 'unknown reason'}`)
+  if (cleanup.error) issues.push(`guest cleanup failed: ${cleanup.error}`)
+  if (cleanup.attempted && (!cleanup.tripsDeleted || !cleanup.profileDeleted || !cleanup.userDeleted)) {
+    issues.push('guest cleanup did not confirm trip, profile, and auth user deletion')
+  }
+
+  return {
+    exercised: true,
+    skipped: false,
+    guestId,
+    finalUrl: state.url,
+    cleanup,
     state,
     issues,
   }
@@ -269,6 +475,15 @@ for (const row of rows) {
 await browser.close()
 
 const failures = results.filter((result) => !result.ok)
+const guestStartResults = results.map((result) => result.start?.guestStart).filter(Boolean)
+const exercisedGuestStarts = guestStartResults.filter((result) => result.exercised)
+const guestStartCleanupFailures = exercisedGuestStarts.filter((result) => (
+  result.cleanup?.attempted !== true ||
+  result.cleanup?.error ||
+  result.cleanup?.tripsDeleted !== true ||
+  result.cleanup?.profileDeleted !== true ||
+  result.cleanup?.userDeleted !== true
+))
 const summary = {
   date: requestedDate,
   scope: rehearsalScope,
@@ -286,8 +501,12 @@ const summary = {
   reportArtifact: `qa/${reportArtifact}`,
   artifactDir: `qa/${artifactName}`,
   baseUrl: baseUrl || new URL(rows[0]?.startUrl || 'https://globe-travel-two.vercel.app').origin,
-  nonMutating: true,
-  remoteGuestStartExercised: false,
+  nonMutating: !allowRemoteGuestStart,
+  remoteGuestStartExercised: exercisedGuestStarts.length > 0,
+  remoteGuestStartExerciseLimit: allowRemoteGuestStart ? guestStartExerciseLimit : 0,
+  remoteGuestStartExerciseCount: exercisedGuestStarts.length,
+  remoteGuestStartCleanupFailureCount: guestStartCleanupFailures.length,
+  remoteGuestStartCleanupFailures: guestStartCleanupFailures,
   results,
   failures,
 }
@@ -308,6 +527,8 @@ Packet manifest: \`${summary.packetManifest}\`
 - Expected review count: ${summary.expectedReviewCount}
 - Non-mutating: ${summary.nonMutating ? 'yes' : 'no'}
 - Remote guest start exercised: ${summary.remoteGuestStartExercised ? 'yes' : 'no'}
+- Remote guest start exercise count: ${summary.remoteGuestStartExerciseCount}
+- Remote guest start cleanup failures: ${summary.remoteGuestStartCleanupFailureCount}
 
 ## Coverage
 
@@ -322,6 +543,8 @@ ${markdownList(failures.map((failure) => `${failure.id}: ${failure.issues.join('
 ## Operating Meaning
 
 This preflight does not count as a completed beta review and does not replace human evidence. It proves the ${summary.scope === 'matrix' ? 'planned beta reviewer matrix' : 'active reviewer wave'} opens cleanly in a browser, every start URL preserves the assigned prompt through auth and guest-entry handoff, and each reviewer packet/template pair matches the ${summary.scope === 'matrix' ? 'packet manifest record' : 'operator row'} before people spend time on the review.
+
+When \`QA_BETA_REVIEW_WAVE_REHEARSAL_ALLOW_REMOTE_GUEST_START=1\` is set, the rehearsal also clicks a limited number of guest-start links, confirms the Planner handoff, and removes the disposable guest account. That mode is intentionally opt-in because it touches production guest state.
 `
 
 await writeFile(repoPath(`qa/${jsonArtifact}`), `${JSON.stringify(summary, null, 2)}\n`)

@@ -14,6 +14,8 @@ Packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
 - Expected review count: 25
 - Non-mutating: yes
 - Remote guest start exercised: no
+- Remote guest start exercise count: 0
+- Remote guest start cleanup failures: 0
 
 ## Coverage
 
@@ -52,3 +54,5 @@ Packet manifest: `qa/beta-human-review-packet-manifest-2026-05-21.json`
 ## Operating Meaning
 
 This preflight does not count as a completed beta review and does not replace human evidence. It proves the planned beta reviewer matrix opens cleanly in a browser, every start URL preserves the assigned prompt through auth and guest-entry handoff, and each reviewer packet/template pair matches the packet manifest record before people spend time on the review.
+
+When `QA_BETA_REVIEW_WAVE_REHEARSAL_ALLOW_REMOTE_GUEST_START=1` is set, the rehearsal also clicks a limited number of guest-start links, confirms the Planner handoff, and removes the disposable guest account. That mode is intentionally opt-in because it touches production guest state.

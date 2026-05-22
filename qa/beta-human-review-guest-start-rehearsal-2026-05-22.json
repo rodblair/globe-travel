@@ -30,14 +30,14 @@
   "passed": 5,
   "failed": 0,
   "expectedReviewCount": 5,
-  "jsonArtifact": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
-  "reportArtifact": "qa/beta-human-review-wave-rehearsal-2026-05-22.md",
-  "artifactDir": "qa/beta-human-review-wave-rehearsal-2026-05-22",
+  "jsonArtifact": "qa/beta-human-review-guest-start-rehearsal-2026-05-22.json",
+  "reportArtifact": "qa/beta-human-review-guest-start-rehearsal-2026-05-22.md",
+  "artifactDir": "qa/beta-human-review-guest-start-rehearsal-2026-05-22",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "nonMutating": true,
-  "remoteGuestStartExercised": false,
-  "remoteGuestStartExerciseLimit": 0,
-  "remoteGuestStartExerciseCount": 0,
+  "nonMutating": false,
+  "remoteGuestStartExercised": true,
+  "remoteGuestStartExerciseLimit": 1,
+  "remoteGuestStartExerciseCount": 1,
   "remoteGuestStartCleanupFailureCount": 0,
   "remoteGuestStartCleanupFailures": [],
   "results": [
@@ -68,7 +68,7 @@
       },
       "start": {
         "status": 200,
-        "screenshot": "qa/beta-human-review-wave-rehearsal-2026-05-22/screenshots/beta-hr-001-athens.png",
+        "screenshot": "qa/beta-human-review-guest-start-rehearsal-2026-05-22/screenshots/beta-hr-001-athens.png",
         "state": {
           "url": "https://globe-travel-two.vercel.app/login?next=%2Fchat%3Fq%3DPlan%2Ba%2Brestful%2B5-day%2BAthens%2Btrip%2Bfor%2Ba%2Bcouple%2Bwith%2Bculture%252C%2Bfood%252C%2Band%2Brecovery%2Btime.",
           "pathname": "/login",
@@ -86,22 +86,34 @@
           "horizontalOverflow": false,
           "clientWidth": 390,
           "scrollWidth": 390,
-          "allowGuestStart": false
+          "allowGuestStart": true
         },
         "guestStart": {
-          "exercised": false,
-          "skipped": true,
-          "guestId": null,
-          "finalUrl": null,
+          "exercised": true,
+          "skipped": false,
+          "guestId": "11341d7d-1e11-4994-b9a2-9993f3bdc016",
+          "finalUrl": "https://globe-travel-two.vercel.app/trips/6ad05b41-acc5-4159-8d74-e2ff3ad0bf01?prompt=Plan%20a%20restful%205-day%20Athens%20trip%20for%20a%20couple%20with%20culture%2C%20food%2C%20and%20recovery%20time.",
           "cleanup": {
-            "attempted": false,
-            "guestId": null,
-            "profileDeleted": false,
-            "userDeleted": false,
+            "attempted": true,
+            "guestId": "11341d7d-1e11-4994-b9a2-9993f3bdc016",
+            "tripsDeleted": true,
+            "profileDeleted": true,
+            "userDeleted": true,
             "error": null,
-            "reason": "remote guest-start exercise disabled by default"
+            "reason": null
           },
-          "state": null,
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/trips/6ad05b41-acc5-4159-8d74-e2ff3ad0bf01?prompt=Plan%20a%20restful%205-day%20Athens%20trip%20for%20a%20couple%20with%20culture%2C%20food%2C%20and%20recovery%20time.",
+            "pathname": "/trips/6ad05b41-acc5-4159-8d74-e2ff3ad0bf01",
+            "promptValue": "Plan a restful 5-day Athens trip for a couple with culture, food, and recovery time.",
+            "hasPlanner": false,
+            "hasTripStudio": false,
+            "promptVisible": true,
+            "hasTripAccessError": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "textLength": 158
+          },
           "issues": []
         },
         "issues": []
@@ -135,7 +147,7 @@
       },
       "start": {
         "status": 200,
-        "screenshot": "qa/beta-human-review-wave-rehearsal-2026-05-22/screenshots/beta-hr-002-lisbon.png",
+        "screenshot": "qa/beta-human-review-guest-start-rehearsal-2026-05-22/screenshots/beta-hr-002-lisbon.png",
         "state": {
           "url": "https://globe-travel-two.vercel.app/login?next=%2Fchat%3Fq%3DPlan%2Ba%2B3-day%2BLisbon%2Btrip%2Bfor%2Bfriends%2Bwho%2Bwant%2Bfood%252C%2Bviewpoints%252C%2Band%2Bnightlife.",
           "pathname": "/login",
@@ -153,7 +165,7 @@
           "horizontalOverflow": false,
           "clientWidth": 1440,
           "scrollWidth": 1440,
-          "allowGuestStart": false
+          "allowGuestStart": true
         },
         "guestStart": {
           "exercised": false,
@@ -166,7 +178,7 @@
             "profileDeleted": false,
             "userDeleted": false,
             "error": null,
-            "reason": "remote guest-start exercise disabled by default"
+            "reason": "guest-start exercise limit reached (1)"
           },
           "state": null,
           "issues": []
@@ -201,7 +213,7 @@
       },
       "start": {
         "status": 200,
-        "screenshot": "qa/beta-human-review-wave-rehearsal-2026-05-22/screenshots/beta-hr-003-barcelona.png",
+        "screenshot": "qa/beta-human-review-guest-start-rehearsal-2026-05-22/screenshots/beta-hr-003-barcelona.png",
         "state": {
           "url": "https://globe-travel-two.vercel.app/login?next=%2Fchat%3Fq%3DPlan%2Ba%2Bbudget%2B3-day%2BBarcelona%2Bbeach%2Band%2Bneighborhood%2Btrip%2Bfor%2Bfriends.",
           "pathname": "/login",
@@ -219,7 +231,7 @@
           "horizontalOverflow": false,
           "clientWidth": 390,
           "scrollWidth": 390,
-          "allowGuestStart": false
+          "allowGuestStart": true
         },
         "guestStart": {
           "exercised": false,
@@ -232,7 +244,7 @@
             "profileDeleted": false,
             "userDeleted": false,
             "error": null,
-            "reason": "remote guest-start exercise disabled by default"
+            "reason": "guest-start exercise limit reached (1)"
           },
           "state": null,
           "issues": []
@@ -268,7 +280,7 @@
       },
       "start": {
         "status": 200,
-        "screenshot": "qa/beta-human-review-wave-rehearsal-2026-05-22/screenshots/beta-hr-004-paris.png",
+        "screenshot": "qa/beta-human-review-guest-start-rehearsal-2026-05-22/screenshots/beta-hr-004-paris.png",
         "state": {
           "url": "https://globe-travel-two.vercel.app/login?next=%2Fchat%3Fq%3DPlan%2Ba%2Bpremium%2B4-day%2BParis%2Btrip%2Bfor%2Ba%2Bcouple%2Bwith%2Brestaurants%252C%2Bart%252C%2Band%2Bromantic%2Bpacing.",
           "pathname": "/login",
@@ -286,7 +298,7 @@
           "horizontalOverflow": false,
           "clientWidth": 1440,
           "scrollWidth": 1440,
-          "allowGuestStart": false
+          "allowGuestStart": true
         },
         "guestStart": {
           "exercised": false,
@@ -299,7 +311,7 @@
             "profileDeleted": false,
             "userDeleted": false,
             "error": null,
-            "reason": "remote guest-start exercise disabled by default"
+            "reason": "guest-start exercise limit reached (1)"
           },
           "state": null,
           "issues": []
@@ -335,7 +347,7 @@
       },
       "start": {
         "status": 200,
-        "screenshot": "qa/beta-human-review-wave-rehearsal-2026-05-22/screenshots/beta-hr-005-new-york.png",
+        "screenshot": "qa/beta-human-review-guest-start-rehearsal-2026-05-22/screenshots/beta-hr-005-new-york.png",
         "state": {
           "url": "https://globe-travel-two.vercel.app/login?next=%2Fchat%3Fq%3DPlan%2Ba%2B3-day%2BNew%2BYork%2Btrip%2Bfor%2Brepeat%2Bvisitors%2Bwho%2Bwant%2Bneighborhoods%252C%2Bfood%252C%2Band%2Bfresh%2Bideas.",
           "pathname": "/login",
@@ -353,7 +365,7 @@
           "horizontalOverflow": false,
           "clientWidth": 1440,
           "scrollWidth": 1440,
-          "allowGuestStart": false
+          "allowGuestStart": true
         },
         "guestStart": {
           "exercised": false,
@@ -366,7 +378,7 @@
             "profileDeleted": false,
             "userDeleted": false,
             "error": null,
-            "reason": "remote guest-start exercise disabled by default"
+            "reason": "guest-start exercise limit reached (1)"
           },
           "state": null,
           "issues": []

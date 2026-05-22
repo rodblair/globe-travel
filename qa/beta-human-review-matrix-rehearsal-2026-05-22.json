@@ -36,6 +36,10 @@
   "baseUrl": "https://globe-travel-two.vercel.app",
   "nonMutating": true,
   "remoteGuestStartExercised": false,
+  "remoteGuestStartExerciseLimit": 0,
+  "remoteGuestStartExerciseCount": 0,
+  "remoteGuestStartCleanupFailureCount": 0,
+  "remoteGuestStartCleanupFailures": [],
   "results": [
     {
       "id": "BETA-HR-001",
@@ -83,6 +87,22 @@
           "clientWidth": 390,
           "scrollWidth": 390,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -135,6 +155,22 @@
           "scrollWidth": 1440,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -184,6 +220,22 @@
           "clientWidth": 390,
           "scrollWidth": 390,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -236,6 +288,22 @@
           "scrollWidth": 1440,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -286,6 +354,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -338,6 +422,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -387,6 +487,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -439,6 +555,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -488,6 +620,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -540,6 +688,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -589,6 +753,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -641,6 +821,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -692,6 +888,22 @@
           "scrollWidth": 1440,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -741,6 +953,22 @@
           "clientWidth": 390,
           "scrollWidth": 390,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -793,6 +1021,22 @@
           "scrollWidth": 1440,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -842,6 +1086,22 @@
           "clientWidth": 390,
           "scrollWidth": 390,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -894,6 +1154,22 @@
           "scrollWidth": 1440,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -945,6 +1221,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -994,6 +1286,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -1045,6 +1353,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -1094,6 +1418,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -1146,6 +1486,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -1196,6 +1552,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
@@ -1248,6 +1620,22 @@
           "scrollWidth": 390,
           "allowGuestStart": false
         },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
+        },
         "issues": []
       },
       "ok": true,
@@ -1298,6 +1686,22 @@
           "clientWidth": 1440,
           "scrollWidth": 1440,
           "allowGuestStart": false
+        },
+        "guestStart": {
+          "exercised": false,
+          "skipped": true,
+          "guestId": null,
+          "finalUrl": null,
+          "cleanup": {
+            "attempted": false,
+            "guestId": null,
+            "profileDeleted": false,
+            "userDeleted": false,
+            "error": null,
+            "reason": "remote guest-start exercise disabled by default"
+          },
+          "state": null,
+          "issues": []
         },
         "issues": []
       },
