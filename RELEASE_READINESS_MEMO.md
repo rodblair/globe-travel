@@ -13,6 +13,7 @@ Status: Active goal in progress
 - Current launch signoff passes `95/95` against commit `d03a9051276aaecdcfd8b6e8b8366d90928d378f`.
 - Public launch remains intentionally blocked by real evidence only: `0/25` completed beta human reviews with `25 remaining`, and `2/4` distinct production visual-review dates with `2 remaining`.
 - The current invite-beta operating wave is `BETA-WAVE-01`; `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `.md`, and `.csv` expose 5 next-wave operator rows for outreach without counting them as completed review evidence.
+- `qa/public-launch-blocker-board-2026-05-21.json`, `.md`, and `.csv` now combine the two remaining public-launch blockers into one operator board: 5 beta review rows for `BETA-WAVE-01` plus 3 scheduled production visual-review rows, with 2 visual rows marked required for public-launch history.
 - Recent release-ops-only commits were pushed to `main`; Vercel canceled the resulting production builds via the ignored-build policy, so the live alias correctly remains on the verified `d03a9051276aaecdcfd8b6e8b8366d90928d378f` deployment.
 - The in-app Browser backend was unavailable again in this run (`iab` not available), so production verification used the repo's Playwright-backed Browser QA runners.
 

@@ -22,6 +22,7 @@ Status: beta-ready-public-blocked
 - Latest production visual deployment: globe-travel-5ofl2iqgi-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
+- Public launch blocker board ready: yes
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
 - Incomplete accepted P2 risks: 0
@@ -63,6 +64,9 @@ Production visual-review progress:
 Production visual-review queue:
 - none
 
+Public launch blocker board:
+- none
+
 ## Next Actions
 
 - Collect and import 25 completed beta review submission(s).
@@ -78,6 +82,7 @@ Production visual-review queue:
 - Beta execution schedule: `qa/beta-human-review-schedule-2026-05-21.json`, `qa/beta-human-review-schedule-2026-05-21.md`, and `qa/beta-human-review-schedule-assignments-2026-05-21.csv`
 - Beta command center: `qa/beta-human-review-command-center-2026-05-21.json` and `qa/beta-human-review-command-center-2026-05-21.md`
 - Beta next-wave ops: `qa/beta-human-review-next-wave-ops-2026-05-21.json`, `qa/beta-human-review-next-wave-ops-2026-05-21.md`, and `qa/beta-human-review-next-wave-ops-2026-05-21.csv`
+- Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
 - Latest production visual artifact: `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905` and `qa/visual-baseline-production-next-wave-ops-2026-05-22-d03a905/summary.json`

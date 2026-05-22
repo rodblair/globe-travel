@@ -31,6 +31,9 @@ const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.Q
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
+const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
+const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
+const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -423,6 +426,9 @@ const [
   designSystem,
   plannerActuals,
   releaseCandidate,
+  blockerBoard,
+  blockerBoardReport,
+  blockerBoardCsv,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -448,6 +454,9 @@ const [
   readJson(designSystemPath),
   readJson(plannerActualsPath),
   readJson(releaseCandidatePath),
+  readJson(blockerBoardPath),
+  readText(blockerBoardReportPath),
+  readText(blockerBoardCsvPath),
   fetchHealth(),
 ])
 
@@ -865,6 +874,47 @@ if (visualAssignmentReport.ok && !visualAssignmentReport.text.includes('Public l
   visualQueueIssues.push('visual assignment report does not restate the public-launch visual-history rule')
 }
 
+const blockerBoardIssues = []
+const blockerBoardRows = Array.isArray(blockerBoard.rows) ? blockerBoard.rows : []
+const blockerBoardBetaRows = blockerBoardRows.filter((row) => row.workType === 'beta-human-review')
+const blockerBoardRequiredVisualRows = blockerBoardRows.filter((row) => (
+  row.workType === 'production-visual-review' &&
+  row.status === 'required for public launch history'
+))
+if (blockerBoard.status !== 'pass') blockerBoardIssues.push('public launch blocker board status is not pass')
+if (blockerBoard.publicStatusArtifact !== `qa/${jsonArtifact}`) {
+  blockerBoardIssues.push(`public launch blocker board public status ${blockerBoard.publicStatusArtifact || 'missing'} does not match qa/${jsonArtifact}`)
+}
+if (blockerBoard.betaNextWaveOpsArtifact !== qaDisplayPath(betaNextWaveOpsPath)) {
+  blockerBoardIssues.push('public launch blocker board does not reference current beta next-wave ops artifact')
+}
+if (blockerBoard.visualProgressArtifact !== qaDisplayPath(visualProgressPath)) {
+  blockerBoardIssues.push('public launch blocker board does not reference current production visual progress artifact')
+}
+if (Number(blockerBoard.betaReviewProgress?.remaining) !== betaRemaining) {
+  blockerBoardIssues.push(`public launch blocker board beta remaining ${blockerBoard.betaReviewProgress?.remaining ?? 'missing'} does not match ${betaRemaining}`)
+}
+if (Number(blockerBoard.betaReviewProgress?.openRowCount) !== betaNextWaveOpsRows.length) {
+  blockerBoardIssues.push('public launch blocker board beta row count does not match next-wave ops rows')
+}
+if (blockerBoardBetaRows.length !== betaNextWaveOpsRows.length) {
+  blockerBoardIssues.push('public launch blocker board beta work rows do not match next-wave ops rows')
+}
+if (Number(blockerBoard.productionVisualProgress?.remainingDistinctDates) !== visualRemaining) {
+  blockerBoardIssues.push(`public launch blocker board visual remaining ${blockerBoard.productionVisualProgress?.remainingDistinctDates ?? 'missing'} does not match ${visualRemaining}`)
+}
+if (blockerBoardRequiredVisualRows.length !== visualRemaining) {
+  blockerBoardIssues.push('public launch blocker board required visual row count does not match remaining visual history dates')
+}
+for (const row of blockerBoardRows) {
+  if (!row.id || !row.submissionPath || !blockerBoardCsv.includes(row.id) || !blockerBoardCsv.includes(row.submissionPath)) {
+    blockerBoardIssues.push(`public launch blocker board CSV missing row ${row.id || 'unknown'}`)
+  }
+}
+if (!blockerBoardReport.includes('This blocker board does not satisfy public launch by itself')) {
+  blockerBoardIssues.push('public launch blocker board report does not restate the evidence boundary')
+}
+
 const visualProgressIssues = []
 if (visualProgress.status !== 'pass') {
   visualProgressIssues.push('progress artifact status is not pass')
@@ -1003,6 +1053,7 @@ if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignme
 if (betaScheduleIssues.length > 0) guardrailIssues.push('beta human review execution schedule is not fully prepared')
 if (betaCommandCenterIssues.length > 0) guardrailIssues.push('beta human review command center is not fully prepared')
 if (betaNextWaveOpsIssues.length > 0) guardrailIssues.push('beta human review next-wave ops pack is not fully prepared')
+if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker board is not aligned with current beta and visual blocker evidence')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -1136,6 +1187,17 @@ const summary = {
     submissionTemplateCount: visualSubmissionTemplateChecks.length,
     progressIssues: visualProgressIssues,
     queueIssues: visualQueueIssues,
+  },
+  publicLaunchBlockerBoard: {
+    ready: blockerBoardIssues.length === 0,
+    issueCount: blockerBoardIssues.length,
+    artifact: qaDisplayPath(blockerBoardPath),
+    report: qaDisplayPath(blockerBoardReportPath),
+    csv: qaDisplayPath(blockerBoardCsvPath),
+    rowCount: blockerBoardRows.length,
+    betaRowCount: blockerBoardBetaRows.length,
+    requiredVisualRowCount: blockerBoardRequiredVisualRows.length,
+    issues: blockerBoardIssues,
   },
   risks: {
     openBlockingRiskCount: openBlockingRisks.length,
@@ -1319,6 +1381,7 @@ Status: ${status}
 - Latest production visual deployment: ${summary.productionVisualReviews.latestProductionDeploymentUrl || 'missing'}
 - Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
+- Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'}
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
@@ -1359,6 +1422,9 @@ ${markdownList(visualProgressIssues)}
 Production visual-review queue:
 ${markdownList(visualQueueIssues)}
 
+Public launch blocker board:
+${markdownList(blockerBoardIssues)}
+
 ## Next Actions
 
 ${markdownList(summary.nextActions)}
@@ -1373,6 +1439,7 @@ ${markdownList(summary.nextActions)}
 - Beta execution schedule: \`${summary.betaHumanReviews.scheduleArtifact}\`, \`${summary.betaHumanReviews.scheduleReport}\`, and \`${summary.betaHumanReviews.scheduleCsv}\`
 - Beta command center: \`${summary.betaHumanReviews.commandCenterArtifact}\` and \`${summary.betaHumanReviews.commandCenterReport}\`
 - Beta next-wave ops: \`${summary.betaHumanReviews.nextWaveOpsArtifact}\`, \`${summary.betaHumanReviews.nextWaveOpsReport}\`, and \`${summary.betaHumanReviews.nextWaveOpsCsv}\`
+- Public launch blocker board: \`${summary.publicLaunchBlockerBoard.report}\`, \`${summary.publicLaunchBlockerBoard.csv}\`, and \`${summary.publicLaunchBlockerBoard.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

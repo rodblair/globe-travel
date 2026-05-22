@@ -1,0 +1,307 @@
+{
+  "date": "2026-05-21",
+  "today": "2026-05-22",
+  "status": "pass",
+  "checked": 4,
+  "passed": 4,
+  "failed": 0,
+  "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
+  "betaNextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
+  "visualRegisterArtifact": "qa/production-visual-review-register.json",
+  "visualProgressArtifact": "qa/production-visual-review-progress-2026-05-21.json",
+  "jsonArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
+  "reportArtifact": "qa/public-launch-blocker-board-2026-05-21.md",
+  "csvArtifact": "qa/public-launch-blocker-board-2026-05-21.csv",
+  "betaReviewProgress": {
+    "completed": 0,
+    "minimumForPublicLaunch": 25,
+    "remaining": 25,
+    "nextWave": {
+      "waveId": "BETA-WAVE-01",
+      "kickoffAt": "2026-05-22",
+      "dueAt": "2026-05-25",
+      "daysUntilDue": 3,
+      "status": "open",
+      "scheduledReviewCount": 5,
+      "completedReviewCount": 0,
+      "remainingReviewCount": 5,
+      "reviewerCohorts": [
+        "continuity reviewer",
+        "share-feedback reviewer",
+        "mobile planner reviewer"
+      ],
+      "reviewIds": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ]
+    },
+    "openRowCount": 5
+  },
+  "productionVisualProgress": {
+    "distinctHistoryDateCount": 2,
+    "minimumForPublicLaunch": 4,
+    "remainingDistinctDates": 2,
+    "nextReviewDueAt": "2026-05-28",
+    "openRowCount": 3,
+    "requiredRowCount": 2
+  },
+  "rowCount": 8,
+  "rows": [
+    {
+      "blockerId": "beta-human-review-threshold",
+      "workType": "beta-human-review",
+      "id": "BETA-HR-001",
+      "dueAt": "2026-05-25",
+      "owner": "Product",
+      "reviewerRole": "mobile couple beta reviewer",
+      "status": "needs completed review submission",
+      "action": "Complete BETA-HR-001 using phone 390x844, then validate intake.",
+      "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
+      "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json",
+      "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
+      "source": {
+        "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
+        "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
+        "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json",
+        "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json",
+        "messageSubject": "[Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25"
+      }
+    },
+    {
+      "blockerId": "beta-human-review-threshold",
+      "workType": "beta-human-review",
+      "id": "BETA-HR-002",
+      "dueAt": "2026-05-25",
+      "owner": "Product",
+      "reviewerRole": "desktop friend group beta reviewer",
+      "status": "needs completed review submission",
+      "action": "Complete BETA-HR-002 using desktop 1440x950, then validate intake.",
+      "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
+      "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json",
+      "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
+      "source": {
+        "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
+        "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
+        "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json",
+        "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json",
+        "messageSubject": "[Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25"
+      }
+    },
+    {
+      "blockerId": "beta-human-review-threshold",
+      "workType": "beta-human-review",
+      "id": "BETA-HR-003",
+      "dueAt": "2026-05-25",
+      "owner": "Product",
+      "reviewerRole": "mobile friend group beta reviewer",
+      "status": "needs completed review submission",
+      "action": "Complete BETA-HR-003 using phone 390x844, then validate intake.",
+      "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
+      "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json",
+      "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
+      "source": {
+        "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
+        "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
+        "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json",
+        "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json",
+        "messageSubject": "[Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25"
+      }
+    },
+    {
+      "blockerId": "beta-human-review-threshold",
+      "workType": "beta-human-review",
+      "id": "BETA-HR-004",
+      "dueAt": "2026-05-25",
+      "owner": "Product",
+      "reviewerRole": "desktop couple beta reviewer",
+      "status": "needs completed review submission",
+      "action": "Complete BETA-HR-004 using desktop 1440x950, then validate intake.",
+      "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
+      "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json",
+      "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
+      "source": {
+        "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
+        "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
+        "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json",
+        "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json",
+        "messageSubject": "[Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25"
+      }
+    },
+    {
+      "blockerId": "beta-human-review-threshold",
+      "workType": "beta-human-review",
+      "id": "BETA-HR-005",
+      "dueAt": "2026-05-25",
+      "owner": "Product",
+      "reviewerRole": "desktop friend group beta reviewer",
+      "status": "needs completed review submission",
+      "action": "Complete BETA-HR-005 using desktop 1440x950, then validate intake.",
+      "urlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
+      "submissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json",
+      "evidenceRule": "Counts only after a non-template JSON submission passes beta review intake and is explicitly imported.",
+      "source": {
+        "startUrl": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
+        "packetPath": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
+        "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json",
+        "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json",
+        "messageSubject": "[Globe.travel beta] BETA-HR-005 New York review due 2026-05-25"
+      }
+    },
+    {
+      "blockerId": "production-visual-review-history",
+      "workType": "production-visual-review",
+      "id": "PROD-VISUAL-HISTORY-002",
+      "dueAt": "2026-05-28",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "required for public launch history",
+      "action": "Run production visual review PROD-VISUAL-HISTORY-002, inspect screenshots, then validate intake.",
+      "urlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
+      "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
+      "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
+      "evidenceRule": "Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.",
+      "source": {
+        "routes": [
+          "landing",
+          "login",
+          "signup",
+          "public-share"
+        ],
+        "viewports": [
+          "phone",
+          "tablet",
+          "laptop",
+          "desktop",
+          "wide"
+        ],
+        "diffRoutes": [
+          "landing",
+          "login",
+          "signup"
+        ],
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+      }
+    },
+    {
+      "blockerId": "production-visual-review-history",
+      "workType": "production-visual-review",
+      "id": "PROD-VISUAL-HISTORY-003",
+      "dueAt": "2026-06-04",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "required for public launch history",
+      "action": "Run production visual review PROD-VISUAL-HISTORY-003, inspect screenshots, then validate intake.",
+      "urlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
+      "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-04",
+      "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json",
+      "evidenceRule": "Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.",
+      "source": {
+        "routes": [
+          "landing",
+          "login",
+          "signup",
+          "public-share"
+        ],
+        "viewports": [
+          "phone",
+          "tablet",
+          "laptop",
+          "desktop",
+          "wide"
+        ],
+        "diffRoutes": [
+          "landing",
+          "login",
+          "signup"
+        ],
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+      }
+    },
+    {
+      "blockerId": "production-visual-review-history",
+      "workType": "production-visual-review",
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "scheduled buffer review",
+      "action": "Run production visual review PROD-VISUAL-HISTORY-004, inspect screenshots, then validate intake.",
+      "urlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+      "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-11",
+      "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
+      "evidenceRule": "Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.",
+      "source": {
+        "routes": [
+          "landing",
+          "login",
+          "signup",
+          "public-share"
+        ],
+        "viewports": [
+          "phone",
+          "tablet",
+          "laptop",
+          "desktop",
+          "wide"
+        ],
+        "diffRoutes": [
+          "landing",
+          "login",
+          "signup"
+        ],
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "public launch blocker board reads current blocked status",
+      "ok": true,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
+      "publicLaunchReady": false,
+      "blockers": [
+        {
+          "id": "beta-human-review-threshold",
+          "title": "Complete beta human reviews",
+          "detail": "0/25 completed; 25 remaining."
+        },
+        {
+          "id": "production-visual-review-history",
+          "title": "Complete production visual-review history",
+          "detail": "2/4 distinct review dates recorded; 2 remaining."
+        }
+      ]
+    },
+    {
+      "name": "public launch blocker board covers beta next wave",
+      "ok": true,
+      "betaNextWaveOpsStatus": "pass",
+      "betaNextWaveOpsRows": 5,
+      "expectedRemainingWaveReviews": 5
+    },
+    {
+      "name": "public launch blocker board covers scheduled visual history work",
+      "ok": true,
+      "visualProgressStatus": "pass",
+      "visualRows": 3,
+      "requiredVisualRows": 2,
+      "visualRemaining": 2
+    },
+    {
+      "name": "public launch blocker board CSV includes every open work row",
+      "ok": true,
+      "rowCount": 8,
+      "csvArtifact": "qa/public-launch-blocker-board-2026-05-21.csv"
+    }
+  ],
+  "failures": []
+}

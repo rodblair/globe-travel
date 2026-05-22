@@ -94,6 +94,17 @@
     "progressIssues": [],
     "queueIssues": []
   },
+  "publicLaunchBlockerBoard": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/public-launch-blocker-board-2026-05-21.json",
+    "report": "qa/public-launch-blocker-board-2026-05-21.md",
+    "csv": "qa/public-launch-blocker-board-2026-05-21.csv",
+    "rowCount": 8,
+    "betaRowCount": 5,
+    "requiredVisualRowCount": 2,
+    "issues": []
+  },
   "risks": {
     "openBlockingRiskCount": 0,
     "openAcceptedP2RiskCount": 2,

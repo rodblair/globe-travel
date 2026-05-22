@@ -730,6 +730,7 @@ async function checkRequiredDocs(productionHealth) {
     `${Number(betaStatus.remaining ?? 0)} remaining`,
     betaStatus.nextWave?.waveId,
     betaStatus.nextWaveOpsArtifact,
+    publicStatus?.publicLaunchBlockerBoard?.artifact,
     `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
     visualStatus.latestProductionArtifact,
@@ -2307,6 +2308,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const betaScheduleIssues = Array.isArray(betaReviewStatus.scheduleIssues) ? betaReviewStatus.scheduleIssues : []
   const betaCommandCenterIssues = Array.isArray(betaReviewStatus.commandCenterIssues) ? betaReviewStatus.commandCenterIssues : []
   const betaNextWaveOpsIssues = Array.isArray(betaReviewStatus.nextWaveOpsIssues) ? betaReviewStatus.nextWaveOpsIssues : []
+  const blockerBoardStatus = status.publicLaunchBlockerBoard || {}
+  const blockerBoardIssues = Array.isArray(blockerBoardStatus.issues) ? blockerBoardStatus.issues : []
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
@@ -2335,6 +2338,15 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaScheduleIssues.length === 0 &&
     betaCommandCenterIssues.length === 0 &&
     betaNextWaveOpsIssues.length === 0 &&
+    blockerBoardStatus.ready === true &&
+    hasMeaningfulText(blockerBoardStatus.artifact) &&
+    hasMeaningfulText(blockerBoardStatus.report) &&
+    hasMeaningfulText(blockerBoardStatus.csv) &&
+    Number(blockerBoardStatus.issueCount) === 0 &&
+    Number(blockerBoardStatus.rowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) + Number(blockerBoardStatus.requiredVisualRowCount || 0) + Math.max(0, Number(visualReviewStatus.scheduledReviewCount || 0) - Number(blockerBoardStatus.requiredVisualRowCount || 0)) &&
+    Number(blockerBoardStatus.betaRowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
+    Number(blockerBoardStatus.requiredVisualRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
+    blockerBoardIssues.length === 0 &&
     visualReviewStatus.assignmentQueueReady === true &&
     Number(visualReviewStatus.submissionTemplateCount) >= Number(visualReviewStatus.scheduledReviewCount || 0) &&
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
@@ -2365,6 +2377,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaNextWaveOpsReport: betaReviewStatus.nextWaveOpsReport ?? null,
     betaNextWaveOpsCsv: betaReviewStatus.nextWaveOpsCsv ?? null,
     betaNextWaveOpsRowCount: betaReviewStatus.nextWaveOpsRowCount ?? null,
+    blockerBoardReady: blockerBoardStatus.ready ?? null,
+    blockerBoardArtifact: blockerBoardStatus.artifact ?? null,
+    blockerBoardReport: blockerBoardStatus.report ?? null,
+    blockerBoardCsv: blockerBoardStatus.csv ?? null,
+    blockerBoardRowCount: blockerBoardStatus.rowCount ?? null,
+    blockerBoardBetaRowCount: blockerBoardStatus.betaRowCount ?? null,
+    blockerBoardRequiredVisualRowCount: blockerBoardStatus.requiredVisualRowCount ?? null,
+    blockerBoardIssues,
     betaQueueIssues,
     betaScheduleIssues,
     betaCommandCenterIssues,
