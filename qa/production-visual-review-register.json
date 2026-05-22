@@ -6,6 +6,8 @@
   "nextReviewDueAt": "2026-05-28",
   "reviewSubmissionDirectory": "qa/production-visual-review-submissions-2026-05-21",
   "reviewIntakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
+  "reviewAssignmentCsv": "qa/production-visual-review-assignments-2026-05-21.csv",
+  "reviewAssignmentReport": "qa/production-visual-review-assignments-2026-05-21.md",
   "reviewProtocol": "Review every production visual QA screenshot for route clarity, brand consistency, text fit, mobile readability, empty/error-state polish, visual hierarchy, and trust. Treat app errors, horizontal overflow, clipped primary text, overlapping controls, broken share affordances, or unexplained pixel diffs on stable shell routes as release-blocking until fixed or explicitly accepted in the risk register.",
   "scheduledPublicLaunchReviews": [
     {

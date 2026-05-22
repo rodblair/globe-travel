@@ -471,6 +471,38 @@ function betaSubmissionTemplateIssues(template, packet) {
   return issues
 }
 
+function visualReviewSubmissionTemplateIssues(template, scheduledReview) {
+  const issues = []
+
+  if (!template || typeof template !== 'object' || Array.isArray(template)) {
+    return ['template is not an object']
+  }
+
+  const expectedReviewedAt = dateOnly(scheduledReview.dueAt)
+  const expectedArtifact = scheduledReview.expectedArtifactPrefix || ''
+  const expectedSummaryArtifact = `${expectedArtifact}/summary.json`
+  const missingRoutes = hasAll(template.routesReviewed || [], requiredProductionVisualRoutes)
+  const missingViewports = hasAll(template.viewportsReviewed || [], requiredProductionVisualViewports)
+  const missingDiffRoutes = hasAll(template.diffRoutesReviewed || [], requiredProductionVisualDiffRoutes)
+
+  if (template.scheduledReviewId !== scheduledReview.id) issues.push('scheduledReviewId must match scheduled review')
+  if (dateOnly(template.reviewedAt) !== expectedReviewedAt) issues.push('reviewedAt must match scheduled dueAt')
+  if (template.artifact !== expectedArtifact) issues.push('artifact must match expectedArtifactPrefix')
+  if (template.summaryArtifact !== expectedSummaryArtifact) issues.push('summaryArtifact must match expected artifact summary')
+  if (!hasMeaningfulText(template.productionCommit)) issues.push('productionCommit placeholder is missing')
+  if (!hasMeaningfulText(template.deploymentUrl)) issues.push('deploymentUrl placeholder is missing')
+  if (!hasMeaningfulText(template.reviewedBy)) issues.push('reviewedBy is missing')
+  if (template.verdict !== 'pass') issues.push('verdict must default to pass')
+  if (!Array.isArray(template.blockingFindings)) issues.push('blockingFindings must be an array')
+  if (Number(template.screenshotsReviewed) < 20) issues.push('screenshotsReviewed must be at least 20')
+  if (missingRoutes.length > 0) issues.push(`routesReviewed missing: ${missingRoutes.join(', ')}`)
+  if (missingViewports.length > 0) issues.push(`viewportsReviewed missing: ${missingViewports.join(', ')}`)
+  if (missingDiffRoutes.length > 0) issues.push(`diffRoutesReviewed missing: ${missingDiffRoutes.join(', ')}`)
+  if (!hasMeaningfulText(template.notes, 40)) issues.push('notes must include review guidance')
+
+  return issues
+}
+
 async function checkProductionHealth() {
   const url = `${baseUrl}/api/health`
   let response
@@ -1517,6 +1549,96 @@ async function checkVisualReviewRegister(productionHealth) {
       command: review.command || null,
     })),
   })
+
+  if (remainingRequiredVisualReviewDates > 0) {
+    const submissionDir = register.reviewSubmissionDirectory || ''
+    const scheduledTemplateFiles = await Promise.all(scheduledReviews.map(async (review) => {
+      const templatePath = hasMeaningfulText(submissionDir) ? `${submissionDir}/${review.id}.template.json` : ''
+      let template = null
+      let parseError = null
+      if (hasMeaningfulText(templatePath)) {
+        try {
+          template = await readJson(templatePath)
+        } catch (error) {
+          parseError = error instanceof Error ? error.message : String(error)
+        }
+      }
+      const issues = parseError
+        ? [`template is not readable JSON: ${parseError}`]
+        : visualReviewSubmissionTemplateIssues(template, review)
+      return {
+        id: review.id || '(missing id)',
+        path: templatePath || null,
+        exists: hasMeaningfulText(templatePath) ? await fileExists(templatePath) : false,
+        issues,
+      }
+    }))
+    const badScheduledTemplateFiles = scheduledTemplateFiles.filter((template) => !template.exists || template.issues.length > 0)
+
+    addCheck('production visual review submission templates cover every scheduled review', (
+      hasMeaningfulText(submissionDir) &&
+      scheduledReviews.length >= remainingRequiredVisualReviewDates &&
+      badScheduledTemplateFiles.length === 0
+    ), {
+      scheduledReviewCount: scheduledReviews.length,
+      remainingRequiredVisualReviewDates,
+      submissionDir: submissionDir || null,
+      badScheduledTemplateFiles,
+    })
+
+    const assignmentCsvPath = register.reviewAssignmentCsv || ''
+    const assignmentReportPath = register.reviewAssignmentReport || ''
+    let assignmentCsv = ''
+    let assignmentReport = ''
+    let assignmentCsvError = null
+    let assignmentReportError = null
+    if (hasMeaningfulText(assignmentCsvPath)) {
+      try {
+        assignmentCsv = await readText(assignmentCsvPath)
+      } catch (error) {
+        assignmentCsvError = error instanceof Error ? error.message : String(error)
+      }
+    }
+    if (hasMeaningfulText(assignmentReportPath)) {
+      try {
+        assignmentReport = await readText(assignmentReportPath)
+      } catch (error) {
+        assignmentReportError = error instanceof Error ? error.message : String(error)
+      }
+    }
+    const assignmentBoardIssues = scheduledReviews.flatMap((review) => {
+      const templatePath = hasMeaningfulText(submissionDir) ? `${submissionDir}/${review.id}.template.json` : ''
+      const issues = []
+      if (!assignmentCsv.includes(review.id)) issues.push('CSV missing id')
+      if (!assignmentCsv.includes(review.command)) issues.push('CSV missing command')
+      if (!assignmentCsv.includes(review.expectedArtifactPrefix)) issues.push('CSV missing artifact prefix')
+      if (!assignmentCsv.includes(templatePath)) issues.push('CSV missing template path')
+      if (!assignmentReport.includes(review.id)) issues.push('report missing id')
+      if (!assignmentReport.includes(review.command)) issues.push('report missing command')
+      if (!assignmentReport.includes(review.expectedArtifactPrefix)) issues.push('report missing artifact prefix')
+      if (!assignmentReport.includes(templatePath)) issues.push('report missing template path')
+      return issues.length > 0 ? [{ id: review.id || '(missing id)', issues }] : []
+    })
+    const assignmentReportHasLaunchRule = assignmentReport.includes('not completed visual-review evidence') &&
+      assignmentReport.includes('Public launch still requires four distinct dated passing visual-review history entries')
+
+    addCheck('production visual review assignment board covers every scheduled review', (
+      hasMeaningfulText(assignmentCsvPath) &&
+      hasMeaningfulText(assignmentReportPath) &&
+      !assignmentCsvError &&
+      !assignmentReportError &&
+      assignmentBoardIssues.length === 0 &&
+      assignmentReportHasLaunchRule
+    ), {
+      scheduledReviewCount: scheduledReviews.length,
+      assignmentCsv: assignmentCsvPath || null,
+      assignmentReport: assignmentReportPath || null,
+      assignmentCsvError,
+      assignmentReportError,
+      assignmentBoardIssues,
+      assignmentReportHasLaunchRule,
+    })
+  }
 
   let visualIntakeArtifact = null
   if (hasMeaningfulText(register.reviewIntakeArtifact)) {

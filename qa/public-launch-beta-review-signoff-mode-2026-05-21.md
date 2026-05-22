@@ -18,11 +18,11 @@ The same public-launch mode also fails unless `qa/production-visual-review-regis
 
 ## Verification
 
-- Commit `43ae6627da1211bd7f6c619b143575eccae0363b` deployed to Vercel production with health `ok`, `11/11`.
+- Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production with health `ok`, `11/11`.
 - The full production release gate passed `10/10`, including production visual QA `20/20`, public-share viral loop `5/5`, Athens public-share map integrity, and prompt-suite production actual validation `60/60`.
-- Default exact-commit signoff passed `87/87` for beta/release-candidate operations, including `25/25` beta reviewer packet coverage, `25/25` beta submission-template coverage, beta assignment-board coverage, beta review progress artifact consistency, beta review intake artifact consistency, production visual-review intake consistency, paid-path readiness `6/6`, the `3/3` future production visual-review schedule, and the public-launch status artifact.
+- Default exact-commit signoff passed `89/89` for beta/release-candidate operations, including `25/25` beta reviewer packet coverage, `25/25` beta submission-template coverage, beta assignment-board coverage, beta review progress artifact consistency, beta review intake artifact consistency, paid-path readiness `6/6`, the `3/3` future production visual-review schedule, `3/3` production visual-review submission-template coverage, production visual-review assignment-board coverage, production visual-review intake consistency, and the public-launch status artifact.
 - `npm run qa:public-launch-status` reports `beta-ready-public-blocked` with no guardrail issues, `0/25` completed beta reviews, and `1/4` required production visual-review history entries.
-- `QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS=1 QA_LAUNCH_EXPECTED_COMMIT=539506d829bdc4b7c66cb546e39b92a925e098e0 npm run qa:launch-signoff` fails as expected at `86/89`, with `0/25` completed beta reviews, `1/4` required production visual-review history entries, and a non-ready public-launch status.
+- `QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS=1 QA_LAUNCH_EXPECTED_COMMIT=539506d829bdc4b7c66cb546e39b92a925e098e0 npm run qa:launch-signoff` fails as expected at `88/91`, with `0/25` completed beta reviews, `1/4` required production visual-review history entries, and a non-ready public-launch status.
 - `QA_BETA_REVIEW_PROGRESS_REQUIRE_PUBLIC=1 npm run qa:beta-review-progress` fails as expected with `0/25` completed beta reviews and missing completed-review matrix coverage.
 
 ## Release Meaning

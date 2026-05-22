@@ -13,6 +13,8 @@ Status: pass
 - Required public-launch history dates: 4
 - Remaining required review dates: 3
 - Scheduled review entries: 3
+- Submission templates: 3 written to `qa/production-visual-review-submissions-2026-05-21`
+- Assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
 
 ## Scheduled Reviews
 

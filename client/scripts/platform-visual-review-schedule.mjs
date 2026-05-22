@@ -5,6 +5,9 @@ const root = resolve(process.cwd(), '..')
 const date = process.env.QA_VISUAL_REVIEW_SCHEDULE_DATE || new Date().toISOString().slice(0, 10)
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || '../qa/production-visual-review-register.json'
 const reportName = process.env.QA_VISUAL_REVIEW_SCHEDULE_REPORT || `production-visual-review-schedule-${date}.md`
+const assignmentCsvName = process.env.QA_VISUAL_REVIEW_ASSIGNMENT_CSV || `production-visual-review-assignments-${date}.csv`
+const assignmentReportName = process.env.QA_VISUAL_REVIEW_ASSIGNMENT_REPORT || `production-visual-review-assignments-${date}.md`
+const writeSubmissionTemplates = !['0', 'false', 'no'].includes(String(process.env.QA_VISUAL_REVIEW_WRITE_SUBMISSION_TEMPLATES || '1').toLowerCase())
 
 const requiredRoutes = ['landing', 'login', 'signup', 'public-share']
 const requiredViewports = ['phone', 'tablet', 'laptop', 'desktop', 'wide']
@@ -36,14 +39,120 @@ function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
 
+function csvEscape(value) {
+  const text = String(value ?? '')
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text
+}
+
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function submissionTemplateFile(review) {
+  return `${review.id}.template.json`
+}
+
+function submissionTemplatePath(review, submissionDir) {
+  return `${submissionDir}/${submissionTemplateFile(review)}`
+}
+
+function submissionTemplateForReview(review) {
+  const artifact = review.expectedArtifactPrefix
+  return {
+    scheduledReviewId: review.id,
+    reviewedAt: dateOnly(review.dueAt),
+    artifact,
+    summaryArtifact: `${artifact}/summary.json`,
+    productionCommit: 'replace-with-live-production-commit',
+    deploymentUrl: 'replace-with-live-production-deployment-url',
+    reviewedBy: review.reviewerRole || 'visual QA reviewer',
+    verdict: 'pass',
+    blockingFindings: [],
+    screenshotsReviewed: 20,
+    routesReviewed: review.routes || requiredRoutes,
+    viewportsReviewed: review.viewports || requiredViewports,
+    diffRoutesReviewed: review.diffRoutes || requiredDiffRoutes,
+    notes: 'Replace with a concise review note confirming no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.',
+  }
+}
+
+function assignmentRows(scheduledReviews, submissionDir) {
+  return scheduledReviews.map((review) => ({
+    id: review.id,
+    dueAt: dateOnly(review.dueAt),
+    owner: review.owner,
+    reviewerRole: review.reviewerRole,
+    status: review.status,
+    command: review.command,
+    expectedArtifactPrefix: review.expectedArtifactPrefix,
+    routes: (review.routes || []).join('|'),
+    viewports: (review.viewports || []).join('|'),
+    diffRoutes: (review.diffRoutes || []).join('|'),
+    submissionTemplatePath: submissionTemplatePath(review, submissionDir),
+    assignee: '',
+    completedSubmissionPath: '',
+    notes: '',
+  }))
+}
+
+function assignmentCsv(scheduledReviews, submissionDir) {
+  const columns = [
+    'id',
+    'dueAt',
+    'owner',
+    'reviewerRole',
+    'status',
+    'command',
+    'expectedArtifactPrefix',
+    'routes',
+    'viewports',
+    'diffRoutes',
+    'submissionTemplatePath',
+    'assignee',
+    'completedSubmissionPath',
+    'notes',
+  ]
+  const rows = assignmentRows(scheduledReviews, submissionDir)
+  return [
+    columns.join(','),
+    ...rows.map((row) => columns.map((column) => csvEscape(row[column])).join(',')),
+  ].join('\n') + '\n'
+}
+
+function assignmentMarkdown(scheduledReviews, submissionDir) {
+  return `# Production Visual Review Assignment Board
+
+Date: ${date}
+Status: ready for scheduled review execution
+
+## Operator Instructions
+
+- Run each scheduled production release command on or after its due date.
+- Review all 20 production visual screenshots for the scheduled artifact.
+- Copy the matching \`.template.json\` file to a non-template \`.json\` file only after the review is actually complete.
+- Replace live production commit and deployment placeholders with the current \`/api/health\` deployment metadata.
+- Run \`npm run qa:visual-review-intake\`, then \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\` only when validation is clean.
+- Re-run \`npm run qa:visual-review-schedule\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\` after import.
+
+## Scheduled Review Matrix
+
+| ID | Due | Owner | Artifact | Template | Command |
+| --- | --- | --- | --- | --- | --- |
+${scheduledReviews.map((review) => (
+  `| ${review.id} | ${dateOnly(review.dueAt)} | ${review.owner} | \`${review.expectedArtifactPrefix}\` | \`${submissionTemplatePath(review, submissionDir)}\` | \`${review.command}\` |`
+)).join('\n')}
+
+## Launch Rule
+
+Public launch still requires four distinct dated passing visual-review history entries. This board and its templates are scheduling aids, not completed visual-review evidence.
+`
 }
 
 const raw = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(raw)
 const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
 const scheduledReviews = Array.isArray(register.scheduledPublicLaunchReviews) ? register.scheduledPublicLaunchReviews : []
+const submissionDir = register.reviewSubmissionDirectory || qaDisplayPath(`../qa/production-visual-review-submissions-${date}`)
 const minimumPublicLaunchReviewHistory = Number(register.minimumPublicLaunchReviewHistory) || 4
 const completedHistoryDates = unique(reviewHistory.map((review) => dateOnly(review.reviewedAt)).filter(Boolean))
 const remainingRequiredReviewDates = Math.max(0, minimumPublicLaunchReviewHistory - completedHistoryDates.length)
@@ -115,6 +224,11 @@ const summary = {
   date,
   registerPath: qaDisplayPath(registerPath),
   reportPath: `qa/${reportName}`,
+  assignmentCsv: `qa/${assignmentCsvName}`,
+  assignmentReport: `qa/${assignmentReportName}`,
+  submissionDir,
+  submissionTemplateCount: scheduledReviews.length,
+  submissionTemplatesWritten: writeSubmissionTemplates,
   status: failures.length === 0 ? 'pass' : 'fail',
   checked: checks.length,
   passed: checks.length - failures.length,
@@ -142,6 +256,8 @@ Status: ${summary.status}
 - Required public-launch history dates: ${summary.minimumPublicLaunchReviewHistory}
 - Remaining required review dates: ${summary.remainingRequiredReviewDates}
 - Scheduled review entries: ${summary.scheduledReviewCount}
+- Submission templates: ${summary.submissionTemplateCount}${writeSubmissionTemplates ? ` written to \`${summary.submissionDir}\`` : ''}
+- Assignment board: \`${summary.assignmentReport}\` and \`${summary.assignmentCsv}\`
 
 ## Scheduled Reviews
 
@@ -165,6 +281,29 @@ ${markdownList(malformedScheduledReviews.map((review) => review.id || '(missing 
 
 await mkdir(resolve(root, 'qa'), { recursive: true })
 await writeFile(resolve(root, 'qa', reportName), report)
+await writeFile(resolve(root, 'qa', assignmentCsvName), assignmentCsv(scheduledReviews, submissionDir))
+await writeFile(resolve(root, 'qa', assignmentReportName), assignmentMarkdown(scheduledReviews, submissionDir))
+
+if (writeSubmissionTemplates) {
+  const templateDir = resolve(root, submissionDir)
+  await mkdir(templateDir, { recursive: true })
+  for (const review of scheduledReviews) {
+    await writeFile(
+      resolve(templateDir, submissionTemplateFile(review)),
+      `${JSON.stringify(submissionTemplateForReview(review), null, 2)}\n`,
+    )
+  }
+  await writeFile(resolve(templateDir, 'README.md'), `# Production Visual Review Submissions
+
+Drop completed visual-review JSON files in this directory after a scheduled production visual review is actually run and reviewed.
+
+Each \`.template.json\` file is prefilled from a scheduled public-launch visual-review entry. Copy or rename the relevant template to a non-template \`.json\` file only after the review is complete, replace production deployment placeholders, and keep \`blockingFindings\` empty only when the review found no blockers.
+
+Use \`npm run qa:visual-review-intake\` from \`client/\` to validate files without changing the canonical visual-review register. Use \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\` only after the report is clean and the review is ready to count toward public-launch visual-review history.
+
+Template files ending in \`.template.json\` are ignored by the intake command.
+`)
+}
 
 console.log(JSON.stringify(summary, null, 2))
 

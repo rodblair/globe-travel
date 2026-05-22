@@ -74,7 +74,7 @@ Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production.
 - Paid-path readiness artifact: `qa/paid-path-readiness-2026-05-21.json`
 - Production monitoring readiness: `9/9`
 - Design-system readiness: `10/10`
-- Current launch signoff gate passed `87/87`
+- Current launch signoff gate passed `89/89`
 - Public-launch status: `beta-ready-public-blocked`
 - Public-launch status artifact: `qa/public-launch-status-2026-05-21.json`
 - Public-launch signoff mode fails as expected until `25/25` beta reviews are completed and production visual review history reaches four distinct passing review dates.
@@ -89,6 +89,8 @@ Commit `539506d829bdc4b7c66cb546e39b92a925e098e0` deployed to Vercel production.
 - Production visual QA: `20/20`
 - Production visual artifact: `qa/visual-baseline-production-release-2026-05-21-539506d/`
 - Production visual review schedule: `3/3`, covering the remaining planned public-launch visual-review dates for 2026-05-28, 2026-06-04, and 2026-06-11.
+- Production visual review submission templates: `3/3`
+- Production visual review assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
 - Production visual review intake: `4/4`
 - Production visual review intake artifact: `qa/production-visual-review-intake-2026-05-21.json`
 - Production accessibility artifact: `qa/accessibility-keyboard-production-guest-2026-05-21/`
