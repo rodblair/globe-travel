@@ -13,6 +13,7 @@ const betaProgressPath = process.env.QA_BETA_REVIEW_PROGRESS || 'qa/beta-human-r
 const betaIntakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
 const visualIntakePath = process.env.QA_VISUAL_REVIEW_INTAKE || 'qa/production-visual-review-intake-2026-05-21.json'
+const visualProgressPath = process.env.QA_VISUAL_REVIEW_PROGRESS || 'qa/production-visual-review-progress-2026-05-21.json'
 const visualSchedulePath = process.env.QA_VISUAL_REVIEW_SCHEDULE || 'qa/production-visual-review-schedule-2026-05-21.md'
 const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
@@ -398,6 +399,7 @@ const [
   betaIntake,
   visualRegister,
   visualIntake,
+  visualProgress,
   visualScheduleReport,
   monitoringRegister,
   rollbackPlan,
@@ -415,6 +417,7 @@ const [
   readJson(betaIntakePath),
   readJson(visualRegisterPath),
   readJson(visualIntakePath),
+  readJson(visualProgressPath),
   readText(visualSchedulePath),
   readJson(monitoringRegisterPath),
   readJson(rollbackPath),
@@ -759,6 +762,29 @@ if (visualAssignmentReport.ok && !visualAssignmentReport.text.includes('Public l
   visualQueueIssues.push('visual assignment report does not restate the public-launch visual-history rule')
 }
 
+const visualProgressIssues = []
+if (visualProgress.status !== 'pass') {
+  visualProgressIssues.push('progress artifact status is not pass')
+}
+if (visualProgress.registerPath !== visualRegisterPath) {
+  visualProgressIssues.push(`progress register path ${visualProgress.registerPath || 'missing'} does not match ${visualRegisterPath}`)
+}
+if (Number(visualProgress.reviewHistoryCount) !== visualHistory.length) {
+  visualProgressIssues.push(`progress history count ${visualProgress.reviewHistoryCount ?? 'missing'} does not match ${visualHistory.length}`)
+}
+if (Number(visualProgress.distinctHistoryDateCount) !== visualHistoryDates.length) {
+  visualProgressIssues.push(`progress distinct history date count ${visualProgress.distinctHistoryDateCount ?? 'missing'} does not match ${visualHistoryDates.length}`)
+}
+if (Number(visualProgress.remainingRequiredReviewDates) !== visualRemaining) {
+  visualProgressIssues.push(`progress remaining review count ${visualProgress.remainingRequiredReviewDates ?? 'missing'} does not match ${visualRemaining}`)
+}
+if (Number(visualProgress.scheduledReviewCount) !== scheduledVisualReviews.length) {
+  visualProgressIssues.push(`progress scheduled review count ${visualProgress.scheduledReviewCount ?? 'missing'} does not match ${scheduledVisualReviews.length}`)
+}
+if (Number(visualProgress.latestProductionReview?.issueCount) !== 0) {
+  visualProgressIssues.push('progress latest production review has unresolved evidence issues')
+}
+
 const openBlockingRisks = (Array.isArray(riskRegister.issues) ? riskRegister.issues : [])
   .filter((issue) => ['P0', 'P1'].includes(String(issue.severity || '').toUpperCase()) && String(issue.status || '').toLowerCase() === 'open')
 const openAcceptedP2Risks = (Array.isArray(riskRegister.issues) ? riskRegister.issues : [])
@@ -822,6 +848,7 @@ if (betaProgress.status !== 'pass') guardrailIssues.push('beta human review prog
 if (betaIntake.status !== 'pass') guardrailIssues.push('beta human review intake artifact is not passing')
 if (betaQueueIssues.length > 0) guardrailIssues.push('beta human review assignment queue is not fully prepared')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
+if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
 if (visualQueueIssues.length > 0) guardrailIssues.push('production visual review assignment queue is not fully prepared')
 if (incompleteAcceptedP2Risks.length > 0) {
@@ -915,13 +942,16 @@ const summary = {
     scheduledReviewCount: scheduledVisualReviews.length,
     nextReviewDueAt: visualRegister.nextReviewDueAt || null,
     intakeArtifact: qaDisplayPath(visualIntakePath),
+    progressArtifact: qaDisplayPath(visualProgressPath),
     scheduleArtifact: qaDisplayPath(visualSchedulePath),
+    progressIssueCount: visualProgressIssues.length,
     assignmentQueueReady: visualQueueIssues.length === 0,
     assignmentQueueIssueCount: visualQueueIssues.length,
     assignmentCsv: qaDisplayPath(visualAssignmentCsvPath),
     assignmentReport: qaDisplayPath(visualAssignmentReportPath),
     submissionTemplateDir: qaDisplayPath(visualSubmissionDir),
     submissionTemplateCount: visualSubmissionTemplateChecks.length,
+    progressIssues: visualProgressIssues,
     queueIssues: visualQueueIssues,
   },
   risks: {
@@ -1096,6 +1126,7 @@ Status: ${status}
 - Beta review origin: ${summary.betaHumanReviews.expectedReviewOrigin || 'missing'}
 - Beta review assignment queue ready: ${summary.betaHumanReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Production visual review history: ${visualHistoryDates.length}/${visualMinimum}
+- Production visual review progress artifact aligned: ${visualProgressIssues.length === 0 ? 'yes' : 'no'}
 - Production visual review assignment queue ready: ${summary.productionVisualReviews.assignmentQueueReady ? 'yes' : 'no'}
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
@@ -1121,6 +1152,9 @@ ${markdownList(guardrailIssues)}
 Beta human-review queue:
 ${markdownList(betaQueueIssues)}
 
+Production visual-review progress:
+${markdownList(visualProgressIssues)}
+
 Production visual-review queue:
 ${markdownList(visualQueueIssues)}
 
@@ -1136,6 +1170,7 @@ ${markdownList(summary.nextActions)}
 - Beta packet manifest: \`${summary.betaHumanReviews.packetManifest}\`
 - Beta assignment board: \`${summary.betaHumanReviews.assignmentReport}\` and \`${summary.betaHumanReviews.assignmentCsv}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
+- Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Visual schedule: \`${summary.productionVisualReviews.scheduleArtifact}\`
 - Visual intake: \`${summary.productionVisualReviews.intakeArtifact}\`
 - Visual assignment board: \`${summary.productionVisualReviews.assignmentReport}\` and \`${summary.productionVisualReviews.assignmentCsv}\`

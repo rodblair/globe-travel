@@ -1,0 +1,116 @@
+{
+  "date": "2026-05-21",
+  "registerPath": "qa/production-visual-review-register.json",
+  "jsonArtifact": "qa/production-visual-review-progress-2026-05-21.json",
+  "reportArtifact": "qa/production-visual-review-progress-2026-05-21.md",
+  "status": "pass",
+  "requirePublicProgress": false,
+  "checked": 5,
+  "passed": 5,
+  "failed": 0,
+  "latestProductionReview": {
+    "artifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4",
+    "summaryArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
+    "productionCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
+    "deploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
+    "reviewedBy": "Codex visual QA",
+    "verdict": "pass",
+    "issueCount": 0,
+    "issues": []
+  },
+  "reviewHistoryCount": 1,
+  "distinctHistoryDateCount": 1,
+  "historyDates": [
+    "2026-05-21"
+  ],
+  "minimumPublicLaunchReviewHistory": 4,
+  "remainingRequiredReviewDates": 3,
+  "scheduledReviewCount": 3,
+  "distinctScheduledDateCount": 3,
+  "scheduledDates": [
+    "2026-05-28",
+    "2026-06-04",
+    "2026-06-11"
+  ],
+  "nextReviewDueAt": "2026-05-28",
+  "nextScheduledReview": {
+    "id": "PROD-VISUAL-HISTORY-002",
+    "dueAt": "2026-05-28",
+    "owner": "Product",
+    "reviewerRole": "visual QA reviewer",
+    "status": "planned",
+    "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
+    "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
+    "routes": [
+      "landing",
+      "login",
+      "signup",
+      "public-share"
+    ],
+    "viewports": [
+      "phone",
+      "tablet",
+      "laptop",
+      "desktop",
+      "wide"
+    ],
+    "diffRoutes": [
+      "landing",
+      "login",
+      "signup"
+    ],
+    "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+  },
+  "invalidHistoryReviewCount": 0,
+  "duplicateHistoryDates": [],
+  "publicLaunchReadiness": {
+    "status": "blocked",
+    "blockers": [
+      "3 more distinct passing production visual-review date(s) required"
+    ]
+  },
+  "checks": [
+    {
+      "name": "production visual review progress register is owned and dated",
+      "ok": true,
+      "owner": "Product",
+      "reviewedAt": "2026-05-21",
+      "cadence": "Weekly during beta, after every production deploy during launch week, and before any public launch approval."
+    },
+    {
+      "name": "latest production visual review is complete and evidence-backed",
+      "ok": true,
+      "artifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4",
+      "summaryArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
+      "productionCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
+      "deploymentUrl": "globe-travel-2e5vpe3pc-rodney-blairs-projects.vercel.app",
+      "issues": []
+    },
+    {
+      "name": "completed production visual-review history is valid and distinct",
+      "ok": true,
+      "historyCount": 1,
+      "distinctHistoryDateCount": 1,
+      "invalidHistoryReviewCount": 0,
+      "duplicateHistoryDates": [],
+      "invalidHistoryReviews": []
+    },
+    {
+      "name": "scheduled production visual-review queue covers remaining launch dates",
+      "ok": true,
+      "scheduledReviewCount": 3,
+      "distinctScheduledDateCount": 3,
+      "remainingRequiredReviewDates": 3,
+      "nextReviewDueAt": "2026-05-28"
+    },
+    {
+      "name": "latest production review does not inflate dated public-launch history",
+      "ok": true,
+      "latestReviewDate": "2026-05-22",
+      "historyDates": [
+        "2026-05-21"
+      ]
+    }
+  ],
+  "failures": []
+}

@@ -2027,6 +2027,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const visualReviewStatus = status.productionVisualReviews || {}
   const betaQueueIssues = Array.isArray(betaReviewStatus.queueIssues) ? betaReviewStatus.queueIssues : []
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []
+  const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
@@ -2040,6 +2041,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(visualReviewStatus.assignmentCsv) &&
     hasMeaningfulText(visualReviewStatus.assignmentReport) &&
     hasMeaningfulText(visualReviewStatus.submissionTemplateDir) &&
+    hasMeaningfulText(visualReviewStatus.progressArtifact) &&
+    Number(visualReviewStatus.progressIssueCount) === 0 &&
+    visualProgressIssues.length === 0 &&
     visualQueueIssues.length === 0
   ), {
     betaAssignmentQueueReady: betaReviewStatus.assignmentQueueReady ?? null,
@@ -2050,6 +2054,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     visualAssignmentQueueReady: visualReviewStatus.assignmentQueueReady ?? null,
     visualSubmissionTemplateCount: visualReviewStatus.submissionTemplateCount ?? null,
     visualScheduledReviewCount: visualReviewStatus.scheduledReviewCount ?? null,
+    visualProgressArtifact: visualReviewStatus.progressArtifact ?? null,
+    visualProgressIssueCount: visualReviewStatus.progressIssueCount ?? null,
+    visualProgressIssues,
     visualQueueIssues,
   })
 

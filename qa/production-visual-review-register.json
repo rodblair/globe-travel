@@ -96,6 +96,7 @@
     }
   ],
   "latestProductionReview": {
+    "reviewedAt": "2026-05-22",
     "artifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4",
     "summaryArtifact": "qa/visual-baseline-production-map-trust-repair-2026-05-21-625cdd4/summary.json",
     "productionCommit": "625cdd4fb252c96f99032f062bac8d31c6508a21",
