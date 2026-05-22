@@ -3,11 +3,46 @@ import Script from "next/script";
 import { inter, sourceSerif, jetbrainsMono } from "@/lib/fonts";
 import "./globals.css";
 
+const siteUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://globe-travel-two.vercel.app");
+const siteDescription =
+  "Plan group city trips, collect friend feedback, and share a polished itinerary map everyone can react to.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://globe-travel-two.vercel.app'),
-  title: "Globe.travel — Plan the trip everyone can say yes to",
-  description:
-    "Plan group city trips, collect friend feedback, and share a polished itinerary map everyone can react to.",
+  metadataBase: siteUrl,
+  applicationName: "Globe.travel",
+  title: {
+    default: "Globe.travel — Plan the trip everyone can say yes to",
+    template: "%s · Globe.travel",
+  },
+  description: siteDescription,
+  keywords: [
+    "group travel planner",
+    "travel itinerary app",
+    "collaborative trip planning",
+    "city trip planner",
+    "shareable itinerary map",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Globe.travel — Plan the trip everyone can say yes to",
+    description: siteDescription,
+    url: siteUrl,
+    siteName: "Globe.travel",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Globe.travel — Plan the trip everyone can say yes to",
+    description: siteDescription,
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

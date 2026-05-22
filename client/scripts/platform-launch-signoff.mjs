@@ -28,6 +28,10 @@ const publicShareMapIntegrityArtifact =
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   'qa/public-share-map-catalog-2026-05-22.json'
+const publicMetadataArtifact =
+  process.env.QA_LAUNCH_PUBLIC_METADATA_ARTIFACT ||
+  process.env.QA_PUBLIC_METADATA_ARTIFACT ||
+  'qa/public-metadata-smoke-2026-05-22.json'
 const betaHumanReviewRegister =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_REGISTER ||
   'qa/beta-human-review-register.json'
@@ -2586,6 +2590,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const productionAppSurfacesIssues = Array.isArray(productionAppSurfacesStatus.issues) ? productionAppSurfacesStatus.issues : []
   const publicShareMapStatus = status.publicShareMapIntegrity || {}
   const publicShareMapIssues = Array.isArray(publicShareMapStatus.issues) ? publicShareMapStatus.issues : []
+  const publicMetadataStatus = status.publicMetadata || {}
+  const publicMetadataIssues = Array.isArray(publicMetadataStatus.issues) ? publicMetadataStatus.issues : []
   const requiredRouteInventoryPaths = [
     '/',
     '/login',
@@ -2797,6 +2803,52 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     publicShareMapIntegrityBadRenderedResults: publicShareMapStatus.badRenderedResults || [],
     publicShareMapIntegrityBadDays: publicShareMapStatus.badDays || [],
     publicShareMapIntegrityMissingScreenshots: publicShareMapStatus.missingScreenshots || [],
+  })
+
+  const requiredPublicMetadataChecks = [
+    'root-html',
+    'manifest',
+    'robots',
+    'sitemap',
+  ]
+  const publicMetadataMissingChecks = Array.isArray(publicMetadataStatus.missingChecks)
+    ? publicMetadataStatus.missingChecks
+    : []
+  const publicMetadataFailedResults = Array.isArray(publicMetadataStatus.failedResults)
+    ? publicMetadataStatus.failedResults
+    : []
+  addCheck('public launch status includes public metadata, manifest, robots, and sitemap smoke', (
+    publicMetadataStatus.ready === true &&
+    publicMetadataStatus.baseUrl === baseUrl &&
+    publicMetadataStatus.status === 'pass' &&
+    publicMetadataStatus.artifact === publicMetadataArtifact &&
+    status.artifacts?.publicMetadata === publicMetadataArtifact &&
+    hasMeaningfulText(publicMetadataStatus.report) &&
+    Number(publicMetadataStatus.requiredCheckCount) === requiredPublicMetadataChecks.length &&
+    Number(publicMetadataStatus.checked) >= requiredPublicMetadataChecks.length &&
+    Number(publicMetadataStatus.passed) >= requiredPublicMetadataChecks.length &&
+    Number(publicMetadataStatus.failed) === 0 &&
+    Number(publicMetadataStatus.sourceMissingCount) === 0 &&
+    requiredPublicMetadataChecks.every((id) => (publicMetadataStatus.resultIds || []).includes(id)) &&
+    publicMetadataMissingChecks.length === 0 &&
+    publicMetadataFailedResults.length === 0 &&
+    publicMetadataIssues.length === 0
+  ), {
+    publicMetadataArtifact: publicMetadataStatus.artifact || null,
+    expectedPublicMetadataArtifact: publicMetadataArtifact,
+    publicStatusArtifact: status.artifacts?.publicMetadata || null,
+    publicMetadataReport: publicMetadataStatus.report || null,
+    publicMetadataReady: publicMetadataStatus.ready ?? null,
+    publicMetadataBaseUrl: publicMetadataStatus.baseUrl || null,
+    publicMetadataStatus: publicMetadataStatus.status || null,
+    publicMetadataChecked: publicMetadataStatus.checked ?? null,
+    publicMetadataPassed: publicMetadataStatus.passed ?? null,
+    publicMetadataFailed: publicMetadataStatus.failed ?? null,
+    publicMetadataSourceMissingCount: publicMetadataStatus.sourceMissingCount ?? null,
+    publicMetadataResultIds: publicMetadataStatus.resultIds || [],
+    publicMetadataMissingChecks,
+    publicMetadataFailedResults,
+    publicMetadataIssues,
   })
 
   const visualQueueIssues = Array.isArray(visualReviewStatus.queueIssues) ? visualReviewStatus.queueIssues : []

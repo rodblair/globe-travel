@@ -55,6 +55,9 @@ const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.en
 const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   'qa/public-share-map-catalog-2026-05-22.json'
+const publicMetadataPath = process.env.QA_PUBLIC_METADATA_ARTIFACT ||
+  process.env.QA_LAUNCH_PUBLIC_METADATA_ARTIFACT ||
+  'qa/public-metadata-smoke-2026-05-22.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
 const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT || process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT || 'qa/app-surfaces-smoke-2026-05-22.json'
@@ -205,6 +208,12 @@ const requiredPlannerActualIds = [
   'marrakech-3-day-markets-riads',
   'cape-town-5-day-outdoors-food',
   'sydney-4-day-beaches-neighborhoods',
+]
+const requiredPublicMetadataChecks = [
+  'root-html',
+  'manifest',
+  'robots',
+  'sitemap',
 ]
 const requiredReleaseTasks = [
   'lint',
@@ -508,6 +517,7 @@ const [
   designSystem,
   plannerActuals,
   publicShareMapIntegrity,
+  publicMetadata,
   releaseCandidate,
   routeInventory,
   appSurfaces,
@@ -564,6 +574,7 @@ const [
   readJson(designSystemPath),
   readJson(plannerActualsPath),
   readJson(publicShareMapIntegrityPath),
+  readJson(publicMetadataPath),
   readJson(releaseCandidatePath),
   readJson(routeInventoryPath),
   readJson(appSurfacesPath),
@@ -838,6 +849,19 @@ if (badPublicShareMapRenderedResults.length > 0) publicShareMapIntegrityIssues.p
 if (badPublicShareMapDays.length > 0) publicShareMapIntegrityIssues.push(`public share map integrity day failures: ${badPublicShareMapDays.join(', ')}`)
 if (missingPublicShareMapScreenshots.length > 0) publicShareMapIntegrityIssues.push(`public share map integrity missing screenshots: ${missingPublicShareMapScreenshots.join(', ')}`)
 const publicShareMapIntegrityReady = publicShareMapIntegrityIssues.length === 0
+const publicMetadataResults = Array.isArray(publicMetadata.results) ? publicMetadata.results : []
+const publicMetadataResultIds = publicMetadataResults.map((result) => result.id).filter(Boolean)
+const missingPublicMetadataChecks = missingFrom(publicMetadataResultIds, requiredPublicMetadataChecks)
+const failedPublicMetadataResults = publicMetadataResults.filter((result) => result.ok !== true)
+const publicMetadataIssues = []
+if (publicMetadata.baseUrl !== baseUrl) publicMetadataIssues.push(`public metadata base URL ${publicMetadata.baseUrl || 'missing'} does not match ${baseUrl}`)
+if (publicMetadata.status !== 'pass') publicMetadataIssues.push('public metadata smoke is not passing')
+if (Number(publicMetadata.checked) < requiredPublicMetadataChecks.length) publicMetadataIssues.push('public metadata smoke did not check every required metadata surface')
+if (Number(publicMetadata.failed) !== 0) publicMetadataIssues.push('public metadata smoke has failing checks')
+if (Number(publicMetadata.sourceMissingCount) !== 0) publicMetadataIssues.push('public metadata source files are missing')
+if (missingPublicMetadataChecks.length > 0) publicMetadataIssues.push(`public metadata smoke is missing checks: ${missingPublicMetadataChecks.join(', ')}`)
+if (failedPublicMetadataResults.length > 0) publicMetadataIssues.push(`public metadata smoke has failed results: ${failedPublicMetadataResults.map((result) => result.id || result.path || 'unknown').join(', ')}`)
+const publicMetadataReady = publicMetadataIssues.length === 0
 const releaseTaskNames = unique((Array.isArray(releaseCandidate.results) ? releaseCandidate.results : [])
   .map((result) => result.name)
   .filter(Boolean))
@@ -1969,6 +1993,9 @@ if (!plannerActualsReady) {
 if (!publicShareMapIntegrityReady) {
   guardrailIssues.push('public share map/itinerary integrity evidence is not passing')
 }
+if (!publicMetadataReady) {
+  guardrailIssues.push('public metadata, sitemap, robots, and manifest evidence is not passing')
+}
 if (!releaseCandidateReady) {
   guardrailIssues.push('full release-candidate artifact does not cover every core journey task and launch option')
 }
@@ -2444,6 +2471,27 @@ const summary = {
     issues: publicShareMapIntegrityIssues,
     ready: publicShareMapIntegrityReady,
   },
+  publicMetadata: {
+    artifact: qaDisplayPath(publicMetadataPath),
+    report: qaDisplayPath(publicMetadata.reportArtifact),
+    baseUrl: publicMetadata.baseUrl || null,
+    shareSlug: publicMetadata.shareSlug || null,
+    status: publicMetadata.status || null,
+    checked: publicMetadata.checked ?? null,
+    passed: publicMetadata.passed ?? null,
+    failed: publicMetadata.failed ?? null,
+    sourceMissingCount: publicMetadata.sourceMissingCount ?? null,
+    requiredCheckCount: requiredPublicMetadataChecks.length,
+    resultIds: publicMetadataResultIds,
+    missingChecks: missingPublicMetadataChecks,
+    failedResults: failedPublicMetadataResults.map((result) => ({
+      id: result.id || null,
+      path: result.path || null,
+      issues: result.issues || [],
+    })),
+    issues: publicMetadataIssues,
+    ready: publicMetadataReady,
+  },
   releaseCandidate: {
     artifact: qaDisplayPath(releaseCandidatePath),
     checked: releaseCandidate.checked ?? null,
@@ -2564,6 +2612,7 @@ const summary = {
     designSystemReadiness: qaDisplayPath(designSystemPath),
     plannerActuals: qaDisplayPath(plannerActualsPath),
     publicShareMapIntegrity: qaDisplayPath(publicShareMapIntegrityPath),
+    publicMetadata: qaDisplayPath(publicMetadataPath),
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
     routeInventory: qaDisplayPath(routeInventoryPath),
     appSurfaces: qaDisplayPath(appSurfacesPath),
@@ -2639,6 +2688,7 @@ Status: ${status}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
 - Public share map/itinerary catalog ready: ${summary.publicShareMapIntegrity.ready ? 'yes' : 'no'} (${summary.publicShareMapIntegrity.shareCount || 0}/${summary.publicShareMapIntegrity.discovery.totalPublicShares || 0} public shares, ${summary.publicShareMapIntegrity.checkedViewports || 0} viewports)
+- Public metadata ready: ${summary.publicMetadata.ready ? 'yes' : 'no'} (${summary.publicMetadata.passed || 0}/${summary.publicMetadata.requiredCheckCount || 0})
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
 - Full route inventory ready: ${summary.routeInventory.ready ? 'yes' : 'no'}
 - Authenticated app surfaces ready: ${summary.appSurfaces.ready ? 'yes' : 'no'}
@@ -2720,6 +2770,9 @@ ${markdownList(productionAppSurfaceIssues)}
 Public share map/itinerary integrity:
 ${markdownList(publicShareMapIntegrityIssues)}
 
+Public metadata:
+${markdownList(publicMetadataIssues)}
+
 ## Next Actions
 
 ${markdownList(summary.nextActions)}
@@ -2758,6 +2811,7 @@ ${markdownList(summary.nextActions)}
 - Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
 - Planner actuals: \`${summary.artifacts.plannerActuals}\`
 - Public share map/itinerary integrity: \`${summary.artifacts.publicShareMapIntegrity}\` and \`${summary.publicShareMapIntegrity.report}\`
+- Public metadata, manifest, robots, and sitemap: \`${summary.artifacts.publicMetadata}\` and \`${summary.publicMetadata.report}\`
 - Release candidate: \`${summary.artifacts.releaseCandidate}\`
 - Full route inventory: \`${summary.artifacts.routeInventory}\`
 - Authenticated app surfaces: \`${summary.artifacts.appSurfaces}\`

@@ -48,6 +48,7 @@
     "qa:public-launch-blockers": "node scripts/platform-public-launch-blocker-board.mjs",
     "qa:public-launch-mode-rehearsal": "node scripts/platform-public-launch-mode-rehearsal.mjs",
     "qa:public-launch-status": "node scripts/platform-public-launch-status.mjs",
+    "qa:public-metadata": "node scripts/platform-public-metadata-smoke.mjs",
     "qa:release-production": "node scripts/platform-production-release-smoke.mjs",
     "qa:production-monitoring": "node scripts/platform-production-monitoring-readiness.mjs",
     "qa:visual-review-dispatch-outbox": "node scripts/platform-visual-review-dispatch-outbox.mjs",
