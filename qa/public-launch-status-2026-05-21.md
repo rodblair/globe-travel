@@ -23,6 +23,7 @@ Status: beta-ready-public-blocked
 - Paid path ready: yes
 - Accessibility ready: yes
 - Design system ready: yes
+- Planner map actuals ready: yes
 
 ## Public-Launch Blockers
 
@@ -64,6 +65,7 @@ Production visual-review queue:
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-05-21.json`
+- Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 
 ## Operating Meaning
 

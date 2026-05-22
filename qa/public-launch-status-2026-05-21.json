@@ -147,6 +147,30 @@
     "visualEvidenceReady": true,
     "ready": true
   },
+  "plannerActuals": {
+    "artifact": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
+    "actualCount": 6,
+    "requiredActualIds": [
+      "istanbul-4-day-history-markets",
+      "seoul-5-day-food-shopping",
+      "bangkok-4-day-temples-street-food",
+      "marrakech-3-day-markets-riads",
+      "cape-town-5-day-outdoors-food",
+      "sydney-4-day-beaches-neighborhoods"
+    ],
+    "actualIds": [
+      "istanbul-4-day-history-markets",
+      "seoul-5-day-food-shopping",
+      "bangkok-4-day-temples-street-food",
+      "marrakech-3-day-markets-riads",
+      "cape-town-5-day-outdoors-food",
+      "sydney-4-day-beaches-neighborhoods"
+    ],
+    "missingActualIds": [],
+    "badActualCount": 0,
+    "badActuals": [],
+    "ready": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {
@@ -173,6 +197,7 @@
     "paidPathReadiness": "qa/paid-path-readiness-2026-05-21.json",
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-05-21.json",
+    "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

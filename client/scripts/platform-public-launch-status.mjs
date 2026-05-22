@@ -21,6 +21,7 @@ const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS || process.env.
 const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT || 'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
 const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT || 'qa/design-system-readiness-2026-05-21.json'
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
+const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -121,6 +122,14 @@ const requiredDesignSystemChecks = [
   'responsive visual QA has no polish blockers',
   'production visual QA covers public acquisition and sharing surfaces',
 ]
+const requiredPlannerActualIds = [
+  'istanbul-4-day-history-markets',
+  'seoul-5-day-food-shopping',
+  'bangkok-4-day-temples-street-food',
+  'marrakech-3-day-markets-riads',
+  'cape-town-5-day-outdoors-food',
+  'sydney-4-day-beaches-neighborhoods',
+]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
 
@@ -169,6 +178,35 @@ function missingFrom(actual, expected) {
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
+}
+
+function normalizeCountry(value) {
+  const normalized = String(value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const aliases = {
+    turkiye: 'turkey',
+    'united states of america': 'united states',
+    usa: 'united states',
+    uk: 'united kingdom',
+  }
+
+  return aliases[normalized] || normalized
+}
+
+function dayHasMapTrust(day, expectedCountry = null) {
+  const itemCount = Number(day.itemCount) || 0
+  const mappedItemCount = Number(day.mappedItemCount) || 0
+  const uniqueMappedStopCount = Number(day.uniqueMappedStopCount) || 0
+  const countries = Array.isArray(day.countries) ? day.countries : []
+  const minimumUniqueStops = Math.min(itemCount, 1)
+  const expected = expectedCountry ? normalizeCountry(expectedCountry) : null
+
+  return (
+    itemCount > 0 &&
+    mappedItemCount >= minimumUniqueStops &&
+    uniqueMappedStopCount >= minimumUniqueStops &&
+    countries.length > 0 &&
+    (!expected || countries.every((country) => normalizeCountry(country) === expected))
+  )
 }
 
 function markdownList(items) {
@@ -280,6 +318,7 @@ const [
   paidPathReadiness,
   accessibility,
   designSystem,
+  plannerActuals,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -295,6 +334,7 @@ const [
   readJson(paidPathReadinessPath),
   readJson(accessibilityPath),
   readJson(designSystemPath),
+  readJson(plannerActualsPath),
   fetchHealth(),
 ])
 
@@ -484,6 +524,20 @@ const designSystemReady =
   missingDesignSystemChecks.length === 0 &&
   failedDesignSystemChecks.length === 0 &&
   designSystemVisualEvidenceReady
+const plannerActualIds = Array.isArray(plannerActuals)
+  ? plannerActuals.map((actual) => actual.id).filter(Boolean)
+  : []
+const missingPlannerActualIds = missingFrom(plannerActualIds, requiredPlannerActualIds)
+const badPlannerActuals = Array.isArray(plannerActuals)
+  ? plannerActuals.filter((actual) => {
+    const days = Array.isArray(actual.days) ? actual.days : []
+    return days.length === 0 || days.some((day) => !dayHasMapTrust(day))
+  })
+  : []
+const plannerActualsReady =
+  Array.isArray(plannerActuals) &&
+  missingPlannerActualIds.length === 0 &&
+  badPlannerActuals.length === 0
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -701,6 +755,9 @@ if (!accessibilityReady) {
 if (!designSystemReady) {
   guardrailIssues.push('design-system readiness does not cover required polish, token, copy, and visual-evidence checks')
 }
+if (!plannerActualsReady) {
+  guardrailIssues.push('planner generated actuals do not cover regional edge cities with trustworthy map pins')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -854,6 +911,28 @@ const summary = {
     visualEvidenceReady: designSystemVisualEvidenceReady,
     ready: designSystemReady,
   },
+  plannerActuals: {
+    artifact: qaDisplayPath(plannerActualsPath),
+    actualCount: Array.isArray(plannerActuals) ? plannerActuals.length : null,
+    requiredActualIds: requiredPlannerActualIds,
+    actualIds: plannerActualIds,
+    missingActualIds: missingPlannerActualIds,
+    badActualCount: badPlannerActuals.length,
+    badActuals: badPlannerActuals.map((actual) => ({
+      id: actual.id || null,
+      tripTitle: actual.tripTitle || null,
+      badDays: (actual.days || []).filter((day) => !dayHasMapTrust(day)).map((day) => ({
+        dayIndex: day.dayIndex,
+        itemCount: day.itemCount,
+        mappedItemCount: day.mappedItemCount,
+        uniqueMappedStopCount: day.uniqueMappedStopCount,
+        duplicateMappedStops: day.duplicateMappedStops || [],
+        countries: day.countries || [],
+        usableRouteCount: day.usableRouteCount,
+      })),
+    })),
+    ready: plannerActualsReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -870,6 +949,7 @@ const summary = {
     paidPathReadiness: qaDisplayPath(paidPathReadinessPath),
     accessibility: qaDisplayPath(accessibilityPath),
     designSystemReadiness: qaDisplayPath(designSystemPath),
+    plannerActuals: qaDisplayPath(plannerActualsPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -900,6 +980,7 @@ Status: ${status}
 - Paid path ready: ${summary.paidPath.ready ? 'yes' : 'no'}
 - Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
+- Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -939,6 +1020,7 @@ ${markdownList(summary.nextActions)}
 - Paid-path readiness: \`${summary.artifacts.paidPathReadiness}\`
 - Accessibility: \`${summary.artifacts.accessibility}\`
 - Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
+- Planner actuals: \`${summary.artifacts.plannerActuals}\`
 
 ## Operating Meaning
 
