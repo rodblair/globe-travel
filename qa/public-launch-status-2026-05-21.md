@@ -22,6 +22,7 @@ Status: beta-ready-public-blocked
 - Production monitoring ready: yes
 - Paid path ready: yes
 - Accessibility ready: yes
+- Design system ready: yes
 
 ## Public-Launch Blockers
 
@@ -62,6 +63,7 @@ Production visual-review queue:
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
+- Design-system readiness: `qa/design-system-readiness-2026-05-21.json`
 
 ## Operating Meaning
 

@@ -132,6 +132,21 @@
     "guestCleanupError": null,
     "ready": true
   },
+  "designSystem": {
+    "artifact": "qa/design-system-readiness-2026-05-21.json",
+    "checked": 10,
+    "passed": 10,
+    "failed": 0,
+    "requiredCheckCount": 10,
+    "missingChecks": [],
+    "failedChecks": [],
+    "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
+    "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-05-21-539506d/summary.json",
+    "failureCount": 0,
+    "visualEvidenceReady": true,
+    "ready": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {
@@ -157,6 +172,7 @@
     "riskRegister": "qa/launch-risk-register.json",
     "paidPathReadiness": "qa/paid-path-readiness-2026-05-21.json",
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
+    "designSystemReadiness": "qa/design-system-readiness-2026-05-21.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

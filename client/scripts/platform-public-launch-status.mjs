@@ -19,6 +19,8 @@ const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.js
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
 const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS || process.env.QA_LAUNCH_PAID_PATH_ARTIFACT || 'qa/paid-path-readiness-2026-05-21.json'
 const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT || 'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
+const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT || 'qa/design-system-readiness-2026-05-21.json'
+const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -106,6 +108,18 @@ const requiredAccessibilityProtectedRoutes = [
 const requiredAccessibilityViewports = [
   'phone',
   'desktop',
+]
+const requiredDesignSystemChecks = [
+  'design context documents users, tone, aesthetic, and principles',
+  'global design tokens expose the Globe.travel atmosphere palette and interaction system',
+  'shared UI primitives exist for core forms and controls',
+  'atmosphere component vocabulary exists for editorial travel surfaces',
+  'production UI and API source has no debug console.log calls',
+  'production UI source has no placeholder TODO or lorem copy',
+  'user-facing copy avoids generic AI-travel marketing filler',
+  'responsive visual QA covers every design-critical public and protected route',
+  'responsive visual QA has no polish blockers',
+  'production visual QA covers public acquisition and sharing surfaces',
 ]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
@@ -265,6 +279,7 @@ const [
   riskRegister,
   paidPathReadiness,
   accessibility,
+  designSystem,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -279,6 +294,7 @@ const [
   readJson(riskRegisterPath),
   readJson(paidPathReadinessPath),
   readJson(accessibilityPath),
+  readJson(designSystemPath),
   fetchHealth(),
 ])
 
@@ -448,6 +464,26 @@ const accessibilityReady =
   missingAccessibilityViewports.length === 0 &&
   blockingAccessibilityResults.length === 0 &&
   accessibilityGuestAuthReady
+const designSystemCheckNames = Array.isArray(designSystem.checks)
+  ? designSystem.checks.map((check) => check.name).filter(Boolean)
+  : []
+const missingDesignSystemChecks = missingFrom(designSystemCheckNames, requiredDesignSystemChecks)
+const failedDesignSystemChecks = Array.isArray(designSystem.checks)
+  ? designSystem.checks.filter((check) => check.ok === false).map((check) => check.name)
+  : []
+const designSystemVisualEvidenceReady =
+  designSystem.responsiveVisualArtifact === responsiveVisualArtifactPath &&
+  typeof designSystem.productionVisualArtifact === 'string' &&
+  designSystem.productionVisualArtifact.includes('qa/visual-baseline-production-') &&
+  Array.isArray(designSystem.failures) &&
+  designSystem.failures.length === 0
+const designSystemReady =
+  Number(designSystem.checked) === requiredDesignSystemChecks.length &&
+  Number(designSystem.passed) === requiredDesignSystemChecks.length &&
+  Number(designSystem.failed) === 0 &&
+  missingDesignSystemChecks.length === 0 &&
+  failedDesignSystemChecks.length === 0 &&
+  designSystemVisualEvidenceReady
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -662,6 +698,9 @@ if (!paidPathReady) {
 if (!accessibilityReady) {
   guardrailIssues.push('accessibility and keyboard readiness does not cover required routes, viewports, guest auth, and blocking failures')
 }
+if (!designSystemReady) {
+  guardrailIssues.push('design-system readiness does not cover required polish, token, copy, and visual-evidence checks')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -800,6 +839,21 @@ const summary = {
     guestCleanupError: accessibility.auth?.cleanup?.error || null,
     ready: accessibilityReady,
   },
+  designSystem: {
+    artifact: qaDisplayPath(designSystemPath),
+    checked: designSystem.checked ?? null,
+    passed: designSystem.passed ?? null,
+    failed: designSystem.failed ?? null,
+    requiredCheckCount: requiredDesignSystemChecks.length,
+    missingChecks: missingDesignSystemChecks,
+    failedChecks: failedDesignSystemChecks,
+    responsiveVisualArtifact: qaDisplayPath(designSystem.responsiveVisualArtifact),
+    expectedResponsiveVisualArtifact: qaDisplayPath(responsiveVisualArtifactPath),
+    productionVisualArtifact: qaDisplayPath(designSystem.productionVisualArtifact),
+    failureCount: Array.isArray(designSystem.failures) ? designSystem.failures.length : null,
+    visualEvidenceReady: designSystemVisualEvidenceReady,
+    ready: designSystemReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -815,6 +869,7 @@ const summary = {
     riskRegister: qaDisplayPath(riskRegisterPath),
     paidPathReadiness: qaDisplayPath(paidPathReadinessPath),
     accessibility: qaDisplayPath(accessibilityPath),
+    designSystemReadiness: qaDisplayPath(designSystemPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -844,6 +899,7 @@ Status: ${status}
 - Production monitoring ready: ${summary.monitoring.latestVerificationReady && summary.monitoring.missingSignals.length === 0 && summary.monitoring.workflowIssues.length === 0 && summary.monitoring.missingAlertMarkers.length === 0 && summary.monitoring.missingRunbookMarkers.length === 0 ? 'yes' : 'no'}
 - Paid path ready: ${summary.paidPath.ready ? 'yes' : 'no'}
 - Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
+- Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -882,6 +938,7 @@ ${markdownList(summary.nextActions)}
 - Risk register: \`${summary.artifacts.riskRegister}\`
 - Paid-path readiness: \`${summary.artifacts.paidPathReadiness}\`
 - Accessibility: \`${summary.artifacts.accessibility}\`
+- Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
 
 ## Operating Meaning
 
