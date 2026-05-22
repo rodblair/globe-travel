@@ -39,6 +39,11 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isFutureDate(value) {
+  const date = dateOnly(value)
+  return Boolean(date) && date > currentUtcDate()
+}
+
 function unique(values) {
   return [...new Set(values.filter(Boolean))]
 }
@@ -81,6 +86,7 @@ function publicReviewIssues(review, summary, options = {}) {
   const reviewedAt = dateOnly(review.reviewedAt)
 
   if (!reviewedAt) issues.push('reviewedAt must be YYYY-MM-DD')
+  else if (isFutureDate(reviewedAt)) issues.push('reviewedAt cannot be in the future')
   if (!hasText(review.artifact)) issues.push('artifact is missing')
   if (!hasText(review.summaryArtifact)) issues.push('summaryArtifact is missing')
   if (!hasText(review.productionCommit)) issues.push('productionCommit is missing')

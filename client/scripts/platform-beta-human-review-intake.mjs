@@ -77,6 +77,10 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isFutureDate(value) {
+  return isDate(value) && String(value).trim() > currentUtcDate()
+}
+
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
@@ -151,6 +155,8 @@ function submissionIssues(submission, plannedReview) {
 
   if (hasText(submission.completedAt) && !isDate(submission.completedAt)) {
     issues.push('completedAt must be YYYY-MM-DD')
+  } else if (hasText(submission.completedAt) && isFutureDate(submission.completedAt)) {
+    issues.push('completedAt cannot be in the future')
   }
 
   const scorecard = submission.scorecard || {}

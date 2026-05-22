@@ -27,6 +27,10 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isFutureDate(value) {
+  return isDate(value) && String(value).trim() > currentUtcDate()
+}
+
 function missingFrom(values, required) {
   const set = new Set(values)
   return required.filter((value) => !set.has(value))
@@ -85,6 +89,7 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
   if (!hasText(submission.scheduledReviewId)) issues.push('scheduledReviewId')
   if (!scheduledReview) issues.push('scheduledReviewId does not match a scheduled review')
   if (!isDate(review.reviewedAt)) issues.push('reviewedAt must be YYYY-MM-DD')
+  else if (isFutureDate(review.reviewedAt)) issues.push('reviewedAt cannot be in the future')
   if (!hasText(review.artifact)) issues.push('artifact')
   if (!hasText(review.summaryArtifact)) issues.push('summaryArtifact')
   if (!hasText(review.productionCommit)) issues.push('productionCommit')

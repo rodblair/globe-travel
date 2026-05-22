@@ -91,6 +91,10 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isFutureDate(value) {
+  return isDate(value) && String(value).trim() > currentUtcDate()
+}
+
 function round(value) {
   return Number.isFinite(value) ? Math.round(value * 100) / 100 : null
 }
@@ -139,6 +143,8 @@ function completedReviewEvidenceIssues(review) {
 
   if (hasText(review.completedAt) && !isDate(review.completedAt)) {
     issues.push('completedAt must be YYYY-MM-DD')
+  } else if (hasText(review.completedAt) && isFutureDate(review.completedAt)) {
+    issues.push('completedAt cannot be in the future')
   }
 
   const scorecard = review.scorecard || {}

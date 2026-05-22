@@ -445,6 +445,11 @@ function ageInDays(dateValue) {
   return Math.floor((todayUtc - parsed) / 86400000)
 }
 
+function isFutureEvidenceDate(dateValue) {
+  const ageDays = ageInDays(dateValue)
+  return Number.isFinite(ageDays) && ageDays < 0
+}
+
 function checkEvidenceFreshness(name, dateValue) {
   const ageDays = dateValue ? ageInDays(dateValue) : null
   addCheck(`${name} evidence is fresh`, Number.isFinite(ageDays) && ageDays >= 0 && ageDays <= maxEvidenceAgeDays, {
@@ -520,6 +525,8 @@ function completedBetaReviewEvidenceIssues(review) {
 
   if (hasMeaningfulText(review.completedAt) && !isLaunchDate(review.completedAt)) {
     issues.push('completedAt must be YYYY-MM-DD')
+  } else if (hasMeaningfulText(review.completedAt) && isFutureEvidenceDate(review.completedAt)) {
+    issues.push('completedAt cannot be in the future')
   }
 
   const scorecard = review.scorecard || {}
@@ -1809,6 +1816,13 @@ async function checkVisualReviewRegister(productionHealth) {
   checkEvidenceFreshness('production visual review register', dateOnly(register.reviewedAt))
 
   const latestReview = register.latestProductionReview || {}
+  addCheck('latest production visual review is not future-dated', (
+    hasMeaningfulText(latestReview.reviewedAt) &&
+    !isFutureEvidenceDate(latestReview.reviewedAt)
+  ), {
+    reviewedAt: latestReview.reviewedAt || null,
+  })
+
   const liveDeployment = productionHealth?.deployment || {}
   const liveCommit = liveDeployment.commit || ''
   const liveUrl = liveDeployment.url || ''
@@ -2117,6 +2131,7 @@ async function checkVisualReviewRegister(productionHealth) {
   if (requirePublicLaunchReadiness) {
     const malformedHistory = reviewHistory.filter((review) => (
       !hasMeaningfulText(review.reviewedAt) ||
+      isFutureEvidenceDate(review.reviewedAt) ||
       !hasMeaningfulText(review.artifact) ||
       !hasMeaningfulText(review.summaryArtifact) ||
       !hasMeaningfulText(review.productionCommit) ||

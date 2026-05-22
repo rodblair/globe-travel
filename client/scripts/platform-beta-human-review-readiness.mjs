@@ -109,6 +109,10 @@ function currentUtcDate() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isFutureDate(value) {
+  return isDate(value) && String(value).trim() > currentUtcDate()
+}
+
 function completedReviewEvidenceIssues(review) {
   const issues = []
 
@@ -142,6 +146,8 @@ function completedReviewEvidenceIssues(review) {
 
   if (isNonEmptyString(review.completedAt) && !isDate(review.completedAt)) {
     issues.push('completedAt must be YYYY-MM-DD')
+  } else if (isNonEmptyString(review.completedAt) && isFutureDate(review.completedAt)) {
+    issues.push('completedAt cannot be in the future')
   }
 
   const scorecard = review.scorecard || {}
