@@ -6,9 +6,10 @@ const requestedDate = process.env.QA_VISUAL_REVIEW_SCHEDULE_DATE || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || '../qa/production-visual-review-register.json'
 const writeSubmissionTemplates = !['0', 'false', 'no'].includes(String(process.env.QA_VISUAL_REVIEW_WRITE_SUBMISSION_TEMPLATES || '1').toLowerCase())
 
-const requiredRoutes = ['landing', 'login', 'signup', 'public-share']
+const requiredRoutes = ['landing', 'pricing', 'login', 'signup', 'public-share']
 const requiredViewports = ['phone', 'tablet', 'laptop', 'desktop', 'wide']
 const requiredDiffRoutes = ['landing', 'login', 'signup']
+const expectedScreenshotCount = requiredRoutes.length * requiredViewports.length
 
 function unique(values) {
   return [...new Set(values.filter(Boolean))]
@@ -69,7 +70,7 @@ function submissionTemplateForReview(review) {
     reviewedBy: review.reviewerRole || 'visual QA reviewer',
     verdict: 'pass',
     blockingFindings: [],
-    screenshotsReviewed: 20,
+    screenshotsReviewed: (review.routes || requiredRoutes).length * (review.viewports || requiredViewports).length,
     routesReviewed: review.routes || requiredRoutes,
     viewportsReviewed: review.viewports || requiredViewports,
     diffRoutesReviewed: review.diffRoutes || requiredDiffRoutes,
@@ -129,7 +130,7 @@ Status: ready for scheduled review execution
 ## Operator Instructions
 
 - Run each scheduled production release command on or after its due date.
-- Review all 20 production visual screenshots for the scheduled artifact.
+- Review all ${expectedScreenshotCount} production visual screenshots for the scheduled artifact.
 - Copy the matching \`.template.json\` file to a non-template \`.json\` file only after the review is actually complete.
 - Replace live production commit and deployment placeholders with the current \`/api/health\` deployment metadata.
 - Run \`npm run qa:visual-review-intake\`, then \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\` only when validation is clean.
@@ -282,7 +283,7 @@ ${markdownList(malformedScheduledReviews.map((review) => review.id || '(missing 
 
 - This schedule does not count as completed visual-review history.
 - Public launch still requires ${minimumPublicLaunchReviewHistory} distinct dated passing visual-review history entries with no blocking findings.
-- Each scheduled entry must run production visual QA, review 20 screenshots, and then be recorded in \`qa/production-visual-review-register.json\` only after the review is actually complete.
+- Each scheduled entry must run production visual QA, review ${expectedScreenshotCount} screenshots, and then be recorded in \`qa/production-visual-review-register.json\` only after the review is actually complete.
 `
 
 await mkdir(resolve(root, 'qa'), { recursive: true })

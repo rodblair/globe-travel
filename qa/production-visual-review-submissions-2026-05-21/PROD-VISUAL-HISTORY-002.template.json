@@ -8,9 +8,10 @@
   "reviewedBy": "visual QA reviewer",
   "verdict": "pass",
   "blockingFindings": [],
-  "screenshotsReviewed": 20,
+  "screenshotsReviewed": 25,
   "routesReviewed": [
     "landing",
+    "pricing",
     "login",
     "signup",
     "public-share"

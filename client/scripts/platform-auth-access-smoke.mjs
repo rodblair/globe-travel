@@ -268,10 +268,10 @@ try {
   })
   await checkPage({
     context: anonymous,
-    name: 'pricing resolves to login or billing',
+    name: 'logged-out public pricing remains readable',
     path: '/pricing',
-    markers: [['Welcome back', 'Plan and billing']],
-    expectedPathnames: ['/login', '/account'],
+    markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'],
+    expectedPathnames: ['/pricing'],
   })
 
   const handoffPage = await anonymous.newPage()

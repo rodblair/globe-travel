@@ -11,7 +11,7 @@ const requestedToday = process.env.QA_VISUAL_REVIEW_TODAY || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
 const requirePublicProgress = ['1', 'true', 'yes', 'public'].includes(String(process.env.QA_VISUAL_REVIEW_PROGRESS_REQUIRE_PUBLIC || '').toLowerCase())
 
-const requiredRoutes = ['landing', 'login', 'signup', 'public-share']
+const requiredRoutes = ['landing', 'pricing', 'login', 'signup', 'public-share']
 const requiredViewports = ['phone', 'tablet', 'laptop', 'desktop', 'wide']
 const requiredDiffRoutes = ['landing', 'login', 'signup']
 
@@ -86,6 +86,21 @@ function normalizeDeploymentUrl(value) {
 function publicReviewIssues(review, summary, options = {}) {
   const issues = []
   const reviewedAt = dateOnly(review.reviewedAt)
+  const expectedRoutes = options.legacy
+    ? (Array.isArray(review.routesReviewed) && review.routesReviewed.length > 0
+      ? review.routesReviewed
+      : Array.isArray(summary?.routes)
+        ? summary.routes
+        : requiredRoutes)
+    : requiredRoutes
+  const expectedViewports = options.legacy
+    ? (Array.isArray(review.viewportsReviewed) && review.viewportsReviewed.length > 0
+      ? review.viewportsReviewed
+      : viewportIds(summary).length > 0
+        ? viewportIds(summary)
+        : requiredViewports)
+    : requiredViewports
+  const expectedCount = expectedRoutes.length * expectedViewports.length
 
   if (!reviewedAt) issues.push('reviewedAt must be YYYY-MM-DD')
   else if (isFutureDate(reviewedAt)) issues.push('reviewedAt cannot be in the future')
@@ -96,7 +111,9 @@ function publicReviewIssues(review, summary, options = {}) {
   if (!hasText(review.reviewedBy)) issues.push('reviewedBy is missing')
   if (String(review.verdict || '').toLowerCase() !== 'pass') issues.push('verdict must be pass')
   if (!Array.isArray(review.blockingFindings) || review.blockingFindings.length > 0) issues.push('blockingFindings must be empty')
-  if (Number(review.screenshotsReviewed) < 20) issues.push('screenshotsReviewed must be at least 20')
+  if (Number(review.screenshotsReviewed) < expectedCount) {
+    issues.push(`screenshotsReviewed must be at least ${expectedCount}`)
+  }
   if (!hasText(review.notes, options.legacy ? 20 : 40)) issues.push('notes must explain the review result')
 
   if (!summary) {
@@ -104,17 +121,17 @@ function publicReviewIssues(review, summary, options = {}) {
     return issues
   }
 
-  if (summary.checked !== 20 || summary.passed !== 20 || summary.failed !== 0) {
-    issues.push('summaryArtifact must show production visual QA 20/20')
+  if (summary.checked !== expectedCount || summary.passed !== expectedCount || summary.failed !== 0) {
+    issues.push(`summaryArtifact must show production visual QA ${expectedCount}/${expectedCount}`)
   }
-  if (!Array.isArray(summary.results) || summary.results.length !== 20) {
-    issues.push('summaryArtifact must contain 20 visual results')
+  if (!Array.isArray(summary.results) || summary.results.length !== expectedCount) {
+    issues.push(`summaryArtifact must contain ${expectedCount} visual results`)
   }
-  if (missingFrom(summary.routes, requiredRoutes).length > 0) {
-    issues.push(`summaryArtifact missing routes: ${missingFrom(summary.routes, requiredRoutes).join(', ')}`)
+  if (missingFrom(summary.routes, expectedRoutes).length > 0) {
+    issues.push(`summaryArtifact missing routes: ${missingFrom(summary.routes, expectedRoutes).join(', ')}`)
   }
-  if (missingFrom(viewportIds(summary), requiredViewports).length > 0) {
-    issues.push(`summaryArtifact missing viewports: ${missingFrom(viewportIds(summary), requiredViewports).join(', ')}`)
+  if (missingFrom(viewportIds(summary), expectedViewports).length > 0) {
+    issues.push(`summaryArtifact missing viewports: ${missingFrom(viewportIds(summary), expectedViewports).join(', ')}`)
   }
   if (missingFrom(summary.diffRoutes, requiredDiffRoutes).length > 0) {
     issues.push(`summaryArtifact missing diff routes: ${missingFrom(summary.diffRoutes, requiredDiffRoutes).join(', ')}`)

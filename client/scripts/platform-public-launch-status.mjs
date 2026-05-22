@@ -1381,7 +1381,10 @@ for (const file of visualSubmissionTemplateChecks.filter((file) => file.ok)) {
   if (!hasText(file.json?.reviewedBy)) visualQueueIssues.push(`visual template ${file.path} reviewedBy is missing`)
   if (file.json?.verdict !== 'pass') visualQueueIssues.push(`visual template ${file.path} verdict must default to pass`)
   if (!Array.isArray(file.json?.blockingFindings)) visualQueueIssues.push(`visual template ${file.path} blockingFindings must be an array`)
-  if (Number(file.json?.screenshotsReviewed) < 20) visualQueueIssues.push(`visual template ${file.path} screenshotsReviewed must be at least 20`)
+  const expectedScreenshotCount = file.expectedRoutes.length * file.expectedViewports.length
+  if (Number(file.json?.screenshotsReviewed) < expectedScreenshotCount) {
+    visualQueueIssues.push(`visual template ${file.path} screenshotsReviewed must be at least ${expectedScreenshotCount}`)
+  }
   if (missingRoutes.length > 0) visualQueueIssues.push(`visual template ${file.path} routesReviewed missing: ${missingRoutes.join(', ')}`)
   if (missingViewports.length > 0) visualQueueIssues.push(`visual template ${file.path} viewportsReviewed missing: ${missingViewports.join(', ')}`)
   if (missingDiffRoutes.length > 0) visualQueueIssues.push(`visual template ${file.path} diffRoutesReviewed missing: ${missingDiffRoutes.join(', ')}`)

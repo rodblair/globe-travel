@@ -14,7 +14,7 @@ const visualArtifactName =
   process.env.QA_PRODUCTION_VISUAL_ARTIFACT_NAME ||
   `visual-baseline-production-release-${new Date().toISOString().slice(0, 10)}`
 const visualBaselineDir = process.env.QA_PRODUCTION_VISUAL_BASELINE_DIR || 'qa/visual-baseline-production-2026-05-18'
-const visualRoutes = process.env.QA_PRODUCTION_VISUAL_ROUTES || 'landing,login,signup,public-share'
+const visualRoutes = process.env.QA_PRODUCTION_VISUAL_ROUTES || 'landing,pricing,login,signup,public-share'
 const visualDiffRoutes = process.env.QA_PRODUCTION_VISUAL_DIFF_ROUTES || 'landing,login,signup'
 const visualSettleMs = process.env.QA_PRODUCTION_VISUAL_SETTLE_MS || '1200'
 

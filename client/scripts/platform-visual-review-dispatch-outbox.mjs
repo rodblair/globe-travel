@@ -153,7 +153,8 @@ const messageRows = scheduledReviews.map((review, index) => {
     viewports: Array.isArray(review.viewports) ? review.viewports : [],
     diffRoutes: Array.isArray(review.diffRoutes) ? review.diffRoutes : [],
     acceptanceCriteria: review.acceptanceCriteria || '',
-    screenshotsReviewed: 20,
+    screenshotsReviewed: (Array.isArray(review.routes) ? review.routes.length : 0) *
+      (Array.isArray(review.viewports) ? review.viewports.length : 0),
     daysUntilDue: daysBetween(today, dueAt),
   }
 })
@@ -307,7 +308,7 @@ Source: ${summary.progressArtifact}
 
 - Assign a named visual reviewer before each due date.
 - Send the matching message file, command, and submission-template path to the reviewer.
-- Review all 20 screenshots before copying a template to a completed non-template JSON file.
+- Review all scheduled screenshots before copying a template to a completed non-template JSON file.
 - Replace commit and deployment placeholders with current \`/api/health\` metadata.
 - Validate with \`npm run qa:visual-review-intake\`; import only with \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\` after validation is clean.
 - Re-run \`npm run qa:visual-review-progress\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\` after import.

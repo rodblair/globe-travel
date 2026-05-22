@@ -9,7 +9,7 @@ Base URL: `https://globe-travel-two.vercel.app`
 - Checked: `9`
 - Passed: `9`
 - Failed: `0`
-- Signals covered: `11/11`
+- Signals covered: `12/11`
 - Workflow monitors: `2`
 
 ## Live Deployment
@@ -18,8 +18,8 @@ Base URL: `https://globe-travel-two.vercel.app`
 {
   "environment": "production",
   "region": "iad1",
-  "url": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
-  "commit": "45b64b0e1d3d96dda640a74229b484bb30d07afd"
+  "url": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
+  "commit": "7cd3c2532dfc81523303a96915171b4c6108ffd7"
 }
 ```
 

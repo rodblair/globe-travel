@@ -51,6 +51,7 @@ const allViewports = [
 
 const allRoutes = [
   { id: 'landing', path: '/', markers: ['Globe.travel', 'Plan the trip everyone'] },
+  { id: 'pricing', path: '/pricing', markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'] },
   { id: 'planner', path: '/chat', markers: ['Planner', 'Trip Studio'] },
   { id: 'saved-trips', path: '/saved', markers: ['Trips'] },
   { id: 'saved-journal', path: '/saved?tab=journal', markers: ['Trip notes'] },

@@ -77,10 +77,19 @@ const requiredResponsiveRoutes = [
 
 const requiredProductionRoutes = [
   'landing',
+  'pricing',
   'login',
   'signup',
   'public-share',
 ]
+const requiredProductionViewports = [
+  'phone',
+  'tablet',
+  'laptop',
+  'desktop',
+  'wide',
+]
+const requiredProductionVisualCount = requiredProductionRoutes.length * requiredProductionViewports.length
 
 const checks = []
 
@@ -290,13 +299,14 @@ try {
   productionVisual = await readJson(productionVisualArtifact)
   const missingRoutes = missingFrom(productionVisual.routes || [], requiredProductionRoutes)
   addCheck('production visual QA covers public acquisition and sharing surfaces', (
-    productionVisual.checked === 20 &&
-    productionVisual.passed === 20 &&
+    productionVisual.checked === requiredProductionVisualCount &&
+    productionVisual.passed === requiredProductionVisualCount &&
     productionVisual.failed === 0 &&
     missingRoutes.length === 0
   ), {
     artifact: productionVisualArtifact,
     artifactSource: productionVisualArtifactSource,
+    expected: requiredProductionVisualCount,
     checked: productionVisual.checked,
     passed: productionVisual.passed,
     failed: productionVisual.failed,

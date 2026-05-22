@@ -9,9 +9,9 @@ Status: pass
 - Checked: 3
 - Passed: 3
 - Failed: 0
-- Completed visual-review history dates: 1
+- Completed visual-review history dates: 2
 - Required public-launch history dates: 4
-- Remaining required review dates: 3
+- Remaining required review dates: 2
 - Scheduled review entries: 3
 - Submission templates: 3 written to `qa/production-visual-review-submissions-2026-05-21`
 - Assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
@@ -37,4 +37,4 @@ Malformed scheduled reviews:
 
 - This schedule does not count as completed visual-review history.
 - Public launch still requires 4 distinct dated passing visual-review history entries with no blocking findings.
-- Each scheduled entry must run production visual QA, review 20 screenshots, and then be recorded in `qa/production-visual-review-register.json` only after the review is actually complete.
+- Each scheduled entry must run production visual QA, review 25 screenshots, and then be recorded in `qa/production-visual-review-register.json` only after the review is actually complete.

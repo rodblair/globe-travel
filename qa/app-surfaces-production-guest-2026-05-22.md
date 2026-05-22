@@ -25,7 +25,7 @@ Auth mode: guest
 | journal-alias | phone | `/saved?tab=journal` | https://globe-travel-two.vercel.app/saved?tab=journal | Pass |
 | profile-alias | phone | `/account` | https://globe-travel-two.vercel.app/account | Pass |
 | settings-alias | phone | `/account` | https://globe-travel-two.vercel.app/account | Pass |
-| pricing-alias | phone | `/account?tab=billing` | https://globe-travel-two.vercel.app/account?tab=billing | Pass |
+| pricing-alias | phone | `/pricing` | https://globe-travel-two.vercel.app/pricing | Pass |
 | onboarding-fullscreen | phone | `/onboarding` | https://globe-travel-two.vercel.app/onboarding | Pass |
 | explore-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | globe-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
@@ -34,7 +34,7 @@ Auth mode: guest
 | journal-alias | desktop | `/saved?tab=journal` | https://globe-travel-two.vercel.app/saved?tab=journal | Pass |
 | profile-alias | desktop | `/account` | https://globe-travel-two.vercel.app/account | Pass |
 | settings-alias | desktop | `/account` | https://globe-travel-two.vercel.app/account | Pass |
-| pricing-alias | desktop | `/account?tab=billing` | https://globe-travel-two.vercel.app/account?tab=billing | Pass |
+| pricing-alias | desktop | `/pricing` | https://globe-travel-two.vercel.app/pricing | Pass |
 | onboarding-fullscreen | desktop | `/onboarding` | https://globe-travel-two.vercel.app/onboarding | Pass |
 
 ## Failures

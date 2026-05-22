@@ -10,10 +10,10 @@
   "passed": 6,
   "failed": 0,
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0",
-    "summaryArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json",
-    "productionCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd",
-    "deploymentUrl": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25",
+    "summaryArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
+    "productionCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
+    "deploymentUrl": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "issueCount": 0,
@@ -80,6 +80,7 @@
     "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
     "routes": [
       "landing",
+      "pricing",
       "login",
       "signup",
       "public-share"
@@ -96,7 +97,7 @@
       "login",
       "signup"
     ],
-    "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+    "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
   },
   "invalidHistoryReviewCount": 0,
   "duplicateHistoryDates": [],
@@ -117,10 +118,10 @@
     {
       "name": "latest production visual review is complete and evidence-backed",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0",
-      "summaryArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json",
-      "productionCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd",
-      "deploymentUrl": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25",
+      "summaryArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
+      "productionCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
+      "deploymentUrl": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
       "issues": []
     },
     {

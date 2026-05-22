@@ -6,9 +6,10 @@ const requestedDate = process.env.QA_VISUAL_REVIEW_INTAKE_DATE || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || '../qa/production-visual-review-register.json'
 const importValidSubmissions = ['1', 'true', 'yes'].includes(String(process.env.QA_VISUAL_REVIEW_IMPORT || '').toLowerCase())
 
-const requiredRoutes = ['landing', 'login', 'signup', 'public-share']
+const requiredRoutes = ['landing', 'pricing', 'login', 'signup', 'public-share']
 const requiredViewports = ['phone', 'tablet', 'laptop', 'desktop', 'wide']
 const requiredDiffRoutes = ['landing', 'login', 'signup']
+const expectedScreenshotCount = requiredRoutes.length * requiredViewports.length
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
@@ -97,7 +98,9 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
   if (!hasText(review.reviewedBy)) issues.push('reviewedBy')
   if (review.verdict !== 'pass') issues.push('verdict must be pass')
   if (!Array.isArray(review.blockingFindings) || review.blockingFindings.length > 0) issues.push('blockingFindings must be an empty array')
-  if (!Number.isFinite(review.screenshotsReviewed) || review.screenshotsReviewed < 20) issues.push('screenshotsReviewed must be at least 20')
+  if (!Number.isFinite(review.screenshotsReviewed) || review.screenshotsReviewed < expectedScreenshotCount) {
+    issues.push(`screenshotsReviewed must be at least ${expectedScreenshotCount}`)
+  }
   if (!hasText(review.notes, 40)) issues.push('notes must explain the review result')
 
   if (scheduledReview) {
@@ -133,11 +136,11 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
     const reviewDeploymentUrl = normalizeDeploymentUrl(review.deploymentUrl)
     const summaryMissingRoutes = missingFrom(summary.routes || [], requiredRoutes)
     const summaryMissingDiffRoutes = missingFrom(summary.diffRoutes || [], requiredDiffRoutes)
-    if (summary.checked !== 20 || summary.passed !== 20 || summary.failed !== 0) {
-      issues.push('summaryArtifact must show production visual QA 20/20')
+    if (summary.checked !== expectedScreenshotCount || summary.passed !== expectedScreenshotCount || summary.failed !== 0) {
+      issues.push(`summaryArtifact must show production visual QA ${expectedScreenshotCount}/${expectedScreenshotCount}`)
     }
-    if (!Array.isArray(summary.results) || summary.results.length !== 20) {
-      issues.push('summaryArtifact must contain 20 visual results')
+    if (!Array.isArray(summary.results) || summary.results.length !== expectedScreenshotCount) {
+      issues.push(`summaryArtifact must contain ${expectedScreenshotCount} visual results`)
     }
     if (!Array.isArray(summary.viewports) || summary.viewports.length !== 5) {
       issues.push('summaryArtifact must contain five viewports')
@@ -174,7 +177,7 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
     for (const screenshotPath of screenshotPaths) {
       if (!(await fileExists(screenshotPath))) missingScreenshots.push(screenshotPath)
     }
-    if (screenshotPaths.length !== 20) issues.push('summaryArtifact must reference 20 screenshots')
+    if (screenshotPaths.length !== expectedScreenshotCount) issues.push(`summaryArtifact must reference ${expectedScreenshotCount} screenshots`)
     if (missingScreenshots.length > 0) issues.push(`${missingScreenshots.length} screenshot artifact(s) missing`)
   }
 

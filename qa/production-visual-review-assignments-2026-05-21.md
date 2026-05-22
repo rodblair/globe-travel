@@ -6,7 +6,7 @@ Status: ready for scheduled review execution
 ## Operator Instructions
 
 - Run each scheduled production release command on or after its due date.
-- Review all 20 production visual screenshots for the scheduled artifact.
+- Review all 25 production visual screenshots for the scheduled artifact.
 - Copy the matching `.template.json` file to a non-template `.json` file only after the review is actually complete.
 - Replace live production commit and deployment placeholders with the current `/api/health` deployment metadata.
 - Run `npm run qa:visual-review-intake`, then `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake` only when validation is clean.

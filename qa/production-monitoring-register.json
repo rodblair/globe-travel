@@ -39,16 +39,17 @@
       "kind": "github-actions",
       "workflowFile": ".github/workflows/production-visual-gate.yml",
       "cadence": "daily and manually before public launch approval",
-      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_VISUAL_BASELINE_DIR=qa/visual-baseline-production-2026-05-18 QA_VISUAL_ROUTES=landing,login,signup,public-share QA_VISUAL_DIFF_ROUTES=landing,login,signup npm run qa:visual",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_VISUAL_BASELINE_DIR=qa/visual-baseline-production-2026-05-18 QA_VISUAL_ROUTES=landing,pricing,login,signup,public-share QA_VISUAL_DIFF_ROUTES=landing,login,signup npm run qa:visual",
       "commandMarkers": [
         "npm run qa:visual",
         "QA_VISUAL_BASELINE_DIR",
-        "landing,login,signup,public-share",
+        "landing,pricing,login,signup,public-share",
         "production-visual-gate"
       ],
       "signals": [
         "visual-gate",
         "landing",
+        "pricing",
         "login",
         "signup",
         "public-share-page"
@@ -105,8 +106,8 @@
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=45b64b0e1d3d96dda640a74229b484bb30d07afd npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=7cd3c2532dfc81523303a96915171b4c6108ffd7 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd"
+    "expectedLiveCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7"
   }
 }

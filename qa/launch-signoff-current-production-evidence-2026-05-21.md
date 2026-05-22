@@ -2,6 +2,27 @@
 
 Date: 2026-05-21
 
+## Public Pricing Launch Surface Postdeploy Evidence
+
+Commit `7cd3c2532dfc81523303a96915171b4c6108ffd7` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-kkds2czds-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production Trip Studio recovery UI: `1/1`
+- Production auth and guest access: `13/13`
+- Public commercial pricing: `/pricing` renders publicly with `Globe.travel pricing`, `Start 7-day free trial`, and `Adventurer`.
+- Public share viral loop: `5/5`
+- Production visual QA: `25/25`
+- Production visual artifact: `qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/`
+- Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Public launch status remains `beta-ready-public-blocked` with no guardrail issues.
+- Current production commit: `7cd3c2532dfc81523303a96915171b4c6108ffd7`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Public Share Title Polish Deploy Postdeploy Evidence
 
 Commit `45b64b0e1d3d96dda640a74229b484bb30d07afd` deployed to Vercel production on 2026-05-22.

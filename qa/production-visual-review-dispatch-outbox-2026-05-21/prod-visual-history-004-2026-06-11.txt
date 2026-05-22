@@ -15,11 +15,11 @@ Completed submission filename:
 qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json
 
 Acceptance criteria:
-Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.
+Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.
 
 Reviewer checklist:
 - Run the production visual command on or after 2026-06-11.
-- Review all 20 screenshots across landing, login, signup, public-share and phone, tablet, laptop, desktop, wide.
+- Review all 25 screenshots across landing, pricing, login, signup, public-share and phone, tablet, laptop, desktop, wide.
 - Confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs.
 - Replace production commit and deployment placeholders with the current /api/health deployment metadata.
 - Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json.

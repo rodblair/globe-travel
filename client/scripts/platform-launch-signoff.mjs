@@ -169,6 +169,7 @@ const requiredProtectedRoutes = [
 
 const requiredProductionVisualRoutes = [
   'landing',
+  'pricing',
   'login',
   'signup',
   'public-share',
@@ -187,6 +188,8 @@ const requiredProductionVisualViewports = [
   'desktop',
   'wide',
 ]
+const requiredProductionVisualScreenshotCount =
+  requiredProductionVisualRoutes.length * requiredProductionVisualViewports.length
 
 const requiredDesignSystemChecks = [
   'design context documents users, tone, aesthetic, and principles',
@@ -662,7 +665,10 @@ function visualReviewSubmissionTemplateIssues(template, scheduledReview) {
   if (!hasMeaningfulText(template.reviewedBy)) issues.push('reviewedBy is missing')
   if (template.verdict !== 'pass') issues.push('verdict must default to pass')
   if (!Array.isArray(template.blockingFindings)) issues.push('blockingFindings must be an array')
-  if (Number(template.screenshotsReviewed) < 20) issues.push('screenshotsReviewed must be at least 20')
+  const expectedScreenshotCount = expectedRoutes.length * expectedViewports.length
+  if (Number(template.screenshotsReviewed) < expectedScreenshotCount) {
+    issues.push(`screenshotsReviewed must be at least ${expectedScreenshotCount}`)
+  }
   if (missingRoutes.length > 0) issues.push(`routesReviewed missing: ${missingRoutes.join(', ')}`)
   if (missingViewports.length > 0) issues.push(`viewportsReviewed missing: ${missingViewports.join(', ')}`)
   if (missingDiffRoutes.length > 0) issues.push(`diffRoutesReviewed missing: ${missingDiffRoutes.join(', ')}`)
@@ -1793,10 +1799,10 @@ async function checkProductionEvidence(productionHealth) {
         /"checked":\s*10[\s\S]{0,120}"passed":\s*10[\s\S]{0,120}"failed":\s*0[\s\S]{0,220}"includeProductionVisual":\s*true/i.test(text),
     },
     {
-      label: 'production visual QA 20/20',
-      ok: /production visual QA:\s*`20\/20`/i.test(text) ||
-        /Production visual QA included:\s*`20\/20`/i.test(text) ||
-        /"checked":\s*20[\s\S]{0,80}"passed":\s*20[\s\S]{0,80}"failed":\s*0[\s\S]{0,220}"artifactDir"/i.test(text),
+      label: `production visual QA ${requiredProductionVisualScreenshotCount}/${requiredProductionVisualScreenshotCount}`,
+      ok: new RegExp(`production visual QA:\\s*\`${requiredProductionVisualScreenshotCount}\\/${requiredProductionVisualScreenshotCount}\``, 'i').test(text) ||
+        new RegExp(`Production visual QA included:\\s*\`${requiredProductionVisualScreenshotCount}\\/${requiredProductionVisualScreenshotCount}\``, 'i').test(text) ||
+        new RegExp(`"checked":\\s*${requiredProductionVisualScreenshotCount}[\\s\\S]{0,80}"passed":\\s*${requiredProductionVisualScreenshotCount}[\\s\\S]{0,80}"failed":\\s*0[\\s\\S]{0,220}"artifactDir"`, 'i').test(text),
     },
   ]
 
@@ -1881,10 +1887,10 @@ async function checkVisualReviewRegister(productionHealth) {
     const missingDiffRoutes = hasAll(summary.diffRoutes || [], requiredProductionVisualDiffRoutes)
     const resultCount = Array.isArray(summary.results) ? summary.results.length : 0
     addCheck('production visual review covers required public routes, viewports, and diffs', (
-      summary.checked === 20 &&
-      summary.passed === 20 &&
+      summary.checked === requiredProductionVisualScreenshotCount &&
+      summary.passed === requiredProductionVisualScreenshotCount &&
       summary.failed === 0 &&
-      resultCount === 20 &&
+      resultCount === requiredProductionVisualScreenshotCount &&
       Array.isArray(summary.viewports) &&
       summary.viewports.length === 5 &&
       missingRoutes.length === 0 &&
@@ -1910,9 +1916,10 @@ async function checkVisualReviewRegister(productionHealth) {
       if (!(await fileExists(screenshotPath))) missingScreenshots.push(screenshotPath)
     }
     addCheck('production visual review screenshot artifacts exist for every reviewed result', (
-      screenshotPaths.length === 20 &&
+      screenshotPaths.length === requiredProductionVisualScreenshotCount &&
       missingScreenshots.length === 0
     ), {
+      expectedScreenshotCount: requiredProductionVisualScreenshotCount,
       screenshotCount: screenshotPaths.length,
       missingScreenshots: missingScreenshots.slice(0, 12),
       missingScreenshotCount: missingScreenshots.length,
@@ -2162,7 +2169,12 @@ async function checkVisualReviewRegister(productionHealth) {
       review.verdict !== 'pass' ||
       !Array.isArray(review.blockingFindings) ||
       review.blockingFindings.length > 0 ||
-      Number(review.screenshotsReviewed) < 20
+      Number(review.screenshotsReviewed) < (
+        Array.isArray(review.routesReviewed) && review.routesReviewed.length > 0 &&
+          Array.isArray(review.viewportsReviewed) && review.viewportsReviewed.length > 0
+          ? review.routesReviewed.length * review.viewportsReviewed.length
+          : Number(review.screenshotsReviewed) || requiredProductionVisualScreenshotCount
+      )
     ))
 
     addCheck('public-launch production visual review history is mature', (

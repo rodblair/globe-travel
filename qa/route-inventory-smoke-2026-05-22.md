@@ -9,8 +9,8 @@ Status: pass
 - Checked: 22
 - Passed: 22
 - Failed: 0
-- Public routes: 7
-- Protected routes: 15
+- Public routes: 8
+- Protected routes: 14
 - Missing source files: 0
 
 ## Route Coverage
@@ -33,7 +33,7 @@ Status: pass
 | `/saved` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Fsaved | 200 | Pass |
 | `/account` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Faccount | 200 | Pass |
 | `/account?tab=billing` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Faccount%3Ftab%3Dbilling | 200 | Pass |
-| `/pricing` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Fpricing | 200 | Pass |
+| `/pricing` | public | renders | https://globe-travel-two.vercel.app/pricing | 200 | Pass |
 | `/profile` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Fprofile | 200 | Pass |
 | `/settings` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Fsettings | 200 | Pass |
 | `/trips` | protected | login-redirect | https://globe-travel-two.vercel.app/login?next=%2Fsaved | 200 | Pass |

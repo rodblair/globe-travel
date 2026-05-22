@@ -14,7 +14,7 @@ on:
       routes:
         description: Comma-separated visual route ids to check.
         required: false
-        default: landing,login,signup,public-share
+        default: landing,pricing,login,signup,public-share
       diff_routes:
         description: Comma-separated stable route ids to pixel-compare.
         required: false
@@ -43,7 +43,7 @@ jobs:
       QA_VISUAL_BASELINE_DIR: qa/visual-baseline-production-2026-05-18
       QA_VISUAL_RUN_ID: production-ci-${{ github.run_id }}
       QA_VISUAL_ARTIFACT_NAME: visual-baseline-production-ci-${{ github.run_id }}
-      QA_VISUAL_ROUTES: ${{ github.event.inputs.routes || 'landing,login,signup,public-share' }}
+      QA_VISUAL_ROUTES: ${{ github.event.inputs.routes || 'landing,pricing,login,signup,public-share' }}
       QA_VISUAL_DIFF_ROUTES: ${{ github.event.inputs.diff_routes || 'landing,login,signup' }}
       QA_VISUAL_SETTLE_MS: "1200"
 

@@ -9,8 +9,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
-    "commit": "45b64b0e1d3d96dda640a74229b484bb30d07afd"
+    "url": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
+    "commit": "7cd3c2532dfc81523303a96915171b4c6108ffd7"
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -262,10 +262,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json",
-    "latestProductionCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd",
-    "latestProductionDeploymentUrl": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
+    "latestProductionCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
+    "latestProductionDeploymentUrl": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -335,8 +335,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd",
-    "knownGoodDeploymentUrl": "globe-travel-47jcqjnvu-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
+    "knownGoodDeploymentUrl": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -360,7 +360,8 @@
       "release-gate",
       "launch-signoff",
       "rollback",
-      "visual-gate"
+      "visual-gate",
+      "pricing"
     ],
     "missingSignals": [],
     "workflowCount": 2,
@@ -371,7 +372,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "45b64b0e1d3d96dda640a74229b484bb30d07afd",
+    "latestVerificationExpectedLiveCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -420,8 +421,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-upgrade-dialog-polish-2026-05-22-45b64b0/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -523,8 +524,8 @@
     "failed": 0,
     "requiredRouteCount": 22,
     "routeCount": 22,
-    "publicRouteCount": 7,
-    "protectedRouteCount": 15,
+    "publicRouteCount": 8,
+    "protectedRouteCount": 14,
     "sourceMissingCount": 0,
     "shareSlug": "x3m2c8cnws",
     "missingRoutes": [],
