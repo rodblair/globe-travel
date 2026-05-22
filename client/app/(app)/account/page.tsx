@@ -259,13 +259,13 @@ function AccountPageContent() {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-4 py-6 md:px-6 md:py-8">
+      <div className="mx-auto w-full max-w-5xl px-4 py-5 md:px-6 md:py-8">
         {activeTab === 'profile' && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_320px] lg:gap-7">
             <div className="space-y-6">
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-rule bg-paper-recessed">
+              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-5 sm:p-6">
+                <div className="mb-5 flex items-center gap-3 sm:mb-6 sm:gap-4">
+                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-rule bg-paper-recessed sm:h-16 sm:w-16">
                     {profile?.avatar_url ? (
                       <Image
                         src={profile.avatar_url}
@@ -291,7 +291,7 @@ function AccountPageContent() {
                   </div>
                 </div>
 
-                <div className="space-y-5">
+                <div className="space-y-4 sm:space-y-5">
                   <div>
                     <label htmlFor="profile-display-name" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
                       Display name
@@ -303,7 +303,7 @@ function AccountPageContent() {
                       onChange={(event) => setDisplayName(event.target.value)}
                       placeholder="Your name"
                       maxLength={80}
-                      className="w-full rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
+                      className="min-h-11 w-full rounded-xl border border-rule bg-paper/40 px-4 py-2.5 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40 sm:py-3"
                     />
                     <p className="mt-1 text-xs text-foreground/35">{displayName.length}/80 characters</p>
                   </div>
@@ -324,7 +324,7 @@ function AccountPageContent() {
                         placeholder="yourusername"
                         maxLength={30}
                         aria-describedby="profile-username-help"
-                        className="w-full rounded-xl border border-rule bg-paper/40 py-3 pl-8 pr-4 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
+                        className="min-h-11 w-full rounded-xl border border-rule bg-paper/40 py-2.5 pl-8 pr-4 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40 sm:py-3"
                       />
                     </div>
                     <p id="profile-username-help" className="mt-1 text-xs text-foreground/35">
@@ -341,9 +341,9 @@ function AccountPageContent() {
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
                       placeholder="A short note friends will recognize when you share itinerary feedback."
-                      rows={4}
+                      rows={3}
                       maxLength={240}
-                      className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-3 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40"
+                      className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-2.5 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40 sm:py-3"
                     />
                     <p className="mt-1 text-xs text-foreground/35">{bio.length}/240 characters</p>
                   </div>
@@ -353,7 +353,7 @@ function AccountPageContent() {
                       onClick={handleSave}
                       disabled={saving}
                       className={cn(
-                        'touch-target inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-colors',
+                        'touch-target inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-colors sm:w-auto',
                         saved
                           ? 'border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                           : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)] disabled:opacity-40'
