@@ -1,0 +1,95 @@
+{
+  "date": "2026-05-22",
+  "status": "pass",
+  "checked": 4,
+  "passed": 4,
+  "failed": 0,
+  "safeSkipCount": 3,
+  "runtimeBuildCount": 1,
+  "jsonArtifact": "qa/vercel-ignore-smoke-2026-05-22.json",
+  "reportArtifact": "qa/vercel-ignore-smoke-2026-05-22.md",
+  "results": [
+    {
+      "id": "qa-only-probe-skips",
+      "intent": "QA evidence-only probe commit skips Vercel production build.",
+      "previous": "60a565a9566c28c48c03407204e93a278389466a",
+      "head": "5a9e78c5f1d34ee7c02018236f3e275fb3355176",
+      "expectedExitCode": 0,
+      "expectedText": "Skipping build",
+      "ok": true,
+      "exitCode": 0,
+      "stdout": "[vercel-ignore] Skipping build: 1 release-ops/documentation/evidence file(s) changed.",
+      "stderr": "",
+      "changedFiles": [
+        "qa/vercel-ignore-end-to-end-probe-2026-05-21.md"
+      ],
+      "issues": []
+    },
+    {
+      "id": "workflow-and-ignore-policy-skips",
+      "intent": "Release-ops workflow and ignore-policy commit stays skip-safe.",
+      "previous": "9398486fb6971d1e48175602706dbc809064c889",
+      "head": "06eb269ac896ccb4204607ae4e2348079f393309",
+      "expectedExitCode": 0,
+      "expectedText": "Skipping build",
+      "ok": true,
+      "exitCode": 0,
+      "stdout": "[vercel-ignore] Skipping build: 6 release-ops/documentation/evidence file(s) changed.",
+      "stderr": "",
+      "changedFiles": [
+        "OPERATIONS_RUNBOOK.md",
+        "PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md",
+        "RELEASE_READINESS_MEMO.md",
+        "client/scripts/vercel-ignore-build.mjs",
+        "qa/vercel-ignore-docs-only-build-2026-05-21.md",
+        "qa/vercel-ignore-workflow-only-build-2026-05-21.md"
+      ],
+      "issues": []
+    },
+    {
+      "id": "current-release-ops-scripts-skip",
+      "intent": "Current release-ops QA script and evidence updates skip Vercel production build.",
+      "previous": "72159cb26f38f0b2ebe23f35b42658ea5321075a",
+      "head": "d791e8f2a710172426b4be1d4eebacf14447e8d0",
+      "expectedExitCode": 0,
+      "expectedText": "Skipping build",
+      "ok": true,
+      "exitCode": 0,
+      "stdout": "[vercel-ignore] Skipping build: 8 release-ops/documentation/evidence file(s) changed.",
+      "stderr": "",
+      "changedFiles": [
+        "PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md",
+        "RELEASE_READINESS_MEMO.md",
+        "client/scripts/platform-beta-human-review-intake.mjs",
+        "client/scripts/platform-beta-human-review-progress.mjs",
+        "client/scripts/platform-beta-human-review-readiness.mjs",
+        "client/scripts/platform-launch-signoff.mjs",
+        "client/scripts/platform-visual-review-intake.mjs",
+        "client/scripts/platform-visual-review-progress.mjs"
+      ],
+      "issues": []
+    },
+    {
+      "id": "runtime-billing-builds",
+      "intent": "Known runtime billing change still continues Vercel production build.",
+      "previous": "0bf1e7402b360e29fd73398e8caebbaa9ec745bb",
+      "head": "ec53a97b15ccb8a4e8a854b79a22d69f321a8cbc",
+      "expectedExitCode": 1,
+      "expectedText": "Continuing build",
+      "ok": true,
+      "exitCode": 1,
+      "stdout": "[vercel-ignore] Continuing build: runtime-relevant change(s) detected: client/app/(app)/account/page.tsx",
+      "stderr": "",
+      "changedFiles": [
+        "PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md",
+        "RELEASE_READINESS_MEMO.md",
+        "client/app/(app)/account/page.tsx",
+        "client/scripts/platform-billing-recovery-smoke.mjs",
+        "qa/billing-subscription-state-2026-05-21/README.md",
+        "qa/billing-subscription-state-2026-05-21/screenshots/account-billing-canceling-local-1103x-view.png"
+      ],
+      "issues": []
+    }
+  ],
+  "failures": []
+}

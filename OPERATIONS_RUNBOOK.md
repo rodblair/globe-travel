@@ -28,6 +28,7 @@ QA_TRIP_ID=<owned-trip-id> QA_SHARE_SLUG=x3m2c8cnws npm run qa:studio
 npm run qa:studio-actions
 QA_PROMPT_SUITE_SHARE_MAP=athens-5-day-couples-rest=x3m2c8cnws QA_PROMPT_SUITE_ACTUALS_OUT=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-actuals
 QA_PROMPT_SUITE_ACTUALS=/tmp/globe-travel-prompt-actuals.json npm run qa:prompt-suite
+npm run qa:vercel-ignore
 npm run lint
 npm run build
 ```
@@ -53,7 +54,9 @@ Set `QA_INCLUDE_PROMPT_ACTUALS=0` to skip the prompt-suite actuals check. Set `Q
 
 Vercel uses `client/vercel.json` and `client/scripts/vercel-ignore-build.mjs` to skip production builds for commits that only change release evidence, release monitoring workflows, or documentation. The skip list is intentionally conservative: `.github/workflows/**`, `qa/**`, `README.md`, `OPERATIONS_RUNBOOK.md`, `PLATFORM_*.md`, and `RELEASE_READINESS_MEMO.md`.
 
-Any `client/**` change, package/config change, app runtime change, or unknown path continues the build. If a release-ops-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
+Run `npm run qa:vercel-ignore` before release-ops-only pushes. It writes `qa/vercel-ignore-smoke-2026-05-22.json` and `.md`, proving representative release evidence, workflow, and QA-script commits skip Vercel builds while a known runtime application change still forces a build. `npm run qa:launch-signoff` requires that artifact so deployment hygiene stays repeatable.
+
+Any `client/**` runtime change, package/config change, or unknown path continues the build. Vercel may briefly show a release-ops-only commit as building before the ignored-build command resolves; wait for the deployment to cancel or skip before removing it manually. If a release-ops-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
 
 Manual equivalents:
 

@@ -70,6 +70,7 @@
     "qa:stripe-checkout-browser": "node scripts/platform-stripe-checkout-browser.mjs",
     "qa:stripe-portal-browser": "node scripts/platform-stripe-portal-browser.mjs",
     "qa:stripe-readiness": "node scripts/platform-stripe-readiness.mjs",
+    "qa:vercel-ignore": "node scripts/platform-vercel-ignore-smoke.mjs",
     "qa:visual": "node scripts/platform-visual-baseline.mjs"
   },
   "dependencies": {

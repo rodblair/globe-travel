@@ -74,6 +74,9 @@ const visualReviewRegister =
 const productionMonitoringRegister =
   process.env.QA_LAUNCH_PRODUCTION_MONITORING_REGISTER ||
   'qa/production-monitoring-register.json'
+const vercelIgnoreArtifact =
+  process.env.QA_LAUNCH_VERCEL_IGNORE_ARTIFACT ||
+  'qa/vercel-ignore-smoke-2026-05-22.json'
 const publicLaunchStatusArtifact =
   process.env.QA_LAUNCH_PUBLIC_STATUS_ARTIFACT ||
   'qa/public-launch-status-2026-05-21.json'
@@ -2295,6 +2298,55 @@ async function checkProductionMonitoringRegister(productionHealth) {
   })
 }
 
+async function checkVercelIgnoreArtifact() {
+  let summary
+  try {
+    summary = await readJson(vercelIgnoreArtifact)
+  } catch (error) {
+    addCheck('Vercel ignored-build smoke artifact is readable', false, {
+      artifact: vercelIgnoreArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  addCheck('Vercel ignored-build smoke artifact is readable', true, {
+    artifact: vercelIgnoreArtifact,
+    status: summary.status || null,
+  })
+
+  checkEvidenceFreshness('Vercel ignored-build smoke', evidenceDateFrom(summary, vercelIgnoreArtifact))
+
+  const requiredCases = [
+    'qa-only-probe-skips',
+    'workflow-and-ignore-policy-skips',
+    'current-release-ops-scripts-skip',
+    'runtime-billing-builds',
+  ]
+  const results = Array.isArray(summary.results) ? summary.results : []
+  const badResults = results.filter((result) => result.ok !== true)
+  const missingCases = hasAll(results.map((result) => result.id).filter(Boolean), requiredCases)
+  addCheck('Vercel ignored-build smoke proves safe skips and runtime builds', (
+    summary.status === 'pass' &&
+    Number(summary.checked) >= requiredCases.length &&
+    Number(summary.failed) === 0 &&
+    Number(summary.safeSkipCount) >= 3 &&
+    Number(summary.runtimeBuildCount) >= 1 &&
+    badResults.length === 0 &&
+    missingCases.length === 0
+  ), {
+    checked: summary.checked ?? null,
+    failed: summary.failed ?? null,
+    safeSkipCount: summary.safeSkipCount ?? null,
+    runtimeBuildCount: summary.runtimeBuildCount ?? null,
+    missingCases,
+    badResults: badResults.map((result) => ({
+      id: result.id || null,
+      issues: result.issues || [],
+    })),
+  })
+}
+
 async function checkPublicLaunchStatusArtifact(productionHealth) {
   let status
   try {
@@ -2949,6 +3001,7 @@ await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
 await checkProductionMonitoringRegister(productionHealth)
+await checkVercelIgnoreArtifact()
 await checkPublicLaunchStatusArtifact(productionHealth)
 await checkRiskRegister()
 await checkRollbackPlan(productionHealth)
@@ -2969,6 +3022,7 @@ const summary = {
   productionEvidence,
   visualReviewRegister,
   productionMonitoringRegister,
+  vercelIgnoreArtifact,
   publicLaunchStatusArtifact,
   riskRegister,
   rollbackPlan,
