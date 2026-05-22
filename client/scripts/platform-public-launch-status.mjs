@@ -18,6 +18,7 @@ const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
 const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS || process.env.QA_LAUNCH_PAID_PATH_ARTIFACT || 'qa/paid-path-readiness-2026-05-21.json'
+const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT || 'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -85,6 +86,26 @@ const requiredStripeScreenshots = [
   'qa/stripe-checkout-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-checkout-returned.png',
   'qa/stripe-portal-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-portal-loaded.png',
   'qa/stripe-portal-browser-full-with-multi-planner-2026-05-21/screenshots/stripe-portal-returned.png',
+]
+const requiredAccessibilityRoutes = [
+  'landing',
+  'planner',
+  'saved-trips',
+  'account-profile',
+  'account-billing',
+  'login',
+  'signup',
+  'public-share',
+]
+const requiredAccessibilityProtectedRoutes = [
+  'planner',
+  'saved-trips',
+  'account-profile',
+  'account-billing',
+]
+const requiredAccessibilityViewports = [
+  'phone',
+  'desktop',
 ]
 const visualReviewTemplateProductionCommitPlaceholder = 'replace-with-live-production-commit'
 const visualReviewTemplateDeploymentUrlPlaceholder = 'replace-with-live-production-deployment-url'
@@ -243,6 +264,7 @@ const [
   rollbackPlan,
   riskRegister,
   paidPathReadiness,
+  accessibility,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -256,6 +278,7 @@ const [
   readJson(rollbackPath),
   readJson(riskRegisterPath),
   readJson(paidPathReadinessPath),
+  readJson(accessibilityPath),
   fetchHealth(),
 ])
 
@@ -393,6 +416,38 @@ const paidPathReady =
   missingPaidPathTasks.length === 0 &&
   Number(paidPathReadiness.screenshotCount) >= requiredStripeScreenshots.length &&
   missingPaidPathScreenshots.length === 0
+const accessibilityViewportIds = Array.isArray(accessibility.viewports)
+  ? accessibility.viewports.map((viewport) => viewport.id).filter(Boolean)
+  : []
+const missingAccessibilityRoutes = missingFrom(accessibility.routes, requiredAccessibilityRoutes)
+const missingAccessibilityProtectedRoutes = missingFrom(accessibility.auth?.protectedRoutes, requiredAccessibilityProtectedRoutes)
+const missingAccessibilityViewports = missingFrom(accessibilityViewportIds, requiredAccessibilityViewports)
+const blockingAccessibilityResults = Array.isArray(accessibility.results)
+  ? accessibility.results.filter((result) => (
+    result.ok === false ||
+    (Array.isArray(result.missingMarkers) && result.missingMarkers.length > 0) ||
+    (Array.isArray(result.structureIssues) && result.structureIssues.length > 0) ||
+    (Array.isArray(result.axe?.blockingViolations) && result.axe.blockingViolations.length > 0) ||
+    (Array.isArray(result.keyboard?.issues) && result.keyboard.issues.length > 0)
+  ))
+  : []
+const accessibilityGuestAuthReady =
+  accessibility.auth?.mode === 'guest' &&
+  missingAccessibilityProtectedRoutes.length === 0 &&
+  accessibility.auth?.cleanup?.attempted === true &&
+  accessibility.auth?.cleanup?.profileDeleted === true &&
+  accessibility.auth?.cleanup?.userDeleted === true &&
+  !accessibility.auth?.cleanup?.error
+const accessibilityReady =
+  Number(accessibility.checked) === 16 &&
+  Number(accessibility.passed) === 16 &&
+  Number(accessibility.failed) === 0 &&
+  (Array.isArray(accessibility.results) ? accessibility.results.length : 0) === 16 &&
+  missingAccessibilityRoutes.length === 0 &&
+  missingAccessibilityProtectedRoutes.length === 0 &&
+  missingAccessibilityViewports.length === 0 &&
+  blockingAccessibilityResults.length === 0 &&
+  accessibilityGuestAuthReady
 
 const betaQueueIssues = []
 if (!expectedBetaReviewOrigin) {
@@ -604,6 +659,9 @@ if (!monitoringLatestVerificationReady) {
 if (!paidPathReady) {
   guardrailIssues.push('paid-path readiness does not cover commercial, subscription, checkout, portal, and screenshot evidence')
 }
+if (!accessibilityReady) {
+  guardrailIssues.push('accessibility and keyboard readiness does not cover required routes, viewports, guest auth, and blocking failures')
+}
 if (rollbackPlan.production?.knownGoodDeployment?.commit !== liveDeployment?.commit) {
   guardrailIssues.push('rollback plan known-good deployment is not tied to the live production commit')
 }
@@ -717,6 +775,31 @@ const summary = {
     missingScreenshots: missingPaidPathScreenshots,
     ready: paidPathReady,
   },
+  accessibility: {
+    artifact: qaDisplayPath(accessibilityPath),
+    checked: accessibility.checked ?? null,
+    passed: accessibility.passed ?? null,
+    failed: accessibility.failed ?? null,
+    resultCount: Array.isArray(accessibility.results) ? accessibility.results.length : 0,
+    missingRoutes: missingAccessibilityRoutes,
+    missingProtectedRoutes: missingAccessibilityProtectedRoutes,
+    missingViewports: missingAccessibilityViewports,
+    blockingResultCount: blockingAccessibilityResults.length,
+    blockingResults: blockingAccessibilityResults.slice(0, 12).map((result) => ({
+      routeId: result.routeId || null,
+      viewportId: result.viewportId || null,
+      missingMarkers: result.missingMarkers || [],
+      structureIssues: result.structureIssues || [],
+      blockingViolations: result.axe?.blockingViolations || [],
+      keyboardIssues: result.keyboard?.issues || [],
+    })),
+    authMode: accessibility.auth?.mode || null,
+    guestCleanupAttempted: accessibility.auth?.cleanup?.attempted ?? null,
+    guestCleanupProfileDeleted: accessibility.auth?.cleanup?.profileDeleted ?? null,
+    guestCleanupUserDeleted: accessibility.auth?.cleanup?.userDeleted ?? null,
+    guestCleanupError: accessibility.auth?.cleanup?.error || null,
+    ready: accessibilityReady,
+  },
   guardrailIssues,
   blockers,
   nextActions: [
@@ -731,6 +814,7 @@ const summary = {
     rollbackPlan: qaDisplayPath(rollbackPath),
     riskRegister: qaDisplayPath(riskRegisterPath),
     paidPathReadiness: qaDisplayPath(paidPathReadinessPath),
+    accessibility: qaDisplayPath(accessibilityPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -759,6 +843,7 @@ Status: ${status}
 - Rollback plan actionable: ${summary.rollback.actionable ? 'yes' : 'no'}
 - Production monitoring ready: ${summary.monitoring.latestVerificationReady && summary.monitoring.missingSignals.length === 0 && summary.monitoring.workflowIssues.length === 0 && summary.monitoring.missingAlertMarkers.length === 0 && summary.monitoring.missingRunbookMarkers.length === 0 ? 'yes' : 'no'}
 - Paid path ready: ${summary.paidPath.ready ? 'yes' : 'no'}
+- Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
 
 ## Public-Launch Blockers
 
@@ -796,6 +881,7 @@ ${markdownList(summary.nextActions)}
 - Rollback plan: \`${summary.artifacts.rollbackPlan}\`
 - Risk register: \`${summary.artifacts.riskRegister}\`
 - Paid-path readiness: \`${summary.artifacts.paidPathReadiness}\`
+- Accessibility: \`${summary.artifacts.accessibility}\`
 
 ## Operating Meaning
 

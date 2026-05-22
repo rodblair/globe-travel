@@ -114,6 +114,24 @@
     "missingScreenshots": [],
     "ready": true
   },
+  "accessibility": {
+    "artifact": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
+    "checked": 16,
+    "passed": 16,
+    "failed": 0,
+    "resultCount": 16,
+    "missingRoutes": [],
+    "missingProtectedRoutes": [],
+    "missingViewports": [],
+    "blockingResultCount": 0,
+    "blockingResults": [],
+    "authMode": "guest",
+    "guestCleanupAttempted": true,
+    "guestCleanupProfileDeleted": true,
+    "guestCleanupUserDeleted": true,
+    "guestCleanupError": null,
+    "ready": true
+  },
   "guardrailIssues": [],
   "blockers": [
     {
@@ -138,6 +156,7 @@
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
     "paidPathReadiness": "qa/paid-path-readiness-2026-05-21.json",
+    "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

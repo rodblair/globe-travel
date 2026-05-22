@@ -21,6 +21,7 @@ Status: beta-ready-public-blocked
 - Rollback plan actionable: yes
 - Production monitoring ready: yes
 - Paid path ready: yes
+- Accessibility ready: yes
 
 ## Public-Launch Blockers
 
@@ -60,6 +61,7 @@ Production visual-review queue:
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
+- Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 
 ## Operating Meaning
 
