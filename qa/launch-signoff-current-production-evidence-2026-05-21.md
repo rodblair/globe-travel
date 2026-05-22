@@ -2,6 +2,21 @@
 
 Date: 2026-05-21
 
+## Mobile Account Profile Polish Postdeploy Evidence
+
+Commit `368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1` deployed to Vercel production on 2026-05-22.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production Account/Profile visual QA: `5/5`, covering phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped text, overlapping controls, or touch-target blockers.
+- Production Account/Profile accessibility and keyboard QA: `2/2`, covering phone and desktop with guest cleanup confirmed.
+- Production visual artifact: `qa/visual-account-profile-production-polish-2026-05-22-368ef4d/`
+- Production accessibility artifact: `qa/accessibility-account-profile-production-polish-2026-05-22-368ef4d/summary.json`
+- Public launch status remains `beta-ready-public-blocked` after monitoring and rollback pointers are refreshed to this live deployment.
+- Current production commit: `368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Public Pricing Launch Surface Postdeploy Evidence
 
 Commit `7cd3c2532dfc81523303a96915171b4c6108ffd7` deployed to Vercel production on 2026-05-22.

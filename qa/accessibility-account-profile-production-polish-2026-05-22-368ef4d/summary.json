@@ -1,0 +1,468 @@
+{
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "date": "2026-05-22",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/accessibility-account-profile-production-polish-2026-05-22-368ef4d",
+  "auth": {
+    "requestedMode": "guest",
+    "mode": "guest",
+    "guestId": "2b249aef-ef4f-411f-b8fd-84852a65a1d4",
+    "protectedRoutes": [
+      "account-profile"
+    ],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": true,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "2b249aef-ef4f-411f-b8fd-84852a65a1d4",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "2b249aef-ef4f-411f-b8fd-84852a65a1d4",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": true,
+      "reason": null,
+      "guestId": "2b249aef-ef4f-411f-b8fd-84852a65a1d4",
+      "profileDeleted": true,
+      "userDeleted": true,
+      "error": null
+    }
+  },
+  "checked": 2,
+  "passed": 2,
+  "failed": 0,
+  "routes": [
+    "account-profile"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "tabLimit": 12,
+  "results": [
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "https://globe-travel-two.vercel.app/account",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Profile",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 25,
+              "y": 121,
+              "width": 99,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Billing",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 132,
+              "y": 121,
+              "width": 96,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Your name",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 334,
+              "width": 316,
+              "height": 44
+            }
+          },
+          {
+            "tag": "input",
+            "label": "yourusername",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 438,
+              "width": 316,
+              "height": 44
+            }
+          },
+          {
+            "tag": "textarea",
+            "label": "A short note friends will recognize when you share itinerary feedback.",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 558,
+              "width": 316,
+              "height": 82
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Save changes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 37,
+              "y": 682,
+              "width": 316,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 41,
+              "y": 677,
+              "width": 113,
+              "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Trips",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 131,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Account",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 259,
+              "y": 780,
+              "width": 127,
+              "height": 56
+            }
+          },
+          {
+            "tag": "body",
+            "label": "Skip to content<iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-WS29K6XJ\" height=\"0\" width=\"0\" style=\"displa",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "https://globe-travel-two.vercel.app/account",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Profile",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 369,
+              "y": 105,
+              "width": 99,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Billing",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 476,
+              "y": 105,
+              "width": 96,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "Your name",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 385,
+              "y": 350,
+              "width": 578,
+              "height": 46
+            }
+          },
+          {
+            "tag": "input",
+            "label": "yourusername",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 385,
+              "y": 460,
+              "width": 578,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,398 @@
+{
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "date": "2026-05-22",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-account-profile-production-polish-2026-05-22-368ef4d",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 900,
+  "deployment": {
+    "environment": "production",
+    "region": "iad1",
+    "url": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
+    "commit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1"
+  },
+  "deploymentCheck": {
+    "checked": true,
+    "reason": null,
+    "status": 200,
+    "healthStatus": "ok",
+    "summary": {
+      "total": 11,
+      "ok": 11,
+      "criticalMissing": 0,
+      "warningMissing": 0
+    },
+    "error": null
+  },
+  "auth": {
+    "requestedMode": "guest",
+    "mode": "guest",
+    "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+    "protectedRoutes": [
+      "account-profile"
+    ],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": true,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "tablet",
+        "mode": "guest",
+        "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "guest",
+        "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "wide",
+        "mode": "guest",
+        "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": true,
+      "reason": null,
+      "guestId": "4a6c4ad7-fb21-47ae-b4a1-7b9196981495",
+      "profileDeleted": true,
+      "userDeleted": true,
+      "error": null
+    }
+  },
+  "checked": 5,
+  "passed": 5,
+  "failed": 0,
+  "routes": [
+    "account-profile"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    },
+    {
+      "id": "wide",
+      "width": 1728,
+      "height": 1050
+    }
+  ],
+  "results": [
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/account",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Sharing profile",
+          "Session"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME 0/80 characters USERNAME @ 3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private. BIO 0/240 characters Save changes Sharing profile This is the lightweight identity friends see around itinerary feedback and shared planning links. Name visible on feedback Guest mode stays available Share links"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-phone-390x844.png",
+        "relativePath": "qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/account",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Sharing profile",
+          "Session"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 14,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME 0/80 characters USERNAME @ 3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private. BIO 0/240 characters Save changes Sharing profile This is the ligh"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-tablet-768x1024.png",
+        "relativePath": "qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/account",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Sharing profile",
+          "Session"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 15,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME 0/80 characters USERNAME @ 3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private. BIO 0/240 characters Save changes Sharing profile This is the ligh"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-laptop-1280x800.png",
+        "relativePath": "qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/account",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Sharing profile",
+          "Session"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 15,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME 0/80 characters USERNAME @ 3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private. BIO 0/240 characters Save changes Sharing profile This is the ligh"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-desktop-1440x950.png",
+        "relativePath": "qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-profile",
+      "path": "/account",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "https://globe-travel-two.vercel.app/account",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 1050,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Sharing profile",
+          "Session"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 15,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler No username set yet DISPLAY NAME 0/80 characters USERNAME @ 3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private. BIO 0/240 characters Save changes Sharing profile This is the ligh"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-wide-1728x1050.png",
+        "relativePath": "qa/visual-account-profile-production-polish-2026-05-22-368ef4d/screenshots/account-profile-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

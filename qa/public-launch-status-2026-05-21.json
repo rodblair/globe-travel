@@ -9,8 +9,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
-    "commit": "7cd3c2532dfc81523303a96915171b4c6108ffd7"
+    "url": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
+    "commit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1"
   },
   "betaHumanReviews": {
     "planned": 25,
@@ -262,10 +262,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
-    "latestProductionCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
-    "latestProductionDeploymentUrl": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json",
+    "latestProductionCommit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1",
+    "latestProductionDeploymentUrl": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -335,8 +335,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
-    "knownGoodDeploymentUrl": "globe-travel-kkds2czds-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1",
+    "knownGoodDeploymentUrl": "globe-travel-7cr0hafed-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -375,7 +375,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "7cd3c2532dfc81523303a96915171b4c6108ffd7",
+    "latestVerificationExpectedLiveCommit": "368ef4d26bfe96fb4e6e3ce476045e6e2a48a0b1",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -424,8 +424,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-public-pricing-2026-05-22-7cd3c25/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-account-profile-polish-2026-05-22-368ef4d/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
