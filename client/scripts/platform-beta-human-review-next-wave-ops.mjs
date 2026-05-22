@@ -36,6 +36,18 @@ function daysBetween(startDate, endDate) {
   return Math.round((end - start) / 86400000)
 }
 
+function subtractDays(dateValue, days) {
+  const parsed = Date.parse(`${dateValue}T00:00:00Z`)
+  if (!Number.isFinite(parsed)) return ''
+  return new Date(parsed - days * 86400000).toISOString().slice(0, 10)
+}
+
+function maxDate(firstDate, secondDate) {
+  if (!isDate(firstDate)) return isDate(secondDate) ? secondDate : ''
+  if (!isDate(secondDate)) return firstDate
+  return Date.parse(`${firstDate}T00:00:00Z`) >= Date.parse(`${secondDate}T00:00:00Z`) ? firstDate : secondDate
+}
+
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
 }
@@ -47,6 +59,11 @@ function csvEscape(value) {
 
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
+}
+
+function sentenceItem(label, value) {
+  const text = String(value || '').trim()
+  return `${label} ${text}`
 }
 
 async function readJsonArtifact(path) {
@@ -67,8 +84,31 @@ function messageFor(row) {
     `You are assigned ${row.id} for ${scopeText}.`,
     `Please use ${row.device} ${row.viewport}, start here: ${row.startUrl}`,
     `Read the packet at ${row.packetPath}, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as ${row.completedSubmissionPath}.`,
+    `Use the checklist in the packet, fill every scorecard field, and flag any confusing or broken moment as P0, P1, P2, or P3.`,
     `Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.`,
   ].join(' ')
+}
+
+function reviewerChecklistFor(row) {
+  return [
+    `Use ${row.device} ${row.viewport} for the full review.`,
+    sentenceItem('Start from', row.startUrl),
+    'Complete planner, Trip Studio, map, save/reopen, public share, feedback, and paid-value checks.',
+    'Fill every scorecard field with a numeric score and a short note.',
+    'Classify each finding as P0, P1, P2, P3, or none.',
+    sentenceItem('Save the completed non-template JSON as', row.completedSubmissionPath),
+  ]
+}
+
+function operatorChecklistFor(row) {
+  return [
+    'Assign a named human reviewer and record their contact outside this artifact.',
+    `Send the subject "${row.messageSubject}" with the reviewer message below.`,
+    `Include packet ${row.packetPath} and template ${row.submissionTemplatePath}.`,
+    `Confirm the reviewer can test ${row.device} ${row.viewport} before ${row.dueAt}.`,
+    `Follow up no later than ${row.followUpAt}.`,
+    'After the completed JSON arrives, run npm run qa:beta-review-intake before any import.',
+  ]
 }
 
 function rowsToCsv(rows) {
@@ -77,6 +117,10 @@ function rowsToCsv(rows) {
     'waveId',
     'kickoffAt',
     'dueAt',
+    'sendBy',
+    'followUpAt',
+    'dispatchStatus',
+    'timeboxMinutes',
     'reviewerCohort',
     'reviewerRole',
     'destination',
@@ -119,12 +163,17 @@ const scopedScheduledRows = opsScope === 'all-waves' ? scheduledReviews : nextWa
 const incompleteRows = scopedScheduledRows.filter((review) => !reviewIsComplete(plannedById.get(review.id)))
 const operatorRows = incompleteRows.map((review) => {
   const packet = packetById.get(review.id) || {}
+  const followUpAt = maxDate(review.kickoffAt, subtractDays(review.dueAt, 1))
   const row = {
     scope: opsScope,
     id: review.id,
     waveId: review.waveId,
     kickoffAt: review.kickoffAt,
     dueAt: review.dueAt,
+    sendBy: review.kickoffAt,
+    followUpAt,
+    dispatchStatus: 'prepared-not-sent',
+    timeboxMinutes: 45,
     daysUntilDue: daysBetween(today, review.dueAt),
     reviewerCohort: review.reviewerCohort,
     reviewerRole: review.reviewerRole,
@@ -144,6 +193,8 @@ const operatorRows = incompleteRows.map((review) => {
   return {
     ...row,
     reviewerMessage: messageFor(row),
+    reviewerChecklist: reviewerChecklistFor(row),
+    operatorChecklist: operatorChecklistFor(row),
   }
 })
 
@@ -156,6 +207,11 @@ const malformedRows = operatorRows.filter((row) => (
   !hasText(row.id) ||
   !hasText(row.waveId) ||
   !hasText(row.dueAt) ||
+  !hasText(row.sendBy) ||
+  !hasText(row.followUpAt) ||
+  !hasText(row.dispatchStatus) ||
+  row.dispatchStatus !== 'prepared-not-sent' ||
+  !Number.isFinite(row.timeboxMinutes) ||
   !hasText(row.reviewerCohort) ||
   !hasText(row.reviewerRole) ||
   !hasText(row.destination) ||
@@ -169,7 +225,11 @@ const malformedRows = operatorRows.filter((row) => (
   !hasText(row.completedSubmissionPath) ||
   row.completedSubmissionPath.endsWith('.template.json') ||
   !hasText(row.messageSubject, 20) ||
-  !hasText(row.reviewerMessage, 120)
+  !hasText(row.reviewerMessage, 120) ||
+  !Array.isArray(row.reviewerChecklist) ||
+  row.reviewerChecklist.length < 6 ||
+  !Array.isArray(row.operatorChecklist) ||
+  row.operatorChecklist.length < 6
 ))
 const csvText = rowsToCsv(operatorRows)
 const scheduledWaveIds = [...new Set(scheduledReviews.map((review) => review.waveId).filter(Boolean))]
@@ -225,6 +285,25 @@ addCheck(`${opsScope} ops CSV includes every scoped review id`, (
   csvArtifact: `qa/${opsCsvName}`,
 })
 
+const rowsWithBadDispatchDates = operatorRows.filter((row) => (
+  !isDate(row.sendBy) ||
+  !isDate(row.followUpAt) ||
+  Date.parse(`${row.sendBy}T00:00:00Z`) > Date.parse(`${row.dueAt}T00:00:00Z`) ||
+  Date.parse(`${row.followUpAt}T00:00:00Z`) > Date.parse(`${row.dueAt}T00:00:00Z`)
+))
+addCheck(`${opsScope} ops has dispatch and follow-up dates before due dates`, rowsWithBadDispatchDates.length === 0, {
+  rowsWithBadDispatchDates: rowsWithBadDispatchDates.map((row) => row.id || '(missing id)'),
+})
+
+const rowsMissingDispatchChecklists = operatorRows.filter((row) => (
+  !row.reviewerChecklist.some((item) => item.includes(row.completedSubmissionPath)) ||
+  !row.operatorChecklist.some((item) => item.includes('qa:beta-review-intake')) ||
+  !row.reviewerMessage.includes('scorecard')
+))
+addCheck(`${opsScope} ops has reviewer and operator dispatch checklists`, rowsMissingDispatchChecklists.length === 0, {
+  rowsMissingDispatchChecklists: rowsMissingDispatchChecklists.map((row) => row.id || '(missing id)'),
+})
+
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
@@ -275,6 +354,7 @@ Status: ${summary.status}
 ## Operator Workflow
 
 - Assign a named human reviewer to each row before sending.
+- Send next-wave rows by their send-by date and follow up no later than the follow-up date.
 - Send the packet path, start URL, and completed-submission filename from the row.
 - Keep \`.template.json\` files unchanged; completed reviews must be non-template JSON files.
 - Run \`npm run qa:beta-review-intake\`; only import with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` after validation is clean.
@@ -282,9 +362,9 @@ Status: ${summary.status}
 
 ## Operator Rows
 
-| ID | Cohort | Device | Destination | Due | Packet | Completed File |
-| --- | --- | --- | --- | --- | --- | --- |
-${operatorRows.map((row) => `| ${row.id} | ${row.reviewerCohort} | ${row.device} ${row.viewport} | ${row.destination} | ${row.dueAt} | \`${row.packetPath}\` | \`${row.completedSubmissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none |'}
+| ID | Cohort | Device | Destination | Send By | Follow Up | Due | Packet | Completed File |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${operatorRows.map((row) => `| ${row.id} | ${row.reviewerCohort} | ${row.device} ${row.viewport} | ${row.destination} | ${row.sendBy} | ${row.followUpAt} | ${row.dueAt} | \`${row.packetPath}\` | \`${row.completedSubmissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none | none | none |'}
 
 ## Reviewer Message Drafts
 
@@ -293,6 +373,12 @@ ${operatorRows.map((row) => `### ${row.id}: ${row.destination}
 Subject: ${row.messageSubject}
 
 ${row.reviewerMessage}
+
+Reviewer checklist:
+${row.reviewerChecklist.map((item) => `- ${item}`).join('\n')}
+
+Operator checklist:
+${row.operatorChecklist.map((item) => `- ${item}`).join('\n')}
 `).join('\n')}
 
 ## Checks
