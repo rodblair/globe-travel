@@ -3,6 +3,14 @@ import 'server-only'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createGuestProfile, createGuestUser, devProfile, devUser } from '@/lib/dev-auth'
 
+async function userExists(supabase: SupabaseClient, id: string) {
+  const { data, error } = await supabase.auth.admin.getUserById(id)
+  if (error && !error.message.toLowerCase().includes('not found')) {
+    throw new Error(error.message)
+  }
+  return Boolean(data.user)
+}
+
 async function ensureProfileBackedAccount({
   supabase,
   id,
@@ -18,12 +26,7 @@ async function ensureProfileBackedAccount({
   isGuest: boolean
   profile: ReturnType<typeof createGuestProfile>
 }) {
-  const { data: existingUser, error: lookupError } = await supabase.auth.admin.getUserById(id)
-  if (lookupError && !lookupError.message.toLowerCase().includes('not found')) {
-    throw new Error(lookupError.message)
-  }
-
-  if (!existingUser.user) {
+  if (!(await userExists(supabase, id))) {
     const { error } = await supabase.auth.admin.createUser({
       id,
       email,
@@ -35,7 +38,10 @@ async function ensureProfileBackedAccount({
       },
     })
 
-    if (error && !/already|duplicate|registered/i.test(error.message)) {
+    // Parallel guest route fetches can race: one request creates the auth user
+    // while another receives Supabase's generic "Database error creating new user".
+    // Re-check the explicit id before treating the create response as fatal.
+    if (error && !/already|duplicate|registered/i.test(error.message) && !(await userExists(supabase, id))) {
       throw new Error(error.message)
     }
   }
