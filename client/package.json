@@ -14,6 +14,7 @@
     "qa:beta-review-packets": "QA_BETA_REVIEW_WRITE_PACKETS=1 node scripts/platform-beta-human-review-readiness.mjs",
     "qa:beta-review-command-center": "node scripts/platform-beta-human-review-command-center.mjs",
     "qa:beta-review-next-wave-ops": "node scripts/platform-beta-human-review-next-wave-ops.mjs",
+    "qa:beta-review-all-wave-ops": "QA_BETA_REVIEW_OPS_SCOPE=all-waves QA_BETA_REVIEW_NEXT_WAVE_OPS_JSON=beta-human-review-all-wave-ops-2026-05-21.json QA_BETA_REVIEW_NEXT_WAVE_OPS_REPORT=beta-human-review-all-wave-ops-2026-05-21.md QA_BETA_REVIEW_NEXT_WAVE_OPS_CSV=beta-human-review-all-wave-ops-2026-05-21.csv node scripts/platform-beta-human-review-next-wave-ops.mjs",
     "qa:beta-review-wave-rehearsal": "node scripts/platform-beta-review-wave-rehearsal.mjs",
     "qa:beta-review-matrix-rehearsal": "QA_BETA_REVIEW_WAVE_REHEARSAL_SCOPE=matrix QA_BETA_REVIEW_WAVE_REHEARSAL_ARTIFACT_NAME=beta-human-review-matrix-rehearsal-2026-05-22 node scripts/platform-beta-review-wave-rehearsal.mjs",
     "qa:beta-review-intake": "node scripts/platform-beta-human-review-intake.mjs",

@@ -8,6 +8,7 @@
   "jsonArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
   "reportArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.md",
   "csvArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.csv",
+  "scope": "next-wave",
   "status": "pass",
   "checked": 4,
   "passed": 4,
@@ -34,9 +35,13 @@
       "BETA-HR-005"
     ]
   },
+  "scheduledWaveCount": 5,
+  "operatorWaveCount": 1,
+  "expectedRowCount": 5,
   "operatorRowCount": 5,
   "operatorRows": [
     {
+      "scope": "next-wave",
       "id": "BETA-HR-001",
       "waveId": "BETA-WAVE-01",
       "kickoffAt": "2026-05-22",
@@ -66,6 +71,7 @@
       "reviewerMessage": "You are assigned BETA-HR-001 for the Globe.travel beta review wave BETA-WAVE-01. Please use phone 390x844, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes."
     },
     {
+      "scope": "next-wave",
       "id": "BETA-HR-002",
       "waveId": "BETA-WAVE-01",
       "kickoffAt": "2026-05-22",
@@ -94,6 +100,7 @@
       "reviewerMessage": "You are assigned BETA-HR-002 for the Globe.travel beta review wave BETA-WAVE-01. Please use desktop 1440x950, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes."
     },
     {
+      "scope": "next-wave",
       "id": "BETA-HR-003",
       "waveId": "BETA-WAVE-01",
       "kickoffAt": "2026-05-22",
@@ -121,6 +128,7 @@
       "reviewerMessage": "You are assigned BETA-HR-003 for the Globe.travel beta review wave BETA-WAVE-01. Please use phone 390x844, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes."
     },
     {
+      "scope": "next-wave",
       "id": "BETA-HR-004",
       "waveId": "BETA-WAVE-01",
       "kickoffAt": "2026-05-22",
@@ -149,6 +157,7 @@
       "reviewerMessage": "You are assigned BETA-HR-004 for the Globe.travel beta review wave BETA-WAVE-01. Please use desktop 1440x950, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes."
     },
     {
+      "scope": "next-wave",
       "id": "BETA-HR-005",
       "waveId": "BETA-WAVE-01",
       "kickoffAt": "2026-05-22",
@@ -187,8 +196,9 @@
       "plannedReviewCount": 25
     },
     {
-      "name": "next-wave ops exposes the current open wave",
+      "name": "next-wave ops exposes the expected review scope",
       "ok": true,
+      "scope": "next-wave",
       "nextWave": {
         "waveId": "BETA-WAVE-01",
         "kickoffAt": "2026-05-22",
@@ -211,17 +221,29 @@
           "BETA-HR-005"
         ]
       },
+      "scheduledWaveIds": [
+        "BETA-WAVE-01",
+        "BETA-WAVE-02",
+        "BETA-WAVE-03",
+        "BETA-WAVE-04",
+        "BETA-WAVE-05"
+      ],
+      "operatorWaveIds": [
+        "BETA-WAVE-01"
+      ],
+      "scheduledReviewCount": 25,
+      "plannedReviewCount": 25,
       "nextWaveReviewIdCount": 5
     },
     {
-      "name": "next-wave ops has one actionable row per remaining wave review",
+      "name": "next-wave ops has one actionable row per remaining scoped review",
       "ok": true,
       "operatorRowCount": 5,
       "expectedRemainingReviewCount": 5,
       "malformedRows": []
     },
     {
-      "name": "next-wave ops CSV includes every current wave review id",
+      "name": "next-wave ops CSV includes every scoped review id",
       "ok": true,
       "csvArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.csv"
     }

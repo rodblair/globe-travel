@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS_DATE || ''
 const registerPath = process.env.QA_BETA_REVIEW_REGISTER || '../qa/beta-human-review-register.json'
+const opsScope = process.env.QA_BETA_REVIEW_OPS_SCOPE || 'next-wave'
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 
 function hasText(value, minLength = 1) {
@@ -49,8 +50,9 @@ function completedSubmissionPath(templatePath) {
 }
 
 function messageFor(row) {
+  const scopeText = row.scope === 'all-waves' ? `wave ${row.waveId}` : `the Globe.travel beta review wave ${row.waveId}`
   return [
-    `You are assigned ${row.id} for the Globe.travel beta review wave ${row.waveId}.`,
+    `You are assigned ${row.id} for ${scopeText}.`,
     `Please use ${row.device} ${row.viewport}, start here: ${row.startUrl}`,
     `Read the packet at ${row.packetPath}, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as ${row.completedSubmissionPath}.`,
     `Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.`,
@@ -100,10 +102,12 @@ const scheduledReviews = Array.isArray(schedule.scheduledReviews) ? schedule.sch
 const nextWave = commandCenter.nextWave || null
 const nextWaveIds = new Set(Array.isArray(nextWave?.reviewIds) ? nextWave.reviewIds : [])
 const nextWaveScheduledRows = scheduledReviews.filter((review) => nextWaveIds.has(review.id))
-const incompleteRows = nextWaveScheduledRows.filter((review) => !reviewIsComplete(plannedById.get(review.id)))
+const scopedScheduledRows = opsScope === 'all-waves' ? scheduledReviews : nextWaveScheduledRows
+const incompleteRows = scopedScheduledRows.filter((review) => !reviewIsComplete(plannedById.get(review.id)))
 const operatorRows = incompleteRows.map((review) => {
   const packet = packetById.get(review.id) || {}
   const row = {
+    scope: opsScope,
     id: review.id,
     waveId: review.waveId,
     kickoffAt: review.kickoffAt,
@@ -155,8 +159,13 @@ const malformedRows = operatorRows.filter((row) => (
   !hasText(row.reviewerMessage, 120)
 ))
 const csvText = rowsToCsv(operatorRows)
+const scheduledWaveIds = [...new Set(scheduledReviews.map((review) => review.waveId).filter(Boolean))]
+const operatorWaveIds = [...new Set(operatorRows.map((row) => row.waveId).filter(Boolean))]
+const expectedRowCount = opsScope === 'all-waves'
+  ? scheduledReviews.filter((review) => !reviewIsComplete(plannedById.get(review.id))).length
+  : Number(nextWave?.remainingReviewCount || 0)
 
-addCheck('next-wave ops inputs are passing and aligned', (
+addCheck(`${opsScope} ops inputs are passing and aligned`, (
   commandCenter.status === 'pass' &&
   schedule.status === 'pass' &&
   packetManifest.packetCount >= plannedReviews.length
@@ -167,26 +176,30 @@ addCheck('next-wave ops inputs are passing and aligned', (
   plannedReviewCount: plannedReviews.length,
 })
 
-addCheck('next-wave ops exposes the current open wave', (
-  nextWave &&
-  hasText(nextWave.waveId) &&
-  Number(nextWave.remainingReviewCount) > 0 &&
-  nextWaveIds.size === Number(nextWave.scheduledReviewCount)
+addCheck(`${opsScope} ops exposes the expected review scope`, (
+  opsScope === 'all-waves'
+    ? scheduledReviews.length === plannedReviews.length && operatorWaveIds.length === scheduledWaveIds.length
+    : nextWave && hasText(nextWave.waveId) && Number(nextWave.remainingReviewCount) > 0 && nextWaveIds.size === Number(nextWave.scheduledReviewCount)
 ), {
+  scope: opsScope,
   nextWave,
+  scheduledWaveIds,
+  operatorWaveIds,
+  scheduledReviewCount: scheduledReviews.length,
+  plannedReviewCount: plannedReviews.length,
   nextWaveReviewIdCount: nextWaveIds.size,
 })
 
-addCheck('next-wave ops has one actionable row per remaining wave review', (
-  operatorRows.length === Number(nextWave?.remainingReviewCount || 0) &&
+addCheck(`${opsScope} ops has one actionable row per remaining scoped review`, (
+  operatorRows.length === expectedRowCount &&
   malformedRows.length === 0
 ), {
   operatorRowCount: operatorRows.length,
-  expectedRemainingReviewCount: nextWave?.remainingReviewCount ?? null,
+  expectedRemainingReviewCount: expectedRowCount,
   malformedRows: malformedRows.map((row) => row.id || '(missing id)'),
 })
 
-addCheck('next-wave ops CSV includes every current wave review id', (
+addCheck(`${opsScope} ops CSV includes every scoped review id`, (
   operatorRows.every((row) => csvText.includes(row.id)) &&
   operatorRows.every((row) => csvText.includes(row.completedSubmissionPath))
 ), {
@@ -204,21 +217,30 @@ const summary = {
   jsonArtifact: `qa/${opsJsonName}`,
   reportArtifact: `qa/${opsReportName}`,
   csvArtifact: `qa/${opsCsvName}`,
+  scope: opsScope,
   status: failures.length === 0 ? 'pass' : 'fail',
   checked: checks.length,
   passed: checks.length - failures.length,
   failed: failures.length,
   nextWave,
+  scheduledWaveCount: scheduledWaveIds.length,
+  operatorWaveCount: operatorWaveIds.length,
+  expectedRowCount,
   operatorRowCount: operatorRows.length,
   operatorRows,
   checks,
   failures,
 }
 
-const report = `# Beta Human Review Next-Wave Ops
+const title = opsScope === 'all-waves' ? 'Beta Human Review All-Wave Ops' : 'Beta Human Review Next-Wave Ops'
+const evidenceBoundary = opsScope === 'all-waves'
+  ? 'This all-wave ops pack is an assignment and outreach artifact, not completed review evidence.'
+  : 'This next-wave ops pack is an assignment and outreach artifact, not completed review evidence.'
+const report = `# ${title}
 
 Date: ${date}
 Today: ${summary.today}
+Scope: ${opsScope}
 Status: ${summary.status}
 
 ## Result
@@ -227,6 +249,7 @@ Status: ${summary.status}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
 - Next wave: ${nextWave?.waveId || 'none'}
+- Waves covered: ${summary.operatorWaveCount}/${summary.scheduledWaveCount}
 - Rows ready to send: ${summary.operatorRowCount}
 - Due: ${nextWave?.dueAt || 'n/a'}
 
@@ -238,7 +261,7 @@ Status: ${summary.status}
 - Run \`npm run qa:beta-review-intake\`; only import with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` after validation is clean.
 - Re-run \`npm run qa:beta-review-progress\`, \`npm run qa:beta-review-command-center\`, \`npm run qa:beta-review-next-wave-ops\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\`.
 
-## Current Wave Rows
+## Operator Rows
 
 | ID | Cohort | Device | Destination | Due | Packet | Completed File |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -263,7 +286,7 @@ ${markdownList(failures.map((failure) => failure.name))}
 
 ## Launch Rule
 
-This next-wave ops pack is an assignment and outreach artifact, not completed review evidence. Public launch still requires ${register.minimumCompletedReviewsForPublicLaunch || 25} completed beta human reviews, zero unresolved P0/P1 findings, complete scorecard evidence, and passing intake/progress artifacts.
+${evidenceBoundary} Public launch still requires ${register.minimumCompletedReviewsForPublicLaunch || 25} completed beta human reviews, zero unresolved P0/P1 findings, complete scorecard evidence, and passing intake/progress artifacts.
 `
 
 await mkdir(resolve(root, 'qa'), { recursive: true })

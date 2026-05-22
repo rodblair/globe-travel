@@ -2,6 +2,7 @@
 
 Date: 2026-05-21
 Today: 2026-05-22
+Scope: next-wave
 Status: pass
 
 ## Result
@@ -10,6 +11,7 @@ Status: pass
 - Passed: 4
 - Failed: 0
 - Next wave: BETA-WAVE-01
+- Waves covered: 1/5
 - Rows ready to send: 5
 - Due: 2026-05-25
 
@@ -21,7 +23,7 @@ Status: pass
 - Run `npm run qa:beta-review-intake`; only import with `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake` after validation is clean.
 - Re-run `npm run qa:beta-review-progress`, `npm run qa:beta-review-command-center`, `npm run qa:beta-review-next-wave-ops`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff`.
 
-## Current Wave Rows
+## Operator Rows
 
 | ID | Cohort | Device | Destination | Due | Packet | Completed File |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -67,9 +69,9 @@ You are assigned BETA-HR-005 for the Globe.travel beta review wave BETA-WAVE-01.
 ## Checks
 
 - Pass: next-wave ops inputs are passing and aligned
-- Pass: next-wave ops exposes the current open wave
-- Pass: next-wave ops has one actionable row per remaining wave review
-- Pass: next-wave ops CSV includes every current wave review id
+- Pass: next-wave ops exposes the expected review scope
+- Pass: next-wave ops has one actionable row per remaining scoped review
+- Pass: next-wave ops CSV includes every scoped review id
 
 ## Failures
 

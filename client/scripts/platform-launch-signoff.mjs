@@ -741,6 +741,7 @@ async function checkRequiredDocs(productionHealth) {
     `${Number(betaStatus.remaining ?? 0)} remaining`,
     betaStatus.nextWave?.waveId,
     betaStatus.nextWaveOpsArtifact,
+    betaStatus.allWaveOpsArtifact,
     betaStatus.waveRehearsalArtifact,
     betaStatus.matrixRehearsalArtifact,
     publicStatus?.publicLaunchBlockerBoard?.artifact,
@@ -2508,6 +2509,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaReviewStatus.executionScheduleReady === true &&
     betaReviewStatus.commandCenterReady === true &&
     betaReviewStatus.nextWaveOpsReady === true &&
+    betaReviewStatus.allWaveOpsReady === true &&
     betaReviewStatus.waveRehearsalReady === true &&
     betaReviewStatus.matrixRehearsalReady === true &&
     Number(betaReviewStatus.packetCount) >= Number(betaReviewStatus.planned || 0) &&
@@ -2525,6 +2527,12 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.nextWaveOpsCsv) &&
     Number(betaReviewStatus.nextWaveOpsIssueCount) === 0 &&
     Number(betaReviewStatus.nextWaveOpsRowCount) === Number(betaReviewStatus.nextWave?.remainingReviewCount || 0) &&
+    hasMeaningfulText(betaReviewStatus.allWaveOpsArtifact) &&
+    hasMeaningfulText(betaReviewStatus.allWaveOpsReport) &&
+    hasMeaningfulText(betaReviewStatus.allWaveOpsCsv) &&
+    Number(betaReviewStatus.allWaveOpsIssueCount) === 0 &&
+    Number(betaReviewStatus.allWaveOpsRowCount) === Number(betaReviewStatus.planned || 0) - Number(betaReviewStatus.completed || 0) &&
+    Number(betaReviewStatus.allWaveOpsWaveCount) >= Number(betaReviewStatus.scheduleWaveCount || 0) &&
     Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     betaReviewStatus.waveRehearsalNonMutating === true &&
@@ -2569,6 +2577,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaCommandCenterIssueCount: betaReviewStatus.commandCenterIssueCount ?? null,
     betaNextWaveOpsReady: betaReviewStatus.nextWaveOpsReady ?? null,
     betaNextWaveOpsIssueCount: betaReviewStatus.nextWaveOpsIssueCount ?? null,
+    betaAllWaveOpsReady: betaReviewStatus.allWaveOpsReady ?? null,
+    betaAllWaveOpsIssueCount: betaReviewStatus.allWaveOpsIssueCount ?? null,
     betaPacketCount: betaReviewStatus.packetCount ?? null,
     betaSubmissionTemplateCount: betaReviewStatus.submissionTemplateCount ?? null,
     betaPlanned: betaReviewStatus.planned ?? null,
@@ -2582,6 +2592,11 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaNextWaveOpsReport: betaReviewStatus.nextWaveOpsReport ?? null,
     betaNextWaveOpsCsv: betaReviewStatus.nextWaveOpsCsv ?? null,
     betaNextWaveOpsRowCount: betaReviewStatus.nextWaveOpsRowCount ?? null,
+    betaAllWaveOpsArtifact: betaReviewStatus.allWaveOpsArtifact ?? null,
+    betaAllWaveOpsReport: betaReviewStatus.allWaveOpsReport ?? null,
+    betaAllWaveOpsCsv: betaReviewStatus.allWaveOpsCsv ?? null,
+    betaAllWaveOpsRowCount: betaReviewStatus.allWaveOpsRowCount ?? null,
+    betaAllWaveOpsWaveCount: betaReviewStatus.allWaveOpsWaveCount ?? null,
     betaWaveRehearsalReady: betaReviewStatus.waveRehearsalReady ?? null,
     betaWaveRehearsalArtifact: betaReviewStatus.waveRehearsalArtifact ?? null,
     betaWaveRehearsalIssueCount: betaReviewStatus.waveRehearsalIssueCount ?? null,

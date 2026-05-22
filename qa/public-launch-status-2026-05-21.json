@@ -28,6 +28,8 @@
     "commandCenterIssueCount": 0,
     "nextWaveOpsReady": true,
     "nextWaveOpsIssueCount": 0,
+    "allWaveOpsReady": true,
+    "allWaveOpsIssueCount": 0,
     "packetManifest": "qa/beta-human-review-packet-manifest-2026-05-21.json",
     "scheduleArtifact": "qa/beta-human-review-schedule-2026-05-21.json",
     "scheduleReport": "qa/beta-human-review-schedule-2026-05-21.md",
@@ -37,6 +39,11 @@
     "nextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
     "nextWaveOpsReport": "qa/beta-human-review-next-wave-ops-2026-05-21.md",
     "nextWaveOpsCsv": "qa/beta-human-review-next-wave-ops-2026-05-21.csv",
+    "allWaveOpsArtifact": "qa/beta-human-review-all-wave-ops-2026-05-21.json",
+    "allWaveOpsReport": "qa/beta-human-review-all-wave-ops-2026-05-21.md",
+    "allWaveOpsCsv": "qa/beta-human-review-all-wave-ops-2026-05-21.csv",
+    "allWaveOpsRowCount": 25,
+    "allWaveOpsWaveCount": 5,
     "waveRehearsalArtifact": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
     "waveRehearsalReport": "qa/beta-human-review-wave-rehearsal-2026-05-22.md",
     "waveRehearsalArtifactDir": "qa/beta-human-review-wave-rehearsal-2026-05-22",
@@ -98,7 +105,8 @@
     "queueIssues": [],
     "scheduleIssues": [],
     "commandCenterIssues": [],
-    "nextWaveOpsIssues": []
+    "nextWaveOpsIssues": [],
+    "allWaveOpsIssues": []
   },
   "productionVisualReviews": {
     "historyCount": 2,
@@ -366,6 +374,7 @@
     "appSurfaces": "qa/app-surfaces-smoke-2026-05-22.json",
     "betaWaveRehearsal": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
     "betaMatrixRehearsal": "qa/beta-human-review-matrix-rehearsal-2026-05-22.json",
+    "betaAllWaveOps": "qa/beta-human-review-all-wave-ops-2026-05-21.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }
