@@ -17,7 +17,7 @@ const visualArtifact =
   'qa/visual-baseline-2026-05-21-full-with-multi-planner-2026-05-21/summary.json'
 const designSystemArtifact =
   process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
-  'qa/design-system-readiness-2026-05-21.json'
+  'qa/design-system-readiness-2026-05-22.json'
 const paidPathReadinessArtifact =
   process.env.QA_LAUNCH_PAID_PATH_ARTIFACT ||
   'qa/paid-path-readiness-2026-05-21.json'

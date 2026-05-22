@@ -8,8 +8,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: f61c9a486be361fb1045c84632e2350bfd8ecc8d
-- Production deployment: globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app
+- Production commit: f6692fd23a6329aeffdbbdc545f73db899136e5d
+- Production deployment: globe-travel-f3s28yfa8-rodney-blairs-projects.vercel.app
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -76,7 +76,7 @@ Production visual-review queue:
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
-- Design-system readiness: `qa/design-system-readiness-2026-05-21.json`
+- Design-system readiness: `qa/design-system-readiness-2026-05-22.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 

@@ -97,10 +97,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4",
-    "summaryArtifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/summary.json",
-    "productionCommit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
-    "deploymentUrl": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-beta-schedule-2026-05-22-f6692fd",
+    "summaryArtifact": "qa/visual-baseline-production-beta-schedule-2026-05-22-f6692fd/summary.json",
+    "productionCommit": "f6692fd23a6329aeffdbbdc545f73db899136e5d",
+    "deploymentUrl": "globe-travel-f3s28yfa8-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -123,7 +123,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live f61c9a4 deployment after the production visual-progress QA tooling deploy. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live f6692fd deployment after the beta review schedule gate deploy. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
@@ -140,10 +140,10 @@
     },
     {
       "reviewedAt": "2026-05-22",
-      "artifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4",
-      "summaryArtifact": "qa/visual-baseline-production-visual-progress-2026-05-22-f61c9a4/summary.json",
-      "productionCommit": "f61c9a486be361fb1045c84632e2350bfd8ecc8d",
-      "deploymentUrl": "globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-beta-schedule-2026-05-22-f6692fd",
+      "summaryArtifact": "qa/visual-baseline-production-beta-schedule-2026-05-22-f6692fd/summary.json",
+      "productionCommit": "f6692fd23a6329aeffdbbdc545f73db899136e5d",
+      "deploymentUrl": "globe-travel-f3s28yfa8-rodney-blairs-projects.vercel.app",
       "reviewedBy": "Codex visual QA",
       "verdict": "pass",
       "blockingFindings": [],
@@ -166,7 +166,7 @@
         "login",
         "signup"
       ],
-      "notes": "Public-launch visual review history entry for the live f61c9a4 production deployment. Production release gate passed 10/10, production visual QA passed 20/20, and the Athens public-share itinerary again verified mapped stops, usable routes, share metadata, and share-card rendering."
+      "notes": "Public-launch visual review history entry for the live f6692fd production deployment. Production release gate passed 10/10, production visual QA passed 20/20, and the Athens public-share itinerary again verified mapped stops, usable routes, share metadata, and share-card rendering after the beta review schedule gate deploy."
     }
   ]
 }

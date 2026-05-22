@@ -6,10 +6,10 @@ Status: Active goal in progress
 
 ## Current Readiness Update - 2026-05-22
 
-- Production is verified on commit `f61c9a486be361fb1045c84632e2350bfd8ecc8d` at deployment `globe-travel-azuuhuexz-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`.
-- Production release verification passed on the live alias: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-visual-progress-2026-05-22-f61c9a4 npm run qa:release-production` passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens five-day public-share map integrity passed `5/5`, and prompt-suite validation passed `60/60`.
+- Production is verified on commit `f6692fd23a6329aeffdbbdc545f73db899136e5d` at deployment `globe-travel-f3s28yfa8-rodney-blairs-projects.vercel.app` with health `ok`, `11/11`.
+- Production release verification passed on the live alias: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-beta-schedule-2026-05-22-f6692fd npm run qa:release-production` passed `10/10`, production visual QA passed `20/20`, public-share viral loop passed `5/5`, Athens five-day public-share map integrity passed `5/5`, and prompt-suite validation passed `60/60`.
 - Launch signoff now verifies that accepted-risk P2 notes match current launch evidence counts, so stale risk narratives cannot silently disagree with `qa/public-launch-status-2026-05-21.json`.
-- Current launch signoff passes `90/90` against commit `f61c9a486be361fb1045c84632e2350bfd8ecc8d`.
+- Current launch signoff passes `92/92` against commit `f6692fd23a6329aeffdbbdc545f73db899136e5d`.
 - Public launch remains intentionally blocked by real evidence only: `0/25` completed beta human reviews with `25` remaining, and `2/4` distinct production visual-review dates with `2` remaining.
 - The in-app Browser backend was unavailable again in this run (`iab` not available), so production verification used the repo's Playwright-backed Browser QA runners.
 
