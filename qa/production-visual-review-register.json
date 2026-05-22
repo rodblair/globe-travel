@@ -97,10 +97,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-release-2026-05-22-2897c3a",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-05-22-2897c3a/summary.json",
-    "productionCommit": "2897c3a16d72c49852ace8763f0840972a647f31",
-    "deploymentUrl": "globe-travel-dhghg8wn2-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-release-2026-05-22-6e4cbf5",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-05-22-6e4cbf5/summary.json",
+    "productionCommit": "6e4cbf5d37d8c984306b7a0b4ad9800a62eba349",
+    "deploymentUrl": "globe-travel-qiig0dnvj-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -123,7 +123,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live 2897c3a deployment after the public share copy-feedback fix. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 20/20 on the live 6e4cbf5 deployment after the public share map integrity evidence guard shipped. No app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker was present in the reviewed artifact."
   },
   "reviewHistory": [
     {
