@@ -123,6 +123,13 @@ const dispatchMarkSentDryRunArtifact =
 const dispatchMarkSentDryRunReport =
   process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_REPORT ||
   'qa/dispatch-log-mark-sent-2026-05-22.md'
+const dispatchMarkSentImportRehearsalArtifact =
+  process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_ARTIFACT ||
+  process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL ||
+  'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json'
+const dispatchMarkSentImportRehearsalReport =
+  process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_REPORT ||
+  'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md'
 const reviewIntakeRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_REHEARSAL ||
@@ -2597,6 +2604,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const dispatchMarkSentDryRunIssues = Array.isArray(dispatchMarkSentDryRunStatus.issues)
     ? dispatchMarkSentDryRunStatus.issues
     : []
+  const dispatchMarkSentImportRehearsalStatus = status.dispatchMarkSentImportRehearsal || {}
+  const dispatchMarkSentImportRehearsalIssues = Array.isArray(dispatchMarkSentImportRehearsalStatus.issues)
+    ? dispatchMarkSentImportRehearsalStatus.issues
+    : []
   const reviewIntakeRehearsalStatus = status.reviewIntakeRehearsal || {}
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
@@ -3137,6 +3148,59 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     expectedBetaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact || null,
     expectedVisualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact || null,
     dispatchMarkSentDryRunIssues,
+  })
+
+  addCheck('public launch status includes dispatch mark-sent import rehearsal', (
+    dispatchMarkSentImportRehearsalStatus.ready === true &&
+    dispatchMarkSentImportRehearsalStatus.artifact === dispatchMarkSentImportRehearsalArtifact &&
+    dispatchMarkSentImportRehearsalStatus.report === dispatchMarkSentImportRehearsalReport &&
+    status.artifacts?.dispatchMarkSentImportRehearsal === dispatchMarkSentImportRehearsalArtifact &&
+    Number(dispatchMarkSentImportRehearsalStatus.issueCount) === 0 &&
+    dispatchMarkSentImportRehearsalStatus.fixtureArtifact === 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json' &&
+    Number(dispatchMarkSentImportRehearsalStatus.markSentExitCode) === 0 &&
+    dispatchMarkSentImportRehearsalStatus.markSentStatus === 'pass' &&
+    dispatchMarkSentImportRehearsalStatus.markSentImportMode === true &&
+    Boolean(dispatchMarkSentImportRehearsalStatus.importedRows?.beta) &&
+    Boolean(dispatchMarkSentImportRehearsalStatus.importedRows?.visual) &&
+    Number(dispatchMarkSentImportRehearsalStatus.tempBetaSentCount) > 0 &&
+    Number(dispatchMarkSentImportRehearsalStatus.tempVisualSentCount) > 0 &&
+    Number(dispatchMarkSentImportRehearsalStatus.launchOperatorExitCode) === 0 &&
+    dispatchMarkSentImportRehearsalStatus.launchOperatorStatus === 'pass' &&
+    dispatchMarkSentImportRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+    Array.isArray(dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds) &&
+    !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.beta) &&
+    !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.visual) &&
+    Number(dispatchMarkSentImportRehearsalStatus.launchOperatorBetaCompleted) === 0 &&
+    Number(dispatchMarkSentImportRehearsalStatus.launchOperatorVisualHistoryCount) === 2 &&
+    Number(dispatchMarkSentImportRehearsalStatus.canonicalBetaSentCount) === 0 &&
+    Number(dispatchMarkSentImportRehearsalStatus.canonicalVisualSentCount) === 0 &&
+    dispatchMarkSentImportRehearsalStatus.rawArtifactsCleanedUp === true &&
+    dispatchMarkSentImportRehearsalIssues.length === 0
+  ), {
+    dispatchMarkSentImportRehearsalArtifact: dispatchMarkSentImportRehearsalStatus.artifact || null,
+    expectedDispatchMarkSentImportRehearsalArtifact: dispatchMarkSentImportRehearsalArtifact,
+    dispatchMarkSentImportRehearsalReport: dispatchMarkSentImportRehearsalStatus.report || null,
+    expectedDispatchMarkSentImportRehearsalReport: dispatchMarkSentImportRehearsalReport,
+    publicStatusArtifact: status.artifacts?.dispatchMarkSentImportRehearsal || null,
+    dispatchMarkSentImportRehearsalReady: dispatchMarkSentImportRehearsalStatus.ready ?? null,
+    dispatchMarkSentImportRehearsalIssueCount: dispatchMarkSentImportRehearsalStatus.issueCount ?? null,
+    dispatchMarkSentImportRehearsalFixtureArtifact: dispatchMarkSentImportRehearsalStatus.fixtureArtifact || null,
+    dispatchMarkSentImportRehearsalMarkSentExitCode: dispatchMarkSentImportRehearsalStatus.markSentExitCode ?? null,
+    dispatchMarkSentImportRehearsalMarkSentStatus: dispatchMarkSentImportRehearsalStatus.markSentStatus || null,
+    dispatchMarkSentImportRehearsalMarkSentImportMode: dispatchMarkSentImportRehearsalStatus.markSentImportMode ?? null,
+    dispatchMarkSentImportRehearsalImportedRows: dispatchMarkSentImportRehearsalStatus.importedRows || null,
+    dispatchMarkSentImportRehearsalTempBetaSentCount: dispatchMarkSentImportRehearsalStatus.tempBetaSentCount ?? null,
+    dispatchMarkSentImportRehearsalTempVisualSentCount: dispatchMarkSentImportRehearsalStatus.tempVisualSentCount ?? null,
+    dispatchMarkSentImportRehearsalLaunchExitCode: dispatchMarkSentImportRehearsalStatus.launchOperatorExitCode ?? null,
+    dispatchMarkSentImportRehearsalLaunchStatus: dispatchMarkSentImportRehearsalStatus.launchOperatorStatus || null,
+    dispatchMarkSentImportRehearsalLaunchPublicStatus: dispatchMarkSentImportRehearsalStatus.launchOperatorPublicLaunchStatus || null,
+    dispatchMarkSentImportRehearsalActionIds: dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds || null,
+    dispatchMarkSentImportRehearsalBetaCompleted: dispatchMarkSentImportRehearsalStatus.launchOperatorBetaCompleted ?? null,
+    dispatchMarkSentImportRehearsalVisualHistoryCount: dispatchMarkSentImportRehearsalStatus.launchOperatorVisualHistoryCount ?? null,
+    dispatchMarkSentImportRehearsalCanonicalBetaSentCount: dispatchMarkSentImportRehearsalStatus.canonicalBetaSentCount ?? null,
+    dispatchMarkSentImportRehearsalCanonicalVisualSentCount: dispatchMarkSentImportRehearsalStatus.canonicalVisualSentCount ?? null,
+    dispatchMarkSentImportRehearsalRawArtifactsCleanedUp: dispatchMarkSentImportRehearsalStatus.rawArtifactsCleanedUp ?? null,
+    dispatchMarkSentImportRehearsalIssues,
   })
 
   addCheck('public launch status includes review intake rejection rehearsal', (

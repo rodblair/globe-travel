@@ -450,6 +450,39 @@
     ],
     "issues": []
   },
+  "dispatchMarkSentImportRehearsal": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json",
+    "report": "qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md",
+    "date": "2026-05-22",
+    "fixtureArtifact": "qa/dispatch-log-mark-sent-fixture-2026-05-22.json",
+    "markSentExitCode": 0,
+    "markSentStatus": "pass",
+    "markSentImportMode": true,
+    "importedRows": {
+      "beta": "BETA-HR-001",
+      "visual": "PROD-VISUAL-HISTORY-002"
+    },
+    "tempBetaSentCount": 1,
+    "tempVisualSentCount": 1,
+    "launchOperatorExitCode": 0,
+    "launchOperatorStatus": "pass",
+    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+    "launchOperatorActionRowCount": 4,
+    "launchOperatorActionIds": [
+      "BETA-HR-002",
+      "BETA-HR-003",
+      "BETA-HR-004",
+      "BETA-HR-005"
+    ],
+    "launchOperatorBetaCompleted": 0,
+    "launchOperatorVisualHistoryCount": 2,
+    "canonicalBetaSentCount": 0,
+    "canonicalVisualSentCount": 0,
+    "rawArtifactsCleanedUp": true,
+    "issues": []
+  },
   "reviewIntakeRehearsal": {
     "ready": true,
     "issueCount": 0,
@@ -832,6 +865,7 @@
     "launchOperatorTodayOverdueRehearsal": "qa/launch-operator-today-overdue-rehearsal-2026-05-22.json",
     "launchOperatorSentDispatchRehearsal": "qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json",
     "dispatchMarkSentDryRun": "qa/dispatch-log-mark-sent-2026-05-22.json",
+    "dispatchMarkSentImportRehearsal": "qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json",
     "reviewIntakeRehearsal": "qa/review-intake-rehearsal-2026-05-22.json",
     "publicLaunchModeRehearsal": "qa/public-launch-mode-rehearsal-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
