@@ -83,6 +83,27 @@ const packetRows = await Promise.all(templateRows.map(async (row) => {
     contactRecordLocation: row.contactRecordLocation || '',
   }
 }))
+const operatorBrief = {
+  immediateExternalAction: launchOperator.operatorHandoff?.immediateExternalAction || 'Send the prepared outreach messages, then record sent proof.',
+  publicLaunchBoundary: 'This packet is outreach material only; it is not completed beta-review or production visual-review evidence.',
+  sendOrder: packetRows.map((row, index) => ({
+    order: index + 1,
+    id: row.id,
+    workType: row.workType,
+    priority: row.priority || 'n/a',
+    destination: row.destination,
+    messageSubject: row.messageSubject,
+    messageFile: row.messageFile,
+    completedEvidenceTarget: row.completedSubmissionPath,
+  })),
+  proofFieldsToFillAfterSending: [
+    'reviewerAlias',
+    'deliveryChannel',
+    'sentAt',
+    'contactRecordLocation',
+  ],
+  proofPrivacyRule: 'Keep names, emails, phone numbers, and other contact details in the external contact system; store only aliases and external proof pointers in repo artifacts.',
+}
 
 const messageFileChecks = await Promise.all(packetRows.map(async (row) => ({
   id: row.id,
@@ -113,6 +134,11 @@ const sensitiveRows = packetRows.filter((row) => (
   looksSensitive(row.reviewerAlias) ||
   looksSensitive(row.contactRecordLocation)
 )).map((row) => row.id)
+const requiredProofFields = ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contactRecordLocation']
+const operatorBriefSendIds = new Set(operatorBrief.sendOrder.map((row) => row.id))
+const missingOperatorBriefRows = packetRows.filter((row) => !operatorBriefSendIds.has(row.id)).map((row) => row.id)
+const missingOperatorBriefProofFields = requiredProofFields
+  .filter((field) => !operatorBrief.proofFieldsToFillAfterSending.includes(field))
 
 const checks = [
   {
@@ -169,6 +195,19 @@ const checks = [
     rowsMissingContext,
     sensitiveRows,
   },
+  {
+    name: 'launch dispatch packet includes a concise operator brief and send order',
+    ok: hasText(operatorBrief.immediateExternalAction) &&
+      String(operatorBrief.publicLaunchBoundary || '').includes('not completed') &&
+      String(operatorBrief.proofPrivacyRule || '').includes('external contact system') &&
+      operatorBrief.sendOrder.length === packetRows.length &&
+      missingOperatorBriefRows.length === 0 &&
+      missingOperatorBriefProofFields.length === 0,
+    immediateExternalAction: operatorBrief.immediateExternalAction,
+    sendOrderCount: operatorBrief.sendOrder.length,
+    missingOperatorBriefRows,
+    missingOperatorBriefProofFields,
+  },
 ]
 
 const failures = checks.filter((check) => !check.ok)
@@ -184,6 +223,7 @@ const summary = {
   rowCount: packetRows.length,
   betaRowCount: packetRows.filter((row) => row.workType === 'beta-human-review').length,
   visualRowCount: packetRows.filter((row) => row.workType === 'production-visual-review').length,
+  operatorBrief,
   csvValidationCommand: sentRecordTemplate.csvValidationCommand,
   csvImportCommand: sentRecordTemplate.csvImportCommand,
   postImportCommands: sentRecordTemplate.postImportCommands || [],
@@ -208,6 +248,17 @@ Status: ${summary.status}
 - Sent-record template: \`${summary.sentRecordTemplateArtifact}\`
 - Sent-record CSV to fill after real outreach: \`${summary.sentRecordTemplateCsv}\`
 - Outreach rows: ${summary.rowCount} (${summary.betaRowCount} beta, ${summary.visualRowCount} visual)
+
+## Operator Brief
+
+- Immediate external action: ${summary.operatorBrief.immediateExternalAction}
+- Boundary: ${summary.operatorBrief.publicLaunchBoundary}
+- Privacy rule: ${summary.operatorBrief.proofPrivacyRule}
+- Proof fields to fill after sending: ${summary.operatorBrief.proofFieldsToFillAfterSending.map((field) => `\`${field}\``).join(', ')}
+
+| Order | ID | Type | Priority | Subject | Message File | Completed Evidence Target |
+| --- | --- | --- | --- | --- | --- | --- |
+${summary.operatorBrief.sendOrder.map((row) => `| ${row.order} | ${row.id} | ${row.workType} | ${row.priority} | ${row.messageSubject} | \`${row.messageFile}\` | \`${row.completedEvidenceTarget}\` |`).join('\n')}
 
 ## Operating Meaning
 

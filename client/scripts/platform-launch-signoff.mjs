@@ -1752,6 +1752,16 @@ async function checkLaunchDispatchPacketArtifact() {
       !hasMeaningfulText(row.validateCommand) ||
       !hasMeaningfulText(row.importCommand))
     .map((row) => row.id)
+  const operatorBrief = packet.operatorBrief || {}
+  const operatorBriefSendOrder = Array.isArray(operatorBrief.sendOrder) ? operatorBrief.sendOrder : []
+  const operatorBriefSendIds = new Set(operatorBriefSendOrder.map((row) => row.id))
+  const missingOperatorBriefRows = rows.filter((row) => !operatorBriefSendIds.has(row.id)).map((row) => row.id)
+  const requiredOperatorBriefProofFields = ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contactRecordLocation']
+  const operatorBriefProofFields = Array.isArray(operatorBrief.proofFieldsToFillAfterSending)
+    ? operatorBrief.proofFieldsToFillAfterSending
+    : []
+  const missingOperatorBriefProofFields = requiredOperatorBriefProofFields
+    .filter((field) => !operatorBriefProofFields.includes(field))
   const reportExists = await fileExists(launchDispatchPacketReport)
 
   addCheck('launch dispatch packet artifact is readable', true, {
@@ -1780,6 +1790,12 @@ async function checkLaunchDispatchPacketArtifact() {
     missingMessageRows.length === 0 &&
     rowsWithProofFields.length === 0 &&
     rowsMissingContext.length === 0 &&
+    hasMeaningfulText(operatorBrief.immediateExternalAction) &&
+    String(operatorBrief.publicLaunchBoundary || '').includes('not completed') &&
+    String(operatorBrief.proofPrivacyRule || '').includes('external contact system') &&
+    operatorBriefSendOrder.length === rows.length &&
+    missingOperatorBriefRows.length === 0 &&
+    missingOperatorBriefProofFields.length === 0 &&
     String(packet.csvValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
     String(packet.csvImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
     Array.isArray(packet.postImportCommands) &&
@@ -1800,6 +1816,10 @@ async function checkLaunchDispatchPacketArtifact() {
     missingMessageRows,
     rowsWithProofFields,
     rowsMissingContext,
+    operatorBriefImmediateExternalAction: operatorBrief.immediateExternalAction || null,
+    operatorBriefSendOrderCount: operatorBriefSendOrder.length,
+    missingOperatorBriefRows,
+    missingOperatorBriefProofFields,
     failedChecks,
     failureCount: failures.length,
     csvValidationCommand: packet.csvValidationCommand || null,

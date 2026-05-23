@@ -5,13 +5,29 @@ Status: pass
 
 ## Result
 
-- Checked: 7
-- Passed: 7
+- Checked: 8
+- Passed: 8
 - Failed: 0
 - Launch operator board: `qa/launch-operator-today-2026-05-23.json`
 - Sent-record template: `qa/dispatch-sent-record-template-2026-05-23.json`
 - Sent-record CSV to fill after real outreach: `qa/dispatch-sent-record-template-2026-05-23.csv`
 - Outreach rows: 6 (5 beta, 1 visual)
+
+## Operator Brief
+
+- Immediate external action: Send or reassign 5 overdue beta invites now.
+- Boundary: This packet is outreach material only; it is not completed beta-review or production visual-review evidence.
+- Privacy rule: Keep names, emails, phone numbers, and other contact details in the external contact system; store only aliases and external proof pointers in repo artifacts.
+- Proof fields to fill after sending: `reviewerAlias`, `deliveryChannel`, `sentAt`, `contactRecordLocation`
+
+| Order | ID | Type | Priority | Subject | Message File | Completed Evidence Target |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | BETA-HR-001 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
+| 2 | BETA-HR-002 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
+| 3 | BETA-HR-003 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
+| 4 | BETA-HR-004 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
+| 5 | BETA-HR-005 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
+| 6 | PROD-VISUAL-HISTORY-002 | production-visual-review | P1 | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Operating Meaning
 
@@ -352,6 +368,7 @@ This message is visual-review outreach, not completed visual-review history. Pub
 - Pass: launch dispatch packet keeps proof fields blank until real outreach is sent
 - Pass: launch dispatch packet includes validation and import commands for every row
 - Pass: launch dispatch packet includes complete operator context without sensitive contact details
+- Pass: launch dispatch packet includes a concise operator brief and send order
 
 ## Failures
 
