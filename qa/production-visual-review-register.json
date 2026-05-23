@@ -100,10 +100,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-e629404",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json",
-    "productionCommit": "e6294047034a653f45f489cfa5d0c6e45d601bcf",
-    "deploymentUrl": "globe-travel-oftzu4ak3-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e/summary.json",
+    "productionCommit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5",
+    "deploymentUrl": "globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live e629404 deployment after the GlobeBrand runtime and launch-status deployment-currency guard reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live fd7d17e deployment after onboarding polish and launch-operator evidence refresh reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker."
   },
   "reviewHistory": [
     {

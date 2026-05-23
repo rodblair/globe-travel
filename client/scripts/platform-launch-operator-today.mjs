@@ -287,6 +287,14 @@ function addCheck(name, ok, detail = {}) {
   checks.push({ name, ok: Boolean(ok), ...detail })
 }
 
+const publicGuardrailIssues = Array.isArray(publicStatus.guardrailIssues) ? publicStatus.guardrailIssues : []
+const launchOperatorSelfGuardrailIssues = new Set([
+  'daily launch operator board is not aligned with current blocker evidence',
+  'daily launch operator sent-dispatch rehearsal is not proving sent-state behavior',
+])
+const onlyLaunchOperatorSelfGuardrails =
+  publicGuardrailIssues.length > 0 &&
+  publicGuardrailIssues.every((issue) => launchOperatorSelfGuardrailIssues.has(issue))
 const releaseStatusIsActionable = (
   publicStatus.status === 'beta-ready-public-blocked' &&
   publicStatus.betaReady === true &&
@@ -295,6 +303,11 @@ const releaseStatusIsActionable = (
   publicStatus.status === 'blocked' &&
   publicStatus.publicLaunchReady === false &&
   deploymentRuntimeBlocked
+) || (
+  publicStatus.status === 'blocked' &&
+  publicStatus.publicLaunchReady === false &&
+  !deploymentRuntimeBlocked &&
+  onlyLaunchOperatorSelfGuardrails
 )
 addCheck('launch today reads current blocked release status', releaseStatusIsActionable, {
   status: publicStatus.status || null,
@@ -303,6 +316,8 @@ addCheck('launch today reads current blocked release status', releaseStatusIsAct
   deploymentRuntimeBlocked,
   deploymentCurrencyError: deploymentCurrency.error || null,
   latestRuntimeCommit: deploymentRuntimeCommitShort || null,
+  guardrailIssues: publicGuardrailIssues,
+  onlyLaunchOperatorSelfGuardrails,
 })
 
 addCheck('launch today has actionable deployment, beta, or visual work', uniquePriorityRows.length > 0, {
@@ -382,6 +397,8 @@ const summary = {
   deploymentRuntimeCommitShort: deploymentRuntimeCommitShort || null,
   liveDeploymentCommit: publicStatus.liveDeployment?.commit || null,
   publicLaunchStatus: publicStatus.status || null,
+  publicGuardrailIssues,
+  publicOnlyLaunchOperatorSelfGuardrails: onlyLaunchOperatorSelfGuardrails,
   betaReviews: publicStatus.betaHumanReviews
     ? {
         completed: publicStatus.betaHumanReviews.completed,

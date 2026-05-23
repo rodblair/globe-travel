@@ -147,9 +147,13 @@ const actionRows = Array.isArray(launchSummary?.actionRows) ? launchSummary.acti
 const launchOperatorDeploymentRuntimeBlocked =
   launchSummary?.publicLaunchStatus === 'blocked' &&
   actionRows.some((row) => row.id === 'production-runtime-deployment-currency')
+const launchOperatorOnlySelfGuardrails =
+  launchSummary?.publicLaunchStatus === 'blocked' &&
+  launchSummary?.publicOnlyLaunchOperatorSelfGuardrails === true
 const launchOperatorEvidenceBlocked =
   launchSummary?.publicLaunchStatus === 'beta-ready-public-blocked' ||
-  launchOperatorDeploymentRuntimeBlocked
+  launchOperatorDeploymentRuntimeBlocked ||
+  launchOperatorOnlySelfGuardrails
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const checks = [
@@ -227,6 +231,7 @@ const summary = {
   launchOperatorStatus: launchSummary?.status || null,
   launchOperatorPublicLaunchStatus: launchSummary?.publicLaunchStatus || null,
   launchOperatorDeploymentRuntimeBlocked,
+  launchOperatorOnlySelfGuardrails,
   launchOperatorActionRowCount: actionRows.length,
   launchOperatorActionIds: actionRows.map((row) => row.id),
   currentLaunchArtifact,

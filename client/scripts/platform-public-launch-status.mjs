@@ -2106,7 +2106,13 @@ const launchSentDispatchPublicStatusCurrent = deploymentCurrency.enforced && dep
   ? launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'blocked' &&
     launchSentDispatchHasDeploymentAction &&
     launchOperatorSentDispatchRehearsal.launchOperatorDeploymentRuntimeBlocked === true
-  : launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+  : (
+      launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' ||
+      (
+        launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'blocked' &&
+        launchOperatorSentDispatchRehearsal.launchOperatorOnlySelfGuardrails === true
+      )
+    ) &&
     !launchSentDispatchHasDeploymentAction
 if (launchOperatorSentDispatchRehearsal.status !== 'pass') {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal status is not pass')
@@ -3093,6 +3099,7 @@ const summary = {
     launchOperatorStatus: launchOperatorSentDispatchRehearsal.launchOperatorStatus || null,
     launchOperatorPublicLaunchStatus: launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus || null,
     launchOperatorDeploymentRuntimeBlocked: launchOperatorSentDispatchRehearsal.launchOperatorDeploymentRuntimeBlocked ?? null,
+    launchOperatorOnlySelfGuardrails: launchOperatorSentDispatchRehearsal.launchOperatorOnlySelfGuardrails ?? null,
     launchOperatorActionRowCount: launchOperatorSentDispatchRehearsal.launchOperatorActionRowCount ?? null,
     launchOperatorActionIds: launchSentDispatchActionIds,
     rawArtifactsCleanedUp: launchOperatorSentDispatchRehearsal.rawArtifactsCleanedUp ?? null,

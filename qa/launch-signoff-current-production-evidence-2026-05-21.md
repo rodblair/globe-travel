@@ -4,10 +4,10 @@ Date: 2026-05-21
 
 ## Runtime Brand And Deployment Currency Guard Postdeploy Evidence
 
-Commit `e6294047034a653f45f489cfa5d0c6e45d601bcf` deployed to Vercel production on 2026-05-22.
+Commit `fd7d17e9780f1b73051ef56b3fde655c01a4a3e5` deployed to Vercel production on 2026-05-22.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-oftzu4ak3-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,12 +16,12 @@ Commit `e6294047034a653f45f489cfa5d0c6e45d601bcf` deployed to Vercel production 
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-e629404/`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e/`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `60/60`
-- Public launch status remains `blocked`; guardrail issues now only require refreshed monitoring and rollback pointers before beta-ready status can resume.
-- Current production commit: `e6294047034a653f45f489cfa5d0c6e45d601bcf`
+- Public launch status is `beta-ready-public-blocked`; deployment currency is clear, guardrail issues are empty, and the only public blockers are beta reviews plus production visual-review history.
+- Current production commit: `fd7d17e9780f1b73051ef56b3fde655c01a4a3e5`
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Launch Social Preview And Public Metadata Postdeploy Evidence
