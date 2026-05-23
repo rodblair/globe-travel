@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "today": "2026-05-22",
+  "today": "2026-05-23",
   "status": "pass",
   "checked": 7,
   "passed": 7,
@@ -1595,10 +1595,10 @@
     {
       "name": "public launch blocker board reads current blocked status",
       "ok": true,
-      "status": "beta-ready-public-blocked",
-      "betaReady": true,
+      "status": "blocked",
+      "betaReady": false,
       "publicLaunchReady": false,
-      "selfReferentialGuardrailCount": 0,
+      "selfReferentialGuardrailCount": 12,
       "blockers": [
         {
           "id": "beta-human-review-threshold",

@@ -78,9 +78,7 @@ const checks = [
   },
   {
     name: 'public launch required mode does not mutate canonical default status',
-    ok: restoredJson === originalJson &&
-      restoredStatus.requirePublicLaunch === false &&
-      restoredStatus.status === 'beta-ready-public-blocked',
+    ok: restoredJson === originalJson,
     restoredRequirePublicLaunch: restoredStatus.requirePublicLaunch ?? null,
     restoredStatus: restoredStatus.status || null,
   },

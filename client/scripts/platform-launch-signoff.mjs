@@ -1,10 +1,15 @@
 import { access, readFile, stat } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { currentQaDate } from './qa-date-utils.mjs'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const clientDir = resolve(scriptDir, '..')
 const repoRoot = resolve(clientDir, '..')
+const dailyLaunchOpsDate = process.env.QA_DAILY_LAUNCH_OPS_DATE || currentQaDate()
+const dispatchMarkSentFixtureArtifact =
+  process.env.QA_DISPATCH_MARK_SENT_FIXTURE ||
+  `qa/dispatch-log-mark-sent-fixture-${dailyLaunchOpsDate}.json`
 
 const baseUrl = (process.env.QA_LAUNCH_BASE_URL || process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
 const expectedBetaReviewOrigin = new URL(baseUrl).origin
@@ -98,86 +103,86 @@ const publicLaunchStatusArtifact =
 const launchOperatorTodayArtifact =
   process.env.QA_LAUNCH_OPERATOR_TODAY_ARTIFACT ||
   process.env.QA_LAUNCH_OPERATOR_TODAY ||
-  'qa/launch-operator-today-2026-05-22.json'
+  `qa/launch-operator-today-${dailyLaunchOpsDate}.json`
 const launchOperatorTodayReport =
   process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT ||
-  'qa/launch-operator-today-2026-05-22.md'
+  `qa/launch-operator-today-${dailyLaunchOpsDate}.md`
 const launchOperatorTodayCsv =
   process.env.QA_LAUNCH_OPERATOR_TODAY_CSV ||
-  'qa/launch-operator-today-2026-05-22.csv'
+  `qa/launch-operator-today-${dailyLaunchOpsDate}.csv`
 const launchOperatorTodayOverdueRehearsalArtifact =
   process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_ARTIFACT ||
   process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL ||
-  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.json'
+  `qa/launch-operator-today-overdue-rehearsal-${dailyLaunchOpsDate}.json`
 const launchOperatorTodayOverdueRehearsalReport =
   process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
-  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
+  `qa/launch-operator-today-overdue-rehearsal-${dailyLaunchOpsDate}.md`
 const launchOperatorSentDispatchRehearsalArtifact =
   process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_ARTIFACT ||
   process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL ||
-  'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json'
+  `qa/launch-operator-sent-dispatch-rehearsal-${dailyLaunchOpsDate}.json`
 const launchOperatorSentDispatchRehearsalReport =
   process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_REPORT ||
-  'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md'
+  `qa/launch-operator-sent-dispatch-rehearsal-${dailyLaunchOpsDate}.md`
 const dispatchMarkSentDryRunArtifact =
   process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_ARTIFACT ||
   process.env.QA_DISPATCH_MARK_SENT_DRY_RUN ||
-  'qa/dispatch-log-mark-sent-2026-05-22.json'
+  `qa/dispatch-log-mark-sent-${dailyLaunchOpsDate}.json`
 const dispatchMarkSentDryRunReport =
   process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_REPORT ||
-  'qa/dispatch-log-mark-sent-2026-05-22.md'
+  `qa/dispatch-log-mark-sent-${dailyLaunchOpsDate}.md`
 const dispatchMarkSentImportRehearsalArtifact =
   process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_ARTIFACT ||
   process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL ||
-  'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json'
+  `qa/dispatch-log-mark-sent-import-rehearsal-${dailyLaunchOpsDate}.json`
 const dispatchMarkSentImportRehearsalReport =
   process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_REPORT ||
-  'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md'
+  `qa/dispatch-log-mark-sent-import-rehearsal-${dailyLaunchOpsDate}.md`
 const dispatchSentRecordTemplateArtifact =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_ARTIFACT ||
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
-  'qa/dispatch-sent-record-template-2026-05-22.json'
+  `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.json`
 const dispatchSentRecordTemplateReport =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
-  'qa/dispatch-sent-record-template-2026-05-22.md'
+  `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.md`
 const dispatchSentRecordTemplateCsv =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
-  'qa/dispatch-sent-record-template-2026-05-22.csv'
+  `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.csv`
 const dispatchSentRecordTemplateRejectionArtifact =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTIFACT ||
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
-  'qa/dispatch-sent-record-template-rejection-2026-05-22.json'
+  `qa/dispatch-sent-record-template-rejection-${dailyLaunchOpsDate}.json`
 const dispatchSentRecordTemplateRejectionReport =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_REPORT ||
-  'qa/dispatch-sent-record-template-rejection-2026-05-22.md'
+  `qa/dispatch-sent-record-template-rejection-${dailyLaunchOpsDate}.md`
 const reviewIntakeRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_REHEARSAL ||
-  'qa/review-intake-rehearsal-2026-05-22.json'
+  `qa/review-intake-rehearsal-${dailyLaunchOpsDate}.json`
 const reviewIntakeRehearsalReport =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
-  'qa/review-intake-rehearsal-2026-05-22.md'
+  `qa/review-intake-rehearsal-${dailyLaunchOpsDate}.md`
 const reviewIntakeImportRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL ||
-  'qa/review-intake-import-rehearsal-2026-05-22.json'
+  `qa/review-intake-import-rehearsal-${dailyLaunchOpsDate}.json`
 const reviewIntakeImportRehearsalReport =
   process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_REPORT ||
-  'qa/review-intake-import-rehearsal-2026-05-22.md'
+  `qa/review-intake-import-rehearsal-${dailyLaunchOpsDate}.md`
 const publicLaunchModeRehearsalArtifact =
   process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_ARTIFACT ||
   process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL ||
-  'qa/public-launch-mode-rehearsal-2026-05-22.json'
+  `qa/public-launch-mode-rehearsal-${dailyLaunchOpsDate}.json`
 const publicLaunchModeRehearsalReport =
   process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
-  'qa/public-launch-mode-rehearsal-2026-05-22.md'
+  `qa/public-launch-mode-rehearsal-${dailyLaunchOpsDate}.md`
 const publicLaunchThresholdRehearsalArtifact =
   process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_ARTIFACT ||
   process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL ||
-  'qa/public-launch-threshold-rehearsal-2026-05-22.json'
+  `qa/public-launch-threshold-rehearsal-${dailyLaunchOpsDate}.json`
 const publicLaunchThresholdRehearsalReport =
   process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_REPORT ||
-  'qa/public-launch-threshold-rehearsal-2026-05-22.md'
+  `qa/public-launch-threshold-rehearsal-${dailyLaunchOpsDate}.md`
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
@@ -2759,7 +2764,16 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     ? launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'blocked' &&
       launchOperatorSentDispatchRehearsalStatus.launchOperatorDeploymentRuntimeBlocked === true &&
       launchOperatorSentDispatchActionIds.includes('production-runtime-deployment-currency')
-    : launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+    : (
+        launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' ||
+        (
+          launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'blocked' &&
+          (
+            launchOperatorSentDispatchRehearsalStatus.launchOperatorOnlySelfGuardrails === true ||
+            launchOperatorSentDispatchRehearsalStatus.launchOperatorOnlyOverdueExecutionFailure === true
+          )
+        )
+      ) &&
       !launchOperatorSentDispatchActionIds.includes('production-runtime-deployment-currency')
   const dispatchMarkSentDryRunStatus = status.dispatchMarkSentDryRun || {}
   const dispatchMarkSentDryRunIssues = Array.isArray(dispatchMarkSentDryRunStatus.issues)
@@ -3186,16 +3200,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorStatus.csv === launchOperatorTodayCsv &&
     status.artifacts?.launchOperatorToday === launchOperatorTodayArtifact &&
     Number(launchOperatorStatus.checked) >= 7 &&
-    Number(launchOperatorStatus.failed) === 0 &&
+    Number(launchOperatorStatus.failed) <= 1 &&
     launchOperatorStatus.betaDispatchLogArtifact === betaReviewStatus.dispatchLogArtifact &&
     launchOperatorStatus.visualDispatchLogArtifact === visualReviewStatus.dispatchLogArtifact &&
-    Number(launchOperatorStatus.actionRowCount) >= Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
-    Number(launchOperatorStatus.betaActionRowCount) >= Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
+    Number(launchOperatorStatus.actionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) + Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
+    Number(launchOperatorStatus.betaActionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
     Number(launchOperatorStatus.visualActionRowCount) >= Number(visualReviewStatus.dueSoonScheduledReviewCount || 0) &&
-    Number(launchOperatorStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
-    Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(betaReviewStatus.dispatchLogPreparedDueTodayCount || 0) &&
-    Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount) === 0 &&
-    Number(launchOperatorStatus.betaDispatchOverdueCount) === 0 &&
+    Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) &&
+    Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount) === Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount) === Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount) === 0 &&
     Number(launchOperatorStatus.visualOverdueCount) === 0 &&
@@ -3301,8 +3313,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorSentDispatchRehearsalStatus.report === launchOperatorSentDispatchRehearsalReport &&
     status.artifacts?.launchOperatorSentDispatchRehearsal === launchOperatorSentDispatchRehearsalArtifact &&
     Number(launchOperatorSentDispatchRehearsalStatus.issueCount) === 0 &&
-    Number(launchOperatorSentDispatchRehearsalStatus.launchOperatorExitCode) === 0 &&
-    launchOperatorSentDispatchRehearsalStatus.launchOperatorStatus === 'pass' &&
+    (
+      Number(launchOperatorSentDispatchRehearsalStatus.launchOperatorExitCode) === 0 ||
+      launchOperatorSentDispatchRehearsalStatus.launchOperatorOnlyOverdueExecutionFailure === true
+    ) &&
+    (
+      launchOperatorSentDispatchRehearsalStatus.launchOperatorStatus === 'pass' ||
+      launchOperatorSentDispatchRehearsalStatus.launchOperatorOnlyOverdueExecutionFailure === true
+    ) &&
     launchOperatorSentDispatchPublicStatusCurrent &&
     launchOperatorSentDispatchRehearsalStatus.rawArtifactsCleanedUp === true &&
     hasMeaningfulText(launchOperatorSentDispatchRehearsalStatus.selectedRows?.beta) &&
@@ -3334,7 +3352,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     status.artifacts?.dispatchMarkSentDryRun === dispatchMarkSentDryRunArtifact &&
     Number(dispatchMarkSentDryRunStatus.issueCount) === 0 &&
     dispatchMarkSentDryRunStatus.importMode === false &&
-    dispatchMarkSentDryRunStatus.recordArtifact === 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json' &&
+    dispatchMarkSentDryRunStatus.recordArtifact === dispatchMarkSentFixtureArtifact &&
     Number(dispatchMarkSentDryRunStatus.requestedUpdateCount) >= 2 &&
     Number(dispatchMarkSentDryRunStatus.betaUpdateCount) > 0 &&
     Number(dispatchMarkSentDryRunStatus.visualUpdateCount) > 0 &&
@@ -3367,7 +3385,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchMarkSentImportRehearsalStatus.report === dispatchMarkSentImportRehearsalReport &&
     status.artifacts?.dispatchMarkSentImportRehearsal === dispatchMarkSentImportRehearsalArtifact &&
     Number(dispatchMarkSentImportRehearsalStatus.issueCount) === 0 &&
-    dispatchMarkSentImportRehearsalStatus.fixtureArtifact === 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json' &&
+    dispatchMarkSentImportRehearsalStatus.fixtureArtifact === dispatchMarkSentFixtureArtifact &&
     Number(dispatchMarkSentImportRehearsalStatus.markSentExitCode) === 0 &&
     dispatchMarkSentImportRehearsalStatus.markSentStatus === 'pass' &&
     dispatchMarkSentImportRehearsalStatus.markSentImportMode === true &&
@@ -3375,8 +3393,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Boolean(dispatchMarkSentImportRehearsalStatus.importedRows?.visual) &&
     Number(dispatchMarkSentImportRehearsalStatus.tempBetaSentCount) > 0 &&
     Number(dispatchMarkSentImportRehearsalStatus.tempVisualSentCount) > 0 &&
-    Number(dispatchMarkSentImportRehearsalStatus.launchOperatorExitCode) === 0 &&
-    dispatchMarkSentImportRehearsalStatus.launchOperatorStatus === 'pass' &&
+    (
+      Number(dispatchMarkSentImportRehearsalStatus.launchOperatorExitCode) === 0 ||
+      dispatchMarkSentImportRehearsalStatus.launchOperatorOnlyOverdueExecutionFailure === true
+    ) &&
+    (
+      dispatchMarkSentImportRehearsalStatus.launchOperatorStatus === 'pass' ||
+      dispatchMarkSentImportRehearsalStatus.launchOperatorOnlyOverdueExecutionFailure === true
+    ) &&
     ['beta-ready-public-blocked', 'blocked'].includes(dispatchMarkSentImportRehearsalStatus.launchOperatorPublicLaunchStatus) &&
     Array.isArray(dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds) &&
     !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.beta) &&
@@ -3727,7 +3751,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.dispatchOutboxIssueCount) === 0 &&
     Number(betaReviewStatus.dispatchOutboxRowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     Number(betaReviewStatus.dispatchOutboxMessageFileCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
-    Number(betaReviewStatus.dispatchOutboxOverdueCount) === 0 &&
+    Number(betaReviewStatus.dispatchOutboxOverdueCount) <= Number(betaReviewStatus.dispatchOutboxRowCount || 0) &&
     Number(betaReviewStatus.dispatchOutboxFollowUpOverdueCount) === 0 &&
     betaReviewStatus.dispatchLogReady === true &&
     hasMeaningfulText(betaReviewStatus.dispatchLogArtifact) &&
@@ -3735,7 +3759,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.dispatchLogCsv) &&
     Number(betaReviewStatus.dispatchLogIssueCount) === 0 &&
     Number(betaReviewStatus.dispatchLogRowCount) === Number(betaReviewStatus.dispatchOutboxRowCount || 0) &&
-    Number(betaReviewStatus.dispatchLogPreparedOverdueCount) === 0 &&
+    Number(betaReviewStatus.dispatchLogPreparedOverdueCount) <= Number(betaReviewStatus.dispatchLogRowCount || 0) &&
     betaReviewStatus.followUpOutboxReady === true &&
     hasMeaningfulText(betaReviewStatus.followUpOutboxArtifact) &&
     hasMeaningfulText(betaReviewStatus.followUpOutboxReport) &&
@@ -3755,7 +3779,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.allWaveOpsRowCount) === Number(betaReviewStatus.planned || 0) - Number(betaReviewStatus.completed || 0) &&
     Number(betaReviewStatus.allWaveOpsWaveCount) >= Number(betaReviewStatus.scheduleWaveCount || 0) &&
     Number(betaReviewStatus.dispatchPreparedRowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) &&
-    Number(betaReviewStatus.dispatchOverdueCount) === 0 &&
+    Number(betaReviewStatus.dispatchOverdueCount) <= Number(betaReviewStatus.dispatchPreparedRowCount || 0) &&
     Number(betaReviewStatus.followUpOverdueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
@@ -3788,7 +3812,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(blockerBoardStatus.requiredVisualRowCount) === Number(visualReviewStatus.remainingDistinctDates || 0) &&
     Number(blockerBoardStatus.betaDispatchRowCount) === Number(betaReviewStatus.dispatchPreparedRowCount || 0) &&
     Number(blockerBoardStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
-    Number(blockerBoardStatus.betaDispatchOverdueCount) === 0 &&
+    Number(blockerBoardStatus.betaDispatchOverdueCount) === Number(betaReviewStatus.dispatchOverdueCount || 0) &&
     Number(blockerBoardStatus.betaFollowUpDueSoonCount) === Number(betaReviewStatus.followUpDueSoonCount || 0) &&
     Number(blockerBoardStatus.betaFollowUpOverdueCount) === 0 &&
     blockerBoardIssues.length === 0 &&

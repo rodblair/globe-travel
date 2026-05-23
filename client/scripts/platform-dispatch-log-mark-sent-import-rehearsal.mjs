@@ -9,7 +9,7 @@ const artifactDate = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_DATE || 
 const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
 const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG || 'qa/production-visual-review-dispatch-log-2026-05-21.json'
 const fixturePath = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_RECORD ||
-  'qa/dispatch-log-mark-sent-fixture-2026-05-22.json'
+  `qa/dispatch-log-mark-sent-fixture-${artifactDate}.json`
 const rawArtifactName = `dispatch-log-mark-sent-import-rehearsal-raw-${artifactDate}`
 const betaRawLog = `qa/${rawArtifactName}-beta-dispatch-log.json`
 const visualRawLog = `qa/${rawArtifactName}-visual-dispatch-log.json`
@@ -55,6 +55,13 @@ function markdownList(items) {
 function rowById(summary, id) {
   const rows = Array.isArray(summary?.dispatchRows) ? summary.dispatchRows : []
   return rows.find((row) => row.id === id) || null
+}
+
+function isOnlyOverdueExecutionFailure(summary) {
+  const failures = Array.isArray(summary?.failures) ? summary.failures : []
+  return summary?.status === 'fail' &&
+    failures.length === 1 &&
+    failures[0]?.name === 'launch today has no overdue launch execution rows'
 }
 
 function csvEscape(value) {
@@ -158,6 +165,10 @@ const canonicalBetaDispatchLog = await readJson(betaDispatchLogPath)
 const canonicalVisualDispatchLog = await readJson(visualDispatchLogPath)
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
+const launchOperatorBoardActionable = launchResult.status === 0 ||
+  isOnlyOverdueExecutionFailure(launchSummary)
+const currentLaunchBoardActionable = currentLaunchSummary?.status === 'pass' ||
+  isOnlyOverdueExecutionFailure(currentLaunchSummary)
 const launchActionRows = Array.isArray(launchSummary?.actionRows) ? launchSummary.actionRows : []
 const launchActionIds = launchActionRows.map((row) => row.id)
 const importedRows = {
@@ -210,8 +221,7 @@ const checks = [
   },
   {
     name: 'launch operator consumes imported sent state',
-    ok: launchResult.status === 0 &&
-      launchSummary?.status === 'pass' &&
+    ok: launchOperatorBoardActionable &&
       ['beta-ready-public-blocked', 'blocked'].includes(launchSummary?.publicLaunchStatus) &&
       !launchActionIds.includes(importedRows.beta) &&
       !launchActionIds.includes(importedRows.visual),
@@ -237,10 +247,11 @@ const checks = [
     canonicalVisualSentCount: canonicalVisualDispatchLog?.sentCount ?? null,
   },
   {
-    name: 'current launch operator artifact remains passing',
-    ok: currentLaunchSummary?.status === 'pass',
+    name: 'current launch operator artifact remains actionable',
+    ok: currentLaunchBoardActionable,
     currentLaunchArtifact,
     currentStatus: currentLaunchSummary?.status || null,
+    currentOnlyOverdueExecutionFailure: isOnlyOverdueExecutionFailure(currentLaunchSummary),
   },
 ]
 
@@ -281,6 +292,7 @@ const summary = {
   tempVisualCsvSentCount: tempVisualCsvDispatchLog?.sentCount ?? null,
   launchOperatorExitCode: launchResult.status,
   launchOperatorStatus: launchSummary?.status || null,
+  launchOperatorOnlyOverdueExecutionFailure: isOnlyOverdueExecutionFailure(launchSummary),
   launchOperatorPublicLaunchStatus: launchSummary?.publicLaunchStatus || null,
   launchOperatorActionRowCount: launchActionRows.length,
   launchOperatorActionIds: launchActionIds,

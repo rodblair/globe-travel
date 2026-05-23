@@ -2,7 +2,7 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T05:18:35.784Z",
+  "generatedAt": "2026-05-23T07:06:14.464Z",
   "status": "fail",
   "checked": 8,
   "passed": 7,
@@ -15,10 +15,23 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "c4c93cc838bd1c48a1ea6dcf2b76c4495cb21f46",
-  "publicLaunchStatus": "beta-ready-public-blocked",
-  "publicGuardrailIssues": [],
-  "publicOnlyLaunchOperatorSelfGuardrails": false,
+  "liveDeploymentCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
+  "publicLaunchStatus": "blocked",
+  "publicGuardrailIssues": [
+    "public launch blocker board is not aligned with current beta and visual blocker evidence",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "daily launch operator overdue rehearsal is not proving stale-date failure behavior",
+    "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
+    "dispatch mark-sent dry run is not proving safe sent-state imports",
+    "dispatch mark-sent import rehearsal is not proving isolated sent-state imports",
+    "dispatch sent-record template is not ready for operator handoff",
+    "dispatch sent-record blank-template rejection is not proving pre-import safety",
+    "review intake rehearsal is not proving incomplete evidence rejection",
+    "review intake import rehearsal is not proving isolated completed-evidence imports",
+    "public launch mode rehearsal is not proving strict public-blocker enforcement",
+    "public launch threshold rehearsal is not proving completed-evidence readiness"
+  ],
+  "publicOnlyLaunchOperatorSelfGuardrails": true,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -223,14 +236,27 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "beta-ready-public-blocked",
-      "betaReady": true,
+      "status": "blocked",
+      "betaReady": false,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [],
-      "onlyLaunchOperatorSelfGuardrails": false
+      "guardrailIssues": [
+        "public launch blocker board is not aligned with current beta and visual blocker evidence",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "daily launch operator overdue rehearsal is not proving stale-date failure behavior",
+        "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
+        "dispatch mark-sent dry run is not proving safe sent-state imports",
+        "dispatch mark-sent import rehearsal is not proving isolated sent-state imports",
+        "dispatch sent-record template is not ready for operator handoff",
+        "dispatch sent-record blank-template rejection is not proving pre-import safety",
+        "review intake rehearsal is not proving incomplete evidence rejection",
+        "review intake import rehearsal is not proving isolated completed-evidence imports",
+        "public launch mode rehearsal is not proving strict public-blocker enforcement",
+        "public launch threshold rehearsal is not proving completed-evidence readiness"
+      ],
+      "onlyLaunchOperatorSelfGuardrails": true
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -242,7 +268,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "c4c93cc838bd1c48a1ea6dcf2b76c4495cb21f46"
+      "liveCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564"
     },
     {
       "name": "launch today reads aligned dispatch logs",

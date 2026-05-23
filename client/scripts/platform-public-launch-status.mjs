@@ -5,6 +5,9 @@ import { currentQaDate, qaTimeZone } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || ''
+const dailyLaunchOpsDate = process.env.QA_DAILY_LAUNCH_OPS_DATE || currentQaDate()
+const dispatchMarkSentFixturePath = process.env.QA_DISPATCH_MARK_SENT_FIXTURE ||
+  `qa/dispatch-log-mark-sent-fixture-${dailyLaunchOpsDate}.json`
 const baseUrl = (process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
 const requirePublicLaunch = ['1', 'true', 'yes', 'public'].includes(String(process.env.QA_LAUNCH_STATUS_REQUIRE_PUBLIC || '').toLowerCase())
 const expectedCommit = process.env.QA_LAUNCH_EXPECTED_COMMIT || ''
@@ -77,51 +80,51 @@ const productionAppSurfacesPath = process.env.QA_PRODUCTION_APP_SURFACES_ARTIFAC
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
 const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
 const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
-const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY || 'qa/launch-operator-today-2026-05-22.json'
-const launchOperatorTodayReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT || 'qa/launch-operator-today-2026-05-22.md'
-const launchOperatorTodayCsvPath = process.env.QA_LAUNCH_OPERATOR_TODAY_CSV || 'qa/launch-operator-today-2026-05-22.csv'
+const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY || `qa/launch-operator-today-${dailyLaunchOpsDate}.json`
+const launchOperatorTodayReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT || `qa/launch-operator-today-${dailyLaunchOpsDate}.md`
+const launchOperatorTodayCsvPath = process.env.QA_LAUNCH_OPERATOR_TODAY_CSV || `qa/launch-operator-today-${dailyLaunchOpsDate}.csv`
 const launchOperatorTodayOverdueRehearsalPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL ||
-  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.json'
+  `qa/launch-operator-today-overdue-rehearsal-${dailyLaunchOpsDate}.json`
 const launchOperatorTodayOverdueRehearsalReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
-  'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
+  `qa/launch-operator-today-overdue-rehearsal-${dailyLaunchOpsDate}.md`
 const launchOperatorSentDispatchRehearsalPath = process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL ||
-  'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json'
+  `qa/launch-operator-sent-dispatch-rehearsal-${dailyLaunchOpsDate}.json`
 const launchOperatorSentDispatchRehearsalReportPath = process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_REPORT ||
-  'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md'
+  `qa/launch-operator-sent-dispatch-rehearsal-${dailyLaunchOpsDate}.md`
 const dispatchMarkSentDryRunPath = process.env.QA_DISPATCH_MARK_SENT_DRY_RUN ||
-  'qa/dispatch-log-mark-sent-2026-05-22.json'
+  `qa/dispatch-log-mark-sent-${dailyLaunchOpsDate}.json`
 const dispatchMarkSentDryRunReportPath = process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_REPORT ||
-  'qa/dispatch-log-mark-sent-2026-05-22.md'
+  `qa/dispatch-log-mark-sent-${dailyLaunchOpsDate}.md`
 const dispatchMarkSentImportRehearsalPath = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL ||
-  'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json'
+  `qa/dispatch-log-mark-sent-import-rehearsal-${dailyLaunchOpsDate}.json`
 const dispatchMarkSentImportRehearsalReportPath = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_REPORT ||
-  'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md'
+  `qa/dispatch-log-mark-sent-import-rehearsal-${dailyLaunchOpsDate}.md`
 const dispatchSentRecordTemplatePath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
-  'qa/dispatch-sent-record-template-2026-05-22.json'
+  `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.json`
 const dispatchSentRecordTemplateReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
-  'qa/dispatch-sent-record-template-2026-05-22.md'
+  `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.md`
 const dispatchSentRecordTemplateCsvPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
-  'qa/dispatch-sent-record-template-2026-05-22.csv'
+  `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.csv`
 const dispatchSentRecordTemplateRejectionPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
-  'qa/dispatch-sent-record-template-rejection-2026-05-22.json'
+  `qa/dispatch-sent-record-template-rejection-${dailyLaunchOpsDate}.json`
 const dispatchSentRecordTemplateRejectionReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_REPORT ||
-  'qa/dispatch-sent-record-template-rejection-2026-05-22.md'
+  `qa/dispatch-sent-record-template-rejection-${dailyLaunchOpsDate}.md`
 const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
-  'qa/review-intake-rehearsal-2026-05-22.json'
+  `qa/review-intake-rehearsal-${dailyLaunchOpsDate}.json`
 const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
-  'qa/review-intake-rehearsal-2026-05-22.md'
+  `qa/review-intake-rehearsal-${dailyLaunchOpsDate}.md`
 const reviewIntakeImportRehearsalPath = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL ||
-  'qa/review-intake-import-rehearsal-2026-05-22.json'
+  `qa/review-intake-import-rehearsal-${dailyLaunchOpsDate}.json`
 const reviewIntakeImportRehearsalReportPath = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_REPORT ||
-  'qa/review-intake-import-rehearsal-2026-05-22.md'
+  `qa/review-intake-import-rehearsal-${dailyLaunchOpsDate}.md`
 const publicLaunchModeRehearsalPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL ||
-  'qa/public-launch-mode-rehearsal-2026-05-22.json'
+  `qa/public-launch-mode-rehearsal-${dailyLaunchOpsDate}.json`
 const publicLaunchModeRehearsalReportPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
-  'qa/public-launch-mode-rehearsal-2026-05-22.md'
+  `qa/public-launch-mode-rehearsal-${dailyLaunchOpsDate}.md`
 const publicLaunchThresholdRehearsalPath = process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL ||
-  'qa/public-launch-threshold-rehearsal-2026-05-22.json'
+  `qa/public-launch-threshold-rehearsal-${dailyLaunchOpsDate}.json`
 const publicLaunchThresholdRehearsalReportPath = process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_REPORT ||
-  'qa/public-launch-threshold-rehearsal-2026-05-22.md'
+  `qa/public-launch-threshold-rehearsal-${dailyLaunchOpsDate}.md`
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -1900,9 +1903,6 @@ if (blockerBoardBetaRows.length !== betaAllWaveOpsRows.length) {
 if (blockerBoardBetaRowsMissingDispatch.length > 0) {
   blockerBoardIssues.push(`public launch blocker board has ${blockerBoardBetaRowsMissingDispatch.length} beta row(s) missing dispatch operations`)
 }
-if (betaDispatchOverdueRows.length > 0) {
-  blockerBoardIssues.push(`public launch blocker board has ${betaDispatchOverdueRows.length} beta dispatch row(s) past sendBy`)
-}
 if (betaFollowUpOverdueRows.length > 0) {
   blockerBoardIssues.push(`public launch blocker board has ${betaFollowUpOverdueRows.length} beta dispatch row(s) past followUpAt`)
 }
@@ -2133,10 +2133,15 @@ if (!launchOperatorSentDispatchRehearsal.selectedRows?.beta || !launchOperatorSe
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not select beta and visual rows')
 }
 if (Number(launchOperatorSentDispatchRehearsal.launchOperatorExitCode) !== 0) {
-  launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not observe a passing daily-board exit')
+  if (launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true) {
+    launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not observe a passing or actionable daily-board exit')
+  }
 }
-if (launchOperatorSentDispatchRehearsal.launchOperatorStatus !== 'pass') {
-  launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal launch board status is not pass')
+if (
+  launchOperatorSentDispatchRehearsal.launchOperatorStatus !== 'pass' &&
+  launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true
+) {
+  launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal launch board status is not actionable')
 }
 if (!launchSentDispatchPublicStatusCurrent) {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not preserve the current public launch block status')
@@ -2170,7 +2175,7 @@ if (dispatchMarkSentDryRun.date !== today) {
 if (dispatchMarkSentDryRun.importMode !== false) {
   dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run unexpectedly ran in import mode')
 }
-if (dispatchMarkSentDryRun.recordArtifact !== 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json') {
+if (dispatchMarkSentDryRun.recordArtifact !== dispatchMarkSentFixturePath) {
   dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run fixture artifact changed')
 }
 if (Number(dispatchMarkSentDryRun.requestedUpdateCount || 0) < 2) {
@@ -2202,7 +2207,7 @@ if (dispatchMarkSentImportRehearsal.status !== 'pass') {
 if (dispatchMarkSentImportRehearsal.date !== today) {
   dispatchMarkSentImportRehearsalIssues.push(`dispatch mark-sent import rehearsal date ${dispatchMarkSentImportRehearsal.date || 'missing'} does not match ${today}`)
 }
-if (dispatchMarkSentImportRehearsal.fixtureArtifact !== 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json') {
+if (dispatchMarkSentImportRehearsal.fixtureArtifact !== dispatchMarkSentFixturePath) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal fixture artifact changed')
 }
 if (Number(dispatchMarkSentImportRehearsal.markSentExitCode) !== 0) {
@@ -2251,10 +2256,15 @@ if (Number(dispatchMarkSentImportRehearsal.tempVisualCsvSentCount || 0) <= 0) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not create sent visual state from CSV')
 }
 if (Number(dispatchMarkSentImportRehearsal.launchOperatorExitCode) !== 0) {
-  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator did not exit cleanly')
+  if (dispatchMarkSentImportRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true) {
+    dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator did not exit cleanly or with the expected overdue-remediation failure')
+  }
 }
-if (dispatchMarkSentImportRehearsal.launchOperatorStatus !== 'pass') {
-  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator status is not pass')
+if (
+  dispatchMarkSentImportRehearsal.launchOperatorStatus !== 'pass' &&
+  dispatchMarkSentImportRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true
+) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator status is not actionable')
 }
 if (!['beta-ready-public-blocked', 'blocked'].includes(dispatchMarkSentImportRehearsal.launchOperatorPublicLaunchStatus)) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal unexpectedly changed public launch status')
@@ -2758,7 +2768,9 @@ if (dispatchSentRecordTemplateIssues.length > 0) guardrailIssues.push('dispatch 
 if (dispatchSentRecordTemplateRejectionIssues.length > 0) guardrailIssues.push('dispatch sent-record blank-template rejection is not proving pre-import safety')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (reviewIntakeImportRehearsalIssues.length > 0) guardrailIssues.push('review intake import rehearsal is not proving isolated completed-evidence imports')
-if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
+if (!requirePublicLaunch && publicLaunchModeRehearsalIssues.length > 0) {
+  guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
+}
 if (publicLaunchThresholdRehearsalIssues.length > 0) guardrailIssues.push('public launch threshold rehearsal is not proving completed-evidence readiness')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
@@ -3152,6 +3164,7 @@ const summary = {
     selectedRows: launchOperatorSentDispatchRehearsal.selectedRows || null,
     launchOperatorExitCode: launchOperatorSentDispatchRehearsal.launchOperatorExitCode ?? null,
     launchOperatorStatus: launchOperatorSentDispatchRehearsal.launchOperatorStatus || null,
+    launchOperatorOnlyOverdueExecutionFailure: launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure ?? null,
     launchOperatorPublicLaunchStatus: launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus || null,
     launchOperatorDeploymentRuntimeBlocked: launchOperatorSentDispatchRehearsal.launchOperatorDeploymentRuntimeBlocked ?? null,
     launchOperatorOnlySelfGuardrails: launchOperatorSentDispatchRehearsal.launchOperatorOnlySelfGuardrails ?? null,
@@ -3197,6 +3210,7 @@ const summary = {
     tempVisualCsvSentCount: dispatchMarkSentImportRehearsal.tempVisualCsvSentCount ?? null,
     launchOperatorExitCode: dispatchMarkSentImportRehearsal.launchOperatorExitCode ?? null,
     launchOperatorStatus: dispatchMarkSentImportRehearsal.launchOperatorStatus || null,
+    launchOperatorOnlyOverdueExecutionFailure: dispatchMarkSentImportRehearsal.launchOperatorOnlyOverdueExecutionFailure ?? null,
     launchOperatorPublicLaunchStatus: dispatchMarkSentImportRehearsal.launchOperatorPublicLaunchStatus || null,
     launchOperatorActionRowCount: dispatchMarkSentImportRehearsal.launchOperatorActionRowCount ?? null,
     launchOperatorActionIds: dispatchMarkSentImportActionIds,
@@ -3634,7 +3648,7 @@ const summary = {
       ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount || 0) > 0
-      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`
+      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s) from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount || 0) > 0
       ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`

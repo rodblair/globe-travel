@@ -7,9 +7,9 @@ const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const date = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_DATE || currentQaDate()
 const templatePath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
-  'qa/dispatch-sent-record-template-2026-05-22.json'
+  `qa/dispatch-sent-record-template-${date}.json`
 const templateReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
-  'qa/dispatch-sent-record-template-2026-05-22.md'
+  `qa/dispatch-sent-record-template-${date}.md`
 const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG ||
   'qa/beta-human-review-dispatch-log-2026-05-21.json'
 const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||

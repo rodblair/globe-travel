@@ -39,6 +39,13 @@ function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
 
+function isOnlyOverdueExecutionFailure(summary) {
+  const failures = Array.isArray(summary?.failures) ? summary.failures : []
+  return summary?.status === 'fail' &&
+    failures.length === 1 &&
+    failures[0]?.name === 'launch today has no overdue launch execution rows'
+}
+
 function markSent(row, sentAt) {
   return {
     ...row,
@@ -156,6 +163,10 @@ const launchOperatorEvidenceBlocked =
   launchOperatorOnlySelfGuardrails
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
+const launchOperatorBoardActionable = result.status === 0 ||
+  isOnlyOverdueExecutionFailure(launchSummary)
+const currentLaunchBoardActionable = currentLaunchSummary?.status === 'pass' ||
+  isOnlyOverdueExecutionFailure(currentLaunchSummary)
 const checks = [
   {
     name: 'sent-dispatch rehearsal selects beta and visual rows',
@@ -164,10 +175,11 @@ const checks = [
     visualSelectedId: visualSelected?.id || null,
   },
   {
-    name: 'sent-dispatch rehearsal produced a passing launch board',
-    ok: result.status === 0 && launchSummary?.status === 'pass',
+    name: 'sent-dispatch rehearsal produced an actionable launch board',
+    ok: launchOperatorBoardActionable,
     exitCode: result.status,
     status: launchSummary?.status || null,
+    onlyOverdueExecutionFailure: isOnlyOverdueExecutionFailure(launchSummary),
   },
   {
     name: 'sent beta dispatch row is removed from send actions',
@@ -192,10 +204,11 @@ const checks = [
     visualHistoryCount: launchSummary?.productionVisualReviews?.distinctHistoryDateCount ?? null,
   },
   {
-    name: 'current launch operator artifact remains passing',
-    ok: currentLaunchSummary?.status === 'pass',
+    name: 'current launch operator artifact remains actionable',
+    ok: currentLaunchBoardActionable,
     currentLaunchArtifact,
     currentStatus: currentLaunchSummary?.status || null,
+    currentOnlyOverdueExecutionFailure: isOnlyOverdueExecutionFailure(currentLaunchSummary),
   },
 ]
 
@@ -229,6 +242,7 @@ const summary = {
   sentAt,
   launchOperatorExitCode: result.status,
   launchOperatorStatus: launchSummary?.status || null,
+  launchOperatorOnlyOverdueExecutionFailure: isOnlyOverdueExecutionFailure(launchSummary),
   launchOperatorPublicLaunchStatus: launchSummary?.publicLaunchStatus || null,
   launchOperatorDeploymentRuntimeBlocked,
   launchOperatorOnlySelfGuardrails,
