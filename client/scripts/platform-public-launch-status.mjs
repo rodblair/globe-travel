@@ -118,6 +118,10 @@ const publicLaunchModeRehearsalPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSA
   'qa/public-launch-mode-rehearsal-2026-05-22.json'
 const publicLaunchModeRehearsalReportPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
   'qa/public-launch-mode-rehearsal-2026-05-22.md'
+const publicLaunchThresholdRehearsalPath = process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL ||
+  'qa/public-launch-threshold-rehearsal-2026-05-22.json'
+const publicLaunchThresholdRehearsalReportPath = process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_REPORT ||
+  'qa/public-launch-threshold-rehearsal-2026-05-22.md'
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const requiredBetaReviewScorecardFields = [
@@ -729,6 +733,8 @@ const [
   reviewIntakeImportRehearsalReport,
   publicLaunchModeRehearsal,
   publicLaunchModeRehearsalReport,
+  publicLaunchThresholdRehearsal,
+  publicLaunchThresholdRehearsalReport,
   health,
 ] = await Promise.all([
   readJson(betaRegisterPath),
@@ -805,6 +811,8 @@ const [
   readText(reviewIntakeImportRehearsalReportPath),
   readJson(publicLaunchModeRehearsalPath),
   readText(publicLaunchModeRehearsalReportPath),
+  readJson(publicLaunchThresholdRehearsalPath),
+  readText(publicLaunchThresholdRehearsalReportPath),
   fetchHealth(),
 ])
 
@@ -2446,6 +2454,47 @@ if (!publicLaunchModeRehearsalReport.includes('fails while beta-review and produ
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal report does not state the strict public-mode boundary')
 }
 
+const publicLaunchThresholdRehearsalIssues = []
+if (publicLaunchThresholdRehearsal.status !== 'pass') {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal status is not pass')
+}
+if (publicLaunchThresholdRehearsal.date !== today) {
+  publicLaunchThresholdRehearsalIssues.push(`public launch threshold rehearsal date ${publicLaunchThresholdRehearsal.date || 'missing'} does not match ${today}`)
+}
+if (Number(publicLaunchThresholdRehearsal.simulatedBetaCompletedReviewCount || 0) < publicBetaMinimum) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal does not simulate enough beta reviews')
+}
+if (Number(publicLaunchThresholdRehearsal.simulatedBetaRemainingReviewsForMinimum || 0) !== 0) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal still has simulated beta reviews remaining')
+}
+if (publicLaunchThresholdRehearsal.simulatedBetaPublicLaunchReadiness !== 'ready') {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal beta readiness is not ready')
+}
+if (Number(publicLaunchThresholdRehearsal.simulatedVisualDistinctHistoryDateCount || 0) < visualMinimum) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal does not simulate enough visual history dates')
+}
+if (Number(publicLaunchThresholdRehearsal.simulatedVisualRemainingHistoryDateCount || 0) !== 0) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal still has simulated visual history dates remaining')
+}
+if (publicLaunchThresholdRehearsal.simulatedVisualPublicLaunchReadiness !== 'ready') {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal visual readiness is not ready')
+}
+if (publicLaunchThresholdRehearsal.canonicalBetaUnchanged !== true || publicLaunchThresholdRehearsal.canonicalVisualUnchanged !== true) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal mutated canonical launch evidence')
+}
+if (Number(publicLaunchThresholdRehearsal.canonicalBetaCompletedBefore || 0) !== Number(publicLaunchThresholdRehearsal.canonicalBetaCompletedAfter || 0)) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal changed canonical beta completed count')
+}
+if (Number(publicLaunchThresholdRehearsal.canonicalVisualHistoryBefore || 0) !== Number(publicLaunchThresholdRehearsal.canonicalVisualHistoryAfter || 0)) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal changed canonical visual history count')
+}
+if (publicLaunchThresholdRehearsal.rawArtifactsCleanedUp !== true) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal left raw temporary artifacts behind')
+}
+if (!publicLaunchThresholdRehearsalReport.includes('two real public-launch threshold gates turn ready')) {
+  publicLaunchThresholdRehearsalIssues.push('public launch threshold rehearsal report does not state the threshold guarantee')
+}
+
 const visualProgressIssues = []
 if (visualProgress.status !== 'pass') {
   visualProgressIssues.push('progress artifact status is not pass')
@@ -2611,6 +2660,7 @@ if (dispatchSentRecordTemplateRejectionIssues.length > 0) guardrailIssues.push('
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (reviewIntakeImportRehearsalIssues.length > 0) guardrailIssues.push('review intake import rehearsal is not proving isolated completed-evidence imports')
 if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
+if (publicLaunchThresholdRehearsalIssues.length > 0) guardrailIssues.push('public launch threshold rehearsal is not proving completed-evidence readiness')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
 if (!visualScheduleReport.includes('Status: pass')) guardrailIssues.push('production visual review schedule report is not passing')
@@ -3157,6 +3207,29 @@ const summary = {
     canonicalRestored: publicLaunchModeRehearsal.canonicalRestored ?? null,
     issues: publicLaunchModeRehearsalIssues,
   },
+  publicLaunchThresholdRehearsal: {
+    ready: publicLaunchThresholdRehearsalIssues.length === 0,
+    issueCount: publicLaunchThresholdRehearsalIssues.length,
+    artifact: qaDisplayPath(publicLaunchThresholdRehearsalPath),
+    report: qaDisplayPath(publicLaunchThresholdRehearsalReportPath),
+    date: publicLaunchThresholdRehearsal.date || null,
+    simulatedBetaCompletedReviewCount: publicLaunchThresholdRehearsal.simulatedBetaCompletedReviewCount ?? null,
+    simulatedBetaPublicLaunchMinimum: publicLaunchThresholdRehearsal.simulatedBetaPublicLaunchMinimum ?? null,
+    simulatedBetaRemainingReviewsForMinimum: publicLaunchThresholdRehearsal.simulatedBetaRemainingReviewsForMinimum ?? null,
+    simulatedBetaPublicLaunchReadiness: publicLaunchThresholdRehearsal.simulatedBetaPublicLaunchReadiness || null,
+    simulatedVisualDistinctHistoryDateCount: publicLaunchThresholdRehearsal.simulatedVisualDistinctHistoryDateCount ?? null,
+    simulatedVisualMinimumHistoryDateCount: publicLaunchThresholdRehearsal.simulatedVisualMinimumHistoryDateCount ?? null,
+    simulatedVisualRemainingHistoryDateCount: publicLaunchThresholdRehearsal.simulatedVisualRemainingHistoryDateCount ?? null,
+    simulatedVisualPublicLaunchReadiness: publicLaunchThresholdRehearsal.simulatedVisualPublicLaunchReadiness || null,
+    canonicalBetaUnchanged: publicLaunchThresholdRehearsal.canonicalBetaUnchanged ?? null,
+    canonicalVisualUnchanged: publicLaunchThresholdRehearsal.canonicalVisualUnchanged ?? null,
+    canonicalBetaCompletedBefore: publicLaunchThresholdRehearsal.canonicalBetaCompletedBefore ?? null,
+    canonicalBetaCompletedAfter: publicLaunchThresholdRehearsal.canonicalBetaCompletedAfter ?? null,
+    canonicalVisualHistoryBefore: publicLaunchThresholdRehearsal.canonicalVisualHistoryBefore ?? null,
+    canonicalVisualHistoryAfter: publicLaunchThresholdRehearsal.canonicalVisualHistoryAfter ?? null,
+    rawArtifactsCleanedUp: publicLaunchThresholdRehearsal.rawArtifactsCleanedUp ?? null,
+    issues: publicLaunchThresholdRehearsalIssues,
+  },
   risks: {
     openBlockingRiskCount: openBlockingRisks.length,
     openAcceptedP2RiskCount: openAcceptedP2Risks.length,
@@ -3475,6 +3548,7 @@ const summary = {
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
     reviewIntakeImportRehearsal: qaDisplayPath(reviewIntakeImportRehearsalPath),
     publicLaunchModeRehearsal: qaDisplayPath(publicLaunchModeRehearsalPath),
+    publicLaunchThresholdRehearsal: qaDisplayPath(publicLaunchThresholdRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
   },
@@ -3535,6 +3609,7 @@ Status: ${status}
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Review intake import rehearsal ready: ${summary.reviewIntakeImportRehearsal.ready ? 'yes' : 'no'} (beta copied count ${summary.reviewIntakeImportRehearsal.tempBetaCompletedBefore || 0}->${summary.reviewIntakeImportRehearsal.tempBetaCompletedAfter || 0}, visual copied count ${summary.reviewIntakeImportRehearsal.tempVisualHistoryBefore || 0}->${summary.reviewIntakeImportRehearsal.tempVisualHistoryAfter || 0})
 - Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
+- Public launch threshold rehearsal ready: ${summary.publicLaunchThresholdRehearsal.ready ? 'yes' : 'no'} (simulated beta ${summary.publicLaunchThresholdRehearsal.simulatedBetaCompletedReviewCount || 0}/${summary.publicLaunchThresholdRehearsal.simulatedBetaPublicLaunchMinimum || 0}, simulated visual ${summary.publicLaunchThresholdRehearsal.simulatedVisualDistinctHistoryDateCount || 0}/${summary.publicLaunchThresholdRehearsal.simulatedVisualMinimumHistoryDateCount || 0})
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
 - Incomplete accepted P2 risks: ${incompleteAcceptedP2Risks.length}
@@ -3640,6 +3715,9 @@ ${markdownList(reviewIntakeImportRehearsalIssues)}
 Public launch mode rehearsal:
 ${markdownList(publicLaunchModeRehearsalIssues)}
 
+Public launch threshold rehearsal:
+${markdownList(publicLaunchThresholdRehearsalIssues)}
+
 Full route inventory:
 ${markdownList(routeInventoryIssues)}
 
@@ -3684,6 +3762,7 @@ ${markdownList(summary.nextActions)}
 - Dispatch sent-record template: \`${summary.dispatchSentRecordTemplate.report}\`, \`${summary.dispatchSentRecordTemplate.csv}\`, and \`${summary.dispatchSentRecordTemplate.artifact}\`
 - Dispatch sent-record blank-template rejection: \`${summary.dispatchSentRecordTemplateRejection.report}\` and \`${summary.dispatchSentRecordTemplateRejection.artifact}\`
 - Review intake import rehearsal: \`${summary.reviewIntakeImportRehearsal.report}\` and \`${summary.reviewIntakeImportRehearsal.artifact}\`
+- Public launch threshold rehearsal: \`${summary.publicLaunchThresholdRehearsal.report}\` and \`${summary.publicLaunchThresholdRehearsal.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

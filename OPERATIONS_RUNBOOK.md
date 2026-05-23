@@ -67,6 +67,7 @@ npm run qa:launch-today
 npm run qa:dispatch-sent-record-template
 npm run qa:dispatch-sent-record-template-rejection
 npm run qa:review-intake-import-rehearsal
+npm run qa:public-launch-threshold-rehearsal
 ```
 
 Current artifacts:
@@ -75,6 +76,7 @@ Current artifacts:
 - Sent-record starter: `qa/dispatch-sent-record-template-2026-05-22.json`, `qa/dispatch-sent-record-template-2026-05-22.md`, and `qa/dispatch-sent-record-template-2026-05-22.csv`
 - Sent-record blank-template rejection: `qa/dispatch-sent-record-template-rejection-2026-05-22.json` and `qa/dispatch-sent-record-template-rejection-2026-05-22.md`
 - Review intake isolated import rehearsal: `qa/review-intake-import-rehearsal-2026-05-22.json` and `qa/review-intake-import-rehearsal-2026-05-22.md`
+- Public-launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-05-22.json` and `qa/public-launch-threshold-rehearsal-2026-05-22.md`
 - Sent-record validation: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
 - Sent-record import after real sends: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
 
@@ -89,7 +91,7 @@ npm run qa:public-launch-status
 npm run qa:launch-signoff
 ```
 
-Sent proof still does not count as completed beta or visual-review evidence. `npm run qa:review-intake-import-rehearsal` proves valid completed beta and visual-review submissions can be imported into copied registers without mutating canonical launch evidence. Public launch remains blocked until completed beta review submissions pass canonical intake and production visual-review submissions pass canonical intake.
+Sent proof still does not count as completed beta or visual-review evidence. `npm run qa:review-intake-import-rehearsal` proves valid completed beta and visual-review submissions can be imported into copied registers without mutating canonical launch evidence. `npm run qa:public-launch-threshold-rehearsal` proves copied complete registers make the beta and production visual-review threshold gates turn ready. Public launch remains blocked until completed beta review submissions pass canonical intake and production visual-review submissions pass canonical intake.
 
 Manual equivalents:
 

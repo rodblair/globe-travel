@@ -603,6 +603,29 @@
     "canonicalRestored": true,
     "issues": []
   },
+  "publicLaunchThresholdRehearsal": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/public-launch-threshold-rehearsal-2026-05-22.json",
+    "report": "qa/public-launch-threshold-rehearsal-2026-05-22.md",
+    "date": "2026-05-22",
+    "simulatedBetaCompletedReviewCount": 25,
+    "simulatedBetaPublicLaunchMinimum": 25,
+    "simulatedBetaRemainingReviewsForMinimum": 0,
+    "simulatedBetaPublicLaunchReadiness": "ready",
+    "simulatedVisualDistinctHistoryDateCount": 4,
+    "simulatedVisualMinimumHistoryDateCount": 4,
+    "simulatedVisualRemainingHistoryDateCount": 0,
+    "simulatedVisualPublicLaunchReadiness": "ready",
+    "canonicalBetaUnchanged": true,
+    "canonicalVisualUnchanged": true,
+    "canonicalBetaCompletedBefore": 0,
+    "canonicalBetaCompletedAfter": 0,
+    "canonicalVisualHistoryBefore": 2,
+    "canonicalVisualHistoryAfter": 2,
+    "rawArtifactsCleanedUp": true,
+    "issues": []
+  },
   "risks": {
     "openBlockingRiskCount": 0,
     "openAcceptedP2RiskCount": 2,
@@ -949,6 +972,7 @@
     "reviewIntakeRehearsal": "qa/review-intake-rehearsal-2026-05-22.json",
     "reviewIntakeImportRehearsal": "qa/review-intake-import-rehearsal-2026-05-22.json",
     "publicLaunchModeRehearsal": "qa/public-launch-mode-rehearsal-2026-05-22.json",
+    "publicLaunchThresholdRehearsal": "qa/public-launch-threshold-rehearsal-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
     "report": "qa/public-launch-status-2026-05-21.md"
   }

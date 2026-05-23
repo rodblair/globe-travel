@@ -168,6 +168,13 @@ const publicLaunchModeRehearsalArtifact =
 const publicLaunchModeRehearsalReport =
   process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
   'qa/public-launch-mode-rehearsal-2026-05-22.md'
+const publicLaunchThresholdRehearsalArtifact =
+  process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_ARTIFACT ||
+  process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL ||
+  'qa/public-launch-threshold-rehearsal-2026-05-22.json'
+const publicLaunchThresholdRehearsalReport =
+  process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_REPORT ||
+  'qa/public-launch-threshold-rehearsal-2026-05-22.md'
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
   'qa/app-surfaces-smoke-2026-05-22.json'
@@ -886,6 +893,8 @@ async function checkRequiredDocs(productionHealth) {
     publicStatus?.dispatchSentRecordTemplateRejection?.report,
     publicStatus?.reviewIntakeImportRehearsal?.artifact,
     publicStatus?.reviewIntakeImportRehearsal?.report,
+    publicStatus?.publicLaunchThresholdRehearsal?.artifact,
+    publicStatus?.publicLaunchThresholdRehearsal?.report,
     `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
     visualStatus.latestProductionArtifact,
@@ -2659,6 +2668,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const publicLaunchModeRehearsalIssues = Array.isArray(publicLaunchModeRehearsalStatus.issues)
     ? publicLaunchModeRehearsalStatus.issues
     : []
+  const publicLaunchThresholdRehearsalStatus = status.publicLaunchThresholdRehearsal || {}
+  const publicLaunchThresholdRehearsalIssues = Array.isArray(publicLaunchThresholdRehearsalStatus.issues)
+    ? publicLaunchThresholdRehearsalStatus.issues
+    : []
   const routeInventoryStatus = status.routeInventory || {}
   const routeInventoryIssues = Array.isArray(routeInventoryStatus.issues) ? routeInventoryStatus.issues : []
   const appSurfacesStatus = status.appSurfaces || {}
@@ -3468,6 +3481,50 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     publicLaunchModeRehearsalGuardrailIssueCount: publicLaunchModeRehearsalStatus.guardrailIssueCount ?? null,
     publicLaunchModeRehearsalCanonicalRestored: publicLaunchModeRehearsalStatus.canonicalRestored ?? null,
     publicLaunchModeRehearsalIssues,
+  })
+
+  addCheck('public launch status includes completed-threshold rehearsal', (
+    publicLaunchThresholdRehearsalStatus.ready === true &&
+    publicLaunchThresholdRehearsalStatus.artifact === publicLaunchThresholdRehearsalArtifact &&
+    publicLaunchThresholdRehearsalStatus.report === publicLaunchThresholdRehearsalReport &&
+    status.artifacts?.publicLaunchThresholdRehearsal === publicLaunchThresholdRehearsalArtifact &&
+    Number(publicLaunchThresholdRehearsalStatus.issueCount) === 0 &&
+    Number(publicLaunchThresholdRehearsalStatus.simulatedBetaCompletedReviewCount) >= Number(publicLaunchThresholdRehearsalStatus.simulatedBetaPublicLaunchMinimum) &&
+    Number(publicLaunchThresholdRehearsalStatus.simulatedBetaRemainingReviewsForMinimum) === 0 &&
+    publicLaunchThresholdRehearsalStatus.simulatedBetaPublicLaunchReadiness === 'ready' &&
+    Number(publicLaunchThresholdRehearsalStatus.simulatedVisualDistinctHistoryDateCount) >= Number(publicLaunchThresholdRehearsalStatus.simulatedVisualMinimumHistoryDateCount) &&
+    Number(publicLaunchThresholdRehearsalStatus.simulatedVisualRemainingHistoryDateCount) === 0 &&
+    publicLaunchThresholdRehearsalStatus.simulatedVisualPublicLaunchReadiness === 'ready' &&
+    publicLaunchThresholdRehearsalStatus.canonicalBetaUnchanged === true &&
+    publicLaunchThresholdRehearsalStatus.canonicalVisualUnchanged === true &&
+    Number(publicLaunchThresholdRehearsalStatus.canonicalBetaCompletedAfter) === Number(publicLaunchThresholdRehearsalStatus.canonicalBetaCompletedBefore) &&
+    Number(publicLaunchThresholdRehearsalStatus.canonicalVisualHistoryAfter) === Number(publicLaunchThresholdRehearsalStatus.canonicalVisualHistoryBefore) &&
+    publicLaunchThresholdRehearsalStatus.rawArtifactsCleanedUp === true &&
+    publicLaunchThresholdRehearsalIssues.length === 0
+  ), {
+    publicLaunchThresholdRehearsalArtifact: publicLaunchThresholdRehearsalStatus.artifact || null,
+    expectedPublicLaunchThresholdRehearsalArtifact: publicLaunchThresholdRehearsalArtifact,
+    publicLaunchThresholdRehearsalReport: publicLaunchThresholdRehearsalStatus.report || null,
+    expectedPublicLaunchThresholdRehearsalReport: publicLaunchThresholdRehearsalReport,
+    publicStatusArtifact: status.artifacts?.publicLaunchThresholdRehearsal || null,
+    publicLaunchThresholdRehearsalReady: publicLaunchThresholdRehearsalStatus.ready ?? null,
+    publicLaunchThresholdRehearsalIssueCount: publicLaunchThresholdRehearsalStatus.issueCount ?? null,
+    simulatedBetaCompletedReviewCount: publicLaunchThresholdRehearsalStatus.simulatedBetaCompletedReviewCount ?? null,
+    simulatedBetaPublicLaunchMinimum: publicLaunchThresholdRehearsalStatus.simulatedBetaPublicLaunchMinimum ?? null,
+    simulatedBetaRemainingReviewsForMinimum: publicLaunchThresholdRehearsalStatus.simulatedBetaRemainingReviewsForMinimum ?? null,
+    simulatedBetaPublicLaunchReadiness: publicLaunchThresholdRehearsalStatus.simulatedBetaPublicLaunchReadiness || null,
+    simulatedVisualDistinctHistoryDateCount: publicLaunchThresholdRehearsalStatus.simulatedVisualDistinctHistoryDateCount ?? null,
+    simulatedVisualMinimumHistoryDateCount: publicLaunchThresholdRehearsalStatus.simulatedVisualMinimumHistoryDateCount ?? null,
+    simulatedVisualRemainingHistoryDateCount: publicLaunchThresholdRehearsalStatus.simulatedVisualRemainingHistoryDateCount ?? null,
+    simulatedVisualPublicLaunchReadiness: publicLaunchThresholdRehearsalStatus.simulatedVisualPublicLaunchReadiness || null,
+    publicLaunchThresholdRehearsalCanonicalBetaUnchanged: publicLaunchThresholdRehearsalStatus.canonicalBetaUnchanged ?? null,
+    publicLaunchThresholdRehearsalCanonicalVisualUnchanged: publicLaunchThresholdRehearsalStatus.canonicalVisualUnchanged ?? null,
+    publicLaunchThresholdRehearsalCanonicalBetaCompletedBefore: publicLaunchThresholdRehearsalStatus.canonicalBetaCompletedBefore ?? null,
+    publicLaunchThresholdRehearsalCanonicalBetaCompletedAfter: publicLaunchThresholdRehearsalStatus.canonicalBetaCompletedAfter ?? null,
+    publicLaunchThresholdRehearsalCanonicalVisualHistoryBefore: publicLaunchThresholdRehearsalStatus.canonicalVisualHistoryBefore ?? null,
+    publicLaunchThresholdRehearsalCanonicalVisualHistoryAfter: publicLaunchThresholdRehearsalStatus.canonicalVisualHistoryAfter ?? null,
+    publicLaunchThresholdRehearsalRawArtifactsCleanedUp: publicLaunchThresholdRehearsalStatus.rawArtifactsCleanedUp ?? null,
+    publicLaunchThresholdRehearsalIssues,
   })
 
   addCheck('public launch status exposes prepared evidence queues', (

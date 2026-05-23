@@ -1,0 +1,83 @@
+{
+  "date": "2026-05-22",
+  "rehearsalToday": "2026-05-23",
+  "status": "pass",
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "simulatedBetaCompletedReviewCount": 25,
+  "simulatedBetaPublicLaunchMinimum": 25,
+  "simulatedBetaRemainingReviewsForMinimum": 0,
+  "simulatedBetaPublicLaunchReadiness": "ready",
+  "simulatedVisualDistinctHistoryDateCount": 4,
+  "simulatedVisualMinimumHistoryDateCount": 4,
+  "simulatedVisualRemainingHistoryDateCount": 0,
+  "simulatedVisualPublicLaunchReadiness": "ready",
+  "canonicalBetaUnchanged": true,
+  "canonicalVisualUnchanged": true,
+  "canonicalBetaCompletedBefore": 0,
+  "canonicalBetaCompletedAfter": 0,
+  "canonicalVisualHistoryBefore": 2,
+  "canonicalVisualHistoryAfter": 2,
+  "rawArtifactsCleanedUp": true,
+  "checks": [
+    {
+      "name": "simulated beta register reaches public-launch review threshold",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "completedReviewCount": 25,
+      "publicLaunchMinimum": 25,
+      "remainingReviewsForMinimum": 0,
+      "publicLaunchReadiness": "ready"
+    },
+    {
+      "name": "simulated beta threshold covers required completed-review matrix",
+      "ok": true,
+      "completedCoverageGaps": {
+        "audiences": [],
+        "styles": [],
+        "regions": [],
+        "devices": [],
+        "surfaces": []
+      },
+      "completedReviewEvidenceGapCount": 0,
+      "unresolvedBlockingFindingCount": 0
+    },
+    {
+      "name": "simulated visual register reaches public-launch history threshold",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "distinctHistoryDateCount": 4,
+      "minimumPublicLaunchReviewHistory": 4,
+      "remainingRequiredReviewDates": 0,
+      "publicLaunchReadiness": "ready"
+    },
+    {
+      "name": "simulated visual threshold has valid distinct history and no overdue queue",
+      "ok": true,
+      "invalidHistoryReviewCount": 0,
+      "duplicateHistoryDates": [],
+      "overdueScheduledReviewCount": 0
+    },
+    {
+      "name": "public launch threshold rehearsal does not mutate canonical launch evidence",
+      "ok": true,
+      "canonicalBetaUnchanged": true,
+      "canonicalVisualUnchanged": true,
+      "canonicalBetaCompletedBefore": 0,
+      "canonicalBetaCompletedAfter": 0,
+      "canonicalVisualHistoryBefore": 2,
+      "canonicalVisualHistoryAfter": 2
+    },
+    {
+      "name": "public launch threshold rehearsal cleans up temporary threshold artifacts",
+      "ok": true,
+      "rawArtifactsCleanedUp": true
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/public-launch-threshold-rehearsal-2026-05-22.json",
+  "reportArtifact": "qa/public-launch-threshold-rehearsal-2026-05-22.md"
+}
