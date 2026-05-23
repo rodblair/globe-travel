@@ -485,8 +485,8 @@ ${actionRowsTable(uniquePriorityRows)}
 - After sending an invite or visual-review assignment, validate the sent-state update with \`QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent\`, then import it with \`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent\`.
 - Completed beta reviews must be non-template JSON files, validated with \`npm run qa:beta-review-intake\`, then imported only with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\`.
 - Production visual reviews must be inspected by a human, validated with \`npm run qa:visual-review-intake\`, then imported only with \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\`.
-- Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun \`npm run qa:public-launch-status\` and \`npm run qa:launch-signoff\`.
-- Re-run \`npm run qa:launch-today\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\` after each import.
+- Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun \`npm run qa:launch-refresh\` and \`npm run qa:launch-signoff\`.
+- Re-run \`npm run qa:launch-refresh\` and \`npm run qa:launch-signoff\` after each dispatch-log or review-evidence import.
 
 ## Checks
 

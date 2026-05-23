@@ -3,7 +3,7 @@
 Date: 2026-05-22
 Today: 2026-05-22
 Time zone: America/Vancouver
-Generated at: 2026-05-23T03:59:28.558Z
+Generated at: 2026-05-23T04:03:48.382Z
 Status: pass
 
 ## Result
@@ -11,7 +11,7 @@ Status: pass
 - Checked: 8
 - Passed: 8
 - Failed: 0
-- Public launch status: blocked
+- Public launch status: beta-ready-public-blocked
 - Runtime deployment current: yes
 - Beta reviews: 0/25, 25 remaining
 - Production visual-review history: 2/4, 2 remaining
@@ -42,8 +42,8 @@ Status: pass
 - After sending an invite or visual-review assignment, validate the sent-state update with `QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent`, then import it with `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent`.
 - Completed beta reviews must be non-template JSON files, validated with `npm run qa:beta-review-intake`, then imported only with `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake`.
 - Production visual reviews must be inspected by a human, validated with `npm run qa:visual-review-intake`, then imported only with `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`.
-- Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun `npm run qa:public-launch-status` and `npm run qa:launch-signoff`.
-- Re-run `npm run qa:launch-today`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff` after each import.
+- Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.
+- Re-run `npm run qa:launch-refresh` and `npm run qa:launch-signoff` after each dispatch-log or review-evidence import.
 
 ## Checks
 
