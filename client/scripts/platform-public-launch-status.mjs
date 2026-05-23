@@ -2863,6 +2863,24 @@ for (const issue of openAcceptedP2Risks) {
     if (betaNextWaveOpsRows.length > 0 && !note.includes(`${betaNextWaveOpsRows.length} next-wave operator rows`)) {
       acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next-wave operator row count ${betaNextWaveOpsRows.length}`)
     }
+    const launchOperatorTodayDisplayPath = qaDisplayPath(launchOperatorTodayPath)
+    const dispatchSentRecordCsvDisplayPath = qaDisplayPath(dispatchSentRecordTemplateCsvPath)
+    if (!note.includes(launchOperatorTodayDisplayPath)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator board ${launchOperatorTodayDisplayPath}`)
+    }
+    if (launchTodaySendPacketRows.length > 0 && !note.includes(`${launchTodaySendPacketRows.length} send-packet rows`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator send-packet row count ${launchTodaySendPacketRows.length}`)
+    }
+    if (launchTodayExecutionOrder.length > 0 && !note.includes(`${launchTodayExecutionOrder.length} execution steps`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator execution step count ${launchTodayExecutionOrder.length}`)
+    }
+    if (!note.includes(dispatchSentRecordCsvDisplayPath)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV ${dispatchSentRecordCsvDisplayPath}`)
+    }
+    if (!note.includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsvDisplayPath}`) ||
+      !note.includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsvDisplayPath}`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV validation and import commands`)
+    }
   }
   if (issue.id === 'GT-P2-002') {
     const expectedVisualCount = `${visualHistoryDates.length}/${visualMinimum}`
@@ -2889,6 +2907,21 @@ for (const issue of openAcceptedP2Risks) {
     }
     if (hasText(latestDeploymentUrl) && !note.includes(latestDeploymentUrl)) {
       acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual deployment ${latestDeploymentUrl}`)
+    }
+    const launchOperatorTodayDisplayPath = qaDisplayPath(launchOperatorTodayPath)
+    const dispatchSentRecordCsvDisplayPath = qaDisplayPath(dispatchSentRecordTemplateCsvPath)
+    if (!note.includes(launchOperatorTodayDisplayPath)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator board ${launchOperatorTodayDisplayPath}`)
+    }
+    if (launchTodayVisualRows.length > 0 && !note.includes(`${launchTodayVisualRows.length} production visual-review send-packet row`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review send-packet row count ${launchTodayVisualRows.length}`)
+    }
+    if (!note.includes(dispatchSentRecordCsvDisplayPath)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV ${dispatchSentRecordCsvDisplayPath}`)
+    }
+    if (!note.includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsvDisplayPath}`) ||
+      !note.includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsvDisplayPath}`)) {
+      acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV validation and import commands`)
     }
   }
 }

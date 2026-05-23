@@ -4259,6 +4259,23 @@ async function checkRiskRegister() {
       if (Number(betaStatus.nextWaveOpsRowCount) > 0 && !note.includes(`${Number(betaStatus.nextWaveOpsRowCount)} next-wave operator rows`)) {
         acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current beta next-wave operator row count ${Number(betaStatus.nextWaveOpsRowCount)}`)
       }
+      const launchOperatorStatus = status?.launchOperatorToday || {}
+      if (hasMeaningfulText(launchOperatorStatus.artifact) && !note.includes(launchOperatorStatus.artifact)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator board ${launchOperatorStatus.artifact}`)
+      }
+      if (Number(launchOperatorStatus.sendPacketRowCount) > 0 && !note.includes(`${Number(launchOperatorStatus.sendPacketRowCount)} send-packet rows`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator send-packet row count ${Number(launchOperatorStatus.sendPacketRowCount)}`)
+      }
+      if (Number(launchOperatorStatus.executionOrderStepCount) > 0 && !note.includes(`${Number(launchOperatorStatus.executionOrderStepCount)} execution steps`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator execution step count ${Number(launchOperatorStatus.executionOrderStepCount)}`)
+      }
+      if (hasMeaningfulText(launchOperatorStatus.dispatchSentRecordTemplateCsv) && !note.includes(launchOperatorStatus.dispatchSentRecordTemplateCsv)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV ${launchOperatorStatus.dispatchSentRecordTemplateCsv}`)
+      }
+      if (!note.includes(`QA_DISPATCH_MARK_SENT_RECORD=${launchOperatorStatus.dispatchSentRecordTemplateCsv}`) ||
+        !note.includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${launchOperatorStatus.dispatchSentRecordTemplateCsv}`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV validation and import commands`)
+      }
     }
     if (issue.id === 'GT-P2-002') {
       const expectedVisualCount = `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`
@@ -4280,6 +4297,20 @@ async function checkRiskRegister() {
       }
       if (hasMeaningfulText(visualStatus.latestProductionDeploymentUrl) && !note.includes(visualStatus.latestProductionDeploymentUrl)) {
         acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual deployment ${visualStatus.latestProductionDeploymentUrl}`)
+      }
+      const launchOperatorStatus = status?.launchOperatorToday || {}
+      if (hasMeaningfulText(launchOperatorStatus.artifact) && !note.includes(launchOperatorStatus.artifact)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current launch operator board ${launchOperatorStatus.artifact}`)
+      }
+      if (Number(launchOperatorStatus.visualActionRowCount) > 0 && !note.includes(`${Number(launchOperatorStatus.visualActionRowCount)} production visual-review send-packet row`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current production visual-review send-packet row count ${Number(launchOperatorStatus.visualActionRowCount)}`)
+      }
+      if (hasMeaningfulText(launchOperatorStatus.dispatchSentRecordTemplateCsv) && !note.includes(launchOperatorStatus.dispatchSentRecordTemplateCsv)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV ${launchOperatorStatus.dispatchSentRecordTemplateCsv}`)
+      }
+      if (!note.includes(`QA_DISPATCH_MARK_SENT_RECORD=${launchOperatorStatus.dispatchSentRecordTemplateCsv}`) ||
+        !note.includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${launchOperatorStatus.dispatchSentRecordTemplateCsv}`)) {
+        acceptedRiskEvidenceIssues.push(`${issue.id} acceptedRisk must reference current sent-record CSV validation and import commands`)
       }
     }
   }
