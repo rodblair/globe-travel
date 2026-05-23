@@ -13,6 +13,7 @@ Status: pass
 - Beta rows imported: 0
 - Visual rows imported: 0
 - Required proof fields rejected: reviewerAlias, deliveryChannel, sentAt, contactRecordLocation
+- Invalid proof values rejected: yes
 - Canonical beta log unchanged: yes
 - Canonical visual log unchanged: yes
 - Raw artifacts cleaned up: yes
@@ -27,6 +28,7 @@ The blank sent-record template is rejected before import and cannot mutate canon
 - Pass: blank sent-record template report states the evidence boundary
 - Pass: blank sent-record template import attempt is rejected
 - Pass: blank sent-record template rejection names every required proof field
+- Pass: invalid sent-record proof values are rejected before import
 - Pass: blank sent-record template rejection imports no rows
 - Pass: blank sent-record template cannot mutate canonical dispatch logs
 - Pass: blank sent-record template rejection cleans up temporary mark-sent artifacts

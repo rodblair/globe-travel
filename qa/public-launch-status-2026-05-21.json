@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T07:54:40.010Z",
+  "generatedAt": "2026-05-23T08:02:14.551Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -491,7 +491,7 @@
     "launchOperatorExitCode": 1,
     "launchOperatorStatus": "fail",
     "launchOperatorOnlyOverdueExecutionFailure": true,
-    "launchOperatorPublicLaunchStatus": "blocked",
+    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
     "launchOperatorActionRowCount": 4,
     "launchOperatorActionIds": [
       "BETA-HR-002",

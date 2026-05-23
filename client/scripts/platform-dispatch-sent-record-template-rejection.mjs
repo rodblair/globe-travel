@@ -17,6 +17,10 @@ const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
 const rawArtifactName = `dispatch-sent-record-template-rejection-raw-${date}`
 const rawJson = `qa/${rawArtifactName}.json`
 const rawReport = `qa/${rawArtifactName}.md`
+const invalidProofRecord = `qa/dispatch-sent-record-template-invalid-proof-${date}.json`
+const invalidProofArtifactName = `dispatch-sent-record-template-invalid-proof-raw-${date}`
+const invalidProofRawJson = `qa/${invalidProofArtifactName}.json`
+const invalidProofRawReport = `qa/${invalidProofArtifactName}.md`
 const artifactName = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTIFACT_NAME ||
   `dispatch-sent-record-template-rejection-${date}`
 
@@ -56,7 +60,7 @@ function sentCount(log) {
 }
 
 await mkdir(resolve(root, 'qa'), { recursive: true })
-await Promise.all([rawJson, rawReport].map((path) => rm(repoPath(path), { force: true })))
+await Promise.all([rawJson, rawReport, invalidProofRecord, invalidProofRawJson, invalidProofRawReport].map((path) => rm(repoPath(path), { force: true })))
 
 const template = await readJson(templatePath)
 const templateReport = await readText(templateReportPath)
@@ -91,6 +95,43 @@ const missingFieldNames = ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contac
 const canonicalBetaUnchanged = JSON.stringify(canonicalBetaAfter) === canonicalBetaBeforeSerialized
 const canonicalVisualUnchanged = JSON.stringify(canonicalVisualAfter) === canonicalVisualBeforeSerialized
 const templateRows = Array.isArray(template?.rows) ? template.rows : []
+const invalidProofTemplateRow = templateRows[0] || {}
+const invalidProofRecordBody = {
+  date,
+  rows: invalidProofTemplateRow.id
+    ? [
+        {
+          id: invalidProofTemplateRow.id,
+          reviewerAlias: 'reviewer-alias-001',
+          deliveryChannel: 'personal-inbox',
+          sentAt: `${date}T12:00:00.000Z`,
+          contactRecordLocation: 'todo',
+          notes: 'Invalid proof fixture should be rejected before import.',
+        },
+      ]
+    : [],
+}
+await writeFile(repoPath(invalidProofRecord), `${JSON.stringify(invalidProofRecordBody, null, 2)}\n`)
+
+const invalidProofResult = spawnSync(process.execPath, ['scripts/platform-dispatch-log-mark-sent.mjs'], {
+  cwd: clientRoot,
+  encoding: 'utf8',
+  env: {
+    ...process.env,
+    QA_DISPATCH_MARK_SENT_IMPORT: '1',
+    QA_DISPATCH_MARK_SENT_RECORD: invalidProofRecord,
+    QA_DISPATCH_MARK_SENT_ARTIFACT_NAME: invalidProofArtifactName,
+  },
+})
+const invalidProofSummary = await readJson(invalidProofRawJson).catch(() => null)
+const invalidProofIssues = Array.isArray(invalidProofSummary?.issues) ? invalidProofSummary.issues : []
+const canonicalBetaAfterInvalidProof = await readJson(betaDispatchLogPath)
+const canonicalVisualAfterInvalidProof = await readJson(visualDispatchLogPath)
+const invalidProofArtifactsExistBeforeCleanup = await Promise.all([invalidProofRecord, invalidProofRawJson, invalidProofRawReport].map((path) => fileExists(path)))
+await Promise.all([invalidProofRecord, invalidProofRawJson, invalidProofRawReport].map((path) => rm(repoPath(path), { force: true })))
+const invalidProofArtifactsCleanedUp = !(await Promise.all([invalidProofRecord, invalidProofRawJson, invalidProofRawReport].map((path) => fileExists(path))))
+  .some(Boolean)
+
 const checks = [
   {
     name: 'blank sent-record template is still marked as not ready for import',
@@ -121,6 +162,18 @@ const checks = [
     missingFieldNames,
   },
   {
+    name: 'invalid sent-record proof values are rejected before import',
+    ok: invalidProofResult.status !== 0 &&
+      invalidProofSummary?.status === 'fail' &&
+      invalidProofIssues.some((issue) => String(issue).includes('deliveryChannel must be one of')) &&
+      invalidProofIssues.some((issue) => String(issue).includes('contactRecordLocation must point to a stable external proof record')) &&
+      JSON.stringify(canonicalBetaAfterInvalidProof) === canonicalBetaBeforeSerialized &&
+      JSON.stringify(canonicalVisualAfterInvalidProof) === canonicalVisualBeforeSerialized,
+    exitCode: invalidProofResult.status,
+    status: invalidProofSummary?.status || null,
+    issues: invalidProofIssues,
+  },
+  {
     name: 'blank sent-record template rejection imports no rows',
     ok: Number(markSentSummary?.betaUpdateCount || 0) === 0 &&
       Number(markSentSummary?.visualUpdateCount || 0) === 0,
@@ -140,10 +193,16 @@ const checks = [
   },
   {
     name: 'blank sent-record template rejection cleans up temporary mark-sent artifacts',
-    ok: rawJsonExistsBeforeCleanup && rawReportExistsBeforeCleanup && rawArtifactsCleanedUp,
+    ok: rawJsonExistsBeforeCleanup &&
+      rawReportExistsBeforeCleanup &&
+      rawArtifactsCleanedUp &&
+      invalidProofArtifactsExistBeforeCleanup.every(Boolean) &&
+      invalidProofArtifactsCleanedUp,
     rawJsonExistsBeforeCleanup,
     rawReportExistsBeforeCleanup,
     rawArtifactsCleanedUp,
+    invalidProofArtifactsExistBeforeCleanup,
+    invalidProofArtifactsCleanedUp,
   },
 ]
 
@@ -165,6 +224,10 @@ const summary = {
   betaUpdateCount: markSentSummary?.betaUpdateCount ?? null,
   visualUpdateCount: markSentSummary?.visualUpdateCount ?? null,
   rejectionIssueCount: markSentIssues.length,
+  invalidProofExitCode: invalidProofResult.status,
+  invalidProofStatus: invalidProofSummary?.status || null,
+  invalidProofIssueCount: invalidProofIssues.length,
+  invalidProofArtifactsCleanedUp,
   missingFieldNames,
   canonicalBetaUnchanged,
   canonicalVisualUnchanged,
@@ -192,6 +255,7 @@ Status: ${summary.status}
 - Beta rows imported: ${summary.betaUpdateCount ?? 'missing'}
 - Visual rows imported: ${summary.visualUpdateCount ?? 'missing'}
 - Required proof fields rejected: ${summary.missingFieldNames.join(', ') || 'none'}
+- Invalid proof values rejected: ${summary.invalidProofStatus === 'fail' ? 'yes' : 'no'}
 - Canonical beta log unchanged: ${summary.canonicalBetaUnchanged ? 'yes' : 'no'}
 - Canonical visual log unchanged: ${summary.canonicalVisualUnchanged ? 'yes' : 'no'}
 - Raw artifacts cleaned up: ${summary.rawArtifactsCleanedUp ? 'yes' : 'no'}

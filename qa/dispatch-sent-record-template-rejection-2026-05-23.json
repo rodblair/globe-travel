@@ -1,8 +1,8 @@
 {
   "date": "2026-05-23",
   "status": "pass",
-  "checked": 7,
-  "passed": 7,
+  "checked": 8,
+  "passed": 8,
   "failed": 0,
   "templateArtifact": "qa/dispatch-sent-record-template-2026-05-23.json",
   "templateReport": "qa/dispatch-sent-record-template-2026-05-23.md",
@@ -15,6 +15,10 @@
   "betaUpdateCount": 0,
   "visualUpdateCount": 0,
   "rejectionIssueCount": 24,
+  "invalidProofExitCode": 1,
+  "invalidProofStatus": "fail",
+  "invalidProofIssueCount": 2,
+  "invalidProofArtifactsCleanedUp": true,
   "missingFieldNames": [
     "reviewerAlias",
     "deliveryChannel",
@@ -58,6 +62,16 @@
       ]
     },
     {
+      "name": "invalid sent-record proof values are rejected before import",
+      "ok": true,
+      "exitCode": 1,
+      "status": "fail",
+      "issues": [
+        "BETA-HR-001 deliveryChannel must be one of email, sms, slack, discord, whatsapp, imessage, phone, manual, external-outreach-log, other",
+        "BETA-HR-001 contactRecordLocation must point to a stable external proof record, not a placeholder"
+      ]
+    },
+    {
       "name": "blank sent-record template rejection imports no rows",
       "ok": true,
       "betaUpdateCount": 0,
@@ -76,7 +90,13 @@
       "ok": true,
       "rawJsonExistsBeforeCleanup": true,
       "rawReportExistsBeforeCleanup": true,
-      "rawArtifactsCleanedUp": true
+      "rawArtifactsCleanedUp": true,
+      "invalidProofArtifactsExistBeforeCleanup": [
+        true,
+        true,
+        true
+      ],
+      "invalidProofArtifactsCleanedUp": true
     }
   ],
   "failures": [],

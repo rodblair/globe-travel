@@ -31,7 +31,7 @@
   "launchOperatorExitCode": 1,
   "launchOperatorStatus": "fail",
   "launchOperatorOnlyOverdueExecutionFailure": true,
-  "launchOperatorPublicLaunchStatus": "blocked",
+  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
   "launchOperatorActionRowCount": 4,
   "launchOperatorActionIds": [
     "BETA-HR-002",
@@ -85,7 +85,7 @@
       "ok": true,
       "exitCode": 1,
       "status": "fail",
-      "publicLaunchStatus": "blocked",
+      "publicLaunchStatus": "beta-ready-public-blocked",
       "actionIds": [
         "BETA-HR-002",
         "BETA-HR-003",

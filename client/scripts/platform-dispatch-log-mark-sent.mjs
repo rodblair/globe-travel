@@ -10,6 +10,19 @@ const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG || 'qa/p
 const recordPath = process.env.QA_DISPATCH_MARK_SENT_RECORD || ''
 const importMode = process.env.QA_DISPATCH_MARK_SENT_IMPORT === '1'
 const artifactName = process.env.QA_DISPATCH_MARK_SENT_ARTIFACT_NAME || `dispatch-log-mark-sent-${date}`
+const allowedDeliveryChannels = new Set([
+  'email',
+  'sms',
+  'slack',
+  'discord',
+  'whatsapp',
+  'imessage',
+  'phone',
+  'manual',
+  'external-outreach-log',
+  'other',
+])
+const placeholderValues = new Set(['n/a', 'na', 'none', 'tbd', 'todo', 'replace-me', 'replace with external record'])
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
@@ -110,6 +123,14 @@ function looksSensitive(value) {
     /\+?\d[\d\s().-]{7,}\d/.test(text)
 }
 
+function normalizedText(value) {
+  return String(value || '').trim().toLowerCase()
+}
+
+function looksLikePlaceholder(value) {
+  return placeholderValues.has(normalizedText(value))
+}
+
 function normalizeRows(record) {
   if (Array.isArray(record)) return record
   if (Array.isArray(record?.rows)) return record.rows
@@ -137,6 +158,15 @@ function validateUpdate(update, betaRows, visualRows) {
 
   for (const field of ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contactRecordLocation']) {
     if (!hasText(update[field])) issues.push(`${id || 'unknown'} missing ${field}`)
+  }
+  if (hasText(update.reviewerAlias) && (update.reviewerAlias.trim().length < 3 || looksLikePlaceholder(update.reviewerAlias))) {
+    issues.push(`${id} reviewerAlias must be a stable non-sensitive alias, not a placeholder`)
+  }
+  if (hasText(update.deliveryChannel) && !allowedDeliveryChannels.has(normalizedText(update.deliveryChannel))) {
+    issues.push(`${id} deliveryChannel must be one of ${Array.from(allowedDeliveryChannels).join(', ')}`)
+  }
+  if (hasText(update.contactRecordLocation) && (update.contactRecordLocation.trim().length < 8 || looksLikePlaceholder(update.contactRecordLocation))) {
+    issues.push(`${id} contactRecordLocation must point to a stable external proof record, not a placeholder`)
   }
   if (hasText(update.sentAt) && Number.isNaN(Date.parse(update.sentAt))) {
     issues.push(`${id} sentAt is not parseable`)
