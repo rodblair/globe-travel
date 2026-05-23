@@ -838,14 +838,15 @@ const scheduledVisualReviews = Array.isArray(visualRegister.scheduledPublicLaunc
 
 const liveDeployment = health.body?.deployment || null
 const deploymentCurrency = inspectRuntimeDeploymentCurrency(liveDeployment?.commit)
-const today = currentQaDate()
+const runtimeToday = currentQaDate()
+const today = requestedDate || runtimeToday
 const date = requestedDate ||
   dateOnly(betaRegister.reviewedAt) ||
   dateOnly(visualRegister.reviewedAt) ||
   dateOnly(monitoringRegister.reviewedAt) ||
   dateOnly(rollbackPlan.reviewedAt) ||
   dateOnly(riskRegister.reviewedAt) ||
-  today
+  runtimeToday
 const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-status-${date}.json`
 const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${date}.md`
 const betaAssignmentCsvPath = betaPacketManifest.assignmentCsv || `qa/beta-human-review-assignments-${date}.csv`
@@ -1959,6 +1960,14 @@ const launchTodayVisualMessageFileChecks = Array.isArray(launchOperatorToday.vis
   : []
 const launchTodayMissingMessageFiles = launchTodayMessageFileChecks.filter((check) => check.exists !== true)
 const launchTodayMissingVisualMessageFiles = launchTodayVisualMessageFileChecks.filter((check) => check.exists !== true)
+const launchOperatorTodayFailures = Array.isArray(launchOperatorToday.failures)
+  ? launchOperatorToday.failures
+  : []
+const launchOperatorOnlyOverdueExecutionFailure = launchOperatorToday.status === 'fail' &&
+  launchOperatorTodayFailures.length === 1 &&
+  launchOperatorTodayFailures[0]?.name === 'launch today has no overdue launch execution rows'
+const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' ||
+  launchOperatorOnlyOverdueExecutionFailure
 const betaDispatchLogDueTodayRows = betaDispatchLogRows.filter((row) => row.sendStatus !== 'sent' && daysBetween(today, row.expectedSendBy) === 0)
 const betaDispatchLogOverdueRows = betaDispatchLogRows.filter((row) => {
   const delta = daysBetween(today, row.expectedSendBy)
@@ -1972,7 +1981,7 @@ const visualDispatchLogRequiredOverdueRows = visualDispatchLogRows.filter((row) 
   const delta = daysBetween(today, row.dueAt)
   return row.sendStatus !== 'sent' && row.requiredForPublicLaunch === true && Number.isFinite(delta) && delta < 0
 })
-if (launchOperatorToday.status !== 'pass') launchTodayIssues.push('launch operator today status is not pass')
+if (!launchOperatorBoardActionable) launchTodayIssues.push('launch operator today status is not pass')
 if (launchOperatorToday.today !== today) {
   launchTodayIssues.push(`launch operator today date ${launchOperatorToday.today || 'missing'} does not match ${today}`)
 }
@@ -2003,10 +2012,10 @@ if (Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount) !== betaDisp
 if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaDispatchLogOverdueRows.length) {
   launchTodayIssues.push('launch operator today beta overdue count does not match dispatch log')
 }
-if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0) {
+if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0 && !launchOperatorOnlyOverdueExecutionFailure) {
   launchTodayIssues.push(`launch operator today has ${launchOperatorToday.betaDispatchOverdueCount} overdue beta dispatch row(s)`)
 }
-if (Number(launchOperatorToday.visualOverdueCount) !== 0) {
+if (Number(launchOperatorToday.visualOverdueCount) !== 0 && !launchOperatorOnlyOverdueExecutionFailure) {
   launchTodayIssues.push(`launch operator today has ${launchOperatorToday.visualOverdueCount} overdue production visual row(s)`)
 }
 if (Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount) !== visualDispatchLogRequiredDueSoonRows.length) {

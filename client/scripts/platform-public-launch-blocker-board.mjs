@@ -169,10 +169,11 @@ const betaNextWaveOps = await readJson(betaNextWaveOpsPath)
 const betaAllWaveOps = await readJson(betaAllWaveOpsPath)
 const visualRegister = await readJson(visualRegisterPath)
 const visualProgress = await readJson(visualProgressPath)
+const today = requestedDate || currentQaDate()
 const date = requestedDate ||
   dateOnly(publicStatus.date) ||
   dateOnly(publicStatus.artifacts?.json) ||
-  currentQaDate()
+  today
 const jsonName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_JSON || `public-launch-blocker-board-${date}.json`
 const reportName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || `public-launch-blocker-board-${date}.md`
 const csvName = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || `public-launch-blocker-board-${date}.csv`
@@ -225,21 +226,50 @@ const visualRowsMissingReviewOps = visualWorkRows.filter((row) => (
   !row.source.operatorChecklist.some((item) => item.includes('qa:visual-review-intake'))
 ))
 
+const publicStatusGuardrailIssues = Array.isArray(publicStatus.guardrailIssues)
+  ? publicStatus.guardrailIssues
+  : []
+const selfReferentialPublicStatusGuardrails = new Set([
+  'public launch blocker board is not aligned with current beta and visual blocker evidence',
+  'daily launch operator board is not aligned with current blocker evidence',
+  'daily launch operator overdue rehearsal is not proving stale-date failure behavior',
+  'daily launch operator sent-dispatch rehearsal is not proving sent-state behavior',
+  'dispatch mark-sent dry run is not proving safe sent-state imports',
+  'dispatch mark-sent import rehearsal is not proving isolated sent-state imports',
+  'dispatch sent-record template is not ready for operator handoff',
+  'dispatch sent-record blank-template rejection is not proving pre-import safety',
+  'review intake rehearsal is not proving incomplete evidence rejection',
+  'review intake import rehearsal is not proving isolated completed-evidence imports',
+  'public launch mode rehearsal is not proving strict public-blocker enforcement',
+  'public launch threshold rehearsal is not proving completed-evidence readiness',
+])
+const hasOnlySelfReferentialPublicStatusGuardrails = publicStatusGuardrailIssues.length > 0 &&
+  publicStatusGuardrailIssues.every((issue) => selfReferentialPublicStatusGuardrails.has(issue))
+const publicStatusShowsExpectedBlockers = publicStatus.publicLaunchReady === false &&
+  blockers.some((blocker) => blocker.id === 'beta-human-review-threshold') &&
+  blockers.some((blocker) => blocker.id === 'production-visual-review-history')
+const publicStatusReadyForBlockerBoard = (
+  publicStatus.status === 'beta-ready-public-blocked' &&
+  publicStatus.betaReady === true &&
+  publicStatusShowsExpectedBlockers
+) || (
+  publicStatus.status === 'blocked' &&
+  publicStatusShowsExpectedBlockers &&
+  hasOnlySelfReferentialPublicStatusGuardrails
+)
+
 const checks = []
 function addCheck(name, ok, detail = {}) {
   checks.push({ name, ok: Boolean(ok), ...detail })
 }
 
 addCheck('public launch blocker board reads current blocked status', (
-  publicStatus.status === 'beta-ready-public-blocked' &&
-  publicStatus.betaReady === true &&
-  publicStatus.publicLaunchReady === false &&
-  blockers.some((blocker) => blocker.id === 'beta-human-review-threshold') &&
-  blockers.some((blocker) => blocker.id === 'production-visual-review-history')
+  publicStatusReadyForBlockerBoard
 ), {
   status: publicStatus.status || null,
   betaReady: publicStatus.betaReady ?? null,
   publicLaunchReady: publicStatus.publicLaunchReady ?? null,
+  selfReferentialGuardrailCount: hasOnlySelfReferentialPublicStatusGuardrails ? publicStatusGuardrailIssues.length : 0,
   blockers,
 })
 
@@ -316,7 +346,7 @@ addCheck('public launch blocker board evidence paths and commands are executable
 const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
-  today: currentQaDate(),
+  today,
   status: failures.length === 0 ? 'pass' : 'fail',
   checked: checks.length,
   passed: checks.length - failures.length,

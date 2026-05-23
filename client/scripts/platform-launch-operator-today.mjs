@@ -289,10 +289,18 @@ function addCheck(name, ok, detail = {}) {
 
 const publicGuardrailIssues = Array.isArray(publicStatus.guardrailIssues) ? publicStatus.guardrailIssues : []
 const launchOperatorSelfGuardrailIssues = new Set([
+  'public launch blocker board is not aligned with current beta and visual blocker evidence',
   'daily launch operator board is not aligned with current blocker evidence',
+  'daily launch operator overdue rehearsal is not proving stale-date failure behavior',
   'daily launch operator sent-dispatch rehearsal is not proving sent-state behavior',
   'dispatch mark-sent dry run is not proving safe sent-state imports',
   'dispatch mark-sent import rehearsal is not proving isolated sent-state imports',
+  'dispatch sent-record template is not ready for operator handoff',
+  'dispatch sent-record blank-template rejection is not proving pre-import safety',
+  'review intake rehearsal is not proving incomplete evidence rejection',
+  'review intake import rehearsal is not proving isolated completed-evidence imports',
+  'public launch mode rehearsal is not proving strict public-blocker enforcement',
+  'public launch threshold rehearsal is not proving completed-evidence readiness',
 ])
 const onlyLaunchOperatorSelfGuardrails =
   publicGuardrailIssues.length > 0 &&

@@ -1598,6 +1598,7 @@
       "status": "beta-ready-public-blocked",
       "betaReady": true,
       "publicLaunchReady": false,
+      "selfReferentialGuardrailCount": 0,
       "blockers": [
         {
           "id": "beta-human-review-threshold",
