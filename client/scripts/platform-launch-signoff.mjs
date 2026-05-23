@@ -2655,6 +2655,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
 
   const betaReviewStatus = status.betaHumanReviews || {}
   const visualReviewStatus = status.productionVisualReviews || {}
+  const publicLaunchNextActions = Array.isArray(status.nextActions) ? status.nextActions : []
+  const publicLaunchNextActionText = publicLaunchNextActions.join('\n')
   const betaQueueIssues = Array.isArray(betaReviewStatus.queueIssues) ? betaReviewStatus.queueIssues : []
   const betaScheduleIssues = Array.isArray(betaReviewStatus.scheduleIssues) ? betaReviewStatus.scheduleIssues : []
   const betaCommandCenterIssues = Array.isArray(betaReviewStatus.commandCenterIssues) ? betaReviewStatus.commandCenterIssues : []
@@ -3002,6 +3004,12 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const visualProgressIssues = Array.isArray(visualReviewStatus.progressIssues) ? visualReviewStatus.progressIssues : []
   const visualDispatchOutboxIssues = Array.isArray(visualReviewStatus.dispatchOutboxIssues) ? visualReviewStatus.dispatchOutboxIssues : []
   const visualDispatchLogIssues = Array.isArray(visualReviewStatus.dispatchLogIssues) ? visualReviewStatus.dispatchLogIssues : []
+  const betaDispatchNeedsNextAction =
+    Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount || 0) +
+    Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount || 0) > 0
+  const visualDispatchNeedsNextAction =
+    Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount || 0) +
+    Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount || 0) > 0
   addCheck('public launch status includes beta review wave browser rehearsal', (
     betaReviewStatus.waveRehearsalReady === true &&
     betaReviewStatus.waveRehearsalStatus === 'pass' &&
@@ -3155,6 +3163,32 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorVisualMessageFileCheckCount: launchOperatorStatus.visualMessageFileCheckCount ?? null,
     launchOperatorMissingVisualMessageFileCount: launchOperatorStatus.missingVisualMessageFileCount ?? null,
     launchOperatorIssues,
+  })
+
+  addCheck('public launch status next actions prioritize unsent review dispatches', (
+    (!betaDispatchNeedsNextAction || (
+      publicLaunchNextActionText.includes('beta review dispatch') &&
+      publicLaunchNextActionText.includes(betaReviewStatus.dispatchOutboxArtifact) &&
+      publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
+      publicLaunchNextActionText.includes('qa:dispatch-mark-sent')
+    )) &&
+    (!visualDispatchNeedsNextAction || (
+      publicLaunchNextActionText.includes('production visual-review') &&
+      publicLaunchNextActionText.includes(visualReviewStatus.dispatchOutboxArtifact) &&
+      publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
+      publicLaunchNextActionText.includes('qa:dispatch-mark-sent')
+    ))
+  ), {
+    nextActions: publicLaunchNextActions,
+    betaDispatchNeedsNextAction,
+    visualDispatchNeedsNextAction,
+    betaPreparedDueToday: launchOperatorStatus.betaDispatchLogPreparedDueTodayCount ?? null,
+    betaPreparedOverdue: launchOperatorStatus.betaDispatchLogPreparedOverdueCount ?? null,
+    visualPreparedDueSoon: launchOperatorStatus.visualDispatchLogPreparedDueSoonCount ?? null,
+    visualPreparedOverdue: launchOperatorStatus.visualDispatchLogPreparedOverdueCount ?? null,
+    betaDispatchOutbox: betaReviewStatus.dispatchOutboxArtifact || null,
+    visualDispatchOutbox: visualReviewStatus.dispatchOutboxArtifact || null,
+    dispatchSentRecordTemplateCsv,
   })
 
   addCheck('public launch status includes daily launch operator overdue rehearsal', (
