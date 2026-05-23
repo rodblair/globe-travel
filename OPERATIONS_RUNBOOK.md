@@ -58,6 +58,35 @@ Run `npm run qa:vercel-ignore` before release-ops-only pushes. It writes `qa/ver
 
 Any `client/**` runtime change, package/config change, or unknown path continues the build. Vercel may briefly show a release-ops-only commit as building before the ignored-build command resolves; wait for the deployment to cancel or skip before removing it manually. If a release-ops-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
 
+## Public Launch Evidence Dispatch
+
+The current public-launch blocker work is operational, not app-code blocked. Use the daily launch board and sent-record template as the source of truth:
+
+```bash
+npm run qa:launch-today
+npm run qa:dispatch-sent-record-template
+```
+
+Current artifacts:
+
+- Daily board: `qa/launch-operator-today-2026-05-22.json`, `.md`, and `.csv`
+- Sent-record starter: `qa/dispatch-sent-record-template-2026-05-22.json`, `qa/dispatch-sent-record-template-2026-05-22.md`, and `qa/dispatch-sent-record-template-2026-05-22.csv`
+- Sent-record validation: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
+- Sent-record import after real sends: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
+
+The sent-record starter is deliberately not ready for import when generated. Fill `reviewerAlias`, `deliveryChannel`, `sentAt`, and `contactRecordLocation` only after real outreach happens outside the repo. Keep real names, emails, phone numbers, and contact details in the external contact system. Use only non-sensitive aliases and pointers in the repo.
+
+After importing sent state, rerun:
+
+```bash
+npm run qa:beta-review-follow-up-outbox
+npm run qa:launch-today
+npm run qa:public-launch-status
+npm run qa:launch-signoff
+```
+
+Sent proof still does not count as completed beta or visual-review evidence. Public launch remains blocked until completed beta review submissions pass intake and production visual-review submissions pass intake.
+
 Manual equivalents:
 
 ```bash
