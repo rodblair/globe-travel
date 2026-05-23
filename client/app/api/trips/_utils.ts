@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase-service'
-import { GUEST_SESSION_COOKIE, createGuestUser, devUser, isDevAuthBypassEnabled } from '@/lib/dev-auth'
+import { GUEST_SESSION_COOKIE, createGuestUser, devUser, isDevAuthBypassEnabled, isValidGuestId } from '@/lib/dev-auth'
 import { ensureDevAccount, ensureGuestAccount } from '@/lib/guest-server'
 
 export function randomSlug(length = 10) {
@@ -20,7 +20,7 @@ export const TripBudgetSchema = z.enum(['budget', 'mid', 'luxury']).optional()
 export async function requireUser() {
   const supabase = await createClient()
   const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value
-  if (guestId) {
+  if (guestId && isValidGuestId(guestId)) {
     const serviceSupabase = await createServiceClient()
     await ensureGuestAccount(guestId, serviceSupabase)
     return { supabase: serviceSupabase, user: createGuestUser(guestId) }

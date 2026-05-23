@@ -169,6 +169,12 @@ async function cleanupGuestAccount() {
     auth: { persistSession: false },
   })
 
+  const { data: deletedTrips, error: tripError } = await supabase
+    .from('trips')
+    .delete()
+    .eq('user_id', guestId)
+    .select('id')
+
   const { error: profileError } = await supabase
     .from('profiles')
     .delete()
@@ -180,13 +186,16 @@ async function cleanupGuestAccount() {
   cleanup = {
     attempted: true,
     guestId,
+    tripDeletedCount: Array.isArray(deletedTrips) ? deletedTrips.length : null,
+    tripsDeleted: !tripError,
     profileDeleted: !profileError,
     userDeleted: !userError || userMissing,
+    tripError: tripError?.message || null,
     profileError: profileError?.message || null,
     userError: userMissing ? null : userError?.message || null,
   }
 
-  record('guest access smoke cleans up disposable guest account', !profileError && (!userError || userMissing), cleanup)
+  record('guest access smoke cleans up disposable guest account', !tripError && !profileError && (!userError || userMissing), cleanup)
 }
 
 await loadDotEnv()
@@ -198,6 +207,7 @@ try {
   const guestStartSource = await readFile(resolve(root, 'app/api/guest/start/route.ts'), 'utf8')
   const authUtilsSource = await readFile(resolve(root, 'app/api/trips/_utils.ts'), 'utf8')
   const chatRouteSource = await readFile(resolve(root, 'app/api/chat/route.ts'), 'utf8')
+  const devAuthSource = await readFile(resolve(root, 'lib/dev-auth.ts'), 'utf8')
   const callbackClientSource = await readFile(resolve(root, 'app/(auth)/auth/callback-client/page.tsx'), 'utf8')
   record('auth source preserves protected next destinations', (
     proxySource.includes("url.searchParams.set('next', next)") &&
@@ -212,7 +222,9 @@ try {
     authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) > -1 &&
     authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) <
       authUtilsSource.indexOf("const { data: { user } } = await supabase.auth.getUser()") &&
+    authUtilsSource.includes('guestId && isValidGuestId(guestId)') &&
     chatRouteSource.includes('const user = (guestId ? createGuestUser(guestId) : null) || authUser') &&
+    devAuthSource.includes('isValidGuestId(guestId) ? guestId : null') &&
     loginSource.includes('clearBrowserGuestSession()') &&
     signupSource.includes('clearBrowserGuestSession()') &&
     callbackClientSource.includes('clearBrowserGuestSession()')
@@ -303,6 +315,37 @@ try {
   await handoffPage.close().catch(() => {})
 
   if (shouldCheckGuestApi) {
+    const invalidGuest = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 })
+    await invalidGuest.addCookies([
+      {
+        name: 'globe_travel_guest',
+        value: 'not-a-uuid',
+        domain: new URL(baseUrl).hostname,
+        path: '/',
+        httpOnly: false,
+        secure: baseUrl.startsWith('https://'),
+        sameSite: 'Lax',
+        expires: Math.floor(Date.now() / 1000) + 60 * 60,
+      },
+    ])
+    const invalidGuestPage = await invalidGuest.newPage()
+    await gotoWithRetry(invalidGuestPage, `${baseUrl}/chat`)
+    const invalidGuestApiResult = await invalidGuestPage.evaluate(async () => {
+      const response = await fetch('/api/trips', { cache: 'no-store' })
+      const text = await response.text()
+      return {
+        status: response.status,
+        ok: response.ok,
+        bodyPreview: text.slice(0, 160),
+      }
+    })
+    await invalidGuestPage.close().catch(() => {})
+    await invalidGuest.close().catch(() => {})
+    record('malformed guest cookie is ignored without protected API crash', (
+      invalidGuestApiResult.status !== 500 &&
+      !/Expected parameter to be UUID|Invalid guest session id/i.test(invalidGuestApiResult.bodyPreview)
+    ), invalidGuestApiResult)
+
     const guestHandoffPage = await anonymous.newPage()
     await gotoWithRetry(
       guestHandoffPage,

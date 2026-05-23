@@ -3,13 +3,24 @@ import type { User } from '@supabase/supabase-js'
 export const isDevAuthBypassEnabled = process.env.NODE_ENV === 'development'
 export const GUEST_SESSION_COOKIE = 'globe_travel_guest'
 
+export function isValidGuestId(value: string | null | undefined) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || '').trim())
+}
+
 export function getGuestIdFromCookieHeader(cookieHeader: string | null | undefined) {
   if (!cookieHeader) return null
   const match = cookieHeader
     .split(';')
     .map((part) => part.trim())
     .find((part) => part.startsWith(`${GUEST_SESSION_COOKIE}=`))
-  return match ? decodeURIComponent(match.slice(GUEST_SESSION_COOKIE.length + 1)) : null
+  if (!match) return null
+
+  try {
+    const guestId = decodeURIComponent(match.slice(GUEST_SESSION_COOKIE.length + 1)).trim()
+    return isValidGuestId(guestId) ? guestId : null
+  } catch {
+    return null
+  }
 }
 
 export function clearBrowserGuestSession() {

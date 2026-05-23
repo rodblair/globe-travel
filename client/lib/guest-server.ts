@@ -1,7 +1,7 @@
 import 'server-only'
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { createGuestProfile, createGuestUser, devProfile, devUser } from '@/lib/dev-auth'
+import { createGuestProfile, createGuestUser, devProfile, devUser, isValidGuestId } from '@/lib/dev-auth'
 
 async function userExists(supabase: SupabaseClient, id: string) {
   const { data, error } = await supabase.auth.admin.getUserById(id)
@@ -69,6 +69,10 @@ async function ensureProfileBackedAccount({
 }
 
 export async function ensureGuestAccount(guestId: string, supabase: SupabaseClient) {
+  if (!isValidGuestId(guestId)) {
+    throw new Error('Invalid guest session id')
+  }
+
   const user = createGuestUser(guestId)
   await ensureProfileBackedAccount({
     supabase,
