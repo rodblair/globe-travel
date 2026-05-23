@@ -259,7 +259,7 @@ function AccountPageContent() {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-4 py-5 md:px-6 md:py-8">
+      <div className="mx-auto w-full max-w-5xl px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-5 md:px-6 md:py-8">
         {activeTab === 'profile' && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_320px] lg:gap-7">
             <div className="space-y-6">

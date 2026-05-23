@@ -24,7 +24,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/",
-      "elapsedMs": 310,
+      "elapsedMs": 385,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -41,7 +41,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login",
-      "elapsedMs": 76,
+      "elapsedMs": 99,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -58,7 +58,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/signup",
-      "elapsedMs": 104,
+      "elapsedMs": 81,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -75,7 +75,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/reset-password",
-      "elapsedMs": 88,
+      "elapsedMs": 341,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -91,7 +91,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/callback",
-      "elapsedMs": 166,
+      "elapsedMs": 345,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -108,7 +108,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/auth/callback-client",
-      "elapsedMs": 88,
+      "elapsedMs": 251,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -125,7 +125,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
-      "elapsedMs": 2350,
+      "elapsedMs": 1837,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -139,7 +139,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fchat",
-      "elapsedMs": 203,
+      "elapsedMs": 174,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -153,7 +153,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fexplore",
-      "elapsedMs": 132,
+      "elapsedMs": 129,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -167,7 +167,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fglobe",
-      "elapsedMs": 117,
+      "elapsedMs": 123,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -181,7 +181,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fmap",
-      "elapsedMs": 117,
+      "elapsedMs": 125,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -195,7 +195,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fbucket-list",
-      "elapsedMs": 122,
+      "elapsedMs": 125,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -209,7 +209,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fjournal",
-      "elapsedMs": 126,
+      "elapsedMs": 122,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -223,7 +223,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fsaved",
-      "elapsedMs": 123,
+      "elapsedMs": 127,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -237,7 +237,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Faccount",
-      "elapsedMs": 143,
+      "elapsedMs": 122,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -251,7 +251,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Faccount%3Ftab%3Dbilling",
-      "elapsedMs": 124,
+      "elapsedMs": 132,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -269,7 +269,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/pricing",
-      "elapsedMs": 77,
+      "elapsedMs": 91,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -283,7 +283,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fprofile",
-      "elapsedMs": 133,
+      "elapsedMs": 215,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -297,7 +297,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fsettings",
-      "elapsedMs": 132,
+      "elapsedMs": 145,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -311,7 +311,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fsaved",
-      "elapsedMs": 188,
+      "elapsedMs": 432,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -325,7 +325,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fchat",
-      "elapsedMs": 204,
+      "elapsedMs": 533,
       "attempts": 1,
       "ok": true,
       "issues": []
@@ -339,7 +339,7 @@
       "sourceExists": true,
       "status": 200,
       "finalUrl": "https://globe-travel-two.vercel.app/login?next=%2Fonboarding",
-      "elapsedMs": 125,
+      "elapsedMs": 194,
       "attempts": 1,
       "ok": true,
       "issues": []

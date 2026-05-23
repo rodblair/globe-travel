@@ -317,7 +317,7 @@ function SavedPageContent() {
         </div>
       </div>
 
-      <div className="app-container py-6 md:py-8">
+      <div className="app-container pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 md:py-8">
         {activeTab === 'trips' && (
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -345,7 +345,7 @@ function SavedPageContent() {
                 detail="Checking this session for itineraries, maps, and friend-ready plans."
               />
             ) : trips.length === 0 ? (
-              <div className="flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-16 text-center">
+              <div className="flex min-h-[340px] flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-10 text-center sm:min-h-[420px] sm:py-16">
                 <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
                   <Calendar className="h-8 w-8 text-[var(--brass)]" />
                 </div>
@@ -353,7 +353,7 @@ function SavedPageContent() {
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-foreground/45">
                   Build an itinerary in Planner, then use Save trip to keep it here for later.
                 </p>
-                <p className="mt-3 max-w-md text-xs leading-relaxed text-foreground/45">
+                <p className="mt-3 hidden max-w-md text-xs leading-relaxed text-foreground/45 sm:block">
                   If you opened a friend&apos;s shared link, that trip stays on its public review page until you create or save your own version.
                 </p>
                 <Link
@@ -524,7 +524,7 @@ function SavedPageContent() {
                 rows={3}
               />
             ) : entries.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-28 text-center">
+              <div className="flex flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-16 text-center sm:py-28">
                 <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
                   <Feather className="h-8 w-8 text-[var(--brass)]" />
                 </div>

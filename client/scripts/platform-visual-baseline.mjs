@@ -53,8 +53,8 @@ const allRoutes = [
   { id: 'landing', path: '/', markers: ['Globe.travel', 'Plan the trip everyone'] },
   { id: 'pricing', path: '/pricing', markers: ['Globe.travel pricing', 'Start 7-day free trial', 'Adventurer'] },
   { id: 'planner', path: '/chat', markers: ['Planner', 'Trip Studio'] },
-  { id: 'saved-trips', path: '/saved', markers: ['Trips'] },
-  { id: 'saved-journal', path: '/saved?tab=journal', markers: ['Trip notes'] },
+  { id: 'saved-trips', path: '/saved', markers: ['Trips'], forbiddenMarkers: ['Loading saved trips'] },
+  { id: 'saved-journal', path: '/saved?tab=journal', markers: ['Trip notes'], forbiddenMarkers: ['Loading trip notes'] },
   { id: 'account-profile', path: '/account', markers: ['Account'] },
   { id: 'account-billing', path: '/account?tab=billing', markers: ['Plan and billing'] },
   { id: 'login', path: '/login', markers: ['Welcome back', 'Continue as guest'] },
@@ -318,6 +318,7 @@ async function compareScreenshot({ routeId, screenshotName, screenshotPath }) {
 async function collectPageMetrics(page, route, viewport) {
   await page.setViewportSize({ width: viewport.width, height: viewport.height })
   const markerGroups = route.markers.map((marker) => Array.isArray(marker) ? marker : [marker])
+  const forbiddenMarkers = route.forbiddenMarkers || []
   let response = null
   let lastNavigationError = null
 
@@ -344,19 +345,21 @@ async function collectPageMetrics(page, route, viewport) {
   await page.waitForTimeout(Number.isFinite(settleMs) ? Math.max(0, settleMs) : 900)
   for (let markerAttempt = 1; markerAttempt <= 3; markerAttempt += 1) {
     await page.waitForFunction(
-      ({ markerGroups: groups }) => {
+      ({ markerGroups: groups, forbiddenMarkers: forbidden }) => {
         const text = document.body?.innerText.toLowerCase() || ''
         const appErrors = ['application error', 'unhandled runtime error', 'hydration failed']
+        const hasRequiredMarkers = groups.every((group) => group.some((marker) => text.includes(marker.toLowerCase())))
+        const hasForbiddenMarkers = forbidden.some((marker) => text.includes(marker.toLowerCase()))
         return (
-          groups.every((group) => group.some((marker) => text.includes(marker.toLowerCase()))) ||
+          (hasRequiredMarkers && !hasForbiddenMarkers) ||
           appErrors.some((pattern) => text.includes(pattern))
         )
       },
-      { markerGroups },
+      { markerGroups, forbiddenMarkers },
       { timeout: markerTimeoutMs }
     ).catch(() => {})
 
-    const markerState = await page.evaluate(({ markerGroups: groups }) => {
+    const markerState = await page.evaluate(({ markerGroups: groups, forbiddenMarkers: forbidden }) => {
       const text = document.body?.innerText || ''
       const lower = text.toLowerCase()
       const appErrors = ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].filter((pattern) => text.includes(pattern))
@@ -364,11 +367,16 @@ async function collectPageMetrics(page, route, viewport) {
         missingMarkers: groups
           .filter((group) => !group.some((marker) => lower.includes(marker.toLowerCase())))
           .map((group) => group.join(' or ')),
+        forbiddenMarkersPresent: forbidden.filter((marker) => lower.includes(marker.toLowerCase())),
         appErrors,
       }
-    }, { markerGroups })
+    }, { markerGroups, forbiddenMarkers })
 
-    if (markerState.missingMarkers.length === 0 || markerState.appErrors.length > 0 || markerAttempt === 3) break
+    if (
+      (markerState.missingMarkers.length === 0 && markerState.forbiddenMarkersPresent.length === 0) ||
+      markerState.appErrors.length > 0 ||
+      markerAttempt === 3
+    ) break
 
     await sleep(1000 * markerAttempt)
     response = await page.reload({
@@ -379,7 +387,7 @@ async function collectPageMetrics(page, route, viewport) {
     await page.waitForTimeout(Number.isFinite(settleMs) ? Math.max(0, settleMs) : 900)
   }
 
-  const metrics = await page.evaluate(({ markerGroups }) => {
+  const metrics = await page.evaluate(({ markerGroups, forbiddenMarkers }) => {
     const text = document.body?.innerText || ''
     const appErrorPatterns = [
       'Application error',
@@ -609,6 +617,7 @@ async function collectPageMetrics(page, route, viewport) {
       missingMarkers: markerGroups
         .filter((group) => !group.some((choice) => text.toLowerCase().includes(choice.toLowerCase())))
         .map((group) => group.join(' or ')),
+      forbiddenMarkersPresent: forbiddenMarkers.filter((marker) => text.toLowerCase().includes(marker.toLowerCase())),
       appErrors: appErrorPatterns.filter((pattern) => text.includes(pattern)),
       headings: Array.from(document.querySelectorAll('h1,h2,h3')).slice(0, 8).map((el) => el.textContent.trim().replace(/\s+/g, ' ')),
       smallAppTargets,
@@ -619,7 +628,7 @@ async function collectPageMetrics(page, route, viewport) {
       visibleControlCount: controls.filter((control) => control.inViewport).length,
       bodyPreview: text.slice(0, 500).replace(/\s+/g, ' '),
     }
-  }, { markerGroups })
+  }, { markerGroups, forbiddenMarkers })
 
   const screenshotName = `${route.id}-${viewport.id}-${viewport.width}x${viewport.height}.png`
   const screenshotPath = resolve(screenshotDir, screenshotName)
@@ -640,6 +649,7 @@ async function collectPageMetrics(page, route, viewport) {
     status >= 200 &&
     status < 400 &&
     metrics.missingMarkers.length === 0 &&
+    metrics.forbiddenMarkersPresent.length === 0 &&
     metrics.appErrors.length === 0 &&
     !metrics.horizontalOverflow &&
     metrics.smallAppTargets.length === 0 &&
@@ -781,6 +791,7 @@ const summary = {
     viewportId: failure.viewportId,
     status: failure.status,
     missingMarkers: failure.metrics.missingMarkers,
+    forbiddenMarkersPresent: failure.metrics.forbiddenMarkersPresent,
     appErrors: failure.metrics.appErrors,
     horizontalOverflow: failure.metrics.horizontalOverflow,
     smallAppTargets: failure.metrics.smallAppTargets,
@@ -825,6 +836,7 @@ ${failures.length === 0 ? 'No failures.' : failures.map((failure) => `### ${fail
 
 - Status: ${failure.status}
 - Missing markers: ${failure.metrics.missingMarkers.length ? failure.metrics.missingMarkers.join(', ') : 'none'}
+- Forbidden markers present: ${failure.metrics.forbiddenMarkersPresent.length ? failure.metrics.forbiddenMarkersPresent.join(', ') : 'none'}
 - App errors: ${failure.metrics.appErrors.length ? failure.metrics.appErrors.join(', ') : 'none'}
 - Horizontal overflow: ${failure.metrics.horizontalOverflow ? 'yes' : 'no'}
 - Small app targets: ${failure.metrics.smallAppTargets.length ? JSON.stringify(failure.metrics.smallAppTargets, null, 2) : 'none'}
