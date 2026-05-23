@@ -32,6 +32,7 @@
     "qa:guest-race": "node scripts/platform-guest-account-race-smoke.mjs",
     "qa:dispatch-mark-sent": "node scripts/platform-dispatch-log-mark-sent.mjs",
     "qa:dispatch-mark-sent-import-rehearsal": "node scripts/platform-dispatch-log-mark-sent-import-rehearsal.mjs",
+    "qa:dispatch-sent-record-template": "node scripts/platform-dispatch-sent-record-template.mjs",
     "qa:launch-signoff": "node scripts/platform-launch-signoff.mjs",
     "qa:launch-today": "node scripts/platform-launch-operator-today.mjs",
     "qa:launch-today-overdue-rehearsal": "node scripts/platform-launch-operator-today-rehearsal.mjs",

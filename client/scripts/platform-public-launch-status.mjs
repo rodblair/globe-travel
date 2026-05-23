@@ -96,6 +96,12 @@ const dispatchMarkSentImportRehearsalPath = process.env.QA_DISPATCH_MARK_SENT_IM
   'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json'
 const dispatchMarkSentImportRehearsalReportPath = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_REPORT ||
   'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md'
+const dispatchSentRecordTemplatePath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
+  'qa/dispatch-sent-record-template-2026-05-22.json'
+const dispatchSentRecordTemplateReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
+  'qa/dispatch-sent-record-template-2026-05-22.md'
+const dispatchSentRecordTemplateCsvPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
+  'qa/dispatch-sent-record-template-2026-05-22.csv'
 const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
   'qa/review-intake-rehearsal-2026-05-22.json'
 const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
@@ -704,6 +710,9 @@ const [
   dispatchMarkSentDryRunReport,
   dispatchMarkSentImportRehearsal,
   dispatchMarkSentImportRehearsalReport,
+  dispatchSentRecordTemplate,
+  dispatchSentRecordTemplateReport,
+  dispatchSentRecordTemplateCsv,
   reviewIntakeRehearsal,
   reviewIntakeRehearsalReport,
   publicLaunchModeRehearsal,
@@ -773,6 +782,9 @@ const [
   readText(dispatchMarkSentDryRunReportPath),
   readJson(dispatchMarkSentImportRehearsalPath),
   readText(dispatchMarkSentImportRehearsalReportPath),
+  readJson(dispatchSentRecordTemplatePath),
+  readText(dispatchSentRecordTemplateReportPath),
+  readText(dispatchSentRecordTemplateCsvPath),
   readJson(reviewIntakeRehearsalPath),
   readText(reviewIntakeRehearsalReportPath),
   readJson(publicLaunchModeRehearsalPath),
@@ -2185,6 +2197,68 @@ if (!dispatchMarkSentImportRehearsalReport.includes('import mode can update isol
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal report does not state the isolated import workflow')
 }
 
+const dispatchSentRecordTemplateIssues = []
+const dispatchSentRecordTemplateRows = Array.isArray(dispatchSentRecordTemplate.rows)
+  ? dispatchSentRecordTemplate.rows
+  : []
+const dispatchSentRecordMessageFileChecks = Array.isArray(dispatchSentRecordTemplate.messageFileChecks)
+  ? dispatchSentRecordTemplate.messageFileChecks
+  : []
+const dispatchSentRecordSubmissionTemplateChecks = Array.isArray(dispatchSentRecordTemplate.submissionTemplateChecks)
+  ? dispatchSentRecordTemplate.submissionTemplateChecks
+  : []
+const dispatchSentRecordBlankRows = dispatchSentRecordTemplateRows.filter((row) => (
+  !row.reviewerAlias &&
+  !row.deliveryChannel &&
+  !row.sentAt &&
+  !row.contactRecordLocation
+))
+if (dispatchSentRecordTemplate.status !== 'pass') {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template status is not pass')
+}
+if (dispatchSentRecordTemplate.date !== today) {
+  dispatchSentRecordTemplateIssues.push(`dispatch sent-record template date ${dispatchSentRecordTemplate.date || 'missing'} does not match ${today}`)
+}
+if (dispatchSentRecordTemplate.launchOperatorArtifact !== qaDisplayPath(launchOperatorTodayPath)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template does not reference current launch operator board')
+}
+if (dispatchSentRecordTemplate.readyForImport !== false) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template is incorrectly marked ready for import before real sends')
+}
+if (Number(dispatchSentRecordTemplate.rowCount || 0) !== launchTodayRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template row count does not match launch operator action rows')
+}
+if (Number(dispatchSentRecordTemplate.betaRowCount || 0) !== launchTodayBetaRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template beta row count does not match launch operator beta action rows')
+}
+if (Number(dispatchSentRecordTemplate.visualRowCount || 0) !== launchTodayVisualRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template visual row count does not match launch operator visual action rows')
+}
+if (dispatchSentRecordTemplateRows.length !== launchTodayRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows do not cover every launch operator action row')
+}
+if (dispatchSentRecordBlankRows.length !== dispatchSentRecordTemplateRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template includes prefilled sent proof fields')
+}
+if (!dispatchSentRecordMessageFileChecks.every((check) => check.exists === true)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template references missing message files')
+}
+if (!dispatchSentRecordSubmissionTemplateChecks.every((check) => check.exists === true)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template references missing submission templates')
+}
+if (!String(dispatchSentRecordTemplate.validationCommand || '').includes('qa:dispatch-mark-sent')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template validation command is missing mark-sent dry run')
+}
+if (!String(dispatchSentRecordTemplate.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template import command is missing import mode')
+}
+if (!dispatchSentRecordTemplateReport.includes('This file is not a sent proof')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state the evidence boundary')
+}
+if (!dispatchSentRecordTemplateCsv.includes('completedSubmissionPath')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing completed submission target column')
+}
+
 const reviewIntakeRehearsalIssues = []
 if (reviewIntakeRehearsal.status !== 'pass') {
   reviewIntakeRehearsalIssues.push('review intake rehearsal status is not pass')
@@ -2410,6 +2484,7 @@ if (launchTodayOverdueRehearsalIssues.length > 0) guardrailIssues.push('daily la
 if (launchSentDispatchRehearsalIssues.length > 0) guardrailIssues.push('daily launch operator sent-dispatch rehearsal is not proving sent-state behavior')
 if (dispatchMarkSentDryRunIssues.length > 0) guardrailIssues.push('dispatch mark-sent dry run is not proving safe sent-state imports')
 if (dispatchMarkSentImportRehearsalIssues.length > 0) guardrailIssues.push('dispatch mark-sent import rehearsal is not proving isolated sent-state imports')
+if (dispatchSentRecordTemplateIssues.length > 0) guardrailIssues.push('dispatch sent-record template is not ready for operator handoff')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
@@ -2846,6 +2921,25 @@ const summary = {
     rawArtifactsCleanedUp: dispatchMarkSentImportRehearsal.rawArtifactsCleanedUp ?? null,
     issues: dispatchMarkSentImportRehearsalIssues,
   },
+  dispatchSentRecordTemplate: {
+    ready: dispatchSentRecordTemplateIssues.length === 0,
+    issueCount: dispatchSentRecordTemplateIssues.length,
+    artifact: qaDisplayPath(dispatchSentRecordTemplatePath),
+    report: qaDisplayPath(dispatchSentRecordTemplateReportPath),
+    csv: qaDisplayPath(dispatchSentRecordTemplateCsvPath),
+    date: dispatchSentRecordTemplate.date || null,
+    launchOperatorArtifact: dispatchSentRecordTemplate.launchOperatorArtifact || null,
+    readyForImport: dispatchSentRecordTemplate.readyForImport ?? null,
+    rowCount: dispatchSentRecordTemplate.rowCount ?? null,
+    betaRowCount: dispatchSentRecordTemplate.betaRowCount ?? null,
+    visualRowCount: dispatchSentRecordTemplate.visualRowCount ?? null,
+    blankProofFieldRowCount: dispatchSentRecordBlankRows.length,
+    validationCommand: dispatchSentRecordTemplate.validationCommand || null,
+    importCommand: dispatchSentRecordTemplate.importCommand || null,
+    missingMessageFileCount: dispatchSentRecordMessageFileChecks.filter((check) => check.exists !== true).length,
+    missingSubmissionTemplateCount: dispatchSentRecordSubmissionTemplateChecks.filter((check) => check.exists !== true).length,
+    issues: dispatchSentRecordTemplateIssues,
+  },
   reviewIntakeRehearsal: {
     ready: reviewIntakeRehearsalIssues.length === 0,
     issueCount: reviewIntakeRehearsalIssues.length,
@@ -3198,6 +3292,7 @@ const summary = {
     launchOperatorSentDispatchRehearsal: qaDisplayPath(launchOperatorSentDispatchRehearsalPath),
     dispatchMarkSentDryRun: qaDisplayPath(dispatchMarkSentDryRunPath),
     dispatchMarkSentImportRehearsal: qaDisplayPath(dispatchMarkSentImportRehearsalPath),
+    dispatchSentRecordTemplate: qaDisplayPath(dispatchSentRecordTemplatePath),
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
     publicLaunchModeRehearsal: qaDisplayPath(publicLaunchModeRehearsalPath),
     json: `qa/${jsonArtifact}`,
@@ -3255,6 +3350,7 @@ Status: ${status}
 - Launch operator sent-dispatch rehearsal ready: ${summary.launchOperatorSentDispatchRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorSentDispatchRehearsal.launchOperatorActionRowCount || 0} action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: ${summary.dispatchMarkSentDryRun.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentDryRun.betaUpdateCount || 0} beta, ${summary.dispatchMarkSentDryRun.visualUpdateCount || 0} visual)
 - Dispatch mark-sent import rehearsal ready: ${summary.dispatchMarkSentImportRehearsal.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentImportRehearsal.tempBetaSentCount || 0} beta sent on isolated log, ${summary.dispatchMarkSentImportRehearsal.tempVisualSentCount || 0} visual sent on isolated log)
+- Dispatch sent-record template ready: ${summary.dispatchSentRecordTemplate.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplate.rowCount || 0} rows, ready for import: ${summary.dispatchSentRecordTemplate.readyForImport ? 'yes' : 'no'})
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
 - Open P0/P1 risks: ${openBlockingRisks.length}
@@ -3347,6 +3443,9 @@ ${markdownList(dispatchMarkSentDryRunIssues)}
 Dispatch mark-sent import rehearsal:
 ${markdownList(dispatchMarkSentImportRehearsalIssues)}
 
+Dispatch sent-record template:
+${markdownList(dispatchSentRecordTemplateIssues)}
+
 Review intake rehearsal:
 ${markdownList(reviewIntakeRehearsalIssues)}
 
@@ -3394,6 +3493,7 @@ ${markdownList(summary.nextActions)}
 - Launch operator sent-dispatch rehearsal: \`${summary.launchOperatorSentDispatchRehearsal.report}\` and \`${summary.launchOperatorSentDispatchRehearsal.artifact}\`
 - Dispatch mark-sent dry run: \`${summary.dispatchMarkSentDryRun.report}\` and \`${summary.dispatchMarkSentDryRun.artifact}\`
 - Dispatch mark-sent import rehearsal: \`${summary.dispatchMarkSentImportRehearsal.report}\` and \`${summary.dispatchMarkSentImportRehearsal.artifact}\`
+- Dispatch sent-record template: \`${summary.dispatchSentRecordTemplate.report}\`, \`${summary.dispatchSentRecordTemplate.csv}\`, and \`${summary.dispatchSentRecordTemplate.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

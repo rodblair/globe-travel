@@ -130,6 +130,16 @@ const dispatchMarkSentImportRehearsalArtifact =
 const dispatchMarkSentImportRehearsalReport =
   process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_REPORT ||
   'qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md'
+const dispatchSentRecordTemplateArtifact =
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_ARTIFACT ||
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
+  'qa/dispatch-sent-record-template-2026-05-22.json'
+const dispatchSentRecordTemplateReport =
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
+  'qa/dispatch-sent-record-template-2026-05-22.md'
+const dispatchSentRecordTemplateCsv =
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
+  'qa/dispatch-sent-record-template-2026-05-22.csv'
 const reviewIntakeRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_REHEARSAL ||
@@ -2608,6 +2618,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const dispatchMarkSentImportRehearsalIssues = Array.isArray(dispatchMarkSentImportRehearsalStatus.issues)
     ? dispatchMarkSentImportRehearsalStatus.issues
     : []
+  const dispatchSentRecordTemplateStatus = status.dispatchSentRecordTemplate || {}
+  const dispatchSentRecordTemplateIssues = Array.isArray(dispatchSentRecordTemplateStatus.issues)
+    ? dispatchSentRecordTemplateStatus.issues
+    : []
   const reviewIntakeRehearsalStatus = status.reviewIntakeRehearsal || {}
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
@@ -3201,6 +3215,51 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchMarkSentImportRehearsalCanonicalVisualSentCount: dispatchMarkSentImportRehearsalStatus.canonicalVisualSentCount ?? null,
     dispatchMarkSentImportRehearsalRawArtifactsCleanedUp: dispatchMarkSentImportRehearsalStatus.rawArtifactsCleanedUp ?? null,
     dispatchMarkSentImportRehearsalIssues,
+  })
+
+  addCheck('public launch status includes dispatch sent-record template', (
+    dispatchSentRecordTemplateStatus.ready === true &&
+    dispatchSentRecordTemplateStatus.artifact === dispatchSentRecordTemplateArtifact &&
+    dispatchSentRecordTemplateStatus.report === dispatchSentRecordTemplateReport &&
+    dispatchSentRecordTemplateStatus.csv === dispatchSentRecordTemplateCsv &&
+    status.artifacts?.dispatchSentRecordTemplate === dispatchSentRecordTemplateArtifact &&
+    Number(dispatchSentRecordTemplateStatus.issueCount) === 0 &&
+    dispatchSentRecordTemplateStatus.launchOperatorArtifact === launchOperatorTodayArtifact &&
+    dispatchSentRecordTemplateStatus.readyForImport === false &&
+    Number(dispatchSentRecordTemplateStatus.rowCount) === Number(launchOperatorStatus.actionRowCount) &&
+    Number(dispatchSentRecordTemplateStatus.betaRowCount) === Number(launchOperatorStatus.betaActionRowCount) &&
+    Number(dispatchSentRecordTemplateStatus.visualRowCount) === Number(launchOperatorStatus.visualActionRowCount) &&
+    Number(dispatchSentRecordTemplateStatus.blankProofFieldRowCount) === Number(dispatchSentRecordTemplateStatus.rowCount) &&
+    Number(dispatchSentRecordTemplateStatus.missingMessageFileCount) === 0 &&
+    Number(dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount) === 0 &&
+    String(dispatchSentRecordTemplateStatus.validationCommand || '').includes('qa:dispatch-mark-sent') &&
+    String(dispatchSentRecordTemplateStatus.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+    dispatchSentRecordTemplateIssues.length === 0
+  ), {
+    dispatchSentRecordTemplateArtifact: dispatchSentRecordTemplateStatus.artifact || null,
+    expectedDispatchSentRecordTemplateArtifact: dispatchSentRecordTemplateArtifact,
+    dispatchSentRecordTemplateReport: dispatchSentRecordTemplateStatus.report || null,
+    expectedDispatchSentRecordTemplateReport: dispatchSentRecordTemplateReport,
+    dispatchSentRecordTemplateCsv: dispatchSentRecordTemplateStatus.csv || null,
+    expectedDispatchSentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
+    publicStatusArtifact: status.artifacts?.dispatchSentRecordTemplate || null,
+    dispatchSentRecordTemplateReady: dispatchSentRecordTemplateStatus.ready ?? null,
+    dispatchSentRecordTemplateIssueCount: dispatchSentRecordTemplateStatus.issueCount ?? null,
+    dispatchSentRecordTemplateLaunchOperatorArtifact: dispatchSentRecordTemplateStatus.launchOperatorArtifact || null,
+    expectedLaunchOperatorArtifact: launchOperatorTodayArtifact,
+    dispatchSentRecordTemplateReadyForImport: dispatchSentRecordTemplateStatus.readyForImport ?? null,
+    dispatchSentRecordTemplateRowCount: dispatchSentRecordTemplateStatus.rowCount ?? null,
+    expectedActionRowCount: launchOperatorStatus.actionRowCount ?? null,
+    dispatchSentRecordTemplateBetaRowCount: dispatchSentRecordTemplateStatus.betaRowCount ?? null,
+    expectedBetaActionRowCount: launchOperatorStatus.betaActionRowCount ?? null,
+    dispatchSentRecordTemplateVisualRowCount: dispatchSentRecordTemplateStatus.visualRowCount ?? null,
+    expectedVisualActionRowCount: launchOperatorStatus.visualActionRowCount ?? null,
+    dispatchSentRecordTemplateBlankProofFieldRowCount: dispatchSentRecordTemplateStatus.blankProofFieldRowCount ?? null,
+    dispatchSentRecordTemplateMissingMessageFileCount: dispatchSentRecordTemplateStatus.missingMessageFileCount ?? null,
+    dispatchSentRecordTemplateMissingSubmissionTemplateCount: dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount ?? null,
+    dispatchSentRecordTemplateValidationCommand: dispatchSentRecordTemplateStatus.validationCommand || null,
+    dispatchSentRecordTemplateImportCommand: dispatchSentRecordTemplateStatus.importCommand || null,
+    dispatchSentRecordTemplateIssues,
   })
 
   addCheck('public launch status includes review intake rejection rehearsal', (

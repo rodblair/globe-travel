@@ -483,6 +483,25 @@
     "rawArtifactsCleanedUp": true,
     "issues": []
   },
+  "dispatchSentRecordTemplate": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/dispatch-sent-record-template-2026-05-22.json",
+    "report": "qa/dispatch-sent-record-template-2026-05-22.md",
+    "csv": "qa/dispatch-sent-record-template-2026-05-22.csv",
+    "date": "2026-05-22",
+    "launchOperatorArtifact": "qa/launch-operator-today-2026-05-22.json",
+    "readyForImport": false,
+    "rowCount": 6,
+    "betaRowCount": 5,
+    "visualRowCount": 1,
+    "blankProofFieldRowCount": 6,
+    "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
+    "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
+    "missingMessageFileCount": 0,
+    "missingSubmissionTemplateCount": 0,
+    "issues": []
+  },
   "reviewIntakeRehearsal": {
     "ready": true,
     "issueCount": 0,
@@ -866,6 +885,7 @@
     "launchOperatorSentDispatchRehearsal": "qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json",
     "dispatchMarkSentDryRun": "qa/dispatch-log-mark-sent-2026-05-22.json",
     "dispatchMarkSentImportRehearsal": "qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json",
+    "dispatchSentRecordTemplate": "qa/dispatch-sent-record-template-2026-05-22.json",
     "reviewIntakeRehearsal": "qa/review-intake-rehearsal-2026-05-22.json",
     "publicLaunchModeRehearsal": "qa/public-launch-mode-rehearsal-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
