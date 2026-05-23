@@ -49,8 +49,11 @@ function rowsToCsv(rows) {
     'destination',
     'owner',
     'sendBy',
+    'sendTiming',
     'followUpAt',
+    'followUpTiming',
     'dueAt',
+    'dueTiming',
     'daysUntilDue',
     'sendStatus',
     'reviewerAlias',
@@ -70,6 +73,31 @@ function rowsToCsv(rows) {
 
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
+}
+
+function plural(value, label) {
+  return `${value} ${label}${Math.abs(Number(value)) === 1 ? '' : 's'}`
+}
+
+function timingLabel(targetDate, label = 'due') {
+  const delta = daysBetween(today, targetDate)
+  if (!Number.isFinite(delta)) return `${label} date missing`
+  if (delta < 0) return `${label} overdue by ${plural(Math.abs(delta), 'day')}`
+  if (delta === 0) return `${label} today`
+  return `${label} in ${plural(delta, 'day')}`
+}
+
+function timingActionPrefix(row) {
+  const timing = String(row.sendTiming || row.dueTiming || '')
+    .replace(/^send overdue/, 'dispatch is overdue')
+    .replace(/^send today/, 'dispatch is due today')
+    .replace(/^send in/, 'dispatch is due in')
+  return timing ? `${row.id} ${timing}; ` : ''
+}
+
+function sentenceStart(value) {
+  const text = String(value || '')
+  return text ? `${text[0].toUpperCase()}${text.slice(1)}` : text
 }
 
 const publicStatus = await readJson(publicStatusPath)
@@ -134,8 +162,11 @@ function betaActionRow(row, priority, action) {
     destination: message.destination || row.source?.messageSubject?.replace(/^\[Globe\.travel beta\]\s*/, '') || '',
     owner: row.owner || 'Product',
     sendBy: row.sendBy,
+    sendTiming: row.sendTiming || timingLabel(row.sendBy, 'send'),
     followUpAt: row.followUpAt,
+    followUpTiming: row.followUpTiming || timingLabel(row.followUpAt, 'follow-up'),
     dueAt: row.dueAt,
+    dueTiming: row.dueTiming || timingLabel(row.dueAt, 'review'),
     daysUntilDue: daysBetween(today, row.dueAt),
     sendStatus: dispatchLog.sendStatus || row.dispatchStatus || '',
     reviewerAlias: dispatchLog.reviewerAlias || '',
@@ -161,8 +192,11 @@ function visualActionRow(row, priority, action) {
     destination: 'Production visual review',
     owner: row.owner || 'Product',
     sendBy: '',
+    sendTiming: '',
     followUpAt: '',
+    followUpTiming: '',
     dueAt: row.dueAt,
+    dueTiming: row.dueTiming || timingLabel(row.dueAt, 'review'),
     daysUntilDue: daysBetween(today, row.dueAt),
     sendStatus: dispatchLog.sendStatus || '',
     reviewerAlias: dispatchLog.reviewerAlias || '',
@@ -190,8 +224,11 @@ function deploymentActionRow() {
     destination: 'Vercel production',
     owner: 'Release',
     sendBy: today,
+    sendTiming: 'deploy today',
     followUpAt: today,
+    followUpTiming: 'verify today',
     dueAt: today,
+    dueTiming: 'deployment today',
     daysUntilDue: 0,
     sendStatus: deploymentCurrency.runtimeCommitAhead === true ? `production-on-${liveDeploymentCommitShort}` : 'verification-blocked',
     reviewerAlias: '',
@@ -210,34 +247,34 @@ function deploymentActionRow() {
 
 const betaDispatchDueToday = betaRows
   .filter((row) => daysBetween(today, row.sendBy) === 0 && !rowIsSent(betaDispatchLogById.get(row.id)))
-  .map((row) => betaActionRow(row, 'P0', 'Send beta review invite today.'))
+  .map((row) => betaActionRow(row, 'P0', `${timingActionPrefix(row)}send beta review invite today and record sent proof.`))
 const betaDispatchOverdue = betaRows
   .filter((row) => Number.isFinite(daysBetween(today, row.sendBy)) && daysBetween(today, row.sendBy) < 0 && !rowIsSent(betaDispatchLogById.get(row.id)))
-  .map((row) => betaActionRow(row, 'P0', 'Dispatch is overdue; send invite immediately or reassign.'))
+  .map((row) => betaActionRow(row, 'P0', `${timingActionPrefix(row)}send invite immediately or reassign, then record sent proof.`))
 const betaFollowUpsDueSoon = betaRows
   .filter((row) => {
     const delta = daysBetween(today, row.followUpAt)
     return Number.isFinite(delta) && delta >= 0 && delta <= 2 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
-  .map((row) => betaActionRow(row, 'P1', 'Prepare follow-up; send on or before the follow-up date.'))
+  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(row.followUpTiming || timingLabel(row.followUpAt, 'follow-up'))}; prepare follow-up and send on or before the follow-up date.`))
 const betaReviewsDueSoon = betaRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
     return Number.isFinite(delta) && delta >= 0 && delta <= 3 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
-  .map((row) => betaActionRow(row, 'P1', 'Track completed reviewer JSON and intake readiness.'))
+  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(row.dueTiming || timingLabel(row.dueAt, 'review'))}; track completed reviewer JSON and intake readiness.`))
 const visualDueSoon = visualRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
     return row.status === 'required for public launch history' && Number.isFinite(delta) && delta >= 0 && delta <= 7 && !rowIsSent(visualDispatchLogById.get(row.id))
   })
-  .map((row) => visualActionRow(row, 'P1', 'Send visual-review assignment or confirm scheduled reviewer time.'))
+  .map((row) => visualActionRow(row, 'P1', `${sentenceStart(row.dueTiming || timingLabel(row.dueAt, 'review'))}; send visual-review assignment or confirm scheduled reviewer time.`))
 const visualOverdue = visualRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
     return row.status === 'required for public launch history' && Number.isFinite(delta) && delta < 0 && !rowIsSent(visualDispatchLogById.get(row.id))
   })
-  .map((row) => visualActionRow(row, 'P0', 'Production visual review is overdue; run and import evidence.'))
+  .map((row) => visualActionRow(row, 'P0', `${sentenceStart(row.dueTiming || timingLabel(row.dueAt, 'review'))}; run production visual review and import evidence.`))
 
 const betaDispatchLogDueTodayRows = preparedDueTodayRows(betaDispatchLogRows)
 const betaDispatchLogOverdueRows = preparedOverdueRows(betaDispatchLogRows)
@@ -264,6 +301,14 @@ const uniquePriorityRows = [
   ...visualOverdue,
   ...visualDueSoon,
 ]
+const rowsMissingTiming = uniquePriorityRows.filter((row) => (
+  row.workType !== 'production-runtime-deployment' &&
+  !hasText(row.sendTiming || row.dueTiming)
+))
+const overdueRowsMissingExplicitAction = uniquePriorityRows.filter((row) => (
+  String(row.sendTiming || row.dueTiming || '').includes('overdue') &&
+  !String(row.action || '').includes('overdue')
+))
 
 const messageFileChecks = await Promise.all(uniquePriorityRows
   .filter((row) => row.workType === 'beta-human-review')
@@ -381,6 +426,16 @@ addCheck('launch today send actions match dispatch logs', (
   visualDispatchLogOverdue: visualDispatchLogOverdueRows.filter((row) => row.requiredForPublicLaunch).map((row) => row.id),
 })
 
+addCheck('launch today exposes time-aware execution actions', (
+  uniquePriorityRows.length > 0 &&
+  rowsMissingTiming.length === 0 &&
+  overdueRowsMissingExplicitAction.length === 0
+), {
+  rowsMissingTiming: rowsMissingTiming.map((row) => row.id),
+  overdueRowsMissingExplicitAction: overdueRowsMissingExplicitAction.map((row) => row.id),
+  timedActionRowCount: uniquePriorityRows.filter((row) => hasText(row.sendTiming || row.dueTiming)).length,
+})
+
 addCheck('launch today has no overdue launch execution rows', (
   betaDispatchOverdue.length === 0 &&
   visualOverdue.length === 0
@@ -452,8 +507,8 @@ const summary = {
 }
 
 function actionRowsTable(rows) {
-  if (!rows.length) return '| none | none | none | none | none | none | none | none |\n'
-  return rows.map((row) => `| ${row.priority} | ${row.workType} | ${row.id} | ${row.dueAt || 'n/a'} | ${row.sendStatus || 'n/a'} | ${row.action} | \`${row.messageFile || row.startUrlOrCommand || 'n/a'}\` | \`${row.submissionPath || 'n/a'}\` |`).join('\n')
+  if (!rows.length) return '| none | none | none | none | none | none | none | none | none | none |\n'
+  return rows.map((row) => `| ${row.priority} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.sendTiming || row.dueTiming || 'n/a'} | ${row.dueAt || 'n/a'} | ${row.sendStatus || 'n/a'} | ${row.action} | \`${row.messageFile || row.startUrlOrCommand || 'n/a'}\` | \`${row.submissionPath || 'n/a'}\` |`).join('\n')
 }
 
 const report = `# Launch Operator Today
@@ -484,8 +539,8 @@ Status: ${summary.status}
 
 ## Do Today
 
-| Priority | Type | ID | Due | Send Status | Action | Source | Evidence Path |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Priority | Type | ID | Send By | Timing | Due | Send Status | Action | Source | Evidence Path |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${actionRowsTable(uniquePriorityRows)}
 
 ## Operating Rules
