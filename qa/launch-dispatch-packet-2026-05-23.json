@@ -1,0 +1,261 @@
+{
+  "date": "2026-05-23",
+  "status": "pass",
+  "checked": 7,
+  "passed": 7,
+  "failed": 0,
+  "launchOperatorArtifact": "qa/launch-operator-today-2026-05-23.json",
+  "sentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-05-23.json",
+  "sentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-23.csv",
+  "rowCount": 6,
+  "betaRowCount": 5,
+  "visualRowCount": 1,
+  "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+  "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+  "postImportCommands": [
+    "npm run qa:launch-refresh",
+    "npm run qa:launch-signoff"
+  ],
+  "rows": [
+    {
+      "id": "BETA-HR-001",
+      "workType": "beta-human-review",
+      "priority": "P0",
+      "destination": "Athens",
+      "messageSubject": "[Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25",
+      "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt",
+      "messageBody": "Subject: [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25\n\nYou are assigned BETA-HR-001 for the Globe.travel beta review wave BETA-WAVE-01. Please use phone 390x844, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json. Use the checklist in the packet, fill every scorecard field, and flag any confusing or broken moment as P0, P1, P2, or P3. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.\n\nStart URL:\nhttps://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.\n\nPacket:\nqa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md\n\nSubmission template:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json\n\nCompleted submission filename:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json\n\nReviewer checklist:\n- Use phone 390x844 for the full review.\n- Start from https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.\n- Complete planner, Trip Studio, map, save/reopen, public share, feedback, and paid-value checks.\n- Fill every scorecard field with a numeric score and a short note.\n- Classify each finding as P0, P1, P2, P3, or none.\n- Save the completed non-template JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json\n\nOperator checklist:\n- Assign a named human reviewer and record their contact outside this artifact.\n- Send the subject \"[Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25\" with the reviewer message below.\n- Include packet qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md and template qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json.\n- Confirm the reviewer can test phone 390x844 before 2026-05-25.\n- Follow up no later than 2026-05-24.\n- After the completed JSON arrives, run npm run qa:beta-review-intake before any import.\n\nValidation:\n- npm run qa:beta-review-intake\n- QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\n\nLaunch rule:\nThis message is reviewer outreach, not completed review evidence. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported.\n",
+      "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
+      "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json",
+      "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json",
+      "validateCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": "",
+      "contactRecordLocation": ""
+    },
+    {
+      "id": "BETA-HR-002",
+      "workType": "beta-human-review",
+      "priority": "P0",
+      "destination": "Lisbon",
+      "messageSubject": "[Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25",
+      "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt",
+      "messageBody": "Subject: [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25\n\nYou are assigned BETA-HR-002 for the Globe.travel beta review wave BETA-WAVE-01. Please use desktop 1440x950, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json. Use the checklist in the packet, fill every scorecard field, and flag any confusing or broken moment as P0, P1, P2, or P3. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.\n\nStart URL:\nhttps://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.\n\nPacket:\nqa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md\n\nSubmission template:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json\n\nCompleted submission filename:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json\n\nReviewer checklist:\n- Use desktop 1440x950 for the full review.\n- Start from https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.\n- Complete planner, Trip Studio, map, save/reopen, public share, feedback, and paid-value checks.\n- Fill every scorecard field with a numeric score and a short note.\n- Classify each finding as P0, P1, P2, P3, or none.\n- Save the completed non-template JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json\n\nOperator checklist:\n- Assign a named human reviewer and record their contact outside this artifact.\n- Send the subject \"[Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25\" with the reviewer message below.\n- Include packet qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md and template qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json.\n- Confirm the reviewer can test desktop 1440x950 before 2026-05-25.\n- Follow up no later than 2026-05-24.\n- After the completed JSON arrives, run npm run qa:beta-review-intake before any import.\n\nValidation:\n- npm run qa:beta-review-intake\n- QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\n\nLaunch rule:\nThis message is reviewer outreach, not completed review evidence. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported.\n",
+      "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
+      "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json",
+      "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json",
+      "validateCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": "",
+      "contactRecordLocation": ""
+    },
+    {
+      "id": "BETA-HR-003",
+      "workType": "beta-human-review",
+      "priority": "P0",
+      "destination": "Barcelona",
+      "messageSubject": "[Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25",
+      "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt",
+      "messageBody": "Subject: [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25\n\nYou are assigned BETA-HR-003 for the Globe.travel beta review wave BETA-WAVE-01. Please use phone 390x844, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json. Use the checklist in the packet, fill every scorecard field, and flag any confusing or broken moment as P0, P1, P2, or P3. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.\n\nStart URL:\nhttps://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.\n\nPacket:\nqa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md\n\nSubmission template:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json\n\nCompleted submission filename:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json\n\nReviewer checklist:\n- Use phone 390x844 for the full review.\n- Start from https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.\n- Complete planner, Trip Studio, map, save/reopen, public share, feedback, and paid-value checks.\n- Fill every scorecard field with a numeric score and a short note.\n- Classify each finding as P0, P1, P2, P3, or none.\n- Save the completed non-template JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json\n\nOperator checklist:\n- Assign a named human reviewer and record their contact outside this artifact.\n- Send the subject \"[Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25\" with the reviewer message below.\n- Include packet qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md and template qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json.\n- Confirm the reviewer can test phone 390x844 before 2026-05-25.\n- Follow up no later than 2026-05-24.\n- After the completed JSON arrives, run npm run qa:beta-review-intake before any import.\n\nValidation:\n- npm run qa:beta-review-intake\n- QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\n\nLaunch rule:\nThis message is reviewer outreach, not completed review evidence. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported.\n",
+      "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
+      "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json",
+      "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json",
+      "validateCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": "",
+      "contactRecordLocation": ""
+    },
+    {
+      "id": "BETA-HR-004",
+      "workType": "beta-human-review",
+      "priority": "P0",
+      "destination": "Paris",
+      "messageSubject": "[Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25",
+      "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt",
+      "messageBody": "Subject: [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25\n\nYou are assigned BETA-HR-004 for the Globe.travel beta review wave BETA-WAVE-01. Please use desktop 1440x950, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json. Use the checklist in the packet, fill every scorecard field, and flag any confusing or broken moment as P0, P1, P2, or P3. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.\n\nStart URL:\nhttps://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.\n\nPacket:\nqa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md\n\nSubmission template:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json\n\nCompleted submission filename:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json\n\nReviewer checklist:\n- Use desktop 1440x950 for the full review.\n- Start from https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.\n- Complete planner, Trip Studio, map, save/reopen, public share, feedback, and paid-value checks.\n- Fill every scorecard field with a numeric score and a short note.\n- Classify each finding as P0, P1, P2, P3, or none.\n- Save the completed non-template JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json\n\nOperator checklist:\n- Assign a named human reviewer and record their contact outside this artifact.\n- Send the subject \"[Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25\" with the reviewer message below.\n- Include packet qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md and template qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json.\n- Confirm the reviewer can test desktop 1440x950 before 2026-05-25.\n- Follow up no later than 2026-05-24.\n- After the completed JSON arrives, run npm run qa:beta-review-intake before any import.\n\nValidation:\n- npm run qa:beta-review-intake\n- QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\n\nLaunch rule:\nThis message is reviewer outreach, not completed review evidence. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported.\n",
+      "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
+      "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json",
+      "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json",
+      "validateCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": "",
+      "contactRecordLocation": ""
+    },
+    {
+      "id": "BETA-HR-005",
+      "workType": "beta-human-review",
+      "priority": "P0",
+      "destination": "New York",
+      "messageSubject": "[Globe.travel beta] BETA-HR-005 New York review due 2026-05-25",
+      "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt",
+      "messageBody": "Subject: [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25\n\nYou are assigned BETA-HR-005 for the Globe.travel beta review wave BETA-WAVE-01. Please use desktop 1440x950, start here: https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas. Read the packet at qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md, complete the assigned planner, trip studio, map, save/share, and feedback checks, then save the completed JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json. Use the checklist in the packet, fill every scorecard field, and flag any confusing or broken moment as P0, P1, P2, or P3. Public launch cannot count this review until every scorecard field is filled, findings are classified, and the intake command passes.\n\nStart URL:\nhttps://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.\n\nPacket:\nqa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md\n\nSubmission template:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json\n\nCompleted submission filename:\nqa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json\n\nReviewer checklist:\n- Use desktop 1440x950 for the full review.\n- Start from https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.\n- Complete planner, Trip Studio, map, save/reopen, public share, feedback, and paid-value checks.\n- Fill every scorecard field with a numeric score and a short note.\n- Classify each finding as P0, P1, P2, P3, or none.\n- Save the completed non-template JSON as qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json\n\nOperator checklist:\n- Assign a named human reviewer and record their contact outside this artifact.\n- Send the subject \"[Globe.travel beta] BETA-HR-005 New York review due 2026-05-25\" with the reviewer message below.\n- Include packet qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md and template qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json.\n- Confirm the reviewer can test desktop 1440x950 before 2026-05-25.\n- Follow up no later than 2026-05-24.\n- After the completed JSON arrives, run npm run qa:beta-review-intake before any import.\n\nValidation:\n- npm run qa:beta-review-intake\n- QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\n\nLaunch rule:\nThis message is reviewer outreach, not completed review evidence. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported.\n",
+      "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
+      "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
+      "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json",
+      "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json",
+      "validateCommand": "npm run qa:beta-review-intake",
+      "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": "",
+      "contactRecordLocation": ""
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "workType": "production-visual-review",
+      "priority": "P1",
+      "destination": "Production visual review",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
+      "messageBody": "Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28\n\nYou are assigned PROD-VISUAL-HISTORY-002, a scheduled Globe.travel production visual review for 2026-05-28.\n\nRun command:\nQA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production\n\nExpected artifact:\nqa/visual-baseline-production-review-2026-05-28\n\nSubmission template:\nqa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json\n\nCompleted submission filename:\nqa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json\n\nAcceptance criteria:\nPass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.\n\nReviewer checklist:\n- Run the production visual command on or after 2026-05-28.\n- Review all 25 screenshots across landing, pricing, login, signup, public-share and phone, tablet, laptop, desktop, wide.\n- Confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs.\n- Replace production commit and deployment placeholders with the current /api/health deployment metadata.\n- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json.\n- Validate with npm run qa:visual-review-intake before import.\n\nOperator checklist:\n- Assign a named visual reviewer and record their contact outside this repo.\n- Send this message file, the command, and the submission template path to the reviewer.\n- Confirm the review is not imported until screenshots have actually been inspected.\n- Import only after validation is clean: QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.\n- Re-run npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff after import.\n\nLaunch rule:\nThis message is visual-review outreach, not completed visual-review history. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported into reviewHistory.\n",
+      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
+      "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
+      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
+      "validateCommand": "npm run qa:visual-review-intake",
+      "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": "",
+      "contactRecordLocation": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "launch dispatch packet reads current launch operator and sent-record template",
+      "ok": true,
+      "launchOperatorToday": "2026-05-23",
+      "sentRecordTemplateDate": "2026-05-23",
+      "sentRecordTemplateStatus": "pass",
+      "readyForImport": false
+    },
+    {
+      "name": "launch dispatch packet includes every current outreach row",
+      "ok": true,
+      "packetRowCount": 6,
+      "sentRecordTemplateRowCount": 6,
+      "missingLaunchRows": []
+    },
+    {
+      "name": "launch dispatch packet inlines readable message bodies",
+      "ok": true,
+      "messageFileChecks": [
+        {
+          "id": "BETA-HR-001",
+          "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt",
+          "exists": true,
+          "hasBody": true,
+          "subjectMatches": true
+        },
+        {
+          "id": "BETA-HR-002",
+          "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt",
+          "exists": true,
+          "hasBody": true,
+          "subjectMatches": true
+        },
+        {
+          "id": "BETA-HR-003",
+          "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt",
+          "exists": true,
+          "hasBody": true,
+          "subjectMatches": true
+        },
+        {
+          "id": "BETA-HR-004",
+          "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt",
+          "exists": true,
+          "hasBody": true,
+          "subjectMatches": true
+        },
+        {
+          "id": "BETA-HR-005",
+          "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt",
+          "exists": true,
+          "hasBody": true,
+          "subjectMatches": true
+        },
+        {
+          "id": "PROD-VISUAL-HISTORY-002",
+          "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
+          "exists": true,
+          "hasBody": true,
+          "subjectMatches": true
+        }
+      ]
+    },
+    {
+      "name": "launch dispatch packet points at existing submission templates",
+      "ok": true,
+      "submissionTemplateChecks": [
+        {
+          "id": "BETA-HR-001",
+          "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json",
+          "exists": true
+        },
+        {
+          "id": "BETA-HR-002",
+          "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json",
+          "exists": true
+        },
+        {
+          "id": "BETA-HR-003",
+          "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json",
+          "exists": true
+        },
+        {
+          "id": "BETA-HR-004",
+          "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json",
+          "exists": true
+        },
+        {
+          "id": "BETA-HR-005",
+          "submissionTemplatePath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json",
+          "exists": true
+        },
+        {
+          "id": "PROD-VISUAL-HISTORY-002",
+          "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "launch dispatch packet keeps proof fields blank until real outreach is sent",
+      "ok": true,
+      "rowsWithProofFields": []
+    },
+    {
+      "name": "launch dispatch packet includes validation and import commands for every row",
+      "ok": true,
+      "rowsMissingCommands": [],
+      "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+      "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ]
+    },
+    {
+      "name": "launch dispatch packet includes complete operator context without sensitive contact details",
+      "ok": true,
+      "rowsMissingContext": [],
+      "sensitiveRows": []
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/launch-dispatch-packet-2026-05-23.json",
+  "reportArtifact": "qa/launch-dispatch-packet-2026-05-23.md"
+}

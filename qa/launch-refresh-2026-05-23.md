@@ -2,13 +2,13 @@
 
 Date: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T10:18:08.230Z
+Generated at: 2026-05-23T10:48:56.950Z
 Status: pass
 
 ## Result
 
-- Checked: 8
-- Passed or actionable: 8
+- Checked: 10
+- Passed or actionable: 10
 - Failed: 0
 - Actionable launch-board failures tolerated: 2
 - Public launch status: beta-ready-public-blocked
@@ -19,10 +19,12 @@ Status: pass
 
 - ACTIONABLE: launch-today-before-status (qa:launch-today, exit 1)
 - PASS: dispatch-sent-record-template-after-first-board (qa:dispatch-sent-record-template, exit 0)
+- PASS: launch-dispatch-packet-after-first-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-first-board (qa:dispatch-sent-record-template-rejection, exit 0)
 - PASS: public-launch-status-after-first-board (qa:public-launch-status, exit 0)
 - ACTIONABLE: launch-today-after-status (qa:launch-today, exit 1)
 - PASS: dispatch-sent-record-template-after-final-board (qa:dispatch-sent-record-template, exit 0)
+- PASS: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 0)
 - PASS: public-launch-status-final (qa:public-launch-status, exit 0)
 

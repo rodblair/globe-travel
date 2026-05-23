@@ -80,6 +80,13 @@ steps.push({
   classification: passOrFail(firstTemplateRun),
 })
 
+const firstDispatchPacketRun = runNpmScript('qa:launch-dispatch-packet')
+steps.push({
+  step: 'launch-dispatch-packet-after-first-template',
+  ...firstDispatchPacketRun,
+  classification: passOrFail(firstDispatchPacketRun),
+})
+
 const firstTemplateRejectionRun = runNpmScript('qa:dispatch-sent-record-template-rejection')
 steps.push({
   step: 'dispatch-sent-record-template-rejection-after-first-board',
@@ -114,6 +121,13 @@ steps.push({
   step: 'dispatch-sent-record-template-after-final-board',
   ...secondTemplateRun,
   classification: passOrFail(secondTemplateRun),
+})
+
+const secondDispatchPacketRun = runNpmScript('qa:launch-dispatch-packet')
+steps.push({
+  step: 'launch-dispatch-packet-after-final-template',
+  ...secondDispatchPacketRun,
+  classification: passOrFail(secondDispatchPacketRun),
 })
 
 const secondTemplateRejectionRun = runNpmScript('qa:dispatch-sent-record-template-rejection')

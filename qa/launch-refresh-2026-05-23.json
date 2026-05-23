@@ -1,10 +1,10 @@
 {
   "date": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T10:18:08.230Z",
+  "generatedAt": "2026-05-23T10:48:56.950Z",
   "status": "pass",
-  "checked": 8,
-  "passed": 8,
+  "checked": 10,
+  "passed": 10,
   "failed": 0,
   "actionableStepCount": 2,
   "publicLaunchStatus": "beta-ready-public-blocked",
@@ -50,6 +50,14 @@
       "classification": "pass"
     },
     {
+      "step": "launch-dispatch-packet-after-first-template",
+      "scriptName": "qa:launch-dispatch-packet",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "classification": "pass"
+    },
+    {
       "step": "dispatch-sent-record-template-rejection-after-first-board",
       "scriptName": "qa:dispatch-sent-record-template-rejection",
       "exitCode": 0,
@@ -87,6 +95,14 @@
     {
       "step": "dispatch-sent-record-template-after-final-board",
       "scriptName": "qa:dispatch-sent-record-template",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "classification": "pass"
+    },
+    {
+      "step": "launch-dispatch-packet-after-final-template",
+      "scriptName": "qa:launch-dispatch-packet",
       "exitCode": 0,
       "signal": null,
       "error": null,

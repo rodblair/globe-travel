@@ -153,6 +153,12 @@ const dispatchSentRecordTemplateReport =
 const dispatchSentRecordTemplateCsv =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
   `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.csv`
+const launchDispatchPacketArtifact =
+  process.env.QA_LAUNCH_DISPATCH_PACKET_ARTIFACT ||
+  `qa/launch-dispatch-packet-${dailyLaunchOpsDate}.json`
+const launchDispatchPacketReport =
+  process.env.QA_LAUNCH_DISPATCH_PACKET_REPORT ||
+  `qa/launch-dispatch-packet-${dailyLaunchOpsDate}.md`
 const dispatchSentRecordTemplateRejectionArtifact =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTIFACT ||
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
@@ -1681,6 +1687,98 @@ async function checkPlannerHandoffArtifact() {
     tripCleanup: cleanupResult.tripCleanup || null,
     failureGuestCleanup: cleanupResult.failureGuestCleanup || null,
     slowGuestCleanup: cleanupResult.slowGuestCleanup || null,
+  })
+}
+
+async function checkLaunchDispatchPacketArtifact() {
+  let packet
+  try {
+    packet = await readJson(launchDispatchPacketArtifact)
+  } catch (error) {
+    addCheck('launch dispatch packet artifact is readable', false, {
+      artifact: launchDispatchPacketArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  const rows = Array.isArray(packet.rows) ? packet.rows : []
+  const failures = Array.isArray(packet.failures) ? packet.failures : []
+  const failedChecks = Array.isArray(packet.checks)
+    ? packet.checks.filter((check) => check.ok !== true).map((check) => check.name)
+    : []
+  const missingMessageRows = rows
+    .filter((row) => !hasMeaningfulText(row.messageBody, 80) || !String(row.messageBody || '').includes(row.messageSubject || row.id))
+    .map((row) => row.id)
+  const rowsWithProofFields = rows
+    .filter((row) => hasMeaningfulText(row.reviewerAlias) ||
+      hasMeaningfulText(row.deliveryChannel) ||
+      hasMeaningfulText(row.sentAt) ||
+      hasMeaningfulText(row.contactRecordLocation))
+    .map((row) => row.id)
+  const rowsMissingContext = rows
+    .filter((row) => !hasMeaningfulText(row.messageSubject) ||
+      !hasMeaningfulText(row.messageFile) ||
+      !hasMeaningfulText(row.startUrlOrCommand) ||
+      !hasMeaningfulText(row.packetOrArtifact) ||
+      !hasMeaningfulText(row.submissionTemplatePath) ||
+      !hasMeaningfulText(row.completedSubmissionPath) ||
+      !hasMeaningfulText(row.validateCommand) ||
+      !hasMeaningfulText(row.importCommand))
+    .map((row) => row.id)
+  const reportExists = await fileExists(launchDispatchPacketReport)
+
+  addCheck('launch dispatch packet artifact is readable', true, {
+    artifact: launchDispatchPacketArtifact,
+    status: packet.status || null,
+    checked: packet.checked ?? null,
+    failed: packet.failed ?? null,
+  })
+
+  checkEvidenceFreshness('launch dispatch packet', evidenceDateFrom(packet, launchDispatchPacketArtifact))
+
+  addCheck('launch dispatch packet inlines all current outreach messages without claiming sends', (
+    packet.status === 'pass' &&
+    Number(packet.checked) >= 7 &&
+    Number(packet.failed) === 0 &&
+    failures.length === 0 &&
+    failedChecks.length === 0 &&
+    packet.launchOperatorArtifact === launchOperatorTodayArtifact &&
+    packet.sentRecordTemplateArtifact === dispatchSentRecordTemplateArtifact &&
+    packet.sentRecordTemplateCsv === dispatchSentRecordTemplateCsv &&
+    Number(packet.rowCount) === 6 &&
+    Number(packet.betaRowCount) === 5 &&
+    Number(packet.visualRowCount) === 1 &&
+    reportExists &&
+    rows.length === Number(packet.rowCount) &&
+    missingMessageRows.length === 0 &&
+    rowsWithProofFields.length === 0 &&
+    rowsMissingContext.length === 0 &&
+    String(packet.csvValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    String(packet.csvImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    Array.isArray(packet.postImportCommands) &&
+    packet.postImportCommands.includes('npm run qa:launch-refresh') &&
+    packet.postImportCommands.includes('npm run qa:launch-signoff')
+  ), {
+    expectedReport: launchDispatchPacketReport,
+    reportExists,
+    launchOperatorArtifact: packet.launchOperatorArtifact || null,
+    expectedLaunchOperatorArtifact: launchOperatorTodayArtifact,
+    sentRecordTemplateArtifact: packet.sentRecordTemplateArtifact || null,
+    expectedSentRecordTemplateArtifact: dispatchSentRecordTemplateArtifact,
+    sentRecordTemplateCsv: packet.sentRecordTemplateCsv || null,
+    expectedSentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
+    rowCount: packet.rowCount ?? null,
+    betaRowCount: packet.betaRowCount ?? null,
+    visualRowCount: packet.visualRowCount ?? null,
+    missingMessageRows,
+    rowsWithProofFields,
+    rowsMissingContext,
+    failedChecks,
+    failureCount: failures.length,
+    csvValidationCommand: packet.csvValidationCommand || null,
+    csvImportCommand: packet.csvImportCommand || null,
+    postImportCommands: packet.postImportCommands || null,
   })
 }
 
@@ -4585,6 +4683,7 @@ await checkStripeArtifacts()
 await checkPaidPathReadinessArtifact()
 await checkPlannerActualsArtifact()
 await checkPlannerHandoffArtifact()
+await checkLaunchDispatchPacketArtifact()
 await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
@@ -4606,6 +4705,7 @@ const summary = {
   accessibilityArtifact,
   plannerActualsArtifact,
   plannerHandoffArtifact,
+  launchDispatchPacketArtifact,
   publicShareMapIntegrityArtifact,
   betaHumanReviewRegister,
   betaHumanReviewWaveRehearsal,
