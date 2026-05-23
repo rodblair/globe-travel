@@ -61,7 +61,7 @@ Any `client/**` runtime change, package/config change, or unknown path continues
 
 ## Public Launch Evidence Dispatch
 
-The current public-launch blocker work is operational, not app-code blocked. Use the daily launch board and sent-record template as the source of truth:
+The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `c0484fdf992b56fb161785b7127ed4a4cdf0694f`, but the latest pushed runtime commit `b4948d57bc6ff6ef2f9a364730ee0d1940a62e9f` (`b4948d5`) is not live yet, so `npm run qa:public-launch-status` correctly reports `production is behind runtime commit b4948d5`. The Vercel automatic deployment `globe-travel-p3jd932ur-rodney-blairs-projects.vercel.app` was canceled, and direct deploy is currently blocked by the daily quota `api-deployments-free-per-day`; deploy `b4948d5` when quota is available, then rerun the production and launch gates. Use the daily launch board and sent-record template as the source of truth:
 
 ```bash
 npm run qa:launch-today
@@ -93,7 +93,15 @@ npm run qa:launch-refresh
 npm run qa:launch-signoff
 ```
 
-Sent proof still does not count as completed beta or visual-review evidence. `npm run qa:review-intake-import-rehearsal` proves valid completed beta and visual-review submissions can be imported into copied registers without mutating canonical launch evidence. `npm run qa:public-launch-threshold-rehearsal` proves copied complete registers make the beta and production visual-review threshold gates turn ready. Public launch remains blocked until completed beta review submissions pass canonical intake and production visual-review submissions pass canonical intake.
+Sent proof still does not count as completed beta or visual-review evidence. `npm run qa:review-intake-import-rehearsal` proves valid completed beta and visual-review submissions can be imported into copied registers without mutating canonical launch evidence. `npm run qa:public-launch-threshold-rehearsal` proves copied complete registers make the beta and production visual-review threshold gates turn ready. Public launch remains blocked until `b4948d5` is live on production, completed beta review submissions pass canonical intake, and production visual-review submissions pass canonical intake.
+
+After `b4948d5` is live on the production alias, rerun:
+
+```bash
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-23-b4948d5 npm run qa:release-production
+npm run qa:launch-refresh
+npm run qa:launch-signoff
+```
 
 Manual equivalents:
 
