@@ -3297,7 +3297,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
       publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
       publicLaunchNextActionText.includes('qa:dispatch-mark-sent') &&
       publicLaunchNextActionText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
-      publicLaunchNextActionText.includes('import the sent state')
+      publicLaunchNextActionText.includes('import the sent state') &&
+      publicLaunchNextActionText.includes('npm run qa:launch-refresh') &&
+      publicLaunchNextActionText.includes('npm run qa:launch-signoff')
     )) &&
     (!visualDispatchNeedsNextAction || (
       publicLaunchNextActionText.includes('production visual-review') &&
@@ -3305,7 +3307,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
       publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
       publicLaunchNextActionText.includes('qa:dispatch-mark-sent') &&
       publicLaunchNextActionText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
-      publicLaunchNextActionText.includes('import the sent state')
+      publicLaunchNextActionText.includes('import the sent state') &&
+      publicLaunchNextActionText.includes('npm run qa:launch-refresh') &&
+      publicLaunchNextActionText.includes('npm run qa:launch-signoff')
     ))
   ), {
     nextActions: publicLaunchNextActions,

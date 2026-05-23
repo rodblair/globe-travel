@@ -2855,6 +2855,7 @@ const shouldFail = guardrailIssues.length > 0 || (requirePublicLaunch && !public
 const dispatchSentRecordCsv = qaDisplayPath(dispatchSentRecordTemplateCsvPath)
 const dispatchSentRecordValidateCommand = `QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsv} npm run qa:dispatch-mark-sent`
 const dispatchSentRecordImportCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsv} npm run qa:dispatch-mark-sent`
+const dispatchSentRecordPostImportCommand = 'then rerun npm run qa:launch-refresh and npm run qa:launch-signoff'
 
 const summary = {
   date,
@@ -3651,16 +3652,16 @@ const summary = {
       ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount || 0) > 0
-      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s) from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, then run ${dispatchSentRecordImportCommand} to import the sent state.`
+      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s) from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount || 0) > 0
-      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, then run ${dispatchSentRecordImportCommand} to import the sent state.`
+      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
     Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount || 0) > 0
-      ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, then run ${dispatchSentRecordImportCommand} to import the sent state.`
+      ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
     Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount || 0) > 0
-      ? `Send ${launchOperatorToday.visualDispatchLogPreparedDueSoonCount} production visual-review request(s) due soon from ${qaDisplayPath(visualDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, then run ${dispatchSentRecordImportCommand} to import the sent state.`
+      ? `Send ${launchOperatorToday.visualDispatchLogPreparedDueSoonCount} production visual-review request(s) due soon from ${qaDisplayPath(visualDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
     betaRemaining > 0 ? `Collect and import ${betaRemaining} completed beta review submission(s).` : null,
     visualRemaining > 0 ? `Run, review, and import ${visualRemaining} scheduled production visual review date(s).` : null,
