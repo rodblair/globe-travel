@@ -2,8 +2,8 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "beta-ready-public-blocked",
-  "betaReady": true,
+  "status": "blocked",
+  "betaReady": false,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
@@ -14,16 +14,20 @@
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
-    "shortHead": "0b0690d",
+    "head": "1d7053e13fe61dd6caab1274f3b9ad6235818a8c",
+    "shortHead": "1d7053e",
     "liveCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
-    "runtimeCommitAhead": false,
-    "latestRuntimeCommit": null,
-    "latestRuntimeCommitShort": null,
-    "runtimeCommitCountAhead": 0,
-    "runtimeUnsafeFiles": [],
+    "runtimeCommitAhead": true,
+    "latestRuntimeCommit": "1d7053e13fe61dd6caab1274f3b9ad6235818a8c",
+    "latestRuntimeCommitShort": "1d7053e",
+    "runtimeCommitCountAhead": 1,
+    "runtimeUnsafeFiles": [
+      "client/app/(app)/onboarding/page.tsx",
+      "client/components/chat/ChatInterface.tsx",
+      "client/components/chat/OnboardingChat.tsx"
+    ],
     "error": null
   },
   "betaHumanReviews": {
@@ -375,7 +379,7 @@
     "checked": 8,
     "passed": 8,
     "failed": 0,
-    "actionRowCount": 6,
+    "actionRowCount": 7,
     "betaActionRowCount": 5,
     "visualActionRowCount": 1,
     "betaDispatchDueTodayCount": 5,
@@ -428,11 +432,12 @@
     },
     "launchOperatorExitCode": 0,
     "launchOperatorStatus": "pass",
-    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
-    "launchOperatorDeploymentRuntimeBlocked": false,
+    "launchOperatorPublicLaunchStatus": "blocked",
+    "launchOperatorDeploymentRuntimeBlocked": true,
     "launchOperatorOnlySelfGuardrails": false,
-    "launchOperatorActionRowCount": 4,
+    "launchOperatorActionRowCount": 5,
     "launchOperatorActionIds": [
+      "production-runtime-deployment-currency",
       "BETA-HR-002",
       "BETA-HR-003",
       "BETA-HR-004",
@@ -930,8 +935,15 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "production is behind runtime commit 1d7053e"
+  ],
   "blockers": [
+    {
+      "id": "production-runtime-deployment-currency",
+      "title": "Deploy latest runtime commit to production",
+      "detail": "Production is on 0b0690d; runtime commit 1d7053e is waiting for Vercel production."
+    },
     {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
@@ -944,8 +956,10 @@
     }
   ],
   "nextActions": [
+    "Redeploy production from the repo root so Vercel serves runtime commit 1d7053e; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s).",
+    "Fix guardrail issues before relying on public-launch status."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",
