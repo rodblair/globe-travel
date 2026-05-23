@@ -73,6 +73,7 @@ Status: blocked
 
 ## Public-Launch Blockers
 
+- production-runtime-deployment-currency: Production is on e629404; runtime commit 6966b71 is waiting for Vercel production.
 - beta-human-review-threshold: 0/25 completed; 25 remaining.
 - production-visual-review-history: 2/4 distinct review dates recorded; 2 remaining.
 
@@ -180,6 +181,7 @@ Public metadata:
 
 ## Next Actions
 
+- Redeploy production from the repo root so Vercel serves runtime commit 6966b71; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
 - Fix guardrail issues before relying on public-launch status.

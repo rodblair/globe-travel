@@ -929,6 +929,11 @@
   ],
   "blockers": [
     {
+      "id": "production-runtime-deployment-currency",
+      "title": "Deploy latest runtime commit to production",
+      "detail": "Production is on e629404; runtime commit 6966b71 is waiting for Vercel production."
+    },
+    {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
       "detail": "0/25 completed; 25 remaining."
@@ -940,6 +945,7 @@
     }
   ],
   "nextActions": [
+    "Redeploy production from the repo root so Vercel serves runtime commit 6966b71; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
     "Run, review, and import 2 scheduled production visual review date(s).",
     "Fix guardrail issues before relying on public-launch status."

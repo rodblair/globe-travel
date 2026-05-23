@@ -2600,7 +2600,23 @@ const requiredRollbackStepMarkers = [
 const missingRollbackStepMarkers = requiredRollbackStepMarkers
   .filter((marker) => !rollbackStepText.includes(marker))
 
+const deploymentRuntimeCommitShort = deploymentCurrency.latestRuntimeCommitShort || deploymentCurrency.latestRuntimeCommit
+const liveDeploymentCommitShort = liveDeployment?.commit ? String(liveDeployment.commit).slice(0, 7) : 'missing'
 const blockers = []
+if (deploymentCurrency.enforced && deploymentCurrency.error) {
+  blockers.push(summarizeBlocker(
+    'production-runtime-deployment-currency',
+    'Verify production runtime deployment currency',
+    deploymentCurrency.error
+  ))
+}
+if (deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead) {
+  blockers.push(summarizeBlocker(
+    'production-runtime-deployment-currency',
+    'Deploy latest runtime commit to production',
+    `Production is on ${liveDeploymentCommitShort}; runtime commit ${deploymentRuntimeCommitShort} is waiting for Vercel production.`
+  ))
+}
 if (completedBetaReviews.length < publicBetaMinimum) {
   blockers.push(summarizeBlocker(
     'beta-human-review-threshold',
@@ -3511,6 +3527,12 @@ const summary = {
   nextActions: [
     !publicMetadataPresent ? 'Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.' : null,
     publicMetadataPresent && !publicMetadataReady ? 'Fix the failing public metadata smoke before treating the metadata launch surface as production-ready.' : null,
+    deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead
+      ? `Redeploy production from the repo root so Vercel serves runtime commit ${deploymentRuntimeCommitShort}; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.`
+      : null,
+    deploymentCurrency.enforced && deploymentCurrency.error
+      ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`
+      : null,
     betaRemaining > 0 ? `Collect and import ${betaRemaining} completed beta review submission(s).` : null,
     visualRemaining > 0 ? `Run, review, and import ${visualRemaining} scheduled production visual review date(s).` : null,
     guardrailIssues.length > 0 ? 'Fix guardrail issues before relying on public-launch status.' : null,
