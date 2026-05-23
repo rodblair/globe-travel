@@ -1,6 +1,6 @@
 # Beta Human Review Wave Rehearsal
 
-Date: 2026-05-22
+Date: 2026-05-23
 Scope: matrix
 Status: pass
 Next-wave ops: `qa/beta-human-review-next-wave-ops-2026-05-21.json`
