@@ -4,12 +4,13 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright-core'
 import { createClient } from '@supabase/supabase-js'
+import { currentQaDate } from './qa-date-utils.mjs'
 
 const GUEST_SESSION_COOKIE = 'globe_travel_guest'
 
 const root = resolve(process.cwd(), '..')
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
-const requestedDate = process.env.QA_APP_SURFACES_DATE || new Date().toISOString().slice(0, 10)
+const requestedDate = process.env.QA_APP_SURFACES_DATE || currentQaDate()
 const artifactName = process.env.QA_APP_SURFACES_ARTIFACT_NAME || `app-surfaces-smoke-${requestedDate}`
 const artifactDir = resolve(root, 'qa', artifactName)
 const screenshotDir = resolve(artifactDir, 'screenshots')
@@ -366,6 +367,7 @@ async function collectSurface(page, surface, viewport) {
   if (preflight.horizontalOverflow) issues.push('horizontal overflow detected')
   if (preflight.appError) issues.push('application error text detected')
   if (pageErrors.length > 0) issues.push(`${pageErrors.length} browser page error(s)`)
+  if (consoleErrors.length > 0) issues.push(`${consoleErrors.length} browser console error(s)`)
   if (failedRequests.length > 0) issues.push(`${failedRequests.length} same-origin failed request(s)`)
 
   return {

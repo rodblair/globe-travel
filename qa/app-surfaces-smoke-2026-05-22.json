@@ -27,25 +27,25 @@
   ],
   "auth": {
     "mode": "guest",
-    "guestId": "f723abe3-ac54-4ea0-948b-2ec026743d2e",
+    "guestId": "055e338a-3646-4b1d-9b9c-ab149c5b332f",
     "contexts": [
       {
         "viewportId": "phone",
         "mode": "guest",
-        "guestId": "f723abe3-ac54-4ea0-948b-2ec026743d2e",
+        "guestId": "055e338a-3646-4b1d-9b9c-ab149c5b332f",
         "cookieSet": true
       },
       {
         "viewportId": "desktop",
         "mode": "guest",
-        "guestId": "f723abe3-ac54-4ea0-948b-2ec026743d2e",
+        "guestId": "055e338a-3646-4b1d-9b9c-ab149c5b332f",
         "cookieSet": true
       }
     ],
     "cleanup": {
       "attempted": true,
       "reason": null,
-      "guestId": "f723abe3-ac54-4ea0-948b-2ec026743d2e",
+      "guestId": "055e338a-3646-4b1d-9b9c-ab149c5b332f",
       "profileDeleted": true,
       "userDeleted": true,
       "error": null
@@ -68,14 +68,12 @@
       "intent": "Explore remains a working compatibility path into Planner.",
       "status": 200,
       "finalUrl": "http://localhost:3000/chat",
-      "elapsedMs": 3358,
+      "elapsedMs": 2452,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/explore-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -107,14 +105,12 @@
       "intent": "Globe remains a working compatibility path into Planner.",
       "status": 200,
       "finalUrl": "http://localhost:3000/chat",
-      "elapsedMs": 1934,
+      "elapsedMs": 2016,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/globe-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -146,14 +142,12 @@
       "intent": "Map compatibility path lands in the saved workspace.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved",
-      "elapsedMs": 2983,
+      "elapsedMs": 1984,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/map-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -185,14 +179,12 @@
       "intent": "Bucket list compatibility path lands in the saved workspace.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved",
-      "elapsedMs": 2021,
+      "elapsedMs": 1911,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/bucket-list-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -224,14 +216,12 @@
       "intent": "Journal compatibility path opens the notes tab.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved?tab=journal",
-      "elapsedMs": 1997,
+      "elapsedMs": 2018,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/journal-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -263,14 +253,12 @@
       "intent": "Profile compatibility path opens account profile settings.",
       "status": 200,
       "finalUrl": "http://localhost:3000/account",
-      "elapsedMs": 1836,
+      "elapsedMs": 1758,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/profile-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -302,14 +290,12 @@
       "intent": "Settings compatibility path opens account profile settings.",
       "status": 200,
       "finalUrl": "http://localhost:3000/account",
-      "elapsedMs": 1733,
+      "elapsedMs": 1763,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/settings-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -341,7 +327,7 @@
       "intent": "Pricing renders a public commercial plan page for guest and signed-in contexts.",
       "status": 200,
       "finalUrl": "http://localhost:3000/pricing",
-      "elapsedMs": 1871,
+      "elapsedMs": 1696,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/pricing-alias-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
@@ -350,7 +336,7 @@
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
-        "title": "Pricing - Globe.travel",
+        "title": "Pricing - Globe.travel · Globe.travel",
         "url": "http://localhost:3000/pricing",
         "pathname": "/pricing",
         "search": "",
@@ -378,14 +364,12 @@
       "intent": "Trips index compatibility path lands in the saved workspace.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved",
-      "elapsedMs": 2062,
+      "elapsedMs": 1879,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/trips-index-compat-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -417,14 +401,12 @@
       "intent": "New trip compatibility path opens the Planner.",
       "status": 200,
       "finalUrl": "http://localhost:3000/chat",
-      "elapsedMs": 1929,
+      "elapsedMs": 1888,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/new-trip-compat-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -456,14 +438,12 @@
       "intent": "Onboarding renders as the first-run trip-starting experience.",
       "status": 200,
       "finalUrl": "http://localhost:3000/onboarding",
-      "elapsedMs": 2914,
+      "elapsedMs": 2846,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/onboarding-fullscreen-phone.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -495,14 +475,12 @@
       "intent": "Explore remains a working compatibility path into Planner.",
       "status": 200,
       "finalUrl": "http://localhost:3000/chat",
-      "elapsedMs": 2690,
+      "elapsedMs": 2722,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/explore-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -534,14 +512,12 @@
       "intent": "Globe remains a working compatibility path into Planner.",
       "status": 200,
       "finalUrl": "http://localhost:3000/chat",
-      "elapsedMs": 2001,
+      "elapsedMs": 1999,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/globe-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -573,14 +549,12 @@
       "intent": "Map compatibility path lands in the saved workspace.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved",
-      "elapsedMs": 2347,
+      "elapsedMs": 1936,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/map-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -612,14 +586,12 @@
       "intent": "Bucket list compatibility path lands in the saved workspace.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved",
-      "elapsedMs": 3047,
+      "elapsedMs": 1953,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/bucket-list-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -651,14 +623,12 @@
       "intent": "Journal compatibility path opens the notes tab.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved?tab=journal",
-      "elapsedMs": 2151,
+      "elapsedMs": 1911,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/journal-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -690,14 +660,12 @@
       "intent": "Profile compatibility path opens account profile settings.",
       "status": 200,
       "finalUrl": "http://localhost:3000/account",
-      "elapsedMs": 1799,
+      "elapsedMs": 1797,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/profile-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -729,14 +697,12 @@
       "intent": "Settings compatibility path opens account profile settings.",
       "status": 200,
       "finalUrl": "http://localhost:3000/account",
-      "elapsedMs": 1777,
+      "elapsedMs": 1916,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/settings-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -768,7 +734,7 @@
       "intent": "Pricing renders a public commercial plan page for guest and signed-in contexts.",
       "status": 200,
       "finalUrl": "http://localhost:3000/pricing",
-      "elapsedMs": 1865,
+      "elapsedMs": 1815,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/pricing-alias-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
@@ -777,7 +743,7 @@
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
-        "title": "Pricing - Globe.travel",
+        "title": "Pricing - Globe.travel · Globe.travel",
         "url": "http://localhost:3000/pricing",
         "pathname": "/pricing",
         "search": "",
@@ -805,14 +771,12 @@
       "intent": "Trips index compatibility path lands in the saved workspace.",
       "status": 200,
       "finalUrl": "http://localhost:3000/saved",
-      "elapsedMs": 2712,
+      "elapsedMs": 1925,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/trips-index-compat-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -844,14 +808,12 @@
       "intent": "New trip compatibility path opens the Planner.",
       "status": 200,
       "finalUrl": "http://localhost:3000/chat",
-      "elapsedMs": 1951,
+      "elapsedMs": 1974,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/new-trip-compat-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [],
       "preflight": {
@@ -883,14 +845,12 @@
       "intent": "Onboarding renders as the first-run trip-starting experience.",
       "status": 200,
       "finalUrl": "http://localhost:3000/onboarding",
-      "elapsedMs": 2921,
+      "elapsedMs": 2899,
       "screenshot": "qa/app-surfaces-smoke-2026-05-22/screenshots/onboarding-fullscreen-desktop.png",
       "missingMarkers": [],
       "pageErrors": [],
-      "consoleErrorCount": 1,
-      "consoleErrors": [
-        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
-      ],
+      "consoleErrorCount": 0,
+      "consoleErrors": [],
       "failedRequests": [],
       "tinyTargets": [
         {
