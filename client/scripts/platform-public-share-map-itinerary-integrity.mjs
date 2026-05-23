@@ -23,6 +23,10 @@ const includeRequestedSlugsInDiscovery = process.env.QA_PUBLIC_SHARE_DISCOVER_IN
 const requireUsableRoutes = process.env.QA_PUBLIC_SHARE_REQUIRE_ROUTES !== '0'
 const requestTimeoutMs = Math.max(5000, Number(process.env.QA_PUBLIC_SHARE_REQUEST_TIMEOUT_MS || 20000) || 20000)
 const discoveryTimeoutMs = Math.max(5000, Number(process.env.QA_PUBLIC_SHARE_DISCOVERY_TIMEOUT_MS || 30000) || 30000)
+const browserLaunchTimeoutMs = Math.max(5000, Number(process.env.QA_PUBLIC_SHARE_BROWSER_LAUNCH_TIMEOUT_MS || 20000) || 20000)
+const renderTimeoutMs = Math.max(10000, Number(process.env.QA_PUBLIC_SHARE_RENDER_TIMEOUT_MS || 60000) || 60000)
+const screenshotTimeoutMs = Math.max(5000, Number(process.env.QA_PUBLIC_SHARE_SCREENSHOT_TIMEOUT_MS || 15000) || 15000)
+const contextCloseTimeoutMs = Math.max(2000, Number(process.env.QA_PUBLIC_SHARE_CONTEXT_CLOSE_TIMEOUT_MS || 5000) || 5000)
 
 const viewports = [
   { id: 'phone', width: 390, height: 844 },
@@ -49,6 +53,11 @@ function withTimeout(promise, label, timeoutMs) {
   return Promise.race([promise, timeoutPromise]).finally(() => {
     if (timeout) clearTimeout(timeout)
   })
+}
+
+async function closeWithTimeout(resource, label) {
+  if (!resource?.close) return
+  await withTimeout(resource.close(), label, contextCloseTimeoutMs).catch(() => {})
 }
 
 function parseExpectedCountryMap(value) {
@@ -241,12 +250,13 @@ async function readRenderedShareState(page, shareSlug, expectedDayTitles) {
   await page.goto(`${baseUrl}/t/${shareSlug}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
   await page.waitForFunction(() => {
     const text = document.body?.innerText || ''
+    const normalized = text.toLowerCase()
     return (
-      text.includes('Day-by-day itinerary') ||
-      text.includes('This itinerary link is unavailable.') ||
-      text.includes('Application error')
+      normalized.includes('day-by-day itinerary') ||
+      normalized.includes('this itinerary link is unavailable.') ||
+      normalized.includes('application error')
     )
-  }, { timeout: 18000 }).catch(() => {})
+  }, undefined, { timeout: 18000 }).catch(() => {})
   await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
 
   return page.evaluate((dayTitles) => {
@@ -313,11 +323,15 @@ async function checkShareSlug(shareSlug) {
 
   const rendered = []
   if (!browser) {
-    browser = await chromium.launch({
-      executablePath: chromePath,
-      headless: true,
-      args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
-    })
+    browser = await withTimeout(
+      chromium.launch({
+        executablePath: chromePath,
+        headless: true,
+        args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
+      }),
+      'public share map browser launch',
+      browserLaunchTimeoutMs,
+    )
   }
 
   for (const viewport of viewports) {
@@ -327,25 +341,65 @@ async function checkShareSlug(shareSlug) {
       isMobile: viewport.id === 'phone',
     })
     const page = await context.newPage()
-    const state = await readRenderedShareState(page, shareSlug, dayIntegrity.map((day) => day.title).filter(Boolean))
     const screenshot = `${screenshotDir}/${shareSlug}-${viewport.id}.png`
-    await page.screenshot({ path: repoPath(screenshot), fullPage: true })
+    let state = null
     const issues = []
+    let ok = false
 
-    if (!state.hasSharedMapLabel) issues.push('missing shared map label')
-    if (!state.hasItineraryHeading) issues.push('missing itinerary heading')
-    if (!state.hasDayPlanHeading) issues.push('missing day plan heading')
-    if (!state.hasStartCta) issues.push('missing recipient start CTA')
-    if (!state.hasFeedback) issues.push('missing feedback surfaces')
-    if (!state.hasShareControls) issues.push('missing copy/share controls')
-    if (state.mapSurfaceCount < Math.max(1, days.length)) issues.push(`found ${state.mapSurfaceCount} rendered map surfaces for ${days.length} days`)
-    if (state.stopChipMentions < Math.max(1, days.length)) issues.push(`found ${state.stopChipMentions} stop-count chips for ${days.length} days`)
-    if (state.missingDayTitles.length > 0) issues.push(`missing visible day titles: ${state.missingDayTitles.join(', ')}`)
-    if (state.hasUnavailableState) issues.push('rendered unavailable state')
-    if (state.hasAppError) issues.push('rendered application error')
-    if (state.horizontalOverflow) issues.push(`horizontal overflow ${state.scrollWidth}px > ${state.clientWidth}px`)
+    try {
+      page.setDefaultTimeout?.(renderTimeoutMs)
+      page.setDefaultNavigationTimeout?.(renderTimeoutMs)
+      state = await withTimeout(
+        readRenderedShareState(page, shareSlug, dayIntegrity.map((day) => day.title).filter(Boolean)),
+        `public share ${shareSlug} ${viewport.id} render`,
+        renderTimeoutMs,
+      )
 
-    const ok = issues.length === 0
+      await withTimeout(
+        page.screenshot({ path: repoPath(screenshot), fullPage: true, timeout: screenshotTimeoutMs }),
+        `public share ${shareSlug} ${viewport.id} screenshot`,
+        screenshotTimeoutMs + 1000,
+      )
+
+      if (!state.hasSharedMapLabel) issues.push('missing shared map label')
+      if (!state.hasItineraryHeading) issues.push('missing itinerary heading')
+      if (!state.hasDayPlanHeading) issues.push('missing day plan heading')
+      if (!state.hasStartCta) issues.push('missing recipient start CTA')
+      if (!state.hasFeedback) issues.push('missing feedback surfaces')
+      if (!state.hasShareControls) issues.push('missing copy/share controls')
+      if (state.mapSurfaceCount < Math.max(1, days.length)) issues.push(`found ${state.mapSurfaceCount} rendered map surfaces for ${days.length} days`)
+      if (state.stopChipMentions < Math.max(1, days.length)) issues.push(`found ${state.stopChipMentions} stop-count chips for ${days.length} days`)
+      if (state.missingDayTitles.length > 0) issues.push(`missing visible day titles: ${state.missingDayTitles.join(', ')}`)
+      if (state.hasUnavailableState) issues.push('rendered unavailable state')
+      if (state.hasAppError) issues.push('rendered application error')
+      if (state.horizontalOverflow) issues.push(`horizontal overflow ${state.scrollWidth}px > ${state.clientWidth}px`)
+
+      ok = issues.length === 0
+    } catch (error) {
+      issues.push(error instanceof Error ? error.message : String(error))
+      state = {
+        url: `${baseUrl}/t/${shareSlug}`,
+        title: null,
+        hasSharedMapLabel: false,
+        hasItineraryHeading: false,
+        hasDayPlanHeading: false,
+        hasStartCta: false,
+        hasFeedback: false,
+        hasShareControls: false,
+        routeLabelCount: 0,
+        routeLabels: [],
+        mapboxCanvasCount: 0,
+        mapSurfaceCount: 0,
+        stopChipMentions: 0,
+        visibleDayTitleCount: 0,
+        missingDayTitles: dayIntegrity.map((day) => day.title).filter(Boolean),
+        hasUnavailableState: false,
+        hasAppError: false,
+        horizontalOverflow: false,
+        clientWidth: viewport.width,
+        scrollWidth: viewport.width,
+      }
+    }
     if (!ok) addFailure(shareSlug, `public share rendered map/itinerary ${viewport.id}`, { issues, state })
     rendered.push({
       viewport: viewport.id,
@@ -356,7 +410,7 @@ async function checkShareSlug(shareSlug) {
       issues,
       state,
     })
-    await context.close().catch(() => {})
+    await closeWithTimeout(context, `public share ${shareSlug} ${viewport.id} context close`)
   }
 
   return {
@@ -443,7 +497,7 @@ try {
     error: error instanceof Error ? error.message : String(error),
   })
 } finally {
-  await browser?.close().catch(() => {})
+  await closeWithTimeout(browser, 'public share map browser close')
 }
 
 const summary = {
