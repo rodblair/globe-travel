@@ -1001,16 +1001,25 @@ async function checkRequiredDocs(productionHealth) {
     staleCurrentCheckpointDeploymentStatements,
   })
 
-  const ambiguousHistoricalLiveDeploymentLines = platformPlan
-    .split('\n')
-    .map((line) => line.trim())
+  const currentDocSections = [
+    currentReadinessSection,
+    currentCheckpointSection,
+  ].filter(Boolean)
+  const launchDocLines = [
+    ...releaseMemo.split('\n').map((line) => ({ source: 'RELEASE_READINESS_MEMO.md', line: line.trim() })),
+    ...platformPlan.split('\n').map((line) => ({ source: 'PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md', line: line.trim() })),
+  ]
+  const ambiguousHistoricalLiveDeploymentLines = launchDocLines
+    .map(({ source, line }) => ({ source, line }))
     .filter(Boolean)
-    .filter((line) => {
-      if (currentCheckpointSection.includes(line)) return false
+    .filter(({ line }) => {
+      if (!line) return false
+      if (currentDocSections.some((section) => section.includes(line))) return false
       if (/^(Earlier|Historical)\b/i.test(line)) return false
       return (
         /\b(latest|newest|current)\b/i.test(line) &&
         (
+          /\blatest deployed production alias\b/i.test(line) ||
           /\bpost-deploy production checkpoint\b/i.test(line) ||
           /\bis live on Vercel\b/i.test(line) ||
           /\bis deployed and green in production\b/i.test(line) ||
@@ -1023,7 +1032,7 @@ async function checkRequiredDocs(productionHealth) {
         )
       )
     })
-  addCheck('launch roadmap avoids ambiguous stale live-deployment language', ambiguousHistoricalLiveDeploymentLines.length === 0, {
+  addCheck('launch docs avoid ambiguous stale live-deployment language', ambiguousHistoricalLiveDeploymentLines.length === 0, {
     expectedCommit: liveDeployment.commit || null,
     expectedDeploymentUrl: liveDeployment.url || null,
     ambiguousHistoricalLiveDeploymentLines,
