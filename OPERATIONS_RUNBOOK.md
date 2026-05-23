@@ -86,8 +86,7 @@ After importing sent state, rerun:
 
 ```bash
 npm run qa:beta-review-follow-up-outbox
-npm run qa:launch-today
-npm run qa:public-launch-status
+npm run qa:launch-refresh
 npm run qa:launch-signoff
 ```
 
