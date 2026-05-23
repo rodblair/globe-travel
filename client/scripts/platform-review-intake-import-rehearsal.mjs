@@ -1,13 +1,12 @@
 import { spawnSync } from 'node:child_process'
 import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
-import { currentQaDate } from './qa-date-utils.mjs'
+import { currentQaDate, dateOnly, subtractDays } from './qa-date-utils.mjs'
 
 const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const date = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_DATE || currentQaDate()
-const visualReviewDate = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_VISUAL_DATE ||
-  new Date().toISOString().slice(0, 10)
+const requestedVisualReviewDate = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_VISUAL_DATE || ''
 const artifactName = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_ARTIFACT_NAME ||
   `review-intake-import-rehearsal-${date}`
 const rawDir = `qa/${artifactName}-raw`
@@ -85,6 +84,13 @@ const betaReview = betaRegister.plannedReviews?.find((review) => review.id === '
   betaRegister.plannedReviews?.[0]
 const visualArtifact = visualArtifactFromSummaryPath(latestVisualSummaryPath)
 const visualDeployment = latestVisualSummary.deployment || {}
+const existingVisualHistoryDates = new Set((Array.isArray(visualRegister.reviewHistory) ? visualRegister.reviewHistory : [])
+  .map((review) => dateOnly(review.reviewedAt))
+  .filter(Boolean))
+let visualReviewDate = dateOnly(requestedVisualReviewDate)
+for (let daysBack = 0; !visualReviewDate || existingVisualHistoryDates.has(visualReviewDate); daysBack += 1) {
+  visualReviewDate = subtractDays(date, daysBack)
+}
 
 if (!betaReview?.id) {
   throw new Error('could not find a beta review for import rehearsal')
