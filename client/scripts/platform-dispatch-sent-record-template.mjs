@@ -40,9 +40,14 @@ function rowsToCsv(rows) {
     'id',
     'workType',
     'destination',
+    'messageSubject',
     'messageFile',
+    'startUrlOrCommand',
+    'packetOrArtifact',
     'submissionTemplatePath',
     'completedSubmissionPath',
+    'validateCommand',
+    'importCommand',
     'reviewerAlias',
     'deliveryChannel',
     'sentAt',
@@ -57,6 +62,10 @@ function rowsToCsv(rows) {
 
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
+}
+
+function hasText(value, minLength = 1) {
+  return typeof value === 'string' && value.trim().length >= minLength
 }
 
 function looksSensitive(value) {
@@ -84,9 +93,14 @@ const templateRows = sendRows.map((row) => ({
   id: row.id,
   workType: row.workType,
   destination: row.destination || '',
+  messageSubject: row.messageSubject || row.id,
   messageFile: row.messageFile || '',
+  startUrlOrCommand: row.startUrlOrCommand || '',
+  packetOrArtifact: row.packetOrArtifact || '',
   submissionTemplatePath: templatePathFor(row.submissionPath),
   completedSubmissionPath: row.submissionPath || '',
+  validateCommand: row.validateCommand || '',
+  importCommand: row.importCommand || '',
   reviewerAlias: '',
   deliveryChannel: '',
   sentAt: '',
@@ -146,11 +160,26 @@ const checks = [
       importCommand.includes('qa:dispatch-mark-sent') &&
       csvValidationCommand.includes('.csv') &&
       csvImportCommand.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
-      csvImportCommand.includes('.csv'),
+      csvImportCommand.includes('.csv') &&
+      templateRows.every((row) => hasText(row.validateCommand) && hasText(row.importCommand)),
     validationCommand,
     importCommand,
     csvValidationCommand,
     csvImportCommand,
+    rowsMissingCommands: templateRows
+      .filter((row) => !hasText(row.validateCommand) || !hasText(row.importCommand))
+      .map((row) => row.id),
+  },
+  {
+    name: 'sent-record template includes operator context for every outreach row',
+    ok: templateRows.every((row) => (
+      hasText(row.messageSubject) &&
+      hasText(row.startUrlOrCommand) &&
+      hasText(row.packetOrArtifact)
+    )),
+    rowsMissingOperatorContext: templateRows
+      .filter((row) => !hasText(row.messageSubject) || !hasText(row.startUrlOrCommand) || !hasText(row.packetOrArtifact))
+      .map((row) => row.id),
   },
   {
     name: 'sent-record template contains no sensitive contact details',
@@ -220,9 +249,9 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 
 ## Rows To Fill
 
-| ID | Type | Message | Submission Template | Completed Evidence Target |
-| --- | --- | --- | --- | --- |
-${templateRows.map((row) => `| ${row.id} | ${row.workType} | \`${row.messageFile}\` | \`${row.submissionTemplatePath}\` | \`${row.completedSubmissionPath}\` |`).join('\n') || '| none | none | none | none | none |'}
+| ID | Type | Subject | Source | Packet | Submission Template | Completed Evidence Target |
+| --- | --- | --- | --- | --- | --- | --- |
+${templateRows.map((row) => `| ${row.id} | ${row.workType} | ${row.messageSubject} | \`${row.messageFile || row.startUrlOrCommand}\` | \`${row.packetOrArtifact}\` | \`${row.submissionTemplatePath}\` | \`${row.completedSubmissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none |'}
 
 ## Checks
 

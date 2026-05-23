@@ -30,7 +30,7 @@
   "tempVisualCsvSentCount": 1,
   "launchOperatorExitCode": 0,
   "launchOperatorStatus": "pass",
-  "launchOperatorPublicLaunchStatus": "blocked",
+  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
   "launchOperatorActionRowCount": 4,
   "launchOperatorActionIds": [
     "BETA-HR-002",
@@ -84,7 +84,7 @@
       "ok": true,
       "exitCode": 0,
       "status": "pass",
-      "publicLaunchStatus": "blocked",
+      "publicLaunchStatus": "beta-ready-public-blocked",
       "actionIds": [
         "BETA-HR-002",
         "BETA-HR-003",

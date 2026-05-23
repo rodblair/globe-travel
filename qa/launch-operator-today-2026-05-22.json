@@ -2,7 +2,7 @@
   "date": "2026-05-22",
   "today": "2026-05-22",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T04:38:01.792Z",
+  "generatedAt": "2026-05-23T06:18:27.255Z",
   "status": "pass",
   "checked": 8,
   "passed": 8,
@@ -15,7 +15,7 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "cc529ee622dc60720063c96131306562f90f4c31",
+  "liveDeploymentCommit": "c0484fdf992b56fb161785b7127ed4a4cdf0694f",
   "publicLaunchStatus": "beta-ready-public-blocked",
   "publicGuardrailIssues": [],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
@@ -242,7 +242,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "cc529ee622dc60720063c96131306562f90f4c31"
+      "liveCommit": "c0484fdf992b56fb161785b7127ed4a4cdf0694f"
     },
     {
       "name": "launch today reads aligned dispatch logs",

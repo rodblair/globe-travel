@@ -5,8 +5,8 @@ Status: pass
 
 ## Result
 
-- Checked: 7
-- Passed: 7
+- Checked: 8
+- Passed: 8
 - Failed: 0
 - Launch operator board: `qa/launch-operator-today-2026-05-22.json`
 - Template rows: 6
@@ -30,14 +30,14 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 
 ## Rows To Fill
 
-| ID | Type | Message | Submission Template | Completed Evidence Target |
-| --- | --- | --- | --- | --- |
-| BETA-HR-001 | beta-human-review | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
-| BETA-HR-002 | beta-human-review | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
-| BETA-HR-003 | beta-human-review | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
-| BETA-HR-004 | beta-human-review | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
-| BETA-HR-005 | beta-human-review | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
-| PROD-VISUAL-HISTORY-002 | production-visual-review | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
+| ID | Type | Subject | Source | Packet | Submission Template | Completed Evidence Target |
+| --- | --- | --- | --- | --- | --- | --- |
+| BETA-HR-001 | beta-human-review | [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
+| BETA-HR-002 | beta-human-review | [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
+| BETA-HR-003 | beta-human-review | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
+| BETA-HR-004 | beta-human-review | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
+| BETA-HR-005 | beta-human-review | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
+| PROD-VISUAL-HISTORY-002 | production-visual-review | PROD-VISUAL-HISTORY-002 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/visual-baseline-production-review-2026-05-28` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Checks
 
@@ -47,6 +47,7 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 - Pass: sent-record template points at existing message files
 - Pass: sent-record template points at existing submission templates
 - Pass: sent-record template includes validation and import commands
+- Pass: sent-record template includes operator context for every outreach row
 - Pass: sent-record template contains no sensitive contact details
 
 ## Failures
