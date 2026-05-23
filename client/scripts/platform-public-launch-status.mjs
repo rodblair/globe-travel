@@ -1401,6 +1401,9 @@ if (betaFollowUpOutbox.status !== 'pass') betaFollowUpOutboxIssues.push('beta fo
 if (betaFollowUpOutbox.dispatchOutboxArtifact && betaFollowUpOutbox.dispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
   betaFollowUpOutboxIssues.push(`beta follow-up outbox source ${betaFollowUpOutbox.dispatchOutboxArtifact} does not match ${qaDisplayPath(betaDispatchOutboxPath)}`)
 }
+if (betaFollowUpOutbox.dispatchLogArtifact && betaFollowUpOutbox.dispatchLogArtifact !== qaDisplayPath(betaDispatchLogPath)) {
+  betaFollowUpOutboxIssues.push(`beta follow-up outbox dispatch log ${betaFollowUpOutbox.dispatchLogArtifact} does not match ${qaDisplayPath(betaDispatchLogPath)}`)
+}
 if (betaFollowUpOutbox.intakeArtifact && betaFollowUpOutbox.intakeArtifact !== qaDisplayPath(betaIntakePath)) {
   betaFollowUpOutboxIssues.push(`beta follow-up outbox intake ${betaFollowUpOutbox.intakeArtifact} does not match ${qaDisplayPath(betaIntakePath)}`)
 }
@@ -1413,8 +1416,16 @@ if (Number(betaFollowUpOutbox.messageFileCount) !== betaFollowUpOutboxRows.lengt
 if (Number(betaFollowUpOutbox.followUpOverdueCount) > 0) {
   betaFollowUpOutboxIssues.push(`beta follow-up outbox has ${betaFollowUpOutbox.followUpOverdueCount} overdue follow-up message(s)`)
 }
+if (Number(betaFollowUpOutbox.sendEligibleCount || 0) + Number(betaFollowUpOutbox.blockedUntilInitialSendCount || 0) !== Number(betaFollowUpOutbox.followUpRowCount || 0)) {
+  betaFollowUpOutboxIssues.push('beta follow-up outbox send-eligible and blocked counts do not match follow-up rows')
+}
+if (Number(betaFollowUpOutbox.sendEligibleCount || 0) > Number(betaDispatchLog.sentCount || 0)) {
+  betaFollowUpOutboxIssues.push('beta follow-up outbox has more send-eligible rows than sent dispatch rows')
+}
 for (const row of betaFollowUpOutboxRows) {
   if (!row.id || !betaFollowUpOutboxCsv.includes(row.id)) betaFollowUpOutboxIssues.push(`beta follow-up outbox CSV missing row ${row.id || 'unknown'}`)
+  if (typeof row.followUpSendEligible !== 'boolean') betaFollowUpOutboxIssues.push(`beta follow-up outbox row ${row.id || 'unknown'} is missing send eligibility`)
+  if (!row.initialSendStatus || !betaFollowUpOutboxCsv.includes(row.initialSendStatus)) betaFollowUpOutboxIssues.push(`beta follow-up outbox CSV missing initial send status for ${row.id || 'unknown'}`)
   if (row.followUpFile && !betaFollowUpOutboxCsv.includes(row.followUpFile)) {
     betaFollowUpOutboxIssues.push(`beta follow-up outbox CSV missing message file for ${row.id || 'unknown'}`)
   }
@@ -1439,6 +1450,9 @@ for (const check of betaFollowUpOutboxChecks) {
 if (!betaFollowUpOutboxReport.includes('Status: pass')) betaFollowUpOutboxIssues.push('beta follow-up outbox report is not passing')
 if (!betaFollowUpOutboxReport.includes('This follow-up outbox is outreach evidence, not completed review evidence')) {
   betaFollowUpOutboxIssues.push('beta follow-up outbox report does not restate the evidence boundary')
+}
+if (!betaFollowUpOutboxReport.includes('draft-only until the initial invite is recorded as sent')) {
+  betaFollowUpOutboxIssues.push('beta follow-up outbox report does not explain initial-send eligibility')
 }
 
 const betaAllWaveOpsIssues = []
@@ -2464,8 +2478,11 @@ const summary = {
     followUpOutboxReport: qaDisplayPath(betaFollowUpOutboxReportPath),
     followUpOutboxCsv: qaDisplayPath(betaFollowUpOutboxCsvPath),
     followUpOutboxArtifactDir: qaDisplayPath(betaFollowUpOutbox.artifactDir),
+    followUpOutboxDispatchLogArtifact: betaFollowUpOutbox.dispatchLogArtifact ?? null,
     followUpOutboxRowCount: betaFollowUpOutbox.followUpRowCount ?? null,
     followUpOutboxMessageFileCount: betaFollowUpOutbox.messageFileCount ?? null,
+    followUpOutboxSendEligibleCount: betaFollowUpOutbox.sendEligibleCount ?? null,
+    followUpOutboxBlockedUntilInitialSendCount: betaFollowUpOutbox.blockedUntilInitialSendCount ?? null,
     allWaveOpsArtifact: qaDisplayPath(betaAllWaveOpsPath),
     allWaveOpsReport: qaDisplayPath(betaAllWaveOpsReportPath),
     allWaveOpsCsv: qaDisplayPath(betaAllWaveOpsCsvPath),
@@ -3114,7 +3131,7 @@ Status: ${status}
 - Beta review next-wave ops ready: ${summary.betaHumanReviews.nextWaveOpsReady ? 'yes' : 'no'}
 - Beta review dispatch outbox ready: ${summary.betaHumanReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.dispatchOutboxMessageFileCount || 0} message files)
 - Beta review dispatch log ready: ${summary.betaHumanReviews.dispatchLogReady ? 'yes' : 'no'} (${summary.betaHumanReviews.dispatchLogSentCount || 0} sent, ${summary.betaHumanReviews.dispatchLogPreparedNotSentCount || 0} prepared not sent)
-- Beta review follow-up outbox ready: ${summary.betaHumanReviews.followUpOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.followUpOutboxMessageFileCount || 0} message files)
+- Beta review follow-up outbox ready: ${summary.betaHumanReviews.followUpOutboxReady ? 'yes' : 'no'} (${summary.betaHumanReviews.followUpOutboxMessageFileCount || 0} message files, ${summary.betaHumanReviews.followUpOutboxSendEligibleCount || 0} eligible, ${summary.betaHumanReviews.followUpOutboxBlockedUntilInitialSendCount || 0} draft-only)
 - Beta review all-wave ops ready: ${summary.betaHumanReviews.allWaveOpsReady ? 'yes' : 'no'} (${summary.betaHumanReviews.allWaveOpsRowCount || 0}/${summary.betaHumanReviews.planned || 0})
 - Beta review wave rehearsal ready: ${summary.betaHumanReviews.waveRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.waveRehearsalChecked || 0}/${summary.betaHumanReviews.nextWaveOpsRowCount || 0})
 - Beta review matrix rehearsal ready: ${summary.betaHumanReviews.matrixRehearsalReady ? 'yes' : 'no'} (${summary.betaHumanReviews.matrixRehearsalChecked || 0}/${summary.betaHumanReviews.planned || 0})

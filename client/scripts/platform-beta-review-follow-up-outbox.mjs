@@ -6,6 +6,7 @@ const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_DATE || ''
 const requestedToday = process.env.QA_BETA_REVIEW_TODAY || ''
 const dispatchOutboxPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX || 'qa/beta-human-review-dispatch-outbox-2026-05-21.json'
+const dispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
 const intakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
 
 function hasText(value, minLength = 1) {
@@ -94,6 +95,9 @@ function rowsToCsv(rows) {
     'viewport',
     'followUpAt',
     'dueAt',
+    'initialSendStatus',
+    'initialSentAt',
+    'followUpSendEligible',
     'followUpStatus',
     'followUpSubject',
     'followUpFile',
@@ -109,6 +113,7 @@ function rowsToCsv(rows) {
 }
 
 const dispatchOutbox = await readJson(dispatchOutboxPath)
+const dispatchLog = await readJson(dispatchLogPath)
 const intake = await readJson(intakePath)
 const date = requestedDate || dateOnly(dispatchOutbox.date) || currentQaDate()
 const today = currentReviewDate()
@@ -120,6 +125,8 @@ const outboxDir = `qa/${outboxDirName}`
 const importedIds = new Set(Array.isArray(intake.importedReviewIds) ? intake.importedReviewIds : [])
 const submittedIds = new Set(Array.isArray(intake.submissions) ? intake.submissions.map((submission) => submission.id).filter(Boolean) : [])
 const dispatchRows = Array.isArray(dispatchOutbox.messageRows) ? dispatchOutbox.messageRows : []
+const dispatchLogRows = Array.isArray(dispatchLog.dispatchRows) ? dispatchLog.dispatchRows : []
+const dispatchLogById = new Map(dispatchLogRows.map((row) => [row.id, row]))
 
 const candidateRows = []
 for (const row of dispatchRows) {
@@ -129,6 +136,8 @@ for (const row of dispatchRows) {
   const alreadyCompleted = importedIds.has(row.id) || submittedIds.has(row.id) || completedFileExists
   if (!alreadyCompleted && Number.isFinite(followUpInDays) && followUpInDays >= 0 && followUpInDays <= 2) {
     const fileName = `${safeFileStem(row.id)}-${safeFileStem(row.destination)}-follow-up.txt`
+    const dispatchLogRow = dispatchLogById.get(row.id) || {}
+    const initialSendStatus = dispatchLogRow.sendStatus || row.dispatchStatus || ''
     candidateRows.push({
       id: row.id,
       waveId: row.waveId,
@@ -138,6 +147,9 @@ for (const row of dispatchRows) {
       viewport: row.viewport,
       followUpAt: row.followUpAt,
       dueAt: row.dueAt,
+      initialSendStatus,
+      initialSentAt: dispatchLogRow.sentAt || '',
+      followUpSendEligible: initialSendStatus === 'sent',
       followUpStatus: 'prepared-not-sent',
       followUpSubject: `[Globe.travel beta follow-up] ${row.id} ${row.destination} review due ${row.dueAt}`,
       followUpFile: `${outboxDir}/${fileName}`,
@@ -199,6 +211,9 @@ const malformedRows = candidateRows.filter((row) => (
   !hasText(row.viewport) ||
   !hasText(row.followUpAt) ||
   !hasText(row.dueAt) ||
+  !hasText(row.initialSendStatus) ||
+  !['prepared-not-sent', 'sent'].includes(row.initialSendStatus) ||
+  typeof row.followUpSendEligible !== 'boolean' ||
   row.followUpStatus !== 'prepared-not-sent' ||
   !hasText(row.followUpSubject, 20) ||
   !hasText(row.followUpFile) ||
@@ -222,6 +237,8 @@ const badMessageFiles = messageFileChecks.filter((check) => (
 ))
 const followUpOverdueRows = candidateRows.filter((row) => Number.isFinite(row.followUpInDays) && row.followUpInDays < 0)
 const dueSoonRows = candidateRows.filter((row) => Number.isFinite(row.dueInDays) && row.dueInDays >= 0 && row.dueInDays <= 3)
+const sendEligibleRows = candidateRows.filter((row) => row.followUpSendEligible)
+const blockedUntilInitialSendRows = candidateRows.filter((row) => !row.followUpSendEligible)
 
 const checks = []
 function addCheck(name, ok, detail = {}) {
@@ -230,12 +247,15 @@ function addCheck(name, ok, detail = {}) {
 
 addCheck('follow-up outbox reads passing dispatch and intake artifacts', (
   dispatchOutbox.status === 'pass' &&
+  dispatchLog.status === 'pass' &&
   intake.status === 'pass' &&
   Number(dispatchOutbox.followUpDueSoonCount) >= candidateRows.length
 ), {
   dispatchOutboxArtifact: qaDisplayPath(dispatchOutboxPath),
   dispatchOutboxStatus: dispatchOutbox.status || null,
   dispatchOutboxFollowUpDueSoonCount: dispatchOutbox.followUpDueSoonCount ?? null,
+  dispatchLogArtifact: qaDisplayPath(dispatchLogPath),
+  dispatchLogStatus: dispatchLog.status || null,
   intakeArtifact: qaDisplayPath(intakePath),
   intakeStatus: intake.status || null,
 })
@@ -257,6 +277,14 @@ addCheck('follow-up rows are actionable and not overdue', (
   followUpOverdueRows: followUpOverdueRows.map((row) => row.id || '(missing id)'),
 })
 
+addCheck('follow-up send eligibility is gated by dispatch sent state', (
+  candidateRows.every((row) => row.followUpSendEligible === (row.initialSendStatus === 'sent')) &&
+  sendEligibleRows.length + blockedUntilInitialSendRows.length === candidateRows.length
+), {
+  sendEligibleRows: sendEligibleRows.map((row) => row.id),
+  blockedUntilInitialSendRows: blockedUntilInitialSendRows.map((row) => row.id),
+})
+
 addCheck('follow-up CSV includes every message and completed-submission path', (
   candidateRows.every((row) => csvText.includes(row.followUpFile)) &&
   candidateRows.every((row) => csvText.includes(row.completedSubmissionPath))
@@ -273,6 +301,7 @@ const summary = {
   passed: checks.length - failures.length,
   failed: failures.length,
   dispatchOutboxArtifact: qaDisplayPath(dispatchOutboxPath),
+  dispatchLogArtifact: qaDisplayPath(dispatchLogPath),
   intakeArtifact: qaDisplayPath(intakePath),
   artifact: `qa/${jsonName}`,
   report: `qa/${reportName}`,
@@ -282,6 +311,8 @@ const summary = {
   messageFileCount: messageFileChecks.length,
   dueSoonCount: dueSoonRows.length,
   followUpOverdueCount: followUpOverdueRows.length,
+  sendEligibleCount: sendEligibleRows.length,
+  blockedUntilInitialSendCount: blockedUntilInitialSendRows.length,
   messageRows: csvRows,
   messageFileChecks,
   checks,
@@ -303,10 +334,13 @@ Source: ${summary.dispatchOutboxArtifact}
 - Follow-up message files: ${summary.messageFileCount}
 - Due within 3 days: ${summary.dueSoonCount}
 - Follow-ups overdue: ${summary.followUpOverdueCount}
+- Eligible to send now: ${summary.sendEligibleCount}
+- Draft-only until initial invite is sent: ${summary.blockedUntilInitialSendCount}
 
 ## Operator Workflow
 
 - Send these only after the initial dispatch message has gone out.
+- Rows with \`followUpSendEligible: false\` are draft-only until the initial invite is recorded as sent in the dispatch log.
 - Use the follow-up file matching each review ID.
 - Keep reviewer contact and send timestamps outside this repo.
 - Completed reviews must arrive as non-template JSON files.
@@ -314,9 +348,9 @@ Source: ${summary.dispatchOutboxArtifact}
 
 ## Follow-Up Files
 
-| ID | Reviewer | Destination | Follow Up | Due | Message File |
-| --- | --- | --- | --- | --- | --- |
-${candidateRows.map((row) => `| ${row.id} | ${row.reviewerRole} | ${row.destination} | ${row.followUpAt} | ${row.dueAt} | \`${row.followUpFile}\` |`).join('\n') || '| none | none | none | none | none |'}
+| ID | Reviewer | Destination | Follow Up | Initial Send | Eligible | Message File |
+| --- | --- | --- | --- | --- | --- | --- |
+${candidateRows.map((row) => `| ${row.id} | ${row.reviewerRole} | ${row.destination} | ${row.followUpAt} | ${row.initialSendStatus} | ${row.followUpSendEligible ? 'yes' : 'draft-only'} | \`${row.followUpFile}\` |`).join('\n') || '| none | none | none | none | none | none |'}
 
 ## Checks
 

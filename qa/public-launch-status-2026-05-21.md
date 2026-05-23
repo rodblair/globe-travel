@@ -27,7 +27,7 @@ Status: beta-ready-public-blocked
 - Beta review next-wave ops ready: yes
 - Beta review dispatch outbox ready: yes (5 message files)
 - Beta review dispatch log ready: yes (0 sent, 5 prepared not sent)
-- Beta review follow-up outbox ready: yes (5 message files)
+- Beta review follow-up outbox ready: yes (5 message files, 0 eligible, 5 draft-only)
 - Beta review all-wave ops ready: yes (25/25)
 - Beta review wave rehearsal ready: yes (5/5)
 - Beta review matrix rehearsal ready: yes (25/25)

@@ -3251,10 +3251,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.followUpOutboxReport) &&
     hasMeaningfulText(betaReviewStatus.followUpOutboxCsv) &&
     hasMeaningfulText(betaReviewStatus.followUpOutboxArtifactDir) &&
+    betaReviewStatus.followUpOutboxDispatchLogArtifact === betaReviewStatus.dispatchLogArtifact &&
     Number(betaReviewStatus.followUpOutboxIssueCount) === 0 &&
     Number(betaReviewStatus.followUpOutboxRowCount) === Number(betaReviewStatus.dispatchOutboxFollowUpDueSoonCount || 0) &&
     Number(betaReviewStatus.followUpOutboxMessageFileCount) === Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
     Number(betaReviewStatus.followUpOutboxOverdueCount) === 0 &&
+    Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) <= Number(betaReviewStatus.dispatchLogSentCount || 0) &&
+    Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) + Number(betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount || 0) === Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsArtifact) &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsReport) &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsCsv) &&
@@ -3387,8 +3390,12 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaFollowUpOutboxReport: betaReviewStatus.followUpOutboxReport ?? null,
     betaFollowUpOutboxCsv: betaReviewStatus.followUpOutboxCsv ?? null,
     betaFollowUpOutboxArtifactDir: betaReviewStatus.followUpOutboxArtifactDir ?? null,
+    betaFollowUpOutboxDispatchLogArtifact: betaReviewStatus.followUpOutboxDispatchLogArtifact ?? null,
+    expectedBetaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact ?? null,
     betaFollowUpOutboxRowCount: betaReviewStatus.followUpOutboxRowCount ?? null,
     betaFollowUpOutboxMessageFileCount: betaReviewStatus.followUpOutboxMessageFileCount ?? null,
+    betaFollowUpOutboxSendEligibleCount: betaReviewStatus.followUpOutboxSendEligibleCount ?? null,
+    betaFollowUpOutboxBlockedUntilInitialSendCount: betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount ?? null,
     betaFollowUpOutboxDueSoonCount: betaReviewStatus.followUpOutboxDueSoonCount ?? null,
     betaFollowUpOutboxOverdueCount: betaReviewStatus.followUpOutboxOverdueCount ?? null,
     betaAllWaveOpsArtifact: betaReviewStatus.allWaveOpsArtifact ?? null,
