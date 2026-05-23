@@ -23,6 +23,79 @@ async function readJson(path) {
   return JSON.parse(await readFile(repoPath(path), 'utf8'))
 }
 
+function parseCsv(text) {
+  const rows = []
+  let row = []
+  let field = ''
+  let inQuotes = false
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index]
+    const next = text[index + 1]
+
+    if (inQuotes) {
+      if (char === '"' && next === '"') {
+        field += '"'
+        index += 1
+      } else if (char === '"') {
+        inQuotes = false
+      } else {
+        field += char
+      }
+      continue
+    }
+
+    if (char === '"') {
+      inQuotes = true
+    } else if (char === ',') {
+      row.push(field)
+      field = ''
+    } else if (char === '\n') {
+      row.push(field)
+      rows.push(row)
+      row = []
+      field = ''
+    } else if (char !== '\r') {
+      field += char
+    }
+  }
+
+  if (field.length > 0 || row.length > 0) {
+    row.push(field)
+    rows.push(row)
+  }
+
+  if (inQuotes) {
+    throw new Error('CSV has an unterminated quoted field')
+  }
+
+  const [headers, ...dataRows] = rows.filter((csvRow) => csvRow.some((value) => String(value || '').trim().length > 0))
+  if (!headers || headers.length === 0) return []
+
+  return dataRows.map((csvRow) => Object.fromEntries(headers.map((header, index) => [
+    String(header || '').trim(),
+    csvRow[index] ?? '',
+  ])))
+}
+
+async function readSentRecord(path) {
+  const displayPath = qaDisplayPath(path)
+  const text = await readFile(repoPath(path), 'utf8')
+  if (displayPath.toLowerCase().endsWith('.csv')) {
+    return {
+      format: 'csv',
+      record: {
+        rows: parseCsv(text),
+      },
+    }
+  }
+
+  return {
+    format: 'json',
+    record: JSON.parse(text),
+  }
+}
+
 function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
@@ -107,7 +180,9 @@ if (!recordPath) {
   setupIssues.push('QA_DISPATCH_MARK_SENT_RECORD is required')
 } else {
   try {
-    record = await readJson(recordPath)
+    const sentRecord = await readSentRecord(recordPath)
+    record = sentRecord.record
+    record.format = sentRecord.format
   } catch (error) {
     setupIssues.push(`could not read sent record ${qaDisplayPath(recordPath)}: ${error instanceof Error ? error.message : String(error)}`)
   }
@@ -174,6 +249,7 @@ const summary = {
   status: issues.length === 0 ? 'pass' : 'fail',
   importMode,
   recordArtifact: recordPath ? qaDisplayPath(recordPath) : null,
+  recordFormat: record?.format || null,
   betaDispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
   visualDispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
   requestedUpdateCount: requestedUpdates.length,
@@ -201,6 +277,7 @@ Mode: ${summary.importMode ? 'import' : 'dry run'}
 - Beta rows: ${summary.betaUpdateCount}
 - Visual rows: ${summary.visualUpdateCount}
 - Record: \`${summary.recordArtifact || 'missing'}\`
+- Record format: ${summary.recordFormat || 'unknown'}
 - Updated logs: ${summary.importMode ? summary.updatedLogArtifacts.map((artifact) => `\`${artifact}\``).join(', ') || 'none' : 'dry run only'}
 
 ## Operating Meaning

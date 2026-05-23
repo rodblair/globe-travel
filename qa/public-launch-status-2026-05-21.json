@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T04:20:09.956Z",
+  "generatedAt": "2026-05-23T04:38:03.354Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -470,15 +470,26 @@
     "markSentExitCode": 0,
     "markSentStatus": "pass",
     "markSentImportMode": true,
+    "markSentRecordFormat": "json",
+    "markSentCsvExitCode": 0,
+    "markSentCsvStatus": "pass",
+    "markSentCsvImportMode": true,
+    "markSentCsvRecordFormat": "csv",
     "importedRows": {
+      "beta": "BETA-HR-001",
+      "visual": "PROD-VISUAL-HISTORY-002"
+    },
+    "csvImportedRows": {
       "beta": "BETA-HR-001",
       "visual": "PROD-VISUAL-HISTORY-002"
     },
     "tempBetaSentCount": 1,
     "tempVisualSentCount": 1,
+    "tempBetaCsvSentCount": 1,
+    "tempVisualCsvSentCount": 1,
     "launchOperatorExitCode": 0,
     "launchOperatorStatus": "pass",
-    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+    "launchOperatorPublicLaunchStatus": "blocked",
     "launchOperatorActionRowCount": 4,
     "launchOperatorActionIds": [
       "BETA-HR-002",
@@ -946,8 +957,8 @@
     }
   ],
   "nextActions": [
-    "Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and npm run qa:dispatch-mark-sent.",
-    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and npm run qa:dispatch-mark-sent.",
+    "Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent.",
+    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent.",
     "Collect and import 25 completed beta review submission(s).",
     "Run, review, and import 2 scheduled production visual review date(s)."
   ],

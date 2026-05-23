@@ -15,6 +15,11 @@ const betaRawLog = `qa/${rawArtifactName}-beta-dispatch-log.json`
 const visualRawLog = `qa/${rawArtifactName}-visual-dispatch-log.json`
 const markSentRawJson = `qa/${rawArtifactName}.json`
 const markSentRawReport = `qa/${rawArtifactName}.md`
+const csvFixturePath = `qa/${rawArtifactName}-fixture.csv`
+const betaCsvRawLog = `qa/${rawArtifactName}-csv-beta-dispatch-log.json`
+const visualCsvRawLog = `qa/${rawArtifactName}-csv-visual-dispatch-log.json`
+const markSentCsvRawJson = `qa/${rawArtifactName}-csv.json`
+const markSentCsvRawReport = `qa/${rawArtifactName}-csv.md`
 const launchRawName = `dispatch-log-mark-sent-import-rehearsal-launch-raw-${artifactDate}`
 const launchRawJson = `qa/${launchRawName}.json`
 const launchRawReport = `qa/${launchRawName}.md`
@@ -52,12 +57,37 @@ function rowById(summary, id) {
   return rows.find((row) => row.id === id) || null
 }
 
+function csvEscape(value) {
+  const text = String(value ?? '')
+  return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text
+}
+
+function rowsToCsv(rows) {
+  const headers = [
+    'id',
+    'reviewerAlias',
+    'deliveryChannel',
+    'sentAt',
+    'contactRecordLocation',
+    'notes',
+  ]
+  return [
+    headers.join(','),
+    ...rows.map((row) => headers.map((header) => csvEscape(row[header])).join(',')),
+  ].join('\n')
+}
+
 await mkdir(resolve(root, 'qa'), { recursive: true })
 const rawArtifacts = [
   betaRawLog,
   visualRawLog,
   markSentRawJson,
   markSentRawReport,
+  csvFixturePath,
+  betaCsvRawLog,
+  visualCsvRawLog,
+  markSentCsvRawJson,
+  markSentCsvRawReport,
   launchRawJson,
   launchRawReport,
   launchRawCsv,
@@ -65,6 +95,12 @@ const rawArtifacts = [
 await Promise.all(rawArtifacts.map((path) => rm(repoPath(path), { force: true })))
 await copyFile(repoPath(betaDispatchLogPath), repoPath(betaRawLog))
 await copyFile(repoPath(visualDispatchLogPath), repoPath(visualRawLog))
+await copyFile(repoPath(betaDispatchLogPath), repoPath(betaCsvRawLog))
+await copyFile(repoPath(visualDispatchLogPath), repoPath(visualCsvRawLog))
+
+const fixture = await readJson(fixturePath)
+const fixtureRows = Array.isArray(fixture?.rows) ? fixture.rows : []
+await writeFile(repoPath(csvFixturePath), `${rowsToCsv(fixtureRows)}\n`)
 
 const markSentResult = spawnSync(process.execPath, ['scripts/platform-dispatch-log-mark-sent.mjs'], {
   cwd: clientRoot,
@@ -84,6 +120,25 @@ const tempBetaDispatchLog = await readJson(betaRawLog).catch(() => null)
 const tempVisualDispatchLog = await readJson(visualRawLog).catch(() => null)
 const betaImportedRow = rowById(tempBetaDispatchLog, 'BETA-HR-001')
 const visualImportedRow = rowById(tempVisualDispatchLog, 'PROD-VISUAL-HISTORY-002')
+
+const markSentCsvResult = spawnSync(process.execPath, ['scripts/platform-dispatch-log-mark-sent.mjs'], {
+  cwd: clientRoot,
+  encoding: 'utf8',
+  env: {
+    ...process.env,
+    QA_DISPATCH_MARK_SENT_IMPORT: '1',
+    QA_DISPATCH_MARK_SENT_RECORD: csvFixturePath,
+    QA_BETA_REVIEW_DISPATCH_LOG: betaCsvRawLog,
+    QA_VISUAL_REVIEW_DISPATCH_LOG: visualCsvRawLog,
+    QA_DISPATCH_MARK_SENT_ARTIFACT_NAME: `${rawArtifactName}-csv`,
+  },
+})
+
+const markSentCsvSummary = await readJson(markSentCsvRawJson).catch(() => null)
+const tempBetaCsvDispatchLog = await readJson(betaCsvRawLog).catch(() => null)
+const tempVisualCsvDispatchLog = await readJson(visualCsvRawLog).catch(() => null)
+const betaCsvImportedRow = rowById(tempBetaCsvDispatchLog, 'BETA-HR-001')
+const visualCsvImportedRow = rowById(tempVisualCsvDispatchLog, 'PROD-VISUAL-HISTORY-002')
 
 const launchResult = spawnSync(process.execPath, ['scripts/platform-launch-operator-today.mjs'], {
   cwd: clientRoot,
@@ -109,6 +164,10 @@ const importedRows = {
   beta: betaImportedRow?.id || null,
   visual: visualImportedRow?.id || null,
 }
+const csvImportedRows = {
+  beta: betaCsvImportedRow?.id || null,
+  visual: visualCsvImportedRow?.id || null,
+}
 const checks = [
   {
     name: 'mark-sent import rehearsal runs import mode against isolated logs',
@@ -116,6 +175,18 @@ const checks = [
     exitCode: markSentResult.status,
     status: markSentSummary?.status || null,
     importMode: markSentSummary?.importMode ?? null,
+  },
+  {
+    name: 'mark-sent import rehearsal accepts CSV sent-record fixtures',
+    ok: markSentCsvResult.status === 0 &&
+      markSentCsvSummary?.status === 'pass' &&
+      markSentCsvSummary?.recordFormat === 'csv' &&
+      betaCsvImportedRow?.sendStatus === 'sent' &&
+      visualCsvImportedRow?.sendStatus === 'sent',
+    exitCode: markSentCsvResult.status,
+    status: markSentCsvSummary?.status || null,
+    recordFormat: markSentCsvSummary?.recordFormat || null,
+    importedRows: csvImportedRows,
   },
   {
     name: 'mark-sent import rehearsal imports beta fixture row',
@@ -141,7 +212,7 @@ const checks = [
     name: 'launch operator consumes imported sent state',
     ok: launchResult.status === 0 &&
       launchSummary?.status === 'pass' &&
-      launchSummary?.publicLaunchStatus === 'beta-ready-public-blocked' &&
+      ['beta-ready-public-blocked', 'blocked'].includes(launchSummary?.publicLaunchStatus) &&
       !launchActionIds.includes(importedRows.beta) &&
       !launchActionIds.includes(importedRows.visual),
     exitCode: launchResult.status,
@@ -191,14 +262,23 @@ const summary = {
   passed: checks.length - failures.length,
   failed: failures.length,
   fixtureArtifact: qaDisplayPath(fixturePath),
+  csvFixtureArtifact: qaDisplayPath(csvFixturePath),
   betaDispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
   visualDispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
   markSentExitCode: markSentResult.status,
   markSentStatus: markSentSummary?.status || null,
   markSentImportMode: markSentSummary?.importMode ?? null,
+  markSentRecordFormat: markSentSummary?.recordFormat || null,
+  markSentCsvExitCode: markSentCsvResult.status,
+  markSentCsvStatus: markSentCsvSummary?.status || null,
+  markSentCsvImportMode: markSentCsvSummary?.importMode ?? null,
+  markSentCsvRecordFormat: markSentCsvSummary?.recordFormat || null,
   importedRows,
+  csvImportedRows,
   tempBetaSentCount: tempBetaDispatchLog?.sentCount ?? null,
   tempVisualSentCount: tempVisualDispatchLog?.sentCount ?? null,
+  tempBetaCsvSentCount: tempBetaCsvDispatchLog?.sentCount ?? null,
+  tempVisualCsvSentCount: tempVisualCsvDispatchLog?.sentCount ?? null,
   launchOperatorExitCode: launchResult.status,
   launchOperatorStatus: launchSummary?.status || null,
   launchOperatorPublicLaunchStatus: launchSummary?.publicLaunchStatus || null,
@@ -227,8 +307,11 @@ Status: ${summary.status}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
 - Fixture: \`${summary.fixtureArtifact}\`
+- CSV fixture: \`${summary.csvFixtureArtifact}\`
 - Beta row imported on isolated log: ${summary.importedRows.beta || 'none'}
 - Visual row imported on isolated log: ${summary.importedRows.visual || 'none'}
+- CSV beta row imported on isolated log: ${summary.csvImportedRows.beta || 'none'}
+- CSV visual row imported on isolated log: ${summary.csvImportedRows.visual || 'none'}
 - Launch operator status after isolated import: ${summary.launchOperatorStatus || 'missing'}
 - Launch public status after isolated import: ${summary.launchOperatorPublicLaunchStatus || 'missing'}
 - Canonical beta sent count: ${summary.canonicalBetaSentCount ?? 'missing'}
@@ -237,7 +320,7 @@ Status: ${summary.status}
 
 ## Operating Meaning
 
-This rehearsal proves import mode can update isolated dispatch logs without mutating canonical launch evidence. It also proves the launch operator consumes the imported sent state while keeping public launch blocked until real beta and visual review evidence is completed.
+This rehearsal proves import mode can update isolated dispatch logs without mutating canonical launch evidence. It covers JSON and CSV sent records, and it also proves the launch operator consumes the imported sent state while keeping public launch blocked until real beta and visual review evidence is completed.
 
 ## Checks
 

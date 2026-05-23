@@ -18,10 +18,15 @@ Status: pass
 
 This file is not a sent proof and does not count as outreach evidence. It is a starter record for the release operator to fill only after real beta invites or visual-review assignments are sent outside the repo. Keep real names, emails, phone numbers, and other contact details in the external contact system; use only non-sensitive aliases and external record pointers here.
 
-## Commands After Filling
+## Commands After Filling The JSON
 
 - Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
 - Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
+
+## Commands After Filling The CSV
+
+- Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent`
+- Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent`
 
 ## Rows To Fill
 

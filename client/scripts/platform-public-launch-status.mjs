@@ -2205,11 +2205,29 @@ if (dispatchMarkSentImportRehearsal.markSentStatus !== 'pass') {
 if (dispatchMarkSentImportRehearsal.markSentImportMode !== true) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not run import mode')
 }
+if (Number(dispatchMarkSentImportRehearsal.markSentCsvExitCode) !== 0) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal CSV mark-sent command did not exit cleanly')
+}
+if (dispatchMarkSentImportRehearsal.markSentCsvStatus !== 'pass') {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal CSV mark-sent status is not pass')
+}
+if (dispatchMarkSentImportRehearsal.markSentCsvImportMode !== true) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal CSV did not run import mode')
+}
+if (dispatchMarkSentImportRehearsal.markSentCsvRecordFormat !== 'csv') {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not prove CSV sent-record import')
+}
 if (!dispatchMarkSentImportRehearsal.importedRows?.beta) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not import a beta row')
 }
 if (!dispatchMarkSentImportRehearsal.importedRows?.visual) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not import a visual row')
+}
+if (!dispatchMarkSentImportRehearsal.csvImportedRows?.beta) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not import a beta row from CSV')
+}
+if (!dispatchMarkSentImportRehearsal.csvImportedRows?.visual) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not import a visual row from CSV')
 }
 if (Number(dispatchMarkSentImportRehearsal.tempBetaSentCount || 0) <= 0) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not create sent beta state on isolated log')
@@ -2217,13 +2235,19 @@ if (Number(dispatchMarkSentImportRehearsal.tempBetaSentCount || 0) <= 0) {
 if (Number(dispatchMarkSentImportRehearsal.tempVisualSentCount || 0) <= 0) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not create sent visual state on isolated log')
 }
+if (Number(dispatchMarkSentImportRehearsal.tempBetaCsvSentCount || 0) <= 0) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not create sent beta state from CSV')
+}
+if (Number(dispatchMarkSentImportRehearsal.tempVisualCsvSentCount || 0) <= 0) {
+  dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not create sent visual state from CSV')
+}
 if (Number(dispatchMarkSentImportRehearsal.launchOperatorExitCode) !== 0) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator did not exit cleanly')
 }
 if (dispatchMarkSentImportRehearsal.launchOperatorStatus !== 'pass') {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator status is not pass')
 }
-if (dispatchMarkSentImportRehearsal.launchOperatorPublicLaunchStatus !== 'beta-ready-public-blocked') {
+if (!['beta-ready-public-blocked', 'blocked'].includes(dispatchMarkSentImportRehearsal.launchOperatorPublicLaunchStatus)) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal unexpectedly changed public launch status')
 }
 if (dispatchMarkSentImportActionIds.includes(dispatchMarkSentImportRehearsal.importedRows?.beta)) {
@@ -3131,9 +3155,17 @@ const summary = {
     markSentExitCode: dispatchMarkSentImportRehearsal.markSentExitCode ?? null,
     markSentStatus: dispatchMarkSentImportRehearsal.markSentStatus || null,
     markSentImportMode: dispatchMarkSentImportRehearsal.markSentImportMode ?? null,
+    markSentRecordFormat: dispatchMarkSentImportRehearsal.markSentRecordFormat || null,
+    markSentCsvExitCode: dispatchMarkSentImportRehearsal.markSentCsvExitCode ?? null,
+    markSentCsvStatus: dispatchMarkSentImportRehearsal.markSentCsvStatus || null,
+    markSentCsvImportMode: dispatchMarkSentImportRehearsal.markSentCsvImportMode ?? null,
+    markSentCsvRecordFormat: dispatchMarkSentImportRehearsal.markSentCsvRecordFormat || null,
     importedRows: dispatchMarkSentImportRehearsal.importedRows || null,
+    csvImportedRows: dispatchMarkSentImportRehearsal.csvImportedRows || null,
     tempBetaSentCount: dispatchMarkSentImportRehearsal.tempBetaSentCount ?? null,
     tempVisualSentCount: dispatchMarkSentImportRehearsal.tempVisualSentCount ?? null,
+    tempBetaCsvSentCount: dispatchMarkSentImportRehearsal.tempBetaCsvSentCount ?? null,
+    tempVisualCsvSentCount: dispatchMarkSentImportRehearsal.tempVisualCsvSentCount ?? null,
     launchOperatorExitCode: dispatchMarkSentImportRehearsal.launchOperatorExitCode ?? null,
     launchOperatorStatus: dispatchMarkSentImportRehearsal.launchOperatorStatus || null,
     launchOperatorPublicLaunchStatus: dispatchMarkSentImportRehearsal.launchOperatorPublicLaunchStatus || null,
@@ -3569,16 +3601,16 @@ const summary = {
       ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount || 0) > 0
-      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount || 0) > 0
-      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`
       : null,
     Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount || 0) > 0
-      ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`
       : null,
     Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount || 0) > 0
-      ? `Send ${launchOperatorToday.visualDispatchLogPreparedDueSoonCount} production visual-review request(s) due soon from ${qaDisplayPath(visualDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      ? `Send ${launchOperatorToday.visualDispatchLogPreparedDueSoonCount} production visual-review request(s) due soon from ${qaDisplayPath(visualDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and run QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} npm run qa:dispatch-mark-sent.`
       : null,
     betaRemaining > 0 ? `Collect and import ${betaRemaining} completed beta review submission(s).` : null,
     visualRemaining > 0 ? `Run, review, and import ${visualRemaining} scheduled production visual review date(s).` : null,

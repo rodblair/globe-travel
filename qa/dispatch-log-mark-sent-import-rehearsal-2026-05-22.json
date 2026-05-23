@@ -1,24 +1,36 @@
 {
   "date": "2026-05-22",
   "status": "pass",
-  "checked": 8,
-  "passed": 8,
+  "checked": 9,
+  "passed": 9,
   "failed": 0,
   "fixtureArtifact": "qa/dispatch-log-mark-sent-fixture-2026-05-22.json",
+  "csvFixtureArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-raw-2026-05-22-fixture.csv",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
   "markSentExitCode": 0,
   "markSentStatus": "pass",
   "markSentImportMode": true,
+  "markSentRecordFormat": "json",
+  "markSentCsvExitCode": 0,
+  "markSentCsvStatus": "pass",
+  "markSentCsvImportMode": true,
+  "markSentCsvRecordFormat": "csv",
   "importedRows": {
+    "beta": "BETA-HR-001",
+    "visual": "PROD-VISUAL-HISTORY-002"
+  },
+  "csvImportedRows": {
     "beta": "BETA-HR-001",
     "visual": "PROD-VISUAL-HISTORY-002"
   },
   "tempBetaSentCount": 1,
   "tempVisualSentCount": 1,
+  "tempBetaCsvSentCount": 1,
+  "tempVisualCsvSentCount": 1,
   "launchOperatorExitCode": 0,
   "launchOperatorStatus": "pass",
-  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+  "launchOperatorPublicLaunchStatus": "blocked",
   "launchOperatorActionRowCount": 4,
   "launchOperatorActionIds": [
     "BETA-HR-002",
@@ -41,6 +53,17 @@
       "importMode": true
     },
     {
+      "name": "mark-sent import rehearsal accepts CSV sent-record fixtures",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "recordFormat": "csv",
+      "importedRows": {
+        "beta": "BETA-HR-001",
+        "visual": "PROD-VISUAL-HISTORY-002"
+      }
+    },
+    {
       "name": "mark-sent import rehearsal imports beta fixture row",
       "ok": true,
       "rowId": "BETA-HR-001",
@@ -61,7 +84,7 @@
       "ok": true,
       "exitCode": 0,
       "status": "pass",
-      "publicLaunchStatus": "beta-ready-public-blocked",
+      "publicLaunchStatus": "blocked",
       "actionIds": [
         "BETA-HR-002",
         "BETA-HR-003",

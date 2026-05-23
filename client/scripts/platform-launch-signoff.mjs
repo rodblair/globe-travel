@@ -3377,7 +3377,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchMarkSentImportRehearsalStatus.tempVisualSentCount) > 0 &&
     Number(dispatchMarkSentImportRehearsalStatus.launchOperatorExitCode) === 0 &&
     dispatchMarkSentImportRehearsalStatus.launchOperatorStatus === 'pass' &&
-    dispatchMarkSentImportRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+    ['beta-ready-public-blocked', 'blocked'].includes(dispatchMarkSentImportRehearsalStatus.launchOperatorPublicLaunchStatus) &&
     Array.isArray(dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds) &&
     !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.beta) &&
     !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.visual) &&

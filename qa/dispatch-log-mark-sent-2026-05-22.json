@@ -3,6 +3,7 @@
   "status": "pass",
   "importMode": false,
   "recordArtifact": "qa/dispatch-log-mark-sent-fixture-2026-05-22.json",
+  "recordFormat": "json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
   "requestedUpdateCount": 2,

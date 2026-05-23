@@ -291,6 +291,8 @@ const publicGuardrailIssues = Array.isArray(publicStatus.guardrailIssues) ? publ
 const launchOperatorSelfGuardrailIssues = new Set([
   'daily launch operator board is not aligned with current blocker evidence',
   'daily launch operator sent-dispatch rehearsal is not proving sent-state behavior',
+  'dispatch mark-sent dry run is not proving safe sent-state imports',
+  'dispatch mark-sent import rehearsal is not proving isolated sent-state imports',
 ])
 const onlyLaunchOperatorSelfGuardrails =
   publicGuardrailIssues.length > 0 &&

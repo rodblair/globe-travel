@@ -10,6 +10,7 @@ Mode: dry run
 - Beta rows: 1
 - Visual rows: 1
 - Record: `qa/dispatch-log-mark-sent-fixture-2026-05-22.json`
+- Record format: json
 - Updated logs: dry run only
 
 ## Operating Meaning

@@ -90,6 +90,8 @@ const templateRows = sendRows.map((row) => ({
 }))
 const validationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
 const importCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
+const csvValidationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
+const csvImportCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
 
 const messageFileChecks = await Promise.all(templateRows.map(async (row) => ({
   id: row.id,
@@ -135,9 +137,14 @@ const checks = [
     name: 'sent-record template includes validation and import commands',
     ok: validationCommand.includes('qa:dispatch-mark-sent') &&
       importCommand.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
-      importCommand.includes('qa:dispatch-mark-sent'),
+      importCommand.includes('qa:dispatch-mark-sent') &&
+      csvValidationCommand.includes('.csv') &&
+      csvImportCommand.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+      csvImportCommand.includes('.csv'),
     validationCommand,
     importCommand,
+    csvValidationCommand,
+    csvImportCommand,
   },
   {
     name: 'sent-record template contains no sensitive contact details',
@@ -163,6 +170,8 @@ const summary = {
   visualRowCount: visualRows.length,
   validationCommand,
   importCommand,
+  csvValidationCommand,
+  csvImportCommand,
   messageFileChecks,
   submissionTemplateChecks,
   rows: templateRows,
@@ -193,10 +202,15 @@ Status: ${summary.status}
 
 This file is not a sent proof and does not count as outreach evidence. It is a starter record for the release operator to fill only after real beta invites or visual-review assignments are sent outside the repo. Keep real names, emails, phone numbers, and other contact details in the external contact system; use only non-sensitive aliases and external record pointers here.
 
-## Commands After Filling
+## Commands After Filling The JSON
 
 - Validate: \`${summary.validationCommand}\`
 - Import: \`${summary.importCommand}\`
+
+## Commands After Filling The CSV
+
+- Validate: \`${summary.csvValidationCommand}\`
+- Import: \`${summary.csvImportCommand}\`
 
 ## Rows To Fill
 

@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-23T04:20:09.956Z
+Generated at: 2026-05-23T04:38:03.354Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -182,8 +182,8 @@ Public metadata:
 
 ## Next Actions
 
-- Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and npm run qa:dispatch-mark-sent.
-- Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and npm run qa:dispatch-mark-sent.
+- Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent.
+- Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-22.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
 

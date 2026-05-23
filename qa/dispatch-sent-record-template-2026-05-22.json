@@ -11,6 +11,8 @@
   "visualRowCount": 1,
   "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
   "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
+  "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent",
+  "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent",
   "messageFileChecks": [
     {
       "id": "BETA-HR-001",
@@ -165,7 +167,7 @@
     {
       "name": "sent-record template covers every current outreach send action",
       "ok": true,
-      "actionRowCount": 7,
+      "actionRowCount": 6,
       "outreachSendRowCount": 6,
       "templateRowCount": 6
     },
@@ -188,7 +190,9 @@
       "name": "sent-record template includes validation and import commands",
       "ok": true,
       "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
-      "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent"
+      "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
+      "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent",
+      "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent"
     },
     {
       "name": "sent-record template contains no sensitive contact details",
