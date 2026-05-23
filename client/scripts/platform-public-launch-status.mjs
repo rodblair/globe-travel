@@ -2032,6 +2032,9 @@ const launchTodayVisualMessageFileChecks = Array.isArray(launchOperatorToday.vis
   : []
 const launchTodayMissingMessageFiles = launchTodayMessageFileChecks.filter((check) => check.exists !== true)
 const launchTodayMissingVisualMessageFiles = launchTodayVisualMessageFileChecks.filter((check) => check.exists !== true)
+const launchTodayVisualActionContextIssues = Array.isArray(launchOperatorToday.visualActionContextIssues)
+  ? launchOperatorToday.visualActionContextIssues
+  : []
 const launchOperatorTodayFailures = Array.isArray(launchOperatorToday.failures)
   ? launchOperatorToday.failures
   : []
@@ -2120,8 +2123,12 @@ if (launchTodayVisualMessageFileChecks.length !== launchTodayVisualRows.length) 
 for (const check of launchTodayMissingVisualMessageFiles) {
   launchTodayIssues.push(`launch operator today visual message file is missing for ${check.id || 'unknown'}`)
 }
+for (const issue of launchTodayVisualActionContextIssues) {
+  launchTodayIssues.push(`launch operator today visual action context issue: ${issue}`)
+}
 for (const row of launchTodayRows) {
   const requiresSubmissionPath = row.workType === 'beta-human-review' || row.workType === 'production-visual-review'
+  const requiresMessageSubject = row.workType === 'beta-human-review' || row.workType === 'production-visual-review'
   if (
     !row.id ||
     (requiresSubmissionPath && !row.submissionPath) ||
@@ -2132,6 +2139,9 @@ for (const row of launchTodayRows) {
   }
   if (!row.sendStatus || !launchOperatorTodayCsv.includes(row.sendStatus)) {
     launchTodayIssues.push(`launch operator today CSV missing send status for ${row.id || 'unknown'}`)
+  }
+  if (requiresMessageSubject && (!hasText(row.messageSubject) || !launchOperatorTodayCsv.includes(row.messageSubject) || !launchOperatorTodayReport.includes(row.messageSubject))) {
+    launchTodayIssues.push(`launch operator today missing message subject in CSV or report for ${row.id || 'unknown'}`)
   }
 }
 if (!launchOperatorTodayReport.includes('## Do Today')) {
@@ -3241,6 +3251,8 @@ const summary = {
     missingMessageFileCount: launchTodayMissingMessageFiles.length,
     visualMessageFileCheckCount: launchTodayVisualMessageFileChecks.length,
     missingVisualMessageFileCount: launchTodayMissingVisualMessageFiles.length,
+    visualActionContextIssueCount: launchTodayVisualActionContextIssues.length,
+    visualActionContextIssues: launchTodayVisualActionContextIssues,
     issues: launchTodayIssues,
   },
   launchOperatorTodayOverdueRehearsal: {

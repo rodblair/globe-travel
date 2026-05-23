@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T09:29:17.936Z",
+  "generatedAt": "2026-05-23T09:32:33.113Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -400,6 +400,8 @@
     "missingMessageFileCount": 0,
     "visualMessageFileCheckCount": 1,
     "missingVisualMessageFileCount": 0,
+    "visualActionContextIssueCount": 0,
+    "visualActionContextIssues": [],
     "issues": []
   },
   "launchOperatorTodayOverdueRehearsal": {

@@ -57,7 +57,9 @@ function rowsToCsv(rows) {
     'daysUntilDue',
     'sendStatus',
     'reviewerAlias',
+    'contactRecordLocation',
     'action',
+    'messageSubject',
     'messageFile',
     'startUrlOrCommand',
     'packetOrArtifact',
@@ -536,8 +538,8 @@ const summary = {
 }
 
 function actionRowsTable(rows) {
-  if (!rows.length) return '| none | none | none | none | none | none | none | none | none | none |\n'
-  return rows.map((row) => `| ${row.priority} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.sendTiming || row.dueTiming || 'n/a'} | ${row.dueAt || 'n/a'} | ${row.sendStatus || 'n/a'} | ${row.action} | \`${row.messageFile || row.startUrlOrCommand || 'n/a'}\` | \`${row.submissionPath || 'n/a'}\` |`).join('\n')
+  if (!rows.length) return '| none | none | none | none | none | none | none | none | none | none | none |\n'
+  return rows.map((row) => `| ${row.priority} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.sendTiming || row.dueTiming || 'n/a'} | ${row.dueAt || 'n/a'} | ${row.sendStatus || 'n/a'} | ${row.action} | ${row.messageSubject || 'n/a'} | \`${row.messageFile || row.startUrlOrCommand || 'n/a'}\` | \`${row.submissionPath || 'n/a'}\` |`).join('\n')
 }
 
 const report = `# Launch Operator Today
@@ -568,8 +570,8 @@ Status: ${summary.status}
 
 ## Do Today
 
-| Priority | Type | ID | Send By | Timing | Due | Send Status | Action | Source | Evidence Path |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Priority | Type | ID | Send By | Timing | Due | Send Status | Action | Subject | Source | Evidence Path |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${actionRowsTable(uniquePriorityRows)}
 
 ## Operating Rules

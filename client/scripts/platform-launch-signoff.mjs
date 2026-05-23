@@ -3265,6 +3265,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorStatus.missingMessageFileCount) === 0 &&
     Number(launchOperatorStatus.visualMessageFileCheckCount) >= Number(launchOperatorStatus.visualActionRowCount || 0) &&
     Number(launchOperatorStatus.missingVisualMessageFileCount) === 0 &&
+    Number(launchOperatorStatus.visualActionContextIssueCount || 0) === 0 &&
+    Array.isArray(launchOperatorStatus.visualActionContextIssues) &&
+    launchOperatorStatus.visualActionContextIssues.length === 0 &&
     launchOperatorIssues.length === 0
   ), {
     launchOperatorArtifact: launchOperatorStatus.artifact || null,
@@ -3300,6 +3303,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorMissingMessageFileCount: launchOperatorStatus.missingMessageFileCount ?? null,
     launchOperatorVisualMessageFileCheckCount: launchOperatorStatus.visualMessageFileCheckCount ?? null,
     launchOperatorMissingVisualMessageFileCount: launchOperatorStatus.missingVisualMessageFileCount ?? null,
+    launchOperatorVisualActionContextIssueCount: launchOperatorStatus.visualActionContextIssueCount ?? null,
+    launchOperatorVisualActionContextIssues: launchOperatorStatus.visualActionContextIssues || null,
     launchOperatorIssues,
   })
 
