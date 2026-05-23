@@ -82,8 +82,22 @@ export function formatTripTitleForDisplay(title: string | null | undefined) {
     formatted = formatted.replace(pattern, replacement)
   }
   formatted = polishMonthPhrases(formatted)
-  formatted = formatted.replace(/\b(in\s+[^,]+,\s+(?:Greece|Portugal|Spain|France|Turkey|South Korea|Thailand|Morocco|South Africa|Australia|Canada|Brazil|Iceland|UAE|United Arab Emirates|Japan|Indonesia|Kenya|DC|Mexico|England|UK|Italy|Denmark|Germany))\s+in\s+((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)/g, '$1, in $2')
+  formatted = formatted.replace(/\b(in\s+[^,]+,\s+(?:Greece|Portugal|Spain|France|Turkey|South Korea|Thailand|Morocco|South Africa|Australia|Canada|Brazil|Iceland|UAE|United Arab Emirates|Japan|Indonesia|Kenya|DC|Mexico|England|UK|Italy|Denmark|Germany))\s+in\s+((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)/g, '$1, $2')
   return compactWhitespace(formatted)
+}
+
+export function splitTripTitleTiming(displayTitle: string | null | undefined) {
+  const title = compactWhitespace(displayTitle || 'Trip')
+  const timingMatch = title.match(/^(.*?),\s+((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)$/)
+
+  if (!timingMatch) {
+    return { title, timing: null }
+  }
+
+  return {
+    title: compactWhitespace(timingMatch[1]),
+    timing: compactWhitespace(timingMatch[2]),
+  }
 }
 
 export function formatDestinationForDisplay(destination: string | null | undefined) {

@@ -17,7 +17,7 @@ import {
 import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
 import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
 import { QueryProvider } from '@/components/providers/QueryProvider'
-import { formatTripTitleForDisplay } from '@/lib/trip-copy'
+import { formatTripTitleForDisplay, splitTripTitleTiming } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
 type Trip = {
@@ -103,6 +103,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const trip = data?.trip
   const days = data?.days || []
   const displayTitle = useMemo(() => formatTripTitleForDisplay(trip?.title || 'Trip'), [trip?.title])
+  const displayTitleParts = useMemo(() => splitTripTitleTiming(displayTitle), [displayTitle])
   const meta = useMemo(() => getTripKeepsakeMeta(displayTitle), [displayTitle])
   const starterPrompt = useMemo(
     () => buildStarterPrompt(meta, displayTitle || 'this trip'),
@@ -213,8 +214,13 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     Shared Globe.travel map
                   </p>
                   <h1 className="mt-3 break-words font-serif text-4xl font-semibold leading-[1.02] text-foreground md:text-6xl">
-                    {displayTitle}
+                    {displayTitleParts.title}
                   </h1>
+                  {displayTitleParts.timing && (
+                    <p className="mt-3 t-mono text-[0.6875rem] uppercase tracking-[0.2em] text-[var(--brass)]">
+                      In {displayTitleParts.timing}
+                    </p>
+                  )}
                   <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-2">
                     Review the route, react to the day plan, and help the group turn the {meta.destination} plan into the trip everyone can say yes to.
                   </p>

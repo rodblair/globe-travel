@@ -86,7 +86,7 @@ function formatShareDisplayTitle(title) {
       return cleanModifier === 'mid' ? `mid\u2011${monthName}` : `${cleanModifier} ${monthName}`
     })
     .replace(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t)?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b/gi, (match) => monthNames[String(match).toLowerCase()] || match)
-    .replace(/\b(in\s+[^,]+,\s+(?:Greece|Portugal|Spain|France|Turkey|South Korea|Thailand|Morocco|South Africa|Australia|Canada|Brazil|Iceland|UAE|United Arab Emirates|Japan|Indonesia|Kenya|DC|Mexico|England|UK|Italy|Denmark|Germany))\s+in\s+((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)/g, '$1, in $2')
+    .replace(/\b(in\s+[^,]+,\s+(?:Greece|Portugal|Spain|France|Turkey|South Korea|Thailand|Morocco|South Africa|Australia|Canada|Brazil|Iceland|UAE|United Arab Emirates|Japan|Indonesia|Kenya|DC|Mexico|England|UK|Italy|Denmark|Germany))\s+in\s+((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)/g, '$1, $2')
   return formatted.replace(/\s+/g, ' ').trim()
 }
 

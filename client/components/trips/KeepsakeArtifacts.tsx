@@ -162,7 +162,7 @@ export function TripPosterPreview({
 }) {
   const displayTitle = formatTripTitleForDisplay(trip.title)
   const meta = getTripKeepsakeMeta(displayTitle)
-  const destinationTimingMatch = meta.destination.match(/^(.+?),\s+in\s+(.+)$/i)
+  const destinationTimingMatch = meta.destination.match(/^(.+?),\s+(?:in\s+)?((?:early|late)\s+[A-Z][a-z]+|mid[\u2011-][A-Z][a-z]+)$/i)
   const posterDestination = destinationTimingMatch?.[1] || meta.destination
   const posterTiming = destinationTimingMatch?.[2] || null
   const firstDay = days[0]
