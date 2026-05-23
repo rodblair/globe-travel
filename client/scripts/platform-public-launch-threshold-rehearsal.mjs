@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process'
 import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { currentQaDate } from './qa-date-utils.mjs'
+import { currentQaDate, subtractDays } from './qa-date-utils.mjs'
 
 const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
@@ -16,7 +16,7 @@ const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/producti
 const visualSummaryPath = process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_VISUAL_SUMMARY ||
   'qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json'
 const rehearsalToday = process.env.QA_PUBLIC_LAUNCH_THRESHOLD_REHEARSAL_TODAY ||
-  new Date().toISOString().slice(0, 10)
+  currentQaDate()
 
 const completedStatuses = new Set(['passed', 'failed', 'accepted-risk'])
 const betaProgressRawJson = `public-launch-threshold-rehearsal-beta-progress-raw-${date}.json`
@@ -142,9 +142,16 @@ const completedBetaRegister = {
 }
 
 const visualHistory = Array.isArray(visualRegister.reviewHistory) ? visualRegister.reviewHistory : []
-const additionalVisualDates = ['2026-05-20', rehearsalToday]
-  .filter((reviewDate) => !visualHistory.some((review) => String(review.reviewedAt || '').startsWith(reviewDate)))
-  .slice(0, Math.max(0, 4 - visualHistoryDates(visualRegister).length))
+const additionalVisualDates = []
+const existingVisualDates = new Set(visualHistoryDates(visualRegister))
+const targetAdditionalVisualDateCount = Math.max(0, 4 - existingVisualDates.size)
+for (let daysBack = 0; additionalVisualDates.length < targetAdditionalVisualDateCount; daysBack += 1) {
+  const reviewDate = subtractDays(rehearsalToday, daysBack)
+  if (!existingVisualDates.has(reviewDate)) {
+    existingVisualDates.add(reviewDate)
+    additionalVisualDates.push(reviewDate)
+  }
+}
 const completedVisualReviews = additionalVisualDates.map((reviewDate, index) => ({
   reviewedAt: reviewDate,
   artifact: visualArtifact,
