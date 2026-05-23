@@ -1,10 +1,10 @@
 {
   "date": "2026-05-23",
   "status": "pass",
-  "checked": 7,
-  "passed": 7,
+  "checked": 8,
+  "passed": 8,
   "failed": 0,
-  "safeSkipCount": 6,
+  "safeSkipCount": 7,
   "runtimeBuildCount": 1,
   "jsonArtifact": "qa/vercel-ignore-smoke-2026-05-23.json",
   "reportArtifact": "qa/vercel-ignore-smoke-2026-05-23.md",
@@ -172,6 +172,34 @@
       "stderr": "",
       "changedFiles": [
         "client/scripts/platform-launch-signoff.mjs"
+      ],
+      "issues": []
+    },
+    {
+      "id": "review-intake-privacy-hardening-skip",
+      "intent": "Review-intake privacy hardening and refreshed release evidence stay skip-safe.",
+      "previous": "692585b75d9b65ce94d569e318fddbc9b6d77a94",
+      "head": "20b5637112fefc1b90d2fc1ce09a0431713fb4c8",
+      "expectedExitCode": 0,
+      "expectedText": "Skipping build",
+      "ok": true,
+      "exitCode": 0,
+      "stdout": "[vercel-ignore] Skipping build: 13 release-ops/documentation/evidence file(s) changed.",
+      "stderr": "",
+      "changedFiles": [
+        "client/scripts/platform-beta-human-review-intake.mjs",
+        "client/scripts/platform-launch-signoff.mjs",
+        "client/scripts/platform-public-launch-status.mjs",
+        "client/scripts/platform-review-intake-rehearsal.mjs",
+        "client/scripts/platform-visual-review-intake.mjs",
+        "qa/launch-operator-today-2026-05-23.json",
+        "qa/launch-operator-today-2026-05-23.md",
+        "qa/launch-refresh-2026-05-23.json",
+        "qa/launch-refresh-2026-05-23.md",
+        "qa/public-launch-status-2026-05-21.json",
+        "qa/public-launch-status-2026-05-21.md",
+        "qa/review-intake-rehearsal-2026-05-23.json",
+        "qa/review-intake-rehearsal-2026-05-23.md"
       ],
       "issues": []
     },

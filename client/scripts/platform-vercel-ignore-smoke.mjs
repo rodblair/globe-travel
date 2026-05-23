@@ -59,6 +59,14 @@ const cases = [
     expectedText: 'Skipping build',
   },
   {
+    id: 'review-intake-privacy-hardening-skip',
+    intent: 'Review-intake privacy hardening and refreshed release evidence stay skip-safe.',
+    previous: '692585b75d9b65ce94d569e318fddbc9b6d77a94',
+    head: '20b5637112fefc1b90d2fc1ce09a0431713fb4c8',
+    expectedExitCode: 0,
+    expectedText: 'Skipping build',
+  },
+  {
     id: 'runtime-billing-builds',
     intent: 'Known runtime billing change still continues Vercel production build.',
     previous: '0bf1e7402b360e29fd73398e8caebbaa9ec745bb',
