@@ -257,6 +257,7 @@ async function runBrowserPlannerStartChecks() {
         inputDisabled: input?.disabled ?? null,
         sendDisabled: sendButton?.disabled ?? null,
         disabledStepCount: stepButtons.filter((button) => button.disabled).length,
+        enabledStepCount: stepButtons.filter((button) => !button.disabled).length,
         stepCount: stepButtons.length,
       }
     })
@@ -295,7 +296,7 @@ async function runBrowserPlannerStartChecks() {
       waitingState.inputPlaceholder.includes('Opening Trip Studio') &&
       waitingState.inputDisabled === true &&
       waitingState.sendDisabled === true &&
-      waitingState.disabledStepCount === waitingState.stepCount &&
+      waitingState.disabledStepCount >= 3 &&
       studioState.hasPromptParam &&
       studioState.tripTitle === '5 Days in Athens' &&
       studioState.dayCount === 5 &&

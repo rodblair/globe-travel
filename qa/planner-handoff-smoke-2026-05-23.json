@@ -2,8 +2,8 @@
   "date": "2026-05-23",
   "baseUrl": "http://localhost:3000",
   "prompt": "Plan a 5 day Athens trip for 4 friends with history food relaxed pacing and one memorable night out",
-  "runId": "b50ccb59",
-  "tripId": "cfb163f8-8feb-488a-918b-3f73d6406ef6",
+  "runId": "f3057f32",
+  "tripId": "48112985-3b6e-4446-a717-43103f83d634",
   "checked": 17,
   "passed": 17,
   "failed": 0,
@@ -68,14 +68,14 @@
       "name": "Planner draft API accepts the handoff payload",
       "ok": true,
       "status": 200,
-      "tripId": "cfb163f8-8feb-488a-918b-3f73d6406ef6",
-      "shareSlug": "fwn7mk2xfz"
+      "tripId": "48112985-3b6e-4446-a717-43103f83d634",
+      "shareSlug": "mzw7jkj63v"
     },
     {
       "name": "Planner draft API creates the requested five-day Athens trip shell",
       "ok": true,
       "status": 200,
-      "tripTitle": "QA Planner Handoff b50ccb59",
+      "tripTitle": "QA Planner Handoff f3057f32",
       "dayCount": 5,
       "destinationQuery": "Athens"
     },
@@ -112,10 +112,11 @@
         "inputDisabled": true,
         "sendDisabled": true,
         "disabledStepCount": 3,
-        "stepCount": 3
+        "enabledStepCount": 3,
+        "stepCount": 6
       },
       "studioState": {
-        "tripId": "6b056a76-252f-4702-bcd2-14fbf9375198",
+        "tripId": "255f2e34-248e-4034-bb52-bcd8b48068eb",
         "tripTitle": "5 Days in Athens",
         "dayCount": 5,
         "destinationQuery": "Athens",
@@ -133,8 +134,8 @@
         "scrollWidth": 390
       },
       "studioMetrics": {
-        "url": "http://localhost:3000/trips/6b056a76-252f-4702-bcd2-14fbf9375198?prompt=Plan%20five%20days%20in%20Athens%20for%20friends%20with%20food%2C%20beaches%2C%20and%20relaxed%20mornings",
-        "path": "/trips/6b056a76-252f-4702-bcd2-14fbf9375198",
+        "url": "http://localhost:3000/trips/255f2e34-248e-4034-bb52-bcd8b48068eb?prompt=Plan%20five%20days%20in%20Athens%20for%20friends%20with%20food%2C%20beaches%2C%20and%20relaxed%20mornings",
+        "path": "/trips/255f2e34-248e-4034-bb52-bcd8b48068eb",
         "hasAppError": false,
         "horizontalOverflow": false,
         "clientWidth": 390,
@@ -151,14 +152,14 @@
       },
       "failureGuestCleanup": {
         "attempted": true,
-        "guestId": "f446c40b-efdd-4f9a-9c24-6a9782838381",
+        "guestId": "424e8576-3a9e-470c-b31d-493793d6b1ff",
         "profileDeleted": true,
         "userDeleted": true,
         "error": null
       },
       "slowGuestCleanup": {
         "attempted": true,
-        "guestId": "60ffc774-463a-4a57-8015-bfecd97e7c7c",
+        "guestId": "644714be-41f5-491c-85a5-ce12067e9a8d",
         "profileDeleted": true,
         "userDeleted": true,
         "error": null

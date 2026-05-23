@@ -370,13 +370,13 @@ async function testPlannerSlowDraftCreation() {
     await ideaInput.pressSequentially(prompt, { delay: 5 })
     await page.waitForFunction(() => {
       const input = document.querySelector('input[aria-label="Describe your trip idea"]')
-      const sendButtons = Array.from(document.querySelectorAll('button'))
-        .filter((button) => button.textContent?.trim() === 'Send')
+      const sendButton = document.querySelector('button[aria-label="Send trip idea"]')
       return input instanceof HTMLInputElement &&
         input.value.trim().length > 0 &&
-        sendButtons.some((button) => !button.disabled)
+        sendButton instanceof HTMLButtonElement &&
+        !sendButton.disabled
     }, undefined, { timeout: 5000 })
-    await page.locator('button:visible:not([disabled])').filter({ hasText: /^Send$/ }).last().click({ timeout: 10000 })
+    await page.locator('button[aria-label="Send trip idea"]:visible:not([disabled])').click({ timeout: 10000 })
     await page.waitForTimeout(350)
 
     const waitingText = await visibleText(page)
