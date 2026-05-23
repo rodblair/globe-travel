@@ -1,21 +1,14 @@
 {
   "date": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T16:11:50.238Z",
-  "status": "fail",
+  "generatedAt": "2026-05-23T16:25:59.451Z",
+  "status": "pass",
   "checked": 10,
-  "passed": 3,
-  "failed": 7,
-  "actionableStepCount": 0,
-  "publicLaunchStatus": "blocked",
-  "publicGuardrailIssues": [
-    "daily launch operator board is not aligned with current blocker evidence",
-    "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
-    "dispatch sent-record template is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety",
-    "production monitoring latest verification is not tied to release gates and live production commit",
-    "rollback plan known-good deployment is not tied to the live production commit"
-  ],
+  "passed": 10,
+  "failed": 0,
+  "actionableStepCount": 2,
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
   "blockers": [
     {
       "id": "beta-human-review-threshold",
@@ -32,8 +25,7 @@
     "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s).",
-    "Fix guardrail issues before relying on public-launch status."
+    "Run, review, and import 2 scheduled production visual review date(s)."
   ],
   "operatorHandoff": {
     "immediateExternalAction": "Send or reassign 5 overdue beta invites now.",
@@ -133,12 +125,12 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"
       ],
-      "actionRowCount": 7
+      "actionRowCount": 6
     },
     {
       "step": "dispatch-sent-record-template-after-first-board",
@@ -167,17 +159,12 @@
     {
       "step": "public-launch-status-after-first-board",
       "scriptName": "qa:public-launch-status",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail",
-      "status": "blocked",
-      "guardrailIssues": [
-        "daily launch operator board is not aligned with current blocker evidence",
-        "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
-        "production monitoring latest verification is not tied to release gates and live production commit",
-        "rollback plan known-good deployment is not tied to the live production commit"
-      ],
+      "classification": "pass",
+      "status": "beta-ready-public-blocked",
+      "guardrailIssues": [],
       "blockerIds": [
         "beta-human-review-threshold",
         "production-visual-review-history"
@@ -189,10 +176,9 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "fail",
       "failures": [
-        "launch today reads current blocked release status",
         "launch today has no overdue launch execution rows"
       ],
       "actionRowCount": 6
@@ -200,43 +186,36 @@
     {
       "step": "dispatch-sent-record-template-after-final-board",
       "scriptName": "qa:dispatch-sent-record-template",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail"
+      "classification": "pass"
     },
     {
       "step": "launch-dispatch-packet-after-final-template",
       "scriptName": "qa:launch-dispatch-packet",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail"
+      "classification": "pass"
     },
     {
       "step": "dispatch-sent-record-template-rejection-after-final-board",
       "scriptName": "qa:dispatch-sent-record-template-rejection",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail"
+      "classification": "pass"
     },
     {
       "step": "public-launch-status-final",
       "scriptName": "qa:public-launch-status",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail",
-      "status": "blocked",
-      "guardrailIssues": [
-        "daily launch operator board is not aligned with current blocker evidence",
-        "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
-        "dispatch sent-record template is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety",
-        "production monitoring latest verification is not tied to release gates and live production commit",
-        "rollback plan known-good deployment is not tied to the live production commit"
-      ],
+      "classification": "pass",
+      "status": "beta-ready-public-blocked",
+      "guardrailIssues": [],
       "blockerIds": [
         "beta-human-review-threshold",
         "production-visual-review-history"

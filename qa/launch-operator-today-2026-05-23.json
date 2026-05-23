@@ -2,7 +2,7 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T16:14:14.910Z",
+  "generatedAt": "2026-05-23T16:25:57.693Z",
   "status": "fail",
   "checked": 13,
   "passed": 12,
@@ -25,14 +25,9 @@
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
   "liveDeploymentCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
-  "publicLaunchStatus": "blocked",
-  "publicGuardrailIssues": [
-    "daily launch operator board is not aligned with current blocker evidence",
-    "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
-    "dispatch sent-record template is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety"
-  ],
-  "publicOnlyLaunchOperatorSelfGuardrails": true,
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
+  "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -356,19 +351,14 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [
-        "daily launch operator board is not aligned with current blocker evidence",
-        "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior",
-        "dispatch sent-record template is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety"
-      ],
-      "onlyLaunchOperatorSelfGuardrails": true
+      "guardrailIssues": [],
+      "onlyLaunchOperatorSelfGuardrails": false
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",

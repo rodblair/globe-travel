@@ -2,17 +2,17 @@
 
 Date: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T16:11:50.238Z
-Status: fail
+Generated at: 2026-05-23T16:25:59.451Z
+Status: pass
 
 ## Result
 
 - Checked: 10
-- Passed or actionable: 3
-- Failed: 7
-- Actionable launch-board failures tolerated: 0
-- Public launch status: blocked
-- Public guardrail issues: 6
+- Passed or actionable: 10
+- Failed: 0
+- Actionable launch-board failures tolerated: 2
+- Public launch status: beta-ready-public-blocked
+- Public guardrail issues: 0
 - Public blockers: beta-human-review-threshold, production-visual-review-history
 - Immediate operator action: Send or reassign 5 overdue beta invites now.
 - Sent-record CSV: qa/dispatch-sent-record-template-2026-05-23.csv
@@ -20,16 +20,16 @@ Status: fail
 
 ## Steps
 
-- FAIL: launch-today-before-status (qa:launch-today, exit 1)
+- ACTIONABLE: launch-today-before-status (qa:launch-today, exit 1)
 - PASS: dispatch-sent-record-template-after-first-board (qa:dispatch-sent-record-template, exit 0)
 - PASS: launch-dispatch-packet-after-first-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-first-board (qa:dispatch-sent-record-template-rejection, exit 0)
-- FAIL: public-launch-status-after-first-board (qa:public-launch-status, exit 1)
-- FAIL: launch-today-after-status (qa:launch-today, exit 1)
-- FAIL: dispatch-sent-record-template-after-final-board (qa:dispatch-sent-record-template, exit 1)
-- FAIL: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 1)
-- FAIL: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 1)
-- FAIL: public-launch-status-final (qa:public-launch-status, exit 1)
+- PASS: public-launch-status-after-first-board (qa:public-launch-status, exit 0)
+- ACTIONABLE: launch-today-after-status (qa:launch-today, exit 1)
+- PASS: dispatch-sent-record-template-after-final-board (qa:dispatch-sent-record-template, exit 0)
+- PASS: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 0)
+- PASS: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 0)
+- PASS: public-launch-status-final (qa:public-launch-status, exit 0)
 
 ## Operator Handoff
 
@@ -45,4 +45,3 @@ Status: fail
 - Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
-- Fix guardrail issues before relying on public-launch status.
