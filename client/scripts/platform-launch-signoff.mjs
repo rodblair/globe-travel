@@ -1001,6 +1001,34 @@ async function checkRequiredDocs(productionHealth) {
     staleCurrentCheckpointDeploymentStatements,
   })
 
+  const ambiguousHistoricalLiveDeploymentLines = platformPlan
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => {
+      if (currentCheckpointSection.includes(line)) return false
+      if (/^(Earlier|Historical)\b/i.test(line)) return false
+      return (
+        /\b(latest|newest|current)\b/i.test(line) &&
+        (
+          /\bpost-deploy production checkpoint\b/i.test(line) ||
+          /\bis live on Vercel\b/i.test(line) ||
+          /\bis deployed and green in production\b/i.test(line) ||
+          /\bnow reports live commit\b/i.test(line) ||
+          /\bis the live production deployment\b/i.test(line)
+        ) &&
+        (
+          !line.includes(liveDeployment.commit || '') ||
+          !line.includes(liveDeployment.url || '')
+        )
+      )
+    })
+  addCheck('launch roadmap avoids ambiguous stale live-deployment language', ambiguousHistoricalLiveDeploymentLines.length === 0, {
+    expectedCommit: liveDeployment.commit || null,
+    expectedDeploymentUrl: liveDeployment.url || null,
+    ambiguousHistoricalLiveDeploymentLines,
+  })
+
   const currentLaunchSummaries = [
     ...currentProductionStatements,
     ...currentDeploymentRefreshStatements,
