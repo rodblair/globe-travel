@@ -3549,6 +3549,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorStatus.sendPacketRowCount) === Number(launchOperatorStatus.betaActionRowCount || 0) + Number(launchOperatorStatus.visualActionRowCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount) === Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
+    Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) === Number(betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount || 0) &&
+    Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) <= Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
+    Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) + Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) === Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount) === Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount) === 0 &&
     Number(launchOperatorStatus.visualOverdueCount) === 0 &&
@@ -3585,6 +3588,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorBetaDispatchLogPreparedOverdueCount: launchOperatorStatus.betaDispatchLogPreparedOverdueCount ?? null,
     launchOperatorBetaDispatchLogPreparedNotSentCount: launchOperatorStatus.betaDispatchLogPreparedNotSentCount ?? null,
     launchOperatorBetaDispatchLogSentCount: launchOperatorStatus.betaDispatchLogSentCount ?? null,
+    launchOperatorBetaFollowUpsBlockedUntilInitialSendCount: launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount ?? null,
+    expectedBetaFollowUpsBlockedUntilInitialSendCount: betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount ?? null,
+    betaFollowUpOutboxSendEligibleCount: betaReviewStatus.followUpOutboxSendEligibleCount ?? null,
+    betaFollowUpOutboxRowCount: betaReviewStatus.followUpOutboxRowCount ?? null,
     launchOperatorVisualDispatchLogArtifact: launchOperatorStatus.visualDispatchLogArtifact ?? null,
     expectedVisualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact ?? null,
     launchOperatorDispatchSentRecordTemplateArtifact: launchOperatorStatus.dispatchSentRecordTemplateArtifact ?? null,
