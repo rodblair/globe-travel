@@ -3279,6 +3279,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorStatus.actionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) + Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
     Number(launchOperatorStatus.betaActionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
     Number(launchOperatorStatus.visualActionRowCount) >= Number(visualReviewStatus.dueSoonScheduledReviewCount || 0) &&
+    Number(launchOperatorStatus.executionOrderStepCount) >= 6 &&
+    Number(launchOperatorStatus.sendPacketRowCount) === Number(launchOperatorStatus.betaActionRowCount || 0) + Number(launchOperatorStatus.visualActionRowCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount) === Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount) === Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
@@ -3307,6 +3309,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorActionRowCount: launchOperatorStatus.actionRowCount ?? null,
     launchOperatorBetaActionRowCount: launchOperatorStatus.betaActionRowCount ?? null,
     launchOperatorVisualActionRowCount: launchOperatorStatus.visualActionRowCount ?? null,
+    launchOperatorExecutionOrderStepCount: launchOperatorStatus.executionOrderStepCount ?? null,
+    launchOperatorSendPacketRowCount: launchOperatorStatus.sendPacketRowCount ?? null,
     launchOperatorBetaDispatchDueTodayCount: launchOperatorStatus.betaDispatchDueTodayCount ?? null,
     launchOperatorBetaDispatchOverdueCount: launchOperatorStatus.betaDispatchOverdueCount ?? null,
     launchOperatorBetaDispatchLogArtifact: launchOperatorStatus.betaDispatchLogArtifact ?? null,
