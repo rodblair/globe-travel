@@ -5,24 +5,27 @@ Status: pass
 
 ## Result
 
-- Checked: 7
-- Passed: 7
+- Checked: 8
+- Passed: 8
 - Failed: 0
 - Beta intake exit code: 1
+- Beta blocking-finding intake exit code: 1
 - Visual intake exit code: 1
 - Beta invalid submissions: 1
+- Beta unresolved P0/P1 rehearsal findings: 1
 - Visual invalid submissions: 1
 - Raw artifacts cleaned up: yes
 
 ## Operating Meaning
 
-This rehearsal copies beta and visual-review templates into non-template submission files and proves the intake commands reject them as incomplete evidence. It also confirms the canonical beta register and production visual-review history stay unchanged.
+This rehearsal copies beta and visual-review templates into non-template submission files and proves the intake commands reject them as incomplete evidence. It also submits an otherwise valid beta review with an unresolved P1 finding and proves intake rejects it before import. It confirms the canonical beta register and production visual-review history stay unchanged.
 
 ## Checks
 
 - Pass: beta intake rejects copied template as completed evidence
 - Pass: beta intake reports missing reviewer evidence and scorecard ratings
 - Pass: beta intake rehearsal does not mutate completed review count
+- Pass: beta intake rejects otherwise valid reviews with unresolved P0/P1 findings
 - Pass: visual intake rejects copied template as completed evidence
 - Pass: visual intake reports local-calendar future-dated production evidence
 - Pass: visual intake rehearsal does not mutate review history

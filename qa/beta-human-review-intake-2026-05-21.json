@@ -17,8 +17,8 @@
   "duplicateSubmissionCount": 0,
   "unknownReviewCount": 0,
   "unresolvedBlockingFindingCount": 0,
-  "checked": 4,
-  "passed": 4,
+  "checked": 5,
+  "passed": 5,
   "failed": 0,
   "submissions": [],
   "checks": [
@@ -39,6 +39,12 @@
       "ok": true,
       "duplicateSubmissionCount": 0,
       "duplicateIds": []
+    },
+    {
+      "name": "beta review submissions have no unresolved P0/P1 findings",
+      "ok": true,
+      "unresolvedBlockingFindingCount": 0,
+      "unresolvedBlockingFindings": []
     },
     {
       "name": "beta review intake import is explicit",

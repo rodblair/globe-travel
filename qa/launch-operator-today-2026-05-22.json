@@ -2,7 +2,7 @@
   "date": "2026-05-22",
   "today": "2026-05-22",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T03:48:08.671Z",
+  "generatedAt": "2026-05-23T03:59:28.558Z",
   "status": "pass",
   "checked": 8,
   "passed": 8,
@@ -15,10 +15,12 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
-  "publicLaunchStatus": "beta-ready-public-blocked",
-  "publicGuardrailIssues": [],
-  "publicOnlyLaunchOperatorSelfGuardrails": false,
+  "liveDeploymentCommit": "cc529ee622dc60720063c96131306562f90f4c31",
+  "publicLaunchStatus": "blocked",
+  "publicGuardrailIssues": [
+    "daily launch operator board is not aligned with current blocker evidence"
+  ],
+  "publicOnlyLaunchOperatorSelfGuardrails": true,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -223,14 +225,16 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "beta-ready-public-blocked",
-      "betaReady": true,
+      "status": "blocked",
+      "betaReady": false,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [],
-      "onlyLaunchOperatorSelfGuardrails": false
+      "guardrailIssues": [
+        "daily launch operator board is not aligned with current blocker evidence"
+      ],
+      "onlyLaunchOperatorSelfGuardrails": true
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -242,7 +246,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6"
+      "liveCommit": "cc529ee622dc60720063c96131306562f90f4c31"
     },
     {
       "name": "launch today reads aligned dispatch logs",

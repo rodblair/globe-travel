@@ -77,18 +77,48 @@ function runIntake({ script, submissionDir, jsonName, reportName }) {
 
 await rm(repoPath(rawDir), { recursive: true, force: true })
 await mkdir(repoPath(`${rawDir}/beta`), { recursive: true })
+await mkdir(repoPath(`${rawDir}/beta-blocking`), { recursive: true })
 await mkdir(repoPath(`${rawDir}/visual`), { recursive: true })
 
 const betaRegisterBefore = await readJson(betaRegisterPath)
 const visualRegisterBefore = await readJson(visualRegisterPath)
 const betaTemplate = await readFile(repoPath(betaTemplatePath), 'utf8')
+const betaBlockingSubmission = JSON.parse(betaTemplate)
+betaBlockingSubmission.reviewerRole = 'blocking-finding rehearsal reviewer'
+betaBlockingSubmission.completedAt = date
+betaBlockingSubmission.firstMinuteOutcome = 'Planner was understandable, but this fixture intentionally carries an open blocking finding.'
+betaBlockingSubmission.mapTrustNotes = 'Map evidence was reviewed for the rehearsal fixture.'
+betaBlockingSubmission.shareFeedbackOutcome = 'Share feedback was reviewed for the rehearsal fixture.'
+betaBlockingSubmission.scorecard = {
+  firstMinuteClarity: 4,
+  itineraryUsefulness: 4,
+  mapTrust: 4,
+  editAndSwapConfidence: 4,
+  saveReopenConfidence: 4,
+  shareRecipientClarity: 4,
+  feedbackLoopClarity: 4,
+  mobileUsability: 4,
+  paidValueCredibility: 4,
+}
+betaBlockingSubmission.findings = [
+  {
+    severity: 'P1',
+    status: 'open',
+    surface: 'planner',
+    title: 'Intentional open blocker rehearsal finding',
+    notes: 'This fixture proves beta intake refuses otherwise valid reviews when unresolved P0/P1 findings remain.',
+  },
+]
 const visualTemplate = JSON.parse(await readFile(repoPath(visualTemplatePath), 'utf8'))
 visualTemplate.reviewedAt = addDays(date, 1)
 await writeFile(repoPath(`${rawDir}/beta/BETA-HR-001-athens.json`), betaTemplate)
+await writeFile(repoPath(`${rawDir}/beta-blocking/BETA-HR-001-athens.json`), `${JSON.stringify(betaBlockingSubmission, null, 2)}\n`)
 await writeFile(repoPath(`${rawDir}/visual/PROD-VISUAL-HISTORY-002.json`), `${JSON.stringify(visualTemplate, null, 2)}\n`)
 
 const betaRawJson = `review-intake-rehearsal-beta-raw-${date}.json`
 const betaRawReport = `review-intake-rehearsal-beta-raw-${date}.md`
+const betaBlockingRawJson = `review-intake-rehearsal-beta-blocking-raw-${date}.json`
+const betaBlockingRawReport = `review-intake-rehearsal-beta-blocking-raw-${date}.md`
 const visualRawJson = `review-intake-rehearsal-visual-raw-${date}.json`
 const visualRawReport = `review-intake-rehearsal-visual-raw-${date}.md`
 
@@ -98,6 +128,12 @@ const betaResult = runIntake({
   jsonName: betaRawJson,
   reportName: betaRawReport,
 })
+const betaBlockingResult = runIntake({
+  script: 'scripts/platform-beta-human-review-intake.mjs',
+  submissionDir: `${rawDir}/beta-blocking`,
+  jsonName: betaBlockingRawJson,
+  reportName: betaBlockingRawReport,
+})
 const visualResult = runIntake({
   script: 'scripts/platform-visual-review-intake.mjs',
   submissionDir: `${rawDir}/visual`,
@@ -106,16 +142,20 @@ const visualResult = runIntake({
 })
 
 const betaRawSummary = await readJson(`qa/${betaRawJson}`).catch(() => null)
+const betaBlockingRawSummary = await readJson(`qa/${betaBlockingRawJson}`).catch(() => null)
 const visualRawSummary = await readJson(`qa/${visualRawJson}`).catch(() => null)
 const betaRegisterAfter = await readJson(betaRegisterPath)
 const visualRegisterAfter = await readJson(visualRegisterPath)
 const betaInvalidIssues = (betaRawSummary?.submissions || []).flatMap((submission) => submission.issues || [])
+const betaBlockingChecks = betaBlockingRawSummary?.checks || []
 const visualInvalidIssues = (visualRawSummary?.submissions || []).flatMap((submission) => submission.issues || [])
 
 await Promise.all([
   rm(repoPath(rawDir), { recursive: true, force: true }),
   rm(repoPath(`qa/${betaRawJson}`), { force: true }),
   rm(repoPath(`qa/${betaRawReport}`), { force: true }),
+  rm(repoPath(`qa/${betaBlockingRawJson}`), { force: true }),
+  rm(repoPath(`qa/${betaBlockingRawReport}`), { force: true }),
   rm(repoPath(`qa/${visualRawJson}`), { force: true }),
   rm(repoPath(`qa/${visualRawReport}`), { force: true }),
 ])
@@ -141,6 +181,23 @@ const checks = [
     ok: completedBetaCount(betaRegisterBefore) === completedBetaCount(betaRegisterAfter),
     before: completedBetaCount(betaRegisterBefore),
     after: completedBetaCount(betaRegisterAfter),
+  },
+  {
+    name: 'beta intake rejects otherwise valid reviews with unresolved P0/P1 findings',
+    ok: betaBlockingResult.status !== 0 &&
+      betaBlockingRawSummary?.status === 'fail' &&
+      Number(betaBlockingRawSummary?.validSubmissionCount || 0) === 1 &&
+      Number(betaBlockingRawSummary?.invalidSubmissionCount || 0) === 0 &&
+      Number(betaBlockingRawSummary?.unresolvedBlockingFindingCount || 0) === 1 &&
+      betaBlockingChecks.some((check) => (
+        check.name === 'beta review submissions have no unresolved P0/P1 findings' &&
+        check.ok === false
+      )),
+    exitCode: betaBlockingResult.status,
+    status: betaBlockingRawSummary?.status || null,
+    validSubmissionCount: betaBlockingRawSummary?.validSubmissionCount ?? null,
+    invalidSubmissionCount: betaBlockingRawSummary?.invalidSubmissionCount ?? null,
+    unresolvedBlockingFindingCount: betaBlockingRawSummary?.unresolvedBlockingFindingCount ?? null,
   },
   {
     name: 'visual intake rejects copied template as completed evidence',
@@ -183,8 +240,10 @@ const summary = {
   betaTemplate: qaDisplayPath(betaTemplatePath),
   visualTemplate: qaDisplayPath(visualTemplatePath),
   betaIntakeExitCode: betaResult.status,
+  betaBlockingIntakeExitCode: betaBlockingResult.status,
   visualIntakeExitCode: visualResult.status,
   betaInvalidSubmissionCount: betaRawSummary?.invalidSubmissionCount ?? null,
+  betaBlockingUnresolvedFindingCount: betaBlockingRawSummary?.unresolvedBlockingFindingCount ?? null,
   visualInvalidSubmissionCount: visualRawSummary?.invalidSubmissionCount ?? null,
   betaCompletedBefore: completedBetaCount(betaRegisterBefore),
   betaCompletedAfter: completedBetaCount(betaRegisterAfter),
@@ -208,14 +267,16 @@ Status: ${summary.status}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
 - Beta intake exit code: ${summary.betaIntakeExitCode}
+- Beta blocking-finding intake exit code: ${summary.betaBlockingIntakeExitCode}
 - Visual intake exit code: ${summary.visualIntakeExitCode}
 - Beta invalid submissions: ${summary.betaInvalidSubmissionCount ?? 0}
+- Beta unresolved P0/P1 rehearsal findings: ${summary.betaBlockingUnresolvedFindingCount ?? 0}
 - Visual invalid submissions: ${summary.visualInvalidSubmissionCount ?? 0}
 - Raw artifacts cleaned up: ${summary.rawArtifactsCleanedUp ? 'yes' : 'no'}
 
 ## Operating Meaning
 
-This rehearsal copies beta and visual-review templates into non-template submission files and proves the intake commands reject them as incomplete evidence. It also confirms the canonical beta register and production visual-review history stay unchanged.
+This rehearsal copies beta and visual-review templates into non-template submission files and proves the intake commands reject them as incomplete evidence. It also submits an otherwise valid beta review with an unresolved P1 finding and proves intake rejects it before import. It confirms the canonical beta register and production visual-review history stay unchanged.
 
 ## Checks
 

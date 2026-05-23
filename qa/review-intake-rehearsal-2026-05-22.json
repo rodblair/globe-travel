@@ -1,14 +1,16 @@
 {
   "date": "2026-05-22",
   "status": "pass",
-  "checked": 7,
-  "passed": 7,
+  "checked": 8,
+  "passed": 8,
   "failed": 0,
   "betaTemplate": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.template.json",
   "visualTemplate": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
   "betaIntakeExitCode": 1,
+  "betaBlockingIntakeExitCode": 1,
   "visualIntakeExitCode": 1,
   "betaInvalidSubmissionCount": 1,
+  "betaBlockingUnresolvedFindingCount": 1,
   "visualInvalidSubmissionCount": 1,
   "betaCompletedBefore": 0,
   "betaCompletedAfter": 0,
@@ -40,6 +42,15 @@
       "ok": true,
       "before": 0,
       "after": 0
+    },
+    {
+      "name": "beta intake rejects otherwise valid reviews with unresolved P0/P1 findings",
+      "ok": true,
+      "exitCode": 1,
+      "status": "fail",
+      "validSubmissionCount": 1,
+      "invalidSubmissionCount": 0,
+      "unresolvedBlockingFindingCount": 1
     },
     {
       "name": "visual intake rejects copied template as completed evidence",

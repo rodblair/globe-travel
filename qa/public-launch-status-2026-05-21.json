@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T03:49:29.674Z",
+  "generatedAt": "2026-05-23T03:59:31.625Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -11,14 +11,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app",
-    "commit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6"
+    "url": "globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app",
+    "commit": "cc529ee622dc60720063c96131306562f90f4c31"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
-    "shortHead": "d4ee991",
-    "liveCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
+    "head": "cc529ee622dc60720063c96131306562f90f4c31",
+    "shortHead": "cc529ee",
+    "liveCommit": "cc529ee622dc60720063c96131306562f90f4c31",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -293,10 +293,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/summary.json",
-    "latestProductionCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
-    "latestProductionDeploymentUrl": "globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/summary.json",
+    "latestProductionCommit": "cc529ee622dc60720063c96131306562f90f4c31",
+    "latestProductionDeploymentUrl": "globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -545,8 +545,8 @@
     "artifact": "qa/review-intake-rehearsal-2026-05-22.json",
     "report": "qa/review-intake-rehearsal-2026-05-22.md",
     "date": "2026-05-22",
-    "checked": 7,
-    "passed": 7,
+    "checked": 8,
+    "passed": 8,
     "failed": 0,
     "betaIntakeExitCode": 1,
     "visualIntakeExitCode": 1,
@@ -649,8 +649,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
-    "knownGoodDeploymentUrl": "globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "cc529ee622dc60720063c96131306562f90f4c31",
+    "knownGoodDeploymentUrl": "globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -689,7 +689,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
+    "latestVerificationExpectedLiveCommit": "cc529ee622dc60720063c96131306562f90f4c31",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -738,8 +738,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true

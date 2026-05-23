@@ -4,10 +4,10 @@ Date: 2026-05-21
 
 ## Planner Composer Polish Postdeploy Evidence
 
-Commit `d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6` deployed to Vercel production on 2026-05-22.
+Commit `cc529ee622dc60720063c96131306562f90f4c31` deployed to Vercel production on 2026-05-22.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,13 +16,13 @@ Commit `d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6` deployed to Vercel production 
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Production authenticated app surfaces smoke: `22/22`, including `/trips` and `/trips/new` legacy trip entry paths across phone and desktop.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `60/60`
 - Public launch status is `beta-ready-public-blocked`; deployment currency is clear, guardrail issues are empty, and the only public blockers are beta reviews plus production visual-review history.
-- Current production commit: `d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6`
+- Current production commit: `cc529ee622dc60720063c96131306562f90f4c31`
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Runtime Brand And Deployment Currency Guard Postdeploy Evidence

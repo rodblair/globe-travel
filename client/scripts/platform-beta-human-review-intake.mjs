@@ -280,7 +280,13 @@ const unresolvedBlockingFindingCount = validationResults.reduce((count, result) 
 let imported = false
 let importedReviewIds = []
 let completedAfter = completedBefore
-if (importValidSubmissions && validRecords.length > 0 && invalidSubmissions.length === 0 && duplicateIds.length === 0) {
+if (
+  importValidSubmissions &&
+  validRecords.length > 0 &&
+  invalidSubmissions.length === 0 &&
+  duplicateIds.length === 0 &&
+  unresolvedBlockingFindingCount === 0
+) {
   const nextRegister = {
     ...register,
     reviewedAt: date,
@@ -327,6 +333,18 @@ addCheck('beta review submissions parse and match assigned packets', invalidSubm
 addCheck('beta review submissions do not duplicate planned review ids', duplicateIds.length === 0, {
   duplicateSubmissionCount: duplicateIds.length,
   duplicateIds,
+})
+addCheck('beta review submissions have no unresolved P0/P1 findings', unresolvedBlockingFindingCount === 0, {
+  unresolvedBlockingFindingCount,
+  unresolvedBlockingFindings: validationResults.flatMap((result) => (
+    result.unresolvedBlockingFindings.map((finding) => ({
+      reviewId: result.id,
+      severity: finding.severity,
+      status: finding.status,
+      surface: finding.surface,
+      title: finding.title,
+    }))
+  )),
 })
 addCheck('beta review intake import is explicit', !imported || importValidSubmissions, {
   importRequested: importValidSubmissions,
@@ -381,6 +399,7 @@ Status: ${summary.status}
 - Valid submissions: ${summary.validSubmissionCount}
 - Invalid submissions: ${summary.invalidSubmissionCount}
 - Duplicate planned-review ids: ${summary.duplicateSubmissionCount}
+- Unresolved P0/P1 findings: ${summary.unresolvedBlockingFindingCount}
 - Import requested: ${summary.importRequested}
 - Imported: ${summary.imported}
 
@@ -404,7 +423,7 @@ ${markdownList(validationResults.flatMap((result) => result.unresolvedBlockingFi
 
 - Add completed review JSON files to \`${summary.submissionDir}\`.
 - Run \`npm run qa:beta-review-intake\` to validate submissions without changing the register.
-- Run \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` only after the intake report is clean and the submissions are ready to count.
+- Run \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` only after the intake report is clean, there are no unresolved P0/P1 findings, and the submissions are ready to count.
 - Re-run \`npm run qa:beta-review-progress\` after import so the public-launch dashboard reflects completed reviews.
 `
 
