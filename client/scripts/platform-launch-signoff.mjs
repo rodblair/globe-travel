@@ -2979,6 +2979,10 @@ async function checkVercelIgnoreArtifact() {
     'qa-only-probe-skips',
     'workflow-and-ignore-policy-skips',
     'current-release-ops-scripts-skip',
+    'qa-package-script-release-ops-skip',
+    'launch-qa-hardening-release-ops-skip',
+    'launch-signoff-followup-gating-skip',
+    'review-intake-privacy-hardening-skip',
     'runtime-billing-builds',
   ]
   const results = Array.isArray(summary.results) ? summary.results : []
@@ -2988,7 +2992,7 @@ async function checkVercelIgnoreArtifact() {
     summary.status === 'pass' &&
     Number(summary.checked) >= requiredCases.length &&
     Number(summary.failed) === 0 &&
-    Number(summary.safeSkipCount) >= 3 &&
+    Number(summary.safeSkipCount) >= requiredCases.length - 1 &&
     Number(summary.runtimeBuildCount) >= 1 &&
     badResults.length === 0 &&
     missingCases.length === 0
