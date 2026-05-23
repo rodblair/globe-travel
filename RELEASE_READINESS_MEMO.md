@@ -299,16 +299,11 @@ Recently completed:
 - Commit `a59fb4a` was deployed to Vercel production.
 - Production release verification now includes public share viral-loop checks. The stable Athens public share passed remote affordance, copy-link, native-share payload, recipient CTA, visual, share integrity, and prompt-suite gates in the integrated `qa:release-production` run.
 
-Remaining release work:
+Current release work:
 
-- Full app flow audit beyond itinerary maps.
-- First-time guest planning from scratch.
-- Public share and feedback UX audit.
-- Account/pricing/subscription audit.
-- Mobile and responsive visual polish.
-- Accessibility and keyboard audit.
-- Error-state hardening.
-- Final end-to-end release verification.
+- Core app-flow, first-time guest planning, public share/feedback, account/pricing/subscription, mobile/responsive polish, accessibility/keyboard, and error-state coverage are now represented by repeatable release gates and evidence artifacts in the current readiness update above.
+- Public launch is not approved until the two external evidence thresholds are satisfied: completed beta human reviews reach `25/25`, and production visual-review history reaches `4/4` distinct passing review dates.
+- After every dispatch-log or review-evidence import, rerun `npm run qa:launch-refresh` and `npm run qa:launch-signoff` before treating the launch packet as current.
 
 ## Release Completion Log
 
