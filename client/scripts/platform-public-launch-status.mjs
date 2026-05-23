@@ -3568,6 +3568,18 @@ const summary = {
     deploymentCurrency.enforced && deploymentCurrency.error
       ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`
       : null,
+    Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount || 0) > 0
+      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      : null,
+    Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount || 0) > 0
+      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      : null,
+    Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount || 0) > 0
+      ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      : null,
+    Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount || 0) > 0
+      ? `Send ${launchOperatorToday.visualDispatchLogPreparedDueSoonCount} production visual-review request(s) due soon from ${qaDisplayPath(visualDispatchOutboxPath)}, then record sent evidence with ${qaDisplayPath(dispatchSentRecordTemplateCsvPath)} and npm run qa:dispatch-mark-sent.`
+      : null,
     betaRemaining > 0 ? `Collect and import ${betaRemaining} completed beta review submission(s).` : null,
     visualRemaining > 0 ? `Run, review, and import ${visualRemaining} scheduled production visual review date(s).` : null,
     guardrailIssues.length > 0 ? 'Fix guardrail issues before relying on public-launch status.' : null,
