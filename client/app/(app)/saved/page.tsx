@@ -63,6 +63,48 @@ const tabs: { key: SavedTab; label: string; icon: typeof Calendar }[] = [
   { key: 'journal', label: 'Trip notes', icon: BookOpen },
 ]
 
+function SavedLoadingState({
+  icon: Icon,
+  title,
+  detail,
+  rows = 2,
+}: {
+  icon: typeof Calendar
+  title: string
+  detail: string
+  rows?: number
+}) {
+  return (
+    <div
+      aria-busy="true"
+      className="rounded-[28px] border border-rule bg-paper-recessed/60 p-5"
+      role="status"
+    >
+      <div className="flex items-start gap-4">
+        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brass-subtle)] text-[var(--brass)]">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-serif text-xl font-semibold text-foreground">{title}</p>
+          <p className="mt-1 max-w-md text-sm leading-relaxed text-foreground/45">{detail}</p>
+          <div className="mt-5 space-y-3">
+            {Array.from({ length: rows }).map((_, index) => (
+              <div
+                key={index}
+                className="overflow-hidden rounded-2xl border border-rule bg-paper/45 p-4"
+              >
+                <div className="h-3 w-28 animate-pulse rounded-full bg-[var(--brass-subtle)]" />
+                <div className="mt-4 h-4 w-3/4 animate-pulse rounded-full bg-paper-recessed" />
+                <div className="mt-2 h-3 w-1/2 animate-pulse rounded-full bg-paper-recessed" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function normalizeTab(value: string | null): SavedTab {
   if (value === 'journal') return value
   return 'trips'
@@ -297,11 +339,11 @@ function SavedPageContent() {
             </div>
 
             {tripsLoading ? (
-              <div className="grid gap-5 md:grid-cols-2">
-                {[...Array(2)].map((_, index) => (
-                  <div key={index} className="h-52 animate-pulse rounded-[28px] bg-paper-recessed" />
-                ))}
-              </div>
+              <SavedLoadingState
+                icon={Calendar}
+                title="Loading saved trips"
+                detail="Checking this session for itineraries, maps, and friend-ready plans."
+              />
             ) : trips.length === 0 ? (
               <div className="flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-16 text-center">
                 <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
@@ -475,11 +517,12 @@ function SavedPageContent() {
             )}
 
             {journalLoading ? (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, index) => (
-                  <div key={index} className="h-32 animate-pulse rounded-2xl bg-paper-recessed" />
-                ))}
-              </div>
+              <SavedLoadingState
+                icon={Feather}
+                title="Loading trip notes"
+                detail="Gathering private notes, decisions, and reminders tied to your itineraries."
+                rows={3}
+              />
             ) : entries.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-28 text-center">
                 <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
