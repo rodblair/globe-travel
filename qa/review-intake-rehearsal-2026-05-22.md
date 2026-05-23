@@ -24,7 +24,7 @@ This rehearsal copies beta and visual-review templates into non-template submiss
 - Pass: beta intake reports missing reviewer evidence and scorecard ratings
 - Pass: beta intake rehearsal does not mutate completed review count
 - Pass: visual intake rejects copied template as completed evidence
-- Pass: visual intake reports placeholder or incomplete production evidence
+- Pass: visual intake reports local-calendar future-dated production evidence
 - Pass: visual intake rehearsal does not mutate review history
 - Pass: review intake rehearsal cleans up raw temporary artifacts
 

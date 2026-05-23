@@ -51,6 +51,12 @@ function visualHistoryCount(register) {
   return Array.isArray(register.reviewHistory) ? register.reviewHistory.length : 0
 }
 
+function addDays(dateValue, days) {
+  const parsed = Date.parse(`${dateValue}T00:00:00Z`)
+  if (!Number.isFinite(parsed)) return dateValue
+  return new Date(parsed + days * 86400000).toISOString().slice(0, 10)
+}
+
 function runIntake({ script, submissionDir, jsonName, reportName }) {
   return spawnSync(process.execPath, [script], {
     cwd: clientRoot,
@@ -76,9 +82,10 @@ await mkdir(repoPath(`${rawDir}/visual`), { recursive: true })
 const betaRegisterBefore = await readJson(betaRegisterPath)
 const visualRegisterBefore = await readJson(visualRegisterPath)
 const betaTemplate = await readFile(repoPath(betaTemplatePath), 'utf8')
-const visualTemplate = await readFile(repoPath(visualTemplatePath), 'utf8')
+const visualTemplate = JSON.parse(await readFile(repoPath(visualTemplatePath), 'utf8'))
+visualTemplate.reviewedAt = addDays(date, 1)
 await writeFile(repoPath(`${rawDir}/beta/BETA-HR-001-athens.json`), betaTemplate)
-await writeFile(repoPath(`${rawDir}/visual/PROD-VISUAL-HISTORY-002.json`), visualTemplate)
+await writeFile(repoPath(`${rawDir}/visual/PROD-VISUAL-HISTORY-002.json`), `${JSON.stringify(visualTemplate, null, 2)}\n`)
 
 const betaRawJson = `review-intake-rehearsal-beta-raw-${date}.json`
 const betaRawReport = `review-intake-rehearsal-beta-raw-${date}.md`
@@ -145,10 +152,8 @@ const checks = [
     invalidSubmissionCount: visualRawSummary?.invalidSubmissionCount ?? null,
   },
   {
-    name: 'visual intake reports placeholder or incomplete production evidence',
-    ok: visualInvalidIssues.some((issue) => String(issue).includes('reviewedAt cannot be in the future')) ||
-      visualInvalidIssues.some((issue) => String(issue).includes('summaryArtifact is not readable')) ||
-      visualInvalidIssues.some((issue) => String(issue).includes('deployment')),
+    name: 'visual intake reports local-calendar future-dated production evidence',
+    ok: visualInvalidIssues.some((issue) => String(issue).includes('reviewedAt cannot be in the future')),
     issues: visualInvalidIssues,
   },
   {

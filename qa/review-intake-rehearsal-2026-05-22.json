@@ -49,10 +49,11 @@
       "invalidSubmissionCount": 1
     },
     {
-      "name": "visual intake reports placeholder or incomplete production evidence",
+      "name": "visual intake reports local-calendar future-dated production evidence",
       "ok": true,
       "issues": [
         "reviewedAt cannot be in the future",
+        "reviewedAt must match scheduled dueAt 2026-05-28",
         "summaryArtifact is not readable: ENOENT: no such file or directory, open '/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-review-2026-05-28/summary.json'"
       ]
     },

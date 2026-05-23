@@ -1,5 +1,6 @@
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
+import { currentQaDate } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_VISUAL_REVIEW_INTAKE_DATE || ''
@@ -24,12 +25,12 @@ function dateOnly(value) {
   return match ? match[0] : ''
 }
 
-function currentUtcDate() {
-  return new Date().toISOString().slice(0, 10)
+function currentCalendarDate() {
+  return currentQaDate()
 }
 
 function isFutureDate(value) {
-  return isDate(value) && String(value).trim() > currentUtcDate()
+  return isDate(value) && String(value).trim() > currentCalendarDate()
 }
 
 function missingFrom(values, required) {
@@ -221,7 +222,7 @@ async function readSubmissions() {
 
 const rawRegister = await readFile(resolve(process.cwd(), registerPath), 'utf8')
 const register = JSON.parse(rawRegister)
-const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentUtcDate()
+const date = dateOnly(requestedDate) || dateOnly(register.reviewedAt) || currentCalendarDate()
 const submissionDir = process.env.QA_VISUAL_REVIEW_SUBMISSION_DIR || `../qa/production-visual-review-submissions-${date}`
 const jsonArtifact = process.env.QA_VISUAL_REVIEW_INTAKE_JSON || `production-visual-review-intake-${date}.json`
 const reportArtifact = process.env.QA_VISUAL_REVIEW_INTAKE_REPORT || `production-visual-review-intake-${date}.md`
@@ -280,12 +281,14 @@ if (importValidSubmissions && validRecords.length > 0 && invalidSubmissions.leng
     }
   })
   const importedScheduledIds = new Set(validRecords.map((record) => record.submission.scheduledReviewId))
+  const remainingScheduledReviews = scheduledReviews.filter((review) => !importedScheduledIds.has(review.id))
   const nextRegister = {
     ...register,
     reviewedAt: date,
     latestProductionReview: importedReviews.at(-1) || register.latestProductionReview,
     reviewHistory: [...reviewHistory, ...importedReviews],
-    scheduledPublicLaunchReviews: scheduledReviews.filter((review) => !importedScheduledIds.has(review.id)),
+    scheduledPublicLaunchReviews: remainingScheduledReviews,
+    nextReviewDueAt: remainingScheduledReviews[0]?.dueAt || null,
   }
   await writeFile(resolve(process.cwd(), registerPath), `${JSON.stringify(nextRegister, null, 2)}\n`)
   imported = true
