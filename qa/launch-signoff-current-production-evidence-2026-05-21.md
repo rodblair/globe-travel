@@ -2,6 +2,28 @@
 
 Date: 2026-05-21
 
+## Mobile Skip Link Polish Postdeploy Evidence
+
+Commit `93ab53f218e3126480a2816f8d2664bd6d9e5564` deployed to Vercel production on 2026-05-23.
+
+- Production alias: `https://globe-travel-two.vercel.app`
+- Deployment URL: `globe-travel-2at5w0f5t-rodney-blairs-projects.vercel.app`
+- Production health: `ok`, `11/11`
+- Production release gate with visual QA passed `10/10`
+- Production ops with public metadata requirement passed `3/3`
+- Production Trip Studio recovery UI: `1/1` after rerun; the first just-deployed run showed a transient client exception before the route warmed.
+- Production auth and guest access: `13/13`
+- Public commercial pricing: `4/4`
+- Public share viral loop: `5/5`
+- Production visual QA: `25/25`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f/`
+- Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
+- Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
+- Prompt suite with production actuals: `60/60`
+- Public launch status is `beta-ready-public-blocked`; deployment currency is clear, guardrail issues are empty, and the only public blockers are beta reviews plus production visual-review history.
+- Current production commit: `93ab53f218e3126480a2816f8d2664bd6d9e5564`
+- Current-commit launch signoff evidence requirement: enabled.
+
 ## Shared Button Semantics Postdeploy Evidence
 
 Commit `c0484fdf992b56fb161785b7127ed4a4cdf0694f` deployed to Vercel production on 2026-05-23.

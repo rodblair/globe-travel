@@ -3,7 +3,7 @@
 Date: 2026-05-22
 Today: 2026-05-22
 Time zone: America/Vancouver
-Generated at: 2026-05-23T06:38:53.982Z
+Generated at: 2026-05-23T06:55:46.338Z
 Status: pass
 
 ## Result
@@ -12,7 +12,7 @@ Status: pass
 - Passed: 8
 - Failed: 0
 - Public launch status: blocked
-- Runtime deployment current: no, b4948d5 is waiting for production
+- Runtime deployment current: yes
 - Beta reviews: 0/25, 25 remaining
 - Production visual-review history: 2/4, 2 remaining
 - Beta invites due today: 5
@@ -21,14 +21,13 @@ Status: pass
 - Beta review submissions due soon: 5
 - Required production visual reviews due soon: 1
 - Production visual send log: 0 sent, 2 required prepared not sent
-- Runtime deployment actions: 1
+- Runtime deployment actions: 0
 - Overdue launch execution rows: 0
 
 ## Do Today
 
 | Priority | Type | ID | Due | Send Status | Action | Source | Evidence Path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| P0 | production-runtime-deployment | production-runtime-deployment-currency | 2026-05-22 | production-on-c0484fd | Deploy runtime commit b4948d5 to production, then rerun launch gates. | `vercel deploy --prod --yes` | `n/a` |
 | P0 | beta-human-review | BETA-HR-001 | 2026-05-25 | prepared-not-sent | Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness. | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
 | P0 | beta-human-review | BETA-HR-002 | 2026-05-25 | prepared-not-sent | Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness. | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
 | P0 | beta-human-review | BETA-HR-003 | 2026-05-25 | prepared-not-sent | Send beta review invite today. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness. | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |

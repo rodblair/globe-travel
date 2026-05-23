@@ -198,7 +198,7 @@
     {
       "name": "sent-record template covers every current outreach send action",
       "ok": true,
-      "actionRowCount": 7,
+      "actionRowCount": 6,
       "outreachSendRowCount": 6,
       "templateRowCount": 6
     },

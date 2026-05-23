@@ -2,7 +2,7 @@
   "date": "2026-05-22",
   "today": "2026-05-22",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T06:38:53.982Z",
+  "generatedAt": "2026-05-23T06:55:46.338Z",
   "status": "pass",
   "checked": 8,
   "passed": 8,
@@ -12,17 +12,16 @@
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
-  "deploymentRuntimeBlocked": true,
-  "deploymentRuntimeCommit": "b4948d57bc6ff6ef2f9a364730ee0d1940a62e9f",
-  "deploymentRuntimeCommitShort": "b4948d5",
-  "liveDeploymentCommit": "c0484fdf992b56fb161785b7127ed4a4cdf0694f",
+  "deploymentRuntimeBlocked": false,
+  "deploymentRuntimeCommit": null,
+  "deploymentRuntimeCommitShort": null,
+  "liveDeploymentCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
-    "production is behind runtime commit b4948d5",
     "daily launch operator board is not aligned with current blocker evidence",
     "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior"
   ],
-  "publicOnlyLaunchOperatorSelfGuardrails": false,
+  "publicOnlyLaunchOperatorSelfGuardrails": true,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -48,31 +47,8 @@
   "visualDispatchLogPreparedOverdueCount": 0,
   "visualDispatchLogRequiredPreparedNotSentCount": 2,
   "visualDispatchLogSentCount": 0,
-  "deploymentActionCount": 1,
+  "deploymentActionCount": 0,
   "actionRows": [
-    {
-      "priority": "P0",
-      "workType": "production-runtime-deployment",
-      "id": "production-runtime-deployment-currency",
-      "destination": "Vercel production",
-      "owner": "Release",
-      "sendBy": "2026-05-22",
-      "followUpAt": "2026-05-22",
-      "dueAt": "2026-05-22",
-      "daysUntilDue": 0,
-      "sendStatus": "production-on-c0484fd",
-      "reviewerAlias": "",
-      "contactRecordLocation": "",
-      "action": "Deploy runtime commit b4948d5 to production, then rerun launch gates.",
-      "messageFile": "",
-      "startUrlOrCommand": "vercel deploy --prod --yes",
-      "packetOrArtifact": "qa/public-launch-status-2026-05-21.json",
-      "submissionPath": "",
-      "validateCommand": "npm run qa:launch-refresh",
-      "importCommand": "npm run qa:launch-signoff",
-      "reviewerRole": "",
-      "messageSubject": "Production runtime deployment currency"
-    },
     {
       "priority": "P0",
       "workType": "beta-human-review",
@@ -253,27 +229,26 @@
       "status": "blocked",
       "betaReady": false,
       "publicLaunchReady": false,
-      "deploymentRuntimeBlocked": true,
+      "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
-      "latestRuntimeCommit": "b4948d5",
+      "latestRuntimeCommit": null,
       "guardrailIssues": [
-        "production is behind runtime commit b4948d5",
         "daily launch operator board is not aligned with current blocker evidence",
         "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior"
       ],
-      "onlyLaunchOperatorSelfGuardrails": false
+      "onlyLaunchOperatorSelfGuardrails": true
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
       "ok": true,
-      "actionRowCount": 7
+      "actionRowCount": 6
     },
     {
       "name": "launch today exposes runtime deployment blocker when production is behind",
       "ok": true,
-      "deploymentRuntimeBlocked": true,
-      "latestRuntimeCommit": "b4948d5",
-      "liveCommit": "c0484fdf992b56fb161785b7127ed4a4cdf0694f"
+      "deploymentRuntimeBlocked": false,
+      "latestRuntimeCommit": null,
+      "liveCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564"
     },
     {
       "name": "launch today reads aligned dispatch logs",
