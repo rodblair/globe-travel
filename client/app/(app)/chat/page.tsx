@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { Sparkles, Users, Wallet, CalendarDays } from 'lucide-react'
+import { CalendarDays, Send, Sparkles, Users, Wallet } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -601,7 +601,7 @@ function ChatPageContent() {
             <input
               type="text"
               aria-label="Describe your trip idea"
-              placeholder={planningInProgress ? 'Opening Trip Studio…' : 'Try: “Best 3-day city trip for 4 friends leaving from Toronto?”'}
+              placeholder={planningInProgress ? 'Opening Trip Studio...' : 'Try: "3 days in Lisbon for 4 friends"'}
               disabled={planningInProgress}
               value={draftInput}
               onChange={(event) => setDraftInput(event.target.value)}
@@ -616,9 +616,10 @@ function ChatPageContent() {
               type="button"
               onClick={submitDraftInput}
               disabled={!draftInput.trim() || planningInProgress}
-              className="touch-target rounded-sm bg-[var(--action)] px-3 py-2 t-mono text-[0.625rem] tracking-[0.14em] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+              className="touch-target inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[var(--action)] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
+              aria-label="Send trip idea"
             >
-              Send
+              <Send className="h-4 w-4" />
             </button>
           </div>
         </div>
