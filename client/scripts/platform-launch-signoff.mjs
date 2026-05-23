@@ -3501,6 +3501,21 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchMarkSentImportRehearsalIssues,
   })
 
+  const dispatchSentRecordTemplateAllowedDeliveryChannels = Array.isArray(dispatchSentRecordTemplateStatus.allowedDeliveryChannels)
+    ? dispatchSentRecordTemplateStatus.allowedDeliveryChannels
+    : []
+  const dispatchSentRecordTemplateContactRecordLocationExamples = Array.isArray(dispatchSentRecordTemplateStatus.contactRecordLocationExamples)
+    ? dispatchSentRecordTemplateStatus.contactRecordLocationExamples
+    : []
+  const dispatchSentRecordTemplateProofExamplesReady =
+    dispatchSentRecordTemplateAllowedDeliveryChannels.includes('external-outreach-log') &&
+    dispatchSentRecordTemplateContactRecordLocationExamples.some((example) => String(example).startsWith('https://')) &&
+    dispatchSentRecordTemplateContactRecordLocationExamples.some((example) => String(example).startsWith('external-record:')) &&
+    dispatchSentRecordTemplateContactRecordLocationExamples.some((example) => String(example).startsWith('crm:')) &&
+    Number(dispatchSentRecordTemplateStatus.rowsMissingProofExampleCount || 0) === 0 &&
+    Array.isArray(dispatchSentRecordTemplateStatus.rowsMissingProofExamples) &&
+    dispatchSentRecordTemplateStatus.rowsMissingProofExamples.length === 0
+
   addCheck('public launch status includes dispatch sent-record template', (
     dispatchSentRecordTemplateStatus.ready === true &&
     dispatchSentRecordTemplateStatus.artifact === dispatchSentRecordTemplateArtifact &&
@@ -3528,6 +3543,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommandCount || 0) === 0 &&
     Array.isArray(dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands) &&
     dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands.length === 0 &&
+    dispatchSentRecordTemplateProofExamplesReady &&
     Number(dispatchSentRecordTemplateStatus.rowsMissingCommandCount || 0) === 0 &&
     Number(dispatchSentRecordTemplateStatus.rowsMissingOperatorContextCount || 0) === 0 &&
     dispatchSentRecordTemplateIssues.length === 0
@@ -3563,6 +3579,11 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplatePostImportCommands: dispatchSentRecordTemplateStatus.postImportCommands || null,
     dispatchSentRecordTemplateCsvRowsMissingPostImportCommandCount: dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommandCount ?? null,
     dispatchSentRecordTemplateCsvRowsMissingPostImportCommands: dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands || null,
+    dispatchSentRecordTemplateProofExamplesReady,
+    dispatchSentRecordTemplateAllowedDeliveryChannels,
+    dispatchSentRecordTemplateContactRecordLocationExamples,
+    dispatchSentRecordTemplateRowsMissingProofExampleCount: dispatchSentRecordTemplateStatus.rowsMissingProofExampleCount ?? null,
+    dispatchSentRecordTemplateRowsMissingProofExamples: dispatchSentRecordTemplateStatus.rowsMissingProofExamples || null,
     dispatchSentRecordTemplateRowsMissingCommandCount: dispatchSentRecordTemplateStatus.rowsMissingCommandCount ?? null,
     dispatchSentRecordTemplateRowsMissingOperatorContextCount: dispatchSentRecordTemplateStatus.rowsMissingOperatorContextCount ?? null,
     dispatchSentRecordTemplateRowsMissingCommands: dispatchSentRecordTemplateStatus.rowsMissingCommands || null,
