@@ -196,7 +196,7 @@
       "id": "PROD-VISUAL-HISTORY-002",
       "workType": "production-visual-review",
       "destination": "Production visual review",
-      "messageSubject": "PROD-VISUAL-HISTORY-002",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28",
       "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
       "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
       "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",

@@ -3,13 +3,13 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T09:21:10.760Z
+Generated at: 2026-05-23T09:29:13.750Z
 Status: fail
 
 ## Result
 
-- Checked: 9
-- Passed: 8
+- Checked: 10
+- Passed: 9
 - Failed: 1
 - Public launch status: beta-ready-public-blocked
 - Runtime deployment current: yes
@@ -53,6 +53,7 @@ Status: fail
 - Pass: launch today reads aligned dispatch logs
 - Pass: launch today beta actions have message files
 - Pass: launch today visual actions have message files
+- Pass: launch today visual actions preserve dispatch context
 - Pass: launch today send actions match dispatch logs
 - Pass: launch today exposes time-aware execution actions
 - Fail: launch today has no overdue launch execution rows

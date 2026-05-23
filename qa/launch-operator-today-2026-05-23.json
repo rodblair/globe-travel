@@ -2,10 +2,10 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T09:21:10.760Z",
+  "generatedAt": "2026-05-23T09:29:13.750Z",
   "status": "fail",
-  "checked": 9,
-  "passed": 8,
+  "checked": 10,
+  "passed": 9,
   "failed": 1,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
@@ -200,7 +200,7 @@
       "validateCommand": "npm run qa:visual-review-intake",
       "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
       "reviewerRole": "visual QA reviewer",
-      "messageSubject": "PROD-VISUAL-HISTORY-002"
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28"
     }
   ],
   "messageFileChecks": [
@@ -237,6 +237,7 @@
       "exists": true
     }
   ],
+  "visualActionContextIssues": [],
   "checks": [
     {
       "name": "launch today reads current blocked release status",
@@ -281,6 +282,11 @@
       "name": "launch today visual actions have message files",
       "ok": true,
       "missingVisualMessageFiles": []
+    },
+    {
+      "name": "launch today visual actions preserve dispatch context",
+      "ok": true,
+      "visualActionContextIssues": []
     },
     {
       "name": "launch today send actions match dispatch logs",

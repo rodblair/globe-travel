@@ -203,13 +203,13 @@ function visualActionRow(row, priority, action) {
     contactRecordLocation: dispatchLog.contactRecordLocation || '',
     action,
     messageFile: dispatchLog.messageFile || '',
-    startUrlOrCommand: row.urlOrCommand || '',
-    packetOrArtifact: row.packetOrArtifact || '',
-    submissionPath: row.submissionPath || '',
+    startUrlOrCommand: dispatchLog.command || row.urlOrCommand || '',
+    packetOrArtifact: dispatchLog.expectedArtifactPrefix || row.packetOrArtifact || '',
+    submissionPath: dispatchLog.completedSubmissionPath || row.submissionPath || '',
     validateCommand: row.validationCommand || 'npm run qa:visual-review-intake',
     importCommand: row.importCommand || 'QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake',
-    reviewerRole: row.reviewerRole || '',
-    messageSubject: row.id,
+    reviewerRole: dispatchLog.reviewerRole || row.reviewerRole || '',
+    messageSubject: dispatchLog.messageSubject || row.source?.messageSubject || row.id,
   }
 }
 
@@ -326,6 +326,30 @@ const visualMessageFileChecks = await Promise.all(uniquePriorityRows
     exists: hasText(row.messageFile) ? await fileExists(row.messageFile) : false,
   })))
 const missingVisualMessageFiles = visualMessageFileChecks.filter((check) => !check.exists)
+const visualActionContextIssues = uniquePriorityRows
+  .filter((row) => row.workType === 'production-visual-review')
+  .flatMap((row) => {
+    const dispatchLog = visualDispatchLogById.get(row.id)
+    if (!dispatchLog) return [`${row.id} is missing from the visual dispatch log`]
+
+    const issues = []
+    const expectedFields = [
+      ['messageFile', dispatchLog.messageFile],
+      ['messageSubject', dispatchLog.messageSubject],
+      ['startUrlOrCommand', dispatchLog.command],
+      ['packetOrArtifact', dispatchLog.expectedArtifactPrefix],
+      ['submissionPath', dispatchLog.completedSubmissionPath],
+      ['reviewerRole', dispatchLog.reviewerRole],
+    ]
+
+    for (const [field, expectedValue] of expectedFields) {
+      if (hasText(expectedValue) && row[field] !== expectedValue) {
+        issues.push(`${row.id} ${field} does not match the visual dispatch log`)
+      }
+    }
+
+    return issues
+  })
 
 const checks = []
 function addCheck(name, ok, detail = {}) {
@@ -408,6 +432,10 @@ addCheck('launch today beta actions have message files', missingMessageFiles.len
 
 addCheck('launch today visual actions have message files', missingVisualMessageFiles.length === 0, {
   missingVisualMessageFiles: missingVisualMessageFiles.map((row) => row.id),
+})
+
+addCheck('launch today visual actions preserve dispatch context', visualActionContextIssues.length === 0, {
+  visualActionContextIssues,
 })
 
 addCheck('launch today send actions match dispatch logs', (
@@ -499,6 +527,7 @@ const summary = {
   actionRows: uniquePriorityRows,
   messageFileChecks,
   visualMessageFileChecks,
+  visualActionContextIssues,
   checks,
   failures,
   jsonArtifact: `qa/${jsonName}`,
