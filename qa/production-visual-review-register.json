@@ -100,10 +100,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e/summary.json",
-    "productionCommit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5",
-    "deploymentUrl": "globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json",
+    "productionCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
+    "deploymentUrl": "globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live fd7d17e deployment after onboarding polish and launch-operator evidence refresh reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 0b0690d deployment after onboarding polish and launch-operator evidence refresh reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker."
   },
   "reviewHistory": [
     {

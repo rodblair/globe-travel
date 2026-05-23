@@ -2,31 +2,28 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "blocked",
-  "betaReady": false,
+  "status": "beta-ready-public-blocked",
+  "betaReady": true,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app",
-    "commit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5"
+    "url": "globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app",
+    "commit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f"
   },
   "deploymentCurrency": {
     "enforced": true,
     "head": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
     "shortHead": "0b0690d",
-    "liveCommit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5",
+    "liveCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
-    "runtimeCommitAhead": true,
-    "latestRuntimeCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
-    "latestRuntimeCommitShort": "0b0690d",
-    "runtimeCommitCountAhead": 1,
-    "runtimeUnsafeFiles": [
-      "client/app/(app)/layout.tsx",
-      "client/components/chat/OnboardingChat.tsx"
-    ],
+    "runtimeCommitAhead": false,
+    "latestRuntimeCommit": null,
+    "latestRuntimeCommitShort": null,
+    "runtimeCommitCountAhead": 0,
+    "runtimeUnsafeFiles": [],
     "error": null
   },
   "betaHumanReviews": {
@@ -294,10 +291,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e/summary.json",
-    "latestProductionCommit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5",
-    "latestProductionDeploymentUrl": "globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json",
+    "latestProductionCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
+    "latestProductionDeploymentUrl": "globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -378,7 +375,7 @@
     "checked": 8,
     "passed": 8,
     "failed": 0,
-    "actionRowCount": 7,
+    "actionRowCount": 6,
     "betaActionRowCount": 5,
     "visualActionRowCount": 1,
     "betaDispatchDueTodayCount": 5,
@@ -431,12 +428,11 @@
     },
     "launchOperatorExitCode": 0,
     "launchOperatorStatus": "pass",
-    "launchOperatorPublicLaunchStatus": "blocked",
-    "launchOperatorDeploymentRuntimeBlocked": true,
+    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+    "launchOperatorDeploymentRuntimeBlocked": false,
     "launchOperatorOnlySelfGuardrails": false,
-    "launchOperatorActionRowCount": 5,
+    "launchOperatorActionRowCount": 4,
     "launchOperatorActionIds": [
-      "production-runtime-deployment-currency",
       "BETA-HR-002",
       "BETA-HR-003",
       "BETA-HR-004",
@@ -651,8 +647,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5",
-    "knownGoodDeploymentUrl": "globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
+    "knownGoodDeploymentUrl": "globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -691,7 +687,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "fd7d17e9780f1b73051ef56b3fde655c01a4a3e5",
+    "latestVerificationExpectedLiveCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -740,8 +736,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-fd7d17e/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -934,15 +930,8 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [
-    "production is behind runtime commit 0b0690d"
-  ],
+  "guardrailIssues": [],
   "blockers": [
-    {
-      "id": "production-runtime-deployment-currency",
-      "title": "Deploy latest runtime commit to production",
-      "detail": "Production is on fd7d17e; runtime commit 0b0690d is waiting for Vercel production."
-    },
     {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
@@ -955,10 +944,8 @@
     }
   ],
   "nextActions": [
-    "Redeploy production from the repo root so Vercel serves runtime commit 0b0690d; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s).",
-    "Fix guardrail issues before relying on public-launch status."
+    "Run, review, and import 2 scheduled production visual review date(s)."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",
