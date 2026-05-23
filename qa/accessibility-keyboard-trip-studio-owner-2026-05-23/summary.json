@@ -471,6 +471,12 @@
     "tripDeleted": true,
     "profileDeleted": true,
     "userDeleted": true,
+    "verifiedEmpty": {
+      "tripRows": 0,
+      "dayRows": 0,
+      "profileRows": 0,
+      "userExists": false
+    },
     "error": null
   },
   "failures": []

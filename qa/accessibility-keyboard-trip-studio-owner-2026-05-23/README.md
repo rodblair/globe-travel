@@ -15,6 +15,7 @@ Auth mode: guest (external guest id)
 - Protected routes: trip-studio
 - Guest cleanup: external guest id provided; owner cleanup remains with the caller
 - Operator cleanup: temporary trip `1a81be2f-5691-40aa-b598-30fef2840abd` was deleted through `/api/trips/:id`, then guest profile/user `36d5213a-65f8-42be-950a-97f50fdda563` was removed with the Supabase service role.
+- Cleanup verification: Supabase service-role check found 0 trip rows, 0 trip day rows, 0 profile rows, and no auth user for the temporary fixture identifiers.
 
 | Route | Viewport | Axe Critical/Serious | Axe Moderate | Keyboard Issues | Missing Markers | Result |
 | --- | --- | ---: | ---: | ---: | --- | --- |
