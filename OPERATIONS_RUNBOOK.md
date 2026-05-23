@@ -61,7 +61,7 @@ Any `client/**` runtime change, package/config change, or unknown path continues
 
 ## Public Launch Evidence Dispatch
 
-The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `f798680a63e38109220ed9f56e68281ea39d1d97` at `globe-travel-kolq55mgj-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` has no guardrail issues. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:
+The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `0eac38741e38e20f03c9c168994d900382d41551` at `globe-travel-kel11i717-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` has no guardrail issues. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:
 
 ```bash
 npm run qa:launch-today
