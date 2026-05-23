@@ -2,7 +2,7 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T15:25:56.101Z",
+  "generatedAt": "2026-05-23T15:29:27.473Z",
   "status": "fail",
   "checked": 13,
   "passed": 12,
@@ -27,9 +27,7 @@
   "liveDeploymentCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
-    "production is behind runtime commit acaab39",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior"
+    "production is behind runtime commit acaab39"
   ],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
@@ -388,9 +386,7 @@
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": "acaab39",
       "guardrailIssues": [
-        "production is behind runtime commit acaab39",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior"
+        "production is behind runtime commit acaab39"
       ],
       "onlyLaunchOperatorSelfGuardrails": false
     },

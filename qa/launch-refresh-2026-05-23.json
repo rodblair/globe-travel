@@ -1,15 +1,22 @@
 {
   "date": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T14:44:07.460Z",
-  "status": "pass",
+  "generatedAt": "2026-05-23T15:29:30.057Z",
+  "status": "fail",
   "checked": 10,
-  "passed": 10,
-  "failed": 0,
-  "actionableStepCount": 2,
-  "publicLaunchStatus": "beta-ready-public-blocked",
-  "publicGuardrailIssues": [],
+  "passed": 6,
+  "failed": 4,
+  "actionableStepCount": 0,
+  "publicLaunchStatus": "blocked",
+  "publicGuardrailIssues": [
+    "production is behind runtime commit acaab39"
+  ],
   "blockers": [
+    {
+      "id": "production-runtime-deployment-currency",
+      "title": "Deploy latest runtime commit to production",
+      "detail": "Production is on 79bcaf4; runtime commit acaab39 is waiting for Vercel production."
+    },
     {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
@@ -22,10 +29,12 @@
     }
   ],
   "nextActions": [
+    "Redeploy production from the repo root so Vercel serves runtime commit acaab39; then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s).",
+    "Fix guardrail issues before relying on public-launch status."
   ],
   "operatorHandoff": {
     "immediateExternalAction": "Send or reassign 5 overdue beta invites now.",
@@ -125,12 +134,12 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "actionable",
+      "classification": "fail",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"
       ],
-      "actionRowCount": 6
+      "actionRowCount": 7
     },
     {
       "step": "dispatch-sent-record-template-after-first-board",
@@ -159,13 +168,16 @@
     {
       "step": "public-launch-status-after-first-board",
       "scriptName": "qa:public-launch-status",
-      "exitCode": 0,
+      "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "pass",
-      "status": "beta-ready-public-blocked",
-      "guardrailIssues": [],
+      "classification": "fail",
+      "status": "blocked",
+      "guardrailIssues": [
+        "production is behind runtime commit acaab39"
+      ],
       "blockerIds": [
+        "production-runtime-deployment-currency",
         "beta-human-review-threshold",
         "production-visual-review-history"
       ]
@@ -176,12 +188,12 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "actionable",
+      "classification": "fail",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"
       ],
-      "actionRowCount": 6
+      "actionRowCount": 7
     },
     {
       "step": "dispatch-sent-record-template-after-final-board",
@@ -210,13 +222,16 @@
     {
       "step": "public-launch-status-final",
       "scriptName": "qa:public-launch-status",
-      "exitCode": 0,
+      "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "pass",
-      "status": "beta-ready-public-blocked",
-      "guardrailIssues": [],
+      "classification": "fail",
+      "status": "blocked",
+      "guardrailIssues": [
+        "production is behind runtime commit acaab39"
+      ],
       "blockerIds": [
+        "production-runtime-deployment-currency",
         "beta-human-review-threshold",
         "production-visual-review-history"
       ]
