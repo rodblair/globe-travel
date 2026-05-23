@@ -1,6 +1,6 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { currentQaDate, dateOnly } from './qa-date-utils.mjs'
+import { currentQaDate, dateOnly, daysBetween } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_DATE || ''
@@ -44,14 +44,51 @@ function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
 
+function plural(value, label) {
+  return `${value} ${label}${Math.abs(Number(value)) === 1 ? '' : 's'}`
+}
+
+function timingLabel(targetDate, label = 'due') {
+  const delta = daysBetween(today, targetDate)
+  if (!Number.isFinite(delta)) return `${label} date missing`
+  if (delta < 0) return `${label} overdue by ${plural(Math.abs(delta), 'day')}`
+  if (delta === 0) return `${label} today`
+  return `${label} in ${plural(delta, 'day')}`
+}
+
+function betaAction(row) {
+  const sendDelta = daysBetween(today, row.sendBy)
+  if (Number.isFinite(sendDelta) && sendDelta < 0) {
+    return `${row.id} dispatch is overdue by ${plural(Math.abs(sendDelta), 'day')}; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.`
+  }
+  if (sendDelta === 0) {
+    return `Send ${row.id} today, record sent proof, follow up by ${row.followUpAt}, then validate completed intake after the human review arrives.`
+  }
+  return `Send ${row.id} by ${row.sendBy}, follow up by ${row.followUpAt}, then validate completed intake after the human review arrives.`
+}
+
+function visualAction(review) {
+  const dueDelta = daysBetween(today, review.dueAt)
+  if (Number.isFinite(dueDelta) && dueDelta < 0) {
+    return `${review.id} production visual review is overdue by ${plural(Math.abs(dueDelta), 'day')}; run the review, inspect screenshots, then validate intake.`
+  }
+  if (dueDelta === 0) {
+    return `Run production visual review ${review.id} today, inspect screenshots, then validate intake.`
+  }
+  return `Run production visual review ${review.id} by ${review.dueAt}, inspect screenshots, then validate intake.`
+}
+
 function rowsToCsv(rows) {
   const headers = [
     'blockerId',
     'workType',
     'id',
     'sendBy',
+    'sendTiming',
     'followUpAt',
+    'followUpTiming',
     'dueAt',
+    'dueTiming',
     'owner',
     'reviewerRole',
     'dispatchStatus',
@@ -83,7 +120,10 @@ function betaRows(betaOps) {
     dispatchStatus: row.dispatchStatus || '',
     timeboxMinutes: row.timeboxMinutes ?? '',
     status: 'needs completed review submission',
-    action: `Send ${row.id} by ${row.sendBy}, follow up by ${row.followUpAt}, then validate completed intake.`,
+    sendTiming: timingLabel(row.sendBy, 'send'),
+    followUpTiming: timingLabel(row.followUpAt, 'follow-up'),
+    dueTiming: timingLabel(row.dueAt, 'review'),
+    action: betaAction(row),
     urlOrCommand: row.startUrl,
     packetOrArtifact: row.packetPath,
     submissionPath: row.completedSubmissionPath,
@@ -144,7 +184,10 @@ function visualRows(visualRegister, visualRemaining) {
       dispatchStatus: review.status || 'planned',
       timeboxMinutes: '',
       status: index < visualRemaining ? 'required for public launch history' : 'scheduled buffer review',
-      action: `Run production visual review ${review.id}, inspect screenshots, then validate intake.`,
+      sendTiming: '',
+      followUpTiming: '',
+      dueTiming: timingLabel(review.dueAt, 'review'),
+      action: visualAction(review),
       urlOrCommand: review.command,
       packetOrArtifact: review.expectedArtifactPrefix,
       submissionPath,
@@ -217,6 +260,15 @@ const betaRowsMissingDispatchOps = betaWorkRows.filter((row) => (
   !Array.isArray(row.source?.operatorChecklist) ||
   row.source.operatorChecklist.length < 6
 ))
+const betaRowsMissingTimingOps = betaWorkRows.filter((row) => {
+  const sendDelta = daysBetween(today, row.sendBy)
+  const overdueRowMissingAction = Number.isFinite(sendDelta) && sendDelta < 0 && !String(row.action || '').includes('overdue')
+  return !hasText(row.sendTiming) ||
+    !hasText(row.followUpTiming) ||
+    !hasText(row.dueTiming) ||
+    !hasText(row.action) ||
+    overdueRowMissingAction
+})
 const visualRowsMissingReviewOps = visualWorkRows.filter((row) => (
   !Array.isArray(row.source?.reviewerChecklist) ||
   row.source.reviewerChecklist.length < 6 ||
@@ -224,6 +276,10 @@ const visualRowsMissingReviewOps = visualWorkRows.filter((row) => (
   row.source.operatorChecklist.length < 6 ||
   !row.source.operatorChecklist.some((item) => item.includes('qa:launch-refresh')) ||
   !row.source.operatorChecklist.some((item) => item.includes('qa:visual-review-intake'))
+))
+const visualRowsMissingTimingOps = visualWorkRows.filter((row) => (
+  !hasText(row.dueTiming) ||
+  !hasText(row.action)
 ))
 
 const publicStatusGuardrailIssues = Array.isArray(publicStatus.guardrailIssues)
@@ -327,6 +383,16 @@ addCheck('public launch blocker board exposes visual review operations', (
   visualReviewRowCount: visualWorkRows.length,
 })
 
+addCheck('public launch blocker board exposes time-aware operator actions', (
+  rows.length > 0 &&
+  betaRowsMissingTimingOps.length === 0 &&
+  visualRowsMissingTimingOps.length === 0
+), {
+  betaRowsMissingTimingOps: betaRowsMissingTimingOps.map((row) => row.id || '(missing id)'),
+  visualRowsMissingTimingOps: visualRowsMissingTimingOps.map((row) => row.id || '(missing id)'),
+  betaOverdueActionRowCount: betaWorkRows.filter((row) => String(row.action || '').includes('overdue')).length,
+})
+
 addCheck('public launch blocker board CSV includes every open work row', (
   rows.length > 0 &&
   rows.every((row) => csvText.includes(row.id) && csvText.includes(row.submissionPath))
@@ -390,8 +456,12 @@ function markdownRowDetail(row) {
       '',
       `- Dispatch status: ${row.dispatchStatus || 'missing'}`,
       `- Send by: ${row.sendBy || 'missing'}`,
+      `- Send timing: ${row.sendTiming || 'missing'}`,
       `- Follow up: ${row.followUpAt || 'missing'}`,
+      `- Follow-up timing: ${row.followUpTiming || 'missing'}`,
       `- Due: ${row.dueAt}`,
+      `- Due timing: ${row.dueTiming || 'missing'}`,
+      `- Next action: ${row.action}`,
       `- Timebox: ${row.timeboxMinutes || 'missing'} minutes`,
       `- Reviewer role: ${row.reviewerRole || 'missing'}`,
       `- Start URL: ${row.source?.startUrl || 'missing'}`,
@@ -414,6 +484,8 @@ function markdownRowDetail(row) {
     `### ${row.id}: ${row.status}`,
     '',
     `- Due: ${row.dueAt}`,
+    `- Due timing: ${row.dueTiming || 'missing'}`,
+    `- Next action: ${row.action}`,
     `- Reviewer role: ${row.reviewerRole || 'missing'}`,
     `- Run: \`${row.urlOrCommand || 'missing'}\``,
     `- Expected artifact prefix: \`${row.packetOrArtifact || 'missing'}\``,
@@ -455,9 +527,9 @@ Status: ${summary.status}
 
 ## Work Rows
 
-| Blocker | Type | ID | Send By | Follow Up | Due | Owner | Dispatch | Status | Evidence Path |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-${rows.map((row) => `| ${row.blockerId} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.followUpAt || 'n/a'} | ${row.dueAt} | ${row.owner} | ${row.dispatchStatus || 'n/a'} | ${row.status} | \`${row.submissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none | none | none | none |'}
+| Blocker | Type | ID | Send By | Timing | Follow Up | Due | Owner | Dispatch | Status | Evidence Path |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${rows.map((row) => `| ${row.blockerId} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.sendTiming || row.dueTiming || 'n/a'} | ${row.followUpAt || 'n/a'} | ${row.dueAt} | ${row.owner} | ${row.dispatchStatus || 'n/a'} | ${row.status} | \`${row.submissionPath}\` |`).join('\n') || '| none | none | none | none | none | none | none | none | none | none | none |'}
 
 ## Next Evidence Actions
 
