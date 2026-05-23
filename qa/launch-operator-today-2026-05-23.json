@@ -2,7 +2,7 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T10:02:33.755Z",
+  "generatedAt": "2026-05-23T10:14:40.106Z",
   "status": "fail",
   "checked": 11,
   "passed": 10,
@@ -247,6 +247,14 @@
     }
   ],
   "visualActionContextIssues": [],
+  "executionOrder": [
+    "Send every P0/P1 message file in the Send Packet Index; beta rows are overdue and the visual row is due soon.",
+    "Record each real send in `qa/dispatch-sent-record-template-2026-05-23.csv` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.",
+    "Validate the filled sent-record CSV with `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`.",
+    "Import the sent state with `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent` only after validation passes.",
+    "Refresh launch evidence with `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.",
+    "Collect completed non-template beta and visual review JSON, validate intake, import only after clean validation, then rerun launch gates."
+  ],
   "checks": [
     {
       "name": "launch today reads current blocked release status",

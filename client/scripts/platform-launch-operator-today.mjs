@@ -503,6 +503,14 @@ addCheck('launch today has no overdue launch execution rows', (
 })
 
 const failures = checks.filter((check) => !check.ok)
+const executionOrder = [
+  `Send every P0/P1 message file in the Send Packet Index; beta rows are overdue and the visual row is due soon.`,
+  `Record each real send in \`${dispatchSentRecordTemplateCsv}\` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.`,
+  `Validate the filled sent-record CSV with \`${dispatchSentRecordTemplateValidationCommand}\`.`,
+  `Import the sent state with \`${dispatchSentRecordTemplateImportCommand}\` only after validation passes.`,
+  `Refresh launch evidence with \`${dispatchSentRecordTemplatePostImportCommands.join('` and `')}\`.`,
+  'Collect completed non-template beta and visual review JSON, validate intake, import only after clean validation, then rerun launch gates.',
+]
 const summary = {
   date,
   today,
@@ -564,6 +572,7 @@ const summary = {
   messageFileChecks,
   visualMessageFileChecks,
   visualActionContextIssues,
+  executionOrder,
   checks,
   failures,
   jsonArtifact: `qa/${jsonName}`,
@@ -574,6 +583,15 @@ const summary = {
 function actionRowsTable(rows) {
   if (!rows.length) return '| none | none | none | none | none | none | none | none | none | none | none |\n'
   return rows.map((row) => `| ${row.priority} | ${row.workType} | ${row.id} | ${row.sendBy || 'n/a'} | ${row.sendTiming || row.dueTiming || 'n/a'} | ${row.dueAt || 'n/a'} | ${row.sendStatus || 'n/a'} | ${row.action} | ${row.messageSubject || 'n/a'} | \`${row.messageFile || row.startUrlOrCommand || 'n/a'}\` | \`${row.submissionPath || 'n/a'}\` |`).join('\n')
+}
+
+function sendPacketRowsTable(rows) {
+  const sendRows = rows.filter((row) => (
+    (row.workType === 'beta-human-review' || row.workType === 'production-visual-review') &&
+    hasText(row.messageFile)
+  ))
+  if (!sendRows.length) return '| none | none | none | none | none | none |\n'
+  return sendRows.map((row) => `| ${row.priority} | ${row.id} | ${row.workType} | ${row.messageSubject || 'n/a'} | \`${row.messageFile}\` | \`${row.submissionPath || 'n/a'}\` |`).join('\n')
 }
 
 const report = `# Launch Operator Today
@@ -601,6 +619,16 @@ Status: ${summary.status}
 - Production visual send log: ${summary.visualDispatchLogSentCount} sent, ${summary.visualDispatchLogRequiredPreparedNotSentCount} required prepared not sent
 - Runtime deployment actions: ${summary.deploymentActionCount}
 - Overdue launch execution rows: ${summary.betaDispatchOverdueCount + summary.visualOverdueCount}
+
+## Execution Order
+
+${executionOrder.map((item, index) => `${index + 1}. ${item}`).join('\n')}
+
+## Send Packet Index
+
+| Priority | ID | Type | Subject | Message File | Evidence Path |
+| --- | --- | --- | --- | --- | --- |
+${sendPacketRowsTable(uniquePriorityRows)}
 
 ## Do Today
 

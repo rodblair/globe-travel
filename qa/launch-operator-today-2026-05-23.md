@@ -3,7 +3,7 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T10:02:33.755Z
+Generated at: 2026-05-23T10:14:40.106Z
 Status: fail
 
 ## Result
@@ -23,6 +23,26 @@ Status: fail
 - Production visual send log: 0 sent, 2 required prepared not sent
 - Runtime deployment actions: 0
 - Overdue launch execution rows: 5
+
+## Execution Order
+
+1. Send every P0/P1 message file in the Send Packet Index; beta rows are overdue and the visual row is due soon.
+2. Record each real send in `qa/dispatch-sent-record-template-2026-05-23.csv` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.
+3. Validate the filled sent-record CSV with `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`.
+4. Import the sent state with `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent` only after validation passes.
+5. Refresh launch evidence with `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.
+6. Collect completed non-template beta and visual review JSON, validate intake, import only after clean validation, then rerun launch gates.
+
+## Send Packet Index
+
+| Priority | ID | Type | Subject | Message File | Evidence Path |
+| --- | --- | --- | --- | --- | --- |
+| P0 | BETA-HR-001 | beta-human-review | [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
+| P0 | BETA-HR-002 | beta-human-review | [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
+| P0 | BETA-HR-003 | beta-human-review | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
+| P0 | BETA-HR-004 | beta-human-review | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
+| P0 | BETA-HR-005 | beta-human-review | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
+| P1 | PROD-VISUAL-HISTORY-002 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Do Today
 
