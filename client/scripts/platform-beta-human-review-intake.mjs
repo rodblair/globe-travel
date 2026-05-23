@@ -43,6 +43,12 @@ function hasText(value) {
   return typeof value === 'string' && value.trim().length > 0
 }
 
+function looksSensitive(value) {
+  const text = String(value || '')
+  return /[^\s@]+@[^\s@]+\.[^\s@]+/.test(text) ||
+    /\+?\d[\d\s().-]{7,}\d/.test(text)
+}
+
 function isRating(value) {
   return Number.isInteger(value) && value >= 1 && value <= 5
 }
@@ -159,6 +165,10 @@ function submissionIssues(submission, plannedReview) {
     issues.push('completedAt cannot be in the future')
   }
 
+  for (const field of ['reviewerRole', 'routeOrShareUrl', 'firstMinuteOutcome', 'mapTrustNotes', 'shareFeedbackOutcome']) {
+    if (looksSensitive(submission[field])) issues.push(`${field} appears to include contact details`)
+  }
+
   const scorecard = submission.scorecard || {}
   const missingRatings = requiredScorecardFields.filter((field) => !isRating(scorecard[field]))
   if (missingRatings.length > 0) {
@@ -177,6 +187,12 @@ function submissionIssues(submission, plannedReview) {
     : []
   if (malformedFindings.length > 0) {
     issues.push(`${malformedFindings.length} malformed finding(s)`)
+  }
+  const sensitiveFindings = Array.isArray(submission.findings)
+    ? submission.findings.filter((finding) => ['surface', 'title', 'notes'].some((field) => looksSensitive(finding?.[field])))
+    : []
+  if (sensitiveFindings.length > 0) {
+    issues.push(`${sensitiveFindings.length} finding(s) appear to include contact details`)
   }
 
   return issues

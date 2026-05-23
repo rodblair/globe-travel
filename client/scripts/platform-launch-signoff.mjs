@@ -4012,9 +4012,20 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(reviewIntakeRehearsalStatus.checked) >= 7 &&
     Number(reviewIntakeRehearsalStatus.failed) === 0 &&
     Number(reviewIntakeRehearsalStatus.betaIntakeExitCode) !== 0 &&
+    Number(reviewIntakeRehearsalStatus.betaPrivateIntakeExitCode) !== 0 &&
     Number(reviewIntakeRehearsalStatus.visualIntakeExitCode) !== 0 &&
+    Number(reviewIntakeRehearsalStatus.visualPrivateIntakeExitCode) !== 0 &&
     Number(reviewIntakeRehearsalStatus.betaInvalidSubmissionCount) > 0 &&
+    Number(reviewIntakeRehearsalStatus.betaPrivateContactIssueCount || 0) >= 3 &&
+    Array.isArray(reviewIntakeRehearsalStatus.betaPrivateContactIssues) &&
+    reviewIntakeRehearsalStatus.betaPrivateContactIssues.some((issue) => String(issue).includes('reviewerRole')) &&
+    reviewIntakeRehearsalStatus.betaPrivateContactIssues.some((issue) => String(issue).includes('mapTrustNotes')) &&
+    reviewIntakeRehearsalStatus.betaPrivateContactIssues.some((issue) => String(issue).includes('finding(s) appear to include contact details')) &&
     Number(reviewIntakeRehearsalStatus.visualInvalidSubmissionCount) > 0 &&
+    Number(reviewIntakeRehearsalStatus.visualPrivateContactIssueCount || 0) >= 2 &&
+    Array.isArray(reviewIntakeRehearsalStatus.visualPrivateContactIssues) &&
+    reviewIntakeRehearsalStatus.visualPrivateContactIssues.some((issue) => String(issue).includes('reviewedBy')) &&
+    reviewIntakeRehearsalStatus.visualPrivateContactIssues.some((issue) => String(issue).includes('notes')) &&
     Number(reviewIntakeRehearsalStatus.betaCompletedBefore) === Number(reviewIntakeRehearsalStatus.betaCompletedAfter) &&
     Number(reviewIntakeRehearsalStatus.visualHistoryBefore) === Number(reviewIntakeRehearsalStatus.visualHistoryAfter) &&
     reviewIntakeRehearsalStatus.rawArtifactsCleanedUp === true &&
@@ -4029,9 +4040,15 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     reviewIntakeRehearsalChecked: reviewIntakeRehearsalStatus.checked ?? null,
     reviewIntakeRehearsalFailed: reviewIntakeRehearsalStatus.failed ?? null,
     reviewIntakeRehearsalBetaExitCode: reviewIntakeRehearsalStatus.betaIntakeExitCode ?? null,
+    reviewIntakeRehearsalBetaPrivateExitCode: reviewIntakeRehearsalStatus.betaPrivateIntakeExitCode ?? null,
     reviewIntakeRehearsalVisualExitCode: reviewIntakeRehearsalStatus.visualIntakeExitCode ?? null,
+    reviewIntakeRehearsalVisualPrivateExitCode: reviewIntakeRehearsalStatus.visualPrivateIntakeExitCode ?? null,
     reviewIntakeRehearsalBetaInvalidSubmissionCount: reviewIntakeRehearsalStatus.betaInvalidSubmissionCount ?? null,
+    reviewIntakeRehearsalBetaPrivateContactIssueCount: reviewIntakeRehearsalStatus.betaPrivateContactIssueCount ?? null,
+    reviewIntakeRehearsalBetaPrivateContactIssues: reviewIntakeRehearsalStatus.betaPrivateContactIssues || null,
     reviewIntakeRehearsalVisualInvalidSubmissionCount: reviewIntakeRehearsalStatus.visualInvalidSubmissionCount ?? null,
+    reviewIntakeRehearsalVisualPrivateContactIssueCount: reviewIntakeRehearsalStatus.visualPrivateContactIssueCount ?? null,
+    reviewIntakeRehearsalVisualPrivateContactIssues: reviewIntakeRehearsalStatus.visualPrivateContactIssues || null,
     reviewIntakeRehearsalRawArtifactsCleanedUp: reviewIntakeRehearsalStatus.rawArtifactsCleanedUp ?? null,
     reviewIntakeRehearsalIssues,
   })

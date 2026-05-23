@@ -16,6 +16,12 @@ function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
 }
 
+function looksSensitive(value) {
+  const text = String(value || '')
+  return /[^\s@]+@[^\s@]+\.[^\s@]+/.test(text) ||
+    /\+?\d[\d\s().-]{7,}\d/.test(text)
+}
+
 function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
 }
@@ -103,6 +109,9 @@ async function submissionIssues(submission, scheduledReview, existingHistoryDate
     issues.push(`screenshotsReviewed must be at least ${expectedScreenshotCount}`)
   }
   if (!hasText(review.notes, 40)) issues.push('notes must explain the review result')
+  for (const field of ['reviewedBy', 'deploymentUrl', 'notes']) {
+    if (looksSensitive(review[field])) issues.push(`${field} appears to include contact details`)
+  }
 
   if (scheduledReview) {
     if (review.reviewedAt !== dateOnly(scheduledReview.dueAt)) {

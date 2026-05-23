@@ -78,7 +78,9 @@ function runIntake({ script, submissionDir, jsonName, reportName }) {
 await rm(repoPath(rawDir), { recursive: true, force: true })
 await mkdir(repoPath(`${rawDir}/beta`), { recursive: true })
 await mkdir(repoPath(`${rawDir}/beta-blocking`), { recursive: true })
+await mkdir(repoPath(`${rawDir}/beta-private`), { recursive: true })
 await mkdir(repoPath(`${rawDir}/visual`), { recursive: true })
+await mkdir(repoPath(`${rawDir}/visual-private`), { recursive: true })
 
 const betaRegisterBefore = await readJson(betaRegisterPath)
 const visualRegisterBefore = await readJson(visualRegisterPath)
@@ -109,18 +111,55 @@ betaBlockingSubmission.findings = [
     notes: 'This fixture proves beta intake refuses otherwise valid reviews when unresolved P0/P1 findings remain.',
   },
 ]
+const betaPrivateSubmission = JSON.parse(betaTemplate)
+betaPrivateSubmission.reviewerRole = 'alex@example.com'
+betaPrivateSubmission.completedAt = date
+betaPrivateSubmission.firstMinuteOutcome = 'Reviewer understood the first minute but included private contact details in this rehearsal fixture.'
+betaPrivateSubmission.mapTrustNotes = 'Map trust was acceptable for this fixture; contact +1 555 121 2121 should be rejected.'
+betaPrivateSubmission.shareFeedbackOutcome = 'Share feedback worked, but the fixture intentionally includes private contact details.'
+betaPrivateSubmission.scorecard = {
+  firstMinuteClarity: 4,
+  itineraryUsefulness: 4,
+  mapTrust: 4,
+  editAndSwapConfidence: 4,
+  saveReopenConfidence: 4,
+  shareRecipientClarity: 4,
+  feedbackLoopClarity: 4,
+  mobileUsability: 4,
+  paidValueCredibility: 4,
+}
+betaPrivateSubmission.findings = [
+  {
+    severity: 'P2',
+    status: 'closed',
+    surface: 'planner',
+    title: 'Intentional private contact rehearsal finding',
+    notes: 'This fixture proves beta intake refuses private reviewer contact details such as alex@example.com before import.',
+  },
+]
 const visualTemplate = JSON.parse(await readFile(repoPath(visualTemplatePath), 'utf8'))
 visualTemplate.reviewedAt = addDays(date, 1)
+const visualPrivateSubmission = {
+  ...visualTemplate,
+  reviewedBy: 'visual-reviewer@example.com',
+  notes: 'This otherwise template-derived visual review intentionally includes private contact details such as +1 555 121 2121 so intake must reject it before import.',
+}
 await writeFile(repoPath(`${rawDir}/beta/BETA-HR-001-athens.json`), betaTemplate)
 await writeFile(repoPath(`${rawDir}/beta-blocking/BETA-HR-001-athens.json`), `${JSON.stringify(betaBlockingSubmission, null, 2)}\n`)
+await writeFile(repoPath(`${rawDir}/beta-private/BETA-HR-001-athens.json`), `${JSON.stringify(betaPrivateSubmission, null, 2)}\n`)
 await writeFile(repoPath(`${rawDir}/visual/PROD-VISUAL-HISTORY-002.json`), `${JSON.stringify(visualTemplate, null, 2)}\n`)
+await writeFile(repoPath(`${rawDir}/visual-private/PROD-VISUAL-HISTORY-002.json`), `${JSON.stringify(visualPrivateSubmission, null, 2)}\n`)
 
 const betaRawJson = `review-intake-rehearsal-beta-raw-${date}.json`
 const betaRawReport = `review-intake-rehearsal-beta-raw-${date}.md`
 const betaBlockingRawJson = `review-intake-rehearsal-beta-blocking-raw-${date}.json`
 const betaBlockingRawReport = `review-intake-rehearsal-beta-blocking-raw-${date}.md`
+const betaPrivateRawJson = `review-intake-rehearsal-beta-private-raw-${date}.json`
+const betaPrivateRawReport = `review-intake-rehearsal-beta-private-raw-${date}.md`
 const visualRawJson = `review-intake-rehearsal-visual-raw-${date}.json`
 const visualRawReport = `review-intake-rehearsal-visual-raw-${date}.md`
+const visualPrivateRawJson = `review-intake-rehearsal-visual-private-raw-${date}.json`
+const visualPrivateRawReport = `review-intake-rehearsal-visual-private-raw-${date}.md`
 
 const betaResult = runIntake({
   script: 'scripts/platform-beta-human-review-intake.mjs',
@@ -134,21 +173,37 @@ const betaBlockingResult = runIntake({
   jsonName: betaBlockingRawJson,
   reportName: betaBlockingRawReport,
 })
+const betaPrivateResult = runIntake({
+  script: 'scripts/platform-beta-human-review-intake.mjs',
+  submissionDir: `${rawDir}/beta-private`,
+  jsonName: betaPrivateRawJson,
+  reportName: betaPrivateRawReport,
+})
 const visualResult = runIntake({
   script: 'scripts/platform-visual-review-intake.mjs',
   submissionDir: `${rawDir}/visual`,
   jsonName: visualRawJson,
   reportName: visualRawReport,
 })
+const visualPrivateResult = runIntake({
+  script: 'scripts/platform-visual-review-intake.mjs',
+  submissionDir: `${rawDir}/visual-private`,
+  jsonName: visualPrivateRawJson,
+  reportName: visualPrivateRawReport,
+})
 
 const betaRawSummary = await readJson(`qa/${betaRawJson}`).catch(() => null)
 const betaBlockingRawSummary = await readJson(`qa/${betaBlockingRawJson}`).catch(() => null)
+const betaPrivateRawSummary = await readJson(`qa/${betaPrivateRawJson}`).catch(() => null)
 const visualRawSummary = await readJson(`qa/${visualRawJson}`).catch(() => null)
+const visualPrivateRawSummary = await readJson(`qa/${visualPrivateRawJson}`).catch(() => null)
 const betaRegisterAfter = await readJson(betaRegisterPath)
 const visualRegisterAfter = await readJson(visualRegisterPath)
 const betaInvalidIssues = (betaRawSummary?.submissions || []).flatMap((submission) => submission.issues || [])
 const betaBlockingChecks = betaBlockingRawSummary?.checks || []
+const betaPrivateIssues = (betaPrivateRawSummary?.submissions || []).flatMap((submission) => submission.issues || [])
 const visualInvalidIssues = (visualRawSummary?.submissions || []).flatMap((submission) => submission.issues || [])
+const visualPrivateIssues = (visualPrivateRawSummary?.submissions || []).flatMap((submission) => submission.issues || [])
 
 await Promise.all([
   rm(repoPath(rawDir), { recursive: true, force: true }),
@@ -156,8 +211,12 @@ await Promise.all([
   rm(repoPath(`qa/${betaRawReport}`), { force: true }),
   rm(repoPath(`qa/${betaBlockingRawJson}`), { force: true }),
   rm(repoPath(`qa/${betaBlockingRawReport}`), { force: true }),
+  rm(repoPath(`qa/${betaPrivateRawJson}`), { force: true }),
+  rm(repoPath(`qa/${betaPrivateRawReport}`), { force: true }),
   rm(repoPath(`qa/${visualRawJson}`), { force: true }),
   rm(repoPath(`qa/${visualRawReport}`), { force: true }),
+  rm(repoPath(`qa/${visualPrivateRawJson}`), { force: true }),
+  rm(repoPath(`qa/${visualPrivateRawReport}`), { force: true }),
 ])
 
 const checks = [
@@ -200,6 +259,17 @@ const checks = [
     unresolvedBlockingFindingCount: betaBlockingRawSummary?.unresolvedBlockingFindingCount ?? null,
   },
   {
+    name: 'beta intake rejects private contact details before import',
+    ok: betaPrivateResult.status !== 0 &&
+      betaPrivateRawSummary?.status === 'fail' &&
+      betaPrivateIssues.some((issue) => String(issue).includes('reviewerRole appears to include contact details')) &&
+      betaPrivateIssues.some((issue) => String(issue).includes('mapTrustNotes appears to include contact details')) &&
+      betaPrivateIssues.some((issue) => String(issue).includes('finding(s) appear to include contact details')),
+    exitCode: betaPrivateResult.status,
+    status: betaPrivateRawSummary?.status || null,
+    issues: betaPrivateIssues,
+  },
+  {
     name: 'visual intake rejects copied template as completed evidence',
     ok: visualResult.status !== 0 &&
       visualRawSummary?.status === 'fail' &&
@@ -212,6 +282,16 @@ const checks = [
     name: 'visual intake reports local-calendar future-dated production evidence',
     ok: visualInvalidIssues.some((issue) => String(issue).includes('reviewedAt cannot be in the future')),
     issues: visualInvalidIssues,
+  },
+  {
+    name: 'visual intake rejects private contact details before import',
+    ok: visualPrivateResult.status !== 0 &&
+      visualPrivateRawSummary?.status === 'fail' &&
+      visualPrivateIssues.some((issue) => String(issue).includes('reviewedBy appears to include contact details')) &&
+      visualPrivateIssues.some((issue) => String(issue).includes('notes appears to include contact details')),
+    exitCode: visualPrivateResult.status,
+    status: visualPrivateRawSummary?.status || null,
+    issues: visualPrivateIssues,
   },
   {
     name: 'visual intake rehearsal does not mutate review history',
@@ -241,10 +321,16 @@ const summary = {
   visualTemplate: qaDisplayPath(visualTemplatePath),
   betaIntakeExitCode: betaResult.status,
   betaBlockingIntakeExitCode: betaBlockingResult.status,
+  betaPrivateIntakeExitCode: betaPrivateResult.status,
   visualIntakeExitCode: visualResult.status,
+  visualPrivateIntakeExitCode: visualPrivateResult.status,
   betaInvalidSubmissionCount: betaRawSummary?.invalidSubmissionCount ?? null,
   betaBlockingUnresolvedFindingCount: betaBlockingRawSummary?.unresolvedBlockingFindingCount ?? null,
+  betaPrivateContactIssueCount: betaPrivateIssues.filter((issue) => String(issue).includes('contact details')).length,
+  betaPrivateContactIssues: betaPrivateIssues.filter((issue) => String(issue).includes('contact details')),
   visualInvalidSubmissionCount: visualRawSummary?.invalidSubmissionCount ?? null,
+  visualPrivateContactIssueCount: visualPrivateIssues.filter((issue) => String(issue).includes('contact details')).length,
+  visualPrivateContactIssues: visualPrivateIssues.filter((issue) => String(issue).includes('contact details')),
   betaCompletedBefore: completedBetaCount(betaRegisterBefore),
   betaCompletedAfter: completedBetaCount(betaRegisterAfter),
   visualHistoryBefore: visualHistoryCount(visualRegisterBefore),
@@ -268,10 +354,14 @@ Status: ${summary.status}
 - Failed: ${summary.failed}
 - Beta intake exit code: ${summary.betaIntakeExitCode}
 - Beta blocking-finding intake exit code: ${summary.betaBlockingIntakeExitCode}
+- Beta private-contact intake exit code: ${summary.betaPrivateIntakeExitCode}
 - Visual intake exit code: ${summary.visualIntakeExitCode}
+- Visual private-contact intake exit code: ${summary.visualPrivateIntakeExitCode}
 - Beta invalid submissions: ${summary.betaInvalidSubmissionCount ?? 0}
 - Beta unresolved P0/P1 rehearsal findings: ${summary.betaBlockingUnresolvedFindingCount ?? 0}
+- Beta private-contact issues: ${summary.betaPrivateContactIssueCount ?? 0}
 - Visual invalid submissions: ${summary.visualInvalidSubmissionCount ?? 0}
+- Visual private-contact issues: ${summary.visualPrivateContactIssueCount ?? 0}
 - Raw artifacts cleaned up: ${summary.rawArtifactsCleanedUp ? 'yes' : 'no'}
 
 ## Operating Meaning

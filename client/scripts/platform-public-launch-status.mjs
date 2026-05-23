@@ -2770,8 +2770,26 @@ if (Number(reviewIntakeRehearsal.visualIntakeExitCode) === 0) {
 if (Number(reviewIntakeRehearsal.betaInvalidSubmissionCount || 0) <= 0) {
   reviewIntakeRehearsalIssues.push('review intake rehearsal did not detect invalid beta submission')
 }
+if (Number(reviewIntakeRehearsal.betaPrivateContactIssueCount || 0) < 3) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal did not detect beta private-contact evidence')
+}
+for (const field of ['reviewerRole', 'mapTrustNotes', 'finding(s) appear to include contact details']) {
+  if (!Array.isArray(reviewIntakeRehearsal.betaPrivateContactIssues) ||
+      !reviewIntakeRehearsal.betaPrivateContactIssues.some((issue) => String(issue).includes(field))) {
+    reviewIntakeRehearsalIssues.push(`review intake rehearsal did not prove beta private-contact rejection for ${field}`)
+  }
+}
 if (Number(reviewIntakeRehearsal.visualInvalidSubmissionCount || 0) <= 0) {
   reviewIntakeRehearsalIssues.push('review intake rehearsal did not detect invalid visual submission')
+}
+if (Number(reviewIntakeRehearsal.visualPrivateContactIssueCount || 0) < 2) {
+  reviewIntakeRehearsalIssues.push('review intake rehearsal did not detect visual private-contact evidence')
+}
+for (const field of ['reviewedBy', 'notes']) {
+  if (!Array.isArray(reviewIntakeRehearsal.visualPrivateContactIssues) ||
+      !reviewIntakeRehearsal.visualPrivateContactIssues.some((issue) => String(issue).includes(field))) {
+    reviewIntakeRehearsalIssues.push(`review intake rehearsal did not prove visual private-contact rejection for ${field}`)
+  }
 }
 if (Number(reviewIntakeRehearsal.betaCompletedBefore) !== Number(reviewIntakeRehearsal.betaCompletedAfter)) {
   reviewIntakeRehearsalIssues.push('review intake rehearsal mutated beta completed-review count')
@@ -3664,9 +3682,15 @@ const summary = {
     passed: reviewIntakeRehearsal.passed ?? null,
     failed: reviewIntakeRehearsal.failed ?? null,
     betaIntakeExitCode: reviewIntakeRehearsal.betaIntakeExitCode ?? null,
+    betaPrivateIntakeExitCode: reviewIntakeRehearsal.betaPrivateIntakeExitCode ?? null,
     visualIntakeExitCode: reviewIntakeRehearsal.visualIntakeExitCode ?? null,
+    visualPrivateIntakeExitCode: reviewIntakeRehearsal.visualPrivateIntakeExitCode ?? null,
     betaInvalidSubmissionCount: reviewIntakeRehearsal.betaInvalidSubmissionCount ?? null,
+    betaPrivateContactIssueCount: reviewIntakeRehearsal.betaPrivateContactIssueCount ?? null,
+    betaPrivateContactIssues: reviewIntakeRehearsal.betaPrivateContactIssues || null,
     visualInvalidSubmissionCount: reviewIntakeRehearsal.visualInvalidSubmissionCount ?? null,
+    visualPrivateContactIssueCount: reviewIntakeRehearsal.visualPrivateContactIssueCount ?? null,
+    visualPrivateContactIssues: reviewIntakeRehearsal.visualPrivateContactIssues || null,
     betaCompletedBefore: reviewIntakeRehearsal.betaCompletedBefore ?? null,
     betaCompletedAfter: reviewIntakeRehearsal.betaCompletedAfter ?? null,
     visualHistoryBefore: reviewIntakeRehearsal.visualHistoryBefore ?? null,

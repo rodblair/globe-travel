@@ -5,15 +5,19 @@ Status: pass
 
 ## Result
 
-- Checked: 8
-- Passed: 8
+- Checked: 10
+- Passed: 10
 - Failed: 0
 - Beta intake exit code: 1
 - Beta blocking-finding intake exit code: 1
+- Beta private-contact intake exit code: 1
 - Visual intake exit code: 1
+- Visual private-contact intake exit code: 1
 - Beta invalid submissions: 1
 - Beta unresolved P0/P1 rehearsal findings: 1
+- Beta private-contact issues: 3
 - Visual invalid submissions: 1
+- Visual private-contact issues: 2
 - Raw artifacts cleaned up: yes
 
 ## Operating Meaning
@@ -26,8 +30,10 @@ This rehearsal copies beta and visual-review templates into non-template submiss
 - Pass: beta intake reports missing reviewer evidence and scorecard ratings
 - Pass: beta intake rehearsal does not mutate completed review count
 - Pass: beta intake rejects otherwise valid reviews with unresolved P0/P1 findings
+- Pass: beta intake rejects private contact details before import
 - Pass: visual intake rejects copied template as completed evidence
 - Pass: visual intake reports local-calendar future-dated production evidence
+- Pass: visual intake rejects private contact details before import
 - Pass: visual intake rehearsal does not mutate review history
 - Pass: review intake rehearsal cleans up raw temporary artifacts
 
