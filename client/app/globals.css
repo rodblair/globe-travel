@@ -585,18 +585,19 @@
 
   /* Skip link for keyboard nav */
   .skip-link {
-    position: absolute;
-    top: -40px;
-    left: 0;
+    position: fixed;
+    top: max(0.5rem, env(safe-area-inset-top));
+    left: 0.5rem;
     z-index: 100;
     padding: 8px 16px;
     color: var(--foreground);
     background: var(--background);
     border: 2px solid var(--ring);
     border-radius: var(--radius);
-    transition: top 0.2s;
+    transform: translateY(calc(-100% - max(0.75rem, env(safe-area-inset-top))));
+    transition: transform 0.2s;
   }
-  .skip-link:focus { top: 8px; }
+  .skip-link:focus { transform: translateY(0); }
 }
 
 @layer utilities {

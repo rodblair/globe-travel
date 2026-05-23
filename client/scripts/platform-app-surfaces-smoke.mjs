@@ -303,6 +303,15 @@ async function collectSurface(page, surface, viewport) {
     const horizontalOverflow = documentElement.scrollWidth > documentElement.clientWidth + 1
     const main = document.querySelector('main, [role="main"], #main-content')
     const heading = document.querySelector('h1, h2')
+    const skipLink = document.querySelector('.skip-link')
+    const skipLinkRect = skipLink?.getBoundingClientRect()
+    const hiddenSkipLinkLeaks = Boolean(
+      skipLinkRect &&
+      skipLinkRect.width > 0 &&
+      skipLinkRect.height > 0 &&
+      skipLinkRect.bottom > 0 &&
+      skipLink !== document.activeElement
+    )
     const appError = /application error|unhandled runtime error|something went wrong/i.test(bodyText)
     const interactiveElements = Array.from(document.querySelectorAll('a[href], button, input, textarea, select, [role="button"], [tabindex]:not([tabindex="-1"])'))
       .filter((element) => {
@@ -336,6 +345,7 @@ async function collectSurface(page, surface, viewport) {
       search: location.search,
       hasMainLandmark: Boolean(main),
       hasHeading: Boolean(heading),
+      hiddenSkipLinkLeaks,
       horizontalOverflow,
       appError,
       textLength: bodyText.trim().length,
@@ -364,6 +374,7 @@ async function collectSurface(page, surface, viewport) {
   }
   if (preflight.textLength < 80) issues.push('surface rendered too little user-facing content')
   if (!preflight.hasHeading) issues.push('missing visible heading')
+  if (preflight.hiddenSkipLinkLeaks) issues.push('hidden skip link leaks into the viewport')
   if (preflight.horizontalOverflow) issues.push('horizontal overflow detected')
   if (preflight.appError) issues.push('application error text detected')
   if (pageErrors.length > 0) issues.push(`${pageErrors.length} browser page error(s)`)
