@@ -195,8 +195,7 @@ async function runBrowserPlannerStartChecks() {
     const waitingState = await slowPage.evaluate(() => {
       const text = document.body.innerText
       const input = document.querySelector('input[aria-label="Describe your trip idea"]')
-      const sendButton = Array.from(document.querySelectorAll('button'))
-        .find((button) => button.textContent?.trim() === 'Send')
+      const sendButton = document.querySelector('button[aria-label="Send trip idea"]')
       const stepButtons = Array.from(document.querySelectorAll('button'))
         .filter((button) => /^STEP 0/.test((button.textContent || '').trim()))
       return {
