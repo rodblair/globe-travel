@@ -1,10 +1,11 @@
 import { access, mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { currentQaDate } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const baseUrl = (process.env.QA_BASE_URL || 'https://globe-travel-two.vercel.app').replace(/\/$/, '')
 const shareSlug = process.env.QA_SHARE_SLUG || 'x3m2c8cnws'
-const requestedDate = process.env.QA_ROUTE_INVENTORY_DATE || '2026-05-22'
+const requestedDate = process.env.QA_ROUTE_INVENTORY_DATE || currentQaDate()
 const jsonArtifact = process.env.QA_ROUTE_INVENTORY_JSON || `route-inventory-smoke-${requestedDate}.json`
 const reportArtifact = process.env.QA_ROUTE_INVENTORY_REPORT || `route-inventory-smoke-${requestedDate}.md`
 
