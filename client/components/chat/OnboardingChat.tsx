@@ -18,6 +18,12 @@ const INITIAL_GREETING: Message = {
     "Welcome to Globe.travel! Let’s set you up for city trips with friends. Tell me a few places you’ve already loved visiting, and I’ll start mapping your travel style.",
 }
 
+const ONBOARDING_SUGGESTIONS = [
+  'We loved Lisbon, Kyoto, and Oaxaca for food and walking.',
+  'Our group likes museums, beaches, and easy dinners.',
+  'We want a trip with design hotels, markets, and one great night out.',
+]
+
 export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedProp }: OnboardingChatProps) {
   const [placesAdded, setPlacesAdded] = useState<PlaceEvent['place'][]>([])
 
@@ -71,7 +77,7 @@ export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedP
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={onComplete}
-                  className="ml-1 px-3 py-1 rounded-full bg-[var(--brass)] border border-[color:var(--brass)]/30 text-[var(--brass)] text-xs font-medium flex items-center gap-1.5 hover:bg-[var(--brass)] transition-colors"
+                  className="ml-1 flex items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
                 >
                   Done
                   <ArrowRight className="w-3 h-3" />
@@ -89,7 +95,8 @@ export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedP
           isLoading={isLoading}
           onSendMessage={sendMessage}
           onStop={stop}
-          placeholder="Tell me about your travels..."
+          placeholder="Name a few places your group loved..."
+          suggestions={ONBOARDING_SUGGESTIONS}
         />
       </div>
     </div>

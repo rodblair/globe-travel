@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'motion/react'
 import { Globe, Sparkles } from 'lucide-react'
@@ -28,7 +28,18 @@ export default function OnboardingPage() {
   const router = useRouter()
   const [completing, setCompleting] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [showDesktopGlobe, setShowDesktopGlobe] = useState(false)
   const [globePins, setGlobePins] = useState<GlobePin[]>([])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)')
+    const updateDesktopGlobe = () => setShowDesktopGlobe(mediaQuery.matches)
+
+    updateDesktopGlobe()
+    mediaQuery.addEventListener('change', updateDesktopGlobe)
+
+    return () => mediaQuery.removeEventListener('change', updateDesktopGlobe)
+  }, [])
 
   const handlePlaceAdded = useCallback((event: PlaceEvent) => {
     setGlobePins(prev => [
@@ -101,9 +112,11 @@ export default function OnboardingPage() {
       <div className="relative z-10 flex h-full">
         {/* Left side - Live Globe (desktop only) */}
         <div className="hidden lg:flex lg:w-[45%] items-center justify-center border-r border-rule relative overflow-hidden">
-          <div className="absolute inset-0">
-            <ProfileGlobe pins={globePins} />
-          </div>
+          {showDesktopGlobe && (
+            <div className="absolute inset-0">
+              <ProfileGlobe pins={globePins} />
+            </div>
+          )}
 
           {/* Overlay text at bottom */}
           <div className="absolute bottom-8 left-0 right-0 text-center z-10">

@@ -119,12 +119,12 @@ export default function ChatInterface({
         style={{ paddingBottom: 'max(0.9rem, env(safe-area-inset-bottom))' }}
       >
         {showSuggestions && (
-          <div className="hide-scrollbar mx-auto mb-2 flex max-w-3xl gap-2 overflow-x-auto pb-1">
+          <div className="mx-auto mb-2 flex max-w-3xl flex-wrap gap-2 pb-1">
             {visibleSuggestions.map((s) => (
               <button
                 key={s}
                 onClick={() => onSendMessage(s)}
-                className="touch-target flex-shrink-0 rounded-full border border-rule bg-paper px-3 py-1.5 text-caption text-ink-2 transition-colors hover:bg-paper-hover hover:text-foreground"
+                className="touch-target rounded-full border border-rule bg-paper px-3 py-1.5 text-caption text-ink-2 transition-colors hover:bg-paper-hover hover:text-foreground"
               >
                 {s}
               </button>

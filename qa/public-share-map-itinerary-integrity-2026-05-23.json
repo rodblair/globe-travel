@@ -1,0 +1,216 @@
+{
+  "date": "2026-05-23",
+  "baseUrl": "http://localhost:3000",
+  "shareSlugs": [
+    "x3m2c8cnws"
+  ],
+  "requestedShareSlugs": [
+    "x3m2c8cnws"
+  ],
+  "discovery": {
+    "enabled": true,
+    "limit": 25,
+    "totalPublicShares": 1,
+    "shareCount": 1,
+    "shares": [
+      {
+        "tripId": "0746a2c6-2b9b-4753-bbb7-8c3e9b193d38",
+        "title": "5 Days in Athens Greece in mid september",
+        "shareSlug": "x3m2c8cnws",
+        "updatedAt": "2026-05-11T21:13:40.825+00:00",
+        "createdAt": "2026-05-11T20:51:04.578378+00:00"
+      }
+    ],
+    "includeRequestedSlugs": true
+  },
+  "requireUsableRoutes": true,
+  "expectedCountryMap": {
+    "x3m2c8cnws": "Greece"
+  },
+  "artifactDir": "qa/public-share-map-itinerary-integrity-2026-05-23",
+  "jsonArtifact": "qa/public-share-map-itinerary-integrity-2026-05-23.json",
+  "reportArtifact": "qa/public-share-map-itinerary-integrity-2026-05-23.md",
+  "checked": 1,
+  "checkedViewports": 2,
+  "passed": 1,
+  "failed": 0,
+  "shareResults": [
+    {
+      "shareSlug": "x3m2c8cnws",
+      "expectedCountry": "Greece",
+      "tripTitle": "5 Days in Athens Greece in mid september",
+      "apiStatus": 200,
+      "dayCount": 5,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Plaka arrival",
+          "itemCount": 2,
+          "mappedItemCount": 2,
+          "uniqueMappedStopCount": 2,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            711
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Acropolis essentials",
+          "itemCount": 3,
+          "mappedItemCount": 3,
+          "uniqueMappedStopCount": 3,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            1397
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 3,
+          "title": "Museums & hill views",
+          "itemCount": 3,
+          "mappedItemCount": 3,
+          "uniqueMappedStopCount": 3,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            3449
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 4,
+          "title": "Coastal culture",
+          "itemCount": 3,
+          "mappedItemCount": 3,
+          "uniqueMappedStopCount": 3,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            9883
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 5,
+          "title": "Central Athens finale",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            5018
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-23/screenshots/x3m2c8cnws-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "http://localhost:3000/t/x3m2c8cnws",
+            "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 6,
+            "routeLabels": [
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-23/screenshots/x3m2c8cnws-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "http://localhost:3000/t/x3m2c8cnws",
+            "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 6,
+            "routeLabels": [
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "failures": []
+}
