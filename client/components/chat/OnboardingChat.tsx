@@ -95,7 +95,7 @@ export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedP
           isLoading={isLoading}
           onSendMessage={sendMessage}
           onStop={stop}
-          placeholder="Name a few places your group loved..."
+          placeholder="Places your group loved..."
           suggestions={ONBOARDING_SUGGESTIONS}
         />
       </div>

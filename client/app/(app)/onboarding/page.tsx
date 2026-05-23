@@ -188,7 +188,6 @@ export default function OnboardingPage() {
             />
           </div>
 
-{/* removed inline loading - celebration overlay handles it */}
         </div>
       </div>
     </div>
