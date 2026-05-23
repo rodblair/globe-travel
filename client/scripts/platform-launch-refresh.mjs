@@ -58,6 +58,10 @@ async function loadPublicStatusSummary() {
 
 const steps = []
 
+function passOrFail(run) {
+  return run.exitCode === 0 ? 'pass' : 'fail'
+}
+
 const firstLaunchRun = runNpmScript('qa:launch-today')
 const firstLaunchSummary = await loadLaunchTodaySummary()
 steps.push({
@@ -67,6 +71,20 @@ steps.push({
   status: firstLaunchSummary.status,
   failures: (firstLaunchSummary.failures || []).map((failure) => failure.name),
   actionRowCount: firstLaunchSummary.actionRows?.length || 0,
+})
+
+const firstTemplateRun = runNpmScript('qa:dispatch-sent-record-template')
+steps.push({
+  step: 'dispatch-sent-record-template-after-first-board',
+  ...firstTemplateRun,
+  classification: passOrFail(firstTemplateRun),
+})
+
+const firstTemplateRejectionRun = runNpmScript('qa:dispatch-sent-record-template-rejection')
+steps.push({
+  step: 'dispatch-sent-record-template-rejection-after-first-board',
+  ...firstTemplateRejectionRun,
+  classification: passOrFail(firstTemplateRejectionRun),
 })
 
 const firstStatusRun = runNpmScript('qa:public-launch-status')
@@ -89,6 +107,20 @@ steps.push({
   status: secondLaunchSummary.status,
   failures: (secondLaunchSummary.failures || []).map((failure) => failure.name),
   actionRowCount: secondLaunchSummary.actionRows?.length || 0,
+})
+
+const secondTemplateRun = runNpmScript('qa:dispatch-sent-record-template')
+steps.push({
+  step: 'dispatch-sent-record-template-after-final-board',
+  ...secondTemplateRun,
+  classification: passOrFail(secondTemplateRun),
+})
+
+const secondTemplateRejectionRun = runNpmScript('qa:dispatch-sent-record-template-rejection')
+steps.push({
+  step: 'dispatch-sent-record-template-rejection-after-final-board',
+  ...secondTemplateRejectionRun,
+  classification: passOrFail(secondTemplateRejectionRun),
 })
 
 const secondStatusRun = runNpmScript('qa:public-launch-status')
