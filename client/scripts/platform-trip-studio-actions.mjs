@@ -12,7 +12,7 @@ const cleanupRunId = process.env.QA_CLEANUP_RUN_ID
 const cleanupGuestId = process.env.QA_CLEANUP_GUEST_ID
 const authMode = process.env.QA_AUTH_MODE === 'dev' ? 'dev' : 'guest'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
-const runId = randomUUID().slice(0, 8)
+const runId = (process.env.QA_RUN_ID || randomUUID().slice(0, 8)).slice(0, 24)
 const guestId = authMode === 'guest' ? process.env.QA_GUEST_ID || randomUUID() : null
 const cookie = guestId ? `globe_travel_guest=${guestId}` : null
 const results = []
@@ -112,6 +112,7 @@ if (cleanupTripId || cleanupRunId || cleanupGuestId) {
     runId: cleanupRunId || null,
     guestId: cleanupGuestId || null,
     tripDeleted: false,
+    runTripsDeleted: false,
     placesDeleted: false,
     guestProfileDeleted: false,
     guestUserDeleted: false,
@@ -130,6 +131,14 @@ if (cleanupTripId || cleanupRunId || cleanupGuestId) {
   }
 
   if (cleanupRunId) {
+    const { error: tripRunError } = await supabase
+      .from('trips')
+      .delete()
+      .ilike('title', `%${cleanupRunId}%`)
+
+    cleanupResult.runTripsDeleted = !tripRunError
+    if (tripRunError) cleanupResult.errors.push(tripRunError.message)
+
     const { error } = await supabase
       .from('places')
       .delete()

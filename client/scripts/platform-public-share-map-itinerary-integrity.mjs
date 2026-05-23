@@ -21,6 +21,8 @@ const discoverPublicShares = process.argv.includes('--discover') || ['1', 'true'
 const discoveryLimit = Math.max(1, Number(process.env.QA_PUBLIC_SHARE_DISCOVER_LIMIT || '25'))
 const includeRequestedSlugsInDiscovery = process.env.QA_PUBLIC_SHARE_DISCOVER_INCLUDE_REQUESTED !== '0'
 const requireUsableRoutes = process.env.QA_PUBLIC_SHARE_REQUIRE_ROUTES !== '0'
+const requestTimeoutMs = Math.max(5000, Number(process.env.QA_PUBLIC_SHARE_REQUEST_TIMEOUT_MS || 20000) || 20000)
+const discoveryTimeoutMs = Math.max(5000, Number(process.env.QA_PUBLIC_SHARE_DISCOVERY_TIMEOUT_MS || 30000) || 30000)
 
 const viewports = [
   { id: 'phone', width: 390, height: 844 },
@@ -32,6 +34,22 @@ const failures = []
 let browser = null
 
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms))
+
+function timeoutError(label, timeoutMs) {
+  return new Error(`${label} timed out after ${timeoutMs}ms`)
+}
+
+function withTimeout(promise, label, timeoutMs) {
+  let timeout = null
+  const timeoutPromise = new Promise((_, reject) => {
+    timeout = setTimeout(() => reject(timeoutError(label, timeoutMs)), timeoutMs)
+    timeout.unref?.()
+  })
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeout) clearTimeout(timeout)
+  })
+}
 
 function parseExpectedCountryMap(value) {
   return Object.fromEntries(String(value || '')
@@ -81,13 +99,13 @@ async function discoverShareSlugs() {
     auth: { persistSession: false, autoRefreshToken: false },
   })
 
-  const { data, error, count } = await supabase
+  const { data, error, count } = await withTimeout(supabase
     .from('trips')
     .select('id,title,share_slug,updated_at,created_at', { count: 'exact' })
     .eq('is_public', true)
     .not('share_slug', 'is', null)
     .order('updated_at', { ascending: false })
-    .limit(discoveryLimit)
+    .limit(discoveryLimit), 'public share discovery', discoveryTimeoutMs)
 
   if (error) throw new Error(`Could not discover public share slugs: ${error.message}`)
 
@@ -120,9 +138,13 @@ async function fetchWithRetry(path, options = {}) {
   let lastResponse = null
 
   for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), requestTimeoutMs)
+    timeout.unref?.()
     try {
       const response = await fetch(url, {
         ...options,
+        signal: controller.signal,
         headers: {
           'user-agent': 'globe-travel-public-share-map-integrity/1.0',
           ...(options.headers || {}),
@@ -133,6 +155,8 @@ async function fetchWithRetry(path, options = {}) {
     } catch (error) {
       lastError = error
       if (attempt === 3) throw error
+    } finally {
+      clearTimeout(timeout)
     }
 
     await sleep(500 * attempt)

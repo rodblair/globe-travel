@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { randomUUID } from 'node:crypto'
 import { chromium } from 'playwright-core'
 
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
@@ -9,13 +10,16 @@ const providedGuestId = process.env.QA_GUEST_ID || ''
 const providedShareSlug = process.env.QA_SHARE_SLUG || ''
 const providedRunId = process.env.QA_RUN_ID || ''
 const shouldCreateFixture = !providedTripId || !providedGuestId || !providedShareSlug
+const childScriptTimeoutMs = Math.max(5000, Number(process.env.QA_STUDIO_OWNER_UI_CHILD_TIMEOUT_MS || 120000) || 120000)
+const generatedRunId = providedRunId || randomUUID().slice(0, 8)
+const generatedGuestId = providedGuestId || randomUUID()
 const failures = []
 const results = []
 let fixture = {
   tripId: providedTripId,
-  guestId: providedGuestId,
+  guestId: shouldCreateFixture ? generatedGuestId : providedGuestId,
   shareSlug: providedShareSlug,
-  runId: providedRunId,
+  runId: shouldCreateFixture ? generatedRunId : providedRunId,
   external: !shouldCreateFixture,
 }
 let browser = null
@@ -48,7 +52,7 @@ function record(name, ok, details = {}) {
   return result
 }
 
-function runNodeScript(script, env = {}) {
+function runNodeScript(script, env = {}, timeoutMs = childScriptTimeoutMs) {
   return new Promise((resolve) => {
     const child = spawn(process.execPath, [script], {
       cwd: process.cwd(),
@@ -57,6 +61,22 @@ function runNodeScript(script, env = {}) {
     })
     let stdout = ''
     let stderr = ''
+    let settled = false
+
+    const timeout = setTimeout(() => {
+      if (settled) return
+      settled = true
+      child.kill('SIGTERM')
+      setTimeout(() => child.kill('SIGKILL'), 5000).unref?.()
+      resolve({
+        code: null,
+        stdout,
+        stderr: `${stderr}\nTimed out after ${timeoutMs}ms while running ${script}.`.trim(),
+        parsed: parseJsonOutput(stdout),
+        timedOut: true,
+      })
+    }, timeoutMs)
+    timeout.unref?.()
 
     child.stdout.on('data', (chunk) => {
       stdout += chunk.toString()
@@ -65,7 +85,10 @@ function runNodeScript(script, env = {}) {
       stderr += chunk.toString()
     })
     child.on('close', (code) => {
-      resolve({ code, stdout, stderr, parsed: parseJsonOutput(stdout) })
+      if (settled) return
+      settled = true
+      clearTimeout(timeout)
+      resolve({ code, stdout, stderr, parsed: parseJsonOutput(stdout), timedOut: false })
     })
   })
 }
@@ -78,13 +101,15 @@ async function createFixtureIfNeeded() {
 
   const created = await runNodeScript('scripts/platform-trip-studio-actions.mjs', {
     QA_KEEP_FIXTURE: '1',
+    QA_RUN_ID: generatedRunId,
+    QA_GUEST_ID: generatedGuestId,
   })
 
   const nextFixture = {
     tripId: created.parsed?.fixture?.tripId || null,
-    guestId: created.parsed?.guestId || null,
+    guestId: created.parsed?.guestId || generatedGuestId,
     shareSlug: created.parsed?.fixture?.shareSlug || null,
-    runId: created.parsed?.runId || null,
+    runId: created.parsed?.runId || generatedRunId,
     external: false,
   }
   fixture = nextFixture
@@ -99,6 +124,7 @@ async function createFixtureIfNeeded() {
     passed: created.parsed?.passed,
     failed: created.parsed?.failed,
     fixture: nextFixture,
+    timedOut: created.timedOut,
     stderr: created.stderr.trim().slice(-300),
   })
 }
@@ -123,10 +149,12 @@ async function cleanupFixture() {
   record('owner UI fixture cleanup passed', cleaned.code === 0 && cleaned.parsed?.ok === true, {
     code: cleaned.code,
     tripDeleted: cleaned.parsed?.tripDeleted,
+    runTripsDeleted: cleaned.parsed?.runTripsDeleted,
     placesDeleted: cleaned.parsed?.placesDeleted,
     guestProfileDeleted: cleaned.parsed?.guestProfileDeleted,
     guestUserDeleted: cleaned.parsed?.guestUserDeleted,
     errors: cleaned.parsed?.errors,
+    timedOut: cleaned.timedOut,
     stderr: cleaned.stderr.trim().slice(-300),
   })
 }
