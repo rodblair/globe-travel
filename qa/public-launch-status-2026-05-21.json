@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T09:40:01.781Z",
+  "generatedAt": "2026-05-23T09:43:52.928Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -532,8 +532,27 @@
     "csvRowsMissingPostImportCommands": [],
     "rowsMissingCommandCount": 0,
     "rowsMissingOperatorContextCount": 0,
+    "rowsMissingProofExampleCount": 0,
     "rowsMissingCommands": [],
     "rowsMissingOperatorContext": [],
+    "rowsMissingProofExamples": [],
+    "allowedDeliveryChannels": [
+      "email",
+      "sms",
+      "slack",
+      "discord",
+      "whatsapp",
+      "imessage",
+      "phone",
+      "manual",
+      "external-outreach-log",
+      "other"
+    ],
+    "contactRecordLocationExamples": [
+      "https://crm.example.com/records/GT-123",
+      "external-record:BETA-HR-001-sent-proof",
+      "crm:GT-BETA-HR-001"
+    ],
     "missingMessageFileCount": 0,
     "missingSubmissionTemplateCount": 0,
     "issues": []

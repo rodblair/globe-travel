@@ -2401,6 +2401,19 @@ const dispatchSentRecordRowsMissingOperatorContext = dispatchSentRecordTemplateR
   !hasText(row.startUrlOrCommand) ||
   !hasText(row.packetOrArtifact)
 ))
+const dispatchSentRecordRowsMissingProofExamples = dispatchSentRecordTemplateRows.filter((row) => (
+  !hasText(row.reviewerAliasExample) ||
+  !hasText(row.deliveryChannelExample) ||
+  !hasText(row.sentAtExample) ||
+  !hasText(row.contactRecordLocationExample) ||
+  !String(row.contactRecordLocationExample || '').startsWith('external-record:')
+))
+const dispatchSentRecordAllowedDeliveryChannels = Array.isArray(dispatchSentRecordTemplate.allowedDeliveryChannels)
+  ? dispatchSentRecordTemplate.allowedDeliveryChannels
+  : []
+const dispatchSentRecordLocationExamples = Array.isArray(dispatchSentRecordTemplate.contactRecordLocationExamples)
+  ? dispatchSentRecordTemplate.contactRecordLocationExamples
+  : []
 let dispatchSentRecordTemplateCsvRows = []
 let dispatchSentRecordTemplateCsvParseError = null
 try {
@@ -2468,13 +2481,29 @@ if (dispatchSentRecordRowsMissingCommands.length > 0) {
 if (dispatchSentRecordRowsMissingOperatorContext.length > 0) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows are missing operator handoff context')
 }
+if (!dispatchSentRecordAllowedDeliveryChannels.includes('external-outreach-log')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template is missing allowed delivery-channel guidance')
+}
+if (!dispatchSentRecordLocationExamples.some((example) => String(example).startsWith('https://')) ||
+  !dispatchSentRecordLocationExamples.some((example) => String(example).startsWith('external-record:')) ||
+  !dispatchSentRecordLocationExamples.some((example) => String(example).startsWith('crm:'))) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template is missing stable external proof pointer examples')
+}
+if (dispatchSentRecordRowsMissingProofExamples.length > 0) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows are missing proof-format examples')
+}
 if (!dispatchSentRecordTemplateReport.includes('This file is not a sent proof')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state the evidence boundary')
+}
+if (!dispatchSentRecordTemplateReport.includes('stable external proof pointer') ||
+  !dispatchSentRecordTemplateReport.includes('external-record:') ||
+  !dispatchSentRecordTemplateReport.includes('crm:')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not explain accepted proof pointer formats')
 }
 if (!dispatchSentRecordTemplateReport.includes('npm run qa:launch-refresh') || !dispatchSentRecordTemplateReport.includes('npm run qa:launch-signoff')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state post-import refresh/signoff commands')
 }
-for (const requiredColumn of ['messageSubject', 'startUrlOrCommand', 'packetOrArtifact', 'completedSubmissionPath', 'validateCommand', 'importCommand', 'postImportCommands']) {
+for (const requiredColumn of ['messageSubject', 'startUrlOrCommand', 'packetOrArtifact', 'completedSubmissionPath', 'validateCommand', 'importCommand', 'postImportCommands', 'reviewerAliasExample', 'deliveryChannelExample', 'sentAtExample', 'contactRecordLocationExample']) {
   if (!dispatchSentRecordTemplateCsv.includes(requiredColumn)) {
     dispatchSentRecordTemplateIssues.push(`dispatch sent-record template CSV is missing ${requiredColumn} column`)
   }
@@ -3360,8 +3389,12 @@ const summary = {
     csvRowsMissingPostImportCommands: dispatchSentRecordCsvRowsMissingPostImportCommands.map((row) => row.id),
     rowsMissingCommandCount: dispatchSentRecordRowsMissingCommands.length,
     rowsMissingOperatorContextCount: dispatchSentRecordRowsMissingOperatorContext.length,
+    rowsMissingProofExampleCount: dispatchSentRecordRowsMissingProofExamples.length,
     rowsMissingCommands: dispatchSentRecordRowsMissingCommands.map((row) => row.id),
     rowsMissingOperatorContext: dispatchSentRecordRowsMissingOperatorContext.map((row) => row.id),
+    rowsMissingProofExamples: dispatchSentRecordRowsMissingProofExamples.map((row) => row.id),
+    allowedDeliveryChannels: dispatchSentRecordAllowedDeliveryChannels,
+    contactRecordLocationExamples: dispatchSentRecordLocationExamples,
     missingMessageFileCount: dispatchSentRecordMessageFileChecks.filter((check) => check.exists !== true).length,
     missingSubmissionTemplateCount: dispatchSentRecordSubmissionTemplateChecks.filter((check) => check.exists !== true).length,
     issues: dispatchSentRecordTemplateIssues,

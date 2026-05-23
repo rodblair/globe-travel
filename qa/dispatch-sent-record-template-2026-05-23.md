@@ -5,8 +5,8 @@ Status: pass
 
 ## Result
 
-- Checked: 9
-- Passed: 9
+- Checked: 10
+- Passed: 10
 - Failed: 0
 - Launch operator board: `qa/launch-operator-today-2026-05-23.json`
 - Template rows: 6
@@ -17,6 +17,15 @@ Status: pass
 ## Operating Meaning
 
 This file is not a sent proof and does not count as outreach evidence. It is a starter record for the release operator to fill only after real beta invites or visual-review assignments are sent outside the repo. Keep real names, emails, phone numbers, and other contact details in the external contact system; use only non-sensitive aliases and external record pointers here.
+
+## Proof Fields To Fill
+
+- reviewerAlias: a stable non-sensitive alias, such as `reviewer-beta-hr-001`
+- deliveryChannel: one of `email`, `sms`, `slack`, `discord`, `whatsapp`, `imessage`, `phone`, `manual`, `external-outreach-log`, `other`
+- sentAt: an ISO timestamp that starts with 2026-05-23, such as `2026-05-23T12:00:00.000Z`
+- contactRecordLocation: a stable external proof pointer, such as `https://crm.example.com/records/GT-123`, `external-record:BETA-HR-001-sent-proof`, `crm:GT-BETA-HR-001`
+
+The example columns in the JSON and CSV are examples only. Leave them unchanged or delete them before import; the import command reads only the real proof fields.
 
 ## Commands After Filling The JSON
 
@@ -54,6 +63,7 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 - Pass: sent-record template includes validation and import commands
 - Pass: sent-record template requires launch refresh and signoff after import
 - Pass: sent-record template includes operator context for every outreach row
+- Pass: sent-record template includes proof-format guidance
 - Pass: sent-record template contains no sensitive contact details
 
 ## Failures

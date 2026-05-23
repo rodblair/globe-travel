@@ -12,6 +12,23 @@ const postImportCommands = [
   'npm run qa:launch-refresh',
   'npm run qa:launch-signoff',
 ]
+const allowedDeliveryChannels = [
+  'email',
+  'sms',
+  'slack',
+  'discord',
+  'whatsapp',
+  'imessage',
+  'phone',
+  'manual',
+  'external-outreach-log',
+  'other',
+]
+const contactRecordLocationExamples = [
+  'https://crm.example.com/records/GT-123',
+  'external-record:BETA-HR-001-sent-proof',
+  'crm:GT-BETA-HR-001',
+]
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
@@ -58,6 +75,10 @@ function rowsToCsv(rows) {
     'sentAt',
     'contactRecordLocation',
     'notes',
+    'reviewerAliasExample',
+    'deliveryChannelExample',
+    'sentAtExample',
+    'contactRecordLocationExample',
   ]
   return [
     headers.join(','),
@@ -112,6 +133,10 @@ const templateRows = sendRows.map((row) => ({
   sentAt: '',
   contactRecordLocation: '',
   notes: 'Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.',
+  reviewerAliasExample: `reviewer-${String(row.id || 'row').toLowerCase()}`,
+  deliveryChannelExample: 'external-outreach-log',
+  sentAtExample: `${date}T12:00:00.000Z`,
+  contactRecordLocationExample: `external-record:${String(row.id || 'row').toLowerCase()}-sent-proof`,
 }))
 const validationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
 const importCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
@@ -194,10 +219,40 @@ const checks = [
       .map((row) => row.id),
   },
   {
+    name: 'sent-record template includes proof-format guidance',
+    ok: allowedDeliveryChannels.includes('external-outreach-log') &&
+      contactRecordLocationExamples.some((example) => example.startsWith('https://')) &&
+      contactRecordLocationExamples.some((example) => example.startsWith('external-record:')) &&
+      contactRecordLocationExamples.some((example) => example.startsWith('crm:')) &&
+      templateRows.every((row) => (
+        hasText(row.reviewerAliasExample) &&
+        allowedDeliveryChannels.includes(row.deliveryChannelExample) &&
+        hasText(row.sentAtExample) &&
+        hasText(row.contactRecordLocationExample) &&
+        String(row.contactRecordLocationExample).startsWith('external-record:')
+      )),
+    allowedDeliveryChannels,
+    contactRecordLocationExamples,
+    rowsMissingProofExamples: templateRows
+      .filter((row) => !hasText(row.reviewerAliasExample) ||
+        !allowedDeliveryChannels.includes(row.deliveryChannelExample) ||
+        !hasText(row.sentAtExample) ||
+        !hasText(row.contactRecordLocationExample))
+      .map((row) => row.id),
+  },
+  {
     name: 'sent-record template contains no sensitive contact details',
-    ok: templateRows.every((row) => !looksSensitive(row.reviewerAlias) && !looksSensitive(row.contactRecordLocation) && !looksSensitive(row.notes)),
+    ok: templateRows.every((row) => !looksSensitive(row.reviewerAlias) &&
+      !looksSensitive(row.contactRecordLocation) &&
+      !looksSensitive(row.notes) &&
+      !looksSensitive(row.reviewerAliasExample) &&
+      !looksSensitive(row.contactRecordLocationExample)),
     sensitiveRowIds: templateRows
-      .filter((row) => looksSensitive(row.reviewerAlias) || looksSensitive(row.contactRecordLocation) || looksSensitive(row.notes))
+      .filter((row) => looksSensitive(row.reviewerAlias) ||
+        looksSensitive(row.contactRecordLocation) ||
+        looksSensitive(row.notes) ||
+        looksSensitive(row.reviewerAliasExample) ||
+        looksSensitive(row.contactRecordLocationExample))
       .map((row) => row.id),
   },
 ]
@@ -220,6 +275,8 @@ const summary = {
   csvValidationCommand,
   csvImportCommand,
   postImportCommands,
+  allowedDeliveryChannels,
+  contactRecordLocationExamples,
   messageFileChecks,
   submissionTemplateChecks,
   rows: templateRows,
@@ -249,6 +306,15 @@ Status: ${summary.status}
 ## Operating Meaning
 
 This file is not a sent proof and does not count as outreach evidence. It is a starter record for the release operator to fill only after real beta invites or visual-review assignments are sent outside the repo. Keep real names, emails, phone numbers, and other contact details in the external contact system; use only non-sensitive aliases and external record pointers here.
+
+## Proof Fields To Fill
+
+- reviewerAlias: a stable non-sensitive alias, such as \`reviewer-beta-hr-001\`
+- deliveryChannel: one of ${summary.allowedDeliveryChannels.map((channel) => `\`${channel}\``).join(', ')}
+- sentAt: an ISO timestamp that starts with ${summary.date}, such as \`${summary.date}T12:00:00.000Z\`
+- contactRecordLocation: a stable external proof pointer, such as ${summary.contactRecordLocationExamples.map((example) => `\`${example}\``).join(', ')}
+
+The example columns in the JSON and CSV are examples only. Leave them unchanged or delete them before import; the import command reads only the real proof fields.
 
 ## Commands After Filling The JSON
 

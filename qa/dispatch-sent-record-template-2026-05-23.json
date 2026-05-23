@@ -1,8 +1,8 @@
 {
   "date": "2026-05-23",
   "status": "pass",
-  "checked": 9,
-  "passed": 9,
+  "checked": 10,
+  "passed": 10,
   "failed": 0,
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-23.json",
   "readyForImport": false,
@@ -16,6 +16,23 @@
   "postImportCommands": [
     "npm run qa:launch-refresh",
     "npm run qa:launch-signoff"
+  ],
+  "allowedDeliveryChannels": [
+    "email",
+    "sms",
+    "slack",
+    "discord",
+    "whatsapp",
+    "imessage",
+    "phone",
+    "manual",
+    "external-outreach-log",
+    "other"
+  ],
+  "contactRecordLocationExamples": [
+    "https://crm.example.com/records/GT-123",
+    "external-record:BETA-HR-001-sent-proof",
+    "crm:GT-BETA-HR-001"
   ],
   "messageFileChecks": [
     {
@@ -102,7 +119,11 @@
       "deliveryChannel": "",
       "sentAt": "",
       "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo."
+      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
+      "reviewerAliasExample": "reviewer-beta-hr-001",
+      "deliveryChannelExample": "external-outreach-log",
+      "sentAtExample": "2026-05-23T12:00:00.000Z",
+      "contactRecordLocationExample": "external-record:beta-hr-001-sent-proof"
     },
     {
       "id": "BETA-HR-002",
@@ -124,7 +145,11 @@
       "deliveryChannel": "",
       "sentAt": "",
       "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo."
+      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
+      "reviewerAliasExample": "reviewer-beta-hr-002",
+      "deliveryChannelExample": "external-outreach-log",
+      "sentAtExample": "2026-05-23T12:00:00.000Z",
+      "contactRecordLocationExample": "external-record:beta-hr-002-sent-proof"
     },
     {
       "id": "BETA-HR-003",
@@ -146,7 +171,11 @@
       "deliveryChannel": "",
       "sentAt": "",
       "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo."
+      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
+      "reviewerAliasExample": "reviewer-beta-hr-003",
+      "deliveryChannelExample": "external-outreach-log",
+      "sentAtExample": "2026-05-23T12:00:00.000Z",
+      "contactRecordLocationExample": "external-record:beta-hr-003-sent-proof"
     },
     {
       "id": "BETA-HR-004",
@@ -168,7 +197,11 @@
       "deliveryChannel": "",
       "sentAt": "",
       "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo."
+      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
+      "reviewerAliasExample": "reviewer-beta-hr-004",
+      "deliveryChannelExample": "external-outreach-log",
+      "sentAtExample": "2026-05-23T12:00:00.000Z",
+      "contactRecordLocationExample": "external-record:beta-hr-004-sent-proof"
     },
     {
       "id": "BETA-HR-005",
@@ -190,7 +223,11 @@
       "deliveryChannel": "",
       "sentAt": "",
       "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo."
+      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
+      "reviewerAliasExample": "reviewer-beta-hr-005",
+      "deliveryChannelExample": "external-outreach-log",
+      "sentAtExample": "2026-05-23T12:00:00.000Z",
+      "contactRecordLocationExample": "external-record:beta-hr-005-sent-proof"
     },
     {
       "id": "PROD-VISUAL-HISTORY-002",
@@ -212,7 +249,11 @@
       "deliveryChannel": "",
       "sentAt": "",
       "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo."
+      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
+      "reviewerAliasExample": "reviewer-prod-visual-history-002",
+      "deliveryChannelExample": "external-outreach-log",
+      "sentAtExample": "2026-05-23T12:00:00.000Z",
+      "contactRecordLocationExample": "external-record:prod-visual-history-002-sent-proof"
     }
   ],
   "checks": [
@@ -266,6 +307,28 @@
       "name": "sent-record template includes operator context for every outreach row",
       "ok": true,
       "rowsMissingOperatorContext": []
+    },
+    {
+      "name": "sent-record template includes proof-format guidance",
+      "ok": true,
+      "allowedDeliveryChannels": [
+        "email",
+        "sms",
+        "slack",
+        "discord",
+        "whatsapp",
+        "imessage",
+        "phone",
+        "manual",
+        "external-outreach-log",
+        "other"
+      ],
+      "contactRecordLocationExamples": [
+        "https://crm.example.com/records/GT-123",
+        "external-record:BETA-HR-001-sent-proof",
+        "crm:GT-BETA-HR-001"
+      ],
+      "rowsMissingProofExamples": []
     },
     {
       "name": "sent-record template contains no sensitive contact details",
