@@ -1,16 +1,25 @@
 import { randomUUID } from 'node:crypto'
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
 import { chromium } from 'playwright-core'
 import { createClient } from '@supabase/supabase-js'
+import { currentQaDate } from './qa-date-utils.mjs'
 
 const root = process.cwd()
+const repoRoot = resolve(root, '..')
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const prompt = process.env.QA_PLANNER_PROMPT || 'Plan a 5 day Athens trip for 4 friends with history food relaxed pacing and one memorable night out'
 const runId = process.env.QA_RUN_ID || randomUUID().slice(0, 8)
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
+const date = process.env.QA_PLANNER_HANDOFF_DATE || currentQaDate()
+const jsonArtifact = process.env.QA_PLANNER_HANDOFF_JSON || `qa/planner-handoff-smoke-${date}.json`
+const reportArtifact = process.env.QA_PLANNER_HANDOFF_REPORT || `qa/planner-handoff-smoke-${date}.md`
 const failures = []
+
+function repoPath(relativePath) {
+  return resolve(repoRoot, relativePath)
+}
 
 async function loadDotEnv() {
   const envPath = resolve(root, '.env.local')
@@ -37,6 +46,49 @@ function record(name, ok, details = {}) {
   const result = { name, ok, ...details }
   if (!ok) failures.push(result)
   return result
+}
+
+function markdownTable(rows) {
+  return rows
+    .map((row) => `| ${row.map((cell) => String(cell).replace(/\|/g, '\\|')).join(' | ')} |`)
+    .join('\n')
+}
+
+function buildReport(summary) {
+  const failureLines = summary.failures.length
+    ? summary.failures.map((failure) => `- ${failure.name}`).join('\n')
+    : '- none'
+  const resultRows = [
+    ['Check', 'Result'],
+    ['---', '---'],
+    ...summary.results.map((result) => [result.name, result.ok ? 'Pass' : 'Fail']),
+  ]
+
+  return `# Planner Handoff Smoke
+
+Date: ${date}
+Base URL: ${summary.baseUrl}
+Status: ${summary.failed === 0 ? 'pass' : 'fail'}
+Checked: ${summary.checked}
+Passed: ${summary.passed}
+Failed: ${summary.failed}
+Prompt: ${summary.prompt}
+
+## Coverage
+
+- Verifies /chat?q prompt preservation.
+- Verifies disposable five-day Athens draft creation.
+- Verifies failed planner start keeps the prompt and retry path.
+- Verifies delayed mobile planner start shows progress, disables duplicate-start controls, reaches Trip Studio, and cleans up disposable state.
+
+## Results
+
+${markdownTable(resultRows)}
+
+## Failures
+
+${failureLines}
+`
 }
 
 function getSetCookieHeaders(headers) {
@@ -407,6 +459,7 @@ if (process.env.QA_SKIP_MUTATION !== '1') {
 await runBrowserPlannerStartChecks()
 
 const summary = {
+  date,
   baseUrl,
   prompt,
   runId,
@@ -417,7 +470,13 @@ const summary = {
   cleanup,
   results,
   failures,
+  jsonArtifact,
+  reportArtifact,
 }
+
+await mkdir(dirname(repoPath(jsonArtifact)), { recursive: true })
+await writeFile(repoPath(jsonArtifact), `${JSON.stringify(summary, null, 2)}\n`)
+await writeFile(repoPath(reportArtifact), buildReport(summary))
 
 console.log(JSON.stringify(summary, null, 2))
 
