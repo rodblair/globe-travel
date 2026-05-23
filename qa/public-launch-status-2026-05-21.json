@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T13:45:50.972Z",
+  "generatedAt": "2026-05-23T13:52:38.058Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -587,7 +587,13 @@
     "rejectionIssueCount": 24,
     "invalidProofExitCode": 1,
     "invalidProofStatus": "fail",
-    "invalidProofIssueCount": 3,
+    "invalidProofIssueCount": 6,
+    "privateContactIssueCount": 3,
+    "privateContactIssues": [
+      "BETA-HR-003 reviewerAlias appears to include contact details",
+      "BETA-HR-003 contactRecordLocation appears to include contact details",
+      "BETA-HR-003 notes appears to include contact details"
+    ],
     "invalidProofArtifactsCleanedUp": true,
     "missingFieldNames": [
       "reviewerAlias",

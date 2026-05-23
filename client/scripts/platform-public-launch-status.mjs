@@ -2676,6 +2676,9 @@ const dispatchSentRecordTemplateRejectionIssues = []
 const dispatchSentRecordTemplateRejectionMissingFields = Array.isArray(dispatchSentRecordTemplateRejection.missingFieldNames)
   ? dispatchSentRecordTemplateRejection.missingFieldNames
   : []
+const dispatchSentRecordTemplateRejectionPrivateContactIssues = Array.isArray(dispatchSentRecordTemplateRejection.privateContactIssues)
+  ? dispatchSentRecordTemplateRejection.privateContactIssues
+  : []
 const requiredDispatchSentProofFields = ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contactRecordLocation']
 if (dispatchSentRecordTemplateRejection.status !== 'pass') {
   dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection status is not pass')
@@ -2713,8 +2716,16 @@ if (Number(dispatchSentRecordTemplateRejection.invalidProofExitCode) === 0) {
 if (dispatchSentRecordTemplateRejection.invalidProofStatus !== 'fail') {
   dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record a failed invalid-proof status')
 }
-if (Number(dispatchSentRecordTemplateRejection.invalidProofIssueCount || 0) < 3) {
+if (Number(dispatchSentRecordTemplateRejection.invalidProofIssueCount || 0) < 6) {
   dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record every invalid-proof issue')
+}
+if (Number(dispatchSentRecordTemplateRejection.privateContactIssueCount || 0) < 3) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record every private-contact proof issue')
+}
+for (const field of ['reviewerAlias', 'contactRecordLocation', 'notes']) {
+  if (!dispatchSentRecordTemplateRejectionPrivateContactIssues.some((issue) => String(issue).includes(field))) {
+    dispatchSentRecordTemplateRejectionIssues.push(`dispatch sent-record template rejection did not prove private-contact rejection for ${field}`)
+  }
 }
 if (dispatchSentRecordTemplateRejection.invalidProofArtifactsCleanedUp !== true) {
   dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection left invalid-proof temporary artifacts behind')
@@ -3632,6 +3643,8 @@ const summary = {
     invalidProofExitCode: dispatchSentRecordTemplateRejection.invalidProofExitCode ?? null,
     invalidProofStatus: dispatchSentRecordTemplateRejection.invalidProofStatus || null,
     invalidProofIssueCount: dispatchSentRecordTemplateRejection.invalidProofIssueCount ?? null,
+    privateContactIssueCount: dispatchSentRecordTemplateRejection.privateContactIssueCount ?? null,
+    privateContactIssues: dispatchSentRecordTemplateRejectionPrivateContactIssues,
     invalidProofArtifactsCleanedUp: dispatchSentRecordTemplateRejection.invalidProofArtifactsCleanedUp ?? null,
     missingFieldNames: dispatchSentRecordTemplateRejectionMissingFields,
     canonicalBetaUnchanged: dispatchSentRecordTemplateRejection.canonicalBetaUnchanged ?? null,

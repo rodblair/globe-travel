@@ -97,6 +97,7 @@ const canonicalVisualUnchanged = JSON.stringify(canonicalVisualAfter) === canoni
 const templateRows = Array.isArray(template?.rows) ? template.rows : []
 const invalidProofTemplateRow = templateRows[0] || {}
 const localProofTemplateRow = templateRows[1] || {}
+const sensitiveProofTemplateRow = templateRows[2] || {}
 const invalidProofRecordBody = {
   date,
   rows: [
@@ -124,6 +125,18 @@ const invalidProofRecordBody = {
         },
       ]
       : []),
+    ...(sensitiveProofTemplateRow.id
+      ? [
+        {
+          id: sensitiveProofTemplateRow.id,
+          reviewerAlias: 'alex@example.com',
+          deliveryChannel: 'external-outreach-log',
+          sentAt: `${date}T12:10:00.000Z`,
+          contactRecordLocation: `https://crm.example.com/records/${sensitiveProofTemplateRow.id}?email=alex@example.com`,
+          notes: 'Called +1 555 121 2121; sensitive fixture should be rejected before import.',
+        },
+      ]
+      : []),
   ],
 }
 await writeFile(repoPath(invalidProofRecord), `${JSON.stringify(invalidProofRecordBody, null, 2)}\n`)
@@ -140,6 +153,7 @@ const invalidProofResult = spawnSync(process.execPath, ['scripts/platform-dispat
 })
 const invalidProofSummary = await readJson(invalidProofRawJson).catch(() => null)
 const invalidProofIssues = Array.isArray(invalidProofSummary?.issues) ? invalidProofSummary.issues : []
+const privateContactIssues = invalidProofIssues.filter((issue) => String(issue).includes('appears to include contact details'))
 const canonicalBetaAfterInvalidProof = await readJson(betaDispatchLogPath)
 const canonicalVisualAfterInvalidProof = await readJson(visualDispatchLogPath)
 const invalidProofArtifactsExistBeforeCleanup = await Promise.all([invalidProofRecord, invalidProofRawJson, invalidProofRawReport].map((path) => fileExists(path)))
@@ -183,11 +197,16 @@ const checks = [
       invalidProofIssues.some((issue) => String(issue).includes('deliveryChannel must be one of')) &&
       invalidProofIssues.some((issue) => String(issue).includes('contactRecordLocation must point to a stable external proof record')) &&
       invalidProofIssues.some((issue) => String(issue).includes('qa/fake-local-contact-proof.json') || String(issue).includes(localProofTemplateRow.id || 'local-proof-template-row-missing')) &&
+      privateContactIssues.length >= 3 &&
+      privateContactIssues.some((issue) => String(issue).includes('reviewerAlias')) &&
+      privateContactIssues.some((issue) => String(issue).includes('contactRecordLocation')) &&
+      privateContactIssues.some((issue) => String(issue).includes('notes')) &&
       JSON.stringify(canonicalBetaAfterInvalidProof) === canonicalBetaBeforeSerialized &&
       JSON.stringify(canonicalVisualAfterInvalidProof) === canonicalVisualBeforeSerialized,
     exitCode: invalidProofResult.status,
     status: invalidProofSummary?.status || null,
     issues: invalidProofIssues,
+    privateContactIssues,
   },
   {
     name: 'blank sent-record template rejection imports no rows',
@@ -243,6 +262,8 @@ const summary = {
   invalidProofExitCode: invalidProofResult.status,
   invalidProofStatus: invalidProofSummary?.status || null,
   invalidProofIssueCount: invalidProofIssues.length,
+  privateContactIssueCount: privateContactIssues.length,
+  privateContactIssues,
   invalidProofArtifactsCleanedUp,
   missingFieldNames,
   canonicalBetaUnchanged,

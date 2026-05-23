@@ -3957,7 +3957,12 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateRejectionStatus.rejectionIssueCount) > 0 &&
     Number(dispatchSentRecordTemplateRejectionStatus.invalidProofExitCode) !== 0 &&
     dispatchSentRecordTemplateRejectionStatus.invalidProofStatus === 'fail' &&
-    Number(dispatchSentRecordTemplateRejectionStatus.invalidProofIssueCount) >= 3 &&
+    Number(dispatchSentRecordTemplateRejectionStatus.invalidProofIssueCount) >= 6 &&
+    Number(dispatchSentRecordTemplateRejectionStatus.privateContactIssueCount || 0) >= 3 &&
+    Array.isArray(dispatchSentRecordTemplateRejectionStatus.privateContactIssues) &&
+    dispatchSentRecordTemplateRejectionStatus.privateContactIssues.some((issue) => String(issue).includes('reviewerAlias')) &&
+    dispatchSentRecordTemplateRejectionStatus.privateContactIssues.some((issue) => String(issue).includes('contactRecordLocation')) &&
+    dispatchSentRecordTemplateRejectionStatus.privateContactIssues.some((issue) => String(issue).includes('notes')) &&
     dispatchSentRecordTemplateRejectionStatus.invalidProofArtifactsCleanedUp === true &&
     requiredDispatchSentRecordTemplateRejectionFields.every((field) => dispatchSentRecordTemplateRejectionMissingFields.includes(field)) &&
     dispatchSentRecordTemplateRejectionStatus.canonicalBetaUnchanged === true &&
@@ -3987,6 +3992,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateRejectionInvalidProofExitCode: dispatchSentRecordTemplateRejectionStatus.invalidProofExitCode ?? null,
     dispatchSentRecordTemplateRejectionInvalidProofStatus: dispatchSentRecordTemplateRejectionStatus.invalidProofStatus || null,
     dispatchSentRecordTemplateRejectionInvalidProofIssueCount: dispatchSentRecordTemplateRejectionStatus.invalidProofIssueCount ?? null,
+    dispatchSentRecordTemplateRejectionPrivateContactIssueCount: dispatchSentRecordTemplateRejectionStatus.privateContactIssueCount ?? null,
+    dispatchSentRecordTemplateRejectionPrivateContactIssues: dispatchSentRecordTemplateRejectionStatus.privateContactIssues || null,
     dispatchSentRecordTemplateRejectionInvalidProofArtifactsCleanedUp: dispatchSentRecordTemplateRejectionStatus.invalidProofArtifactsCleanedUp ?? null,
     dispatchSentRecordTemplateRejectionMissingFields,
     dispatchSentRecordTemplateRejectionCanonicalBetaUnchanged: dispatchSentRecordTemplateRejectionStatus.canonicalBetaUnchanged ?? null,
