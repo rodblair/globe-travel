@@ -1,5 +1,5 @@
 {
-  "reviewedAt": "2026-05-21",
+  "reviewedAt": "2026-05-23",
   "owner": "Product",
   "cadence": "Weekly during beta, after every production deploy during launch week, and before any public launch approval.",
   "minimumPublicLaunchReviewHistory": 4,
@@ -99,11 +99,11 @@
     }
   ],
   "latestProductionReview": {
-    "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/summary.json",
-    "productionCommit": "cc529ee622dc60720063c96131306562f90f4c31",
-    "deploymentUrl": "globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app",
+    "reviewedAt": "2026-05-23",
+    "artifact": "qa/visual-baseline-production-release-2026-05-23",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-05-23/summary.json",
+    "productionCommit": "c4c93cc838bd1c48a1ea6dcf2b76c4495cb21f46",
+    "deploymentUrl": "globe-travel-hzc30btur-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live cc529ee deployment after launch evidence timestamp hardening reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live c4c93cc deployment after map accessibility and label hardening reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
   },
   "reviewHistory": [
     {
