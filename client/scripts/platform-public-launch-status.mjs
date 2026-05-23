@@ -102,6 +102,10 @@ const dispatchSentRecordTemplateReportPath = process.env.QA_DISPATCH_SENT_RECORD
   'qa/dispatch-sent-record-template-2026-05-22.md'
 const dispatchSentRecordTemplateCsvPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
   'qa/dispatch-sent-record-template-2026-05-22.csv'
+const dispatchSentRecordTemplateRejectionPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
+  'qa/dispatch-sent-record-template-rejection-2026-05-22.json'
+const dispatchSentRecordTemplateRejectionReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_REPORT ||
+  'qa/dispatch-sent-record-template-rejection-2026-05-22.md'
 const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
   'qa/review-intake-rehearsal-2026-05-22.json'
 const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
@@ -713,6 +717,8 @@ const [
   dispatchSentRecordTemplate,
   dispatchSentRecordTemplateReport,
   dispatchSentRecordTemplateCsv,
+  dispatchSentRecordTemplateRejection,
+  dispatchSentRecordTemplateRejectionReport,
   reviewIntakeRehearsal,
   reviewIntakeRehearsalReport,
   publicLaunchModeRehearsal,
@@ -785,6 +791,8 @@ const [
   readJson(dispatchSentRecordTemplatePath),
   readText(dispatchSentRecordTemplateReportPath),
   readText(dispatchSentRecordTemplateCsvPath),
+  readJson(dispatchSentRecordTemplateRejectionPath),
+  readText(dispatchSentRecordTemplateRejectionReportPath),
   readJson(reviewIntakeRehearsalPath),
   readText(reviewIntakeRehearsalReportPath),
   readJson(publicLaunchModeRehearsalPath),
@@ -2259,6 +2267,65 @@ if (!dispatchSentRecordTemplateCsv.includes('completedSubmissionPath')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing completed submission target column')
 }
 
+const dispatchSentRecordTemplateRejectionIssues = []
+const dispatchSentRecordTemplateRejectionMissingFields = Array.isArray(dispatchSentRecordTemplateRejection.missingFieldNames)
+  ? dispatchSentRecordTemplateRejection.missingFieldNames
+  : []
+const requiredDispatchSentProofFields = ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contactRecordLocation']
+if (dispatchSentRecordTemplateRejection.status !== 'pass') {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection status is not pass')
+}
+if (dispatchSentRecordTemplateRejection.date !== today) {
+  dispatchSentRecordTemplateRejectionIssues.push(`dispatch sent-record template rejection date ${dispatchSentRecordTemplateRejection.date || 'missing'} does not match ${today}`)
+}
+if (dispatchSentRecordTemplateRejection.templateArtifact !== qaDisplayPath(dispatchSentRecordTemplatePath)) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection does not target the current sent-record template')
+}
+if (Number(dispatchSentRecordTemplateRejection.markSentExitCode) === 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not fail the blank import attempt')
+}
+if (dispatchSentRecordTemplateRejection.markSentStatus !== 'fail') {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record a failed mark-sent status')
+}
+if (dispatchSentRecordTemplateRejection.markSentImportMode !== true) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not exercise import mode')
+}
+if (Number(dispatchSentRecordTemplateRejection.requestedUpdateCount || 0) !== Number(dispatchSentRecordTemplate.rowCount || 0)) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not test every template row')
+}
+if (Number(dispatchSentRecordTemplateRejection.betaUpdateCount || 0) !== 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection imported beta rows')
+}
+if (Number(dispatchSentRecordTemplateRejection.visualUpdateCount || 0) !== 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection imported visual rows')
+}
+if (Number(dispatchSentRecordTemplateRejection.rejectionIssueCount || 0) === 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record validation issues')
+}
+for (const field of requiredDispatchSentProofFields) {
+  if (!dispatchSentRecordTemplateRejectionMissingFields.includes(field)) {
+    dispatchSentRecordTemplateRejectionIssues.push(`dispatch sent-record template rejection did not name missing ${field}`)
+  }
+}
+if (dispatchSentRecordTemplateRejection.canonicalBetaUnchanged !== true) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection mutated the canonical beta dispatch log')
+}
+if (dispatchSentRecordTemplateRejection.canonicalVisualUnchanged !== true) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection mutated the canonical visual dispatch log')
+}
+if (Number(dispatchSentRecordTemplateRejection.canonicalBetaSentCount || 0) !== 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection advanced canonical beta sent count')
+}
+if (Number(dispatchSentRecordTemplateRejection.canonicalVisualSentCount || 0) !== 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection advanced canonical visual sent count')
+}
+if (dispatchSentRecordTemplateRejection.rawArtifactsCleanedUp !== true) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection left raw temporary artifacts behind')
+}
+if (!dispatchSentRecordTemplateRejectionReport.includes('blank sent-record template is rejected before import and cannot mutate canonical dispatch logs')) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection report does not state the pre-import safety guarantee')
+}
+
 const reviewIntakeRehearsalIssues = []
 if (reviewIntakeRehearsal.status !== 'pass') {
   reviewIntakeRehearsalIssues.push('review intake rehearsal status is not pass')
@@ -2485,6 +2552,7 @@ if (launchSentDispatchRehearsalIssues.length > 0) guardrailIssues.push('daily la
 if (dispatchMarkSentDryRunIssues.length > 0) guardrailIssues.push('dispatch mark-sent dry run is not proving safe sent-state imports')
 if (dispatchMarkSentImportRehearsalIssues.length > 0) guardrailIssues.push('dispatch mark-sent import rehearsal is not proving isolated sent-state imports')
 if (dispatchSentRecordTemplateIssues.length > 0) guardrailIssues.push('dispatch sent-record template is not ready for operator handoff')
+if (dispatchSentRecordTemplateRejectionIssues.length > 0) guardrailIssues.push('dispatch sent-record blank-template rejection is not proving pre-import safety')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
@@ -2940,6 +3008,28 @@ const summary = {
     missingSubmissionTemplateCount: dispatchSentRecordSubmissionTemplateChecks.filter((check) => check.exists !== true).length,
     issues: dispatchSentRecordTemplateIssues,
   },
+  dispatchSentRecordTemplateRejection: {
+    ready: dispatchSentRecordTemplateRejectionIssues.length === 0,
+    issueCount: dispatchSentRecordTemplateRejectionIssues.length,
+    artifact: qaDisplayPath(dispatchSentRecordTemplateRejectionPath),
+    report: qaDisplayPath(dispatchSentRecordTemplateRejectionReportPath),
+    date: dispatchSentRecordTemplateRejection.date || null,
+    templateArtifact: dispatchSentRecordTemplateRejection.templateArtifact || null,
+    markSentExitCode: dispatchSentRecordTemplateRejection.markSentExitCode ?? null,
+    markSentStatus: dispatchSentRecordTemplateRejection.markSentStatus || null,
+    markSentImportMode: dispatchSentRecordTemplateRejection.markSentImportMode ?? null,
+    requestedUpdateCount: dispatchSentRecordTemplateRejection.requestedUpdateCount ?? null,
+    betaUpdateCount: dispatchSentRecordTemplateRejection.betaUpdateCount ?? null,
+    visualUpdateCount: dispatchSentRecordTemplateRejection.visualUpdateCount ?? null,
+    rejectionIssueCount: dispatchSentRecordTemplateRejection.rejectionIssueCount ?? null,
+    missingFieldNames: dispatchSentRecordTemplateRejectionMissingFields,
+    canonicalBetaUnchanged: dispatchSentRecordTemplateRejection.canonicalBetaUnchanged ?? null,
+    canonicalVisualUnchanged: dispatchSentRecordTemplateRejection.canonicalVisualUnchanged ?? null,
+    canonicalBetaSentCount: dispatchSentRecordTemplateRejection.canonicalBetaSentCount ?? null,
+    canonicalVisualSentCount: dispatchSentRecordTemplateRejection.canonicalVisualSentCount ?? null,
+    rawArtifactsCleanedUp: dispatchSentRecordTemplateRejection.rawArtifactsCleanedUp ?? null,
+    issues: dispatchSentRecordTemplateRejectionIssues,
+  },
   reviewIntakeRehearsal: {
     ready: reviewIntakeRehearsalIssues.length === 0,
     issueCount: reviewIntakeRehearsalIssues.length,
@@ -3293,6 +3383,7 @@ const summary = {
     dispatchMarkSentDryRun: qaDisplayPath(dispatchMarkSentDryRunPath),
     dispatchMarkSentImportRehearsal: qaDisplayPath(dispatchMarkSentImportRehearsalPath),
     dispatchSentRecordTemplate: qaDisplayPath(dispatchSentRecordTemplatePath),
+    dispatchSentRecordTemplateRejection: qaDisplayPath(dispatchSentRecordTemplateRejectionPath),
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
     publicLaunchModeRehearsal: qaDisplayPath(publicLaunchModeRehearsalPath),
     json: `qa/${jsonArtifact}`,
@@ -3351,6 +3442,7 @@ Status: ${status}
 - Dispatch mark-sent dry run ready: ${summary.dispatchMarkSentDryRun.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentDryRun.betaUpdateCount || 0} beta, ${summary.dispatchMarkSentDryRun.visualUpdateCount || 0} visual)
 - Dispatch mark-sent import rehearsal ready: ${summary.dispatchMarkSentImportRehearsal.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentImportRehearsal.tempBetaSentCount || 0} beta sent on isolated log, ${summary.dispatchMarkSentImportRehearsal.tempVisualSentCount || 0} visual sent on isolated log)
 - Dispatch sent-record template ready: ${summary.dispatchSentRecordTemplate.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplate.rowCount || 0} rows, ready for import: ${summary.dispatchSentRecordTemplate.readyForImport ? 'yes' : 'no'})
+- Dispatch sent-record blank-template rejection ready: ${summary.dispatchSentRecordTemplateRejection.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplateRejection.requestedUpdateCount || 0} rejected rows, canonical logs unchanged: ${summary.dispatchSentRecordTemplateRejection.canonicalBetaUnchanged && summary.dispatchSentRecordTemplateRejection.canonicalVisualUnchanged ? 'yes' : 'no'})
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
 - Open P0/P1 risks: ${openBlockingRisks.length}
@@ -3446,6 +3538,9 @@ ${markdownList(dispatchMarkSentImportRehearsalIssues)}
 Dispatch sent-record template:
 ${markdownList(dispatchSentRecordTemplateIssues)}
 
+Dispatch sent-record blank-template rejection:
+${markdownList(dispatchSentRecordTemplateRejectionIssues)}
+
 Review intake rehearsal:
 ${markdownList(reviewIntakeRehearsalIssues)}
 
@@ -3494,6 +3589,7 @@ ${markdownList(summary.nextActions)}
 - Dispatch mark-sent dry run: \`${summary.dispatchMarkSentDryRun.report}\` and \`${summary.dispatchMarkSentDryRun.artifact}\`
 - Dispatch mark-sent import rehearsal: \`${summary.dispatchMarkSentImportRehearsal.report}\` and \`${summary.dispatchMarkSentImportRehearsal.artifact}\`
 - Dispatch sent-record template: \`${summary.dispatchSentRecordTemplate.report}\`, \`${summary.dispatchSentRecordTemplate.csv}\`, and \`${summary.dispatchSentRecordTemplate.artifact}\`
+- Dispatch sent-record blank-template rejection: \`${summary.dispatchSentRecordTemplateRejection.report}\` and \`${summary.dispatchSentRecordTemplateRejection.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

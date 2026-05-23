@@ -1,0 +1,219 @@
+import { spawnSync } from 'node:child_process'
+import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { currentQaDate } from './qa-date-utils.mjs'
+
+const clientRoot = process.cwd()
+const root = resolve(clientRoot, '..')
+const date = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_DATE || currentQaDate()
+const templatePath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
+  'qa/dispatch-sent-record-template-2026-05-22.json'
+const templateReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
+  'qa/dispatch-sent-record-template-2026-05-22.md'
+const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG ||
+  'qa/beta-human-review-dispatch-log-2026-05-21.json'
+const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
+  'qa/production-visual-review-dispatch-log-2026-05-21.json'
+const rawArtifactName = `dispatch-sent-record-template-rejection-raw-${date}`
+const rawJson = `qa/${rawArtifactName}.json`
+const rawReport = `qa/${rawArtifactName}.md`
+const artifactName = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTIFACT_NAME ||
+  `dispatch-sent-record-template-rejection-${date}`
+
+function qaDisplayPath(value) {
+  return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function repoPath(path) {
+  return resolve(root, qaDisplayPath(path))
+}
+
+async function readJson(path) {
+  return JSON.parse(await readFile(repoPath(path), 'utf8'))
+}
+
+async function readText(path) {
+  return readFile(repoPath(path), 'utf8')
+}
+
+async function fileExists(path) {
+  try {
+    await access(repoPath(path))
+    return true
+  } catch {
+    return false
+  }
+}
+
+function markdownList(items) {
+  return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
+}
+
+function sentCount(log) {
+  return Array.isArray(log?.dispatchRows)
+    ? log.dispatchRows.filter((row) => row.sendStatus === 'sent').length
+    : Number(log?.sentCount || 0)
+}
+
+await mkdir(resolve(root, 'qa'), { recursive: true })
+await Promise.all([rawJson, rawReport].map((path) => rm(repoPath(path), { force: true })))
+
+const template = await readJson(templatePath)
+const templateReport = await readText(templateReportPath)
+const canonicalBetaBefore = await readJson(betaDispatchLogPath)
+const canonicalVisualBefore = await readJson(visualDispatchLogPath)
+const canonicalBetaBeforeSerialized = JSON.stringify(canonicalBetaBefore)
+const canonicalVisualBeforeSerialized = JSON.stringify(canonicalVisualBefore)
+
+const markSentResult = spawnSync(process.execPath, ['scripts/platform-dispatch-log-mark-sent.mjs'], {
+  cwd: clientRoot,
+  encoding: 'utf8',
+  env: {
+    ...process.env,
+    QA_DISPATCH_MARK_SENT_IMPORT: '1',
+    QA_DISPATCH_MARK_SENT_RECORD: templatePath,
+    QA_DISPATCH_MARK_SENT_ARTIFACT_NAME: rawArtifactName,
+  },
+})
+
+const markSentSummary = await readJson(rawJson).catch(() => null)
+const canonicalBetaAfter = await readJson(betaDispatchLogPath)
+const canonicalVisualAfter = await readJson(visualDispatchLogPath)
+const rawReportExistsBeforeCleanup = await fileExists(rawReport)
+const rawJsonExistsBeforeCleanup = await fileExists(rawJson)
+await Promise.all([rawJson, rawReport].map((path) => rm(repoPath(path), { force: true })))
+const rawArtifactsCleanedUp = !(await Promise.all([rawJson, rawReport].map((path) => fileExists(path))))
+  .some(Boolean)
+
+const markSentIssues = Array.isArray(markSentSummary?.issues) ? markSentSummary.issues : []
+const missingFieldNames = ['reviewerAlias', 'deliveryChannel', 'sentAt', 'contactRecordLocation']
+  .filter((field) => markSentIssues.some((issue) => String(issue).includes(`missing ${field}`)))
+const canonicalBetaUnchanged = JSON.stringify(canonicalBetaAfter) === canonicalBetaBeforeSerialized
+const canonicalVisualUnchanged = JSON.stringify(canonicalVisualAfter) === canonicalVisualBeforeSerialized
+const templateRows = Array.isArray(template?.rows) ? template.rows : []
+const checks = [
+  {
+    name: 'blank sent-record template is still marked as not ready for import',
+    ok: template?.status === 'pass' && template?.readyForImport === false && templateRows.length > 0,
+    templateStatus: template?.status || null,
+    readyForImport: template?.readyForImport ?? null,
+    rowCount: templateRows.length,
+  },
+  {
+    name: 'blank sent-record template report states the evidence boundary',
+    ok: templateReport.includes('This file is not a sent proof'),
+  },
+  {
+    name: 'blank sent-record template import attempt is rejected',
+    ok: markSentResult.status !== 0 &&
+      markSentSummary?.status === 'fail' &&
+      markSentSummary?.importMode === true &&
+      Number(markSentSummary?.requestedUpdateCount || 0) === templateRows.length,
+    exitCode: markSentResult.status,
+    status: markSentSummary?.status || null,
+    importMode: markSentSummary?.importMode ?? null,
+    requestedUpdateCount: markSentSummary?.requestedUpdateCount ?? null,
+    templateRowCount: templateRows.length,
+  },
+  {
+    name: 'blank sent-record template rejection names every required proof field',
+    ok: missingFieldNames.length === 4,
+    missingFieldNames,
+  },
+  {
+    name: 'blank sent-record template rejection imports no rows',
+    ok: Number(markSentSummary?.betaUpdateCount || 0) === 0 &&
+      Number(markSentSummary?.visualUpdateCount || 0) === 0,
+    betaUpdateCount: markSentSummary?.betaUpdateCount ?? null,
+    visualUpdateCount: markSentSummary?.visualUpdateCount ?? null,
+  },
+  {
+    name: 'blank sent-record template cannot mutate canonical dispatch logs',
+    ok: canonicalBetaUnchanged &&
+      canonicalVisualUnchanged &&
+      sentCount(canonicalBetaAfter) === 0 &&
+      sentCount(canonicalVisualAfter) === 0,
+    canonicalBetaUnchanged,
+    canonicalVisualUnchanged,
+    canonicalBetaSentCount: sentCount(canonicalBetaAfter),
+    canonicalVisualSentCount: sentCount(canonicalVisualAfter),
+  },
+  {
+    name: 'blank sent-record template rejection cleans up temporary mark-sent artifacts',
+    ok: rawJsonExistsBeforeCleanup && rawReportExistsBeforeCleanup && rawArtifactsCleanedUp,
+    rawJsonExistsBeforeCleanup,
+    rawReportExistsBeforeCleanup,
+    rawArtifactsCleanedUp,
+  },
+]
+
+const failures = checks.filter((check) => !check.ok)
+const summary = {
+  date,
+  status: failures.length === 0 ? 'pass' : 'fail',
+  checked: checks.length,
+  passed: checks.length - failures.length,
+  failed: failures.length,
+  templateArtifact: qaDisplayPath(templatePath),
+  templateReport: qaDisplayPath(templateReportPath),
+  betaDispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
+  visualDispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
+  markSentExitCode: markSentResult.status,
+  markSentStatus: markSentSummary?.status || null,
+  markSentImportMode: markSentSummary?.importMode ?? null,
+  requestedUpdateCount: markSentSummary?.requestedUpdateCount ?? null,
+  betaUpdateCount: markSentSummary?.betaUpdateCount ?? null,
+  visualUpdateCount: markSentSummary?.visualUpdateCount ?? null,
+  rejectionIssueCount: markSentIssues.length,
+  missingFieldNames,
+  canonicalBetaUnchanged,
+  canonicalVisualUnchanged,
+  canonicalBetaSentCount: sentCount(canonicalBetaAfter),
+  canonicalVisualSentCount: sentCount(canonicalVisualAfter),
+  rawArtifactsCleanedUp,
+  checks,
+  failures,
+  jsonArtifact: `qa/${artifactName}.json`,
+  reportArtifact: `qa/${artifactName}.md`,
+}
+
+const report = `# Dispatch Sent-Record Template Rejection
+
+Date: ${summary.date}
+Status: ${summary.status}
+
+## Result
+
+- Template: \`${summary.templateArtifact}\`
+- Mark-sent exit code: ${summary.markSentExitCode ?? 'missing'}
+- Mark-sent status: ${summary.markSentStatus || 'missing'}
+- Import mode attempted: ${summary.markSentImportMode ? 'yes' : 'no'}
+- Requested updates: ${summary.requestedUpdateCount ?? 'missing'}
+- Beta rows imported: ${summary.betaUpdateCount ?? 'missing'}
+- Visual rows imported: ${summary.visualUpdateCount ?? 'missing'}
+- Required proof fields rejected: ${summary.missingFieldNames.join(', ') || 'none'}
+- Canonical beta log unchanged: ${summary.canonicalBetaUnchanged ? 'yes' : 'no'}
+- Canonical visual log unchanged: ${summary.canonicalVisualUnchanged ? 'yes' : 'no'}
+- Raw artifacts cleaned up: ${summary.rawArtifactsCleanedUp ? 'yes' : 'no'}
+
+## Operating Meaning
+
+The blank sent-record template is rejected before import and cannot mutate canonical dispatch logs. Fill the sent-record template only after real outreach has happened outside the repo, then dry-run it before importing.
+
+## Checks
+
+${checks.map((check) => `- ${check.ok ? 'Pass' : 'Fail'}: ${check.name}`).join('\n')}
+
+## Issues
+
+${markdownList(failures.map((failure) => failure.name))}
+`
+
+await writeFile(repoPath(summary.jsonArtifact), `${JSON.stringify(summary, null, 2)}\n`)
+await writeFile(repoPath(summary.reportArtifact), report)
+
+console.log(JSON.stringify(summary, null, 2))
+
+if (failures.length > 0) {
+  process.exitCode = 1
+}

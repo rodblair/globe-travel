@@ -140,6 +140,13 @@ const dispatchSentRecordTemplateReport =
 const dispatchSentRecordTemplateCsv =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
   'qa/dispatch-sent-record-template-2026-05-22.csv'
+const dispatchSentRecordTemplateRejectionArtifact =
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTIFACT ||
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
+  'qa/dispatch-sent-record-template-rejection-2026-05-22.json'
+const dispatchSentRecordTemplateRejectionReport =
+  process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_REPORT ||
+  'qa/dispatch-sent-record-template-rejection-2026-05-22.md'
 const reviewIntakeRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_REHEARSAL ||
@@ -868,6 +875,8 @@ async function checkRequiredDocs(productionHealth) {
     publicStatus?.dispatchSentRecordTemplate?.artifact,
     publicStatus?.dispatchSentRecordTemplate?.report,
     publicStatus?.dispatchSentRecordTemplate?.csv,
+    publicStatus?.dispatchSentRecordTemplateRejection?.artifact,
+    publicStatus?.dispatchSentRecordTemplateRejection?.report,
     `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
     visualStatus.latestProductionArtifact,
@@ -2625,6 +2634,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const dispatchSentRecordTemplateIssues = Array.isArray(dispatchSentRecordTemplateStatus.issues)
     ? dispatchSentRecordTemplateStatus.issues
     : []
+  const dispatchSentRecordTemplateRejectionStatus = status.dispatchSentRecordTemplateRejection || {}
+  const dispatchSentRecordTemplateRejectionIssues = Array.isArray(dispatchSentRecordTemplateRejectionStatus.issues)
+    ? dispatchSentRecordTemplateRejectionStatus.issues
+    : []
   const reviewIntakeRehearsalStatus = status.reviewIntakeRehearsal || {}
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
@@ -3263,6 +3276,63 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateValidationCommand: dispatchSentRecordTemplateStatus.validationCommand || null,
     dispatchSentRecordTemplateImportCommand: dispatchSentRecordTemplateStatus.importCommand || null,
     dispatchSentRecordTemplateIssues,
+  })
+
+  const dispatchSentRecordTemplateRejectionMissingFields = Array.isArray(dispatchSentRecordTemplateRejectionStatus.missingFieldNames)
+    ? dispatchSentRecordTemplateRejectionStatus.missingFieldNames
+    : []
+  const requiredDispatchSentRecordTemplateRejectionFields = [
+    'reviewerAlias',
+    'deliveryChannel',
+    'sentAt',
+    'contactRecordLocation',
+  ]
+  addCheck('public launch status includes dispatch sent-record blank-template rejection', (
+    dispatchSentRecordTemplateRejectionStatus.ready === true &&
+    dispatchSentRecordTemplateRejectionStatus.artifact === dispatchSentRecordTemplateRejectionArtifact &&
+    dispatchSentRecordTemplateRejectionStatus.report === dispatchSentRecordTemplateRejectionReport &&
+    status.artifacts?.dispatchSentRecordTemplateRejection === dispatchSentRecordTemplateRejectionArtifact &&
+    Number(dispatchSentRecordTemplateRejectionStatus.issueCount) === 0 &&
+    dispatchSentRecordTemplateRejectionStatus.templateArtifact === dispatchSentRecordTemplateArtifact &&
+    Number(dispatchSentRecordTemplateRejectionStatus.markSentExitCode) !== 0 &&
+    dispatchSentRecordTemplateRejectionStatus.markSentStatus === 'fail' &&
+    dispatchSentRecordTemplateRejectionStatus.markSentImportMode === true &&
+    Number(dispatchSentRecordTemplateRejectionStatus.requestedUpdateCount) === Number(dispatchSentRecordTemplateStatus.rowCount) &&
+    Number(dispatchSentRecordTemplateRejectionStatus.betaUpdateCount) === 0 &&
+    Number(dispatchSentRecordTemplateRejectionStatus.visualUpdateCount) === 0 &&
+    Number(dispatchSentRecordTemplateRejectionStatus.rejectionIssueCount) > 0 &&
+    requiredDispatchSentRecordTemplateRejectionFields.every((field) => dispatchSentRecordTemplateRejectionMissingFields.includes(field)) &&
+    dispatchSentRecordTemplateRejectionStatus.canonicalBetaUnchanged === true &&
+    dispatchSentRecordTemplateRejectionStatus.canonicalVisualUnchanged === true &&
+    Number(dispatchSentRecordTemplateRejectionStatus.canonicalBetaSentCount) === 0 &&
+    Number(dispatchSentRecordTemplateRejectionStatus.canonicalVisualSentCount) === 0 &&
+    dispatchSentRecordTemplateRejectionStatus.rawArtifactsCleanedUp === true &&
+    dispatchSentRecordTemplateRejectionIssues.length === 0
+  ), {
+    dispatchSentRecordTemplateRejectionArtifact: dispatchSentRecordTemplateRejectionStatus.artifact || null,
+    expectedDispatchSentRecordTemplateRejectionArtifact: dispatchSentRecordTemplateRejectionArtifact,
+    dispatchSentRecordTemplateRejectionReport: dispatchSentRecordTemplateRejectionStatus.report || null,
+    expectedDispatchSentRecordTemplateRejectionReport: dispatchSentRecordTemplateRejectionReport,
+    publicStatusArtifact: status.artifacts?.dispatchSentRecordTemplateRejection || null,
+    dispatchSentRecordTemplateRejectionReady: dispatchSentRecordTemplateRejectionStatus.ready ?? null,
+    dispatchSentRecordTemplateRejectionIssueCount: dispatchSentRecordTemplateRejectionStatus.issueCount ?? null,
+    dispatchSentRecordTemplateRejectionTemplateArtifact: dispatchSentRecordTemplateRejectionStatus.templateArtifact || null,
+    expectedDispatchSentRecordTemplateArtifact: dispatchSentRecordTemplateArtifact,
+    dispatchSentRecordTemplateRejectionMarkSentExitCode: dispatchSentRecordTemplateRejectionStatus.markSentExitCode ?? null,
+    dispatchSentRecordTemplateRejectionMarkSentStatus: dispatchSentRecordTemplateRejectionStatus.markSentStatus || null,
+    dispatchSentRecordTemplateRejectionMarkSentImportMode: dispatchSentRecordTemplateRejectionStatus.markSentImportMode ?? null,
+    dispatchSentRecordTemplateRejectionRequestedUpdateCount: dispatchSentRecordTemplateRejectionStatus.requestedUpdateCount ?? null,
+    expectedDispatchSentRecordTemplateRowCount: dispatchSentRecordTemplateStatus.rowCount ?? null,
+    dispatchSentRecordTemplateRejectionBetaUpdateCount: dispatchSentRecordTemplateRejectionStatus.betaUpdateCount ?? null,
+    dispatchSentRecordTemplateRejectionVisualUpdateCount: dispatchSentRecordTemplateRejectionStatus.visualUpdateCount ?? null,
+    dispatchSentRecordTemplateRejectionIssueTotal: dispatchSentRecordTemplateRejectionStatus.rejectionIssueCount ?? null,
+    dispatchSentRecordTemplateRejectionMissingFields,
+    dispatchSentRecordTemplateRejectionCanonicalBetaUnchanged: dispatchSentRecordTemplateRejectionStatus.canonicalBetaUnchanged ?? null,
+    dispatchSentRecordTemplateRejectionCanonicalVisualUnchanged: dispatchSentRecordTemplateRejectionStatus.canonicalVisualUnchanged ?? null,
+    dispatchSentRecordTemplateRejectionCanonicalBetaSentCount: dispatchSentRecordTemplateRejectionStatus.canonicalBetaSentCount ?? null,
+    dispatchSentRecordTemplateRejectionCanonicalVisualSentCount: dispatchSentRecordTemplateRejectionStatus.canonicalVisualSentCount ?? null,
+    dispatchSentRecordTemplateRejectionRawArtifactsCleanedUp: dispatchSentRecordTemplateRejectionStatus.rawArtifactsCleanedUp ?? null,
+    dispatchSentRecordTemplateRejectionIssues,
   })
 
   addCheck('public launch status includes review intake rejection rehearsal', (

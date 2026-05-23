@@ -65,16 +65,18 @@ The current public-launch blocker work is operational, not app-code blocked. Use
 ```bash
 npm run qa:launch-today
 npm run qa:dispatch-sent-record-template
+npm run qa:dispatch-sent-record-template-rejection
 ```
 
 Current artifacts:
 
 - Daily board: `qa/launch-operator-today-2026-05-22.json`, `.md`, and `.csv`
 - Sent-record starter: `qa/dispatch-sent-record-template-2026-05-22.json`, `qa/dispatch-sent-record-template-2026-05-22.md`, and `qa/dispatch-sent-record-template-2026-05-22.csv`
+- Sent-record blank-template rejection: `qa/dispatch-sent-record-template-rejection-2026-05-22.json` and `qa/dispatch-sent-record-template-rejection-2026-05-22.md`
 - Sent-record validation: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
 - Sent-record import after real sends: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
 
-The sent-record starter is deliberately not ready for import when generated. Fill `reviewerAlias`, `deliveryChannel`, `sentAt`, and `contactRecordLocation` only after real outreach happens outside the repo. Keep real names, emails, phone numbers, and contact details in the external contact system. Use only non-sensitive aliases and pointers in the repo.
+The sent-record starter is deliberately not ready for import when generated. `npm run qa:dispatch-sent-record-template-rejection` proves the blank starter fails even in import mode, imports zero rows, and cannot mutate canonical dispatch logs. Fill `reviewerAlias`, `deliveryChannel`, `sentAt`, and `contactRecordLocation` only after real outreach happens outside the repo. Keep real names, emails, phone numbers, and contact details in the external contact system. Use only non-sensitive aliases and pointers in the repo.
 
 After importing sent state, rerun:
 

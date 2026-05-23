@@ -502,6 +502,33 @@
     "missingSubmissionTemplateCount": 0,
     "issues": []
   },
+  "dispatchSentRecordTemplateRejection": {
+    "ready": true,
+    "issueCount": 0,
+    "artifact": "qa/dispatch-sent-record-template-rejection-2026-05-22.json",
+    "report": "qa/dispatch-sent-record-template-rejection-2026-05-22.md",
+    "date": "2026-05-22",
+    "templateArtifact": "qa/dispatch-sent-record-template-2026-05-22.json",
+    "markSentExitCode": 1,
+    "markSentStatus": "fail",
+    "markSentImportMode": true,
+    "requestedUpdateCount": 6,
+    "betaUpdateCount": 0,
+    "visualUpdateCount": 0,
+    "rejectionIssueCount": 24,
+    "missingFieldNames": [
+      "reviewerAlias",
+      "deliveryChannel",
+      "sentAt",
+      "contactRecordLocation"
+    ],
+    "canonicalBetaUnchanged": true,
+    "canonicalVisualUnchanged": true,
+    "canonicalBetaSentCount": 0,
+    "canonicalVisualSentCount": 0,
+    "rawArtifactsCleanedUp": true,
+    "issues": []
+  },
   "reviewIntakeRehearsal": {
     "ready": true,
     "issueCount": 0,
@@ -886,6 +913,7 @@
     "dispatchMarkSentDryRun": "qa/dispatch-log-mark-sent-2026-05-22.json",
     "dispatchMarkSentImportRehearsal": "qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json",
     "dispatchSentRecordTemplate": "qa/dispatch-sent-record-template-2026-05-22.json",
+    "dispatchSentRecordTemplateRejection": "qa/dispatch-sent-record-template-rejection-2026-05-22.json",
     "reviewIntakeRehearsal": "qa/review-intake-rehearsal-2026-05-22.json",
     "publicLaunchModeRehearsal": "qa/public-launch-mode-rehearsal-2026-05-22.json",
     "json": "qa/public-launch-status-2026-05-21.json",
