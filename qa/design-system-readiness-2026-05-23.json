@@ -2,7 +2,7 @@
   "date": "2026-05-23",
   "designContext": ".impeccable.md",
   "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-  "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json",
+  "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json",
   "productionVisualArtifactSource": "qa/production-visual-review-register.json",
   "checked": 11,
   "passed": 11,
@@ -101,7 +101,7 @@
     {
       "name": "production visual QA covers public acquisition and sharing surfaces",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json",
+      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json",
       "artifactSource": "qa/production-visual-review-register.json",
       "expected": 25,
       "checked": 25,

@@ -2,33 +2,30 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T15:37:59.657Z",
+  "generatedAt": "2026-05-23T16:15:11.365Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "blocked",
-  "betaReady": false,
+  "status": "beta-ready-public-blocked",
+  "betaReady": true,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-mbbrhizi0-rodney-blairs-projects.vercel.app",
-    "commit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa"
+    "url": "globe-travel-g62dg00di-rodney-blairs-projects.vercel.app",
+    "commit": "ff37da18eebbfcc954e0101db73d91f63ee72f41"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "acaab39e4370995cf9b05d22621f8f27170c9ad0",
-    "shortHead": "acaab39",
-    "liveCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
+    "head": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
+    "shortHead": "ff37da1",
+    "liveCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
-    "runtimeCommitAhead": true,
-    "latestRuntimeCommit": "acaab39e4370995cf9b05d22621f8f27170c9ad0",
-    "latestRuntimeCommitShort": "acaab39",
-    "runtimeCommitCountAhead": 1,
-    "runtimeUnsafeFiles": [
-      "client/app/pricing/page.tsx",
-      "client/lib/trip-copy.ts"
-    ],
+    "runtimeCommitAhead": false,
+    "latestRuntimeCommit": null,
+    "latestRuntimeCommitShort": null,
+    "runtimeCommitCountAhead": 0,
+    "runtimeUnsafeFiles": [],
     "error": null
   },
   "betaHumanReviews": {
@@ -296,10 +293,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json",
-    "latestProductionCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
-    "latestProductionDeploymentUrl": "globe-travel-mbbrhizi0-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json",
+    "latestProductionCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
+    "latestProductionDeploymentUrl": "globe-travel-g62dg00di-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -380,7 +377,7 @@
     "checked": 13,
     "passed": 12,
     "failed": 1,
-    "actionRowCount": 7,
+    "actionRowCount": 6,
     "betaActionRowCount": 5,
     "visualActionRowCount": 1,
     "executionOrderStepCount": 6,
@@ -449,11 +446,10 @@
     "launchOperatorStatus": "fail",
     "launchOperatorOnlyOverdueExecutionFailure": true,
     "launchOperatorPublicLaunchStatus": "blocked",
-    "launchOperatorDeploymentRuntimeBlocked": true,
-    "launchOperatorOnlySelfGuardrails": false,
-    "launchOperatorActionRowCount": 5,
+    "launchOperatorDeploymentRuntimeBlocked": false,
+    "launchOperatorOnlySelfGuardrails": true,
+    "launchOperatorActionRowCount": 4,
     "launchOperatorActionIds": [
-      "production-runtime-deployment-currency",
       "BETA-HR-002",
       "BETA-HR-003",
       "BETA-HR-004",
@@ -735,8 +731,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
-    "knownGoodDeploymentUrl": "globe-travel-mbbrhizi0-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
+    "knownGoodDeploymentUrl": "globe-travel-g62dg00di-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -775,7 +771,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
+    "latestVerificationExpectedLiveCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -824,8 +820,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -1045,15 +1041,8 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [
-    "production is behind runtime commit acaab39"
-  ],
+  "guardrailIssues": [],
   "blockers": [
-    {
-      "id": "production-runtime-deployment-currency",
-      "title": "Deploy latest runtime commit to production",
-      "detail": "Production is on 79bcaf4; runtime commit acaab39 is waiting for Vercel production."
-    },
     {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
@@ -1066,12 +1055,10 @@
     }
   ],
   "nextActions": [
-    "Redeploy production from the repo root so Vercel serves runtime commit acaab39; then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s).",
-    "Fix guardrail issues before relying on public-launch status."
+    "Run, review, and import 2 scheduled production visual review date(s)."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",

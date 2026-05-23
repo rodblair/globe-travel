@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "today": "2026-05-22",
+  "today": "2026-05-23",
   "status": "pass",
   "checked": 4,
   "passed": 4,
@@ -50,7 +50,7 @@
       ],
       "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
       "screenshotsReviewed": 25,
-      "daysUntilDue": 6
+      "daysUntilDue": 5
     },
     {
       "id": "PROD-VISUAL-HISTORY-003",
@@ -85,7 +85,7 @@
       ],
       "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
       "screenshotsReviewed": 25,
-      "daysUntilDue": 13
+      "daysUntilDue": 12
     },
     {
       "id": "PROD-VISUAL-HISTORY-004",
@@ -120,7 +120,7 @@
       ],
       "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
       "screenshotsReviewed": 25,
-      "daysUntilDue": 20
+      "daysUntilDue": 19
     }
   ],
   "messageFileChecks": [

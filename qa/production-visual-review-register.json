@@ -100,10 +100,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-23",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json",
-    "productionCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
-    "deploymentUrl": "globe-travel-mbbrhizi0-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json",
+    "productionCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
+    "deploymentUrl": "globe-travel-g62dg00di-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 79bcaf4 deployment after the map compatibility alias reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live ff37da1 deployment after the refreshed beta review matrix evidence reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
   },
   "reviewHistory": [
     {
