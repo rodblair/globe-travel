@@ -20,7 +20,7 @@ Auth mode: guest
 | --- | --- | --- | --- | --- |
 | explore-alias | phone | `/chat` | http://localhost:3000/chat | Pass |
 | globe-alias | phone | `/chat` | http://localhost:3000/chat | Pass |
-| map-alias | phone | `/saved` | http://localhost:3000/saved | Pass |
+| map-alias | phone | `/chat` | http://localhost:3000/chat | Pass |
 | bucket-list-alias | phone | `/saved` | http://localhost:3000/saved | Pass |
 | journal-alias | phone | `/saved?tab=journal` | http://localhost:3000/saved?tab=journal | Pass |
 | profile-alias | phone | `/account` | http://localhost:3000/account | Pass |
@@ -31,7 +31,7 @@ Auth mode: guest
 | onboarding-fullscreen | phone | `/onboarding` | http://localhost:3000/onboarding | Pass |
 | explore-alias | desktop | `/chat` | http://localhost:3000/chat | Pass |
 | globe-alias | desktop | `/chat` | http://localhost:3000/chat | Pass |
-| map-alias | desktop | `/saved` | http://localhost:3000/saved | Pass |
+| map-alias | desktop | `/chat` | http://localhost:3000/chat | Pass |
 | bucket-list-alias | desktop | `/saved` | http://localhost:3000/saved | Pass |
 | journal-alias | desktop | `/saved?tab=journal` | http://localhost:3000/saved?tab=journal | Pass |
 | profile-alias | desktop | `/account` | http://localhost:3000/account | Pass |

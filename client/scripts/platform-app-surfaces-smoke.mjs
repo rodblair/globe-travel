@@ -50,10 +50,10 @@ const surfaces = [
   {
     id: 'map-alias',
     path: '/map',
-    expectedPath: '/saved',
+    expectedPath: '/chat',
     expectedSearch: '',
-    markers: ['Trips', 'Saved itineraries'],
-    intent: 'Map compatibility path lands in the saved workspace.',
+    markers: ['Planner', 'Trip Studio'],
+    intent: 'Map compatibility path opens the Planner so map-seeking users can create itinerary maps.',
   },
   {
     id: 'bucket-list-alias',
