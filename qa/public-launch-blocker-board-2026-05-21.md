@@ -6,8 +6,8 @@ Status: pass
 
 ## Result
 
-- Checked: 6
-- Passed: 6
+- Checked: 7
+- Passed: 7
 - Failed: 0
 - Beta reviews: 0/25, 25 remaining
 - Beta next wave: BETA-WAVE-01
@@ -867,6 +867,23 @@ Operator checklist:
 - Diff routes: landing, login, signup
 - Rule: Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.
 
+Reviewer checklist:
+- Run the production release command on or after 2026-05-28.
+- Review every screenshot in qa/visual-baseline-production-review-2026-05-28 across landing, pricing, login, signup, public-share.
+- Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.
+- Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.
+- Check stable diff routes landing, login, signup for unexplained visual drift.
+- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json.
+
+Operator checklist:
+- Assign a visual QA reviewer and record their private contact outside this repo before 2026-05-28.
+- Run QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production.
+- Copy qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json to qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json only after the review is actually complete.
+- Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.
+- Run npm run qa:visual-review-intake before any import.
+- When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.
+- Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff.
+
 ### PROD-VISUAL-HISTORY-003: required for public launch history
 
 - Due: 2026-06-04
@@ -882,6 +899,23 @@ Operator checklist:
 - Diff routes: landing, login, signup
 - Rule: Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.
 
+Reviewer checklist:
+- Run the production release command on or after 2026-06-04.
+- Review every screenshot in qa/visual-baseline-production-review-2026-06-04 across landing, pricing, login, signup, public-share.
+- Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.
+- Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.
+- Check stable diff routes landing, login, signup for unexplained visual drift.
+- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json.
+
+Operator checklist:
+- Assign a visual QA reviewer and record their private contact outside this repo before 2026-06-04.
+- Run QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production.
+- Copy qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json to qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json only after the review is actually complete.
+- Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.
+- Run npm run qa:visual-review-intake before any import.
+- When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.
+- Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff.
+
 ### PROD-VISUAL-HISTORY-004: scheduled buffer review
 
 - Due: 2026-06-11
@@ -896,6 +930,23 @@ Operator checklist:
 - Viewports: phone, tablet, laptop, desktop, wide
 - Diff routes: landing, login, signup
 - Rule: Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.
+
+Reviewer checklist:
+- Run the production release command on or after 2026-06-11.
+- Review every screenshot in qa/visual-baseline-production-review-2026-06-11 across landing, pricing, login, signup, public-share.
+- Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.
+- Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.
+- Check stable diff routes landing, login, signup for unexplained visual drift.
+- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json.
+
+Operator checklist:
+- Assign a visual QA reviewer and record their private contact outside this repo before 2026-06-11.
+- Run QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production.
+- Copy qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json to qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json only after the review is actually complete.
+- Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.
+- Run npm run qa:visual-review-intake before any import.
+- When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.
+- Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff.
 
 ## Operator Rules
 
@@ -913,6 +964,7 @@ Operator checklist:
 - Pass: public launch blocker board covers all remaining beta review rows
 - Pass: public launch blocker board exposes beta dispatch operations
 - Pass: public launch blocker board covers scheduled visual history work
+- Pass: public launch blocker board exposes visual review operations
 - Pass: public launch blocker board CSV includes every open work row
 - Pass: public launch blocker board evidence paths and commands are executable
 

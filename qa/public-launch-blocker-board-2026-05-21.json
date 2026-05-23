@@ -2,8 +2,8 @@
   "date": "2026-05-21",
   "today": "2026-05-22",
   "status": "pass",
-  "checked": 6,
-  "passed": 6,
+  "checked": 7,
+  "passed": 7,
   "failed": 0,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "betaNextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
@@ -1168,7 +1168,24 @@
           "login",
           "signup"
         ],
-        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
+        "reviewerChecklist": [
+          "Run the production release command on or after 2026-05-28.",
+          "Review every screenshot in qa/visual-baseline-production-review-2026-05-28 across landing, pricing, login, signup, public-share.",
+          "Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.",
+          "Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.",
+          "Check stable diff routes landing, login, signup for unexplained visual drift.",
+          "Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json."
+        ],
+        "operatorChecklist": [
+          "Assign a visual QA reviewer and record their private contact outside this repo before 2026-05-28.",
+          "Run QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production.",
+          "Copy qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json to qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json only after the review is actually complete.",
+          "Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.",
+          "Run npm run qa:visual-review-intake before any import.",
+          "When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.",
+          "Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff."
+        ]
       }
     },
     {
@@ -1211,7 +1228,24 @@
           "login",
           "signup"
         ],
-        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
+        "reviewerChecklist": [
+          "Run the production release command on or after 2026-06-04.",
+          "Review every screenshot in qa/visual-baseline-production-review-2026-06-04 across landing, pricing, login, signup, public-share.",
+          "Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.",
+          "Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.",
+          "Check stable diff routes landing, login, signup for unexplained visual drift.",
+          "Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json."
+        ],
+        "operatorChecklist": [
+          "Assign a visual QA reviewer and record their private contact outside this repo before 2026-06-04.",
+          "Run QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production.",
+          "Copy qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json to qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json only after the review is actually complete.",
+          "Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.",
+          "Run npm run qa:visual-review-intake before any import.",
+          "When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.",
+          "Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff."
+        ]
       }
     },
     {
@@ -1254,7 +1288,24 @@
           "login",
           "signup"
         ],
-        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
+        "reviewerChecklist": [
+          "Run the production release command on or after 2026-06-11.",
+          "Review every screenshot in qa/visual-baseline-production-review-2026-06-11 across landing, pricing, login, signup, public-share.",
+          "Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.",
+          "Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.",
+          "Check stable diff routes landing, login, signup for unexplained visual drift.",
+          "Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json."
+        ],
+        "operatorChecklist": [
+          "Assign a visual QA reviewer and record their private contact outside this repo before 2026-06-11.",
+          "Run QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production.",
+          "Copy qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json to qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json only after the review is actually complete.",
+          "Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.",
+          "Run npm run qa:visual-review-intake before any import.",
+          "When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.",
+          "Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff."
+        ]
       }
     }
   ],
@@ -1584,6 +1635,12 @@
       "visualRows": 3,
       "requiredVisualRows": 2,
       "visualRemaining": 2
+    },
+    {
+      "name": "public launch blocker board exposes visual review operations",
+      "ok": true,
+      "rowsMissingReviewOps": [],
+      "visualReviewRowCount": 3
     },
     {
       "name": "public launch blocker board CSV includes every open work row",

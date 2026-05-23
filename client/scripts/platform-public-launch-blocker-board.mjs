@@ -102,37 +102,66 @@ function betaRows(betaOps) {
   }))
 }
 
+function visualReviewerChecklist(review, submissionPath) {
+  return [
+    `Run the production release command on or after ${review.dueAt}.`,
+    `Review every screenshot in ${review.expectedArtifactPrefix} across ${(review.routes || []).join(', ') || 'required routes'}.`,
+    `Confirm phone, tablet, laptop, desktop, and wide viewports have no horizontal overflow or overlapping controls.`,
+    'Confirm primary copy, pricing CTA, auth pages, public-share map, feedback, and share controls are readable.',
+    `Check stable diff routes ${(review.diffRoutes || []).join(', ') || 'landing, login, signup'} for unexplained visual drift.`,
+    `Save the completed non-template JSON as ${submissionPath}.`,
+  ]
+}
+
+function visualOperatorChecklist(review, templatePath, submissionPath) {
+  return [
+    `Assign a visual QA reviewer and record their private contact outside this repo before ${review.dueAt}.`,
+    `Run ${review.command}.`,
+    `Copy ${templatePath} to ${submissionPath} only after the review is actually complete.`,
+    'Replace production commit and deployment placeholders with the live /api/health metadata from the reviewed run.',
+    'Run npm run qa:visual-review-intake before any import.',
+    'When validation is clean, run QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.',
+    'Then rerun npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff.',
+  ]
+}
+
 function visualRows(visualRegister, visualRemaining) {
   const scheduled = Array.isArray(visualRegister.scheduledPublicLaunchReviews)
     ? visualRegister.scheduledPublicLaunchReviews
     : []
-  return scheduled.map((review, index) => ({
-    blockerId: 'production-visual-review-history',
-    workType: 'production-visual-review',
-    id: review.id,
-    sendBy: '',
-    followUpAt: '',
-    dueAt: review.dueAt,
-    owner: review.owner || 'Product',
-    reviewerRole: review.reviewerRole || 'visual QA reviewer',
-    dispatchStatus: review.status || 'planned',
-    timeboxMinutes: '',
-    status: index < visualRemaining ? 'required for public launch history' : 'scheduled buffer review',
-    action: `Run production visual review ${review.id}, inspect screenshots, then validate intake.`,
-    urlOrCommand: review.command,
-    packetOrArtifact: review.expectedArtifactPrefix,
-    submissionPath: `qa/production-visual-review-submissions-2026-05-21/${review.id}.json`,
-    validationCommand: 'npm run qa:visual-review-intake',
-    importCommand: 'QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake',
-    evidenceRule: 'Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.',
-    source: {
-      submissionTemplatePath: `qa/production-visual-review-submissions-2026-05-21/${review.id}.template.json`,
-      routes: review.routes || [],
-      viewports: review.viewports || [],
-      diffRoutes: review.diffRoutes || [],
-      acceptanceCriteria: review.acceptanceCriteria || '',
-    },
-  }))
+  return scheduled.map((review, index) => {
+    const templatePath = `qa/production-visual-review-submissions-2026-05-21/${review.id}.template.json`
+    const submissionPath = `qa/production-visual-review-submissions-2026-05-21/${review.id}.json`
+    return {
+      blockerId: 'production-visual-review-history',
+      workType: 'production-visual-review',
+      id: review.id,
+      sendBy: '',
+      followUpAt: '',
+      dueAt: review.dueAt,
+      owner: review.owner || 'Product',
+      reviewerRole: review.reviewerRole || 'visual QA reviewer',
+      dispatchStatus: review.status || 'planned',
+      timeboxMinutes: '',
+      status: index < visualRemaining ? 'required for public launch history' : 'scheduled buffer review',
+      action: `Run production visual review ${review.id}, inspect screenshots, then validate intake.`,
+      urlOrCommand: review.command,
+      packetOrArtifact: review.expectedArtifactPrefix,
+      submissionPath,
+      validationCommand: 'npm run qa:visual-review-intake',
+      importCommand: 'QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake',
+      evidenceRule: 'Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.',
+      source: {
+        submissionTemplatePath: templatePath,
+        routes: review.routes || [],
+        viewports: review.viewports || [],
+        diffRoutes: review.diffRoutes || [],
+        acceptanceCriteria: review.acceptanceCriteria || '',
+        reviewerChecklist: visualReviewerChecklist(review, submissionPath),
+        operatorChecklist: visualOperatorChecklist(review, templatePath, submissionPath),
+      },
+    }
+  })
 }
 
 const publicStatus = await readJson(publicStatusPath)
@@ -186,6 +215,14 @@ const betaRowsMissingDispatchOps = betaWorkRows.filter((row) => (
   row.source.reviewerChecklist.length < 6 ||
   !Array.isArray(row.source?.operatorChecklist) ||
   row.source.operatorChecklist.length < 6
+))
+const visualRowsMissingReviewOps = visualWorkRows.filter((row) => (
+  !Array.isArray(row.source?.reviewerChecklist) ||
+  row.source.reviewerChecklist.length < 6 ||
+  !Array.isArray(row.source?.operatorChecklist) ||
+  row.source.operatorChecklist.length < 6 ||
+  !row.source.operatorChecklist.some((item) => item.includes('qa:launch-refresh')) ||
+  !row.source.operatorChecklist.some((item) => item.includes('qa:visual-review-intake'))
 ))
 
 const checks = []
@@ -250,6 +287,14 @@ addCheck('public launch blocker board covers scheduled visual history work', (
   visualRows: visualWorkRows.length,
   requiredVisualRows: requiredVisualRows.length,
   visualRemaining,
+})
+
+addCheck('public launch blocker board exposes visual review operations', (
+  visualWorkRows.length > 0 &&
+  visualRowsMissingReviewOps.length === 0
+), {
+  rowsMissingReviewOps: visualRowsMissingReviewOps.map((row) => row.id || '(missing id)'),
+  visualReviewRowCount: visualWorkRows.length,
 })
 
 addCheck('public launch blocker board CSV includes every open work row', (
@@ -350,6 +395,12 @@ function markdownRowDetail(row) {
     `- Viewports: ${(row.source?.viewports || []).join(', ') || 'missing'}`,
     `- Diff routes: ${(row.source?.diffRoutes || []).join(', ') || 'missing'}`,
     `- Rule: ${row.evidenceRule}`,
+    '',
+    'Reviewer checklist:',
+    markdownList(row.source?.reviewerChecklist || []),
+    '',
+    'Operator checklist:',
+    markdownList(row.source?.operatorChecklist || []),
   ].join('\n')
 }
 
