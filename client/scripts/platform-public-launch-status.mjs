@@ -2550,6 +2550,18 @@ if (Number(dispatchSentRecordTemplateRejection.visualUpdateCount || 0) !== 0) {
 if (Number(dispatchSentRecordTemplateRejection.rejectionIssueCount || 0) === 0) {
   dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record validation issues')
 }
+if (Number(dispatchSentRecordTemplateRejection.invalidProofExitCode) === 0) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not fail the invalid-proof import attempt')
+}
+if (dispatchSentRecordTemplateRejection.invalidProofStatus !== 'fail') {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record a failed invalid-proof status')
+}
+if (Number(dispatchSentRecordTemplateRejection.invalidProofIssueCount || 0) < 3) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection did not record every invalid-proof issue')
+}
+if (dispatchSentRecordTemplateRejection.invalidProofArtifactsCleanedUp !== true) {
+  dispatchSentRecordTemplateRejectionIssues.push('dispatch sent-record template rejection left invalid-proof temporary artifacts behind')
+}
 for (const field of requiredDispatchSentProofFields) {
   if (!dispatchSentRecordTemplateRejectionMissingFields.includes(field)) {
     dispatchSentRecordTemplateRejectionIssues.push(`dispatch sent-record template rejection did not name missing ${field}`)
@@ -3413,6 +3425,10 @@ const summary = {
     betaUpdateCount: dispatchSentRecordTemplateRejection.betaUpdateCount ?? null,
     visualUpdateCount: dispatchSentRecordTemplateRejection.visualUpdateCount ?? null,
     rejectionIssueCount: dispatchSentRecordTemplateRejection.rejectionIssueCount ?? null,
+    invalidProofExitCode: dispatchSentRecordTemplateRejection.invalidProofExitCode ?? null,
+    invalidProofStatus: dispatchSentRecordTemplateRejection.invalidProofStatus || null,
+    invalidProofIssueCount: dispatchSentRecordTemplateRejection.invalidProofIssueCount ?? null,
+    invalidProofArtifactsCleanedUp: dispatchSentRecordTemplateRejection.invalidProofArtifactsCleanedUp ?? null,
     missingFieldNames: dispatchSentRecordTemplateRejectionMissingFields,
     canonicalBetaUnchanged: dispatchSentRecordTemplateRejection.canonicalBetaUnchanged ?? null,
     canonicalVisualUnchanged: dispatchSentRecordTemplateRejection.canonicalVisualUnchanged ?? null,

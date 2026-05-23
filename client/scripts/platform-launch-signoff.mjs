@@ -3614,6 +3614,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateRejectionStatus.betaUpdateCount) === 0 &&
     Number(dispatchSentRecordTemplateRejectionStatus.visualUpdateCount) === 0 &&
     Number(dispatchSentRecordTemplateRejectionStatus.rejectionIssueCount) > 0 &&
+    Number(dispatchSentRecordTemplateRejectionStatus.invalidProofExitCode) !== 0 &&
+    dispatchSentRecordTemplateRejectionStatus.invalidProofStatus === 'fail' &&
+    Number(dispatchSentRecordTemplateRejectionStatus.invalidProofIssueCount) >= 3 &&
+    dispatchSentRecordTemplateRejectionStatus.invalidProofArtifactsCleanedUp === true &&
     requiredDispatchSentRecordTemplateRejectionFields.every((field) => dispatchSentRecordTemplateRejectionMissingFields.includes(field)) &&
     dispatchSentRecordTemplateRejectionStatus.canonicalBetaUnchanged === true &&
     dispatchSentRecordTemplateRejectionStatus.canonicalVisualUnchanged === true &&
@@ -3639,6 +3643,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateRejectionBetaUpdateCount: dispatchSentRecordTemplateRejectionStatus.betaUpdateCount ?? null,
     dispatchSentRecordTemplateRejectionVisualUpdateCount: dispatchSentRecordTemplateRejectionStatus.visualUpdateCount ?? null,
     dispatchSentRecordTemplateRejectionIssueTotal: dispatchSentRecordTemplateRejectionStatus.rejectionIssueCount ?? null,
+    dispatchSentRecordTemplateRejectionInvalidProofExitCode: dispatchSentRecordTemplateRejectionStatus.invalidProofExitCode ?? null,
+    dispatchSentRecordTemplateRejectionInvalidProofStatus: dispatchSentRecordTemplateRejectionStatus.invalidProofStatus || null,
+    dispatchSentRecordTemplateRejectionInvalidProofIssueCount: dispatchSentRecordTemplateRejectionStatus.invalidProofIssueCount ?? null,
+    dispatchSentRecordTemplateRejectionInvalidProofArtifactsCleanedUp: dispatchSentRecordTemplateRejectionStatus.invalidProofArtifactsCleanedUp ?? null,
     dispatchSentRecordTemplateRejectionMissingFields,
     dispatchSentRecordTemplateRejectionCanonicalBetaUnchanged: dispatchSentRecordTemplateRejectionStatus.canonicalBetaUnchanged ?? null,
     dispatchSentRecordTemplateRejectionCanonicalVisualUnchanged: dispatchSentRecordTemplateRejectionStatus.canonicalVisualUnchanged ?? null,
