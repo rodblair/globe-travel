@@ -10,10 +10,10 @@
   "passed": 6,
   "failed": 0,
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/summary.json",
-    "productionCommit": "cc529ee622dc60720063c96131306562f90f4c31",
-    "deploymentUrl": "globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-092bf69",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-092bf69/summary.json",
+    "productionCommit": "092bf696051b1470f56882e18ca9a15b1151e680",
+    "deploymentUrl": "globe-travel-jxa77uwgs-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "issueCount": 0,
@@ -112,16 +112,16 @@
       "name": "production visual review progress register is owned and dated",
       "ok": true,
       "owner": "Product",
-      "reviewedAt": "2026-05-21",
+      "reviewedAt": "2026-05-22",
       "cadence": "Weekly during beta, after every production deploy during launch week, and before any public launch approval."
     },
     {
       "name": "latest production visual review is complete and evidence-backed",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee",
-      "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-cc529ee/summary.json",
-      "productionCommit": "cc529ee622dc60720063c96131306562f90f4c31",
-      "deploymentUrl": "globe-travel-gfgkx2u63-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-092bf69",
+      "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-092bf69/summary.json",
+      "productionCommit": "092bf696051b1470f56882e18ca9a15b1151e680",
+      "deploymentUrl": "globe-travel-jxa77uwgs-rodney-blairs-projects.vercel.app",
       "issues": []
     },
     {

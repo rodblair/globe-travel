@@ -5,9 +5,9 @@
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "c4c93cc838bd1c48a1ea6dcf2b76c4495cb21f46",
-      "url": "globe-travel-hzc30btur-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "QA_LAUNCH_EXPECTED_COMMIT=c4c93cc838bd1c48a1ea6dcf2b76c4495cb21f46 npm run qa:launch-signoff",
+      "commit": "092bf696051b1470f56882e18ca9a15b1151e680",
+      "url": "globe-travel-jxa77uwgs-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "QA_LAUNCH_EXPECTED_COMMIT=092bf696051b1470f56882e18ca9a15b1151e680 npm run qa:launch-signoff",
       "verifiedAt": "2026-05-23"
     }
   },
