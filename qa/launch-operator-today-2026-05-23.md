@@ -3,7 +3,7 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T07:06:14.464Z
+Generated at: 2026-05-23T07:28:11.109Z
 Status: fail
 
 ## Result
@@ -12,7 +12,7 @@ Status: fail
 - Passed: 7
 - Failed: 1
 - Public launch status: blocked
-- Runtime deployment current: yes
+- Runtime deployment current: no, db826fd is waiting for production
 - Beta reviews: 0/25, 25 remaining
 - Production visual-review history: 2/4, 2 remaining
 - Beta invites due today: 0
@@ -21,13 +21,14 @@ Status: fail
 - Beta review submissions due soon: 5
 - Required production visual reviews due soon: 1
 - Production visual send log: 0 sent, 2 required prepared not sent
-- Runtime deployment actions: 0
+- Runtime deployment actions: 1
 - Overdue launch execution rows: 5
 
 ## Do Today
 
 | Priority | Type | ID | Due | Send Status | Action | Source | Evidence Path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| P0 | production-runtime-deployment | production-runtime-deployment-currency | 2026-05-23 | production-on-93ab53f | Deploy runtime commit db826fd to production, then rerun launch gates. | `vercel deploy --prod --yes` | `n/a` |
 | P0 | beta-human-review | BETA-HR-001 | 2026-05-25 | prepared-not-sent | Dispatch is overdue; send invite immediately or reassign. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness. | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
 | P0 | beta-human-review | BETA-HR-002 | 2026-05-25 | prepared-not-sent | Dispatch is overdue; send invite immediately or reassign. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness. | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
 | P0 | beta-human-review | BETA-HR-003 | 2026-05-25 | prepared-not-sent | Dispatch is overdue; send invite immediately or reassign. Prepare follow-up; send on or before the follow-up date. Track completed reviewer JSON and intake readiness. | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |

@@ -2,10 +2,10 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T07:15:45.861Z",
+  "generatedAt": "2026-05-23T07:29:48.777Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "beta-ready-public-blocked",
-  "betaReady": true,
+  "status": "blocked",
+  "betaReady": false,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
@@ -16,16 +16,18 @@
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
-    "shortHead": "93ab53f",
+    "head": "db826fd808e89057688c1bba3a4faabc7125a699",
+    "shortHead": "db826fd",
     "liveCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
-    "runtimeCommitAhead": false,
-    "latestRuntimeCommit": null,
-    "latestRuntimeCommitShort": null,
-    "runtimeCommitCountAhead": 0,
-    "runtimeUnsafeFiles": [],
+    "runtimeCommitAhead": true,
+    "latestRuntimeCommit": "db826fd808e89057688c1bba3a4faabc7125a699",
+    "latestRuntimeCommitShort": "db826fd",
+    "runtimeCommitCountAhead": 1,
+    "runtimeUnsafeFiles": [
+      "client/app/(app)/saved/page.tsx"
+    ],
     "error": null
   },
   "betaHumanReviews": {
@@ -377,7 +379,7 @@
     "checked": 8,
     "passed": 7,
     "failed": 1,
-    "actionRowCount": 6,
+    "actionRowCount": 7,
     "betaActionRowCount": 5,
     "visualActionRowCount": 1,
     "betaDispatchDueTodayCount": 0,
@@ -432,10 +434,11 @@
     "launchOperatorStatus": "fail",
     "launchOperatorOnlyOverdueExecutionFailure": true,
     "launchOperatorPublicLaunchStatus": "blocked",
-    "launchOperatorDeploymentRuntimeBlocked": false,
-    "launchOperatorOnlySelfGuardrails": true,
-    "launchOperatorActionRowCount": 4,
+    "launchOperatorDeploymentRuntimeBlocked": true,
+    "launchOperatorOnlySelfGuardrails": false,
+    "launchOperatorActionRowCount": 5,
     "launchOperatorActionIds": [
+      "production-runtime-deployment-currency",
       "BETA-HR-002",
       "BETA-HR-003",
       "BETA-HR-004",
@@ -949,8 +952,15 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "production is behind runtime commit db826fd"
+  ],
   "blockers": [
+    {
+      "id": "production-runtime-deployment-currency",
+      "title": "Deploy latest runtime commit to production",
+      "detail": "Production is on 93ab53f; runtime commit db826fd is waiting for Vercel production."
+    },
     {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
@@ -963,10 +973,12 @@
     }
   ],
   "nextActions": [
+    "Redeploy production from the repo root so Vercel serves runtime commit db826fd; then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent.",
     "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s).",
+    "Fix guardrail issues before relying on public-launch status."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",
