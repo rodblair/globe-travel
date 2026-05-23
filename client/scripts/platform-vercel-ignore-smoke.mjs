@@ -43,6 +43,14 @@ const cases = [
     expectedText: 'Skipping build',
   },
   {
+    id: 'launch-qa-hardening-release-ops-skip',
+    intent: 'Launch QA timeout, cleanup, and evidence hardening stays skip-safe.',
+    previous: '190232186124e761f0af69cf0be5fa51c4e5c9ef',
+    head: 'aee7234b8b7b989c3ba4c9349b59539c42d23055',
+    expectedExitCode: 0,
+    expectedText: 'Skipping build',
+  },
+  {
     id: 'runtime-billing-builds',
     intent: 'Known runtime billing change still continues Vercel production build.',
     previous: '0bf1e7402b360e29fd73398e8caebbaa9ec745bb',

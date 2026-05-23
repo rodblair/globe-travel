@@ -5,10 +5,10 @@ Status: pass
 
 ## Result
 
-- Checked: 5
-- Passed: 5
+- Checked: 6
+- Passed: 6
 - Failed: 0
-- Safe skip cases: 4
+- Safe skip cases: 5
 - Runtime build cases: 1
 
 ## Cases
@@ -17,6 +17,7 @@ Status: pass
 - Pass: workflow-and-ignore-policy-skips - Release-ops workflow and ignore-policy commit stays skip-safe.
 - Pass: current-release-ops-scripts-skip - Current release-ops QA script and evidence updates skip Vercel production build.
 - Pass: qa-package-script-release-ops-skip - QA script-only package.json updates with release evidence skip Vercel production build.
+- Pass: launch-qa-hardening-release-ops-skip - Launch QA timeout, cleanup, and evidence hardening stays skip-safe.
 - Pass: runtime-billing-builds - Known runtime billing change still continues Vercel production build.
 
 ## Failures

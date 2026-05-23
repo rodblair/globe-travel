@@ -97,7 +97,7 @@ const productionMonitoringRegister =
   'qa/production-monitoring-register.json'
 const vercelIgnoreArtifact =
   process.env.QA_LAUNCH_VERCEL_IGNORE_ARTIFACT ||
-  'qa/vercel-ignore-smoke-2026-05-22.json'
+  'qa/vercel-ignore-smoke-2026-05-23.json'
 const publicLaunchStatusArtifact =
   process.env.QA_LAUNCH_PUBLIC_STATUS_ARTIFACT ||
   'qa/public-launch-status-2026-05-21.json'
