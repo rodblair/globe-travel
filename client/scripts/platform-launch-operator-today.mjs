@@ -179,13 +179,13 @@ const betaDispatchOverdue = betaRows
 const betaFollowUpsDueSoon = betaRows
   .filter((row) => {
     const delta = daysBetween(today, row.followUpAt)
-    return Number.isFinite(delta) && delta >= 0 && delta <= 2
+    return Number.isFinite(delta) && delta >= 0 && delta <= 2 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
   .map((row) => betaActionRow(row, 'P1', 'Prepare follow-up; send on or before the follow-up date.'))
 const betaReviewsDueSoon = betaRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
-    return Number.isFinite(delta) && delta >= 0 && delta <= 3
+    return Number.isFinite(delta) && delta >= 0 && delta <= 3 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
   .map((row) => betaActionRow(row, 'P1', 'Track completed reviewer JSON and intake readiness.'))
 const visualDueSoon = visualRows

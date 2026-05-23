@@ -109,6 +109,13 @@ const launchOperatorTodayOverdueRehearsalArtifact =
 const launchOperatorTodayOverdueRehearsalReport =
   process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
   'qa/launch-operator-today-overdue-rehearsal-2026-05-22.md'
+const launchOperatorSentDispatchRehearsalArtifact =
+  process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_ARTIFACT ||
+  process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL ||
+  'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json'
+const launchOperatorSentDispatchRehearsalReport =
+  process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_REPORT ||
+  'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md'
 const reviewIntakeRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_REHEARSAL ||
@@ -2575,6 +2582,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const launchOperatorOverdueRehearsalIssues = Array.isArray(launchOperatorOverdueRehearsalStatus.issues)
     ? launchOperatorOverdueRehearsalStatus.issues
     : []
+  const launchOperatorSentDispatchRehearsalStatus = status.launchOperatorSentDispatchRehearsal || {}
+  const launchOperatorSentDispatchRehearsalIssues = Array.isArray(launchOperatorSentDispatchRehearsalStatus.issues)
+    ? launchOperatorSentDispatchRehearsalStatus.issues
+    : []
   const reviewIntakeRehearsalStatus = status.reviewIntakeRehearsal || {}
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
@@ -3051,6 +3062,36 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorOverdueRehearsalRawArtifactsCleanedUp: launchOperatorOverdueRehearsalStatus.rawLaunchArtifactsCleanedUp ?? null,
     launchOperatorOverdueRehearsalExpectedFailureName: launchOperatorOverdueRehearsalStatus.expectedFailureName || null,
     launchOperatorOverdueRehearsalIssues,
+  })
+
+  addCheck('public launch status includes daily launch operator sent-dispatch rehearsal', (
+    launchOperatorSentDispatchRehearsalStatus.ready === true &&
+    launchOperatorSentDispatchRehearsalStatus.artifact === launchOperatorSentDispatchRehearsalArtifact &&
+    launchOperatorSentDispatchRehearsalStatus.report === launchOperatorSentDispatchRehearsalReport &&
+    status.artifacts?.launchOperatorSentDispatchRehearsal === launchOperatorSentDispatchRehearsalArtifact &&
+    Number(launchOperatorSentDispatchRehearsalStatus.issueCount) === 0 &&
+    Number(launchOperatorSentDispatchRehearsalStatus.launchOperatorExitCode) === 0 &&
+    launchOperatorSentDispatchRehearsalStatus.launchOperatorStatus === 'pass' &&
+    launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+    launchOperatorSentDispatchRehearsalStatus.rawArtifactsCleanedUp === true &&
+    hasMeaningfulText(launchOperatorSentDispatchRehearsalStatus.selectedRows?.beta) &&
+    hasMeaningfulText(launchOperatorSentDispatchRehearsalStatus.selectedRows?.visual) &&
+    launchOperatorSentDispatchRehearsalIssues.length === 0
+  ), {
+    launchOperatorSentDispatchRehearsalArtifact: launchOperatorSentDispatchRehearsalStatus.artifact || null,
+    expectedLaunchOperatorSentDispatchRehearsalArtifact: launchOperatorSentDispatchRehearsalArtifact,
+    launchOperatorSentDispatchRehearsalReport: launchOperatorSentDispatchRehearsalStatus.report || null,
+    expectedLaunchOperatorSentDispatchRehearsalReport: launchOperatorSentDispatchRehearsalReport,
+    publicStatusArtifact: status.artifacts?.launchOperatorSentDispatchRehearsal || null,
+    launchOperatorSentDispatchRehearsalReady: launchOperatorSentDispatchRehearsalStatus.ready ?? null,
+    launchOperatorSentDispatchRehearsalIssueCount: launchOperatorSentDispatchRehearsalStatus.issueCount ?? null,
+    launchOperatorSentDispatchRehearsalExitCode: launchOperatorSentDispatchRehearsalStatus.launchOperatorExitCode ?? null,
+    launchOperatorSentDispatchRehearsalStatus: launchOperatorSentDispatchRehearsalStatus.launchOperatorStatus || null,
+    launchOperatorSentDispatchRehearsalPublicStatus: launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus || null,
+    launchOperatorSentDispatchRehearsalActionRowCount: launchOperatorSentDispatchRehearsalStatus.launchOperatorActionRowCount ?? null,
+    launchOperatorSentDispatchRehearsalSelectedRows: launchOperatorSentDispatchRehearsalStatus.selectedRows || null,
+    launchOperatorSentDispatchRehearsalRawArtifactsCleanedUp: launchOperatorSentDispatchRehearsalStatus.rawArtifactsCleanedUp ?? null,
+    launchOperatorSentDispatchRehearsalIssues,
   })
 
   addCheck('public launch status includes review intake rejection rehearsal', (

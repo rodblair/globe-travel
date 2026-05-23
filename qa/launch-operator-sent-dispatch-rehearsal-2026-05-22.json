@@ -1,0 +1,83 @@
+{
+  "date": "2026-05-22",
+  "status": "pass",
+  "checked": 7,
+  "passed": 7,
+  "failed": 0,
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+  "selectedRows": {
+    "beta": "BETA-HR-001",
+    "visual": "PROD-VISUAL-HISTORY-002"
+  },
+  "sentAt": "2026-05-22T12:00:00.000Z",
+  "launchOperatorExitCode": 0,
+  "launchOperatorStatus": "pass",
+  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+  "launchOperatorActionRowCount": 4,
+  "launchOperatorActionIds": [
+    "BETA-HR-002",
+    "BETA-HR-003",
+    "BETA-HR-004",
+    "BETA-HR-005"
+  ],
+  "currentLaunchArtifact": "qa/launch-operator-today-2026-05-22.json",
+  "rawArtifactsCleanedUp": true,
+  "checks": [
+    {
+      "name": "sent-dispatch rehearsal selects beta and visual rows",
+      "ok": true,
+      "betaSelectedId": "BETA-HR-001",
+      "visualSelectedId": "PROD-VISUAL-HISTORY-002"
+    },
+    {
+      "name": "sent-dispatch rehearsal produced a passing launch board",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass"
+    },
+    {
+      "name": "sent beta dispatch row is removed from send actions",
+      "ok": true,
+      "betaSelectedId": "BETA-HR-001",
+      "actionIds": [
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ]
+    },
+    {
+      "name": "sent visual dispatch row is removed from send actions",
+      "ok": true,
+      "visualSelectedId": "PROD-VISUAL-HISTORY-002",
+      "actionIds": [
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ]
+    },
+    {
+      "name": "sent-dispatch rehearsal does not advance launch evidence",
+      "ok": true,
+      "publicLaunchStatus": "beta-ready-public-blocked",
+      "betaCompleted": 0,
+      "visualHistoryCount": 2
+    },
+    {
+      "name": "current launch operator artifact remains passing",
+      "ok": true,
+      "currentLaunchArtifact": "qa/launch-operator-today-2026-05-22.json",
+      "currentStatus": "pass"
+    },
+    {
+      "name": "sent-dispatch rehearsal cleans up temporary logs and board",
+      "ok": true,
+      "rawArtifactsCleanedUp": true
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json",
+  "reportArtifact": "qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md"
+}
