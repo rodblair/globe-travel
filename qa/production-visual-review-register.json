@@ -99,11 +99,11 @@
     }
   ],
   "latestProductionReview": {
-    "reviewedAt": "2026-05-22",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f/summary.json",
-    "productionCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
-    "deploymentUrl": "globe-travel-2at5w0f5t-rodney-blairs-projects.vercel.app",
+    "reviewedAt": "2026-05-23",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-03288ec",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-03288ec/summary.json",
+    "productionCommit": "03288ec3f741c71720aa5a6666ab54cea95701ec",
+    "deploymentUrl": "globe-travel-lhc3b1nvg-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 93ab53f deployment after the mobile skip-link leak fix reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 03288ec deployment after the latest release-evidence and saved-loading polish reached Vercel. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
   },
   "reviewHistory": [
     {

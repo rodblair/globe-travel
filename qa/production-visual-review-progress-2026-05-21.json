@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "today": "2026-05-22",
+  "today": "2026-05-23",
   "registerPath": "qa/production-visual-review-register.json",
   "jsonArtifact": "qa/production-visual-review-progress-2026-05-21.json",
   "reportArtifact": "qa/production-visual-review-progress-2026-05-21.md",
@@ -10,10 +10,10 @@
   "passed": 6,
   "failed": 0,
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f/summary.json",
-    "productionCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
-    "deploymentUrl": "globe-travel-2at5w0f5t-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-03288ec",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-03288ec/summary.json",
+    "productionCommit": "03288ec3f741c71720aa5a6666ab54cea95701ec",
+    "deploymentUrl": "globe-travel-lhc3b1nvg-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "issueCount": 0,
@@ -38,21 +38,21 @@
     {
       "id": "PROD-VISUAL-HISTORY-002",
       "dueAt": "2026-05-28",
-      "daysUntilDue": 6,
+      "daysUntilDue": 5,
       "completed": false,
       "status": "planned"
     },
     {
       "id": "PROD-VISUAL-HISTORY-003",
       "dueAt": "2026-06-04",
-      "daysUntilDue": 13,
+      "daysUntilDue": 12,
       "completed": false,
       "status": "planned"
     },
     {
       "id": "PROD-VISUAL-HISTORY-004",
       "dueAt": "2026-06-11",
-      "daysUntilDue": 20,
+      "daysUntilDue": 19,
       "completed": false,
       "status": "planned"
     }
@@ -62,7 +62,7 @@
     {
       "id": "PROD-VISUAL-HISTORY-002",
       "dueAt": "2026-05-28",
-      "daysUntilDue": 6,
+      "daysUntilDue": 5,
       "completed": false,
       "status": "planned"
     }
@@ -118,10 +118,10 @@
     {
       "name": "latest production visual review is complete and evidence-backed",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f",
-      "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f/summary.json",
-      "productionCommit": "93ab53f218e3126480a2816f8d2664bd6d9e5564",
-      "deploymentUrl": "globe-travel-2at5w0f5t-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-23-03288ec",
+      "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-23-03288ec/summary.json",
+      "productionCommit": "03288ec3f741c71720aa5a6666ab54cea95701ec",
+      "deploymentUrl": "globe-travel-lhc3b1nvg-rodney-blairs-projects.vercel.app",
       "issues": []
     },
     {
@@ -144,14 +144,14 @@
     {
       "name": "scheduled production visual-review queue has no overdue review dates",
       "ok": true,
-      "today": "2026-05-22",
+      "today": "2026-05-23",
       "overdueScheduledReviewCount": 0,
       "overdueScheduledReviews": []
     },
     {
       "name": "latest production review does not inflate dated public-launch history",
       "ok": true,
-      "latestReviewDate": "2026-05-22",
+      "latestReviewDate": "2026-05-23",
       "historyDates": [
         "2026-05-21",
         "2026-05-22"

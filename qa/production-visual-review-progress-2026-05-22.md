@@ -1,7 +1,7 @@
 # Production Visual Review Progress
 
 Date: 2026-05-22
-Today: 2026-05-22
+Today: 2026-05-23
 Register: `qa/production-visual-review-register.json`
 Status: pass
 
@@ -10,7 +10,7 @@ Status: pass
 - Checked: 6
 - Passed: 6
 - Failed: 0
-- Latest production artifact: `qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f`
+- Latest production artifact: `qa/visual-baseline-production-runtime-current-2026-05-23-03288ec`
 - Latest production review issues: 0
 - Completed history dates: 2/4
 - Remaining required review dates: 2
@@ -29,9 +29,9 @@ Blockers:
 
 ## Latest Production Review
 
-- Summary: `qa/visual-baseline-production-runtime-current-2026-05-23-93ab53f/summary.json`
-- Production commit: 93ab53f218e3126480a2816f8d2664bd6d9e5564
-- Deployment: globe-travel-2at5w0f5t-rodney-blairs-projects.vercel.app
+- Summary: `qa/visual-baseline-production-runtime-current-2026-05-23-03288ec/summary.json`
+- Production commit: 03288ec3f741c71720aa5a6666ab54cea95701ec
+- Deployment: globe-travel-lhc3b1nvg-rodney-blairs-projects.vercel.app
 - Verdict: pass
 
 Issues:
@@ -44,9 +44,9 @@ Issues:
 
 ## Scheduled Queue
 
-- PROD-VISUAL-HISTORY-002: 2026-05-28 (planned, 6 day(s)) - `qa/visual-baseline-production-review-2026-05-28`
-- PROD-VISUAL-HISTORY-003: 2026-06-04 (planned, 13 day(s)) - `qa/visual-baseline-production-review-2026-06-04`
-- PROD-VISUAL-HISTORY-004: 2026-06-11 (planned, 20 day(s)) - `qa/visual-baseline-production-review-2026-06-11`
+- PROD-VISUAL-HISTORY-002: 2026-05-28 (planned, 5 day(s)) - `qa/visual-baseline-production-review-2026-05-28`
+- PROD-VISUAL-HISTORY-003: 2026-06-04 (planned, 12 day(s)) - `qa/visual-baseline-production-review-2026-06-04`
+- PROD-VISUAL-HISTORY-004: 2026-06-11 (planned, 19 day(s)) - `qa/visual-baseline-production-review-2026-06-11`
 
 ## Checks
 
