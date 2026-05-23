@@ -89,6 +89,8 @@ Current artifacts:
 - Sent-record CSV validation: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
 - Sent-record CSV import after real sends: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
 
+The daily board and guarded refresh both expose an `operatorHandoff` block. Treat `operatorHandoff.immediateExternalAction`, `operatorHandoff.rows`, `operatorHandoff.sentRecordTemplateCsv`, `operatorHandoff.validationCommand`, and `operatorHandoff.importCommand` as the fastest source for the release operator's current outreach queue.
+
 The sent-record starter is deliberately not ready for import when generated. `npm run qa:dispatch-sent-record-template-rejection` proves the blank starter and placeholder proof values fail even in import mode, import zero rows, and cannot mutate canonical dispatch logs. `npm run qa:dispatch-mark-sent-import-rehearsal` proves both JSON and CSV sent-record imports against isolated copied logs. Fill `reviewerAlias`, `deliveryChannel`, `sentAt`, and `contactRecordLocation` only after real outreach happens outside the repo; `deliveryChannel` must be an allowed outreach channel and proof pointers must be stable external references rather than private contact data. Keep real names, emails, phone numbers, and contact details in the external contact system. Use only non-sensitive aliases and pointers in the repo.
 
 After importing sent state, rerun:

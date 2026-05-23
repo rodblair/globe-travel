@@ -314,6 +314,18 @@ const uniquePriorityRows = [
   ...visualOverdue,
   ...visualDueSoon,
 ]
+const operatorHandoffRows = uniquePriorityRows
+  .filter((row) => row.workType === 'beta-human-review' || row.workType === 'production-visual-review')
+  .map((row) => ({
+    id: row.id,
+    priority: row.priority,
+    workType: row.workType,
+    messageSubject: row.messageSubject,
+    messageFile: row.messageFile,
+    evidencePath: row.submissionPath,
+    sendTiming: row.sendTiming || row.dueTiming || '',
+    sendStatus: row.sendStatus || 'prepared-not-sent',
+  }))
 const rowsMissingTiming = uniquePriorityRows.filter((row) => (
   row.workType !== 'production-runtime-deployment' &&
   !hasText(row.sendTiming || row.dueTiming)
@@ -494,6 +506,34 @@ addCheck('launch today exposes exact sent-record handoff commands', (
   dispatchSentRecordTemplatePostImportCommands,
 })
 
+addCheck('launch today exposes a complete operator handoff summary', (
+  operatorHandoffRows.length === uniquePriorityRows.filter((row) => (
+    row.workType === 'beta-human-review' || row.workType === 'production-visual-review'
+  )).length &&
+  operatorHandoffRows.every((row) => (
+    hasText(row.id) &&
+    hasText(row.priority) &&
+    hasText(row.messageSubject) &&
+    hasText(row.messageFile) &&
+    hasText(row.evidencePath) &&
+    hasText(row.sendTiming) &&
+    hasText(row.sendStatus)
+  )) &&
+  hasText(dispatchSentRecordTemplateCsv) &&
+  hasText(dispatchSentRecordTemplateValidationCommand) &&
+  hasText(dispatchSentRecordTemplateImportCommand) &&
+  dispatchSentRecordTemplatePostImportCommands.length >= 2
+), {
+  handoffRowCount: operatorHandoffRows.length,
+  missingHandoffFields: operatorHandoffRows
+    .filter((row) => !hasText(row.id) || !hasText(row.priority) || !hasText(row.messageSubject) || !hasText(row.messageFile) || !hasText(row.evidencePath) || !hasText(row.sendTiming) || !hasText(row.sendStatus))
+    .map((row) => row.id || 'unknown'),
+  sentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
+  validationCommand: dispatchSentRecordTemplateValidationCommand,
+  importCommand: dispatchSentRecordTemplateImportCommand,
+  postImportCommands: dispatchSentRecordTemplatePostImportCommands,
+})
+
 addCheck('launch today has no overdue launch execution rows', (
   betaDispatchOverdue.length === 0 &&
   visualOverdue.length === 0
@@ -568,6 +608,24 @@ const summary = {
   visualDispatchLogRequiredPreparedNotSentCount: visualDispatchLogRows.filter((row) => !rowIsSent(row) && row.requiredForPublicLaunch).length,
   visualDispatchLogSentCount: visualDispatchLogRows.filter((row) => rowIsSent(row)).length,
   deploymentActionCount: deploymentRuntimeBlocked ? 1 : 0,
+  operatorHandoff: {
+    immediateExternalAction: betaDispatchOverdue.length > 0
+      ? `Send or reassign ${plural(betaDispatchOverdue.length, 'overdue beta invite')} now.`
+      : visualOverdue.length > 0
+        ? `Run or reassign ${plural(visualOverdue.length, 'overdue production visual review')} now.`
+        : visualDueSoon.length > 0
+          ? `Confirm ${plural(visualDueSoon.length, 'due-soon production visual review')} before the due date.`
+          : 'No overdue external launch action is currently queued.',
+    overdueBetaInviteIds: betaDispatchOverdue.map((row) => row.id),
+    dueSoonVisualReviewIds: visualDueSoon.map((row) => row.id),
+    rows: operatorHandoffRows,
+    sentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
+    validationCommand: dispatchSentRecordTemplateValidationCommand,
+    importCommand: dispatchSentRecordTemplateImportCommand,
+    postImportCommands: dispatchSentRecordTemplatePostImportCommands,
+    privacyRule: 'Keep reviewer names and contact details in the external contact system; store only aliases and proof pointers in repo evidence.',
+    completionRule: 'Sent proof is not completed review evidence. Public launch still requires completed beta and visual-review JSON intake imports.',
+  },
   actionRows: uniquePriorityRows,
   messageFileChecks,
   visualMessageFileChecks,
@@ -619,6 +677,18 @@ Status: ${summary.status}
 - Production visual send log: ${summary.visualDispatchLogSentCount} sent, ${summary.visualDispatchLogRequiredPreparedNotSentCount} required prepared not sent
 - Runtime deployment actions: ${summary.deploymentActionCount}
 - Overdue launch execution rows: ${summary.betaDispatchOverdueCount + summary.visualOverdueCount}
+
+## Operator Handoff
+
+- Immediate action: ${summary.operatorHandoff.immediateExternalAction}
+- Overdue beta invite IDs: ${summary.operatorHandoff.overdueBetaInviteIds.join(', ') || 'none'}
+- Due-soon production visual-review IDs: ${summary.operatorHandoff.dueSoonVisualReviewIds.join(', ') || 'none'}
+- Sent-record CSV: \`${summary.operatorHandoff.sentRecordTemplateCsv}\`
+- Validate sent proof: \`${summary.operatorHandoff.validationCommand}\`
+- Import sent proof: \`${summary.operatorHandoff.importCommand}\`
+- Refresh after import: \`${summary.operatorHandoff.postImportCommands.join('` and `')}\`
+- Privacy rule: ${summary.operatorHandoff.privacyRule}
+- Completion rule: ${summary.operatorHandoff.completionRule}
 
 ## Execution Order
 

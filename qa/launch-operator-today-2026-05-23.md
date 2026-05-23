@@ -3,13 +3,13 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T13:01:05.291Z
+Generated at: 2026-05-23T13:33:20.962Z
 Status: fail
 
 ## Result
 
-- Checked: 11
-- Passed: 10
+- Checked: 12
+- Passed: 11
 - Failed: 1
 - Public launch status: beta-ready-public-blocked
 - Runtime deployment current: yes
@@ -23,6 +23,18 @@ Status: fail
 - Production visual send log: 0 sent, 2 required prepared not sent
 - Runtime deployment actions: 0
 - Overdue launch execution rows: 5
+
+## Operator Handoff
+
+- Immediate action: Send or reassign 5 overdue beta invites now.
+- Overdue beta invite IDs: BETA-HR-001, BETA-HR-002, BETA-HR-003, BETA-HR-004, BETA-HR-005
+- Due-soon production visual-review IDs: PROD-VISUAL-HISTORY-002
+- Sent-record CSV: `qa/dispatch-sent-record-template-2026-05-23.csv`
+- Validate sent proof: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
+- Import sent proof: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
+- Refresh after import: `npm run qa:launch-refresh` and `npm run qa:launch-signoff`
+- Privacy rule: Keep reviewer names and contact details in the external contact system; store only aliases and proof pointers in repo evidence.
+- Completion rule: Sent proof is not completed review evidence. Public launch still requires completed beta and visual-review JSON intake imports.
 
 ## Execution Order
 
@@ -78,6 +90,7 @@ Status: fail
 - Pass: launch today send actions match dispatch logs
 - Pass: launch today exposes time-aware execution actions
 - Pass: launch today exposes exact sent-record handoff commands
+- Pass: launch today exposes a complete operator handoff summary
 - Fail: launch today has no overdue launch execution rows
 
 ## Failures

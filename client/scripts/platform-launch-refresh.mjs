@@ -162,6 +162,7 @@ const summary = {
   publicGuardrailIssues: secondPublicStatus.guardrailIssues || [],
   blockers: secondPublicStatus.blockers || [],
   nextActions: secondPublicStatus.nextActions || [],
+  operatorHandoff: secondLaunchSummary.operatorHandoff || null,
   steps,
   jsonArtifact: `qa/launch-refresh-${date}.json`,
   reportArtifact: `qa/launch-refresh-${date}.md`,
@@ -183,10 +184,21 @@ Status: ${summary.status}
 - Public launch status: ${summary.publicLaunchStatus}
 - Public guardrail issues: ${summary.publicGuardrailIssues.length}
 - Public blockers: ${summary.blockers.map((blocker) => blocker.id).join(', ') || 'none'}
+- Immediate operator action: ${summary.operatorHandoff?.immediateExternalAction || 'none'}
+- Sent-record CSV: ${summary.operatorHandoff?.sentRecordTemplateCsv || 'none'}
+- Handoff rows: ${summary.operatorHandoff?.rows?.length ?? 0}
 
 ## Steps
 
 ${steps.map((step) => `- ${step.classification.toUpperCase()}: ${step.step} (${step.scriptName}, exit ${step.exitCode})`).join('\n')}
+
+## Operator Handoff
+
+- Validate sent proof: ${summary.operatorHandoff?.validationCommand ? `\`${summary.operatorHandoff.validationCommand}\`` : 'none'}
+- Import sent proof: ${summary.operatorHandoff?.importCommand ? `\`${summary.operatorHandoff.importCommand}\`` : 'none'}
+- Refresh after import: ${summary.operatorHandoff?.postImportCommands?.length ? summary.operatorHandoff.postImportCommands.map((command) => `\`${command}\``).join(' and ') : 'none'}
+- Privacy rule: ${summary.operatorHandoff?.privacyRule || 'none'}
+- Completion rule: ${summary.operatorHandoff?.completionRule || 'none'}
 
 ## Next Actions
 
