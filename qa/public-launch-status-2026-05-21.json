@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T14:04:37.876Z",
+  "generatedAt": "2026-05-23T14:11:18.467Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -775,7 +775,7 @@
     "latestVerificationReady": true
   },
   "paidPath": {
-    "artifact": "qa/paid-path-readiness-2026-05-21.json",
+    "artifact": "qa/paid-path-readiness-2026-05-23.json",
     "status": "pass",
     "checked": 6,
     "failed": 0,
@@ -1067,7 +1067,7 @@
     "monitoringRegister": "qa/production-monitoring-register.json",
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
-    "paidPathReadiness": "qa/paid-path-readiness-2026-05-21.json",
+    "paidPathReadiness": "qa/paid-path-readiness-2026-05-23.json",
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-05-23.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",

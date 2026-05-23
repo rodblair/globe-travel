@@ -26,10 +26,10 @@ const designSystemArtifact =
   'qa/design-system-readiness-2026-05-23.json'
 const mobileReadinessArtifact =
   process.env.QA_LAUNCH_MOBILE_READINESS_ARTIFACT ||
-  'qa/mobile-readiness-2026-05-22.json'
+  latestQaArtifact(/^mobile-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/mobile-readiness-2026-05-22.json')
 const paidPathReadinessArtifact =
   process.env.QA_LAUNCH_PAID_PATH_ARTIFACT ||
-  'qa/paid-path-readiness-2026-05-21.json'
+  latestQaArtifact(/^paid-path-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/paid-path-readiness-2026-05-21.json')
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'

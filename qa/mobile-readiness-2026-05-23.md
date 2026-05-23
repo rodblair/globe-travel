@@ -7,8 +7,8 @@ App: Globe Travel
 
 ## Result
 
-- Checked: 8
-- Passed: 8
+- Checked: 9
+- Passed: 9
 - Failed: 0
 - Typecheck: pass
 - Expo doctor: pass
@@ -18,6 +18,7 @@ App: Globe Travel
 - Pass: mobile app source files are present
 - Pass: mobile package exposes launch and validation scripts
 - Pass: mobile package includes Expo and React Native dependencies
+- Pass: mobile Metro config extends Expo default config
 - Pass: mobile app config uses Globe Travel launch identity
 - Pass: mobile API can target the web backend
 - Pass: mobile UI uses Globe design tokens and core app surfaces

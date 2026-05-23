@@ -15,6 +15,7 @@ const reportArtifact = process.env.QA_MOBILE_READINESS_REPORT || `qa/mobile-read
 const requiredFiles = [
   'mobile/App.tsx',
   'mobile/app.json',
+  'mobile/metro.config.js',
   'mobile/package.json',
   'mobile/README.md',
   'mobile/src/api.ts',
@@ -99,6 +100,7 @@ function run(command, args) {
 const packageJson = await readJson('mobile/package.json')
 const appJson = await readJson('mobile/app.json')
 const readme = await readText('mobile/README.md')
+const metroSource = await readText('mobile/metro.config.js')
 const apiSource = await readText('mobile/src/api.ts')
 const themeSource = await readText('mobile/src/theme.ts')
 const appSource = await readText('mobile/App.tsx')
@@ -129,6 +131,14 @@ addCheck('mobile package includes Expo and React Native dependencies', missingDe
   missingDependencies,
   expoVersion: dependencies.expo || null,
   reactNativeVersion: dependencies['react-native'] || null,
+})
+
+addCheck('mobile Metro config extends Expo default config', (
+  metroSource.includes("require('expo/metro-config')") &&
+  metroSource.includes('getDefaultConfig(__dirname)')
+), {
+  hasExpoMetroConfig: metroSource.includes("require('expo/metro-config')"),
+  hasDefaultConfig: metroSource.includes('getDefaultConfig(__dirname)'),
 })
 
 addCheck('mobile app config uses Globe Travel launch identity', (

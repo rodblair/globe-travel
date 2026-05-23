@@ -2,8 +2,8 @@
   "date": "2026-05-23",
   "timeZone": "America/Vancouver",
   "status": "pass",
-  "checked": 8,
-  "passed": 8,
+  "checked": 9,
+  "passed": 9,
   "failed": 0,
   "mobileDir": "mobile",
   "packageName": "globe-travel-mobile",
@@ -17,6 +17,7 @@
       "requiredFiles": [
         "mobile/App.tsx",
         "mobile/app.json",
+        "mobile/metro.config.js",
         "mobile/package.json",
         "mobile/README.md",
         "mobile/src/api.ts",
@@ -49,6 +50,12 @@
       "missingDependencies": [],
       "expoVersion": "~54.0.33",
       "reactNativeVersion": "0.81.5"
+    },
+    {
+      "name": "mobile Metro config extends Expo default config",
+      "ok": true,
+      "hasExpoMetroConfig": true,
+      "hasDefaultConfig": true
     },
     {
       "name": "mobile app config uses Globe Travel launch identity",

@@ -61,7 +61,9 @@ const visualDispatchLogCsvPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG_CSV |
 const monitoringRegisterPath = process.env.QA_PRODUCTION_MONITORING_REGISTER || 'qa/production-monitoring-register.json'
 const rollbackPath = process.env.QA_ROLLBACK_PLAN || 'qa/launch-rollback-plan.json'
 const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-register.json'
-const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS || process.env.QA_LAUNCH_PAID_PATH_ARTIFACT || 'qa/paid-path-readiness-2026-05-21.json'
+const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS ||
+  process.env.QA_LAUNCH_PAID_PATH_ARTIFACT ||
+  latestQaArtifact(/^paid-path-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/paid-path-readiness-2026-05-21.json')
 const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT || 'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
 const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT || 'qa/design-system-readiness-2026-05-23.json'
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json'

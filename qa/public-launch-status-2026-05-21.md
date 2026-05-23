@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-23T14:04:37.876Z
+Generated at: 2026-05-23T14:11:18.467Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -236,7 +236,7 @@ Public metadata:
 - Monitoring register: `qa/production-monitoring-register.json`
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`
-- Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
+- Paid-path readiness: `qa/paid-path-readiness-2026-05-23.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-05-23.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
