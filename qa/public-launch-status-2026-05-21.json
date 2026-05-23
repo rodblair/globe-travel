@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T08:28:41.565Z",
+  "generatedAt": "2026-05-23T08:31:24.720Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -525,6 +525,9 @@
       "npm run qa:launch-refresh",
       "npm run qa:launch-signoff"
     ],
+    "csvRowCount": 6,
+    "csvRowsMissingPostImportCommandCount": 0,
+    "csvRowsMissingPostImportCommands": [],
     "rowsMissingCommandCount": 0,
     "rowsMissingOperatorContextCount": 0,
     "rowsMissingCommands": [],

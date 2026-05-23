@@ -340,6 +340,61 @@ async function readText(path) {
   return readFile(repoPath(path), 'utf8')
 }
 
+function parseCsv(text) {
+  const rows = []
+  let row = []
+  let field = ''
+  let inQuotes = false
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index]
+    const next = text[index + 1]
+
+    if (inQuotes) {
+      if (char === '"' && next === '"') {
+        field += '"'
+        index += 1
+      } else if (char === '"') {
+        inQuotes = false
+      } else {
+        field += char
+      }
+      continue
+    }
+
+    if (char === '"') {
+      inQuotes = true
+    } else if (char === ',') {
+      row.push(field)
+      field = ''
+    } else if (char === '\n') {
+      row.push(field)
+      rows.push(row)
+      row = []
+      field = ''
+    } else if (char !== '\r') {
+      field += char
+    }
+  }
+
+  if (field.length > 0 || row.length > 0) {
+    row.push(field)
+    rows.push(row)
+  }
+
+  if (inQuotes) {
+    throw new Error('CSV has an unterminated quoted field')
+  }
+
+  const [headers, ...dataRows] = rows.filter((csvRow) => csvRow.some((value) => String(value || '').trim().length > 0))
+  if (!headers || headers.length === 0) return []
+
+  return dataRows.map((csvRow) => Object.fromEntries(headers.map((header, index) => [
+    String(header || '').trim(),
+    csvRow[index] ?? '',
+  ])))
+}
+
 function runGit(args) {
   return execFileSync('git', args, {
     cwd: root,
@@ -2319,6 +2374,17 @@ const dispatchSentRecordRowsMissingOperatorContext = dispatchSentRecordTemplateR
   !hasText(row.startUrlOrCommand) ||
   !hasText(row.packetOrArtifact)
 ))
+let dispatchSentRecordTemplateCsvRows = []
+let dispatchSentRecordTemplateCsvParseError = null
+try {
+  dispatchSentRecordTemplateCsvRows = parseCsv(dispatchSentRecordTemplateCsv)
+} catch (error) {
+  dispatchSentRecordTemplateCsvParseError = error
+}
+const dispatchSentRecordCsvRowsMissingPostImportCommands = dispatchSentRecordTemplateCsvRows.filter((row) => (
+  !String(row.postImportCommands || '').includes('npm run qa:launch-refresh') ||
+  !String(row.postImportCommands || '').includes('npm run qa:launch-signoff')
+))
 if (dispatchSentRecordTemplate.status !== 'pass') {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template status is not pass')
 }
@@ -2342,6 +2408,12 @@ if (Number(dispatchSentRecordTemplate.visualRowCount || 0) !== launchTodayVisual
 }
 if (dispatchSentRecordTemplateRows.length !== launchTodayOutreachRows.length) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows do not cover every launch operator outreach action row')
+}
+if (dispatchSentRecordTemplateCsvParseError) {
+  dispatchSentRecordTemplateIssues.push(`dispatch sent-record template CSV could not be parsed: ${dispatchSentRecordTemplateCsvParseError.message}`)
+}
+if (!dispatchSentRecordTemplateCsvParseError && dispatchSentRecordTemplateCsvRows.length !== launchTodayOutreachRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV row count does not match launch operator outreach action rows')
 }
 if (dispatchSentRecordBlankRows.length !== dispatchSentRecordTemplateRows.length) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template includes prefilled sent proof fields')
@@ -2382,6 +2454,9 @@ for (const requiredColumn of ['messageSubject', 'startUrlOrCommand', 'packetOrAr
 }
 if (!dispatchSentRecordTemplateCsv.includes('npm run qa:launch-refresh') || !dispatchSentRecordTemplateCsv.includes('npm run qa:launch-signoff')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing post-import refresh/signoff commands')
+}
+if (dispatchSentRecordCsvRowsMissingPostImportCommands.length > 0) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV rows are missing post-import refresh/signoff commands')
 }
 
 const dispatchSentRecordTemplateRejectionIssues = []
@@ -3251,6 +3326,9 @@ const summary = {
     postImportCommands: Array.isArray(dispatchSentRecordTemplate.postImportCommands)
       ? dispatchSentRecordTemplate.postImportCommands
       : [],
+    csvRowCount: dispatchSentRecordTemplateCsvRows.length,
+    csvRowsMissingPostImportCommandCount: dispatchSentRecordCsvRowsMissingPostImportCommands.length,
+    csvRowsMissingPostImportCommands: dispatchSentRecordCsvRowsMissingPostImportCommands.map((row) => row.id),
     rowsMissingCommandCount: dispatchSentRecordRowsMissingCommands.length,
     rowsMissingOperatorContextCount: dispatchSentRecordRowsMissingOperatorContext.length,
     rowsMissingCommands: dispatchSentRecordRowsMissingCommands.map((row) => row.id),
