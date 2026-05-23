@@ -4,10 +4,10 @@ Date: 2026-05-21
 
 ## Current Production Runtime Evidence
 
-Commit `0eac38741e38e20f03c9c168994d900382d41551` deployed to Vercel production on 2026-05-23.
+Commit `79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa` deployed to Vercel production on 2026-05-23.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-kel11i717-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-mbbrhizi0-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,13 +16,13 @@ Commit `0eac38741e38e20f03c9c168994d900382d41551` deployed to Vercel production 
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-23-0eac387/`
-- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-23-0eac387/summary.json`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/`
+- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-23-79bcaf4/summary.json`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `60/60`
 - Public launch status is `beta-ready-public-blocked`; deployment currency is clear, guardrail issues are empty, and the only public blockers are beta reviews plus production visual-review history.
-- Current production commit: `0eac38741e38e20f03c9c168994d900382d41551`
+- Current production commit: `79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa`
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Shared Button Semantics Postdeploy Evidence

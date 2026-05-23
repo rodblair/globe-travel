@@ -20,7 +20,7 @@ Auth mode: guest
 | --- | --- | --- | --- | --- |
 | explore-alias | phone | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | globe-alias | phone | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
-| map-alias | phone | `/saved` | https://globe-travel-two.vercel.app/saved | Pass |
+| map-alias | phone | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | bucket-list-alias | phone | `/saved` | https://globe-travel-two.vercel.app/saved | Pass |
 | journal-alias | phone | `/saved?tab=journal` | https://globe-travel-two.vercel.app/saved?tab=journal | Pass |
 | profile-alias | phone | `/account` | https://globe-travel-two.vercel.app/account | Pass |
@@ -31,7 +31,7 @@ Auth mode: guest
 | onboarding-fullscreen | phone | `/onboarding` | https://globe-travel-two.vercel.app/onboarding | Pass |
 | explore-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | globe-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
-| map-alias | desktop | `/saved` | https://globe-travel-two.vercel.app/saved | Pass |
+| map-alias | desktop | `/chat` | https://globe-travel-two.vercel.app/chat | Pass |
 | bucket-list-alias | desktop | `/saved` | https://globe-travel-two.vercel.app/saved | Pass |
 | journal-alias | desktop | `/saved?tab=journal` | https://globe-travel-two.vercel.app/saved?tab=journal | Pass |
 | profile-alias | desktop | `/account` | https://globe-travel-two.vercel.app/account | Pass |
