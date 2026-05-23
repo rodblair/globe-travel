@@ -33,6 +33,10 @@ const paidPathReadinessArtifact =
 const plannerActualsArtifact =
   process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT ||
   'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const plannerHandoffArtifact =
+  process.env.QA_LAUNCH_PLANNER_HANDOFF_ARTIFACT ||
+  process.env.QA_PLANNER_HANDOFF_ARTIFACT ||
+  latestQaArtifact(/^planner-handoff-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/planner-handoff-smoke-2026-05-23.json')
 const publicShareMapIntegrityArtifact =
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
@@ -397,6 +401,13 @@ const requiredPlannerActualIds = [
   'marrakech-3-day-markets-riads',
   'cape-town-5-day-outdoors-food',
   'sydney-4-day-beaches-neighborhoods',
+]
+
+const requiredPlannerHandoffChecks = [
+  'Browser planner query failure preserves the trip idea and retry path',
+  'Browser planner delayed query shows progress and reaches Trip Studio',
+  'Browser planner start checks clean up disposable state',
+  'Planner draft API creates the requested five-day Athens trip shell',
 ]
 
 const requiredBetaReviewAudiences = ['friend-group', 'couple', 'family', 'solo']
@@ -1558,6 +1569,118 @@ async function checkPlannerActualsArtifact() {
         usableRouteCount: day.usableRouteCount,
       })),
     })),
+  })
+}
+
+async function checkPlannerHandoffArtifact() {
+  let summary
+  try {
+    summary = await readJson(plannerHandoffArtifact)
+  } catch (error) {
+    addCheck('planner handoff smoke artifact is readable', false, {
+      artifact: plannerHandoffArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  const results = Array.isArray(summary.results) ? summary.results : []
+  const resultNames = results.map((result) => result.name).filter(Boolean)
+  const missingChecks = hasAll(resultNames, requiredPlannerHandoffChecks)
+  const failedResults = results.filter((result) => result.ok !== true)
+  const failures = Array.isArray(summary.failures) ? summary.failures : []
+  const failureResult = results.find((result) => result.name === 'Browser planner query failure preserves the trip idea and retry path') || {}
+  const delayedResult = results.find((result) => result.name === 'Browser planner delayed query shows progress and reaches Trip Studio') || {}
+  const athensResult = results.find((result) => result.name === 'Planner draft API creates the requested five-day Athens trip shell') || {}
+  const cleanupResult = results.find((result) => result.name === 'Browser planner start checks clean up disposable state') || {}
+  const studioState = delayedResult.studioState || {}
+  const waitingState = delayedResult.waitingState || {}
+  const failureMetrics = failureResult.metrics || {}
+  const waitingMetrics = delayedResult.waitingMetrics || {}
+  const studioMetrics = delayedResult.studioMetrics || {}
+
+  addCheck('planner handoff smoke artifact is readable', true, {
+    artifact: plannerHandoffArtifact,
+    checked: summary.checked ?? null,
+    passed: summary.passed ?? null,
+    failed: summary.failed ?? null,
+  })
+
+  checkEvidenceFreshness('planner handoff smoke', evidenceDateFrom(summary, plannerHandoffArtifact))
+
+  addCheck('planner handoff smoke covers first-time prompt, delayed Athens Trip Studio, retry, and cleanup paths', (
+    Number(summary.checked) >= 17 &&
+    Number(summary.passed) === Number(summary.checked) &&
+    Number(summary.failed) === 0 &&
+    failures.length === 0 &&
+    failedResults.length === 0 &&
+    missingChecks.length === 0
+  ), {
+    requiredPlannerHandoffChecks,
+    resultCount: results.length,
+    checked: summary.checked ?? null,
+    passed: summary.passed ?? null,
+    failed: summary.failed ?? null,
+    missingChecks,
+    failedResults: failedResults.map((result) => result.name || 'unnamed result'),
+    failureCount: failures.length,
+  })
+
+  addCheck('planner handoff smoke proves five-day Athens draft and Trip Studio state', (
+    athensResult.dayCount === 5 &&
+    athensResult.destinationQuery === 'Athens' &&
+    studioState.tripTitle === '5 Days in Athens' &&
+    studioState.dayCount === 5 &&
+    studioState.destinationQuery === 'Athens' &&
+    studioState.constraintDays === 5 &&
+    studioState.hasPromptParam === true &&
+    studioState.hasStudioActions === true &&
+    studioState.hasInitialGenerationCopy === true &&
+    waitingState.hasOpeningState === true &&
+    waitingState.promptVisible === true &&
+    waitingState.inputDisabled === true &&
+    waitingState.sendDisabled === true &&
+    waitingMetrics.hasAppError !== true &&
+    waitingMetrics.horizontalOverflow !== true &&
+    studioMetrics.hasAppError !== true &&
+    studioMetrics.horizontalOverflow !== true
+  ), {
+    athensDraft: {
+      dayCount: athensResult.dayCount ?? null,
+      destinationQuery: athensResult.destinationQuery || null,
+    },
+    studioState,
+    waitingState,
+    waitingMetrics,
+    studioMetrics,
+  })
+
+  addCheck('planner handoff smoke proves retry recovery preserves the failed prompt without layout breakage', (
+    failureResult.hasRecoveryCopy === true &&
+    failureResult.inputValue === 'Plan a 4 day Lisbon food trip for friends with viewpoints and relaxed mornings' &&
+    failureResult.tryAgainVisible === true &&
+    failureResult.tryAgainDisabled === false &&
+    failureMetrics.hasAppError !== true &&
+    failureMetrics.horizontalOverflow !== true
+  ), {
+    hasRecoveryCopy: failureResult.hasRecoveryCopy ?? null,
+    inputValue: failureResult.inputValue || null,
+    tryAgainVisible: failureResult.tryAgainVisible ?? null,
+    tryAgainDisabled: failureResult.tryAgainDisabled ?? null,
+    failureMetrics,
+  })
+
+  addCheck('planner handoff smoke cleans up disposable trip and guest state', (
+    cleanupResult.tripCleanup?.tripDeleted === true &&
+    cleanupResult.failureGuestCleanup?.userDeleted === true &&
+    cleanupResult.slowGuestCleanup?.userDeleted === true &&
+    !cleanupResult.tripCleanup?.error &&
+    !cleanupResult.failureGuestCleanup?.error &&
+    !cleanupResult.slowGuestCleanup?.error
+  ), {
+    tripCleanup: cleanupResult.tripCleanup || null,
+    failureGuestCleanup: cleanupResult.failureGuestCleanup || null,
+    slowGuestCleanup: cleanupResult.slowGuestCleanup || null,
   })
 }
 
@@ -2878,6 +3001,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const appSurfacesIssues = Array.isArray(appSurfacesStatus.issues) ? appSurfacesStatus.issues : []
   const productionAppSurfacesStatus = status.productionAppSurfaces || {}
   const productionAppSurfacesIssues = Array.isArray(productionAppSurfacesStatus.issues) ? productionAppSurfacesStatus.issues : []
+  const plannerHandoffStatus = status.plannerHandoff || {}
+  const plannerHandoffIssues = Array.isArray(plannerHandoffStatus.issues) ? plannerHandoffStatus.issues : []
+  const plannerHandoffMissingChecks = Array.isArray(plannerHandoffStatus.missingChecks) ? plannerHandoffStatus.missingChecks : []
+  const plannerHandoffFailedResults = Array.isArray(plannerHandoffStatus.failedResults) ? plannerHandoffStatus.failedResults : []
   const publicShareMapStatus = status.publicShareMapIntegrity || {}
   const publicShareMapIssues = Array.isArray(publicShareMapStatus.issues) ? publicShareMapStatus.issues : []
   const publicMetadataStatus = status.publicMetadata || {}
@@ -3050,6 +3177,47 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     productionAppSurfacesMissingViewports,
     productionAppSurfacesBadResults,
     productionAppSurfacesIssues,
+  })
+
+  addCheck('public launch status includes planner handoff smoke evidence', (
+    plannerHandoffStatus.ready === true &&
+    plannerHandoffStatus.artifact === plannerHandoffArtifact &&
+    status.artifacts?.plannerHandoff === plannerHandoffArtifact &&
+    hasMeaningfulText(plannerHandoffStatus.report) &&
+    Number(plannerHandoffStatus.checked) >= 17 &&
+    Number(plannerHandoffStatus.passed) === Number(plannerHandoffStatus.checked) &&
+    Number(plannerHandoffStatus.failed) === 0 &&
+    Number(plannerHandoffStatus.requiredCheckCount) === requiredPlannerHandoffChecks.length &&
+    Number(plannerHandoffStatus.failureCount) === 0 &&
+    plannerHandoffMissingChecks.length === 0 &&
+    plannerHandoffFailedResults.length === 0 &&
+    plannerHandoffIssues.length === 0 &&
+    plannerHandoffStatus.athensStudio?.tripTitle === '5 Days in Athens' &&
+    plannerHandoffStatus.athensStudio?.dayCount === 5 &&
+    plannerHandoffStatus.athensStudio?.destinationQuery === 'Athens' &&
+    plannerHandoffStatus.athensStudio?.constraintDays === 5 &&
+    plannerHandoffStatus.athensStudio?.hasPromptParam === true &&
+    plannerHandoffStatus.athensStudio?.hasStudioActions === true &&
+    plannerHandoffStatus.athensStudio?.hasInitialGenerationCopy === true &&
+    plannerHandoffStatus.retryRecoveryReady === true &&
+    plannerHandoffStatus.cleanupReady === true
+  ), {
+    plannerHandoffArtifact: plannerHandoffStatus.artifact || null,
+    expectedPlannerHandoffArtifact: plannerHandoffArtifact,
+    publicStatusArtifact: status.artifacts?.plannerHandoff || null,
+    plannerHandoffReport: plannerHandoffStatus.report || null,
+    plannerHandoffReady: plannerHandoffStatus.ready ?? null,
+    plannerHandoffChecked: plannerHandoffStatus.checked ?? null,
+    plannerHandoffPassed: plannerHandoffStatus.passed ?? null,
+    plannerHandoffFailed: plannerHandoffStatus.failed ?? null,
+    plannerHandoffRequiredCheckCount: plannerHandoffStatus.requiredCheckCount ?? null,
+    plannerHandoffMissingChecks,
+    plannerHandoffFailedResults,
+    plannerHandoffFailureCount: plannerHandoffStatus.failureCount ?? null,
+    plannerHandoffAthensStudio: plannerHandoffStatus.athensStudio || null,
+    plannerHandoffRetryRecoveryReady: plannerHandoffStatus.retryRecoveryReady ?? null,
+    plannerHandoffCleanupReady: plannerHandoffStatus.cleanupReady ?? null,
+    plannerHandoffIssues,
   })
 
   addCheck('public launch status includes public share map/itinerary integrity evidence', (
@@ -4416,6 +4584,7 @@ await checkAccessibilityArtifact()
 await checkStripeArtifacts()
 await checkPaidPathReadinessArtifact()
 await checkPlannerActualsArtifact()
+await checkPlannerHandoffArtifact()
 await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
@@ -4436,6 +4605,7 @@ const summary = {
   paidPathReadinessArtifact,
   accessibilityArtifact,
   plannerActualsArtifact,
+  plannerHandoffArtifact,
   publicShareMapIntegrityArtifact,
   betaHumanReviewRegister,
   betaHumanReviewWaveRehearsal,

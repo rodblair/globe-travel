@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-23T10:22:13.990Z
+Generated at: 2026-05-23T10:42:43.252Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -66,6 +66,7 @@ Status: beta-ready-public-blocked
 - Accessibility ready: yes
 - Design system ready: yes
 - Planner map actuals ready: yes
+- Planner handoff ready: yes (17/17, Athens days: 5)
 - Public share map/itinerary catalog ready: yes (1/1 public shares, 2 viewports)
 - Public metadata ready: yes (6/6)
 - Release candidate ready: yes
@@ -181,6 +182,9 @@ Authenticated app surfaces:
 Production authenticated app surfaces:
 - none
 
+Planner handoff:
+- none
+
 Public share map/itinerary integrity:
 - none
 
@@ -236,6 +240,7 @@ Public metadata:
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-05-23.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
+- Planner handoff: `qa/planner-handoff-smoke-2026-05-23.json` and `qa/planner-handoff-smoke-2026-05-23.md`
 - Public share map/itinerary integrity: `qa/public-share-map-itinerary-integrity-2026-05-23.json` and `qa/public-share-map-itinerary-integrity-2026-05-23.md`
 - Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-23.json` and `qa/public-metadata-smoke-2026-05-23.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`

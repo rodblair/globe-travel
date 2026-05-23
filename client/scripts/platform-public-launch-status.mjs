@@ -66,6 +66,9 @@ const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.Q
 const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS || process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT || 'qa/design-system-readiness-2026-05-23.json'
 const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json'
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
+const plannerHandoffPath = process.env.QA_PLANNER_HANDOFF_ARTIFACT ||
+  process.env.QA_LAUNCH_PLANNER_HANDOFF_ARTIFACT ||
+  latestQaArtifact(/^planner-handoff-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/planner-handoff-smoke-2026-05-23.json')
 const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   'qa/public-share-map-itinerary-integrity-2026-05-23.json'
@@ -257,6 +260,12 @@ const requiredPlannerActualIds = [
   'marrakech-3-day-markets-riads',
   'cape-town-5-day-outdoors-food',
   'sydney-4-day-beaches-neighborhoods',
+]
+const requiredPlannerHandoffChecks = [
+  'Browser planner query failure preserves the trip idea and retry path',
+  'Browser planner delayed query shows progress and reaches Trip Studio',
+  'Browser planner start checks clean up disposable state',
+  'Planner draft API creates the requested five-day Athens trip shell',
 ]
 const requiredPublicMetadataChecks = [
   'root-html',
@@ -777,6 +786,7 @@ const [
   accessibility,
   designSystem,
   plannerActuals,
+  plannerHandoff,
   publicShareMapIntegrity,
   publicMetadataRead,
   releaseCandidate,
@@ -855,6 +865,7 @@ const [
   readJson(accessibilityPath),
   readJson(designSystemPath),
   readJson(plannerActualsPath),
+  readJson(plannerHandoffPath),
   readJson(publicShareMapIntegrityPath),
   readableJson(publicMetadataPath),
   readJson(releaseCandidatePath),
@@ -1100,6 +1111,77 @@ const plannerActualsReady =
   Array.isArray(plannerActuals) &&
   missingPlannerActualIds.length === 0 &&
   badPlannerActuals.length === 0
+const plannerHandoffResults = Array.isArray(plannerHandoff.results) ? plannerHandoff.results : []
+const plannerHandoffResultNames = plannerHandoffResults.map((result) => result.name).filter(Boolean)
+const missingPlannerHandoffChecks = missingFrom(plannerHandoffResultNames, requiredPlannerHandoffChecks)
+const failedPlannerHandoffResults = plannerHandoffResults.filter((result) => result.ok !== true)
+const plannerHandoffFailures = Array.isArray(plannerHandoff.failures) ? plannerHandoff.failures : []
+const plannerHandoffFailureResult = plannerHandoffResults.find((result) => result.name === 'Browser planner query failure preserves the trip idea and retry path') || {}
+const plannerHandoffDelayedResult = plannerHandoffResults.find((result) => result.name === 'Browser planner delayed query shows progress and reaches Trip Studio') || {}
+const plannerHandoffAthensResult = plannerHandoffResults.find((result) => result.name === 'Planner draft API creates the requested five-day Athens trip shell') || {}
+const plannerHandoffCleanupResult = plannerHandoffResults.find((result) => result.name === 'Browser planner start checks clean up disposable state') || {}
+const plannerHandoffStudioState = plannerHandoffDelayedResult.studioState || {}
+const plannerHandoffWaitingState = plannerHandoffDelayedResult.waitingState || {}
+const plannerHandoffFailureMetrics = plannerHandoffFailureResult.metrics || {}
+const plannerHandoffWaitingMetrics = plannerHandoffDelayedResult.waitingMetrics || {}
+const plannerHandoffStudioMetrics = plannerHandoffDelayedResult.studioMetrics || {}
+const plannerHandoffDate = dateOnly(plannerHandoff.date) || dateOnly(plannerHandoffPath)
+const plannerHandoffAgeDays = daysBetween(plannerHandoffDate, dailyLaunchOpsDate)
+const plannerHandoffIssues = []
+if (Number(plannerHandoff.checked) < 17) plannerHandoffIssues.push('planner handoff smoke did not cover the full required check count')
+if (Number(plannerHandoff.passed) !== Number(plannerHandoff.checked) || Number(plannerHandoff.failed) !== 0) plannerHandoffIssues.push('planner handoff smoke has failed checks')
+if (plannerHandoffFailures.length > 0 || failedPlannerHandoffResults.length > 0) plannerHandoffIssues.push('planner handoff smoke includes failure records')
+if (missingPlannerHandoffChecks.length > 0) plannerHandoffIssues.push('planner handoff smoke is missing required first-time-user journey checks')
+if (!Number.isFinite(plannerHandoffAgeDays) || plannerHandoffAgeDays < 0 || plannerHandoffAgeDays > 14) plannerHandoffIssues.push('planner handoff smoke evidence is not fresh enough for launch signoff')
+if (plannerHandoffAthensResult.dayCount !== 5 || plannerHandoffAthensResult.destinationQuery !== 'Athens') plannerHandoffIssues.push('planner handoff draft API did not prove a five-day Athens shell')
+if (
+  plannerHandoffStudioState.tripTitle !== '5 Days in Athens' ||
+  plannerHandoffStudioState.dayCount !== 5 ||
+  plannerHandoffStudioState.destinationQuery !== 'Athens' ||
+  plannerHandoffStudioState.constraintDays !== 5 ||
+  plannerHandoffStudioState.hasPromptParam !== true ||
+  plannerHandoffStudioState.hasStudioActions !== true ||
+  plannerHandoffStudioState.hasInitialGenerationCopy !== true
+) {
+  plannerHandoffIssues.push('planner handoff delayed browser path did not prove the five-day Athens Trip Studio state')
+}
+if (
+  plannerHandoffWaitingState.hasOpeningState !== true ||
+  plannerHandoffWaitingState.promptVisible !== true ||
+  plannerHandoffWaitingState.inputDisabled !== true ||
+  plannerHandoffWaitingState.sendDisabled !== true
+) {
+  plannerHandoffIssues.push('planner handoff delayed browser path did not prove a clear opening state')
+}
+if (
+  plannerHandoffFailureResult.hasRecoveryCopy !== true ||
+  plannerHandoffFailureResult.inputValue !== 'Plan a 4 day Lisbon food trip for friends with viewpoints and relaxed mornings' ||
+  plannerHandoffFailureResult.tryAgainVisible !== true ||
+  plannerHandoffFailureResult.tryAgainDisabled !== false ||
+  plannerHandoffFailureMetrics.hasAppError === true ||
+  plannerHandoffFailureMetrics.horizontalOverflow === true
+) {
+  plannerHandoffIssues.push('planner handoff failure path did not preserve prompt, recovery copy, retry, and layout health')
+}
+if (
+  plannerHandoffWaitingMetrics.hasAppError === true ||
+  plannerHandoffWaitingMetrics.horizontalOverflow === true ||
+  plannerHandoffStudioMetrics.hasAppError === true ||
+  plannerHandoffStudioMetrics.horizontalOverflow === true
+) {
+  plannerHandoffIssues.push('planner handoff delayed browser path had app errors or horizontal overflow')
+}
+if (
+  plannerHandoffCleanupResult.tripCleanup?.tripDeleted !== true ||
+  plannerHandoffCleanupResult.failureGuestCleanup?.userDeleted !== true ||
+  plannerHandoffCleanupResult.slowGuestCleanup?.userDeleted !== true ||
+  plannerHandoffCleanupResult.tripCleanup?.error ||
+  plannerHandoffCleanupResult.failureGuestCleanup?.error ||
+  plannerHandoffCleanupResult.slowGuestCleanup?.error
+) {
+  plannerHandoffIssues.push('planner handoff smoke did not clean up disposable trip and guest state')
+}
+const plannerHandoffReady = plannerHandoffIssues.length === 0
 const publicShareMapIntegrityIssues = []
 const publicShareMapResults = Array.isArray(publicShareMapIntegrity.shareResults) ? publicShareMapIntegrity.shareResults : []
 const publicShareMapSlugs = Array.isArray(publicShareMapIntegrity.shareSlugs) ? publicShareMapIntegrity.shareSlugs : []
@@ -3072,6 +3154,9 @@ if (!designSystemReady) {
 if (!plannerActualsReady) {
   guardrailIssues.push('planner generated actuals do not cover regional edge cities with trustworthy map pins')
 }
+if (!plannerHandoffReady) {
+  guardrailIssues.push('planner handoff smoke evidence does not prove first-time prompt, delayed Athens Trip Studio, retry, and cleanup paths')
+}
 if (!publicShareMapIntegrityReady) {
   guardrailIssues.push('public share map/itinerary integrity evidence is not passing')
 }
@@ -3762,6 +3847,37 @@ const summary = {
     })),
     ready: plannerActualsReady,
   },
+  plannerHandoff: {
+    artifact: qaDisplayPath(plannerHandoffPath),
+    report: qaDisplayPath(plannerHandoff.reportArtifact),
+    date: plannerHandoffDate || null,
+    ageDays: plannerHandoffAgeDays,
+    checked: plannerHandoff.checked ?? null,
+    passed: plannerHandoff.passed ?? null,
+    failed: plannerHandoff.failed ?? null,
+    requiredCheckCount: requiredPlannerHandoffChecks.length,
+    resultCount: plannerHandoffResults.length,
+    missingChecks: missingPlannerHandoffChecks,
+    failedResults: failedPlannerHandoffResults.map((result) => result.name || 'unnamed result'),
+    failureCount: plannerHandoffFailures.length,
+    athensStudio: {
+      tripTitle: plannerHandoffStudioState.tripTitle || null,
+      dayCount: plannerHandoffStudioState.dayCount ?? null,
+      destinationQuery: plannerHandoffStudioState.destinationQuery || null,
+      constraintDays: plannerHandoffStudioState.constraintDays ?? null,
+      hasPromptParam: plannerHandoffStudioState.hasPromptParam ?? null,
+      hasStudioActions: plannerHandoffStudioState.hasStudioActions ?? null,
+      hasInitialGenerationCopy: plannerHandoffStudioState.hasInitialGenerationCopy ?? null,
+    },
+    retryRecoveryReady: plannerHandoffFailureResult.hasRecoveryCopy === true &&
+      plannerHandoffFailureResult.tryAgainVisible === true &&
+      plannerHandoffFailureResult.tryAgainDisabled === false,
+    cleanupReady: plannerHandoffCleanupResult.tripCleanup?.tripDeleted === true &&
+      plannerHandoffCleanupResult.failureGuestCleanup?.userDeleted === true &&
+      plannerHandoffCleanupResult.slowGuestCleanup?.userDeleted === true,
+    issues: plannerHandoffIssues,
+    ready: plannerHandoffReady,
+  },
   publicShareMapIntegrity: {
     artifact: qaDisplayPath(publicShareMapIntegrityPath),
     report: qaDisplayPath(publicShareMapIntegrity.reportArtifact),
@@ -3956,6 +4072,7 @@ const summary = {
     accessibility: qaDisplayPath(accessibilityPath),
     designSystemReadiness: qaDisplayPath(designSystemPath),
     plannerActuals: qaDisplayPath(plannerActualsPath),
+    plannerHandoff: qaDisplayPath(plannerHandoffPath),
     publicShareMapIntegrity: qaDisplayPath(publicShareMapIntegrityPath),
     publicMetadata: qaDisplayPath(publicMetadataPath),
     releaseCandidate: qaDisplayPath(releaseCandidatePath),
@@ -4052,6 +4169,7 @@ Status: ${status}
 - Accessibility ready: ${summary.accessibility.ready ? 'yes' : 'no'}
 - Design system ready: ${summary.designSystem.ready ? 'yes' : 'no'}
 - Planner map actuals ready: ${summary.plannerActuals.ready ? 'yes' : 'no'}
+- Planner handoff ready: ${summary.plannerHandoff.ready ? 'yes' : 'no'} (${summary.plannerHandoff.passed || 0}/${summary.plannerHandoff.checked || 0}, Athens days: ${summary.plannerHandoff.athensStudio.dayCount || 'missing'})
 - Public share map/itinerary catalog ready: ${summary.publicShareMapIntegrity.ready ? 'yes' : 'no'} (${summary.publicShareMapIntegrity.shareCount || 0}/${summary.publicShareMapIntegrity.discovery.totalPublicShares || 0} public shares, ${summary.publicShareMapIntegrity.checkedViewports || 0} viewports)
 - Public metadata ready: ${summary.publicMetadata.ready ? 'yes' : 'no'} (${summary.publicMetadata.passed || 0}/${summary.publicMetadata.requiredCheckCount || 0})
 - Release candidate ready: ${summary.releaseCandidate.ready ? 'yes' : 'no'}
@@ -4166,6 +4284,9 @@ ${markdownList(appSurfaceIssues)}
 Production authenticated app surfaces:
 ${markdownList(productionAppSurfaceIssues)}
 
+Planner handoff:
+${markdownList(plannerHandoffIssues)}
+
 Public share map/itinerary integrity:
 ${markdownList(publicShareMapIntegrityIssues)}
 
@@ -4218,6 +4339,7 @@ ${markdownList(summary.nextActions)}
 - Accessibility: \`${summary.artifacts.accessibility}\`
 - Design-system readiness: \`${summary.artifacts.designSystemReadiness}\`
 - Planner actuals: \`${summary.artifacts.plannerActuals}\`
+- Planner handoff: \`${summary.artifacts.plannerHandoff}\` and \`${summary.plannerHandoff.report}\`
 - Public share map/itinerary integrity: \`${summary.artifacts.publicShareMapIntegrity}\` and \`${summary.publicShareMapIntegrity.report}\`
 - Public metadata, manifest, robots, and sitemap: \`${summary.artifacts.publicMetadata}\` and \`${summary.publicMetadata.report}\`
 - Release candidate: \`${summary.artifacts.releaseCandidate}\`
