@@ -1,6 +1,6 @@
 # Dispatch Sent-Record Template
 
-Date: 2026-05-22
+Date: 2026-05-23
 Status: pass
 
 ## Result
@@ -8,7 +8,7 @@ Status: pass
 - Checked: 7
 - Passed: 7
 - Failed: 0
-- Launch operator board: `qa/launch-operator-today-2026-05-22.json`
+- Launch operator board: `qa/launch-operator-today-2026-05-23.json`
 - Template rows: 6
 - Beta rows: 5
 - Visual rows: 1
@@ -20,13 +20,13 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 
 ## Commands After Filling The JSON
 
-- Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
-- Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent`
+- Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent`
+- Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent`
 
 ## Commands After Filling The CSV
 
-- Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent`
-- Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent`
+- Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
+- Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
 
 ## Rows To Fill
 

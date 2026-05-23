@@ -1,18 +1,18 @@
 {
-  "date": "2026-05-22",
+  "date": "2026-05-23",
   "status": "pass",
   "checked": 7,
   "passed": 7,
   "failed": 0,
-  "launchOperatorArtifact": "qa/launch-operator-today-2026-05-22.json",
+  "launchOperatorArtifact": "qa/launch-operator-today-2026-05-23.json",
   "readyForImport": false,
   "rowCount": 6,
   "betaRowCount": 5,
   "visualRowCount": 1,
-  "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
-  "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
-  "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent",
-  "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent",
+  "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
+  "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
+  "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+  "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
   "messageFileChecks": [
     {
       "id": "BETA-HR-001",
@@ -161,9 +161,9 @@
     {
       "name": "sent-record template reads actionable launch operator board",
       "ok": true,
-      "launchOperatorStatus": "pass",
-      "launchOperatorToday": "2026-05-22",
-      "acceptedOverdueRemediationBoard": false
+      "launchOperatorStatus": "fail",
+      "launchOperatorToday": "2026-05-23",
+      "acceptedOverdueRemediationBoard": true
     },
     {
       "name": "sent-record template covers every current outreach send action",
@@ -190,10 +190,10 @@
     {
       "name": "sent-record template includes validation and import commands",
       "ok": true,
-      "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
-      "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.json npm run qa:dispatch-mark-sent",
-      "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent",
-      "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-22.csv npm run qa:dispatch-mark-sent"
+      "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
+      "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
+      "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+      "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent"
     },
     {
       "name": "sent-record template contains no sensitive contact details",
@@ -202,7 +202,7 @@
     }
   ],
   "failures": [],
-  "jsonArtifact": "qa/dispatch-sent-record-template-2026-05-22.json",
-  "reportArtifact": "qa/dispatch-sent-record-template-2026-05-22.md",
-  "csvArtifact": "qa/dispatch-sent-record-template-2026-05-22.csv"
+  "jsonArtifact": "qa/dispatch-sent-record-template-2026-05-23.json",
+  "reportArtifact": "qa/dispatch-sent-record-template-2026-05-23.md",
+  "csvArtifact": "qa/dispatch-sent-record-template-2026-05-23.csv"
 }

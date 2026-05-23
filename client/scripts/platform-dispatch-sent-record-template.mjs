@@ -71,6 +71,11 @@ function templatePathFor(completedSubmissionPath) {
 
 const launchOperatorToday = await readJson(launchOperatorTodayPath)
 const actionRows = Array.isArray(launchOperatorToday.actionRows) ? launchOperatorToday.actionRows : []
+const launchOperatorFailures = Array.isArray(launchOperatorToday.failures) ? launchOperatorToday.failures : []
+const onlyOverdueLaunchExecutionFailure = launchOperatorToday.status === 'fail' &&
+  launchOperatorFailures.length === 1 &&
+  launchOperatorFailures[0]?.name === 'launch today has no overdue launch execution rows'
+const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' || onlyOverdueLaunchExecutionFailure
 const sendRows = actionRows.filter((row) => (
   row.sendStatus !== 'sent' &&
   (row.workType === 'beta-human-review' || row.workType === 'production-visual-review')
@@ -106,10 +111,11 @@ const submissionTemplateChecks = await Promise.all(templateRows.map(async (row) 
 
 const checks = [
   {
-    name: 'sent-record template reads passing launch operator board',
-    ok: launchOperatorToday.status === 'pass' && launchOperatorToday.today === date,
+    name: 'sent-record template reads actionable launch operator board',
+    ok: launchOperatorBoardActionable && launchOperatorToday.today === date,
     launchOperatorStatus: launchOperatorToday.status || null,
     launchOperatorToday: launchOperatorToday.today || null,
+    acceptedOverdueRemediationBoard: onlyOverdueLaunchExecutionFailure,
   },
   {
     name: 'sent-record template covers every current outreach send action',

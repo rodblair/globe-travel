@@ -1,0 +1,85 @@
+{
+  "date": "2026-05-23",
+  "status": "pass",
+  "checked": 7,
+  "passed": 7,
+  "failed": 0,
+  "templateArtifact": "qa/dispatch-sent-record-template-2026-05-23.json",
+  "templateReport": "qa/dispatch-sent-record-template-2026-05-23.md",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+  "markSentExitCode": 1,
+  "markSentStatus": "fail",
+  "markSentImportMode": true,
+  "requestedUpdateCount": 6,
+  "betaUpdateCount": 0,
+  "visualUpdateCount": 0,
+  "rejectionIssueCount": 24,
+  "missingFieldNames": [
+    "reviewerAlias",
+    "deliveryChannel",
+    "sentAt",
+    "contactRecordLocation"
+  ],
+  "canonicalBetaUnchanged": true,
+  "canonicalVisualUnchanged": true,
+  "canonicalBetaSentCount": 0,
+  "canonicalVisualSentCount": 0,
+  "rawArtifactsCleanedUp": true,
+  "checks": [
+    {
+      "name": "blank sent-record template is still marked as not ready for import",
+      "ok": true,
+      "templateStatus": "pass",
+      "readyForImport": false,
+      "rowCount": 6
+    },
+    {
+      "name": "blank sent-record template report states the evidence boundary",
+      "ok": true
+    },
+    {
+      "name": "blank sent-record template import attempt is rejected",
+      "ok": true,
+      "exitCode": 1,
+      "status": "fail",
+      "importMode": true,
+      "requestedUpdateCount": 6,
+      "templateRowCount": 6
+    },
+    {
+      "name": "blank sent-record template rejection names every required proof field",
+      "ok": true,
+      "missingFieldNames": [
+        "reviewerAlias",
+        "deliveryChannel",
+        "sentAt",
+        "contactRecordLocation"
+      ]
+    },
+    {
+      "name": "blank sent-record template rejection imports no rows",
+      "ok": true,
+      "betaUpdateCount": 0,
+      "visualUpdateCount": 0
+    },
+    {
+      "name": "blank sent-record template cannot mutate canonical dispatch logs",
+      "ok": true,
+      "canonicalBetaUnchanged": true,
+      "canonicalVisualUnchanged": true,
+      "canonicalBetaSentCount": 0,
+      "canonicalVisualSentCount": 0
+    },
+    {
+      "name": "blank sent-record template rejection cleans up temporary mark-sent artifacts",
+      "ok": true,
+      "rawJsonExistsBeforeCleanup": true,
+      "rawReportExistsBeforeCleanup": true,
+      "rawArtifactsCleanedUp": true
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/dispatch-sent-record-template-rejection-2026-05-23.json",
+  "reportArtifact": "qa/dispatch-sent-record-template-rejection-2026-05-23.md"
+}
