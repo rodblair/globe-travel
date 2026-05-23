@@ -18,6 +18,9 @@ const visualArtifact =
 const designSystemArtifact =
   process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
   'qa/design-system-readiness-2026-05-23.json'
+const mobileReadinessArtifact =
+  process.env.QA_LAUNCH_MOBILE_READINESS_ARTIFACT ||
+  'qa/mobile-readiness-2026-05-22.json'
 const paidPathReadinessArtifact =
   process.env.QA_LAUNCH_PAID_PATH_ARTIFACT ||
   'qa/paid-path-readiness-2026-05-21.json'
@@ -299,6 +302,16 @@ const requiredDesignSystemChecks = [
   'responsive visual QA covers every design-critical public and protected route',
   'responsive visual QA has no polish blockers',
   'production visual QA covers public acquisition and sharing surfaces',
+]
+const requiredMobileReadinessChecks = [
+  'mobile app source files are present',
+  'mobile package exposes launch and validation scripts',
+  'mobile package includes Expo and React Native dependencies',
+  'mobile app config uses Globe Travel launch identity',
+  'mobile API can target the web backend',
+  'mobile UI uses Globe design tokens and core app surfaces',
+  'mobile TypeScript typecheck passes',
+  'mobile Expo doctor passes',
 ]
 
 const requiredAccessibilityRoutes = [
@@ -890,6 +903,7 @@ async function checkRequiredDocs(productionHealth) {
     betaStatus.allWaveOpsArtifact,
     betaStatus.waveRehearsalArtifact,
     betaStatus.matrixRehearsalArtifact,
+    mobileReadinessArtifact,
     publicStatus?.publicLaunchBlockerBoard?.artifact,
     'unsent review dispatches',
     'qa:dispatch-mark-sent',
@@ -1217,6 +1231,66 @@ async function checkDesignSystemArtifact() {
     productionVisualArtifact: summary.productionVisualArtifact || null,
     failureCount: Array.isArray(summary.failures) ? summary.failures.length : null,
     visualRegisterError,
+  })
+
+  return summary
+}
+
+async function checkMobileReadinessArtifact() {
+  let summary
+  try {
+    summary = await readJson(mobileReadinessArtifact)
+  } catch (error) {
+    addCheck('mobile readiness artifact is readable', false, {
+      artifact: mobileReadinessArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+
+  addCheck('mobile readiness artifact is readable', true, {
+    artifact: mobileReadinessArtifact,
+    status: summary.status || null,
+    checked: summary.checked ?? null,
+    passed: summary.passed ?? null,
+    failed: summary.failed ?? null,
+  })
+
+  checkEvidenceFreshness('mobile readiness', evidenceDateFrom(summary, mobileReadinessArtifact))
+
+  const checkNames = Array.isArray(summary.checks)
+    ? summary.checks.map((check) => check.name).filter(Boolean)
+    : []
+  const missingChecks = hasAll(checkNames, requiredMobileReadinessChecks)
+  const failedChecks = Array.isArray(summary.checks)
+    ? summary.checks.filter((check) => check.ok === false).map((check) => check.name)
+    : []
+  const typecheck = Array.isArray(summary.checks)
+    ? summary.checks.find((check) => check.name === 'mobile TypeScript typecheck passes')
+    : null
+  const expoDoctor = Array.isArray(summary.checks)
+    ? summary.checks.find((check) => check.name === 'mobile Expo doctor passes')
+    : null
+
+  addCheck('mobile Expo app readiness passed typecheck and doctor gates', (
+    summary.status === 'pass' &&
+    Number(summary.checked) >= requiredMobileReadinessChecks.length &&
+    Number(summary.failed) === 0 &&
+    missingChecks.length === 0 &&
+    failedChecks.length === 0 &&
+    typecheck?.ok === true &&
+    expoDoctor?.ok === true &&
+    String(expoDoctor?.stdout || '').includes('18/18 checks passed')
+  ), {
+    status: summary.status || null,
+    checked: summary.checked ?? null,
+    failed: summary.failed ?? null,
+    packageName: summary.packageName || null,
+    appName: summary.appName || null,
+    missingChecks,
+    failedChecks,
+    typecheckExitCode: typecheck?.exitCode ?? null,
+    expoDoctorExitCode: expoDoctor?.exitCode ?? null,
   })
 
   return summary
@@ -4131,6 +4205,7 @@ await checkRequiredDocs(productionHealth)
 await checkReleaseArtifact()
 await checkVisualArtifact()
 await checkDesignSystemArtifact()
+await checkMobileReadinessArtifact()
 await checkAccessibilityArtifact()
 await checkStripeArtifacts()
 await checkPaidPathReadinessArtifact()
@@ -4151,6 +4226,7 @@ const summary = {
   releaseArtifact,
   visualArtifact,
   designSystemArtifact,
+  mobileReadinessArtifact,
   paidPathReadinessArtifact,
   accessibilityArtifact,
   plannerActualsArtifact,

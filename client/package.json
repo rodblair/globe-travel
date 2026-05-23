@@ -40,6 +40,7 @@
     "qa:launch-today-overdue-rehearsal": "node scripts/platform-launch-operator-today-rehearsal.mjs",
     "qa:launch-today-sent-dispatch-rehearsal": "node scripts/platform-launch-operator-sent-dispatch-rehearsal.mjs",
     "qa:map-fallback": "node scripts/platform-map-fallback-smoke.mjs",
+    "qa:mobile-readiness": "node scripts/platform-mobile-readiness.mjs",
     "qa:ops": "node scripts/platform-ops-smoke.mjs",
     "qa:paid-path-readiness": "node scripts/platform-paid-path-readiness.mjs",
     "qa:planner-handoff": "node scripts/platform-planner-handoff-smoke.mjs",

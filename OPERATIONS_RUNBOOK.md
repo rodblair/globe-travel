@@ -21,6 +21,7 @@ Run from `client/` before deploy:
 npm run qa:smoke
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:commercial
 npm run qa:ops
+npm run qa:mobile-readiness
 QA_SHARE_SLUG=x3m2c8cnws npm run qa:share
 # or validate several public itinerary links at once:
 QA_SHARE_SLUGS=x3m2c8cnws,<next-share-slug> npm run qa:share
