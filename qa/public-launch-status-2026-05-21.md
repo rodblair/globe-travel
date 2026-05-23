@@ -45,7 +45,7 @@ Status: blocked
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
 - Launch operator today ready: yes (7 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
-- Launch operator sent-dispatch rehearsal ready: yes (4 action rows after rehearsed sends)
+- Launch operator sent-dispatch rehearsal ready: yes (5 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (1 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (1 beta sent on isolated log, 1 visual sent on isolated log)
 - Dispatch sent-record template ready: yes (6 rows, ready for import: no)

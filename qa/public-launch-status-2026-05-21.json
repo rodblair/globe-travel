@@ -430,8 +430,16 @@
     },
     "launchOperatorExitCode": 0,
     "launchOperatorStatus": "pass",
-    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
-    "launchOperatorActionRowCount": 4,
+    "launchOperatorPublicLaunchStatus": "blocked",
+    "launchOperatorDeploymentRuntimeBlocked": true,
+    "launchOperatorActionRowCount": 5,
+    "launchOperatorActionIds": [
+      "production-runtime-deployment-currency",
+      "BETA-HR-002",
+      "BETA-HR-003",
+      "BETA-HR-004",
+      "BETA-HR-005"
+    ],
     "rawArtifactsCleanedUp": true,
     "issues": []
   },

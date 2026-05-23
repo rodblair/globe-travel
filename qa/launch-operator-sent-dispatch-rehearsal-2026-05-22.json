@@ -13,9 +13,11 @@
   "sentAt": "2026-05-22T12:00:00.000Z",
   "launchOperatorExitCode": 0,
   "launchOperatorStatus": "pass",
-  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
-  "launchOperatorActionRowCount": 4,
+  "launchOperatorPublicLaunchStatus": "blocked",
+  "launchOperatorDeploymentRuntimeBlocked": true,
+  "launchOperatorActionRowCount": 5,
   "launchOperatorActionIds": [
+    "production-runtime-deployment-currency",
     "BETA-HR-002",
     "BETA-HR-003",
     "BETA-HR-004",
@@ -41,6 +43,7 @@
       "ok": true,
       "betaSelectedId": "BETA-HR-001",
       "actionIds": [
+        "production-runtime-deployment-currency",
         "BETA-HR-002",
         "BETA-HR-003",
         "BETA-HR-004",
@@ -52,6 +55,7 @@
       "ok": true,
       "visualSelectedId": "PROD-VISUAL-HISTORY-002",
       "actionIds": [
+        "production-runtime-deployment-currency",
         "BETA-HR-002",
         "BETA-HR-003",
         "BETA-HR-004",
@@ -61,7 +65,8 @@
     {
       "name": "sent-dispatch rehearsal does not advance launch evidence",
       "ok": true,
-      "publicLaunchStatus": "beta-ready-public-blocked",
+      "publicLaunchStatus": "blocked",
+      "deploymentRuntimeBlocked": true,
       "betaCompleted": 0,
       "visualHistoryCount": 2
     },

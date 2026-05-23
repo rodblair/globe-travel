@@ -2100,6 +2100,14 @@ const launchSentDispatchRehearsalIssues = []
 const launchSentDispatchActionIds = Array.isArray(launchOperatorSentDispatchRehearsal.launchOperatorActionIds)
   ? launchOperatorSentDispatchRehearsal.launchOperatorActionIds
   : []
+const launchSentDispatchHasDeploymentAction =
+  launchSentDispatchActionIds.includes('production-runtime-deployment-currency')
+const launchSentDispatchPublicStatusCurrent = deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead
+  ? launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'blocked' &&
+    launchSentDispatchHasDeploymentAction &&
+    launchOperatorSentDispatchRehearsal.launchOperatorDeploymentRuntimeBlocked === true
+  : launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+    !launchSentDispatchHasDeploymentAction
 if (launchOperatorSentDispatchRehearsal.status !== 'pass') {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal status is not pass')
 }
@@ -2115,8 +2123,8 @@ if (Number(launchOperatorSentDispatchRehearsal.launchOperatorExitCode) !== 0) {
 if (launchOperatorSentDispatchRehearsal.launchOperatorStatus !== 'pass') {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal launch board status is not pass')
 }
-if (launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus !== 'beta-ready-public-blocked') {
-  launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal changed the public launch status')
+if (!launchSentDispatchPublicStatusCurrent) {
+  launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not preserve the current public launch block status')
 }
 if (launchSentDispatchActionIds.includes(launchOperatorSentDispatchRehearsal.selectedRows?.beta)) {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal left selected beta row in send actions')
@@ -3084,7 +3092,9 @@ const summary = {
     launchOperatorExitCode: launchOperatorSentDispatchRehearsal.launchOperatorExitCode ?? null,
     launchOperatorStatus: launchOperatorSentDispatchRehearsal.launchOperatorStatus || null,
     launchOperatorPublicLaunchStatus: launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus || null,
+    launchOperatorDeploymentRuntimeBlocked: launchOperatorSentDispatchRehearsal.launchOperatorDeploymentRuntimeBlocked ?? null,
     launchOperatorActionRowCount: launchOperatorSentDispatchRehearsal.launchOperatorActionRowCount ?? null,
+    launchOperatorActionIds: launchSentDispatchActionIds,
     rawArtifactsCleanedUp: launchOperatorSentDispatchRehearsal.rawArtifactsCleanedUp ?? null,
     issues: launchSentDispatchRehearsalIssues,
   },

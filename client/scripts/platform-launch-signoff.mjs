@@ -2637,6 +2637,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const statusDeployment = status.liveDeployment || {}
   const blockers = Array.isArray(status.blockers) ? status.blockers : []
   const guardrailIssues = Array.isArray(status.guardrailIssues) ? status.guardrailIssues : []
+  const deploymentCurrency = status.deploymentCurrency || {}
   const publicStatusMatchesLive =
     status.baseUrl === baseUrl &&
     statusDeployment.commit === liveDeployment.commit &&
@@ -2673,6 +2674,15 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const launchOperatorSentDispatchRehearsalIssues = Array.isArray(launchOperatorSentDispatchRehearsalStatus.issues)
     ? launchOperatorSentDispatchRehearsalStatus.issues
     : []
+  const launchOperatorSentDispatchActionIds = Array.isArray(launchOperatorSentDispatchRehearsalStatus.launchOperatorActionIds)
+    ? launchOperatorSentDispatchRehearsalStatus.launchOperatorActionIds
+    : []
+  const launchOperatorSentDispatchPublicStatusCurrent = deploymentCurrency.runtimeCommitAhead === true
+    ? launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'blocked' &&
+      launchOperatorSentDispatchRehearsalStatus.launchOperatorDeploymentRuntimeBlocked === true &&
+      launchOperatorSentDispatchActionIds.includes('production-runtime-deployment-currency')
+    : launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+      !launchOperatorSentDispatchActionIds.includes('production-runtime-deployment-currency')
   const dispatchMarkSentDryRunStatus = status.dispatchMarkSentDryRun || {}
   const dispatchMarkSentDryRunIssues = Array.isArray(dispatchMarkSentDryRunStatus.issues)
     ? dispatchMarkSentDryRunStatus.issues
@@ -3183,7 +3193,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorSentDispatchRehearsalStatus.issueCount) === 0 &&
     Number(launchOperatorSentDispatchRehearsalStatus.launchOperatorExitCode) === 0 &&
     launchOperatorSentDispatchRehearsalStatus.launchOperatorStatus === 'pass' &&
-    launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' &&
+    launchOperatorSentDispatchPublicStatusCurrent &&
     launchOperatorSentDispatchRehearsalStatus.rawArtifactsCleanedUp === true &&
     hasMeaningfulText(launchOperatorSentDispatchRehearsalStatus.selectedRows?.beta) &&
     hasMeaningfulText(launchOperatorSentDispatchRehearsalStatus.selectedRows?.visual) &&
@@ -3199,7 +3209,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorSentDispatchRehearsalExitCode: launchOperatorSentDispatchRehearsalStatus.launchOperatorExitCode ?? null,
     launchOperatorSentDispatchRehearsalStatus: launchOperatorSentDispatchRehearsalStatus.launchOperatorStatus || null,
     launchOperatorSentDispatchRehearsalPublicStatus: launchOperatorSentDispatchRehearsalStatus.launchOperatorPublicLaunchStatus || null,
+    launchOperatorSentDispatchRehearsalDeploymentRuntimeBlocked: launchOperatorSentDispatchRehearsalStatus.launchOperatorDeploymentRuntimeBlocked ?? null,
     launchOperatorSentDispatchRehearsalActionRowCount: launchOperatorSentDispatchRehearsalStatus.launchOperatorActionRowCount ?? null,
+    launchOperatorSentDispatchRehearsalActionIds: launchOperatorSentDispatchActionIds,
     launchOperatorSentDispatchRehearsalSelectedRows: launchOperatorSentDispatchRehearsalStatus.selectedRows || null,
     launchOperatorSentDispatchRehearsalRawArtifactsCleanedUp: launchOperatorSentDispatchRehearsalStatus.rawArtifactsCleanedUp ?? null,
     launchOperatorSentDispatchRehearsalIssues,

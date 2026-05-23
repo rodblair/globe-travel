@@ -144,6 +144,12 @@ try {
 }
 
 const actionRows = Array.isArray(launchSummary?.actionRows) ? launchSummary.actionRows : []
+const launchOperatorDeploymentRuntimeBlocked =
+  launchSummary?.publicLaunchStatus === 'blocked' &&
+  actionRows.some((row) => row.id === 'production-runtime-deployment-currency')
+const launchOperatorEvidenceBlocked =
+  launchSummary?.publicLaunchStatus === 'beta-ready-public-blocked' ||
+  launchOperatorDeploymentRuntimeBlocked
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const checks = [
@@ -173,10 +179,11 @@ const checks = [
   },
   {
     name: 'sent-dispatch rehearsal does not advance launch evidence',
-    ok: launchSummary?.publicLaunchStatus === 'beta-ready-public-blocked' &&
+    ok: launchOperatorEvidenceBlocked &&
       Number(launchSummary?.betaReviews?.completed || 0) === 0 &&
       Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === 2,
     publicLaunchStatus: launchSummary?.publicLaunchStatus || null,
+    deploymentRuntimeBlocked: launchOperatorDeploymentRuntimeBlocked,
     betaCompleted: launchSummary?.betaReviews?.completed ?? null,
     visualHistoryCount: launchSummary?.productionVisualReviews?.distinctHistoryDateCount ?? null,
   },
@@ -219,6 +226,7 @@ const summary = {
   launchOperatorExitCode: result.status,
   launchOperatorStatus: launchSummary?.status || null,
   launchOperatorPublicLaunchStatus: launchSummary?.publicLaunchStatus || null,
+  launchOperatorDeploymentRuntimeBlocked,
   launchOperatorActionRowCount: actionRows.length,
   launchOperatorActionIds: actionRows.map((row) => row.id),
   currentLaunchArtifact,
