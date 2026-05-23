@@ -3499,6 +3499,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateStatus.betaRowCount) === Number(launchOperatorStatus.betaActionRowCount) &&
     Number(dispatchSentRecordTemplateStatus.visualRowCount) === Number(launchOperatorStatus.visualActionRowCount) &&
     Number(dispatchSentRecordTemplateStatus.blankProofFieldRowCount) === Number(dispatchSentRecordTemplateStatus.rowCount) &&
+    Number(dispatchSentRecordTemplateStatus.csvRowCount) === Number(dispatchSentRecordTemplateStatus.rowCount) &&
     Number(dispatchSentRecordTemplateStatus.missingMessageFileCount) === 0 &&
     Number(dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount) === 0 &&
     String(dispatchSentRecordTemplateStatus.validationCommand || '').includes('qa:dispatch-mark-sent') &&
@@ -3506,6 +3507,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Array.isArray(dispatchSentRecordTemplateStatus.postImportCommands) &&
     dispatchSentRecordTemplateStatus.postImportCommands.includes('npm run qa:launch-refresh') &&
     dispatchSentRecordTemplateStatus.postImportCommands.includes('npm run qa:launch-signoff') &&
+    Number(dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommandCount || 0) === 0 &&
+    Array.isArray(dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands) &&
+    dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands.length === 0 &&
     Number(dispatchSentRecordTemplateStatus.rowsMissingCommandCount || 0) === 0 &&
     Number(dispatchSentRecordTemplateStatus.rowsMissingOperatorContextCount || 0) === 0 &&
     dispatchSentRecordTemplateIssues.length === 0
@@ -3533,11 +3537,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateVisualRowCount: dispatchSentRecordTemplateStatus.visualRowCount ?? null,
     expectedVisualActionRowCount: launchOperatorStatus.visualActionRowCount ?? null,
     dispatchSentRecordTemplateBlankProofFieldRowCount: dispatchSentRecordTemplateStatus.blankProofFieldRowCount ?? null,
+    dispatchSentRecordTemplateCsvRowCount: dispatchSentRecordTemplateStatus.csvRowCount ?? null,
     dispatchSentRecordTemplateMissingMessageFileCount: dispatchSentRecordTemplateStatus.missingMessageFileCount ?? null,
     dispatchSentRecordTemplateMissingSubmissionTemplateCount: dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount ?? null,
     dispatchSentRecordTemplateValidationCommand: dispatchSentRecordTemplateStatus.validationCommand || null,
     dispatchSentRecordTemplateImportCommand: dispatchSentRecordTemplateStatus.importCommand || null,
     dispatchSentRecordTemplatePostImportCommands: dispatchSentRecordTemplateStatus.postImportCommands || null,
+    dispatchSentRecordTemplateCsvRowsMissingPostImportCommandCount: dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommandCount ?? null,
+    dispatchSentRecordTemplateCsvRowsMissingPostImportCommands: dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands || null,
     dispatchSentRecordTemplateRowsMissingCommandCount: dispatchSentRecordTemplateStatus.rowsMissingCommandCount ?? null,
     dispatchSentRecordTemplateRowsMissingOperatorContextCount: dispatchSentRecordTemplateStatus.rowsMissingOperatorContextCount ?? null,
     dispatchSentRecordTemplateRowsMissingCommands: dispatchSentRecordTemplateStatus.rowsMissingCommands || null,
