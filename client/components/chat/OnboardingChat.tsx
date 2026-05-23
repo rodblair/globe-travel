@@ -41,7 +41,7 @@ export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedP
   const canFinish = placesAdded.length >= 3
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden pb-3 sm:pb-4 lg:pb-0">
       {/* Places tracker bar */}
       <div className="flex-shrink-0 px-4 py-2.5 border-b border-rule">
         <div className="flex items-center justify-between max-w-3xl mx-auto">
