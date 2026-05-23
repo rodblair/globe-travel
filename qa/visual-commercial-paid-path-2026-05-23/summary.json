@@ -1,0 +1,430 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-23",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 900,
+  "deployment": null,
+  "deploymentCheck": {
+    "checked": false,
+    "reason": "local visual target",
+    "status": null,
+    "healthStatus": null,
+    "summary": null,
+    "error": null
+  },
+  "auth": {
+    "requestedMode": "guest",
+    "mode": "guest",
+    "guestId": "67ee2c4c-5877-41f5-9d24-0f530614967a",
+    "protectedRoutes": [
+      "saved-journal",
+      "account-billing"
+    ],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "67ee2c4c-5877-41f5-9d24-0f530614967a",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "67ee2c4c-5877-41f5-9d24-0f530614967a",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": true,
+      "reason": null,
+      "guestId": "67ee2c4c-5877-41f5-9d24-0f530614967a",
+      "profileDeleted": true,
+      "userDeleted": true,
+      "error": null
+    }
+  },
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "routes": [
+    "pricing",
+    "saved-journal",
+    "account-billing"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "results": [
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing - Globe.travel · Globe.travel",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 3017,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 3,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day free trial. Unlimited"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23/screenshots/pricing-phone-390x844.png",
+        "relativePath": "qa/visual-commercial-paid-path-2026-05-23/screenshots/pricing-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "saved-journal",
+      "path": "/saved?tab=journal",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/saved?tab=journal",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Trips",
+          "Trip notes",
+          "Add a trip note"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 6,
+        "bodyPreview": "Skip to content Trips Saved itineraries and trip notes in one calm workspace. TRIPS 0 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. Add a trip note Capture decisions, reminders, and memories for the itineraries you are building with friends. Add first note PLAN TRIPS ACCOUNT"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23/screenshots/saved-journal-phone-390x844.png",
+        "relativePath": "qa/visual-commercial-paid-path-2026-05-23/screenshots/saved-journal-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 7,
+        "bodyPreview": "Skip to content Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. Free WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventurer Unlock unlimited trip planning and richer sharing tools. Monthly Yearly $4.99 / month 7-DAY FREE TRIAL Billed monthly Start free trial Plan"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23/screenshots/account-billing-phone-390x844.png",
+        "relativePath": "qa/visual-commercial-paid-path-2026-05-23/screenshots/account-billing-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing - Globe.travel · Globe.travel",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 1765,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 5,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS SIGN IN GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day f"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23/screenshots/pricing-desktop-1440x950.png",
+        "relativePath": "qa/visual-commercial-paid-path-2026-05-23/screenshots/pricing-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "saved-journal",
+      "path": "/saved?tab=journal",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/saved?tab=journal",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Trips",
+          "Trip notes",
+          "Add a trip note"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 10,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Trips Saved itineraries and trip notes in one calm workspace. TRIPS 0 NOTES 0 Trips Trip notes Trip notes Private reminders, decisions, and memories tied to your itineraries. Add a trip note Capture decisions, reminders, and memories for the itineraries you are building with friends. Add first note"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23/screenshots/saved-journal-desktop-1440x950.png",
+        "relativePath": "qa/visual-commercial-paid-path-2026-05-23/screenshots/saved-journal-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "account-billing",
+      "path": "/account?tab=billing",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/account?tab=billing",
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 950,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Account",
+          "Plan and billing",
+          "Upgrade to Adventurer",
+          "Plan comparison",
+          "Built for small groups"
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 13,
+        "bodyPreview": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Plan and billing CURRENT PLAN Explorer Free plan with generous limits to get started. Free WHAT YOU GET 3 journal entries 2 saved trips 10 AI messages / day Basic itinerary maps Shareable trip review links Upgrade to Adventure"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-commercial-paid-path-2026-05-23/screenshots/account-billing-desktop-1440x950.png",
+        "relativePath": "qa/visual-commercial-paid-path-2026-05-23/screenshots/account-billing-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}
