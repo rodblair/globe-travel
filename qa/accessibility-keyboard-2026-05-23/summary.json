@@ -8,7 +8,7 @@
   "auth": {
     "requestedMode": "auto",
     "mode": "guest",
-    "guestId": "7ea3a132-70a2-46cf-8c3f-9263c536c7b7",
+    "guestId": "7fcae61b-c987-4661-a960-14bd03b27821",
     "protectedRoutes": [
       "planner",
       "saved-trips",
@@ -23,20 +23,20 @@
       {
         "viewportId": "phone",
         "mode": "guest",
-        "guestId": "7ea3a132-70a2-46cf-8c3f-9263c536c7b7",
+        "guestId": "7fcae61b-c987-4661-a960-14bd03b27821",
         "cookieSet": true
       },
       {
         "viewportId": "desktop",
         "mode": "guest",
-        "guestId": "7ea3a132-70a2-46cf-8c3f-9263c536c7b7",
+        "guestId": "7fcae61b-c987-4661-a960-14bd03b27821",
         "cookieSet": true
       }
     ],
     "cleanup": {
       "attempted": true,
       "reason": null,
-      "guestId": "7ea3a132-70a2-46cf-8c3f-9263c536c7b7",
+      "guestId": "7fcae61b-c987-4661-a960-14bd03b27821",
       "profileDeleted": true,
       "userDeleted": true,
       "error": null
@@ -111,7 +111,7 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
+              "x": 8,
               "y": 8,
               "width": 150,
               "height": 44
@@ -209,8 +209,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": 5,
+              "x": 8,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -314,8 +314,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -517,8 +517,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -643,8 +643,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -720,8 +720,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -923,8 +923,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -1126,8 +1126,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -44,
               "width": 150,
               "height": 44
             }
@@ -1224,8 +1224,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -44,
               "width": 150,
               "height": 44
             }
@@ -1329,8 +1329,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -37,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -1469,8 +1469,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -37,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -1532,8 +1532,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -1735,8 +1735,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -1889,8 +1889,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -1938,8 +1938,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -2092,8 +2092,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -2141,8 +2141,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -2344,7 +2344,7 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
+              "x": 8,
               "y": 8,
               "width": 150,
               "height": 44
@@ -2484,8 +2484,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -12,
+              "x": 8,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2547,8 +2547,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -2750,8 +2750,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -2953,8 +2953,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -45,
               "width": 150,
               "height": 44
             }
@@ -3156,8 +3156,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -3359,8 +3359,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -3485,8 +3485,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -3562,8 +3562,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -3765,8 +3765,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -3968,8 +3968,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -4171,8 +4171,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -4374,8 +4374,8 @@
             "visible": true,
             "hasAccessibleName": true,
             "rect": {
-              "x": 0,
-              "y": -40,
+              "x": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }

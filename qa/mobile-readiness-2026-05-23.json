@@ -1,0 +1,97 @@
+{
+  "date": "2026-05-23",
+  "timeZone": "America/Vancouver",
+  "status": "pass",
+  "checked": 8,
+  "passed": 8,
+  "failed": 0,
+  "mobileDir": "mobile",
+  "packageName": "globe-travel-mobile",
+  "appName": "Globe Travel",
+  "jsonArtifact": "qa/mobile-readiness-2026-05-23.json",
+  "reportArtifact": "qa/mobile-readiness-2026-05-23.md",
+  "checks": [
+    {
+      "name": "mobile app source files are present",
+      "ok": true,
+      "requiredFiles": [
+        "mobile/App.tsx",
+        "mobile/app.json",
+        "mobile/package.json",
+        "mobile/README.md",
+        "mobile/src/api.ts",
+        "mobile/src/theme.ts",
+        "mobile/src/trips.ts"
+      ],
+      "missingFiles": []
+    },
+    {
+      "name": "mobile package exposes launch and validation scripts",
+      "ok": true,
+      "requiredScripts": [
+        "ios",
+        "android",
+        "web",
+        "typecheck"
+      ],
+      "missingScripts": []
+    },
+    {
+      "name": "mobile package includes Expo and React Native dependencies",
+      "ok": true,
+      "requiredDependencies": [
+        "expo",
+        "react",
+        "react-native",
+        "react-dom",
+        "react-native-web"
+      ],
+      "missingDependencies": [],
+      "expoVersion": "~54.0.33",
+      "reactNativeVersion": "0.81.5"
+    },
+    {
+      "name": "mobile app config uses Globe Travel launch identity",
+      "ok": true,
+      "appName": "Globe Travel",
+      "slug": "globe-travel-mobile",
+      "orientation": "portrait",
+      "iosSupportsTablet": true,
+      "androidEdgeToEdgeEnabled": true
+    },
+    {
+      "name": "mobile API can target the web backend",
+      "ok": true,
+      "hasEnvOverride": true,
+      "hasLocalFallback": true,
+      "hasTripApiRoute": true,
+      "readmeDocumentsApiUrl": true
+    },
+    {
+      "name": "mobile UI uses Globe design tokens and core app surfaces",
+      "ok": true,
+      "hasBrandNavy": true,
+      "hasBrandPaper": true,
+      "hasTripStudioSurface": true,
+      "hasSavedSurface": true,
+      "hasCrewSurface": true
+    },
+    {
+      "name": "mobile TypeScript typecheck passes",
+      "ok": true,
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "stdout": "> globe-travel-mobile@1.0.0 typecheck\n> tsc --noEmit",
+      "stderr": ""
+    },
+    {
+      "name": "mobile Expo doctor passes",
+      "ok": true,
+      "command": "npx --yes expo-doctor",
+      "exitCode": 0,
+      "stdout": "Running 18 checks on your project...\n18/18 checks passed. No issues detected!",
+      "stderr": ""
+    }
+  ],
+  "failures": []
+}
