@@ -891,6 +891,8 @@ async function checkRequiredDocs(productionHealth) {
     betaStatus.waveRehearsalArtifact,
     betaStatus.matrixRehearsalArtifact,
     publicStatus?.publicLaunchBlockerBoard?.artifact,
+    'unsent review dispatches',
+    'qa:dispatch-mark-sent',
     publicStatus?.dispatchSentRecordTemplate?.artifact,
     publicStatus?.dispatchSentRecordTemplate?.report,
     publicStatus?.dispatchSentRecordTemplate?.csv,
