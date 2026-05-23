@@ -1,0 +1,477 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-23",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": "1a81be2f-5691-40aa-b598-30fef2840abd",
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/accessibility-keyboard-trip-studio-owner-2026-05-23",
+  "auth": {
+    "requestedMode": "auto",
+    "mode": "guest",
+    "guestId": "36d5213a-65f8-42be-950a-97f50fdda563",
+    "protectedRoutes": [
+      "trip-studio"
+    ],
+    "externalGuestId": true,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "guest",
+        "guestId": "36d5213a-65f8-42be-950a-97f50fdda563",
+        "cookieSet": true
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "guest",
+        "guestId": "36d5213a-65f8-42be-950a-97f50fdda563",
+        "cookieSet": true
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "external guest id provided; owner cleanup remains with the caller",
+      "guestId": "36d5213a-65f8-42be-950a-97f50fdda563",
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 2,
+  "passed": 2,
+  "failed": 0,
+  "routes": [
+    "trip-studio"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    }
+  ],
+  "tabLimit": 12,
+  "results": [
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/1a81be2f-5691-40aa-b598-30fef2840abd",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/trips/1a81be2f-5691-40aa-b598-30fef2840abd",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Save the latest trip plan",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 21,
+              "y": 87,
+              "width": 170,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Planner chat",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 199,
+              "y": 87,
+              "width": 170,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Optimize the order for this day",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 21,
+              "y": 141,
+              "width": 170,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Repair or rebuild day map locations and routes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 199,
+              "y": 141,
+              "width": 170,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Create a friend review link and share it",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 21,
+              "y": 195,
+              "width": 170,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Enable public link",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 231,
+              "y": 361,
+              "width": 126,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Generate decision memo",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 33,
+              "y": 417,
+              "width": 324,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Create cheap / balanced / premium variants",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 33,
+              "y": 471,
+              "width": 324,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Refresh plan from feedback",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 33,
+              "y": 525,
+              "width": 324,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Optimize stop order to minimize walking",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 29,
+              "y": 354,
+              "width": 97,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Rewrite this day only, leaving the rest of the trip unchanged",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 134,
+              "y": 354,
+              "width": 113,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "routeId": "trip-studio",
+      "path": "/trips/1a81be2f-5691-40aa-b598-30fef2840abd",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "navigationError": null,
+      "ok": true,
+      "preflight": {
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "url": "http://localhost:3000/trips/1a81be2f-5691-40aa-b598-30fef2840abd",
+        "hasSkipLink": true,
+        "hasSkipTarget": true,
+        "hasMainLandmark": true,
+        "hasH1": true,
+        "missingMarkers": []
+      },
+      "missingMarkers": [],
+      "structureIssues": [],
+      "axe": {
+        "blockingViolations": [],
+        "warningViolations": [],
+        "rawViolationCount": 0
+      },
+      "keyboard": {
+        "limit": 12,
+        "sequence": [
+          {
+            "tag": "a",
+            "label": "Skip to content",
+            "role": "",
+            "href": "#main-content",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 0,
+              "y": 8,
+              "width": 150,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe.travel",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 24,
+              "y": 24,
+              "width": 132,
+              "height": 44
+            }
+          },
+          {
+            "tag": "a",
+            "label": "PlanConversations & ideas",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 101,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "TripsItineraries & notes",
+            "role": "",
+            "href": "/saved",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 156,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "AccountProfile & settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 8,
+              "y": 212,
+              "width": 239,
+              "height": 53
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Globe Pro7-DAY FREE TRIAL",
+            "role": "",
+            "href": "/pricing",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 12,
+              "y": 800,
+              "width": 231,
+              "height": 55
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Open account settings",
+            "role": "",
+            "href": "/account",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 20,
+              "y": 887,
+              "width": 44,
+              "height": 44
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Sign out",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 189,
+              "y": 886,
+              "width": 46,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Save the latest trip plan",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 770,
+              "y": 29,
+              "width": 107,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Planner chat",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 885,
+              "y": 29,
+              "width": 120,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Optimize the order for this day",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1013,
+              "y": 29,
+              "width": 123,
+              "height": 46
+            }
+          },
+          {
+            "tag": "button",
+            "label": "Repair or rebuild day map locations and routes",
+            "role": "",
+            "href": "",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 1144,
+              "y": 29,
+              "width": 111,
+              "height": 46
+            }
+          }
+        ],
+        "issues": []
+      }
+    }
+  ],
+  "operatorCleanup": {
+    "attempted": true,
+    "tripId": "1a81be2f-5691-40aa-b598-30fef2840abd",
+    "guestId": "36d5213a-65f8-42be-950a-97f50fdda563",
+    "tripDeleted": true,
+    "profileDeleted": true,
+    "userDeleted": true,
+    "error": null
+  },
+  "failures": []
+}
