@@ -2,16 +2,16 @@
 
 Date: 2026-05-21
 Base URL: https://globe-travel-two.vercel.app
-Status: blocked
+Status: beta-ready-public-blocked
 
 ## Result
 
-- Beta/release-ops ready: no
+- Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 0b0690dbbbc912245adc27cd99ffa78ece93c21f
-- Production deployment: globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app
-- Runtime deployment current: no
-- Latest runtime commit awaiting production: 1d7053e
+- Production commit: d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6
+- Production deployment: globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app
+- Runtime deployment current: yes
+- Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -35,17 +35,17 @@ Status: blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d
-- Latest production visual commit: 0b0690dbbbc912245adc27cd99ffa78ece93c21f
-- Latest production visual deployment: globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991
+- Latest production visual commit: d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6
+- Latest production visual deployment: globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Production visual review dispatch log ready: yes (0 sent, 3 prepared not sent)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
-- Launch operator today ready: yes (7 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
+- Launch operator today ready: yes (6 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
-- Launch operator sent-dispatch rehearsal ready: yes (5 action rows after rehearsed sends)
+- Launch operator sent-dispatch rehearsal ready: yes (4 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (1 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (1 beta sent on isolated log, 1 visual sent on isolated log)
 - Dispatch sent-record template ready: yes (6 rows, ready for import: no)
@@ -73,13 +73,12 @@ Status: blocked
 
 ## Public-Launch Blockers
 
-- production-runtime-deployment-currency: Production is on 0b0690d; runtime commit 1d7053e is waiting for Vercel production.
 - beta-human-review-threshold: 0/25 completed; 25 remaining.
 - production-visual-review-history: 2/4 distinct review dates recorded; 2 remaining.
 
 ## Guardrail Issues
 
-- production is behind runtime commit 1d7053e
+- none
 
 ## Evidence Queue Issues
 
@@ -181,10 +180,8 @@ Public metadata:
 
 ## Next Actions
 
-- Redeploy production from the repo root so Vercel serves runtime commit 1d7053e; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
-- Fix guardrail issues before relying on public-launch status.
 
 ## Evidence
 
@@ -214,7 +211,7 @@ Public metadata:
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-05-22.md` and `qa/public-launch-threshold-rehearsal-2026-05-22.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d` and `qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991` and `qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
@@ -226,7 +223,7 @@ Public metadata:
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-21.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
-- Design-system readiness: `qa/design-system-readiness-2026-05-22.json`
+- Design-system readiness: `qa/design-system-readiness-2026-05-23.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Public share map/itinerary integrity: `qa/public-share-map-itinerary-integrity-2026-05-23.json` and `qa/public-share-map-itinerary-integrity-2026-05-23.md`
 - Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-22.json` and `qa/public-metadata-smoke-2026-05-22.md`

@@ -10,14 +10,12 @@
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
-  "deploymentRuntimeBlocked": true,
-  "deploymentRuntimeCommit": "1d7053e13fe61dd6caab1274f3b9ad6235818a8c",
-  "deploymentRuntimeCommitShort": "1d7053e",
-  "liveDeploymentCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
-  "publicLaunchStatus": "blocked",
-  "publicGuardrailIssues": [
-    "production is behind runtime commit 1d7053e"
-  ],
+  "deploymentRuntimeBlocked": false,
+  "deploymentRuntimeCommit": null,
+  "deploymentRuntimeCommitShort": null,
+  "liveDeploymentCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
     "completed": 0,
@@ -44,31 +42,8 @@
   "visualDispatchLogPreparedOverdueCount": 0,
   "visualDispatchLogRequiredPreparedNotSentCount": 2,
   "visualDispatchLogSentCount": 0,
-  "deploymentActionCount": 1,
+  "deploymentActionCount": 0,
   "actionRows": [
-    {
-      "priority": "P0",
-      "workType": "production-runtime-deployment",
-      "id": "production-runtime-deployment-currency",
-      "destination": "Vercel production",
-      "owner": "Release",
-      "sendBy": "2026-05-22",
-      "followUpAt": "2026-05-22",
-      "dueAt": "2026-05-22",
-      "daysUntilDue": 0,
-      "sendStatus": "production-on-0b0690d",
-      "reviewerAlias": "",
-      "contactRecordLocation": "",
-      "action": "Deploy runtime commit 1d7053e to production, then rerun launch gates.",
-      "messageFile": "",
-      "startUrlOrCommand": "vercel deploy --prod --yes",
-      "packetOrArtifact": "qa/public-launch-status-2026-05-21.json",
-      "submissionPath": "",
-      "validateCommand": "npm run qa:public-launch-status",
-      "importCommand": "npm run qa:launch-signoff",
-      "reviewerRole": "",
-      "messageSubject": "Production runtime deployment currency"
-    },
     {
       "priority": "P0",
       "workType": "beta-human-review",
@@ -246,28 +221,26 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
-      "deploymentRuntimeBlocked": true,
+      "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
-      "latestRuntimeCommit": "1d7053e",
-      "guardrailIssues": [
-        "production is behind runtime commit 1d7053e"
-      ],
+      "latestRuntimeCommit": null,
+      "guardrailIssues": [],
       "onlyLaunchOperatorSelfGuardrails": false
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
       "ok": true,
-      "actionRowCount": 7
+      "actionRowCount": 6
     },
     {
       "name": "launch today exposes runtime deployment blocker when production is behind",
       "ok": true,
-      "deploymentRuntimeBlocked": true,
-      "latestRuntimeCommit": "1d7053e",
-      "liveCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f"
+      "deploymentRuntimeBlocked": false,
+      "latestRuntimeCommit": null,
+      "liveCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6"
     },
     {
       "name": "launch today reads aligned dispatch logs",

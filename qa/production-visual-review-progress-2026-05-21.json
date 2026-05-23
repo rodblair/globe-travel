@@ -10,10 +10,10 @@
   "passed": 6,
   "failed": 0,
   "latestProductionReview": {
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json",
-    "productionCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
-    "deploymentUrl": "globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/summary.json",
+    "productionCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
+    "deploymentUrl": "globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "issueCount": 0,
@@ -118,10 +118,10 @@
     {
       "name": "latest production visual review is complete and evidence-backed",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d",
-      "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-0b0690d/summary.json",
-      "productionCommit": "0b0690dbbbc912245adc27cd99ffa78ece93c21f",
-      "deploymentUrl": "globe-travel-6utb3e7sz-rodney-blairs-projects.vercel.app",
+      "artifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991",
+      "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-d4ee991/summary.json",
+      "productionCommit": "d4ee991f1d0cf1f5d2471e5e3f87e92258a38ae6",
+      "deploymentUrl": "globe-travel-jq0697gvr-rodney-blairs-projects.vercel.app",
       "issues": []
     },
     {
