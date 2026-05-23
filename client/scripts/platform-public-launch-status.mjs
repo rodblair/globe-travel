@@ -110,6 +110,10 @@ const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
   'qa/review-intake-rehearsal-2026-05-22.json'
 const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
   'qa/review-intake-rehearsal-2026-05-22.md'
+const reviewIntakeImportRehearsalPath = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL ||
+  'qa/review-intake-import-rehearsal-2026-05-22.json'
+const reviewIntakeImportRehearsalReportPath = process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_REPORT ||
+  'qa/review-intake-import-rehearsal-2026-05-22.md'
 const publicLaunchModeRehearsalPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL ||
   'qa/public-launch-mode-rehearsal-2026-05-22.json'
 const publicLaunchModeRehearsalReportPath = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_REPORT ||
@@ -721,6 +725,8 @@ const [
   dispatchSentRecordTemplateRejectionReport,
   reviewIntakeRehearsal,
   reviewIntakeRehearsalReport,
+  reviewIntakeImportRehearsal,
+  reviewIntakeImportRehearsalReport,
   publicLaunchModeRehearsal,
   publicLaunchModeRehearsalReport,
   health,
@@ -795,6 +801,8 @@ const [
   readText(dispatchSentRecordTemplateRejectionReportPath),
   readJson(reviewIntakeRehearsalPath),
   readText(reviewIntakeRehearsalReportPath),
+  readJson(reviewIntakeImportRehearsalPath),
+  readText(reviewIntakeImportRehearsalReportPath),
   readJson(publicLaunchModeRehearsalPath),
   readText(publicLaunchModeRehearsalReportPath),
   fetchHealth(),
@@ -2358,6 +2366,53 @@ if (!reviewIntakeRehearsalReport.includes('reject them as incomplete evidence'))
   reviewIntakeRehearsalIssues.push('review intake rehearsal report does not state the fake-evidence boundary')
 }
 
+const reviewIntakeImportRehearsalIssues = []
+if (reviewIntakeImportRehearsal.status !== 'pass') {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal status is not pass')
+}
+if (reviewIntakeImportRehearsal.date !== today) {
+  reviewIntakeImportRehearsalIssues.push(`review intake import rehearsal date ${reviewIntakeImportRehearsal.date || 'missing'} does not match ${today}`)
+}
+if (Number(reviewIntakeImportRehearsal.betaIntakeExitCode) !== 0 || reviewIntakeImportRehearsal.betaIntakeStatus !== 'pass') {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal did not pass beta intake against copied register')
+}
+if (reviewIntakeImportRehearsal.betaImported !== true) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal did not import beta evidence into copied register')
+}
+if (Number(reviewIntakeImportRehearsal.betaValidSubmissionCount || 0) !== 1 || Number(reviewIntakeImportRehearsal.betaInvalidSubmissionCount || 0) !== 0) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal beta submission counts are not clean')
+}
+if (Number(reviewIntakeImportRehearsal.tempBetaCompletedAfter || 0) !== Number(reviewIntakeImportRehearsal.tempBetaCompletedBefore || 0) + 1) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal did not advance copied beta completed count by one')
+}
+if (Number(reviewIntakeImportRehearsal.visualIntakeExitCode) !== 0 || reviewIntakeImportRehearsal.visualIntakeStatus !== 'pass') {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal did not pass visual intake against copied register')
+}
+if (reviewIntakeImportRehearsal.visualImported !== true) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal did not import visual evidence into copied register')
+}
+if (Number(reviewIntakeImportRehearsal.visualValidSubmissionCount || 0) !== 1 || Number(reviewIntakeImportRehearsal.visualInvalidSubmissionCount || 0) !== 0) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal visual submission counts are not clean')
+}
+if (Number(reviewIntakeImportRehearsal.tempVisualHistoryAfter || 0) !== Number(reviewIntakeImportRehearsal.tempVisualHistoryBefore || 0) + 1) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal did not advance copied visual history by one')
+}
+if (reviewIntakeImportRehearsal.canonicalBetaUnchanged !== true || reviewIntakeImportRehearsal.canonicalVisualUnchanged !== true) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal mutated canonical launch evidence')
+}
+if (Number(reviewIntakeImportRehearsal.canonicalBetaCompletedAfter || 0) !== Number(reviewIntakeImportRehearsal.canonicalBetaCompletedBefore || 0)) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal changed canonical beta completed count')
+}
+if (Number(reviewIntakeImportRehearsal.canonicalVisualHistoryAfter || 0) !== Number(reviewIntakeImportRehearsal.canonicalVisualHistoryBefore || 0)) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal changed canonical visual history count')
+}
+if (reviewIntakeImportRehearsal.rawArtifactsCleanedUp !== true) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal left raw temporary artifacts behind')
+}
+if (!reviewIntakeImportRehearsalReport.includes('valid completed beta and production visual-review evidence can be imported against isolated register copies')) {
+  reviewIntakeImportRehearsalIssues.push('review intake import rehearsal report does not state the isolated import guarantee')
+}
+
 const publicLaunchModeRehearsalIssues = []
 const publicLaunchModeBlockers = Array.isArray(publicLaunchModeRehearsal.blockers)
   ? publicLaunchModeRehearsal.blockers
@@ -2554,6 +2609,7 @@ if (dispatchMarkSentImportRehearsalIssues.length > 0) guardrailIssues.push('disp
 if (dispatchSentRecordTemplateIssues.length > 0) guardrailIssues.push('dispatch sent-record template is not ready for operator handoff')
 if (dispatchSentRecordTemplateRejectionIssues.length > 0) guardrailIssues.push('dispatch sent-record blank-template rejection is not proving pre-import safety')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
+if (reviewIntakeImportRehearsalIssues.length > 0) guardrailIssues.push('review intake import rehearsal is not proving isolated completed-evidence imports')
 if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
 if (visualProgressIssues.length > 0) guardrailIssues.push('production visual review progress artifact is not aligned with the launch register')
@@ -3050,6 +3106,38 @@ const summary = {
     rawArtifactsCleanedUp: reviewIntakeRehearsal.rawArtifactsCleanedUp ?? null,
     issues: reviewIntakeRehearsalIssues,
   },
+  reviewIntakeImportRehearsal: {
+    ready: reviewIntakeImportRehearsalIssues.length === 0,
+    issueCount: reviewIntakeImportRehearsalIssues.length,
+    artifact: qaDisplayPath(reviewIntakeImportRehearsalPath),
+    report: qaDisplayPath(reviewIntakeImportRehearsalReportPath),
+    date: reviewIntakeImportRehearsal.date || null,
+    betaReviewId: reviewIntakeImportRehearsal.betaReviewId || null,
+    visualReviewId: reviewIntakeImportRehearsal.visualReviewId || null,
+    visualReviewDate: reviewIntakeImportRehearsal.visualReviewDate || null,
+    betaIntakeExitCode: reviewIntakeImportRehearsal.betaIntakeExitCode ?? null,
+    betaIntakeStatus: reviewIntakeImportRehearsal.betaIntakeStatus || null,
+    betaImported: reviewIntakeImportRehearsal.betaImported ?? null,
+    betaValidSubmissionCount: reviewIntakeImportRehearsal.betaValidSubmissionCount ?? null,
+    betaInvalidSubmissionCount: reviewIntakeImportRehearsal.betaInvalidSubmissionCount ?? null,
+    tempBetaCompletedBefore: reviewIntakeImportRehearsal.tempBetaCompletedBefore ?? null,
+    tempBetaCompletedAfter: reviewIntakeImportRehearsal.tempBetaCompletedAfter ?? null,
+    visualIntakeExitCode: reviewIntakeImportRehearsal.visualIntakeExitCode ?? null,
+    visualIntakeStatus: reviewIntakeImportRehearsal.visualIntakeStatus || null,
+    visualImported: reviewIntakeImportRehearsal.visualImported ?? null,
+    visualValidSubmissionCount: reviewIntakeImportRehearsal.visualValidSubmissionCount ?? null,
+    visualInvalidSubmissionCount: reviewIntakeImportRehearsal.visualInvalidSubmissionCount ?? null,
+    tempVisualHistoryBefore: reviewIntakeImportRehearsal.tempVisualHistoryBefore ?? null,
+    tempVisualHistoryAfter: reviewIntakeImportRehearsal.tempVisualHistoryAfter ?? null,
+    canonicalBetaUnchanged: reviewIntakeImportRehearsal.canonicalBetaUnchanged ?? null,
+    canonicalVisualUnchanged: reviewIntakeImportRehearsal.canonicalVisualUnchanged ?? null,
+    canonicalBetaCompletedBefore: reviewIntakeImportRehearsal.canonicalBetaCompletedBefore ?? null,
+    canonicalBetaCompletedAfter: reviewIntakeImportRehearsal.canonicalBetaCompletedAfter ?? null,
+    canonicalVisualHistoryBefore: reviewIntakeImportRehearsal.canonicalVisualHistoryBefore ?? null,
+    canonicalVisualHistoryAfter: reviewIntakeImportRehearsal.canonicalVisualHistoryAfter ?? null,
+    rawArtifactsCleanedUp: reviewIntakeImportRehearsal.rawArtifactsCleanedUp ?? null,
+    issues: reviewIntakeImportRehearsalIssues,
+  },
   publicLaunchModeRehearsal: {
     ready: publicLaunchModeRehearsalIssues.length === 0,
     issueCount: publicLaunchModeRehearsalIssues.length,
@@ -3385,6 +3473,7 @@ const summary = {
     dispatchSentRecordTemplate: qaDisplayPath(dispatchSentRecordTemplatePath),
     dispatchSentRecordTemplateRejection: qaDisplayPath(dispatchSentRecordTemplateRejectionPath),
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
+    reviewIntakeImportRehearsal: qaDisplayPath(reviewIntakeImportRehearsalPath),
     publicLaunchModeRehearsal: qaDisplayPath(publicLaunchModeRehearsalPath),
     json: `qa/${jsonArtifact}`,
     report: `qa/${reportArtifact}`,
@@ -3444,6 +3533,7 @@ Status: ${status}
 - Dispatch sent-record template ready: ${summary.dispatchSentRecordTemplate.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplate.rowCount || 0} rows, ready for import: ${summary.dispatchSentRecordTemplate.readyForImport ? 'yes' : 'no'})
 - Dispatch sent-record blank-template rejection ready: ${summary.dispatchSentRecordTemplateRejection.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplateRejection.requestedUpdateCount || 0} rejected rows, canonical logs unchanged: ${summary.dispatchSentRecordTemplateRejection.canonicalBetaUnchanged && summary.dispatchSentRecordTemplateRejection.canonicalVisualUnchanged ? 'yes' : 'no'})
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
+- Review intake import rehearsal ready: ${summary.reviewIntakeImportRehearsal.ready ? 'yes' : 'no'} (beta copied count ${summary.reviewIntakeImportRehearsal.tempBetaCompletedBefore || 0}->${summary.reviewIntakeImportRehearsal.tempBetaCompletedAfter || 0}, visual copied count ${summary.reviewIntakeImportRehearsal.tempVisualHistoryBefore || 0}->${summary.reviewIntakeImportRehearsal.tempVisualHistoryAfter || 0})
 - Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
 - Open P0/P1 risks: ${openBlockingRisks.length}
 - Open accepted P2 risks: ${openAcceptedP2Risks.length}
@@ -3544,6 +3634,9 @@ ${markdownList(dispatchSentRecordTemplateRejectionIssues)}
 Review intake rehearsal:
 ${markdownList(reviewIntakeRehearsalIssues)}
 
+Review intake import rehearsal:
+${markdownList(reviewIntakeImportRehearsalIssues)}
+
 Public launch mode rehearsal:
 ${markdownList(publicLaunchModeRehearsalIssues)}
 
@@ -3590,6 +3683,7 @@ ${markdownList(summary.nextActions)}
 - Dispatch mark-sent import rehearsal: \`${summary.dispatchMarkSentImportRehearsal.report}\` and \`${summary.dispatchMarkSentImportRehearsal.artifact}\`
 - Dispatch sent-record template: \`${summary.dispatchSentRecordTemplate.report}\`, \`${summary.dispatchSentRecordTemplate.csv}\`, and \`${summary.dispatchSentRecordTemplate.artifact}\`
 - Dispatch sent-record blank-template rejection: \`${summary.dispatchSentRecordTemplateRejection.report}\` and \`${summary.dispatchSentRecordTemplateRejection.artifact}\`
+- Review intake import rehearsal: \`${summary.reviewIntakeImportRehearsal.report}\` and \`${summary.reviewIntakeImportRehearsal.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

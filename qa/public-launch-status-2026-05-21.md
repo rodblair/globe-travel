@@ -51,6 +51,7 @@ Status: beta-ready-public-blocked
 - Dispatch sent-record template ready: yes (6 rows, ready for import: no)
 - Dispatch sent-record blank-template rejection ready: yes (6 rejected rows, canonical logs unchanged: yes)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
+- Review intake import rehearsal ready: yes (beta copied count 0->1, visual copied count 2->3)
 - Public launch mode rehearsal ready: yes (1 strict-mode exit)
 - Open P0/P1 risks: 0
 - Open accepted P2 risks: 2
@@ -152,6 +153,9 @@ Dispatch sent-record blank-template rejection:
 Review intake rehearsal:
 - none
 
+Review intake import rehearsal:
+- none
+
 Public launch mode rehearsal:
 - none
 
@@ -199,6 +203,7 @@ Public metadata:
 - Dispatch mark-sent import rehearsal: `qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.md` and `qa/dispatch-log-mark-sent-import-rehearsal-2026-05-22.json`
 - Dispatch sent-record template: `qa/dispatch-sent-record-template-2026-05-22.md`, `qa/dispatch-sent-record-template-2026-05-22.csv`, and `qa/dispatch-sent-record-template-2026-05-22.json`
 - Dispatch sent-record blank-template rejection: `qa/dispatch-sent-record-template-rejection-2026-05-22.md` and `qa/dispatch-sent-record-template-rejection-2026-05-22.json`
+- Review intake import rehearsal: `qa/review-intake-import-rehearsal-2026-05-22.md` and `qa/review-intake-import-rehearsal-2026-05-22.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
 - Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-e629404` and `qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json`

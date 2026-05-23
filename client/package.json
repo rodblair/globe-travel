@@ -51,6 +51,7 @@
     "qa:release-candidate": "node scripts/platform-release-candidate-smoke.mjs",
     "qa:route-inventory": "node scripts/platform-route-inventory-smoke.mjs",
     "qa:review-intake-rehearsal": "node scripts/platform-review-intake-rehearsal.mjs",
+    "qa:review-intake-import-rehearsal": "node scripts/platform-review-intake-import-rehearsal.mjs",
     "qa:public-launch-blockers": "node scripts/platform-public-launch-blocker-board.mjs",
     "qa:public-launch-mode-rehearsal": "node scripts/platform-public-launch-mode-rehearsal.mjs",
     "qa:public-launch-status": "node scripts/platform-public-launch-status.mjs",

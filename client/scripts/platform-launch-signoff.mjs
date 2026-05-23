@@ -154,6 +154,13 @@ const reviewIntakeRehearsalArtifact =
 const reviewIntakeRehearsalReport =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
   'qa/review-intake-rehearsal-2026-05-22.md'
+const reviewIntakeImportRehearsalArtifact =
+  process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_ARTIFACT ||
+  process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL ||
+  'qa/review-intake-import-rehearsal-2026-05-22.json'
+const reviewIntakeImportRehearsalReport =
+  process.env.QA_REVIEW_INTAKE_IMPORT_REHEARSAL_REPORT ||
+  'qa/review-intake-import-rehearsal-2026-05-22.md'
 const publicLaunchModeRehearsalArtifact =
   process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_ARTIFACT ||
   process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL ||
@@ -877,6 +884,8 @@ async function checkRequiredDocs(productionHealth) {
     publicStatus?.dispatchSentRecordTemplate?.csv,
     publicStatus?.dispatchSentRecordTemplateRejection?.artifact,
     publicStatus?.dispatchSentRecordTemplateRejection?.report,
+    publicStatus?.reviewIntakeImportRehearsal?.artifact,
+    publicStatus?.reviewIntakeImportRehearsal?.report,
     `${Number(visualStatus.distinctHistoryDateCount ?? 0)}/${Number(visualStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(visualStatus.remainingDistinctDates ?? 0)} remaining`,
     visualStatus.latestProductionArtifact,
@@ -2642,6 +2651,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
     : []
+  const reviewIntakeImportRehearsalStatus = status.reviewIntakeImportRehearsal || {}
+  const reviewIntakeImportRehearsalIssues = Array.isArray(reviewIntakeImportRehearsalStatus.issues)
+    ? reviewIntakeImportRehearsalStatus.issues
+    : []
   const publicLaunchModeRehearsalStatus = status.publicLaunchModeRehearsal || {}
   const publicLaunchModeRehearsalIssues = Array.isArray(publicLaunchModeRehearsalStatus.issues)
     ? publicLaunchModeRehearsalStatus.issues
@@ -3365,6 +3378,62 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     reviewIntakeRehearsalVisualInvalidSubmissionCount: reviewIntakeRehearsalStatus.visualInvalidSubmissionCount ?? null,
     reviewIntakeRehearsalRawArtifactsCleanedUp: reviewIntakeRehearsalStatus.rawArtifactsCleanedUp ?? null,
     reviewIntakeRehearsalIssues,
+  })
+
+  addCheck('public launch status includes review intake isolated import rehearsal', (
+    reviewIntakeImportRehearsalStatus.ready === true &&
+    reviewIntakeImportRehearsalStatus.artifact === reviewIntakeImportRehearsalArtifact &&
+    reviewIntakeImportRehearsalStatus.report === reviewIntakeImportRehearsalReport &&
+    status.artifacts?.reviewIntakeImportRehearsal === reviewIntakeImportRehearsalArtifact &&
+    Number(reviewIntakeImportRehearsalStatus.issueCount) === 0 &&
+    Number(reviewIntakeImportRehearsalStatus.betaIntakeExitCode) === 0 &&
+    reviewIntakeImportRehearsalStatus.betaIntakeStatus === 'pass' &&
+    reviewIntakeImportRehearsalStatus.betaImported === true &&
+    Number(reviewIntakeImportRehearsalStatus.betaValidSubmissionCount) === 1 &&
+    Number(reviewIntakeImportRehearsalStatus.betaInvalidSubmissionCount) === 0 &&
+    Number(reviewIntakeImportRehearsalStatus.tempBetaCompletedAfter) === Number(reviewIntakeImportRehearsalStatus.tempBetaCompletedBefore) + 1 &&
+    Number(reviewIntakeImportRehearsalStatus.visualIntakeExitCode) === 0 &&
+    reviewIntakeImportRehearsalStatus.visualIntakeStatus === 'pass' &&
+    reviewIntakeImportRehearsalStatus.visualImported === true &&
+    Number(reviewIntakeImportRehearsalStatus.visualValidSubmissionCount) === 1 &&
+    Number(reviewIntakeImportRehearsalStatus.visualInvalidSubmissionCount) === 0 &&
+    Number(reviewIntakeImportRehearsalStatus.tempVisualHistoryAfter) === Number(reviewIntakeImportRehearsalStatus.tempVisualHistoryBefore) + 1 &&
+    reviewIntakeImportRehearsalStatus.canonicalBetaUnchanged === true &&
+    reviewIntakeImportRehearsalStatus.canonicalVisualUnchanged === true &&
+    Number(reviewIntakeImportRehearsalStatus.canonicalBetaCompletedAfter) === Number(reviewIntakeImportRehearsalStatus.canonicalBetaCompletedBefore) &&
+    Number(reviewIntakeImportRehearsalStatus.canonicalVisualHistoryAfter) === Number(reviewIntakeImportRehearsalStatus.canonicalVisualHistoryBefore) &&
+    reviewIntakeImportRehearsalStatus.rawArtifactsCleanedUp === true &&
+    reviewIntakeImportRehearsalIssues.length === 0
+  ), {
+    reviewIntakeImportRehearsalArtifact: reviewIntakeImportRehearsalStatus.artifact || null,
+    expectedReviewIntakeImportRehearsalArtifact: reviewIntakeImportRehearsalArtifact,
+    reviewIntakeImportRehearsalReport: reviewIntakeImportRehearsalStatus.report || null,
+    expectedReviewIntakeImportRehearsalReport: reviewIntakeImportRehearsalReport,
+    publicStatusArtifact: status.artifacts?.reviewIntakeImportRehearsal || null,
+    reviewIntakeImportRehearsalReady: reviewIntakeImportRehearsalStatus.ready ?? null,
+    reviewIntakeImportRehearsalIssueCount: reviewIntakeImportRehearsalStatus.issueCount ?? null,
+    reviewIntakeImportRehearsalBetaExitCode: reviewIntakeImportRehearsalStatus.betaIntakeExitCode ?? null,
+    reviewIntakeImportRehearsalBetaStatus: reviewIntakeImportRehearsalStatus.betaIntakeStatus || null,
+    reviewIntakeImportRehearsalBetaImported: reviewIntakeImportRehearsalStatus.betaImported ?? null,
+    reviewIntakeImportRehearsalBetaValidSubmissionCount: reviewIntakeImportRehearsalStatus.betaValidSubmissionCount ?? null,
+    reviewIntakeImportRehearsalBetaInvalidSubmissionCount: reviewIntakeImportRehearsalStatus.betaInvalidSubmissionCount ?? null,
+    reviewIntakeImportRehearsalTempBetaCompletedBefore: reviewIntakeImportRehearsalStatus.tempBetaCompletedBefore ?? null,
+    reviewIntakeImportRehearsalTempBetaCompletedAfter: reviewIntakeImportRehearsalStatus.tempBetaCompletedAfter ?? null,
+    reviewIntakeImportRehearsalVisualExitCode: reviewIntakeImportRehearsalStatus.visualIntakeExitCode ?? null,
+    reviewIntakeImportRehearsalVisualStatus: reviewIntakeImportRehearsalStatus.visualIntakeStatus || null,
+    reviewIntakeImportRehearsalVisualImported: reviewIntakeImportRehearsalStatus.visualImported ?? null,
+    reviewIntakeImportRehearsalVisualValidSubmissionCount: reviewIntakeImportRehearsalStatus.visualValidSubmissionCount ?? null,
+    reviewIntakeImportRehearsalVisualInvalidSubmissionCount: reviewIntakeImportRehearsalStatus.visualInvalidSubmissionCount ?? null,
+    reviewIntakeImportRehearsalTempVisualHistoryBefore: reviewIntakeImportRehearsalStatus.tempVisualHistoryBefore ?? null,
+    reviewIntakeImportRehearsalTempVisualHistoryAfter: reviewIntakeImportRehearsalStatus.tempVisualHistoryAfter ?? null,
+    reviewIntakeImportRehearsalCanonicalBetaUnchanged: reviewIntakeImportRehearsalStatus.canonicalBetaUnchanged ?? null,
+    reviewIntakeImportRehearsalCanonicalVisualUnchanged: reviewIntakeImportRehearsalStatus.canonicalVisualUnchanged ?? null,
+    reviewIntakeImportRehearsalCanonicalBetaCompletedBefore: reviewIntakeImportRehearsalStatus.canonicalBetaCompletedBefore ?? null,
+    reviewIntakeImportRehearsalCanonicalBetaCompletedAfter: reviewIntakeImportRehearsalStatus.canonicalBetaCompletedAfter ?? null,
+    reviewIntakeImportRehearsalCanonicalVisualHistoryBefore: reviewIntakeImportRehearsalStatus.canonicalVisualHistoryBefore ?? null,
+    reviewIntakeImportRehearsalCanonicalVisualHistoryAfter: reviewIntakeImportRehearsalStatus.canonicalVisualHistoryAfter ?? null,
+    reviewIntakeImportRehearsalRawArtifactsCleanedUp: reviewIntakeImportRehearsalStatus.rawArtifactsCleanedUp ?? null,
+    reviewIntakeImportRehearsalIssues,
   })
 
   addCheck('public launch status includes strict public-mode blocker rehearsal', (
