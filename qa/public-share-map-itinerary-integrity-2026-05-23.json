@@ -1,6 +1,6 @@
 {
   "date": "2026-05-23",
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "https://globe-travel-two.vercel.app",
   "shareSlugs": [
     "x3m2c8cnws"
   ],
@@ -142,7 +142,7 @@
           "ok": true,
           "issues": [],
           "state": {
-            "url": "http://localhost:3000/t/x3m2c8cnws",
+            "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
             "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel · Globe.travel",
             "hasSharedMapLabel": true,
             "hasItineraryHeading": true,
@@ -179,7 +179,7 @@
           "ok": true,
           "issues": [],
           "state": {
-            "url": "http://localhost:3000/t/x3m2c8cnws",
+            "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
             "title": "5 Days in Athens, Greece, in mid‑September | Globe.travel · Globe.travel",
             "hasSharedMapLabel": true,
             "hasItineraryHeading": true,

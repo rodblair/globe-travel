@@ -64,7 +64,7 @@ const responsiveVisualArtifactPath = process.env.QA_LAUNCH_VISUAL_ARTIFACT || 'q
 const plannerActualsPath = process.env.QA_PLANNER_ACTUALS_ARTIFACT || process.env.QA_LAUNCH_PLANNER_ACTUALS_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json'
 const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
-  'qa/public-share-map-catalog-2026-05-22.json'
+  'qa/public-share-map-itinerary-integrity-2026-05-23.json'
 const publicMetadataPath = process.env.QA_PUBLIC_METADATA_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_METADATA_ARTIFACT ||
   'qa/public-metadata-smoke-2026-05-22.json'
