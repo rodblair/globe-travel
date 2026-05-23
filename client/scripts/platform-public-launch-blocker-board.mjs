@@ -390,7 +390,7 @@ ${rows.map(markdownRowDetail).join('\n\n') || '- none'}
 - Keep template files unchanged; completed evidence must be non-template JSON.
 - Validate beta evidence with \`npm run qa:beta-review-intake\`; import only with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\`.
 - Validate visual evidence with \`npm run qa:visual-review-intake\`; import only with \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\`.
-- Re-run \`npm run qa:public-launch-blockers\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\` after every import.
+- Re-run \`npm run qa:public-launch-blockers\`, \`npm run qa:launch-refresh\`, and \`npm run qa:launch-signoff\` after every import.
 
 ## Checks
 

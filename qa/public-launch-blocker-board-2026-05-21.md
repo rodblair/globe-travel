@@ -862,7 +862,7 @@ Operator checklist:
 - Completed evidence path: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json`
 - Validate: `npm run qa:visual-review-intake`
 - Import when clean: `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`
-- Routes: landing, login, signup, public-share
+- Routes: landing, pricing, login, signup, public-share
 - Viewports: phone, tablet, laptop, desktop, wide
 - Diff routes: landing, login, signup
 - Rule: Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.
@@ -877,7 +877,7 @@ Operator checklist:
 - Completed evidence path: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json`
 - Validate: `npm run qa:visual-review-intake`
 - Import when clean: `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`
-- Routes: landing, login, signup, public-share
+- Routes: landing, pricing, login, signup, public-share
 - Viewports: phone, tablet, laptop, desktop, wide
 - Diff routes: landing, login, signup
 - Rule: Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.
@@ -892,7 +892,7 @@ Operator checklist:
 - Completed evidence path: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json`
 - Validate: `npm run qa:visual-review-intake`
 - Import when clean: `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`
-- Routes: landing, login, signup, public-share
+- Routes: landing, pricing, login, signup, public-share
 - Viewports: phone, tablet, laptop, desktop, wide
 - Diff routes: landing, login, signup
 - Rule: Counts only after production visual review evidence passes intake and is explicitly imported into reviewHistory.
@@ -905,7 +905,7 @@ Operator checklist:
 - Keep template files unchanged; completed evidence must be non-template JSON.
 - Validate beta evidence with `npm run qa:beta-review-intake`; import only with `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake`.
 - Validate visual evidence with `npm run qa:visual-review-intake`; import only with `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`.
-- Re-run `npm run qa:public-launch-blockers`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff` after every import.
+- Re-run `npm run qa:public-launch-blockers`, `npm run qa:launch-refresh`, and `npm run qa:launch-signoff` after every import.
 
 ## Checks
 

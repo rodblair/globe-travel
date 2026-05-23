@@ -2,6 +2,7 @@
   "date": "2026-05-21",
   "registerPath": "qa/beta-human-review-register.json",
   "reviewerBaseUrl": "https://globe-travel-two.vercel.app",
+  "expectedReviewOrigin": "https://globe-travel-two.vercel.app",
   "packetDir": "qa/beta-human-review-packets-2026-05-21",
   "packetCount": 25,
   "assignmentCsv": "qa/beta-human-review-assignments-2026-05-21.csv",

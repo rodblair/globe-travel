@@ -10,7 +10,7 @@ Status: ready for scheduled review execution
 - Copy the matching `.template.json` file to a non-template `.json` file only after the review is actually complete.
 - Replace live production commit and deployment placeholders with the current `/api/health` deployment metadata.
 - Run `npm run qa:visual-review-intake`, then `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake` only when validation is clean.
-- Re-run `npm run qa:visual-review-schedule`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff` after import.
+- Re-run `npm run qa:visual-review-schedule`, `npm run qa:launch-refresh`, and `npm run qa:launch-signoff` after import.
 
 ## Scheduled Review Matrix
 

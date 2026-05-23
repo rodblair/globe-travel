@@ -201,7 +201,7 @@ function deploymentActionRow() {
     startUrlOrCommand: 'vercel deploy --prod --yes',
     packetOrArtifact: publicStatus.artifacts?.json || qaDisplayPath(publicStatusPath),
     submissionPath: '',
-    validateCommand: 'npm run qa:public-launch-status',
+    validateCommand: 'npm run qa:launch-refresh',
     importCommand: 'npm run qa:launch-signoff',
     reviewerRole: '',
     messageSubject: 'Production runtime deployment currency',

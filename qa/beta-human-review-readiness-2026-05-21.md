@@ -12,9 +12,9 @@ Status: pass
 - Planned reviews: 25
 - Completed reviews: 0
 - Requested completed-review threshold: 0
-- Reviewer packets: 25
-- Submission templates: 25
-- Assignment board: not written
+- Reviewer packets: 25 written to `qa/beta-human-review-packets-2026-05-21`
+- Submission templates: 25 written to `qa/beta-human-review-submissions-2026-05-21`
+- Assignment board: `qa/beta-human-review-assignments-2026-05-21.md` and `qa/beta-human-review-assignments-2026-05-21.csv`
 
 ## Coverage
 

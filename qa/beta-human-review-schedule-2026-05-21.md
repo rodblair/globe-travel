@@ -10,7 +10,7 @@ Status: pass
 - Send the reviewer the packet path and matching JSON submission template path.
 - Copy a template to a non-template `.json` file only after that review is actually complete.
 - Run `npm run qa:beta-review-intake`, then `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake` only when validation is clean.
-- Re-run `npm run qa:beta-review-progress`, `npm run qa:beta-review-schedule`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff` after import.
+- Re-run `npm run qa:beta-review-progress`, `npm run qa:beta-review-schedule`, `npm run qa:launch-refresh`, and `npm run qa:launch-signoff` after import.
 
 ## Wave Summary
 

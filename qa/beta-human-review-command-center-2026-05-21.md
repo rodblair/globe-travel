@@ -23,7 +23,7 @@ Immediate workflow:
 - Send each reviewer their packet path and submission template.
 - Save completed submissions as non-template JSON files in `qa/beta-human-review-submissions-2026-05-21`.
 - Run `npm run qa:beta-review-intake`; if clean, run `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake`.
-- Re-run `npm run qa:beta-review-progress`, `npm run qa:beta-review-command-center`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff`.
+- Re-run `npm run qa:beta-review-progress`, `npm run qa:beta-review-command-center`, `npm run qa:launch-refresh`, and `npm run qa:launch-signoff`.
 
 ## Wave Board
 

@@ -42,4 +42,4 @@ Status: pass
 - Add completed visual review JSON files to `qa/production-visual-review-submissions-2026-05-21`.
 - Run `npm run qa:visual-review-intake` to validate submissions without changing the register.
 - Run `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake` only after the intake report is clean and the review is ready to count.
-- Re-run `npm run qa:visual-review-schedule` and `npm run qa:launch-signoff` after import.
+- Re-run `npm run qa:visual-review-schedule`, `npm run qa:launch-refresh`, and `npm run qa:launch-signoff` after import.

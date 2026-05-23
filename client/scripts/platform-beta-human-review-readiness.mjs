@@ -374,7 +374,7 @@ Status: ready for assignment
 - Send the reviewer the packet path and matching JSON submission template path.
 - Keep template files ending in \`.template.json\` unchanged; save completed reviews as non-template \`.json\` files in \`${qaDisplayPath(submissionTemplateDir)}\`.
 - After submissions arrive, run \`npm run qa:beta-review-intake\`, then \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` only when validation is clean.
-- Run \`npm run qa:beta-review-progress\` and \`npm run qa:public-launch-status\` after import.
+- Run \`npm run qa:beta-review-progress\`, \`npm run qa:launch-refresh\`, and \`npm run qa:launch-signoff\` after import.
 
 ## Assignment Matrix
 

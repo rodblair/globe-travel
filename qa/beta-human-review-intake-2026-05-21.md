@@ -46,4 +46,4 @@ Status: pass
 - Add completed review JSON files to `qa/beta-human-review-submissions-2026-05-21`.
 - Run `npm run qa:beta-review-intake` to validate submissions without changing the register.
 - Run `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake` only after the intake report is clean, there are no unresolved P0/P1 findings, and the submissions are ready to count.
-- Re-run `npm run qa:beta-review-progress` after import so the public-launch dashboard reflects completed reviews.
+- Re-run `npm run qa:beta-review-progress`, then `npm run qa:launch-refresh` and `npm run qa:launch-signoff` after import so the public-launch dashboard reflects completed reviews.

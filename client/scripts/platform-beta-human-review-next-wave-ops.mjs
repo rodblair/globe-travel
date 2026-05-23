@@ -333,7 +333,7 @@ Status: ${summary.status}
 - Send the packet path, start URL, and completed-submission filename from the row.
 - Keep \`.template.json\` files unchanged; completed reviews must be non-template JSON files.
 - Run \`npm run qa:beta-review-intake\`; only import with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\` after validation is clean.
-- Re-run \`npm run qa:beta-review-progress\`, \`npm run qa:beta-review-command-center\`, \`npm run qa:beta-review-next-wave-ops\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\`.
+- Re-run \`npm run qa:beta-review-progress\`, \`npm run qa:beta-review-command-center\`, \`npm run qa:beta-review-next-wave-ops\`, \`npm run qa:launch-refresh\`, and \`npm run qa:launch-signoff\`.
 
 ## Operator Rows
 

@@ -94,7 +94,7 @@ Operator checklist:
 - Send this message file, the command, and the submission template path to the reviewer.
 - Confirm the review is not imported until screenshots have actually been inspected.
 - Import only after validation is clean: QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.
-- Re-run npm run qa:visual-review-progress, npm run qa:public-launch-status, and npm run qa:launch-signoff after import.
+- Re-run npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff after import.
 
 Launch rule:
 This message is visual-review outreach, not completed visual-review history. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported into reviewHistory.
@@ -311,7 +311,7 @@ Source: ${summary.progressArtifact}
 - Review all scheduled screenshots before copying a template to a completed non-template JSON file.
 - Replace commit and deployment placeholders with current \`/api/health\` metadata.
 - Validate with \`npm run qa:visual-review-intake\`; import only with \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\` after validation is clean.
-- Re-run \`npm run qa:visual-review-progress\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\` after import.
+- Re-run \`npm run qa:visual-review-progress\`, \`npm run qa:launch-refresh\`, and \`npm run qa:launch-signoff\` after import.
 
 ## Message Files
 

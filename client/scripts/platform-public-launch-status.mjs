@@ -3563,7 +3563,7 @@ const summary = {
     !publicMetadataPresent ? 'Deploy the current metadata routes to production, then run npm run qa:public-metadata against the live alias.' : null,
     publicMetadataPresent && !publicMetadataReady ? 'Fix the failing public metadata smoke before treating the metadata launch surface as production-ready.' : null,
     deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead
-      ? `Redeploy production from the repo root so Vercel serves runtime commit ${deploymentRuntimeCommitShort}; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.`
+      ? `Redeploy production from the repo root so Vercel serves runtime commit ${deploymentRuntimeCommitShort}; then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.`
       : null,
     deploymentCurrency.enforced && deploymentCurrency.error
       ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`

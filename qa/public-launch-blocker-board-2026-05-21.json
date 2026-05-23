@@ -1151,6 +1151,7 @@
         "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
         "routes": [
           "landing",
+          "pricing",
           "login",
           "signup",
           "public-share"
@@ -1167,7 +1168,7 @@
           "login",
           "signup"
         ],
-        "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
       }
     },
     {
@@ -1193,6 +1194,7 @@
         "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
         "routes": [
           "landing",
+          "pricing",
           "login",
           "signup",
           "public-share"
@@ -1209,7 +1211,7 @@
           "login",
           "signup"
         ],
-        "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
       }
     },
     {
@@ -1235,6 +1237,7 @@
         "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
         "routes": [
           "landing",
+          "pricing",
           "login",
           "signup",
           "public-share"
@@ -1251,7 +1254,7 @@
           "login",
           "signup"
         ],
-        "acceptanceCriteria": "Pass production release gate 10/10, review all 20 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+        "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
       }
     }
   ],
