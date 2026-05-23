@@ -2,10 +2,10 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T14:44:07.432Z",
+  "generatedAt": "2026-05-23T15:26:20.748Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "beta-ready-public-blocked",
-  "betaReady": true,
+  "status": "blocked",
+  "betaReady": false,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
@@ -16,16 +16,19 @@
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
-    "shortHead": "79bcaf4",
+    "head": "acaab39e4370995cf9b05d22621f8f27170c9ad0",
+    "shortHead": "acaab39",
     "liveCommit": "79bcaf47c17abc6338d3f2a725c79c2d3ac1f3fa",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
-    "runtimeCommitAhead": false,
-    "latestRuntimeCommit": null,
-    "latestRuntimeCommitShort": null,
-    "runtimeCommitCountAhead": 0,
-    "runtimeUnsafeFiles": [],
+    "runtimeCommitAhead": true,
+    "latestRuntimeCommit": "acaab39e4370995cf9b05d22621f8f27170c9ad0",
+    "latestRuntimeCommitShort": "acaab39",
+    "runtimeCommitCountAhead": 1,
+    "runtimeUnsafeFiles": [
+      "client/app/pricing/page.tsx",
+      "client/lib/trip-copy.ts"
+    ],
     "error": null
   },
   "betaHumanReviews": {
@@ -377,7 +380,7 @@
     "checked": 13,
     "passed": 12,
     "failed": 1,
-    "actionRowCount": 6,
+    "actionRowCount": 7,
     "betaActionRowCount": 5,
     "visualActionRowCount": 1,
     "executionOrderStepCount": 6,
@@ -446,10 +449,11 @@
     "launchOperatorStatus": "fail",
     "launchOperatorOnlyOverdueExecutionFailure": true,
     "launchOperatorPublicLaunchStatus": "blocked",
-    "launchOperatorDeploymentRuntimeBlocked": false,
-    "launchOperatorOnlySelfGuardrails": true,
-    "launchOperatorActionRowCount": 4,
+    "launchOperatorDeploymentRuntimeBlocked": true,
+    "launchOperatorOnlySelfGuardrails": false,
+    "launchOperatorActionRowCount": 5,
     "launchOperatorActionIds": [
+      "production-runtime-deployment-currency",
       "BETA-HR-002",
       "BETA-HR-003",
       "BETA-HR-004",
@@ -1041,8 +1045,15 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "production is behind runtime commit acaab39"
+  ],
   "blockers": [
+    {
+      "id": "production-runtime-deployment-currency",
+      "title": "Deploy latest runtime commit to production",
+      "detail": "Production is on 79bcaf4; runtime commit acaab39 is waiting for Vercel production."
+    },
     {
       "id": "beta-human-review-threshold",
       "title": "Complete beta human reviews",
@@ -1055,10 +1066,12 @@
     }
   ],
   "nextActions": [
+    "Redeploy production from the repo root so Vercel serves runtime commit acaab39; then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s).",
+    "Fix guardrail issues before relying on public-launch status."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",

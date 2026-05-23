@@ -3,7 +3,7 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T14:44:05.581Z
+Generated at: 2026-05-23T15:25:56.101Z
 Status: fail
 
 ## Result
@@ -11,8 +11,8 @@ Status: fail
 - Checked: 13
 - Passed: 12
 - Failed: 1
-- Public launch status: beta-ready-public-blocked
-- Runtime deployment current: yes
+- Public launch status: blocked
+- Runtime deployment current: no, acaab39 is waiting for production
 - Beta reviews: 0/25, 25 remaining
 - Production visual-review history: 2/4, 2 remaining
 - Beta invites due today: 0
@@ -22,7 +22,7 @@ Status: fail
 - Beta review submissions due soon: 5
 - Required production visual reviews due soon: 1
 - Production visual send log: 0 sent, 2 required prepared not sent
-- Runtime deployment actions: 0
+- Runtime deployment actions: 1
 - Overdue launch execution rows: 5
 
 ## Operator Handoff
@@ -62,6 +62,7 @@ Status: fail
 
 | Priority | Type | ID | Send By | Timing | Due | Send Status | Action | Subject | Source | Evidence Path |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| P0 | production-runtime-deployment | production-runtime-deployment-currency | 2026-05-23 | deploy today | 2026-05-23 | production-on-79bcaf4 | Deploy runtime commit acaab39 to production, then rerun launch gates. | Production runtime deployment currency | `vercel deploy --prod --yes` | `n/a` |
 | P0 | beta-human-review | BETA-HR-001 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-001 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
 | P0 | beta-human-review | BETA-HR-002 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-002 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
 | P0 | beta-human-review | BETA-HR-003 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-003 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
