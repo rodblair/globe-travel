@@ -4066,6 +4066,13 @@ ${markdownList(dispatchMarkSentImportRehearsalIssues)}
 Dispatch sent-record template:
 ${markdownList(dispatchSentRecordTemplateIssues)}
 
+Dispatch sent-record commands:
+- JSON validation: \`${summary.dispatchSentRecordTemplate.validationCommand || 'missing'}\`
+- JSON import after real sends: \`${summary.dispatchSentRecordTemplate.importCommand || 'missing'}\`
+- CSV validation: \`${summary.dispatchSentRecordTemplate.csvValidationCommand || 'missing'}\`
+- CSV import after real sends: \`${summary.dispatchSentRecordTemplate.csvImportCommand || 'missing'}\`
+- Post-import checks: ${(summary.dispatchSentRecordTemplate.postImportCommands || []).map((command) => `\`${command}\``).join(', ') || 'missing'}
+
 Dispatch sent-record blank-template rejection:
 ${markdownList(dispatchSentRecordTemplateRejectionIssues)}
 

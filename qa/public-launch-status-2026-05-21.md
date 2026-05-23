@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-23T10:06:57.243Z
+Generated at: 2026-05-23T10:11:05.321Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -149,6 +149,13 @@ Dispatch mark-sent import rehearsal:
 
 Dispatch sent-record template:
 - none
+
+Dispatch sent-record commands:
+- JSON validation: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent`
+- JSON import after real sends: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent`
+- CSV validation: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
+- CSV import after real sends: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
+- Post-import checks: `npm run qa:launch-refresh`, `npm run qa:launch-signoff`
 
 Dispatch sent-record blank-template rejection:
 - none
