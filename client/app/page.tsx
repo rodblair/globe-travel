@@ -29,7 +29,7 @@ export default function Home() {
   const driftY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
   return (
-    <div className="bg-paper text-foreground">
+    <main className="bg-paper text-foreground" aria-label="Globe.travel overview">
       {/* ─────────────── HERO ─────────────── */}
       <div ref={heroRef}>
         <HorizonHero
@@ -295,7 +295,7 @@ export default function Home() {
           </p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
 

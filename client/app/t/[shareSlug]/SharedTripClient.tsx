@@ -160,7 +160,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-paper text-foreground">
+    <main className="relative min-h-screen overflow-hidden bg-paper text-foreground" aria-label="Shared itinerary">
       <div className="absolute inset-0 opacity-70">
         <ContourOverlay density="sparse" />
       </div>

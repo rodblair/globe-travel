@@ -106,6 +106,7 @@ export function KeepsakeRouteCard({
         title={`Day ${day.day_index}`}
         subtitle={day.title}
         routeSummary={routeSummary}
+        ariaLabel={`Itinerary ${compact ? 'summary' : 'detail'} card route map for day ${day.day_index}${day.title ? `: ${day.title}` : ''}`}
         showDetails={false}
         mapHeightClassName={compact ? 'h-40' : 'h-56'}
         className="min-w-0 rounded-none border-0 shadow-none"

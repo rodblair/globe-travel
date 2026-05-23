@@ -484,6 +484,7 @@ function ChatPageContent() {
                         title={`Day ${day.day_index}${day.title ? ` · ${day.title}` : ''}`}
                         subtitle={`${stops.length} mapped stop${stops.length === 1 ? '' : 's'}`}
                         routeSummary={routeSummary}
+                        ariaLabel={`Planner preview map for day ${day.day_index}${day.title ? `: ${day.title}` : ''}`}
                         active={resolvedSelectedDayIndex === day.day_index}
                         onClick={() => setSelectedDayIndex(day.day_index)}
                         mapHeightClassName="h-44"
@@ -530,6 +531,7 @@ function ChatPageContent() {
                   }]}
                   title={destinationFallback.title}
                   subtitle="Destination preview"
+                  ariaLabel={`Destination preview map for ${destinationFallback.title}`}
                   showDetails={false}
                   mapHeightClassName="h-full min-h-[220px]"
                   className="h-full min-h-[220px] min-w-0"

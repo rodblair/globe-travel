@@ -36,6 +36,7 @@ type TripDayMapProps = {
   onClick?: () => void
   forceStatic?: boolean
   className?: string
+  ariaLabel?: string
 }
 
 function getStopRole(index: number, total: number) {
@@ -101,6 +102,12 @@ function buildStopPath(stops: TripDayMapStop[]) {
   }
 }
 
+function applyMapCanvasAccessibility(map: mapboxgl.Map, label: string) {
+  const canvas = map.getCanvas()
+  canvas.setAttribute('role', 'img')
+  canvas.setAttribute('aria-label', label)
+}
+
 export default function TripDayMap({
   stops,
   routeGeojson,
@@ -115,6 +122,7 @@ export default function TripDayMap({
   onClick,
   forceStatic = false,
   className,
+  ariaLabel,
 }: TripDayMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
@@ -207,6 +215,14 @@ export default function TripDayMap({
     : routeGeojson && routeSummary?.includes('min walk')
       ? 'Walking Map'
       : 'Trip Map'
+  const canvasAriaLabel =
+    ariaLabel ||
+    `${title} ${mapLabel.toLowerCase()} with ${validStops.length} mapped stop${validStops.length === 1 ? '' : 's'}`
+  const canvasAriaLabelRef = useRef(canvasAriaLabel)
+
+  useEffect(() => {
+    canvasAriaLabelRef.current = canvasAriaLabel
+  }, [canvasAriaLabel])
 
   const fitMapToStops = useCallback((map: mapboxgl.Map) => {
     if (validStops.length === 0) {
@@ -259,6 +275,7 @@ export default function TripDayMap({
     }
 
     mapRef.current = map
+    applyMapCanvasAccessibility(map, canvasAriaLabelRef.current)
     if (interactive) map.dragRotate.disable()
 
     // +/− zoom buttons work programmatically even on non-interactive maps.
@@ -445,6 +462,12 @@ export default function TripDayMap({
 
     fitMapToStops(map)
   }, [validStops, active, mapReady, interactive, fitMapToStops])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !mapReady) return
+    applyMapCanvasAccessibility(map, canvasAriaLabel)
+  }, [canvasAriaLabel, mapReady])
 
   useEffect(() => {
     const map = mapRef.current

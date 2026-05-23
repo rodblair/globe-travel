@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -24,15 +24,28 @@ type TravelMapProps = {
 }
 
 const statusColors = {
-  visited: '#F59E0B',
-  bucket_list: '#06B6D4',
-  planning: '#A855F7',
+  visited: '#7c5824',
+  bucket_list: '#5a9aa8',
+  planning: '#9f4629',
+}
+
+const mapFog = {
+  color: 'rgb(10, 10, 15)',
+  'high-color': 'rgb(20, 20, 40)',
+  'horizon-blend': 0.08,
+  'space-color': 'rgb(5, 5, 10)',
+  'star-intensity': 0.6,
+} satisfies Parameters<mapboxgl.Map['setFog']>[0]
+
+function hasFiniteCoordinates(place: Place) {
+  return Number.isFinite(place.latitude) && Number.isFinite(place.longitude)
 }
 
 export function TravelMap({ places, onMarkerClick, className }: TravelMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<mapboxgl.Marker[]>([])
+  const [mapUnavailable, setMapUnavailable] = useState(false)
 
   const createMarkerElement = useCallback((place: Place) => {
     const el = document.createElement('div')
@@ -70,26 +83,29 @@ export function TravelMap({ places, onMarkerClick, className }: TravelMapProps) 
   useEffect(() => {
     if (!mapContainerRef.current) return
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-    if (!token) return
+    if (!token || !mapboxgl.supported()) {
+      queueMicrotask(() => setMapUnavailable(true))
+      return
+    }
 
     mapboxgl.accessToken = token
 
-    const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [0, 20],
-      zoom: 1.5,
-      projection: 'globe',
-    })
+    let map: mapboxgl.Map
+    try {
+      map = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [0, 20],
+        zoom: 1.5,
+        projection: 'globe',
+      })
+    } catch {
+      queueMicrotask(() => setMapUnavailable(true))
+      return
+    }
 
     map.on('style.load', () => {
-      map.setFog({
-        color: 'rgb(10, 10, 15)',
-        'high-color': 'rgb(20, 20, 40)',
-        'horizon-blend': 0.08,
-        'space-color': 'rgb(5, 5, 10)',
-        'star-intensity': 0.6,
-      })
+      map.setFog(mapFog)
     })
 
     mapRef.current = map
@@ -111,7 +127,7 @@ export function TravelMap({ places, onMarkerClick, className }: TravelMapProps) 
     markersRef.current = []
 
     // Add new markers
-    const validPlaces = places.filter((p) => p.latitude && p.longitude)
+    const validPlaces = places.filter(hasFiniteCoordinates)
 
     validPlaces.forEach((place) => {
       const el = createMarkerElement(place)
@@ -138,6 +154,18 @@ export function TravelMap({ places, onMarkerClick, className }: TravelMapProps) 
       }
     }
   }, [places, onMarkerClick, createMarkerElement])
+
+  if (mapUnavailable) {
+    return (
+      <div className={className} style={{ width: '100%', height: '100%' }}>
+        <div className="flex h-full w-full items-center justify-center bg-paper-recessed text-center">
+          <p className="max-w-[180px] text-xs text-foreground/45">
+            Map preview unavailable on this device.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div ref={mapContainerRef} className={className} style={{ width: '100%', height: '100%' }} />

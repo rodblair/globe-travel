@@ -528,6 +528,7 @@ export default function ItineraryArtifact({
                 title={`Day ${selectedDay.day_index}`}
                 subtitle={selectedDay.title}
                 routeSummary={selectedDayMap.routeSummary}
+                ariaLabel={`Focused route map for day ${selectedDay.day_index}${selectedDay.title ? `: ${selectedDay.title}` : ''}`}
                 showDetails={false}
                 interactive={true}
                 mapHeightClassName={mapExpanded ? 'h-80' : 'h-56'}

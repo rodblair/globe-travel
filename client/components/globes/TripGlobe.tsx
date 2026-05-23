@@ -22,6 +22,32 @@ type TripGlobeProps = {
   className?: string
 }
 
+const globeFog = {
+  color: 'rgb(8, 8, 14)',
+  'high-color': 'rgb(15, 18, 40)',
+  'horizon-blend': 0.04,
+  'space-color': 'rgb(4, 4, 10)',
+  'star-intensity': 0.35,
+} satisfies Parameters<mapboxgl.Map['setFog']>[0]
+
+const globePalette = {
+  route: 'rgba(220,176,114,0.88)',
+  routeSoft: 'rgba(220,176,114,0.2)',
+  routeBorder: 'rgba(220,176,114,0.36)',
+  markerText: 'rgba(220,176,114,0.98)',
+  labelText: 'rgba(246,241,230,0.82)',
+  labelSurface: 'rgba(5,5,16,0.82)',
+} as const
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export default function TripGlobe({
   stops,
   routeGeojson,
@@ -55,8 +81,10 @@ export default function TripGlobe({
   useEffect(() => {
     if (!containerRef.current) return
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-    if (!token) return
-    if (!mapboxSupported) return
+    if (!token || !mapboxSupported) {
+      queueMicrotask(() => setGlobeUnavailable(true))
+      return
+    }
 
     mapboxgl.accessToken = token
 
@@ -96,13 +124,7 @@ export default function TripGlobe({
       } catch {
         // ignore
       }
-      map.setFog({
-        color: 'rgb(8, 8, 14)',
-        'high-color': 'rgb(15, 18, 40)',
-        'horizon-blend': 0.04,
-        'space-color': 'rgb(4, 4, 10)',
-        'star-intensity': 0.35,
-      })
+      map.setFog(globeFog)
     })
 
     map.on('mousedown', () => { userInteracting.current = true })
@@ -150,7 +172,7 @@ export default function TripGlobe({
           source: 'trip-route',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
           paint: {
-            'line-color': 'rgba(251,191,36,0.85)',
+            'line-color': globePalette.route,
             'line-width': 3,
             'line-blur': 0.5,
           },
@@ -186,26 +208,27 @@ export default function TripGlobe({
     markersRef.current = []
 
     validStops.forEach((stop) => {
+      const safeTitle = escapeHtml(stop.title)
       const el = document.createElement('div')
       el.style.cssText = 'cursor:pointer;'
       el.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
           <div style="
             width:22px;height:22px;border-radius:999px;
-            background:rgba(251,191,36,0.18);
-            border:1px solid rgba(251,191,36,0.35);
+            background:${globePalette.routeSoft};
+            border:1px solid ${globePalette.routeBorder};
             display:flex;align-items:center;justify-content:center;
-            color:rgba(251,191,36,0.95);
+            color:${globePalette.markerText};
             font-size:11px;font-weight:600;
-            box-shadow:0 0 14px rgba(251,191,36,0.25);
+            box-shadow:0 0 14px ${globePalette.routeSoft};
           ">${stop.index}</div>
           <div style="
             font-size:10px;font-weight:500;letter-spacing:0.02em;
             font-family:Inter,system-ui,sans-serif;
-            color:rgba(255,255,255,0.75);
+            color:${globePalette.labelText};
             text-shadow:0 1px 6px rgba(0,0,0,0.9),0 0 3px rgba(0,0,0,0.8);
             white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;
-          ">${stop.title}</div>
+          ">${safeTitle}</div>
         </div>
       `
 
@@ -227,24 +250,25 @@ export default function TripGlobe({
       Number.isFinite(destinationCenter.latitude) &&
       Number.isFinite(destinationCenter.longitude)
     ) {
+      const safeDestinationLabel = escapeHtml(destinationLabel)
       const el = document.createElement('div')
       el.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
           <div style="
             width:12px;height:12px;border-radius:999px;
-            background:rgba(251,191,36,0.95);
-            box-shadow:0 0 0 4px rgba(251,191,36,0.18), 0 0 18px rgba(251,191,36,0.35);
+            background:${globePalette.markerText};
+            box-shadow:0 0 0 4px ${globePalette.routeSoft}, 0 0 18px ${globePalette.routeBorder};
           "></div>
           <div style="
             padding:4px 8px;border-radius:999px;
-            background:rgba(5,5,16,0.82);
-            border:1px solid rgba(251,191,36,0.22);
-            color:rgba(255,255,255,0.88);
+            background:${globePalette.labelSurface};
+            border:1px solid ${globePalette.routeBorder};
+            color:rgba(246,241,230,0.9);
             font-size:11px;font-weight:600;letter-spacing:0.02em;
             font-family:Inter,system-ui,sans-serif;
             white-space:nowrap;
             text-shadow:0 1px 6px rgba(0,0,0,0.9);
-          ">${destinationLabel}</div>
+          ">${safeDestinationLabel}</div>
         </div>
       `
 

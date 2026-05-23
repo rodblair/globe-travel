@@ -82,13 +82,13 @@ export function AuthCanvas({
   );
 
   return (
-    <div className="min-h-screen flex bg-paper text-foreground">
+    <main className="min-h-screen flex bg-paper text-foreground" aria-label="Authentication">
       {side === "left" ? panel : null}
       <div className={formClasses}>
         <div className="paper-grain absolute inset-0 pointer-events-none" />
         <div className="relative w-full max-w-md">{children}</div>
       </div>
       {side === "right" ? panel : null}
-    </div>
+    </main>
   );
 }

@@ -62,6 +62,7 @@ export function Sidebar() {
 
   return (
     <aside
+      aria-label="Primary app navigation"
       className={cn(
         'hidden h-dvh w-64 flex-shrink-0 md:flex flex-col',
         'border-r border-rule bg-[var(--sidebar-bg)] text-foreground',
