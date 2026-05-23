@@ -2,16 +2,16 @@
 
 Date: 2026-05-21
 Base URL: https://globe-travel-two.vercel.app
-Status: beta-ready-public-blocked
+Status: blocked
 
 ## Result
 
-- Beta/release-ops ready: yes
+- Beta/release-ops ready: no
 - Public-launch ready: no
 - Production commit: fd7d17e9780f1b73051ef56b3fde655c01a4a3e5
 - Production deployment: globe-travel-kkuhrv886-rodney-blairs-projects.vercel.app
-- Runtime deployment current: yes
-- Latest runtime commit awaiting production: none
+- Runtime deployment current: no
+- Latest runtime commit awaiting production: 0b0690d
 - Beta reviews: 0/25
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
@@ -43,9 +43,9 @@ Status: beta-ready-public-blocked
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Production visual review dispatch log ready: yes (0 sent, 3 prepared not sent)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
-- Launch operator today ready: yes (6 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
+- Launch operator today ready: yes (7 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
-- Launch operator sent-dispatch rehearsal ready: yes (4 action rows after rehearsed sends)
+- Launch operator sent-dispatch rehearsal ready: yes (5 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (1 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (1 beta sent on isolated log, 1 visual sent on isolated log)
 - Dispatch sent-record template ready: yes (6 rows, ready for import: no)
@@ -73,12 +73,13 @@ Status: beta-ready-public-blocked
 
 ## Public-Launch Blockers
 
+- production-runtime-deployment-currency: Production is on fd7d17e; runtime commit 0b0690d is waiting for Vercel production.
 - beta-human-review-threshold: 0/25 completed; 25 remaining.
 - production-visual-review-history: 2/4 distinct review dates recorded; 2 remaining.
 
 ## Guardrail Issues
 
-- none
+- production is behind runtime commit 0b0690d
 
 ## Evidence Queue Issues
 
@@ -180,8 +181,10 @@ Public metadata:
 
 ## Next Actions
 
+- Redeploy production from the repo root so Vercel serves runtime commit 0b0690d; then rerun npm run qa:public-launch-status and npm run qa:launch-signoff.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
+- Fix guardrail issues before relying on public-launch status.
 
 ## Evidence
 
