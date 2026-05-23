@@ -111,6 +111,10 @@ const validationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json 
 const importCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
 const csvValidationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
 const csvImportCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
+const postImportCommands = [
+  'npm run qa:launch-refresh',
+  'npm run qa:launch-signoff',
+]
 
 const messageFileChecks = await Promise.all(templateRows.map(async (row) => ({
   id: row.id,
@@ -171,6 +175,12 @@ const checks = [
       .map((row) => row.id),
   },
   {
+    name: 'sent-record template requires launch refresh and signoff after import',
+    ok: postImportCommands.includes('npm run qa:launch-refresh') &&
+      postImportCommands.includes('npm run qa:launch-signoff'),
+    postImportCommands,
+  },
+  {
     name: 'sent-record template includes operator context for every outreach row',
     ok: templateRows.every((row) => (
       hasText(row.messageSubject) &&
@@ -207,6 +217,7 @@ const summary = {
   importCommand,
   csvValidationCommand,
   csvImportCommand,
+  postImportCommands,
   messageFileChecks,
   submissionTemplateChecks,
   rows: templateRows,
@@ -246,6 +257,10 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 
 - Validate: \`${summary.csvValidationCommand}\`
 - Import: \`${summary.csvImportCommand}\`
+
+## After Import
+
+${summary.postImportCommands.map((command) => `- Run: \`${command}\``).join('\n')}
 
 ## Rows To Fill
 

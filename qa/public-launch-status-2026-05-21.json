@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T08:23:27.827Z",
+  "generatedAt": "2026-05-23T08:26:03.195Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -521,6 +521,10 @@
     "blankProofFieldRowCount": 6,
     "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
     "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
+    "postImportCommands": [
+      "npm run qa:launch-refresh",
+      "npm run qa:launch-signoff"
+    ],
     "rowsMissingCommandCount": 0,
     "rowsMissingOperatorContextCount": 0,
     "rowsMissingCommands": [],

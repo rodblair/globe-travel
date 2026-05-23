@@ -2358,6 +2358,11 @@ if (!String(dispatchSentRecordTemplate.validationCommand || '').includes('qa:dis
 if (!String(dispatchSentRecordTemplate.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template import command is missing import mode')
 }
+if (!Array.isArray(dispatchSentRecordTemplate.postImportCommands) ||
+  !dispatchSentRecordTemplate.postImportCommands.includes('npm run qa:launch-refresh') ||
+  !dispatchSentRecordTemplate.postImportCommands.includes('npm run qa:launch-signoff')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template is missing post-import launch refresh/signoff commands')
+}
 if (dispatchSentRecordRowsMissingCommands.length > 0) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows are missing review validation or import commands')
 }
@@ -2366,6 +2371,9 @@ if (dispatchSentRecordRowsMissingOperatorContext.length > 0) {
 }
 if (!dispatchSentRecordTemplateReport.includes('This file is not a sent proof')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state the evidence boundary')
+}
+if (!dispatchSentRecordTemplateReport.includes('npm run qa:launch-refresh') || !dispatchSentRecordTemplateReport.includes('npm run qa:launch-signoff')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state post-import refresh/signoff commands')
 }
 if (!dispatchSentRecordTemplateCsv.includes('completedSubmissionPath')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing completed submission target column')
@@ -3240,6 +3248,9 @@ const summary = {
     blankProofFieldRowCount: dispatchSentRecordBlankRows.length,
     validationCommand: dispatchSentRecordTemplate.validationCommand || null,
     importCommand: dispatchSentRecordTemplate.importCommand || null,
+    postImportCommands: Array.isArray(dispatchSentRecordTemplate.postImportCommands)
+      ? dispatchSentRecordTemplate.postImportCommands
+      : [],
     rowsMissingCommandCount: dispatchSentRecordRowsMissingCommands.length,
     rowsMissingOperatorContextCount: dispatchSentRecordRowsMissingOperatorContext.length,
     rowsMissingCommands: dispatchSentRecordRowsMissingCommands.map((row) => row.id),

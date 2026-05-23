@@ -1,8 +1,8 @@
 {
   "date": "2026-05-23",
   "status": "pass",
-  "checked": 8,
-  "passed": 8,
+  "checked": 9,
+  "passed": 9,
   "failed": 0,
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-23.json",
   "readyForImport": false,
@@ -13,6 +13,10 @@
   "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.json npm run qa:dispatch-mark-sent",
   "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
   "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+  "postImportCommands": [
+    "npm run qa:launch-refresh",
+    "npm run qa:launch-signoff"
+  ],
   "messageFileChecks": [
     {
       "id": "BETA-HR-001",
@@ -225,6 +229,14 @@
       "csvValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
       "csvImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
       "rowsMissingCommands": []
+    },
+    {
+      "name": "sent-record template requires launch refresh and signoff after import",
+      "ok": true,
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ]
     },
     {
       "name": "sent-record template includes operator context for every outreach row",

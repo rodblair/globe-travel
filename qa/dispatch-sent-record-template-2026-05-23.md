@@ -5,8 +5,8 @@ Status: pass
 
 ## Result
 
-- Checked: 8
-- Passed: 8
+- Checked: 9
+- Passed: 9
 - Failed: 0
 - Launch operator board: `qa/launch-operator-today-2026-05-23.json`
 - Template rows: 6
@@ -28,6 +28,11 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 - Validate: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
 - Import: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
 
+## After Import
+
+- Run: `npm run qa:launch-refresh`
+- Run: `npm run qa:launch-signoff`
+
 ## Rows To Fill
 
 | ID | Type | Subject | Source | Packet | Submission Template | Completed Evidence Target |
@@ -47,6 +52,7 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 - Pass: sent-record template points at existing message files
 - Pass: sent-record template points at existing submission templates
 - Pass: sent-record template includes validation and import commands
+- Pass: sent-record template requires launch refresh and signoff after import
 - Pass: sent-record template includes operator context for every outreach row
 - Pass: sent-record template contains no sensitive contact details
 
