@@ -35,7 +35,7 @@ Status: pass
 
 - Send beta invite messages from the listed message files; do not treat sent messages as completed review evidence.
 - Record reviewer names and contact details outside the repo.
-- After sending an invite or visual-review assignment, update the matching dispatch log row with `sendStatus: "sent"`, a non-sensitive reviewer alias, delivery channel, sent timestamp, and external contact-record pointer.
+- After sending an invite or visual-review assignment, validate the sent-state update with `QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent`, then import it with `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent`.
 - Completed beta reviews must be non-template JSON files, validated with `npm run qa:beta-review-intake`, then imported only with `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake`.
 - Production visual reviews must be inspected by a human, validated with `npm run qa:visual-review-intake`, then imported only with `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`.
 - Re-run `npm run qa:launch-today`, `npm run qa:public-launch-status`, and `npm run qa:launch-signoff` after each import.

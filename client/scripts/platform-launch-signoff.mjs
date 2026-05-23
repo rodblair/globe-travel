@@ -116,6 +116,13 @@ const launchOperatorSentDispatchRehearsalArtifact =
 const launchOperatorSentDispatchRehearsalReport =
   process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_REPORT ||
   'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md'
+const dispatchMarkSentDryRunArtifact =
+  process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_ARTIFACT ||
+  process.env.QA_DISPATCH_MARK_SENT_DRY_RUN ||
+  'qa/dispatch-log-mark-sent-2026-05-22.json'
+const dispatchMarkSentDryRunReport =
+  process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_REPORT ||
+  'qa/dispatch-log-mark-sent-2026-05-22.md'
 const reviewIntakeRehearsalArtifact =
   process.env.QA_REVIEW_INTAKE_REHEARSAL_ARTIFACT ||
   process.env.QA_REVIEW_INTAKE_REHEARSAL ||
@@ -2586,6 +2593,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const launchOperatorSentDispatchRehearsalIssues = Array.isArray(launchOperatorSentDispatchRehearsalStatus.issues)
     ? launchOperatorSentDispatchRehearsalStatus.issues
     : []
+  const dispatchMarkSentDryRunStatus = status.dispatchMarkSentDryRun || {}
+  const dispatchMarkSentDryRunIssues = Array.isArray(dispatchMarkSentDryRunStatus.issues)
+    ? dispatchMarkSentDryRunStatus.issues
+    : []
   const reviewIntakeRehearsalStatus = status.reviewIntakeRehearsal || {}
   const reviewIntakeRehearsalIssues = Array.isArray(reviewIntakeRehearsalStatus.issues)
     ? reviewIntakeRehearsalStatus.issues
@@ -3092,6 +3103,40 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorSentDispatchRehearsalSelectedRows: launchOperatorSentDispatchRehearsalStatus.selectedRows || null,
     launchOperatorSentDispatchRehearsalRawArtifactsCleanedUp: launchOperatorSentDispatchRehearsalStatus.rawArtifactsCleanedUp ?? null,
     launchOperatorSentDispatchRehearsalIssues,
+  })
+
+  addCheck('public launch status includes dispatch mark-sent dry run', (
+    dispatchMarkSentDryRunStatus.ready === true &&
+    dispatchMarkSentDryRunStatus.artifact === dispatchMarkSentDryRunArtifact &&
+    dispatchMarkSentDryRunStatus.report === dispatchMarkSentDryRunReport &&
+    status.artifacts?.dispatchMarkSentDryRun === dispatchMarkSentDryRunArtifact &&
+    Number(dispatchMarkSentDryRunStatus.issueCount) === 0 &&
+    dispatchMarkSentDryRunStatus.importMode === false &&
+    dispatchMarkSentDryRunStatus.recordArtifact === 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json' &&
+    Number(dispatchMarkSentDryRunStatus.requestedUpdateCount) >= 2 &&
+    Number(dispatchMarkSentDryRunStatus.betaUpdateCount) > 0 &&
+    Number(dispatchMarkSentDryRunStatus.visualUpdateCount) > 0 &&
+    Array.isArray(dispatchMarkSentDryRunStatus.updatedLogArtifacts) &&
+    dispatchMarkSentDryRunStatus.updatedLogArtifacts.includes(betaReviewStatus.dispatchLogArtifact) &&
+    dispatchMarkSentDryRunStatus.updatedLogArtifacts.includes(visualReviewStatus.dispatchLogArtifact) &&
+    dispatchMarkSentDryRunIssues.length === 0
+  ), {
+    dispatchMarkSentDryRunArtifact: dispatchMarkSentDryRunStatus.artifact || null,
+    expectedDispatchMarkSentDryRunArtifact: dispatchMarkSentDryRunArtifact,
+    dispatchMarkSentDryRunReport: dispatchMarkSentDryRunStatus.report || null,
+    expectedDispatchMarkSentDryRunReport: dispatchMarkSentDryRunReport,
+    publicStatusArtifact: status.artifacts?.dispatchMarkSentDryRun || null,
+    dispatchMarkSentDryRunReady: dispatchMarkSentDryRunStatus.ready ?? null,
+    dispatchMarkSentDryRunIssueCount: dispatchMarkSentDryRunStatus.issueCount ?? null,
+    dispatchMarkSentDryRunImportMode: dispatchMarkSentDryRunStatus.importMode ?? null,
+    dispatchMarkSentDryRunRecordArtifact: dispatchMarkSentDryRunStatus.recordArtifact || null,
+    dispatchMarkSentDryRunRequestedUpdateCount: dispatchMarkSentDryRunStatus.requestedUpdateCount ?? null,
+    dispatchMarkSentDryRunBetaUpdateCount: dispatchMarkSentDryRunStatus.betaUpdateCount ?? null,
+    dispatchMarkSentDryRunVisualUpdateCount: dispatchMarkSentDryRunStatus.visualUpdateCount ?? null,
+    dispatchMarkSentDryRunUpdatedLogArtifacts: dispatchMarkSentDryRunStatus.updatedLogArtifacts || null,
+    expectedBetaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact || null,
+    expectedVisualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact || null,
+    dispatchMarkSentDryRunIssues,
   })
 
   addCheck('public launch status includes review intake rejection rehearsal', (

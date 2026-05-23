@@ -88,6 +88,10 @@ const launchOperatorSentDispatchRehearsalPath = process.env.QA_LAUNCH_OPERATOR_S
   'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json'
 const launchOperatorSentDispatchRehearsalReportPath = process.env.QA_LAUNCH_OPERATOR_SENT_DISPATCH_REHEARSAL_REPORT ||
   'qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md'
+const dispatchMarkSentDryRunPath = process.env.QA_DISPATCH_MARK_SENT_DRY_RUN ||
+  'qa/dispatch-log-mark-sent-2026-05-22.json'
+const dispatchMarkSentDryRunReportPath = process.env.QA_DISPATCH_MARK_SENT_DRY_RUN_REPORT ||
+  'qa/dispatch-log-mark-sent-2026-05-22.md'
 const reviewIntakeRehearsalPath = process.env.QA_REVIEW_INTAKE_REHEARSAL ||
   'qa/review-intake-rehearsal-2026-05-22.json'
 const reviewIntakeRehearsalReportPath = process.env.QA_REVIEW_INTAKE_REHEARSAL_REPORT ||
@@ -692,6 +696,8 @@ const [
   launchOperatorTodayOverdueRehearsalReport,
   launchOperatorSentDispatchRehearsal,
   launchOperatorSentDispatchRehearsalReport,
+  dispatchMarkSentDryRun,
+  dispatchMarkSentDryRunReport,
   reviewIntakeRehearsal,
   reviewIntakeRehearsalReport,
   publicLaunchModeRehearsal,
@@ -757,6 +763,8 @@ const [
   readText(launchOperatorTodayOverdueRehearsalReportPath),
   readJson(launchOperatorSentDispatchRehearsalPath),
   readText(launchOperatorSentDispatchRehearsalReportPath),
+  readJson(dispatchMarkSentDryRunPath),
+  readText(dispatchMarkSentDryRunReportPath),
   readJson(reviewIntakeRehearsalPath),
   readText(reviewIntakeRehearsalReportPath),
   readJson(publicLaunchModeRehearsalPath),
@@ -2052,6 +2060,41 @@ if (!launchOperatorSentDispatchRehearsalReport.includes('sent rows drop out of t
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal report does not state the sent-state meaning')
 }
 
+const dispatchMarkSentDryRunIssues = []
+const dispatchMarkSentUpdatedArtifacts = Array.isArray(dispatchMarkSentDryRun.updatedLogArtifacts)
+  ? dispatchMarkSentDryRun.updatedLogArtifacts
+  : []
+if (dispatchMarkSentDryRun.status !== 'pass') {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run status is not pass')
+}
+if (dispatchMarkSentDryRun.date !== today) {
+  dispatchMarkSentDryRunIssues.push(`dispatch mark-sent dry run date ${dispatchMarkSentDryRun.date || 'missing'} does not match ${today}`)
+}
+if (dispatchMarkSentDryRun.importMode !== false) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run unexpectedly ran in import mode')
+}
+if (dispatchMarkSentDryRun.recordArtifact !== 'qa/dispatch-log-mark-sent-fixture-2026-05-22.json') {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run fixture artifact changed')
+}
+if (Number(dispatchMarkSentDryRun.requestedUpdateCount || 0) < 2) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run did not validate beta and visual rows')
+}
+if (Number(dispatchMarkSentDryRun.betaUpdateCount || 0) <= 0) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run did not validate a beta row')
+}
+if (Number(dispatchMarkSentDryRun.visualUpdateCount || 0) <= 0) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run did not validate a visual row')
+}
+if (!dispatchMarkSentUpdatedArtifacts.includes(qaDisplayPath(betaDispatchLogPath))) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run does not target the beta dispatch log')
+}
+if (!dispatchMarkSentUpdatedArtifacts.includes(qaDisplayPath(visualDispatchLogPath))) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run does not target the visual dispatch log')
+}
+if (!dispatchMarkSentDryRunReport.includes('Dry run validates the record without mutating dispatch logs')) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run report does not state the non-mutating workflow')
+}
+
 const reviewIntakeRehearsalIssues = []
 if (reviewIntakeRehearsal.status !== 'pass') {
   reviewIntakeRehearsalIssues.push('review intake rehearsal status is not pass')
@@ -2275,6 +2318,7 @@ if (blockerBoardIssues.length > 0) guardrailIssues.push('public launch blocker b
 if (launchTodayIssues.length > 0) guardrailIssues.push('daily launch operator board is not aligned with current blocker evidence')
 if (launchTodayOverdueRehearsalIssues.length > 0) guardrailIssues.push('daily launch operator overdue rehearsal is not proving stale-date failure behavior')
 if (launchSentDispatchRehearsalIssues.length > 0) guardrailIssues.push('daily launch operator sent-dispatch rehearsal is not proving sent-state behavior')
+if (dispatchMarkSentDryRunIssues.length > 0) guardrailIssues.push('dispatch mark-sent dry run is not proving safe sent-state imports')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (publicLaunchModeRehearsalIssues.length > 0) guardrailIssues.push('public launch mode rehearsal is not proving strict public-blocker enforcement')
 if (visualIntake.status !== 'pass') guardrailIssues.push('production visual review intake artifact is not passing')
@@ -2669,6 +2713,20 @@ const summary = {
     rawArtifactsCleanedUp: launchOperatorSentDispatchRehearsal.rawArtifactsCleanedUp ?? null,
     issues: launchSentDispatchRehearsalIssues,
   },
+  dispatchMarkSentDryRun: {
+    ready: dispatchMarkSentDryRunIssues.length === 0,
+    issueCount: dispatchMarkSentDryRunIssues.length,
+    artifact: qaDisplayPath(dispatchMarkSentDryRunPath),
+    report: qaDisplayPath(dispatchMarkSentDryRunReportPath),
+    date: dispatchMarkSentDryRun.date || null,
+    importMode: dispatchMarkSentDryRun.importMode ?? null,
+    recordArtifact: dispatchMarkSentDryRun.recordArtifact || null,
+    requestedUpdateCount: dispatchMarkSentDryRun.requestedUpdateCount ?? null,
+    betaUpdateCount: dispatchMarkSentDryRun.betaUpdateCount ?? null,
+    visualUpdateCount: dispatchMarkSentDryRun.visualUpdateCount ?? null,
+    updatedLogArtifacts: dispatchMarkSentUpdatedArtifacts,
+    issues: dispatchMarkSentDryRunIssues,
+  },
   reviewIntakeRehearsal: {
     ready: reviewIntakeRehearsalIssues.length === 0,
     issueCount: reviewIntakeRehearsalIssues.length,
@@ -3019,6 +3077,7 @@ const summary = {
     launchOperatorToday: qaDisplayPath(launchOperatorTodayPath),
     launchOperatorTodayOverdueRehearsal: qaDisplayPath(launchOperatorTodayOverdueRehearsalPath),
     launchOperatorSentDispatchRehearsal: qaDisplayPath(launchOperatorSentDispatchRehearsalPath),
+    dispatchMarkSentDryRun: qaDisplayPath(dispatchMarkSentDryRunPath),
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
     publicLaunchModeRehearsal: qaDisplayPath(publicLaunchModeRehearsalPath),
     json: `qa/${jsonArtifact}`,
@@ -3074,6 +3133,7 @@ Status: ${status}
 - Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual, ${summary.launchOperatorToday.betaDispatchLogPreparedNotSentCount || 0} beta unsent, ${summary.launchOperatorToday.visualDispatchLogRequiredPreparedNotSentCount || 0} required visual unsent)
 - Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
 - Launch operator sent-dispatch rehearsal ready: ${summary.launchOperatorSentDispatchRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorSentDispatchRehearsal.launchOperatorActionRowCount || 0} action rows after rehearsed sends)
+- Dispatch mark-sent dry run ready: ${summary.dispatchMarkSentDryRun.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentDryRun.betaUpdateCount || 0} beta, ${summary.dispatchMarkSentDryRun.visualUpdateCount || 0} visual)
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Public launch mode rehearsal ready: ${summary.publicLaunchModeRehearsal.ready ? 'yes' : 'no'} (${summary.publicLaunchModeRehearsal.publicLaunchModeExitCode ?? 'missing'} strict-mode exit)
 - Open P0/P1 risks: ${openBlockingRisks.length}
@@ -3160,6 +3220,9 @@ ${markdownList(launchTodayOverdueRehearsalIssues)}
 Launch operator sent-dispatch rehearsal:
 ${markdownList(launchSentDispatchRehearsalIssues)}
 
+Dispatch mark-sent dry run:
+${markdownList(dispatchMarkSentDryRunIssues)}
+
 Review intake rehearsal:
 ${markdownList(reviewIntakeRehearsalIssues)}
 
@@ -3205,6 +3268,7 @@ ${markdownList(summary.nextActions)}
 - Public launch blocker board: \`${summary.publicLaunchBlockerBoard.report}\`, \`${summary.publicLaunchBlockerBoard.csv}\`, and \`${summary.publicLaunchBlockerBoard.artifact}\`
 - Launch operator today: \`${summary.launchOperatorToday.report}\`, \`${summary.launchOperatorToday.csv}\`, and \`${summary.launchOperatorToday.artifact}\`
 - Launch operator sent-dispatch rehearsal: \`${summary.launchOperatorSentDispatchRehearsal.report}\` and \`${summary.launchOperatorSentDispatchRehearsal.artifact}\`
+- Dispatch mark-sent dry run: \`${summary.dispatchMarkSentDryRun.report}\` and \`${summary.dispatchMarkSentDryRun.artifact}\`
 - Visual register: \`${summary.artifacts.visualRegister}\`
 - Visual progress: \`${summary.productionVisualReviews.progressArtifact}\`
 - Latest production visual artifact: \`${summary.productionVisualReviews.latestProductionArtifact}\` and \`${summary.productionVisualReviews.latestProductionSummaryArtifact}\`

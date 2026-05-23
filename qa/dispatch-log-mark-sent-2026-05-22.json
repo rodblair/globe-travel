@@ -1,0 +1,34 @@
+{
+  "date": "2026-05-22",
+  "status": "pass",
+  "importMode": false,
+  "recordArtifact": "qa/dispatch-log-mark-sent-fixture-2026-05-22.json",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+  "requestedUpdateCount": 2,
+  "betaUpdateCount": 1,
+  "visualUpdateCount": 1,
+  "updatedLogArtifacts": [
+    "qa/beta-human-review-dispatch-log-2026-05-21.json",
+    "qa/production-visual-review-dispatch-log-2026-05-21.json"
+  ],
+  "validationResults": [
+    {
+      "ok": true,
+      "issues": [],
+      "id": "BETA-HR-001",
+      "kind": "beta",
+      "currentStatus": "prepared-not-sent"
+    },
+    {
+      "ok": true,
+      "issues": [],
+      "id": "PROD-VISUAL-HISTORY-002",
+      "kind": "visual",
+      "currentStatus": "prepared-not-sent"
+    }
+  ],
+  "issues": [],
+  "jsonArtifact": "qa/dispatch-log-mark-sent-2026-05-22.json",
+  "reportArtifact": "qa/dispatch-log-mark-sent-2026-05-22.md"
+}

@@ -46,6 +46,7 @@ Status: beta-ready-public-blocked
 - Launch operator today ready: yes (6 action rows, 5 beta, 1 visual, 5 beta unsent, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
 - Launch operator sent-dispatch rehearsal ready: yes (4 action rows after rehearsed sends)
+- Dispatch mark-sent dry run ready: yes (1 beta, 1 visual)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
 - Public launch mode rehearsal ready: yes (1 strict-mode exit)
 - Open P0/P1 risks: 0
@@ -133,6 +134,9 @@ Launch operator overdue rehearsal:
 Launch operator sent-dispatch rehearsal:
 - none
 
+Dispatch mark-sent dry run:
+- none
+
 Review intake rehearsal:
 - none
 
@@ -179,6 +183,7 @@ Public metadata:
 - Public launch blocker board: `qa/public-launch-blocker-board-2026-05-21.md`, `qa/public-launch-blocker-board-2026-05-21.csv`, and `qa/public-launch-blocker-board-2026-05-21.json`
 - Launch operator today: `qa/launch-operator-today-2026-05-22.md`, `qa/launch-operator-today-2026-05-22.csv`, and `qa/launch-operator-today-2026-05-22.json`
 - Launch operator sent-dispatch rehearsal: `qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.md` and `qa/launch-operator-sent-dispatch-rehearsal-2026-05-22.json`
+- Dispatch mark-sent dry run: `qa/dispatch-log-mark-sent-2026-05-22.md` and `qa/dispatch-log-mark-sent-2026-05-22.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
 - Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-22-e629404` and `qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json`
