@@ -94,6 +94,10 @@
       "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json",
       "validateCommand": "npm run qa:beta-review-intake",
       "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ],
       "reviewerAlias": "",
       "deliveryChannel": "",
       "sentAt": "",
@@ -112,6 +116,10 @@
       "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json",
       "validateCommand": "npm run qa:beta-review-intake",
       "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ],
       "reviewerAlias": "",
       "deliveryChannel": "",
       "sentAt": "",
@@ -130,6 +138,10 @@
       "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json",
       "validateCommand": "npm run qa:beta-review-intake",
       "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ],
       "reviewerAlias": "",
       "deliveryChannel": "",
       "sentAt": "",
@@ -148,6 +160,10 @@
       "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json",
       "validateCommand": "npm run qa:beta-review-intake",
       "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ],
       "reviewerAlias": "",
       "deliveryChannel": "",
       "sentAt": "",
@@ -166,6 +182,10 @@
       "completedSubmissionPath": "qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json",
       "validateCommand": "npm run qa:beta-review-intake",
       "importCommand": "QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ],
       "reviewerAlias": "",
       "deliveryChannel": "",
       "sentAt": "",
@@ -184,6 +204,10 @@
       "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
       "validateCommand": "npm run qa:visual-review-intake",
       "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
+      "postImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ],
       "reviewerAlias": "",
       "deliveryChannel": "",
       "sentAt": "",

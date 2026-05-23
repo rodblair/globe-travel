@@ -8,6 +8,10 @@ const date = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_DATE || currentQaDate(
 const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY || `qa/launch-operator-today-${date}.json`
 const artifactName = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_ARTIFACT_NAME ||
   `dispatch-sent-record-template-${date}`
+const postImportCommands = [
+  'npm run qa:launch-refresh',
+  'npm run qa:launch-signoff',
+]
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
@@ -48,6 +52,7 @@ function rowsToCsv(rows) {
     'completedSubmissionPath',
     'validateCommand',
     'importCommand',
+    'postImportCommands',
     'reviewerAlias',
     'deliveryChannel',
     'sentAt',
@@ -101,6 +106,7 @@ const templateRows = sendRows.map((row) => ({
   completedSubmissionPath: row.submissionPath || '',
   validateCommand: row.validateCommand || '',
   importCommand: row.importCommand || '',
+  postImportCommands,
   reviewerAlias: '',
   deliveryChannel: '',
   sentAt: '',
@@ -111,10 +117,6 @@ const validationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json 
 const importCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
 const csvValidationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
 const csvImportCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
-const postImportCommands = [
-  'npm run qa:launch-refresh',
-  'npm run qa:launch-signoff',
-]
 
 const messageFileChecks = await Promise.all(templateRows.map(async (row) => ({
   id: row.id,

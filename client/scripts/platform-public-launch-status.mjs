@@ -2375,13 +2375,13 @@ if (!dispatchSentRecordTemplateReport.includes('This file is not a sent proof'))
 if (!dispatchSentRecordTemplateReport.includes('npm run qa:launch-refresh') || !dispatchSentRecordTemplateReport.includes('npm run qa:launch-signoff')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state post-import refresh/signoff commands')
 }
-if (!dispatchSentRecordTemplateCsv.includes('completedSubmissionPath')) {
-  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing completed submission target column')
-}
-for (const requiredColumn of ['messageSubject', 'startUrlOrCommand', 'packetOrArtifact', 'validateCommand', 'importCommand']) {
+for (const requiredColumn of ['messageSubject', 'startUrlOrCommand', 'packetOrArtifact', 'completedSubmissionPath', 'validateCommand', 'importCommand', 'postImportCommands']) {
   if (!dispatchSentRecordTemplateCsv.includes(requiredColumn)) {
     dispatchSentRecordTemplateIssues.push(`dispatch sent-record template CSV is missing ${requiredColumn} column`)
   }
+}
+if (!dispatchSentRecordTemplateCsv.includes('npm run qa:launch-refresh') || !dispatchSentRecordTemplateCsv.includes('npm run qa:launch-signoff')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing post-import refresh/signoff commands')
 }
 
 const dispatchSentRecordTemplateRejectionIssues = []
