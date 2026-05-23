@@ -112,6 +112,17 @@ const date = requestedDate || (requestedToday ? today : currentQaDate())
 const jsonName = process.env.QA_LAUNCH_TODAY_JSON || `launch-operator-today-${date}.json`
 const reportName = process.env.QA_LAUNCH_TODAY_REPORT || `launch-operator-today-${date}.md`
 const csvName = process.env.QA_LAUNCH_TODAY_CSV || `launch-operator-today-${date}.csv`
+const dispatchSentRecordTemplateArtifact = `qa/dispatch-sent-record-template-${date}.json`
+const dispatchSentRecordTemplateReport = `qa/dispatch-sent-record-template-${date}.md`
+const dispatchSentRecordTemplateCsv = `qa/dispatch-sent-record-template-${date}.csv`
+const dispatchSentRecordTemplateValidationCommand =
+  `QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv} npm run qa:dispatch-mark-sent`
+const dispatchSentRecordTemplateImportCommand =
+  `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv} npm run qa:dispatch-mark-sent`
+const dispatchSentRecordTemplatePostImportCommands = [
+  'npm run qa:launch-refresh',
+  'npm run qa:launch-signoff',
+]
 
 const allRows = Array.isArray(blockerBoard.rows) ? blockerBoard.rows : []
 const betaRows = allRows.filter((row) => row.workType === 'beta-human-review')
@@ -466,6 +477,23 @@ addCheck('launch today exposes time-aware execution actions', (
   timedActionRowCount: uniquePriorityRows.filter((row) => hasText(row.sendTiming || row.dueTiming)).length,
 })
 
+addCheck('launch today exposes exact sent-record handoff commands', (
+  hasText(dispatchSentRecordTemplateCsv) &&
+  dispatchSentRecordTemplateValidationCommand.includes(dispatchSentRecordTemplateCsv) &&
+  dispatchSentRecordTemplateValidationCommand.includes('qa:dispatch-mark-sent') &&
+  dispatchSentRecordTemplateImportCommand.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+  dispatchSentRecordTemplateImportCommand.includes(dispatchSentRecordTemplateCsv) &&
+  dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-refresh') &&
+  dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-signoff')
+), {
+  dispatchSentRecordTemplateArtifact,
+  dispatchSentRecordTemplateReport,
+  dispatchSentRecordTemplateCsv,
+  dispatchSentRecordTemplateValidationCommand,
+  dispatchSentRecordTemplateImportCommand,
+  dispatchSentRecordTemplatePostImportCommands,
+})
+
 addCheck('launch today has no overdue launch execution rows', (
   betaDispatchOverdue.length === 0 &&
   visualOverdue.length === 0
@@ -489,6 +517,12 @@ const summary = {
   betaDispatchOutboxArtifact: qaDisplayPath(betaDispatchOutboxPath),
   betaDispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
   visualDispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
+  dispatchSentRecordTemplateArtifact,
+  dispatchSentRecordTemplateReport,
+  dispatchSentRecordTemplateCsv,
+  dispatchSentRecordTemplateValidationCommand,
+  dispatchSentRecordTemplateImportCommand,
+  dispatchSentRecordTemplatePostImportCommands,
   deploymentRuntimeBlocked,
   deploymentRuntimeCommit: deploymentCurrency.latestRuntimeCommit || null,
   deploymentRuntimeCommitShort: deploymentRuntimeCommitShort || null,
@@ -578,11 +612,12 @@ ${actionRowsTable(uniquePriorityRows)}
 
 - Send beta invite messages from the listed message files; do not treat sent messages as completed review evidence.
 - Record reviewer names and contact details outside the repo.
-- After sending an invite or visual-review assignment, validate the sent-state update with \`QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent\`, then import it with \`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent\`.
+- Fill the generated sent-record template after real outreach: \`${dispatchSentRecordTemplateCsv}\` (report: \`${dispatchSentRecordTemplateReport}\`, JSON: \`${dispatchSentRecordTemplateArtifact}\`).
+- Validate the filled sent-state update with \`${dispatchSentRecordTemplateValidationCommand}\`, then import it with \`${dispatchSentRecordTemplateImportCommand}\`.
 - Completed beta reviews must be non-template JSON files, validated with \`npm run qa:beta-review-intake\`, then imported only with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\`.
 - Production visual reviews must be inspected by a human, validated with \`npm run qa:visual-review-intake\`, then imported only with \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\`.
 - Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun \`npm run qa:launch-refresh\` and \`npm run qa:launch-signoff\`.
-- Re-run \`npm run qa:launch-refresh\` and \`npm run qa:launch-signoff\` after each dispatch-log or review-evidence import.
+- Re-run \`${dispatchSentRecordTemplatePostImportCommands.join('` and `')}\` after each dispatch-log or review-evidence import.
 
 ## Checks
 

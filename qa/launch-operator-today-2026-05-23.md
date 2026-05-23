@@ -3,13 +3,13 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T09:50:04.961Z
+Generated at: 2026-05-23T09:55:52.108Z
 Status: fail
 
 ## Result
 
-- Checked: 10
-- Passed: 9
+- Checked: 11
+- Passed: 10
 - Failed: 1
 - Public launch status: beta-ready-public-blocked
 - Runtime deployment current: yes
@@ -39,7 +39,8 @@ Status: fail
 
 - Send beta invite messages from the listed message files; do not treat sent messages as completed review evidence.
 - Record reviewer names and contact details outside the repo.
-- After sending an invite or visual-review assignment, validate the sent-state update with `QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent`, then import it with `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent`.
+- Fill the generated sent-record template after real outreach: `qa/dispatch-sent-record-template-2026-05-23.csv` (report: `qa/dispatch-sent-record-template-2026-05-23.md`, JSON: `qa/dispatch-sent-record-template-2026-05-23.json`).
+- Validate the filled sent-state update with `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`, then import it with `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`.
 - Completed beta reviews must be non-template JSON files, validated with `npm run qa:beta-review-intake`, then imported only with `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake`.
 - Production visual reviews must be inspected by a human, validated with `npm run qa:visual-review-intake`, then imported only with `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`.
 - Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.
@@ -56,6 +57,7 @@ Status: fail
 - Pass: launch today visual actions preserve dispatch context
 - Pass: launch today send actions match dispatch logs
 - Pass: launch today exposes time-aware execution actions
+- Pass: launch today exposes exact sent-record handoff commands
 - Fail: launch today has no overdue launch execution rows
 
 ## Failures

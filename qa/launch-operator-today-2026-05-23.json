@@ -2,16 +2,25 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T09:50:04.961Z",
+  "generatedAt": "2026-05-23T09:55:52.108Z",
   "status": "fail",
-  "checked": 10,
-  "passed": 9,
+  "checked": 11,
+  "passed": 10,
   "failed": 1,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+  "dispatchSentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-05-23.json",
+  "dispatchSentRecordTemplateReport": "qa/dispatch-sent-record-template-2026-05-23.md",
+  "dispatchSentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-23.csv",
+  "dispatchSentRecordTemplateValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+  "dispatchSentRecordTemplateImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+  "dispatchSentRecordTemplatePostImportCommands": [
+    "npm run qa:launch-refresh",
+    "npm run qa:launch-signoff"
+  ],
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
@@ -322,6 +331,19 @@
       "rowsMissingTiming": [],
       "overdueRowsMissingExplicitAction": [],
       "timedActionRowCount": 6
+    },
+    {
+      "name": "launch today exposes exact sent-record handoff commands",
+      "ok": true,
+      "dispatchSentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-05-23.json",
+      "dispatchSentRecordTemplateReport": "qa/dispatch-sent-record-template-2026-05-23.md",
+      "dispatchSentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-23.csv",
+      "dispatchSentRecordTemplateValidationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+      "dispatchSentRecordTemplateImportCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent",
+      "dispatchSentRecordTemplatePostImportCommands": [
+        "npm run qa:launch-refresh",
+        "npm run qa:launch-signoff"
+      ]
     },
     {
       "name": "launch today has no overdue launch execution rows",

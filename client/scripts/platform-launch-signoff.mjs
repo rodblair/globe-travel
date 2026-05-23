@@ -3253,6 +3253,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorStatus.failed) <= 1 &&
     launchOperatorStatus.betaDispatchLogArtifact === betaReviewStatus.dispatchLogArtifact &&
     launchOperatorStatus.visualDispatchLogArtifact === visualReviewStatus.dispatchLogArtifact &&
+    launchOperatorStatus.dispatchSentRecordTemplateArtifact === dispatchSentRecordTemplateArtifact &&
+    launchOperatorStatus.dispatchSentRecordTemplateReport === dispatchSentRecordTemplateReport &&
+    launchOperatorStatus.dispatchSentRecordTemplateCsv === dispatchSentRecordTemplateCsv &&
+    String(launchOperatorStatus.dispatchSentRecordTemplateValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    String(launchOperatorStatus.dispatchSentRecordTemplateImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    Array.isArray(launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands) &&
+    launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-refresh') &&
+    launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-signoff') &&
     Number(launchOperatorStatus.actionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) + Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
     Number(launchOperatorStatus.betaActionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
     Number(launchOperatorStatus.visualActionRowCount) >= Number(visualReviewStatus.dueSoonScheduledReviewCount || 0) &&
@@ -3294,6 +3302,15 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorBetaDispatchLogSentCount: launchOperatorStatus.betaDispatchLogSentCount ?? null,
     launchOperatorVisualDispatchLogArtifact: launchOperatorStatus.visualDispatchLogArtifact ?? null,
     expectedVisualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact ?? null,
+    launchOperatorDispatchSentRecordTemplateArtifact: launchOperatorStatus.dispatchSentRecordTemplateArtifact ?? null,
+    expectedDispatchSentRecordTemplateArtifact: dispatchSentRecordTemplateArtifact,
+    launchOperatorDispatchSentRecordTemplateReport: launchOperatorStatus.dispatchSentRecordTemplateReport ?? null,
+    expectedDispatchSentRecordTemplateReport: dispatchSentRecordTemplateReport,
+    launchOperatorDispatchSentRecordTemplateCsv: launchOperatorStatus.dispatchSentRecordTemplateCsv ?? null,
+    expectedDispatchSentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
+    launchOperatorDispatchSentRecordTemplateValidationCommand: launchOperatorStatus.dispatchSentRecordTemplateValidationCommand ?? null,
+    launchOperatorDispatchSentRecordTemplateImportCommand: launchOperatorStatus.dispatchSentRecordTemplateImportCommand ?? null,
+    launchOperatorDispatchSentRecordTemplatePostImportCommands: launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands ?? null,
     launchOperatorVisualDispatchLogPreparedDueSoonCount: launchOperatorStatus.visualDispatchLogPreparedDueSoonCount ?? null,
     launchOperatorVisualDispatchLogPreparedOverdueCount: launchOperatorStatus.visualDispatchLogPreparedOverdueCount ?? null,
     launchOperatorVisualDispatchLogRequiredPreparedNotSentCount: launchOperatorStatus.visualDispatchLogRequiredPreparedNotSentCount ?? null,

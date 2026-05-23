@@ -2075,6 +2075,26 @@ if (launchOperatorToday.betaDispatchLogArtifact !== qaDisplayPath(betaDispatchLo
 if (launchOperatorToday.visualDispatchLogArtifact !== qaDisplayPath(visualDispatchLogPath)) {
   launchTodayIssues.push('launch operator today does not reference current visual dispatch log')
 }
+if (launchOperatorToday.dispatchSentRecordTemplateArtifact !== qaDisplayPath(dispatchSentRecordTemplatePath)) {
+  launchTodayIssues.push('launch operator today does not reference the current sent-record JSON template')
+}
+if (launchOperatorToday.dispatchSentRecordTemplateReport !== qaDisplayPath(dispatchSentRecordTemplateReportPath)) {
+  launchTodayIssues.push('launch operator today does not reference the current sent-record template report')
+}
+if (launchOperatorToday.dispatchSentRecordTemplateCsv !== qaDisplayPath(dispatchSentRecordTemplateCsvPath)) {
+  launchTodayIssues.push('launch operator today does not reference the current sent-record CSV template')
+}
+if (!String(launchOperatorToday.dispatchSentRecordTemplateValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`)) {
+  launchTodayIssues.push('launch operator today validation command does not point to the current sent-record CSV template')
+}
+if (!String(launchOperatorToday.dispatchSentRecordTemplateImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`)) {
+  launchTodayIssues.push('launch operator today import command does not point to the current sent-record CSV template')
+}
+if (!Array.isArray(launchOperatorToday.dispatchSentRecordTemplatePostImportCommands) ||
+  !launchOperatorToday.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-refresh') ||
+  !launchOperatorToday.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-signoff')) {
+  launchTodayIssues.push('launch operator today does not list post-import launch refresh/signoff commands')
+}
 if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaDispatchLogDueTodayRows.length) {
   launchTodayIssues.push(`launch operator today beta invites due today ${launchOperatorToday.betaDispatchDueTodayCount ?? 'missing'} does not match dispatch log ${betaDispatchLogDueTodayRows.length}`)
 }
@@ -2150,8 +2170,14 @@ if (!launchOperatorTodayReport.includes('## Do Today')) {
 if (!launchOperatorTodayReport.includes('do not treat sent messages as completed review evidence')) {
   launchTodayIssues.push('launch operator today report does not restate the beta evidence boundary')
 }
-if (!launchOperatorTodayReport.includes('After sending an invite or visual-review assignment')) {
+if (!launchOperatorTodayReport.includes('Fill the generated sent-record template after real outreach') &&
+  !launchOperatorTodayReport.includes('After sending an invite or visual-review assignment')) {
   launchTodayIssues.push('launch operator today report does not describe dispatch-log update workflow')
+}
+if (!launchOperatorTodayReport.includes(qaDisplayPath(dispatchSentRecordTemplateCsvPath)) ||
+  !launchOperatorTodayReport.includes(`QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`) ||
+  !launchOperatorTodayReport.includes('QA_DISPATCH_MARK_SENT_IMPORT=1')) {
+  launchTodayIssues.push('launch operator today report does not include exact sent-record template commands')
 }
 
 const launchTodayOverdueRehearsalIssues = []
@@ -3284,6 +3310,12 @@ const summary = {
     visualDueSoonCount: launchOperatorToday.visualDueSoonCount ?? null,
     visualOverdueCount: launchOperatorToday.visualOverdueCount ?? null,
     visualDispatchLogArtifact: launchOperatorToday.visualDispatchLogArtifact ?? null,
+    dispatchSentRecordTemplateArtifact: launchOperatorToday.dispatchSentRecordTemplateArtifact ?? null,
+    dispatchSentRecordTemplateReport: launchOperatorToday.dispatchSentRecordTemplateReport ?? null,
+    dispatchSentRecordTemplateCsv: launchOperatorToday.dispatchSentRecordTemplateCsv ?? null,
+    dispatchSentRecordTemplateValidationCommand: launchOperatorToday.dispatchSentRecordTemplateValidationCommand ?? null,
+    dispatchSentRecordTemplateImportCommand: launchOperatorToday.dispatchSentRecordTemplateImportCommand ?? null,
+    dispatchSentRecordTemplatePostImportCommands: launchOperatorToday.dispatchSentRecordTemplatePostImportCommands ?? null,
     visualDispatchLogPreparedDueSoonCount: launchOperatorToday.visualDispatchLogPreparedDueSoonCount ?? null,
     visualDispatchLogPreparedOverdueCount: launchOperatorToday.visualDispatchLogPreparedOverdueCount ?? null,
     visualDispatchLogRequiredPreparedNotSentCount: launchOperatorToday.visualDispatchLogRequiredPreparedNotSentCount ?? null,
