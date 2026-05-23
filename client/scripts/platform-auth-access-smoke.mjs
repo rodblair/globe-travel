@@ -19,6 +19,17 @@ const results = []
 let browser = null
 let cleanup = null
 
+function withTimeout(promise, label, timeoutMs = 10000) {
+  let timer = null
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs}ms`))
+    }, timeoutMs)
+  })
+
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
+}
+
 async function loadDotEnv() {
   const envPath = resolve(root, '.env.local')
   let text = ''
@@ -169,18 +180,41 @@ async function cleanupGuestAccount() {
     auth: { persistSession: false },
   })
 
-  const { data: deletedTrips, error: tripError } = await supabase
-    .from('trips')
-    .delete()
-    .eq('user_id', guestId)
-    .select('id')
+  let deletedTrips = null
+  let tripError = null
+  let profileError = null
+  let userError = null
+  let cleanupTimeoutError = null
 
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .delete()
-    .eq('id', guestId)
+  try {
+    const tripResult = await withTimeout(
+      supabase
+        .from('trips')
+        .delete()
+        .eq('user_id', guestId)
+        .select('id'),
+      'guest trip cleanup',
+    )
+    deletedTrips = tripResult.data
+    tripError = tripResult.error
 
-  const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+    const profileResult = await withTimeout(
+      supabase
+        .from('profiles')
+        .delete()
+        .eq('id', guestId),
+      'guest profile cleanup',
+    )
+    profileError = profileResult.error
+
+    const userResult = await withTimeout(
+      supabase.auth.admin.deleteUser(guestId),
+      'guest auth-user cleanup',
+    )
+    userError = userResult.error
+  } catch (error) {
+    cleanupTimeoutError = error instanceof Error ? error.message : String(error)
+  }
   const userMissing = userError?.message?.toLowerCase().includes('not found') || false
 
   cleanup = {
@@ -193,9 +227,15 @@ async function cleanupGuestAccount() {
     tripError: tripError?.message || null,
     profileError: profileError?.message || null,
     userError: userMissing ? null : userError?.message || null,
+    timeoutError: cleanupTimeoutError,
   }
 
-  record('guest access smoke cleans up disposable guest account', !tripError && !profileError && (!userError || userMissing), cleanup)
+  record('guest access smoke cleans up disposable guest account', (
+    !cleanupTimeoutError &&
+    !tripError &&
+    !profileError &&
+    (!userError || userMissing)
+  ), cleanup)
 }
 
 await loadDotEnv()
