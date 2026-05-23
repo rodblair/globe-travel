@@ -17,7 +17,7 @@
   "rejectionIssueCount": 24,
   "invalidProofExitCode": 1,
   "invalidProofStatus": "fail",
-  "invalidProofIssueCount": 2,
+  "invalidProofIssueCount": 3,
   "invalidProofArtifactsCleanedUp": true,
   "missingFieldNames": [
     "reviewerAlias",
@@ -68,7 +68,8 @@
       "status": "fail",
       "issues": [
         "BETA-HR-001 deliveryChannel must be one of email, sms, slack, discord, whatsapp, imessage, phone, manual, external-outreach-log, other",
-        "BETA-HR-001 contactRecordLocation must point to a stable external proof record, not a placeholder"
+        "BETA-HR-001 contactRecordLocation must point to a stable external proof record such as https://..., external-record:..., or crm:...",
+        "BETA-HR-002 contactRecordLocation must point to a stable external proof record such as https://..., external-record:..., or crm:..."
       ]
     },
     {

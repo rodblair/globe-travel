@@ -131,6 +131,23 @@ function looksLikePlaceholder(value) {
   return placeholderValues.has(normalizedText(value))
 }
 
+function looksLikeLocalProofPath(value) {
+  const text = String(value || '').trim().toLowerCase()
+  return text.startsWith('qa/') ||
+    text.startsWith('./') ||
+    text.startsWith('../') ||
+    text.startsWith('/') ||
+    text.includes('/qa/') ||
+    text.endsWith('.template.json')
+}
+
+function looksLikeStableExternalRecord(value) {
+  const text = String(value || '').trim()
+  if (text.length < 8 || looksLikePlaceholder(text) || looksLikeLocalProofPath(text)) return false
+  if (/^https:\/\/[^\s]+\.[^\s]+$/i.test(text)) return true
+  return /^(external-record|crm|airtable|notion|hubspot|linear|asana|drive|doc|slack|manual-log):[a-z0-9][a-z0-9._:/-]{2,}$/i.test(text)
+}
+
 function normalizeRows(record) {
   if (Array.isArray(record)) return record
   if (Array.isArray(record?.rows)) return record.rows
@@ -165,8 +182,8 @@ function validateUpdate(update, betaRows, visualRows) {
   if (hasText(update.deliveryChannel) && !allowedDeliveryChannels.has(normalizedText(update.deliveryChannel))) {
     issues.push(`${id} deliveryChannel must be one of ${Array.from(allowedDeliveryChannels).join(', ')}`)
   }
-  if (hasText(update.contactRecordLocation) && (update.contactRecordLocation.trim().length < 8 || looksLikePlaceholder(update.contactRecordLocation))) {
-    issues.push(`${id} contactRecordLocation must point to a stable external proof record, not a placeholder`)
+  if (hasText(update.contactRecordLocation) && !looksLikeStableExternalRecord(update.contactRecordLocation)) {
+    issues.push(`${id} contactRecordLocation must point to a stable external proof record such as https://..., external-record:..., or crm:...`)
   }
   if (hasText(update.sentAt) && Number.isNaN(Date.parse(update.sentAt))) {
     issues.push(`${id} sentAt is not parseable`)
@@ -312,7 +329,7 @@ Mode: ${summary.importMode ? 'import' : 'dry run'}
 
 ## Operating Meaning
 
-Use this command after real outreach happens outside the repo. The sent record must contain only non-sensitive reviewer aliases, delivery channels, timestamps, and external contact-record pointers. Dry run validates the record without mutating dispatch logs; import mode writes the matching beta and visual dispatch rows as sent.
+Use this command after real outreach happens outside the repo. The sent record must contain only non-sensitive reviewer aliases, delivery channels, timestamps, and stable external contact-record pointers such as \`https://...\`, \`external-record:...\`, or \`crm:...\`. Dry run validates the record without mutating dispatch logs; import mode writes the matching beta and visual dispatch rows as sent.
 
 ## Rows
 

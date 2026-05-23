@@ -96,10 +96,12 @@ const canonicalBetaUnchanged = JSON.stringify(canonicalBetaAfter) === canonicalB
 const canonicalVisualUnchanged = JSON.stringify(canonicalVisualAfter) === canonicalVisualBeforeSerialized
 const templateRows = Array.isArray(template?.rows) ? template.rows : []
 const invalidProofTemplateRow = templateRows[0] || {}
+const localProofTemplateRow = templateRows[1] || {}
 const invalidProofRecordBody = {
   date,
-  rows: invalidProofTemplateRow.id
-    ? [
+  rows: [
+    ...(invalidProofTemplateRow.id
+      ? [
         {
           id: invalidProofTemplateRow.id,
           reviewerAlias: 'reviewer-alias-001',
@@ -109,7 +111,20 @@ const invalidProofRecordBody = {
           notes: 'Invalid proof fixture should be rejected before import.',
         },
       ]
-    : [],
+      : []),
+    ...(localProofTemplateRow.id
+      ? [
+        {
+          id: localProofTemplateRow.id,
+          reviewerAlias: 'reviewer-alias-002',
+          deliveryChannel: 'external-outreach-log',
+          sentAt: `${date}T12:05:00.000Z`,
+          contactRecordLocation: 'qa/fake-local-contact-proof.json',
+          notes: 'Local repo proof fixture should be rejected before import.',
+        },
+      ]
+      : []),
+  ],
 }
 await writeFile(repoPath(invalidProofRecord), `${JSON.stringify(invalidProofRecordBody, null, 2)}\n`)
 
@@ -167,6 +182,7 @@ const checks = [
       invalidProofSummary?.status === 'fail' &&
       invalidProofIssues.some((issue) => String(issue).includes('deliveryChannel must be one of')) &&
       invalidProofIssues.some((issue) => String(issue).includes('contactRecordLocation must point to a stable external proof record')) &&
+      invalidProofIssues.some((issue) => String(issue).includes('qa/fake-local-contact-proof.json') || String(issue).includes(localProofTemplateRow.id || 'local-proof-template-row-missing')) &&
       JSON.stringify(canonicalBetaAfterInvalidProof) === canonicalBetaBeforeSerialized &&
       JSON.stringify(canonicalVisualAfterInvalidProof) === canonicalVisualBeforeSerialized,
     exitCode: invalidProofResult.status,
