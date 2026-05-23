@@ -2496,6 +2496,14 @@ if (!String(dispatchSentRecordTemplate.validationCommand || '').includes('qa:dis
 if (!String(dispatchSentRecordTemplate.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template import command is missing import mode')
 }
+if (!String(dispatchSentRecordTemplate.csvValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`) ||
+  !String(dispatchSentRecordTemplate.csvValidationCommand || '').includes('qa:dispatch-mark-sent')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV validation command is missing mark-sent dry run')
+}
+if (!String(dispatchSentRecordTemplate.csvImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`) ||
+  !String(dispatchSentRecordTemplate.csvImportCommand || '').includes('qa:dispatch-mark-sent')) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV import command is missing import mode')
+}
 if (!Array.isArray(dispatchSentRecordTemplate.postImportCommands) ||
   !dispatchSentRecordTemplate.postImportCommands.includes('npm run qa:launch-refresh') ||
   !dispatchSentRecordTemplate.postImportCommands.includes('npm run qa:launch-signoff')) {
@@ -3425,6 +3433,8 @@ const summary = {
     blankProofFieldRowCount: dispatchSentRecordBlankRows.length,
     validationCommand: dispatchSentRecordTemplate.validationCommand || null,
     importCommand: dispatchSentRecordTemplate.importCommand || null,
+    csvValidationCommand: dispatchSentRecordTemplate.csvValidationCommand || null,
+    csvImportCommand: dispatchSentRecordTemplate.csvImportCommand || null,
     postImportCommands: Array.isArray(dispatchSentRecordTemplate.postImportCommands)
       ? dispatchSentRecordTemplate.postImportCommands
       : [],

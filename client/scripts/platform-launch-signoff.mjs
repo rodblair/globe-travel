@@ -930,6 +930,8 @@ async function checkRequiredDocs(productionHealth) {
     publicStatus?.dispatchSentRecordTemplate?.csv,
     publicStatus?.dispatchSentRecordTemplate?.validationCommand,
     publicStatus?.dispatchSentRecordTemplate?.importCommand,
+    publicStatus?.dispatchSentRecordTemplate?.csvValidationCommand,
+    publicStatus?.dispatchSentRecordTemplate?.csvImportCommand,
     ...(Array.isArray(publicStatus?.dispatchSentRecordTemplate?.postImportCommands)
       ? publicStatus.dispatchSentRecordTemplate.postImportCommands
       : []),
@@ -3567,6 +3569,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount) === 0 &&
     String(dispatchSentRecordTemplateStatus.validationCommand || '').includes('qa:dispatch-mark-sent') &&
     String(dispatchSentRecordTemplateStatus.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+    String(dispatchSentRecordTemplateStatus.csvValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    String(dispatchSentRecordTemplateStatus.csvValidationCommand || '').includes('qa:dispatch-mark-sent') &&
+    String(dispatchSentRecordTemplateStatus.csvImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    String(dispatchSentRecordTemplateStatus.csvImportCommand || '').includes('qa:dispatch-mark-sent') &&
     Array.isArray(dispatchSentRecordTemplateStatus.postImportCommands) &&
     dispatchSentRecordTemplateStatus.postImportCommands.includes('npm run qa:launch-refresh') &&
     dispatchSentRecordTemplateStatus.postImportCommands.includes('npm run qa:launch-signoff') &&
@@ -3606,6 +3612,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateMissingSubmissionTemplateCount: dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount ?? null,
     dispatchSentRecordTemplateValidationCommand: dispatchSentRecordTemplateStatus.validationCommand || null,
     dispatchSentRecordTemplateImportCommand: dispatchSentRecordTemplateStatus.importCommand || null,
+    dispatchSentRecordTemplateCsvValidationCommand: dispatchSentRecordTemplateStatus.csvValidationCommand || null,
+    dispatchSentRecordTemplateCsvImportCommand: dispatchSentRecordTemplateStatus.csvImportCommand || null,
     dispatchSentRecordTemplatePostImportCommands: dispatchSentRecordTemplateStatus.postImportCommands || null,
     dispatchSentRecordTemplateCsvRowsMissingPostImportCommandCount: dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommandCount ?? null,
     dispatchSentRecordTemplateCsvRowsMissingPostImportCommands: dispatchSentRecordTemplateStatus.csvRowsMissingPostImportCommands || null,
