@@ -133,6 +133,13 @@
           "ok": true
         }
       ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 1,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
       "rendered": [
         {
           "viewport": "phone",

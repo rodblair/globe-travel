@@ -246,6 +246,45 @@ function analyzeDay(day, expectedCountry) {
   }
 }
 
+function internalFeedbackReason(entry) {
+  const author = String(entry?.author_name || '').trim()
+  const comment = String(entry?.comment || '').trim()
+  const values = [author, comment]
+
+  if (values.some((value) => /^QA\b/i.test(value))) return 'internal QA feedback is visible'
+  if (values.some((value) => /^Release QA\b/i.test(value))) return 'release QA feedback is visible'
+  if (values.some((value) => /QA browser feedback|QA feedback|Release QA check/i.test(value))) return 'test feedback copy is visible'
+  return null
+}
+
+async function readPublicFeedback(shareSlug) {
+  const feedbackApi = await fetchJson(`/api/trips/share/${shareSlug}/feedback`)
+  const rows = Array.isArray(feedbackApi.json) ? feedbackApi.json : []
+  const internalRows = rows
+    .map((entry) => ({
+      id: entry.id || null,
+      authorName: entry.author_name || null,
+      comment: entry.comment || null,
+      sentiment: entry.sentiment || null,
+      createdAt: entry.created_at || null,
+      reason: internalFeedbackReason(entry),
+    }))
+    .filter((entry) => entry.reason)
+  const issues = []
+
+  if (!feedbackApi.response.ok) issues.push(`feedback API returned HTTP ${feedbackApi.response.status}`)
+  if (!Array.isArray(feedbackApi.json)) issues.push('feedback API did not return an array')
+  if (internalRows.length > 0) issues.push(`${internalRows.length} internal QA feedback row(s) visible on public share`)
+
+  return {
+    status: feedbackApi.response.status,
+    count: rows.length,
+    internalRows,
+    issues,
+    ok: issues.length === 0,
+  }
+}
+
 async function readRenderedShareState(page, shareSlug, expectedDayTitles) {
   await page.goto(`${baseUrl}/t/${shareSlug}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
   await page.waitForFunction(() => {
@@ -320,6 +359,15 @@ async function checkShareSlug(shareSlug) {
   const badDays = dayIntegrity.filter((day) => !day.ok)
   const apiOk = apiIssues.length === 0 && badDays.length === 0
   if (!apiOk) addFailure(shareSlug, 'public share API map/itinerary integrity', { apiIssues, badDays })
+
+  const publicFeedback = await readPublicFeedback(shareSlug)
+  if (!publicFeedback.ok) {
+    addFailure(shareSlug, 'public share feedback cleanliness', {
+      issues: publicFeedback.issues,
+      internalRows: publicFeedback.internalRows,
+      feedbackCount: publicFeedback.count,
+    })
+  }
 
   const rendered = []
   if (!browser) {
@@ -420,8 +468,9 @@ async function checkShareSlug(shareSlug) {
     apiStatus: tripApi.response.status,
     dayCount: days.length,
     dayIntegrity,
+    publicFeedback,
     rendered,
-    ok: apiOk && rendered.every((result) => result.ok),
+    ok: apiOk && publicFeedback.ok && rendered.every((result) => result.ok),
   }
 }
 
@@ -448,6 +497,10 @@ Base URL: ${summary.baseUrl}
 | Share | Result | Trip | Days | Expected country | Rendered viewports |
 | --- | --- | --- | ---: | --- | ---: |
 ${rows.join('\n')}
+
+## Feedback Cleanliness
+
+${markdownList(summary.shareResults.map((result) => `${result.shareSlug}: ${result.publicFeedback?.count ?? 0} visible reaction(s), ${result.publicFeedback?.internalRows?.length ?? 0} internal QA row(s)`))}
 
 ## Failures
 

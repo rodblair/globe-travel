@@ -17,6 +17,10 @@ Base URL: https://globe-travel-two.vercel.app
 | --- | --- | --- | ---: | --- | ---: |
 | x3m2c8cnws | Pass | 5 Days in Athens Greece in mid september | 5 | Greece | 2 |
 
+## Feedback Cleanliness
+
+- x3m2c8cnws: 1 visible reaction(s), 0 internal QA row(s)
+
 ## Failures
 
 - none
