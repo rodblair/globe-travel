@@ -71,7 +71,7 @@ const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_AR
   'qa/public-share-map-itinerary-integrity-2026-05-23.json'
 const publicMetadataPath = process.env.QA_PUBLIC_METADATA_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_METADATA_ARTIFACT ||
-  'qa/public-metadata-smoke-2026-05-22.json'
+  latestQaArtifact(/^public-metadata-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-metadata-smoke-2026-05-22.json')
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT ||
   process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT ||

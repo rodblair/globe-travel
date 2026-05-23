@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T08:44:23.221Z",
+  "generatedAt": "2026-05-23T08:47:33.618Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -828,8 +828,8 @@
     "ready": true
   },
   "publicMetadata": {
-    "artifact": "qa/public-metadata-smoke-2026-05-22.json",
-    "report": "qa/public-metadata-smoke-2026-05-22.md",
+    "artifact": "qa/public-metadata-smoke-2026-05-23.json",
+    "report": "qa/public-metadata-smoke-2026-05-23.md",
     "artifactReadable": true,
     "artifactError": null,
     "pending": false,
@@ -987,7 +987,7 @@
     "designSystemReadiness": "qa/design-system-readiness-2026-05-23.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "publicShareMapIntegrity": "qa/public-share-map-itinerary-integrity-2026-05-23.json",
-    "publicMetadata": "qa/public-metadata-smoke-2026-05-22.json",
+    "publicMetadata": "qa/public-metadata-smoke-2026-05-23.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-05-23.json",
     "appSurfaces": "qa/app-surfaces-smoke-2026-05-23.json",

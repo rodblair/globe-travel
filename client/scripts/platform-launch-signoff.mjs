@@ -40,7 +40,7 @@ const publicShareMapIntegrityArtifact =
 const publicMetadataArtifact =
   process.env.QA_LAUNCH_PUBLIC_METADATA_ARTIFACT ||
   process.env.QA_PUBLIC_METADATA_ARTIFACT ||
-  'qa/public-metadata-smoke-2026-05-22.json'
+  latestQaArtifact(/^public-metadata-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-metadata-smoke-2026-05-22.json')
 const betaHumanReviewRegister =
   process.env.QA_LAUNCH_BETA_HUMAN_REVIEW_REGISTER ||
   'qa/beta-human-review-register.json'

@@ -1,0 +1,126 @@
+{
+  "date": "2026-05-23",
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "publicSiteUrl": "https://globe-travel-two.vercel.app",
+  "shareSlug": "x3m2c8cnws",
+  "status": "pass",
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "sourceFiles": [
+    {
+      "path": "client/app/layout.tsx",
+      "exists": true
+    },
+    {
+      "path": "client/app/manifest.ts",
+      "exists": true
+    },
+    {
+      "path": "client/app/opengraph-image.tsx",
+      "exists": true
+    },
+    {
+      "path": "client/app/robots.ts",
+      "exists": true
+    },
+    {
+      "path": "client/app/sitemap.ts",
+      "exists": true
+    },
+    {
+      "path": "client/app/twitter-image.tsx",
+      "exists": true
+    }
+  ],
+  "sourceMissingCount": 0,
+  "jsonArtifact": "qa/public-metadata-smoke-2026-05-23.json",
+  "reportArtifact": "qa/public-metadata-smoke-2026-05-23.md",
+  "results": [
+    {
+      "id": "root-html",
+      "path": "/",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://globe-travel-two.vercel.app/",
+      "attempts": 1,
+      "missingMarkers": [],
+      "issues": []
+    },
+    {
+      "id": "manifest",
+      "path": "/manifest.webmanifest",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://globe-travel-two.vercel.app/manifest.webmanifest",
+      "attempts": 1,
+      "manifest": {
+        "name": "Globe.travel",
+        "short_name": "Globe",
+        "description": "Plan group city trips, collect friend feedback, and share polished itinerary maps.",
+        "start_url": "/?source=app-manifest",
+        "scope": "/",
+        "display": "standalone",
+        "background_color": "#f6f1e6",
+        "theme_color": "#0c1f33",
+        "categories": [
+          "travel",
+          "lifestyle",
+          "productivity"
+        ],
+        "icons": [
+          {
+            "src": "/favicon.ico",
+            "sizes": "any",
+            "type": "image/x-icon",
+            "purpose": "any"
+          }
+        ]
+      },
+      "issues": []
+    },
+    {
+      "id": "robots",
+      "path": "/robots.txt",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://globe-travel-two.vercel.app/robots.txt",
+      "attempts": 1,
+      "issues": []
+    },
+    {
+      "id": "sitemap",
+      "path": "/sitemap.xml",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://globe-travel-two.vercel.app/sitemap.xml",
+      "attempts": 1,
+      "sitemapUrlCount": 3,
+      "protectedLeaks": [],
+      "issues": []
+    },
+    {
+      "id": "opengraph-image",
+      "path": "/opengraph-image",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://globe-travel-two.vercel.app/opengraph-image",
+      "attempts": 1,
+      "contentType": "image/png",
+      "byteLength": 58307,
+      "issues": []
+    },
+    {
+      "id": "twitter-image",
+      "path": "/twitter-image",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://globe-travel-two.vercel.app/twitter-image",
+      "attempts": 1,
+      "contentType": "image/png",
+      "byteLength": 58307,
+      "issues": []
+    }
+  ],
+  "failures": []
+}
