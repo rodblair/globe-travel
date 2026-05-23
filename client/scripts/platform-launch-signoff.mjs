@@ -3434,6 +3434,8 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount) === 0 &&
     String(dispatchSentRecordTemplateStatus.validationCommand || '').includes('qa:dispatch-mark-sent') &&
     String(dispatchSentRecordTemplateStatus.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+    Number(dispatchSentRecordTemplateStatus.rowsMissingCommandCount || 0) === 0 &&
+    Number(dispatchSentRecordTemplateStatus.rowsMissingOperatorContextCount || 0) === 0 &&
     dispatchSentRecordTemplateIssues.length === 0
   ), {
     dispatchSentRecordTemplateArtifact: dispatchSentRecordTemplateStatus.artifact || null,
@@ -3463,6 +3465,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateMissingSubmissionTemplateCount: dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount ?? null,
     dispatchSentRecordTemplateValidationCommand: dispatchSentRecordTemplateStatus.validationCommand || null,
     dispatchSentRecordTemplateImportCommand: dispatchSentRecordTemplateStatus.importCommand || null,
+    dispatchSentRecordTemplateRowsMissingCommandCount: dispatchSentRecordTemplateStatus.rowsMissingCommandCount ?? null,
+    dispatchSentRecordTemplateRowsMissingOperatorContextCount: dispatchSentRecordTemplateStatus.rowsMissingOperatorContextCount ?? null,
+    dispatchSentRecordTemplateRowsMissingCommands: dispatchSentRecordTemplateStatus.rowsMissingCommands || null,
+    dispatchSentRecordTemplateRowsMissingOperatorContext: dispatchSentRecordTemplateStatus.rowsMissingOperatorContext || null,
     dispatchSentRecordTemplateIssues,
   })
 

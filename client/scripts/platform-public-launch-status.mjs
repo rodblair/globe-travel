@@ -2300,6 +2300,15 @@ const dispatchSentRecordBlankRows = dispatchSentRecordTemplateRows.filter((row) 
   !row.sentAt &&
   !row.contactRecordLocation
 ))
+const dispatchSentRecordRowsMissingCommands = dispatchSentRecordTemplateRows.filter((row) => (
+  !hasText(row.validateCommand) ||
+  !hasText(row.importCommand)
+))
+const dispatchSentRecordRowsMissingOperatorContext = dispatchSentRecordTemplateRows.filter((row) => (
+  !hasText(row.messageSubject) ||
+  !hasText(row.startUrlOrCommand) ||
+  !hasText(row.packetOrArtifact)
+))
 if (dispatchSentRecordTemplate.status !== 'pass') {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template status is not pass')
 }
@@ -2339,11 +2348,22 @@ if (!String(dispatchSentRecordTemplate.validationCommand || '').includes('qa:dis
 if (!String(dispatchSentRecordTemplate.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template import command is missing import mode')
 }
+if (dispatchSentRecordRowsMissingCommands.length > 0) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows are missing review validation or import commands')
+}
+if (dispatchSentRecordRowsMissingOperatorContext.length > 0) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows are missing operator handoff context')
+}
 if (!dispatchSentRecordTemplateReport.includes('This file is not a sent proof')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template report does not state the evidence boundary')
 }
 if (!dispatchSentRecordTemplateCsv.includes('completedSubmissionPath')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV is missing completed submission target column')
+}
+for (const requiredColumn of ['messageSubject', 'startUrlOrCommand', 'packetOrArtifact', 'validateCommand', 'importCommand']) {
+  if (!dispatchSentRecordTemplateCsv.includes(requiredColumn)) {
+    dispatchSentRecordTemplateIssues.push(`dispatch sent-record template CSV is missing ${requiredColumn} column`)
+  }
 }
 
 const dispatchSentRecordTemplateRejectionIssues = []
@@ -3202,6 +3222,10 @@ const summary = {
     blankProofFieldRowCount: dispatchSentRecordBlankRows.length,
     validationCommand: dispatchSentRecordTemplate.validationCommand || null,
     importCommand: dispatchSentRecordTemplate.importCommand || null,
+    rowsMissingCommandCount: dispatchSentRecordRowsMissingCommands.length,
+    rowsMissingOperatorContextCount: dispatchSentRecordRowsMissingOperatorContext.length,
+    rowsMissingCommands: dispatchSentRecordRowsMissingCommands.map((row) => row.id),
+    rowsMissingOperatorContext: dispatchSentRecordRowsMissingOperatorContext.map((row) => row.id),
     missingMessageFileCount: dispatchSentRecordMessageFileChecks.filter((check) => check.exists !== true).length,
     missingSubmissionTemplateCount: dispatchSentRecordSubmissionTemplateChecks.filter((check) => check.exists !== true).length,
     issues: dispatchSentRecordTemplateIssues,
@@ -3716,7 +3740,7 @@ Status: ${status}
 - Launch operator sent-dispatch rehearsal ready: ${summary.launchOperatorSentDispatchRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorSentDispatchRehearsal.launchOperatorActionRowCount || 0} action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: ${summary.dispatchMarkSentDryRun.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentDryRun.betaUpdateCount || 0} beta, ${summary.dispatchMarkSentDryRun.visualUpdateCount || 0} visual)
 - Dispatch mark-sent import rehearsal ready: ${summary.dispatchMarkSentImportRehearsal.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentImportRehearsal.tempBetaSentCount || 0} beta sent on isolated log, ${summary.dispatchMarkSentImportRehearsal.tempVisualSentCount || 0} visual sent on isolated log)
-- Dispatch sent-record template ready: ${summary.dispatchSentRecordTemplate.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplate.rowCount || 0} rows, ready for import: ${summary.dispatchSentRecordTemplate.readyForImport ? 'yes' : 'no'})
+- Dispatch sent-record template ready: ${summary.dispatchSentRecordTemplate.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplate.rowCount || 0} rows, ready for import: ${summary.dispatchSentRecordTemplate.readyForImport ? 'yes' : 'no'}, missing commands: ${summary.dispatchSentRecordTemplate.rowsMissingCommandCount || 0}, missing context: ${summary.dispatchSentRecordTemplate.rowsMissingOperatorContextCount || 0})
 - Dispatch sent-record blank-template rejection ready: ${summary.dispatchSentRecordTemplateRejection.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplateRejection.requestedUpdateCount || 0} rejected rows, canonical logs unchanged: ${summary.dispatchSentRecordTemplateRejection.canonicalBetaUnchanged && summary.dispatchSentRecordTemplateRejection.canonicalVisualUnchanged ? 'yes' : 'no'})
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Review intake import rehearsal ready: ${summary.reviewIntakeImportRehearsal.ready ? 'yes' : 'no'} (beta copied count ${summary.reviewIntakeImportRehearsal.tempBetaCompletedBefore || 0}->${summary.reviewIntakeImportRehearsal.tempBetaCompletedAfter || 0}, visual copied count ${summary.reviewIntakeImportRehearsal.tempVisualHistoryBefore || 0}->${summary.reviewIntakeImportRehearsal.tempVisualHistoryAfter || 0})

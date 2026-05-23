@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-23T06:20:21.035Z
+Generated at: 2026-05-23T06:24:40.282Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -50,7 +50,7 @@ Status: beta-ready-public-blocked
 - Launch operator sent-dispatch rehearsal ready: yes (4 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (1 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (1 beta sent on isolated log, 1 visual sent on isolated log)
-- Dispatch sent-record template ready: yes (6 rows, ready for import: no)
+- Dispatch sent-record template ready: yes (6 rows, ready for import: no, missing commands: 0, missing context: 0)
 - Dispatch sent-record blank-template rejection ready: yes (6 rejected rows, canonical logs unchanged: yes)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
 - Review intake import rehearsal ready: yes (beta copied count 0->1, visual copied count 2->3)
