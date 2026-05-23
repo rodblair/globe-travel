@@ -1,6 +1,6 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { currentQaDate, daysBetween, requestedOrCurrentDate } from './qa-date-utils.mjs'
+import { currentQaDate, daysBetween, qaTimeZone, requestedOrCurrentDate } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_LAUNCH_TODAY_DATE || ''
@@ -383,6 +383,8 @@ const failures = checks.filter((check) => !check.ok)
 const summary = {
   date,
   today,
+  timeZone: qaTimeZone,
+  generatedAt: new Date().toISOString(),
   status: failures.length === 0 ? 'pass' : 'fail',
   checked: checks.length,
   passed: checks.length - failures.length,
@@ -448,6 +450,8 @@ const report = `# Launch Operator Today
 
 Date: ${date}
 Today: ${today}
+Time zone: ${summary.timeZone}
+Generated at: ${summary.generatedAt}
 Status: ${summary.status}
 
 ## Result

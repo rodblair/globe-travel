@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { currentQaDate } from './qa-date-utils.mjs'
+import { currentQaDate, qaTimeZone } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || ''
@@ -2791,6 +2791,8 @@ const shouldFail = guardrailIssues.length > 0 || (requirePublicLaunch && !public
 const summary = {
   date,
   dateSource: requestedDate ? 'QA_PUBLIC_LAUNCH_STATUS_DATE' : 'release evidence',
+  timeZone: qaTimeZone,
+  generatedAt: new Date().toISOString(),
   baseUrl,
   status,
   betaReady,
@@ -3612,6 +3614,8 @@ const summary = {
 const report = `# Public Launch Status
 
 Date: ${date}
+Time zone: ${summary.timeZone}
+Generated at: ${summary.generatedAt}
 Base URL: ${baseUrl}
 Status: ${status}
 

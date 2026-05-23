@@ -1,6 +1,8 @@
 {
   "date": "2026-05-22",
   "today": "2026-05-22",
+  "timeZone": "America/Vancouver",
+  "generatedAt": "2026-05-23T03:48:08.671Z",
   "status": "pass",
   "checked": 8,
   "passed": 8,
