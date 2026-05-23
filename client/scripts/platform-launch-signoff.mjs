@@ -874,10 +874,15 @@ async function checkRequiredDocs(productionHealth) {
   const liveDeployment = productionHealth?.deployment || {}
   const betaStatus = publicStatus?.betaHumanReviews || {}
   const visualStatus = publicStatus?.productionVisualReviews || {}
+  const deploymentCurrency = publicStatus?.deploymentCurrency || {}
+  const guardrailIssues = Array.isArray(publicStatus?.guardrailIssues) ? publicStatus.guardrailIssues : []
   const requiredDocMarkers = [
     liveDeployment.commit,
     liveDeployment.url,
     publicStatus?.status,
+    deploymentCurrency.latestRuntimeCommit,
+    deploymentCurrency.latestRuntimeCommitShort,
+    ...guardrailIssues,
     `${Number(betaStatus.completed ?? 0)}/${Number(betaStatus.minimumForPublicLaunch ?? 0)}`,
     `${Number(betaStatus.remaining ?? 0)} remaining`,
     betaStatus.nextWave?.waveId,
@@ -973,6 +978,34 @@ async function checkRequiredDocs(productionHealth) {
     expectedDeploymentUrl: liveDeployment.url || null,
     expectedLatestVisualArtifact: visualStatus.latestProductionArtifact || null,
     staleCurrentCheckpointDeploymentStatements,
+  })
+
+  const currentLaunchSummaries = [
+    ...currentProductionStatements,
+    ...currentDeploymentRefreshStatements,
+  ]
+  const guardrailContradictions = []
+  if (guardrailIssues.length > 0 || deploymentCurrency.runtimeCommitAhead === true) {
+    for (const line of currentLaunchSummaries) {
+      if (/no guardrail issues/i.test(line)) {
+        guardrailContradictions.push({ reason: 'claims no guardrail issues', line })
+      }
+      if (/production is now current/i.test(line) || /production current/i.test(line)) {
+        guardrailContradictions.push({ reason: 'claims production current', line })
+      }
+      if (/launch signoff passes/i.test(line)) {
+        guardrailContradictions.push({ reason: 'claims launch signoff passes', line })
+      }
+      if (publicStatus?.status && !line.includes(publicStatus.status) && /public-launch status is `?[\w-]+`?/i.test(line)) {
+        guardrailContradictions.push({ reason: 'claims stale public launch status', line })
+      }
+    }
+  }
+  addCheck('current launch doc summaries do not contradict public-launch guardrails', guardrailContradictions.length === 0, {
+    status: publicStatus?.status || null,
+    runtimeCommitAhead: deploymentCurrency.runtimeCommitAhead ?? null,
+    guardrailIssues,
+    guardrailContradictions,
   })
 }
 
