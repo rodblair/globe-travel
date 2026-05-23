@@ -3295,13 +3295,17 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
       publicLaunchNextActionText.includes('beta review dispatch') &&
       publicLaunchNextActionText.includes(betaReviewStatus.dispatchOutboxArtifact) &&
       publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
-      publicLaunchNextActionText.includes('qa:dispatch-mark-sent')
+      publicLaunchNextActionText.includes('qa:dispatch-mark-sent') &&
+      publicLaunchNextActionText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+      publicLaunchNextActionText.includes('import the sent state')
     )) &&
     (!visualDispatchNeedsNextAction || (
       publicLaunchNextActionText.includes('production visual-review') &&
       publicLaunchNextActionText.includes(visualReviewStatus.dispatchOutboxArtifact) &&
       publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
-      publicLaunchNextActionText.includes('qa:dispatch-mark-sent')
+      publicLaunchNextActionText.includes('qa:dispatch-mark-sent') &&
+      publicLaunchNextActionText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+      publicLaunchNextActionText.includes('import the sent state')
     ))
   ), {
     nextActions: publicLaunchNextActions,
