@@ -901,6 +901,7 @@ async function checkRequiredDocs(productionHealth) {
   let publicStatus = null
   let releaseMemo = ''
   let platformPlan = ''
+  let operationsRunbook = ''
   const currencyIssues = []
   try {
     publicStatus = await readJson(publicLaunchStatusArtifact)
@@ -916,6 +917,11 @@ async function checkRequiredDocs(productionHealth) {
     platformPlan = await readText('PLATFORM_NEXT_SEVERAL_MONTHS_PLAN.md')
   } catch (error) {
     currencyIssues.push(`platform plan is not readable: ${error instanceof Error ? error.message : String(error)}`)
+  }
+  try {
+    operationsRunbook = await readText('OPERATIONS_RUNBOOK.md')
+  } catch (error) {
+    currencyIssues.push(`operations runbook is not readable: ${error instanceof Error ? error.message : String(error)}`)
   }
 
   const combinedDocs = `${releaseMemo}\n${platformPlan}`
@@ -982,6 +988,26 @@ async function checkRequiredDocs(productionHealth) {
     requiredDocMarkers,
     missingDocMarkers,
     currencyIssues,
+  })
+
+  const requiredRunbookMarkers = [
+    'Vercel Deploy Quota And Skipped Commits',
+    'api-deployments-free-per-day',
+    'more than 100',
+    'Do not force a production deploy for release-ops-only commits',
+    'curl -fsS https://globe-travel-two.vercel.app/api/health',
+    'vercel ls --scope rodney-blairs-projects',
+    'vercel deploy --prod --yes --force --scope rodney-blairs-projects',
+    'npm run qa:launch-refresh',
+    'npm run qa:launch-signoff',
+  ]
+  const missingRunbookMarkers = requiredRunbookMarkers.filter((marker) => !operationsRunbook.includes(marker))
+  addCheck('operations runbook includes Vercel deploy quota recovery guidance', (
+    operationsRunbook.length > 0 &&
+    missingRunbookMarkers.length === 0
+  ), {
+    requiredRunbookMarkers,
+    missingRunbookMarkers,
   })
 
   const currentReadinessMatch = releaseMemo.match(/## Current Readiness Update[^\n]*\n([\s\S]*?)(?=\n## )/)

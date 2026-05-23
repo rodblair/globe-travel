@@ -59,6 +59,12 @@ Run `npm run qa:vercel-ignore` before release-ops-only pushes. It writes `qa/ver
 
 Any `client/**` runtime change, package/config change, or unknown path continues the build. Vercel may briefly show a release-ops-only commit as building before the ignored-build command resolves; wait for the deployment to cancel or skip before removing it manually. If a release-ops-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
 
+## Vercel Deploy Quota And Skipped Commits
+
+Do not force a production deploy for release-ops-only commits after `npm run qa:vercel-ignore` proves they are skip-safe. A canceled Vercel deployment for documentation, QA evidence, or launch-signoff script hardening is expected and should not be treated as a broken app release when `/api/health` is still green on the known-good runtime commit.
+
+If Vercel returns `api-deployments-free-per-day` or `more than 100`, stop retrying deploys for the day. Record the quota hit in the release notes or handoff, verify the current production alias with `curl -fsS https://globe-travel-two.vercel.app/api/health`, inspect `vercel ls --scope rodney-blairs-projects`, and continue only non-deploy launch work such as beta dispatch, visual-review intake, lint/build, or launch signoff. Retry `vercel deploy --prod --yes --force --scope rodney-blairs-projects` from the repo root after the quota resets and then rerun `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.
+
 ## Public Launch Evidence Dispatch
 
 The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `0eac38741e38e20f03c9c168994d900382d41551` at `globe-travel-kel11i717-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` has no guardrail issues. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:

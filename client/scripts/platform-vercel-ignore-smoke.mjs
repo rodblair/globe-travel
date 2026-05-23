@@ -51,6 +51,14 @@ const cases = [
     expectedText: 'Skipping build',
   },
   {
+    id: 'launch-signoff-followup-gating-skip',
+    intent: 'Launch-signoff follow-up gating hardening stays skip-safe.',
+    previous: 'b2d1b306b5683ea700f42b7af813904c35b6b480',
+    head: 'dc24d67c0c70c1f94b254888686a887a256ba03a',
+    expectedExitCode: 0,
+    expectedText: 'Skipping build',
+  },
+  {
     id: 'runtime-billing-builds',
     intent: 'Known runtime billing change still continues Vercel production build.',
     previous: '0bf1e7402b360e29fd73398e8caebbaa9ec745bb',
