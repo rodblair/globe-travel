@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { access, readFile, stat } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -185,11 +186,11 @@ const publicLaunchThresholdRehearsalReport =
   `qa/public-launch-threshold-rehearsal-${dailyLaunchOpsDate}.md`
 const appSurfacesArtifact =
   process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
-  'qa/app-surfaces-smoke-2026-05-22.json'
+  latestQaArtifact(/^app-surfaces-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/app-surfaces-smoke-2026-05-22.json')
 const productionAppSurfacesArtifact =
   process.env.QA_LAUNCH_PRODUCTION_APP_SURFACES_ARTIFACT ||
   process.env.QA_PRODUCTION_APP_SURFACES_ARTIFACT ||
-  'qa/app-surfaces-production-guest-2026-05-22.json'
+  latestQaArtifact(/^app-surfaces-production-guest-\d{4}-\d{2}-\d{2}\.json$/, 'qa/app-surfaces-production-guest-2026-05-22.json')
 const maxEvidenceAgeDays = Number.parseInt(process.env.QA_LAUNCH_MAX_EVIDENCE_AGE_DAYS || '14', 10)
 const requirePublicBetaReviews = ['1', 'true', 'yes', 'public'].includes(
   String(process.env.QA_LAUNCH_REQUIRE_PUBLIC_BETA_REVIEWS || process.env.QA_LAUNCH_MODE || '').toLowerCase(),
@@ -454,6 +455,18 @@ function addCheck(name, ok, detail = {}) {
 
 function repoPath(relativePath) {
   return resolve(repoRoot, relativePath)
+}
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const files = readdirSync(repoPath('qa'), { withFileTypes: true })
+      .filter((entry) => entry.isFile() && filePattern.test(entry.name))
+      .map((entry) => `qa/${entry.name}`)
+      .sort()
+    return files.at(-1) || fallbackPath
+  } catch {
+    return fallbackPath
+  }
 }
 
 async function fileExists(relativePath) {

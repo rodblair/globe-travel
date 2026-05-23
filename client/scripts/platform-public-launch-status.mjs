@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process'
+import { readdirSync } from 'node:fs'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate, qaTimeZone } from './qa-date-utils.mjs'
@@ -73,10 +74,12 @@ const publicMetadataPath = process.env.QA_PUBLIC_METADATA_ARTIFACT ||
   'qa/public-metadata-smoke-2026-05-22.json'
 const releaseCandidatePath = process.env.QA_RELEASE_CANDIDATE_ARTIFACT || process.env.QA_LAUNCH_RELEASE_ARTIFACT || 'qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json'
 const routeInventoryPath = process.env.QA_ROUTE_INVENTORY_ARTIFACT || process.env.QA_LAUNCH_ROUTE_INVENTORY_ARTIFACT || 'qa/route-inventory-smoke-2026-05-22.json'
-const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT || process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT || 'qa/app-surfaces-smoke-2026-05-22.json'
+const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT ||
+  process.env.QA_LAUNCH_APP_SURFACES_ARTIFACT ||
+  latestQaArtifact(/^app-surfaces-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/app-surfaces-smoke-2026-05-22.json')
 const productionAppSurfacesPath = process.env.QA_PRODUCTION_APP_SURFACES_ARTIFACT ||
   process.env.QA_LAUNCH_PRODUCTION_APP_SURFACES_ARTIFACT ||
-  'qa/app-surfaces-production-guest-2026-05-22.json'
+  latestQaArtifact(/^app-surfaces-production-guest-\d{4}-\d{2}-\d{2}\.json$/, 'qa/app-surfaces-production-guest-2026-05-22.json')
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
 const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
 const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
@@ -330,6 +333,18 @@ function repoPath(path) {
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const files = readdirSync(repoPath('qa'), { withFileTypes: true })
+      .filter((entry) => entry.isFile() && filePattern.test(entry.name))
+      .map((entry) => `qa/${entry.name}`)
+      .sort()
+    return files.at(-1) || fallbackPath
+  } catch {
+    return fallbackPath
+  }
 }
 
 async function readJson(path) {
