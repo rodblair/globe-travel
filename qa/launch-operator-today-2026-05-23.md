@@ -3,13 +3,13 @@
 Date: 2026-05-23
 Today: 2026-05-23
 Time zone: America/Vancouver
-Generated at: 2026-05-23T13:33:20.962Z
+Generated at: 2026-05-23T13:38:36.808Z
 Status: fail
 
 ## Result
 
-- Checked: 12
-- Passed: 11
+- Checked: 13
+- Passed: 12
 - Failed: 1
 - Public launch status: beta-ready-public-blocked
 - Runtime deployment current: yes
@@ -18,6 +18,7 @@ Status: fail
 - Beta invites due today: 0
 - Beta invite send log: 0 sent, 5 prepared not sent
 - Beta follow-ups due soon: 5
+- Beta follow-ups blocked until initial sent proof: 5
 - Beta review submissions due soon: 5
 - Required production visual reviews due soon: 1
 - Production visual send log: 0 sent, 2 required prepared not sent
@@ -29,6 +30,7 @@ Status: fail
 - Immediate action: Send or reassign 5 overdue beta invites now.
 - Overdue beta invite IDs: BETA-HR-001, BETA-HR-002, BETA-HR-003, BETA-HR-004, BETA-HR-005
 - Due-soon production visual-review IDs: PROD-VISUAL-HISTORY-002
+- Follow-ups blocked until initial sent proof: BETA-HR-001, BETA-HR-002, BETA-HR-003, BETA-HR-004, BETA-HR-005
 - Sent-record CSV: `qa/dispatch-sent-record-template-2026-05-23.csv`
 - Validate sent proof: `QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
 - Import sent proof: `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent`
@@ -60,11 +62,11 @@ Status: fail
 
 | Priority | Type | ID | Send By | Timing | Due | Send Status | Action | Subject | Source | Evidence Path |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| P0 | beta-human-review | BETA-HR-001 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-001 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
-| P0 | beta-human-review | BETA-HR-002 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-002 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
-| P0 | beta-human-review | BETA-HR-003 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-003 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
-| P0 | beta-human-review | BETA-HR-004 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-004 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
-| P0 | beta-human-review | BETA-HR-005 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-005 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
+| P0 | beta-human-review | BETA-HR-001 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-001 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-001 Athens review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
+| P0 | beta-human-review | BETA-HR-002 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-002 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-002 Lisbon review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
+| P0 | beta-human-review | BETA-HR-003 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-003 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
+| P0 | beta-human-review | BETA-HR-004 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-004 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
+| P0 | beta-human-review | BETA-HR-005 | 2026-05-22 | send overdue by 1 day | 2026-05-25 | prepared-not-sent | BETA-HR-005 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
 | P1 | production-visual-review | PROD-VISUAL-HISTORY-002 | n/a | review in 5 days | 2026-05-28 | prepared-not-sent | Review in 5 days; send visual-review assignment or confirm scheduled reviewer time. | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Operating Rules
@@ -91,6 +93,7 @@ Status: fail
 - Pass: launch today exposes time-aware execution actions
 - Pass: launch today exposes exact sent-record handoff commands
 - Pass: launch today exposes a complete operator handoff summary
+- Pass: launch today keeps beta follow-ups gated by initial sent proof
 - Fail: launch today has no overdue launch execution rows
 
 ## Failures

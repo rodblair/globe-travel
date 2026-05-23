@@ -1,7 +1,7 @@
 {
   "date": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T13:33:24.932Z",
+  "generatedAt": "2026-05-23T13:38:40.056Z",
   "status": "pass",
   "checked": 10,
   "passed": 10,
@@ -38,6 +38,13 @@
     ],
     "dueSoonVisualReviewIds": [
       "PROD-VISUAL-HISTORY-002"
+    ],
+    "followUpsBlockedUntilInitialSendIds": [
+      "BETA-HR-001",
+      "BETA-HR-002",
+      "BETA-HR-003",
+      "BETA-HR-004",
+      "BETA-HR-005"
     ],
     "rows": [
       {

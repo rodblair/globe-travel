@@ -2210,6 +2210,9 @@ if (Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount) !== betaDisp
 if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaDispatchLogOverdueRows.length) {
   launchTodayIssues.push('launch operator today beta overdue count does not match dispatch log')
 }
+if (Number(launchOperatorToday.betaFollowUpsBlockedUntilInitialSendCount || 0) !== Number(betaFollowUpOutbox.blockedUntilInitialSendCount || 0)) {
+  launchTodayIssues.push('launch operator today blocked follow-up count does not match follow-up outbox')
+}
 if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0 && !launchOperatorOnlyOverdueExecutionFailure) {
   launchTodayIssues.push(`launch operator today has ${launchOperatorToday.betaDispatchOverdueCount} overdue beta dispatch row(s)`)
 }
@@ -2285,6 +2288,10 @@ for (const row of launchTodaySendPacketRows) {
 }
 if (!launchOperatorTodayReport.includes('do not treat sent messages as completed review evidence')) {
   launchTodayIssues.push('launch operator today report does not restate the beta evidence boundary')
+}
+if (Number(betaFollowUpOutbox.blockedUntilInitialSendCount || 0) > 0 &&
+  !launchOperatorTodayReport.includes('Follow-ups blocked until initial sent proof')) {
+  launchTodayIssues.push('launch operator today report does not show follow-ups blocked until initial sent proof')
 }
 if (!launchOperatorTodayReport.includes('Fill the generated sent-record template after real outreach') &&
   !launchOperatorTodayReport.includes('After sending an invite or visual-review assignment')) {
@@ -3468,6 +3475,7 @@ const summary = {
     betaDispatchLogPreparedNotSentCount: launchOperatorToday.betaDispatchLogPreparedNotSentCount ?? null,
     betaDispatchLogSentCount: launchOperatorToday.betaDispatchLogSentCount ?? null,
     betaFollowUpsDueSoonCount: launchOperatorToday.betaFollowUpsDueSoonCount ?? null,
+    betaFollowUpsBlockedUntilInitialSendCount: launchOperatorToday.betaFollowUpsBlockedUntilInitialSendCount ?? null,
     betaReviewsDueSoonCount: launchOperatorToday.betaReviewsDueSoonCount ?? null,
     visualDueSoonCount: launchOperatorToday.visualDueSoonCount ?? null,
     visualOverdueCount: launchOperatorToday.visualOverdueCount ?? null,
@@ -4148,7 +4156,7 @@ Status: ${status}
 - Production visual review dispatch outbox ready: ${summary.productionVisualReviews.dispatchOutboxReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchOutboxMessageFileCount || 0} message files, ${summary.productionVisualReviews.dispatchOutboxRequiredRowCount || 0} required)
 - Production visual review dispatch log ready: ${summary.productionVisualReviews.dispatchLogReady ? 'yes' : 'no'} (${summary.productionVisualReviews.dispatchLogSentCount || 0} sent, ${summary.productionVisualReviews.dispatchLogPreparedNotSentCount || 0} prepared not sent)
 - Public launch blocker board ready: ${summary.publicLaunchBlockerBoard.ready ? 'yes' : 'no'} (${summary.publicLaunchBlockerBoard.betaRowCount || 0} beta rows, ${summary.publicLaunchBlockerBoard.requiredVisualRowCount || 0} required visual rows, ${summary.publicLaunchBlockerBoard.rowCount || 0} total rows)
-- Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual, ${summary.launchOperatorToday.sendPacketRowCount || 0} send-packet rows, ${summary.launchOperatorToday.executionOrderStepCount || 0} execution steps, ${summary.launchOperatorToday.betaDispatchLogPreparedNotSentCount || 0} beta unsent, ${summary.launchOperatorToday.visualDispatchLogRequiredPreparedNotSentCount || 0} required visual unsent)
+- Launch operator today ready: ${summary.launchOperatorToday.ready ? 'yes' : 'no'} (${summary.launchOperatorToday.actionRowCount || 0} action rows, ${summary.launchOperatorToday.betaActionRowCount || 0} beta, ${summary.launchOperatorToday.visualActionRowCount || 0} visual, ${summary.launchOperatorToday.sendPacketRowCount || 0} send-packet rows, ${summary.launchOperatorToday.executionOrderStepCount || 0} execution steps, ${summary.launchOperatorToday.betaDispatchLogPreparedNotSentCount || 0} beta unsent, ${summary.launchOperatorToday.betaFollowUpsBlockedUntilInitialSendCount || 0} follow-ups blocked until initial sent proof, ${summary.launchOperatorToday.visualDispatchLogRequiredPreparedNotSentCount || 0} required visual unsent)
 - Launch operator overdue rehearsal ready: ${summary.launchOperatorTodayOverdueRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorTodayOverdueRehearsal.detectedOverdueRowCount || 0} overdue rows detected)
 - Launch operator sent-dispatch rehearsal ready: ${summary.launchOperatorSentDispatchRehearsal.ready ? 'yes' : 'no'} (${summary.launchOperatorSentDispatchRehearsal.launchOperatorActionRowCount || 0} action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: ${summary.dispatchMarkSentDryRun.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentDryRun.betaUpdateCount || 0} beta, ${summary.dispatchMarkSentDryRun.visualUpdateCount || 0} visual)

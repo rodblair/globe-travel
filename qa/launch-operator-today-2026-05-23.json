@@ -2,10 +2,10 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T13:33:20.962Z",
+  "generatedAt": "2026-05-23T13:38:36.808Z",
   "status": "fail",
-  "checked": 12,
-  "passed": 11,
+  "checked": 13,
+  "passed": 12,
   "failed": 1,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
@@ -46,6 +46,7 @@
   "betaDispatchLogPreparedNotSentCount": 5,
   "betaDispatchLogSentCount": 0,
   "betaFollowUpsDueSoonCount": 5,
+  "betaFollowUpsBlockedUntilInitialSendCount": 5,
   "betaReviewsDueSoonCount": 5,
   "visualDueSoonCount": 1,
   "visualOverdueCount": 0,
@@ -65,6 +66,13 @@
     ],
     "dueSoonVisualReviewIds": [
       "PROD-VISUAL-HISTORY-002"
+    ],
+    "followUpsBlockedUntilInitialSendIds": [
+      "BETA-HR-001",
+      "BETA-HR-002",
+      "BETA-HR-003",
+      "BETA-HR-004",
+      "BETA-HR-005"
     ],
     "rows": [
       {
@@ -155,7 +163,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "BETA-HR-001 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-001 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-001-athens.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-001-athens.md",
@@ -181,7 +189,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "BETA-HR-002 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-002 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-002-lisbon.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-002-lisbon.md",
@@ -207,7 +215,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "BETA-HR-003 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-003 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-003-barcelona.md",
@@ -233,7 +241,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "BETA-HR-004 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-004 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-004-paris.md",
@@ -259,7 +267,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "BETA-HR-005 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; prepare follow-up and send on or before the follow-up date. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-005 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-005-new-york.md",
@@ -449,6 +457,25 @@
         "npm run qa:launch-refresh",
         "npm run qa:launch-signoff"
       ]
+    },
+    {
+      "name": "launch today keeps beta follow-ups gated by initial sent proof",
+      "ok": true,
+      "followUpsDueSoon": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ],
+      "blockedUntilInitialSend": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ],
+      "rowsMissingBlockedCopy": []
     },
     {
       "name": "launch today has no overdue launch execution rows",

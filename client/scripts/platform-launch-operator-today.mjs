@@ -269,7 +269,7 @@ const betaFollowUpsDueSoon = betaRows
     const delta = daysBetween(today, row.followUpAt)
     return Number.isFinite(delta) && delta >= 0 && delta <= 2 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
-  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(row.followUpTiming || timingLabel(row.followUpAt, 'follow-up'))}; prepare follow-up and send on or before the follow-up date.`))
+  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(row.followUpTiming || timingLabel(row.followUpAt, 'follow-up'))}; draft the follow-up, but do not send it until the initial invite is recorded as sent.`))
 const betaReviewsDueSoon = betaRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
@@ -314,6 +314,7 @@ const uniquePriorityRows = [
   ...visualOverdue,
   ...visualDueSoon,
 ]
+const betaFollowUpsBlockedUntilInitialSend = betaFollowUpsDueSoon.filter((row) => !rowIsSent(betaDispatchLogById.get(row.id)))
 const operatorHandoffRows = uniquePriorityRows
   .filter((row) => row.workType === 'beta-human-review' || row.workType === 'production-visual-review')
   .map((row) => ({
@@ -534,6 +535,17 @@ addCheck('launch today exposes a complete operator handoff summary', (
   postImportCommands: dispatchSentRecordTemplatePostImportCommands,
 })
 
+addCheck('launch today keeps beta follow-ups gated by initial sent proof', (
+  betaFollowUpsBlockedUntilInitialSend.length === betaFollowUpsDueSoon.length &&
+  betaFollowUpsBlockedUntilInitialSend.every((row) => String(row.action || '').includes('do not send it until the initial invite is recorded as sent'))
+), {
+  followUpsDueSoon: betaFollowUpsDueSoon.map((row) => row.id),
+  blockedUntilInitialSend: betaFollowUpsBlockedUntilInitialSend.map((row) => row.id),
+  rowsMissingBlockedCopy: betaFollowUpsBlockedUntilInitialSend
+    .filter((row) => !String(row.action || '').includes('do not send it until the initial invite is recorded as sent'))
+    .map((row) => row.id),
+})
+
 addCheck('launch today has no overdue launch execution rows', (
   betaDispatchOverdue.length === 0 &&
   visualOverdue.length === 0
@@ -600,6 +612,7 @@ const summary = {
   betaDispatchLogPreparedNotSentCount: betaDispatchLogRows.filter((row) => !rowIsSent(row)).length,
   betaDispatchLogSentCount: betaDispatchLogRows.filter((row) => rowIsSent(row)).length,
   betaFollowUpsDueSoonCount: betaFollowUpsDueSoon.length,
+  betaFollowUpsBlockedUntilInitialSendCount: betaFollowUpsBlockedUntilInitialSend.length,
   betaReviewsDueSoonCount: betaReviewsDueSoon.length,
   visualDueSoonCount: visualDueSoon.length,
   visualOverdueCount: visualOverdue.length,
@@ -618,6 +631,7 @@ const summary = {
           : 'No overdue external launch action is currently queued.',
     overdueBetaInviteIds: betaDispatchOverdue.map((row) => row.id),
     dueSoonVisualReviewIds: visualDueSoon.map((row) => row.id),
+    followUpsBlockedUntilInitialSendIds: betaFollowUpsBlockedUntilInitialSend.map((row) => row.id),
     rows: operatorHandoffRows,
     sentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
     validationCommand: dispatchSentRecordTemplateValidationCommand,
@@ -672,6 +686,7 @@ Status: ${summary.status}
 - Beta invites due today: ${summary.betaDispatchDueTodayCount}
 - Beta invite send log: ${summary.betaDispatchLogSentCount} sent, ${summary.betaDispatchLogPreparedNotSentCount} prepared not sent
 - Beta follow-ups due soon: ${summary.betaFollowUpsDueSoonCount}
+- Beta follow-ups blocked until initial sent proof: ${summary.betaFollowUpsBlockedUntilInitialSendCount}
 - Beta review submissions due soon: ${summary.betaReviewsDueSoonCount}
 - Required production visual reviews due soon: ${summary.visualDueSoonCount}
 - Production visual send log: ${summary.visualDispatchLogSentCount} sent, ${summary.visualDispatchLogRequiredPreparedNotSentCount} required prepared not sent
@@ -683,6 +698,7 @@ Status: ${summary.status}
 - Immediate action: ${summary.operatorHandoff.immediateExternalAction}
 - Overdue beta invite IDs: ${summary.operatorHandoff.overdueBetaInviteIds.join(', ') || 'none'}
 - Due-soon production visual-review IDs: ${summary.operatorHandoff.dueSoonVisualReviewIds.join(', ') || 'none'}
+- Follow-ups blocked until initial sent proof: ${summary.operatorHandoff.followUpsBlockedUntilInitialSendIds.join(', ') || 'none'}
 - Sent-record CSV: \`${summary.operatorHandoff.sentRecordTemplateCsv}\`
 - Validate sent proof: \`${summary.operatorHandoff.validationCommand}\`
 - Import sent proof: \`${summary.operatorHandoff.importCommand}\`
