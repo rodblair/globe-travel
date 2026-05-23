@@ -1947,6 +1947,10 @@ const launchTodayIssues = []
 const launchTodayRows = Array.isArray(launchOperatorToday.actionRows) ? launchOperatorToday.actionRows : []
 const launchTodayBetaRows = launchTodayRows.filter((row) => row.workType === 'beta-human-review')
 const launchTodayVisualRows = launchTodayRows.filter((row) => row.workType === 'production-visual-review')
+const launchTodayDeploymentRows = launchTodayRows.filter((row) => row.workType === 'production-runtime-deployment')
+const launchTodayOutreachRows = launchTodayRows.filter((row) => (
+  row.workType === 'beta-human-review' || row.workType === 'production-visual-review'
+))
 const launchTodayMessageFileChecks = Array.isArray(launchOperatorToday.messageFileChecks)
   ? launchOperatorToday.messageFileChecks
   : []
@@ -2017,6 +2021,12 @@ if (launchTodayBetaRows.length < betaDispatchLogDueTodayRows.length) {
 if (launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
   launchTodayIssues.push('launch operator today does not include every due-soon production visual review')
 }
+if (deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead && !launchTodayDeploymentRows.some((row) => row.id === 'production-runtime-deployment-currency')) {
+  launchTodayIssues.push('launch operator today does not include the production runtime deployment blocker')
+}
+if (!(deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead) && launchTodayDeploymentRows.length > 0) {
+  launchTodayIssues.push('launch operator today includes a stale production runtime deployment action')
+}
 if (launchTodayMessageFileChecks.length !== launchTodayBetaRows.length) {
   launchTodayIssues.push('launch operator today message-file checks do not cover every beta action row')
 }
@@ -2030,7 +2040,13 @@ for (const check of launchTodayMissingVisualMessageFiles) {
   launchTodayIssues.push(`launch operator today visual message file is missing for ${check.id || 'unknown'}`)
 }
 for (const row of launchTodayRows) {
-  if (!row.id || !row.submissionPath || !launchOperatorTodayCsv.includes(row.id) || !launchOperatorTodayCsv.includes(row.submissionPath)) {
+  const requiresSubmissionPath = row.workType === 'beta-human-review' || row.workType === 'production-visual-review'
+  if (
+    !row.id ||
+    (requiresSubmissionPath && !row.submissionPath) ||
+    !launchOperatorTodayCsv.includes(row.id) ||
+    (requiresSubmissionPath && !launchOperatorTodayCsv.includes(row.submissionPath))
+  ) {
     launchTodayIssues.push(`launch operator today CSV missing row ${row.id || 'unknown'}`)
   }
   if (!row.sendStatus || !launchOperatorTodayCsv.includes(row.sendStatus)) {
@@ -2249,8 +2265,8 @@ if (dispatchSentRecordTemplate.launchOperatorArtifact !== qaDisplayPath(launchOp
 if (dispatchSentRecordTemplate.readyForImport !== false) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template is incorrectly marked ready for import before real sends')
 }
-if (Number(dispatchSentRecordTemplate.rowCount || 0) !== launchTodayRows.length) {
-  dispatchSentRecordTemplateIssues.push('dispatch sent-record template row count does not match launch operator action rows')
+if (Number(dispatchSentRecordTemplate.rowCount || 0) !== launchTodayOutreachRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template row count does not match launch operator outreach action rows')
 }
 if (Number(dispatchSentRecordTemplate.betaRowCount || 0) !== launchTodayBetaRows.length) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template beta row count does not match launch operator beta action rows')
@@ -2258,8 +2274,8 @@ if (Number(dispatchSentRecordTemplate.betaRowCount || 0) !== launchTodayBetaRows
 if (Number(dispatchSentRecordTemplate.visualRowCount || 0) !== launchTodayVisualRows.length) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template visual row count does not match launch operator visual action rows')
 }
-if (dispatchSentRecordTemplateRows.length !== launchTodayRows.length) {
-  dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows do not cover every launch operator action row')
+if (dispatchSentRecordTemplateRows.length !== launchTodayOutreachRows.length) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template rows do not cover every launch operator outreach action row')
 }
 if (dispatchSentRecordBlankRows.length !== dispatchSentRecordTemplateRows.length) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template includes prefilled sent proof fields')

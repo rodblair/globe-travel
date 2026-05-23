@@ -163,9 +163,10 @@
       "launchOperatorToday": "2026-05-22"
     },
     {
-      "name": "sent-record template covers every current send action",
+      "name": "sent-record template covers every current outreach send action",
       "ok": true,
-      "actionRowCount": 6,
+      "actionRowCount": 7,
+      "outreachSendRowCount": 6,
       "templateRowCount": 6
     },
     {

@@ -37,7 +37,7 @@ This file is not a sent proof and does not count as outreach evidence. It is a s
 ## Checks
 
 - Pass: sent-record template reads passing launch operator board
-- Pass: sent-record template covers every current send action
+- Pass: sent-record template covers every current outreach send action
 - Pass: sent-record template keeps post-send proof fields blank
 - Pass: sent-record template points at existing message files
 - Pass: sent-record template points at existing submission templates

@@ -92,6 +92,15 @@ const betaDispatchLogRows = Array.isArray(betaDispatchLog.dispatchRows) ? betaDi
 const visualDispatchLogRows = Array.isArray(visualDispatchLog.dispatchRows) ? visualDispatchLog.dispatchRows : []
 const betaDispatchLogById = new Map(betaDispatchLogRows.map((row) => [row.id, row]))
 const visualDispatchLogById = new Map(visualDispatchLogRows.map((row) => [row.id, row]))
+const deploymentCurrency = publicStatus.deploymentCurrency || {}
+const deploymentRuntimeCommitShort = deploymentCurrency.latestRuntimeCommitShort || deploymentCurrency.latestRuntimeCommit
+const liveDeploymentCommitShort = publicStatus.liveDeployment?.commit
+  ? String(publicStatus.liveDeployment.commit).slice(0, 7)
+  : 'missing'
+const deploymentRuntimeBlocked = deploymentCurrency.enforced === true && (
+  deploymentCurrency.runtimeCommitAhead === true ||
+  hasText(deploymentCurrency.error)
+)
 
 function rowIsSent(row) {
   return row?.sendStatus === 'sent'
@@ -170,6 +179,35 @@ function visualActionRow(row, priority, action) {
   }
 }
 
+function deploymentActionRow() {
+  const action = deploymentCurrency.runtimeCommitAhead === true
+    ? `Deploy runtime commit ${deploymentRuntimeCommitShort} to production, then rerun launch gates.`
+    : `Resolve deployment-currency verification before relying on launch status: ${deploymentCurrency.error}`
+  return {
+    priority: 'P0',
+    workType: 'production-runtime-deployment',
+    id: 'production-runtime-deployment-currency',
+    destination: 'Vercel production',
+    owner: 'Release',
+    sendBy: today,
+    followUpAt: today,
+    dueAt: today,
+    daysUntilDue: 0,
+    sendStatus: deploymentCurrency.runtimeCommitAhead === true ? `production-on-${liveDeploymentCommitShort}` : 'verification-blocked',
+    reviewerAlias: '',
+    contactRecordLocation: '',
+    action,
+    messageFile: '',
+    startUrlOrCommand: 'vercel deploy --prod --yes',
+    packetOrArtifact: publicStatus.artifacts?.json || qaDisplayPath(publicStatusPath),
+    submissionPath: '',
+    validateCommand: 'npm run qa:public-launch-status',
+    importCommand: 'npm run qa:launch-signoff',
+    reviewerRole: '',
+    messageSubject: 'Production runtime deployment currency',
+  }
+}
+
 const betaDispatchDueToday = betaRows
   .filter((row) => daysBetween(today, row.sendBy) === 0 && !rowIsSent(betaDispatchLogById.get(row.id)))
   .map((row) => betaActionRow(row, 'P0', 'Send beta review invite today.'))
@@ -221,6 +259,7 @@ for (const row of [...betaDispatchOverdue, ...betaDispatchDueToday, ...betaFollo
   upsertBetaAction(row)
 }
 const uniquePriorityRows = [
+  ...(deploymentRuntimeBlocked ? [deploymentActionRow()] : []),
   ...betaActionById.values(),
   ...visualOverdue,
   ...visualDueSoon,
@@ -248,18 +287,35 @@ function addCheck(name, ok, detail = {}) {
   checks.push({ name, ok: Boolean(ok), ...detail })
 }
 
-addCheck('launch today reads current blocked release status', (
+const releaseStatusIsActionable = (
   publicStatus.status === 'beta-ready-public-blocked' &&
   publicStatus.betaReady === true &&
   publicStatus.publicLaunchReady === false
-), {
+) || (
+  publicStatus.status === 'blocked' &&
+  publicStatus.publicLaunchReady === false &&
+  deploymentRuntimeBlocked
+)
+addCheck('launch today reads current blocked release status', releaseStatusIsActionable, {
   status: publicStatus.status || null,
   betaReady: publicStatus.betaReady ?? null,
   publicLaunchReady: publicStatus.publicLaunchReady ?? null,
+  deploymentRuntimeBlocked,
+  deploymentCurrencyError: deploymentCurrency.error || null,
+  latestRuntimeCommit: deploymentRuntimeCommitShort || null,
 })
 
-addCheck('launch today has actionable beta or visual work', uniquePriorityRows.length > 0, {
+addCheck('launch today has actionable deployment, beta, or visual work', uniquePriorityRows.length > 0, {
   actionRowCount: uniquePriorityRows.length,
+})
+
+addCheck('launch today exposes runtime deployment blocker when production is behind', (
+  !deploymentRuntimeBlocked ||
+  uniquePriorityRows.some((row) => row.id === 'production-runtime-deployment-currency')
+), {
+  deploymentRuntimeBlocked,
+  latestRuntimeCommit: deploymentRuntimeCommitShort || null,
+  liveCommit: publicStatus.liveDeployment?.commit || null,
 })
 
 addCheck('launch today reads aligned dispatch logs', (
@@ -321,6 +377,10 @@ const summary = {
   betaDispatchOutboxArtifact: qaDisplayPath(betaDispatchOutboxPath),
   betaDispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
   visualDispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
+  deploymentRuntimeBlocked,
+  deploymentRuntimeCommit: deploymentCurrency.latestRuntimeCommit || null,
+  deploymentRuntimeCommitShort: deploymentRuntimeCommitShort || null,
+  liveDeploymentCommit: publicStatus.liveDeployment?.commit || null,
   publicLaunchStatus: publicStatus.status || null,
   betaReviews: publicStatus.betaHumanReviews
     ? {
@@ -351,6 +411,7 @@ const summary = {
   visualDispatchLogPreparedOverdueCount: visualDispatchLogOverdueRows.length,
   visualDispatchLogRequiredPreparedNotSentCount: visualDispatchLogRows.filter((row) => !rowIsSent(row) && row.requiredForPublicLaunch).length,
   visualDispatchLogSentCount: visualDispatchLogRows.filter((row) => rowIsSent(row)).length,
+  deploymentActionCount: deploymentRuntimeBlocked ? 1 : 0,
   actionRows: uniquePriorityRows,
   messageFileChecks,
   visualMessageFileChecks,
@@ -378,6 +439,7 @@ Status: ${summary.status}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
 - Public launch status: ${summary.publicLaunchStatus}
+- Runtime deployment current: ${summary.deploymentRuntimeBlocked ? `no, ${summary.deploymentRuntimeCommitShort || 'latest runtime'} is waiting for production` : 'yes'}
 - Beta reviews: ${summary.betaReviews?.completed ?? 0}/${summary.betaReviews?.minimumForPublicLaunch ?? 0}, ${summary.betaReviews?.remaining ?? 0} remaining
 - Production visual-review history: ${summary.productionVisualReviews?.distinctHistoryDateCount ?? 0}/${summary.productionVisualReviews?.minimumForPublicLaunch ?? 0}, ${summary.productionVisualReviews?.remainingDistinctDates ?? 0} remaining
 - Beta invites due today: ${summary.betaDispatchDueTodayCount}
@@ -386,6 +448,7 @@ Status: ${summary.status}
 - Beta review submissions due soon: ${summary.betaReviewsDueSoonCount}
 - Required production visual reviews due soon: ${summary.visualDueSoonCount}
 - Production visual send log: ${summary.visualDispatchLogSentCount} sent, ${summary.visualDispatchLogRequiredPreparedNotSentCount} required prepared not sent
+- Runtime deployment actions: ${summary.deploymentActionCount}
 - Overdue launch execution rows: ${summary.betaDispatchOverdueCount + summary.visualOverdueCount}
 
 ## Do Today
@@ -401,6 +464,7 @@ ${actionRowsTable(uniquePriorityRows)}
 - After sending an invite or visual-review assignment, validate the sent-state update with \`QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent\`, then import it with \`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/path-to-sent-record.json npm run qa:dispatch-mark-sent\`.
 - Completed beta reviews must be non-template JSON files, validated with \`npm run qa:beta-review-intake\`, then imported only with \`QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake\`.
 - Production visual reviews must be inspected by a human, validated with \`npm run qa:visual-review-intake\`, then imported only with \`QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake\`.
+- Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun \`npm run qa:public-launch-status\` and \`npm run qa:launch-signoff\`.
 - Re-run \`npm run qa:launch-today\`, \`npm run qa:public-launch-status\`, and \`npm run qa:launch-signoff\` after each import.
 
 ## Checks

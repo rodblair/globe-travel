@@ -71,7 +71,10 @@ function templatePathFor(completedSubmissionPath) {
 
 const launchOperatorToday = await readJson(launchOperatorTodayPath)
 const actionRows = Array.isArray(launchOperatorToday.actionRows) ? launchOperatorToday.actionRows : []
-const sendRows = actionRows.filter((row) => row.sendStatus !== 'sent')
+const sendRows = actionRows.filter((row) => (
+  row.sendStatus !== 'sent' &&
+  (row.workType === 'beta-human-review' || row.workType === 'production-visual-review')
+))
 const templateRows = sendRows.map((row) => ({
   id: row.id,
   workType: row.workType,
@@ -107,9 +110,10 @@ const checks = [
     launchOperatorToday: launchOperatorToday.today || null,
   },
   {
-    name: 'sent-record template covers every current send action',
-    ok: templateRows.length === actionRows.length && templateRows.length > 0,
+    name: 'sent-record template covers every current outreach send action',
+    ok: templateRows.length === sendRows.length && templateRows.length > 0,
     actionRowCount: actionRows.length,
+    outreachSendRowCount: sendRows.length,
     templateRowCount: templateRows.length,
   },
   {

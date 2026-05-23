@@ -3301,7 +3301,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateStatus.issueCount) === 0 &&
     dispatchSentRecordTemplateStatus.launchOperatorArtifact === launchOperatorTodayArtifact &&
     dispatchSentRecordTemplateStatus.readyForImport === false &&
-    Number(dispatchSentRecordTemplateStatus.rowCount) === Number(launchOperatorStatus.actionRowCount) &&
+    Number(dispatchSentRecordTemplateStatus.rowCount) === (
+      Number(launchOperatorStatus.betaActionRowCount || 0) +
+      Number(launchOperatorStatus.visualActionRowCount || 0)
+    ) &&
     Number(dispatchSentRecordTemplateStatus.betaRowCount) === Number(launchOperatorStatus.betaActionRowCount) &&
     Number(dispatchSentRecordTemplateStatus.visualRowCount) === Number(launchOperatorStatus.visualActionRowCount) &&
     Number(dispatchSentRecordTemplateStatus.blankProofFieldRowCount) === Number(dispatchSentRecordTemplateStatus.rowCount) &&
@@ -3325,6 +3328,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateReadyForImport: dispatchSentRecordTemplateStatus.readyForImport ?? null,
     dispatchSentRecordTemplateRowCount: dispatchSentRecordTemplateStatus.rowCount ?? null,
     expectedActionRowCount: launchOperatorStatus.actionRowCount ?? null,
+    expectedOutreachActionRowCount: (
+      Number(launchOperatorStatus.betaActionRowCount || 0) +
+      Number(launchOperatorStatus.visualActionRowCount || 0)
+    ),
     dispatchSentRecordTemplateBetaRowCount: dispatchSentRecordTemplateStatus.betaRowCount ?? null,
     expectedBetaActionRowCount: launchOperatorStatus.betaActionRowCount ?? null,
     dispatchSentRecordTemplateVisualRowCount: dispatchSentRecordTemplateStatus.visualRowCount ?? null,
