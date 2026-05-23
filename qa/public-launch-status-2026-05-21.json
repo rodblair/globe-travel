@@ -2,8 +2,8 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "beta-ready-public-blocked",
-  "betaReady": true,
+  "status": "blocked",
+  "betaReady": false,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
@@ -14,16 +14,18 @@
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "e6294047034a653f45f489cfa5d0c6e45d601bcf",
-    "shortHead": "e629404",
+    "head": "6966b711bbcc60589205e20316c0ff77aae052e6",
+    "shortHead": "6966b71",
     "liveCommit": "e6294047034a653f45f489cfa5d0c6e45d601bcf",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
-    "runtimeCommitAhead": false,
-    "latestRuntimeCommit": null,
-    "latestRuntimeCommitShort": null,
-    "runtimeCommitCountAhead": 0,
-    "runtimeUnsafeFiles": [],
+    "runtimeCommitAhead": true,
+    "latestRuntimeCommit": "6966b711bbcc60589205e20316c0ff77aae052e6",
+    "latestRuntimeCommitShort": "6966b71",
+    "runtimeCommitCountAhead": 1,
+    "runtimeUnsafeFiles": [
+      "client/app/api/stripe/subscription/route.ts"
+    ],
     "error": null
   },
   "betaHumanReviews": {
@@ -922,7 +924,9 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "production is behind runtime commit 6966b71"
+  ],
   "blockers": [
     {
       "id": "beta-human-review-threshold",
@@ -937,7 +941,8 @@
   ],
   "nextActions": [
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s)."
+    "Run, review, and import 2 scheduled production visual review date(s).",
+    "Fix guardrail issues before relying on public-launch status."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",
