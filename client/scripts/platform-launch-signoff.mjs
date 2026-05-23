@@ -928,6 +928,19 @@ async function checkRequiredDocs(productionHealth) {
     publicStatus?.dispatchSentRecordTemplate?.artifact,
     publicStatus?.dispatchSentRecordTemplate?.report,
     publicStatus?.dispatchSentRecordTemplate?.csv,
+    publicStatus?.dispatchSentRecordTemplate?.validationCommand,
+    publicStatus?.dispatchSentRecordTemplate?.importCommand,
+    ...(Array.isArray(publicStatus?.dispatchSentRecordTemplate?.postImportCommands)
+      ? publicStatus.dispatchSentRecordTemplate.postImportCommands
+      : []),
+    publicStatus?.launchOperatorToday?.dispatchSentRecordTemplateArtifact,
+    publicStatus?.launchOperatorToday?.dispatchSentRecordTemplateReport,
+    publicStatus?.launchOperatorToday?.dispatchSentRecordTemplateCsv,
+    publicStatus?.launchOperatorToday?.dispatchSentRecordTemplateValidationCommand,
+    publicStatus?.launchOperatorToday?.dispatchSentRecordTemplateImportCommand,
+    ...(Array.isArray(publicStatus?.launchOperatorToday?.dispatchSentRecordTemplatePostImportCommands)
+      ? publicStatus.launchOperatorToday.dispatchSentRecordTemplatePostImportCommands
+      : []),
     publicStatus?.dispatchSentRecordTemplateRejection?.artifact,
     publicStatus?.dispatchSentRecordTemplateRejection?.report,
     publicStatus?.reviewIntakeImportRehearsal?.artifact,
