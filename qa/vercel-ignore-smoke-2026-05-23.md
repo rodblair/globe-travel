@@ -5,10 +5,10 @@ Status: pass
 
 ## Result
 
-- Checked: 8
-- Passed: 8
+- Checked: 9
+- Passed: 9
 - Failed: 0
-- Safe skip cases: 7
+- Safe skip cases: 8
 - Runtime build cases: 1
 
 ## Cases
@@ -20,6 +20,7 @@ Status: pass
 - Pass: launch-qa-hardening-release-ops-skip - Launch QA timeout, cleanup, and evidence hardening stays skip-safe.
 - Pass: launch-signoff-followup-gating-skip - Launch-signoff follow-up gating hardening stays skip-safe.
 - Pass: review-intake-privacy-hardening-skip - Review-intake privacy hardening and refreshed release evidence stay skip-safe.
+- Pass: mobile-readiness-metro-config-skip - Sibling Expo mobile readiness changes skip Vercel web production builds.
 - Pass: runtime-billing-builds - Known runtime billing change still continues Vercel production build.
 
 ## Failures

@@ -2983,6 +2983,7 @@ async function checkVercelIgnoreArtifact() {
     'launch-qa-hardening-release-ops-skip',
     'launch-signoff-followup-gating-skip',
     'review-intake-privacy-hardening-skip',
+    'mobile-readiness-metro-config-skip',
     'runtime-billing-builds',
   ]
   const results = Array.isArray(summary.results) ? summary.results : []

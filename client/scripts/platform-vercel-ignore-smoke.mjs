@@ -67,6 +67,14 @@ const cases = [
     expectedText: 'Skipping build',
   },
   {
+    id: 'mobile-readiness-metro-config-skip',
+    intent: 'Sibling Expo mobile readiness changes skip Vercel web production builds.',
+    previous: '1c4e7806eeba8e0e1f648e0d7f1b4e6f3eccb322',
+    head: 'ada892892a91c762c13f8b5c26df9d82ed6df6b5',
+    expectedExitCode: 0,
+    expectedText: 'Skipping build',
+  },
+  {
     id: 'runtime-billing-builds',
     intent: 'Known runtime billing change still continues Vercel production build.',
     previous: '0bf1e7402b360e29fd73398e8caebbaa9ec745bb',

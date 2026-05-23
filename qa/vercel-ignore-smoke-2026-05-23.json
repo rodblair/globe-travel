@@ -1,10 +1,10 @@
 {
   "date": "2026-05-23",
   "status": "pass",
-  "checked": 8,
-  "passed": 8,
+  "checked": 9,
+  "passed": 9,
   "failed": 0,
-  "safeSkipCount": 7,
+  "safeSkipCount": 8,
   "runtimeBuildCount": 1,
   "jsonArtifact": "qa/vercel-ignore-smoke-2026-05-23.json",
   "reportArtifact": "qa/vercel-ignore-smoke-2026-05-23.md",
@@ -200,6 +200,33 @@
         "qa/public-launch-status-2026-05-21.md",
         "qa/review-intake-rehearsal-2026-05-23.json",
         "qa/review-intake-rehearsal-2026-05-23.md"
+      ],
+      "issues": []
+    },
+    {
+      "id": "mobile-readiness-metro-config-skip",
+      "intent": "Sibling Expo mobile readiness changes skip Vercel web production builds.",
+      "previous": "1c4e7806eeba8e0e1f648e0d7f1b4e6f3eccb322",
+      "head": "ada892892a91c762c13f8b5c26df9d82ed6df6b5",
+      "expectedExitCode": 0,
+      "expectedText": "Skipping build",
+      "ok": true,
+      "exitCode": 0,
+      "stdout": "[vercel-ignore] Skipping build: 12 release-ops/documentation/evidence file(s) changed.",
+      "stderr": "",
+      "changedFiles": [
+        "client/scripts/platform-launch-signoff.mjs",
+        "client/scripts/platform-mobile-readiness.mjs",
+        "client/scripts/platform-public-launch-status.mjs",
+        "mobile/metro.config.js",
+        "qa/launch-operator-today-2026-05-23.json",
+        "qa/launch-operator-today-2026-05-23.md",
+        "qa/launch-refresh-2026-05-23.json",
+        "qa/launch-refresh-2026-05-23.md",
+        "qa/mobile-readiness-2026-05-23.json",
+        "qa/mobile-readiness-2026-05-23.md",
+        "qa/public-launch-status-2026-05-21.json",
+        "qa/public-launch-status-2026-05-21.md"
       ],
       "issues": []
     },

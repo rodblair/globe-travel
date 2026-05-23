@@ -4,6 +4,7 @@ const BUILD_SKIP_SAFE_PATTERNS = [
   /^\.github\/workflows\//,
   /^client\/scripts\/platform-[^/]+\.mjs$/,
   /^client\/scripts\/vercel-ignore-build\.mjs$/,
+  /^mobile\//,
   /^qa\//,
   /^README\.md$/,
   /^OPERATIONS_RUNBOOK\.md$/,
