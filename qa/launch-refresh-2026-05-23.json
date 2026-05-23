@@ -1,0 +1,88 @@
+{
+  "date": "2026-05-23",
+  "timeZone": "America/Vancouver",
+  "generatedAt": "2026-05-23T07:54:40.019Z",
+  "status": "pass",
+  "checked": 4,
+  "passed": 4,
+  "failed": 0,
+  "actionableStepCount": 2,
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
+  "blockers": [
+    {
+      "id": "beta-human-review-threshold",
+      "title": "Complete beta human reviews",
+      "detail": "0/25 completed; 25 remaining."
+    },
+    {
+      "id": "production-visual-review-history",
+      "title": "Complete production visual-review history",
+      "detail": "2/4 distinct review dates recorded; 2 remaining."
+    }
+  ],
+  "nextActions": [
+    "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent.",
+    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-23.csv and run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-23.csv npm run qa:dispatch-mark-sent.",
+    "Collect and import 25 completed beta review submission(s).",
+    "Run, review, and import 2 scheduled production visual review date(s)."
+  ],
+  "steps": [
+    {
+      "step": "launch-today-before-status",
+      "scriptName": "qa:launch-today",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "classification": "actionable",
+      "status": "fail",
+      "failures": [
+        "launch today has no overdue launch execution rows"
+      ],
+      "actionRowCount": 6
+    },
+    {
+      "step": "public-launch-status-after-first-board",
+      "scriptName": "qa:public-launch-status",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "classification": "pass",
+      "status": "beta-ready-public-blocked",
+      "guardrailIssues": [],
+      "blockerIds": [
+        "beta-human-review-threshold",
+        "production-visual-review-history"
+      ]
+    },
+    {
+      "step": "launch-today-after-status",
+      "scriptName": "qa:launch-today",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "classification": "actionable",
+      "status": "fail",
+      "failures": [
+        "launch today has no overdue launch execution rows"
+      ],
+      "actionRowCount": 6
+    },
+    {
+      "step": "public-launch-status-final",
+      "scriptName": "qa:public-launch-status",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "classification": "pass",
+      "status": "beta-ready-public-blocked",
+      "guardrailIssues": [],
+      "blockerIds": [
+        "beta-human-review-threshold",
+        "production-visual-review-history"
+      ]
+    }
+  ],
+  "jsonArtifact": "qa/launch-refresh-2026-05-23.json",
+  "reportArtifact": "qa/launch-refresh-2026-05-23.md"
+}

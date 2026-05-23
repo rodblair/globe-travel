@@ -2,7 +2,7 @@
   "date": "2026-05-23",
   "today": "2026-05-23",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-23T07:45:49.694Z",
+  "generatedAt": "2026-05-23T07:54:39.028Z",
   "status": "fail",
   "checked": 8,
   "passed": 7,
@@ -16,12 +16,9 @@
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
   "liveDeploymentCommit": "03288ec3f741c71720aa5a6666ab54cea95701ec",
-  "publicLaunchStatus": "blocked",
-  "publicGuardrailIssues": [
-    "daily launch operator board is not aligned with current blocker evidence",
-    "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior"
-  ],
-  "publicOnlyLaunchOperatorSelfGuardrails": true,
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
+  "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -226,17 +223,14 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [
-        "daily launch operator board is not aligned with current blocker evidence",
-        "daily launch operator sent-dispatch rehearsal is not proving sent-state behavior"
-      ],
-      "onlyLaunchOperatorSelfGuardrails": true
+      "guardrailIssues": [],
+      "onlyLaunchOperatorSelfGuardrails": false
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",

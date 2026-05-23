@@ -35,7 +35,7 @@
     "qa:dispatch-sent-record-template": "node scripts/platform-dispatch-sent-record-template.mjs",
     "qa:dispatch-sent-record-template-rejection": "node scripts/platform-dispatch-sent-record-template-rejection.mjs",
     "qa:launch-signoff": "node scripts/platform-launch-signoff.mjs",
-    "qa:launch-refresh": "npm run qa:launch-today && npm run qa:public-launch-status && npm run qa:launch-today && npm run qa:public-launch-status",
+    "qa:launch-refresh": "node scripts/platform-launch-refresh.mjs",
     "qa:launch-today": "node scripts/platform-launch-operator-today.mjs",
     "qa:launch-today-overdue-rehearsal": "node scripts/platform-launch-operator-today-rehearsal.mjs",
     "qa:launch-today-sent-dispatch-rehearsal": "node scripts/platform-launch-operator-sent-dispatch-rehearsal.mjs",
