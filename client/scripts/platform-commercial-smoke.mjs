@@ -58,23 +58,55 @@ async function checkJsonPost({ name, path, body, expectedStatuses }) {
   return result
 }
 
-async function checkPage({ name, path, markers, disallowedFinalPathnames = [] }) {
+function extractTitle(html) {
+  const match = html.match(/<title[^>]*>([^<]*)<\/title>/i)
+  return match?.[1]?.replace(/\s+/g, ' ').trim() || ''
+}
+
+function hrefPresent(html, href) {
+  const escaped = href.replace(/&/g, '&amp;')
+  return html.includes(`href="${href}"`) || html.includes(`href="${escaped}"`)
+}
+
+async function checkPage({
+  name,
+  path,
+  markers,
+  expectedTitle = null,
+  expectedHrefs = [],
+  disallowedFinalPathnames = [],
+  disallowedTitleFragments = [],
+}) {
   const response = await fetch(`${baseUrl}${path}`, {
     redirect: 'follow',
     headers: { 'user-agent': 'globe-travel-commercial-smoke/1.0' },
   })
   const finalUrl = new URL(response.url)
   const body = await response.text()
+  const title = extractTitle(body)
   const missingMarkers = markers.filter((marker) => !body.includes(marker))
+  const missingHrefs = expectedHrefs.filter((href) => !hrefPresent(body, href))
+  const badTitleFragments = disallowedTitleFragments.filter((fragment) => title.includes(fragment))
+  const titleMatches = !expectedTitle || title === expectedTitle
   const redirectedToDisallowedPath = disallowedFinalPathnames.includes(finalUrl.pathname)
-  const ok = response.ok && missingMarkers.length === 0 && !redirectedToDisallowedPath
+  const ok =
+    response.ok &&
+    missingMarkers.length === 0 &&
+    missingHrefs.length === 0 &&
+    titleMatches &&
+    badTitleFragments.length === 0 &&
+    !redirectedToDisallowedPath
   const result = {
     name,
     path,
     status: response.status,
     ok,
     finalUrl: response.url,
+    title,
+    expectedTitle,
     missingMarkers,
+    missingHrefs,
+    badTitleFragments,
     disallowedFinalPathnames,
   }
 
@@ -92,6 +124,15 @@ results.push(await checkPage({
     'Start 7-day free trial',
     'Adventurer',
     'No charge today',
+  ],
+  expectedTitle: 'Pricing · Globe.travel',
+  expectedHrefs: [
+    '/signup?next=%2Faccount%3Ftab%3Dbilling',
+    '/api/guest/start?next=%2Fchat',
+  ],
+  disallowedTitleFragments: [
+    'Globe.travel · Globe.travel',
+    'Pricing - Globe.travel',
   ],
   disallowedFinalPathnames: ['/login'],
 }))

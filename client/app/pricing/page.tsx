@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { PLANS } from '@/lib/plans'
 
 export const metadata: Metadata = {
-  title: 'Pricing - Globe.travel',
+  title: 'Pricing',
   description: 'Start free, then upgrade for unlimited trip notes, AI planning, maps, sharing, and friend feedback.',
 }
 

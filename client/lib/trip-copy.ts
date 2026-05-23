@@ -59,6 +59,17 @@ function compactWhitespace(value: string) {
   return value.replace(/\s+/g, ' ').trim()
 }
 
+function stripBrandSuffix(value: string) {
+  let cleaned = compactWhitespace(value)
+  const brandSuffixPattern = /\s+(?:[|·-]\s*)?Globe\.travel\s*$/i
+
+  while (brandSuffixPattern.test(cleaned)) {
+    cleaned = compactWhitespace(cleaned.replace(brandSuffixPattern, ''))
+  }
+
+  return cleaned || 'Trip'
+}
+
 function titleCaseSmallPhrase(value: string) {
   return value.replace(/\b([a-z])([a-z']*)/gi, (word, first: string, rest: string) => {
     if (/^(and|or|of|the|a|an|to|in|for|with)$/i.test(word)) return word.toLowerCase()
@@ -77,7 +88,7 @@ function polishMonthPhrases(value: string) {
 }
 
 export function formatTripTitleForDisplay(title: string | null | undefined) {
-  let formatted = compactWhitespace(title || 'Trip')
+  let formatted = stripBrandSuffix(title || 'Trip')
   for (const [pattern, replacement] of CITY_COUNTRY_REPLACEMENTS) {
     formatted = formatted.replace(pattern, replacement)
   }

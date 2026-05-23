@@ -1,0 +1,406 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "date": "2026-05-23",
+  "runId": null,
+  "shareSlug": "x3m2c8cnws",
+  "tripId": null,
+  "artifactDir": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-commercial-title-polish-2026-05-23",
+  "baselineDir": null,
+  "diffRoutes": [],
+  "diffFailureThreshold": 0.015,
+  "pixelmatchThreshold": 0.12,
+  "settleMs": 900,
+  "deployment": null,
+  "deploymentCheck": {
+    "checked": false,
+    "reason": "local visual target",
+    "status": null,
+    "healthStatus": null,
+    "summary": null,
+    "error": null
+  },
+  "auth": {
+    "requestedMode": "auto",
+    "mode": "none",
+    "guestId": null,
+    "protectedRoutes": [],
+    "externalGuestId": false,
+    "allowRemoteGuestAuth": false,
+    "contexts": [
+      {
+        "viewportId": "phone",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "tablet",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "laptop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "desktop",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      },
+      {
+        "viewportId": "wide",
+        "mode": "none",
+        "guestId": null,
+        "cookieSet": false
+      }
+    ],
+    "cleanup": {
+      "attempted": false,
+      "reason": "guest visual auth not used",
+      "guestId": null,
+      "profileDeleted": false,
+      "userDeleted": false,
+      "error": null
+    }
+  },
+  "checked": 5,
+  "passed": 5,
+  "failed": 0,
+  "routes": [
+    "pricing"
+  ],
+  "viewports": [
+    {
+      "id": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "id": "laptop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 950
+    },
+    {
+      "id": "wide",
+      "width": 1728,
+      "height": 1050
+    }
+  ],
+  "results": [
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "phone",
+      "requestedViewport": {
+        "id": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing · Globe.travel",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "clientHeight": 844,
+        "scrollHeight": 3017,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 3,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day free trial. Unlimited"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-phone-390x844.png",
+        "relativePath": "qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-phone-390x844.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "tablet",
+      "requestedViewport": {
+        "id": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing · Globe.travel",
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "clientHeight": 1024,
+        "scrollHeight": 2479,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 5,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS SIGN IN GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day f"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-tablet-768x1024.png",
+        "relativePath": "qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-tablet-768x1024.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "laptop",
+      "requestedViewport": {
+        "id": "laptop",
+        "width": 1280,
+        "height": 800
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing · Globe.travel",
+        "innerWidth": 1280,
+        "innerHeight": 800,
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "clientHeight": 800,
+        "scrollHeight": 1758,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 5,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS SIGN IN GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day f"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-laptop-1280x800.png",
+        "relativePath": "qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-laptop-1280x800.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "desktop",
+      "requestedViewport": {
+        "id": "desktop",
+        "width": 1440,
+        "height": 950
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing · Globe.travel",
+        "innerWidth": 1440,
+        "innerHeight": 950,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "clientHeight": 950,
+        "scrollHeight": 1765,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 5,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS SIGN IN GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day f"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-desktop-1440x950.png",
+        "relativePath": "qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-desktop-1440x950.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    },
+    {
+      "routeId": "pricing",
+      "path": "/pricing",
+      "viewportId": "wide",
+      "requestedViewport": {
+        "id": "wide",
+        "width": 1728,
+        "height": 1050
+      },
+      "status": 200,
+      "ok": true,
+      "metrics": {
+        "url": "http://localhost:3000/pricing",
+        "title": "Pricing · Globe.travel",
+        "innerWidth": 1728,
+        "innerHeight": 1050,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "clientHeight": 1050,
+        "scrollHeight": 1765,
+        "horizontalOverflow": false,
+        "missingMarkers": [],
+        "forbiddenMarkersPresent": [],
+        "appErrors": [],
+        "headings": [
+          "Start free. Upgrade when the trip gets real.",
+          "Maps that match the itinerary",
+          "Feedback without another thread",
+          "Built for small groups",
+          "The free plan proves the trip. Adventurer runs the whole crew.",
+          "Give the group one plan to react to."
+        ],
+        "smallAppTargets": [],
+        "smallMapControlTargets": [],
+        "thirdPartySmallTargets": [],
+        "clippedText": [],
+        "overlappingAppTargets": [],
+        "visibleControlCount": 5,
+        "bodyPreview": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS SIGN IN GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day f"
+      },
+      "screenshot": {
+        "ok": true,
+        "path": "/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-wide-1728x1050.png",
+        "relativePath": "qa/visual-baseline-commercial-title-polish-2026-05-23/screenshots/pricing-wide-1728x1050.png",
+        "error": null
+      },
+      "comparison": {
+        "enabled": false,
+        "ok": true,
+        "baselinePath": null,
+        "baselineRelativePath": null,
+        "diffPath": null,
+        "diffRelativePath": null,
+        "diffPixels": 0,
+        "totalPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.015,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

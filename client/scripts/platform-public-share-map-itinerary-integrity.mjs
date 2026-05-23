@@ -257,6 +257,11 @@ function internalFeedbackReason(entry) {
   return null
 }
 
+function hasDuplicateBrandTitle(value) {
+  const title = String(value || '')
+  return /Globe\.travel\s*[|·-]\s*Globe\.travel/i.test(title) || /Globe\.travel.*Globe\.travel/i.test(title)
+}
+
 async function readPublicFeedback(shareSlug) {
   const feedbackApi = await fetchJson(`/api/trips/share/${shareSlug}/feedback`)
   const rows = Array.isArray(feedbackApi.json) ? feedbackApi.json : []
@@ -421,6 +426,7 @@ async function checkShareSlug(shareSlug) {
       if (state.hasUnavailableState) issues.push('rendered unavailable state')
       if (state.hasAppError) issues.push('rendered application error')
       if (state.horizontalOverflow) issues.push(`horizontal overflow ${state.scrollWidth}px > ${state.clientWidth}px`)
+      if (hasDuplicateBrandTitle(state.title)) issues.push(`duplicate Globe.travel browser title: ${state.title}`)
 
       ok = issues.length === 0
     } catch (error) {
