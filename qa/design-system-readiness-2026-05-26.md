@@ -3,7 +3,7 @@
 Date: 2026-05-26
 Design context: `.impeccable.md`
 Responsive visual artifact: `qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json`
-Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-26-913e0a6/summary.json`
+Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-26-1801da5/summary.json`
 
 ## Result
 
