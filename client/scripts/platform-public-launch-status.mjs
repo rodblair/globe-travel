@@ -71,7 +71,9 @@ const riskRegisterPath = process.env.QA_RISK_REGISTER || 'qa/launch-risk-registe
 const paidPathReadinessPath = process.env.QA_PAID_PATH_READINESS ||
   process.env.QA_LAUNCH_PAID_PATH_ARTIFACT ||
   latestQaArtifact(/^paid-path-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/paid-path-readiness-2026-05-21.json')
-const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT || process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT || 'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json'
+const accessibilityPath = process.env.QA_ACCESSIBILITY_ARTIFACT ||
+  process.env.QA_LAUNCH_ACCESSIBILITY_ARTIFACT ||
+  latestQaSummaryArtifact(/^accessibility-keyboard-production-guest-\d{4}-\d{2}-\d{2}$/, 'qa/accessibility-keyboard-production-guest-2026-05-21/summary.json')
 const designSystemPath = process.env.QA_DESIGN_SYSTEM_READINESS ||
   process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
   latestQaArtifact(/^design-system-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/design-system-readiness-2026-05-23.json')
@@ -365,6 +367,18 @@ function latestQaArtifact(filePattern, fallbackPath) {
       .map((entry) => `qa/${entry.name}`)
       .sort()
     return files.at(-1) || fallbackPath
+  } catch {
+    return fallbackPath
+  }
+}
+
+function latestQaSummaryArtifact(directoryPattern, fallbackPath) {
+  try {
+    const dirs = readdirSync(repoPath('qa'), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && directoryPattern.test(entry.name))
+      .map((entry) => `qa/${entry.name}/summary.json`)
+      .sort()
+    return dirs.at(-1) || fallbackPath
   } catch {
     return fallbackPath
   }

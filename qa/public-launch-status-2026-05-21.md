@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-26T23:07:16.708Z
+Generated at: 2026-05-26T23:24:10.004Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -240,16 +240,16 @@ Public metadata:
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-23.json`
-- Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-21/summary.json`
+- Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-26/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-05-26.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Planner handoff: `qa/planner-handoff-smoke-2026-05-26.json` and `qa/planner-handoff-smoke-2026-05-26.md`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-26.json` and `qa/public-share-map-catalog-2026-05-26.md`
-- Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-23.json` and `qa/public-metadata-smoke-2026-05-23.md`
+- Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-26.json` and `qa/public-metadata-smoke-2026-05-26.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
-- Full route inventory: `qa/route-inventory-smoke-2026-05-23.json`
+- Full route inventory: `qa/route-inventory-smoke-2026-05-26.json`
 - Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-23.json`
-- Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-05-22.json`
+- Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-05-26.json`
 
 ## Operating Meaning
 

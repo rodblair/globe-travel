@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T23:07:16.708Z",
+  "generatedAt": "2026-05-26T23:24:10.004Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "blocked",
   "betaReady": false,
@@ -948,7 +948,7 @@
     "ready": true
   },
   "accessibility": {
-    "artifact": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
+    "artifact": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
     "checked": 22,
     "passed": 22,
     "failed": 0,
@@ -1104,8 +1104,8 @@
     "ready": true
   },
   "publicMetadata": {
-    "artifact": "qa/public-metadata-smoke-2026-05-23.json",
-    "report": "qa/public-metadata-smoke-2026-05-23.md",
+    "artifact": "qa/public-metadata-smoke-2026-05-26.json",
+    "report": "qa/public-metadata-smoke-2026-05-26.md",
     "artifactReadable": true,
     "artifactError": null,
     "pending": false,
@@ -1159,8 +1159,8 @@
     "ready": true
   },
   "routeInventory": {
-    "artifact": "qa/route-inventory-smoke-2026-05-23.json",
-    "report": "qa/route-inventory-smoke-2026-05-23.md",
+    "artifact": "qa/route-inventory-smoke-2026-05-26.json",
+    "report": "qa/route-inventory-smoke-2026-05-26.md",
     "baseUrl": "https://globe-travel-two.vercel.app",
     "status": "pass",
     "checked": 22,
@@ -1206,9 +1206,9 @@
     "ready": true
   },
   "productionAppSurfaces": {
-    "artifact": "qa/app-surfaces-production-guest-2026-05-22.json",
-    "report": "qa/app-surfaces-production-guest-2026-05-22.md",
-    "artifactDir": "qa/app-surfaces-production-guest-2026-05-22",
+    "artifact": "qa/app-surfaces-production-guest-2026-05-26.json",
+    "report": "qa/app-surfaces-production-guest-2026-05-26.md",
+    "artifactDir": "qa/app-surfaces-production-guest-2026-05-26",
     "baseUrl": "https://globe-travel-two.vercel.app",
     "status": "pass",
     "checked": 22,
@@ -1262,16 +1262,16 @@
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
     "paidPathReadiness": "qa/paid-path-readiness-2026-05-23.json",
-    "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
+    "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-05-26.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "plannerHandoff": "qa/planner-handoff-smoke-2026-05-26.json",
     "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-26.json",
-    "publicMetadata": "qa/public-metadata-smoke-2026-05-23.json",
+    "publicMetadata": "qa/public-metadata-smoke-2026-05-26.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
-    "routeInventory": "qa/route-inventory-smoke-2026-05-23.json",
+    "routeInventory": "qa/route-inventory-smoke-2026-05-26.json",
     "appSurfaces": "qa/app-surfaces-smoke-2026-05-23.json",
-    "productionAppSurfaces": "qa/app-surfaces-production-guest-2026-05-22.json",
+    "productionAppSurfaces": "qa/app-surfaces-production-guest-2026-05-26.json",
     "betaWaveRehearsal": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
     "betaMatrixRehearsal": "qa/beta-human-review-matrix-rehearsal-2026-05-22.json",
     "betaGuestStartRehearsal": "qa/beta-human-review-guest-start-rehearsal-2026-05-22.json",
