@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate, isDate } from './qa-date-utils.mjs'
@@ -6,7 +7,8 @@ const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const date = process.env.QA_DISPATCH_MARK_SENT_DATE || currentQaDate()
 const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
-const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG || 'qa/production-visual-review-dispatch-log-2026-05-21.json'
+const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
+  latestQaArtifact(/^production-visual-review-dispatch-log-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-log-2026-05-21.json')
 const recordPath = process.env.QA_DISPATCH_MARK_SENT_RECORD || ''
 const importMode = process.env.QA_DISPATCH_MARK_SENT_IMPORT === '1'
 const artifactName = process.env.QA_DISPATCH_MARK_SENT_ARTIFACT_NAME || `dispatch-log-mark-sent-${date}`
@@ -23,6 +25,17 @@ const allowedDeliveryChannels = new Set([
   'other',
 ])
 const placeholderValues = new Set(['n/a', 'na', 'none', 'tbd', 'todo', 'replace-me', 'replace with external record'])
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
+}
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')

@@ -2,7 +2,7 @@
   "date": "2026-05-26",
   "today": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T22:07:17.876Z",
+  "generatedAt": "2026-05-26T22:32:27.353Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -11,7 +11,7 @@
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
   "dispatchSentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-05-26.json",
   "dispatchSentRecordTemplateReport": "qa/dispatch-sent-record-template-2026-05-26.md",
   "dispatchSentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-26.csv",
@@ -24,10 +24,12 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "b426b4860f7e20775c33957419ad75306cc472b6",
+  "liveDeploymentCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
-    "beta human review command center is not fully prepared"
+    "beta human review command center is not fully prepared",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "dispatch mark-sent dry run is not proving safe sent-state imports"
   ],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
@@ -158,7 +160,7 @@
         "priority": "P1",
         "workType": "production-visual-review",
         "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28",
-        "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
+        "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
         "evidencePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
         "sendTiming": "review in 2 days",
         "sendStatus": "prepared-not-sent"
@@ -322,7 +324,7 @@
       "reviewerAlias": "",
       "contactRecordLocation": "",
       "action": "Review in 2 days; send visual-review assignment or confirm scheduled reviewer time.",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
       "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
       "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
       "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
@@ -362,7 +364,7 @@
   "visualMessageFileChecks": [
     {
       "id": "PROD-VISUAL-HISTORY-002",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
       "exists": true
     }
   ],
@@ -386,7 +388,9 @@
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
       "guardrailIssues": [
-        "beta human review command center is not fully prepared"
+        "beta human review command center is not fully prepared",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "dispatch mark-sent dry run is not proving safe sent-state imports"
       ],
       "onlyLaunchOperatorSelfGuardrails": false,
       "onlyLaunchOperatorAcceptedExternalGuardrails": true
@@ -401,7 +405,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "b426b4860f7e20775c33957419ad75306cc472b6"
+      "liveCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74"
     },
     {
       "name": "launch today reads aligned dispatch logs",
@@ -409,7 +413,7 @@
       "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
       "betaDispatchLogStatus": "pass",
       "betaDispatchLogRowCount": 5,
-      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
       "visualDispatchLogStatus": "pass",
       "visualDispatchLogRowCount": 3
     },

@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { currentQaDate, dateOnly, daysBetween, isDate, requestedOrCurrentDate } from './qa-date-utils.mjs'
@@ -6,7 +7,19 @@ const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX_DATE || ''
 const requestedToday = process.env.QA_VISUAL_REVIEW_TODAY || ''
 const registerPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
-const progressPath = process.env.QA_VISUAL_REVIEW_PROGRESS || 'qa/production-visual-review-progress-2026-05-21.json'
+const progressPath = process.env.QA_VISUAL_REVIEW_PROGRESS ||
+  latestQaArtifact(/^production-visual-review-progress-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-progress-2026-05-21.json')
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
+}
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength

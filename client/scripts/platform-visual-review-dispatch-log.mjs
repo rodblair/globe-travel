@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { access, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate, dateOnly, daysBetween, requestedOrCurrentDate } from './qa-date-utils.mjs'
@@ -6,7 +7,19 @@ const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG_DATE || ''
 const requestedToday = process.env.QA_VISUAL_REVIEW_TODAY || ''
 const requireSent = ['1', 'true', 'yes', 'sent'].includes(String(process.env.QA_VISUAL_REVIEW_DISPATCH_LOG_REQUIRE_SENT || '').toLowerCase())
-const dispatchOutboxPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX || 'qa/production-visual-review-dispatch-outbox-2026-05-21.json'
+const dispatchOutboxPath = process.env.QA_VISUAL_REVIEW_DISPATCH_OUTBOX ||
+  latestQaArtifact(/^production-visual-review-dispatch-outbox-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-outbox-2026-05-21.json')
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
+}
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength

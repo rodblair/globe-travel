@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { readdirSync } from 'node:fs'
 import { access, copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate } from './qa-date-utils.mjs'
@@ -7,7 +8,8 @@ const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const artifactDate = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_DATE || currentQaDate()
 const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
-const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG || 'qa/production-visual-review-dispatch-log-2026-05-21.json'
+const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
+  latestQaArtifact(/^production-visual-review-dispatch-log-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-log-2026-05-21.json')
 const fixturePath = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_RECORD ||
   `qa/dispatch-log-mark-sent-fixture-${artifactDate}.json`
 const rawArtifactName = `dispatch-log-mark-sent-import-rehearsal-raw-${artifactDate}`
@@ -26,6 +28,17 @@ const launchRawReport = `qa/${launchRawName}.md`
 const launchRawCsv = `qa/${launchRawName}.csv`
 const artifactName = process.env.QA_DISPATCH_MARK_SENT_IMPORT_REHEARSAL_ARTIFACT_NAME ||
   `dispatch-log-mark-sent-import-rehearsal-${artifactDate}`
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
+}
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')

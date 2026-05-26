@@ -24,9 +24,7 @@
     }
   ],
   "guardrailIssues": [
-    "beta human review command center is not fully prepared",
-    "public launch blocker board is not aligned with current beta and visual blocker evidence",
-    "open accepted P2 launch risks are not aligned with current launch evidence counts"
+    "beta human review command center is not fully prepared"
   ],
   "canonicalRestored": true,
   "checks": [
@@ -43,9 +41,7 @@
       "publicLaunchReady": false,
       "requirePublicLaunch": true,
       "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "public launch blocker board is not aligned with current beta and visual blocker evidence",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
+        "beta human review command center is not fully prepared"
       ]
     },
     {
@@ -60,16 +56,14 @@
       "name": "public launch required mode reports guardrail state without hiding blockers",
       "ok": true,
       "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "public launch blocker board is not aligned with current beta and visual blocker evidence",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
+        "beta human review command center is not fully prepared"
       ]
     },
     {
       "name": "public launch required mode does not mutate canonical default status",
       "ok": true,
       "restoredRequirePublicLaunch": false,
-      "restoredStatus": "beta-ready-public-blocked"
+      "restoredStatus": "blocked"
     }
   ],
   "failures": [],

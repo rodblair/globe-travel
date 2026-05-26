@@ -9,5 +9,20 @@
     "sample": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL QA Browser Traveler @qa-browser-traveler ATHENS ITINERARY 5 Days in Athens Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Share this Athens plan when it is ready for friend review. Enable public link Reviews open automatically once the trip is public. CREW BRIEF Add crew context in chat Crew size not set yet Budget still flexible Origin city not set Vibe: Balanced trip with broad appeal Trip readiness: 0/4 — turn on sharing, needs reactions. FRIEND FEEDBACK 0 reviews No reviews yet. Invite a few friends and ask them where the ",
     "title": "Globe.travel — Plan the trip everyone can say yes to",
     "url": "http://localhost:3000/trips/b8311d0b-2b85-4838-aae3-867417608f22?prompt=Plan%20a%20restful%205-day%20Athens%20trip%20for%20a%20couple%20with%20culture%2C%20food%2C%20and%20recovery%20time."
+  },
+  "productionPlannerState": {
+    "h1": "5 Days in Athens",
+    "hasAppError": false,
+    "hasAthensTitle": true,
+    "hasRestfulTitle": false,
+    "horizontalOverflow": false,
+    "sample": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler no callsign ATHENS ITINERARY 5 Days in Athens Save trip Planner chat Optimize day Build maps Share with friends GROUP REVIEW Share this Athens plan when it is ready for friend review. Enable public link Reviews open automatically once the trip is public. CREW BRIEF Add crew context in chat Crew size not set yet Budget still flexible Origin city not set Vibe: Balanced trip with broad appeal Trip readiness: 0/4 — turn on sharing, needs reactions. FRIEND FEEDBACK 0 reviews No reviews yet. Invite a few friends and ask them where the itinerary feels too ",
+    "title": "Globe.travel — Plan the trip everyone can say yes to",
+    "url": "https://globe-travel-two.vercel.app/trips/c3b7da58-6d95-4732-8c87-6fd2b5da6af4?prompt=Plan%20a%20restful%205-day%20Athens%20trip%20for%20a%20couple%20with%20culture%2C%20food%2C%20and%20recovery%20time."
+  },
+  "productionCheckedAt": "2026-05-26T22:21:21.812Z",
+  "productionDeployment": {
+    "url": "globe-travel-gdue4pa9b-rodney-blairs-projects.vercel.app",
+    "commit": "913e0a6b76f2f096c1cacc1004a172af909d6d74"
   }
 }

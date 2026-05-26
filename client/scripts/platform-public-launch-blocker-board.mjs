@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate, dateOnly, daysBetween } from './qa-date-utils.mjs'
@@ -8,7 +9,19 @@ const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS || 'qa/public-launc
 const betaNextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
 const betaAllWaveOpsPath = process.env.QA_BETA_REVIEW_ALL_WAVE_OPS || 'qa/beta-human-review-all-wave-ops-2026-05-21.json'
 const visualRegisterPath = process.env.QA_VISUAL_REVIEW_REGISTER || 'qa/production-visual-review-register.json'
-const visualProgressPath = process.env.QA_VISUAL_REVIEW_PROGRESS || 'qa/production-visual-review-progress-2026-05-21.json'
+const visualProgressPath = process.env.QA_VISUAL_REVIEW_PROGRESS ||
+  latestQaArtifact(/^production-visual-review-progress-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-progress-2026-05-21.json')
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
+}
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength

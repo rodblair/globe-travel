@@ -23,7 +23,7 @@ const visualArtifact =
   'qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json'
 const designSystemArtifact =
   process.env.QA_LAUNCH_DESIGN_SYSTEM_ARTIFACT ||
-  'qa/design-system-readiness-2026-05-23.json'
+  latestQaArtifact(/^design-system-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/design-system-readiness-2026-05-23.json')
 const mobileReadinessArtifact =
   process.env.QA_LAUNCH_MOBILE_READINESS_ARTIFACT ||
   latestQaArtifact(/^mobile-readiness-\d{4}-\d{2}-\d{2}\.json$/, 'qa/mobile-readiness-2026-05-22.json')

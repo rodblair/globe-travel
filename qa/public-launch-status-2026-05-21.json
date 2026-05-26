@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T22:07:19.655Z",
+  "generatedAt": "2026-05-26T22:32:58.428Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "blocked",
   "betaReady": false,
@@ -11,14 +11,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-hw4towyva-rodney-blairs-projects.vercel.app",
-    "commit": "b426b4860f7e20775c33957419ad75306cc472b6"
+    "url": "globe-travel-gdue4pa9b-rodney-blairs-projects.vercel.app",
+    "commit": "913e0a6b76f2f096c1cacc1004a172af909d6d74"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "b426b4860f7e20775c33957419ad75306cc472b6",
-    "shortHead": "b426b48",
-    "liveCommit": "b426b4860f7e20775c33957419ad75306cc472b6",
+    "head": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
+    "shortHead": "913e0a6",
+    "liveCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -448,10 +448,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-b426b48",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-b426b48/summary.json",
-    "latestProductionCommit": "b426b4860f7e20775c33957419ad75306cc472b6",
-    "latestProductionDeploymentUrl": "globe-travel-hw4towyva-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-913e0a6",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-913e0a6/summary.json",
+    "latestProductionCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
+    "latestProductionDeploymentUrl": "globe-travel-gdue4pa9b-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -467,7 +467,7 @@
     "overdueScheduledReviews": [],
     "nextReviewDueAt": "2026-05-28",
     "intakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
-    "progressArtifact": "qa/production-visual-review-progress-2026-05-21.json",
+    "progressArtifact": "qa/production-visual-review-progress-2026-05-26.json",
     "scheduleArtifact": "qa/production-visual-review-schedule-2026-05-21.md",
     "progressIssueCount": 0,
     "assignmentQueueReady": true,
@@ -476,18 +476,18 @@
     "dispatchOutboxIssueCount": 0,
     "dispatchLogReady": true,
     "dispatchLogIssueCount": 0,
-    "dispatchOutboxArtifact": "qa/production-visual-review-dispatch-outbox-2026-05-21.json",
-    "dispatchOutboxReport": "qa/production-visual-review-dispatch-outbox-2026-05-21.md",
-    "dispatchOutboxCsv": "qa/production-visual-review-dispatch-outbox-2026-05-21.csv",
-    "dispatchOutboxArtifactDir": "qa/production-visual-review-dispatch-outbox-2026-05-21",
+    "dispatchOutboxArtifact": "qa/production-visual-review-dispatch-outbox-2026-05-26.json",
+    "dispatchOutboxReport": "qa/production-visual-review-dispatch-outbox-2026-05-26.md",
+    "dispatchOutboxCsv": "qa/production-visual-review-dispatch-outbox-2026-05-26.csv",
+    "dispatchOutboxArtifactDir": "qa/production-visual-review-dispatch-outbox-2026-05-26",
     "dispatchOutboxRowCount": 3,
     "dispatchOutboxRequiredRowCount": 2,
     "dispatchOutboxMessageFileCount": 3,
     "dispatchOutboxDueSoonCount": 1,
     "dispatchOutboxOverdueCount": 0,
-    "dispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
-    "dispatchLogReport": "qa/production-visual-review-dispatch-log-2026-05-21.md",
-    "dispatchLogCsv": "qa/production-visual-review-dispatch-log-2026-05-21.csv",
+    "dispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+    "dispatchLogReport": "qa/production-visual-review-dispatch-log-2026-05-26.md",
+    "dispatchLogCsv": "qa/production-visual-review-dispatch-log-2026-05-26.csv",
     "dispatchLogRowCount": 3,
     "dispatchLogRequiredRowCount": 2,
     "dispatchLogSentCount": 0,
@@ -549,7 +549,7 @@
     "betaReviewsDueSoonCount": 5,
     "visualDueSoonCount": 1,
     "visualOverdueCount": 0,
-    "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+    "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
     "dispatchSentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-05-26.json",
     "dispatchSentRecordTemplateReport": "qa/dispatch-sent-record-template-2026-05-26.md",
     "dispatchSentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-26.csv",
@@ -626,7 +626,7 @@
     "visualUpdateCount": 1,
     "updatedLogArtifacts": [
       "qa/beta-human-review-dispatch-log-2026-05-21.json",
-      "qa/production-visual-review-dispatch-log-2026-05-21.json"
+      "qa/production-visual-review-dispatch-log-2026-05-26.json"
     ],
     "issues": []
   },
@@ -660,7 +660,7 @@
     "launchOperatorExitCode": 1,
     "launchOperatorStatus": "fail",
     "launchOperatorOnlyOverdueExecutionFailure": true,
-    "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+    "launchOperatorPublicLaunchStatus": "blocked",
     "launchOperatorActionRowCount": 4,
     "launchOperatorActionIds": [
       "BETA-HR-002",
@@ -846,7 +846,7 @@
       "beta-human-review-threshold",
       "production-visual-review-history"
     ],
-    "guardrailIssueCount": 3,
+    "guardrailIssueCount": 1,
     "canonicalRestored": true,
     "issues": []
   },
@@ -886,8 +886,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "b426b4860f7e20775c33957419ad75306cc472b6",
-    "knownGoodDeploymentUrl": "globe-travel-hw4towyva-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
+    "knownGoodDeploymentUrl": "globe-travel-gdue4pa9b-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -926,7 +926,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "b426b4860f7e20775c33957419ad75306cc472b6",
+    "latestVerificationExpectedLiveCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -966,7 +966,7 @@
     "ready": true
   },
   "designSystem": {
-    "artifact": "qa/design-system-readiness-2026-05-23.json",
+    "artifact": "qa/design-system-readiness-2026-05-26.json",
     "checked": 11,
     "passed": 11,
     "failed": 0,
@@ -975,8 +975,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-b426b48/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-b426b48/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-913e0a6/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-913e0a6/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -1006,10 +1006,10 @@
     "ready": true
   },
   "plannerHandoff": {
-    "artifact": "qa/planner-handoff-smoke-2026-05-23.json",
-    "report": "qa/planner-handoff-smoke-2026-05-23.md",
-    "date": "2026-05-23",
-    "ageDays": 3,
+    "artifact": "qa/planner-handoff-smoke-2026-05-26.json",
+    "report": "qa/planner-handoff-smoke-2026-05-26.md",
+    "date": "2026-05-26",
+    "ageDays": 0,
     "checked": 17,
     "passed": 17,
     "failed": 0,
@@ -1213,7 +1213,7 @@
   ],
   "nextActions": [
     "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
-    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
+    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-26.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
     "Run, review, and import 2 scheduled production visual review date(s).",
     "Fix guardrail issues before relying on public-launch status."
@@ -1221,15 +1221,15 @@
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",
     "visualRegister": "qa/production-visual-review-register.json",
-    "visualDispatchOutbox": "qa/production-visual-review-dispatch-outbox-2026-05-21.json",
+    "visualDispatchOutbox": "qa/production-visual-review-dispatch-outbox-2026-05-26.json",
     "monitoringRegister": "qa/production-monitoring-register.json",
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
     "paidPathReadiness": "qa/paid-path-readiness-2026-05-23.json",
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-21/summary.json",
-    "designSystemReadiness": "qa/design-system-readiness-2026-05-23.json",
+    "designSystemReadiness": "qa/design-system-readiness-2026-05-26.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
-    "plannerHandoff": "qa/planner-handoff-smoke-2026-05-23.json",
+    "plannerHandoff": "qa/planner-handoff-smoke-2026-05-26.json",
     "publicShareMapIntegrity": "qa/public-share-map-itinerary-integrity-2026-05-23.json",
     "publicMetadata": "qa/public-metadata-smoke-2026-05-23.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",

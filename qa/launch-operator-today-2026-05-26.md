@@ -3,7 +3,7 @@
 Date: 2026-05-26
 Today: 2026-05-26
 Time zone: America/Vancouver
-Generated at: 2026-05-26T22:07:17.876Z
+Generated at: 2026-05-26T22:32:27.353Z
 Status: fail
 
 ## Result
@@ -59,7 +59,7 @@ Status: fail
 | P0 | BETA-HR-003 | beta-human-review | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
 | P0 | BETA-HR-004 | beta-human-review | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
 | P0 | BETA-HR-005 | beta-human-review | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
-| P1 | PROD-VISUAL-HISTORY-002 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
+| P1 | PROD-VISUAL-HISTORY-002 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Do Today
 
@@ -70,7 +70,7 @@ Status: fail
 | P0 | beta-human-review | BETA-HR-003 | 2026-05-22 | send overdue by 4 days | 2026-05-25 | prepared-not-sent | BETA-HR-003 dispatch is overdue by 4 days; send invite immediately or reassign, then record sent proof. Follow-up overdue by 2 days; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review overdue by 1 day; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
 | P0 | beta-human-review | BETA-HR-004 | 2026-05-22 | send overdue by 4 days | 2026-05-25 | prepared-not-sent | BETA-HR-004 dispatch is overdue by 4 days; send invite immediately or reassign, then record sent proof. Follow-up overdue by 2 days; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review overdue by 1 day; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
 | P0 | beta-human-review | BETA-HR-005 | 2026-05-22 | send overdue by 4 days | 2026-05-25 | prepared-not-sent | BETA-HR-005 dispatch is overdue by 4 days; send invite immediately or reassign, then record sent proof. Follow-up overdue by 2 days; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review overdue by 1 day; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
-| P1 | production-visual-review | PROD-VISUAL-HISTORY-002 | n/a | review in 2 days | 2026-05-28 | prepared-not-sent | Review in 2 days; send visual-review assignment or confirm scheduled reviewer time. | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
+| P1 | production-visual-review | PROD-VISUAL-HISTORY-002 | n/a | review in 2 days | 2026-05-28 | prepared-not-sent | Review in 2 days; send visual-review assignment or confirm scheduled reviewer time. | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Operating Rules
 

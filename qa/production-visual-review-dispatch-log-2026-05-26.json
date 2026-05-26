@@ -1,0 +1,107 @@
+{
+  "date": "2026-05-26",
+  "today": "2026-05-26",
+  "status": "pass",
+  "checked": 4,
+  "passed": 4,
+  "failed": 0,
+  "requireSent": false,
+  "dispatchOutboxArtifact": "qa/production-visual-review-dispatch-outbox-2026-05-26.json",
+  "artifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+  "report": "qa/production-visual-review-dispatch-log-2026-05-26.md",
+  "csv": "qa/production-visual-review-dispatch-log-2026-05-26.csv",
+  "dispatchRowCount": 3,
+  "requiredDispatchRowCount": 2,
+  "sentCount": 0,
+  "preparedNotSentCount": 3,
+  "requiredPreparedNotSentCount": 2,
+  "preparedDueSoonCount": 1,
+  "preparedOverdueCount": 0,
+  "dispatchRows": [
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "dueAt": "2026-05-28",
+      "reviewerRole": "visual QA reviewer",
+      "requiredForPublicLaunch": true,
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
+      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": null,
+      "contactRecordLocation": "",
+      "notes": "Prepared by visual QA outbox. Store real reviewer contact details outside the repo."
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-003",
+      "dueAt": "2026-06-04",
+      "reviewerRole": "visual QA reviewer",
+      "requiredForPublicLaunch": true,
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-04",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
+      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json",
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": null,
+      "contactRecordLocation": "",
+      "notes": "Prepared by visual QA outbox. Store real reviewer contact details outside the repo."
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "reviewerRole": "visual QA reviewer",
+      "requiredForPublicLaunch": false,
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-004-2026-06-11.txt",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-11",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
+      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
+      "sendStatus": "prepared-not-sent",
+      "reviewerAlias": "",
+      "deliveryChannel": "",
+      "sentAt": null,
+      "contactRecordLocation": "",
+      "notes": "Prepared by visual QA outbox. Store real reviewer contact details outside the repo."
+    }
+  ],
+  "checks": [
+    {
+      "name": "visual dispatch log reads passing dispatch outbox",
+      "ok": true,
+      "dispatchOutboxArtifact": "qa/production-visual-review-dispatch-outbox-2026-05-26.json",
+      "dispatchOutboxStatus": "pass",
+      "dispatchOutboxRowCount": 3,
+      "rowCount": 3
+    },
+    {
+      "name": "visual dispatch log has one row per outbox message",
+      "ok": true,
+      "dispatchRowCount": 3,
+      "outboxRowCount": 3,
+      "unknownRows": []
+    },
+    {
+      "name": "visual dispatch log rows are aligned and privacy-safe",
+      "ok": true,
+      "rowIssues": []
+    },
+    {
+      "name": "visual dispatch log strict send proof is satisfied when requested",
+      "ok": true,
+      "requireSent": false,
+      "strictIssues": []
+    }
+  ],
+  "failures": [],
+  "rowIssues": [],
+  "strictIssues": []
+}
