@@ -180,7 +180,7 @@ export function Sidebar() {
               {profile?.display_name || 'Traveler'}
             </p>
             <p className="t-mono text-[0.625rem] text-ink-3 truncate leading-tight mt-0.5">
-              {profile?.username ? `@${profile.username}` : 'no callsign'}
+              {profile?.username ? `@${profile.username}` : 'Username not set'}
             </p>
           </div>
           <button
