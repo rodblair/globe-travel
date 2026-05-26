@@ -56,7 +56,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchProfile = useCallback(async () => {
     const { data: { user: authUser } } = await supabase.auth.getUser()
     if (authUser) {
-      clearBrowserGuestSession()
       const { data } = await supabase
         .from('profiles')
         .select('*')
@@ -81,7 +80,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshProfile = useCallback(async () => {
     const { data: { user: authUser } } = await supabase.auth.getUser()
     if (authUser) {
-      clearBrowserGuestSession()
       setUser(authUser)
       await fetchProfile()
       return
@@ -107,7 +105,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { user } } = await supabase.auth.getUser()
       if (cancelled) return
       if (user) {
-        clearBrowserGuestSession()
         setUser(user)
         await fetchProfile()
         setIsLoading(false)
@@ -143,7 +140,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setUser(session?.user ?? null)
         if (session?.user) {
-          clearBrowserGuestSession()
           await fetchProfile()
         } else {
           setProfile(null)
