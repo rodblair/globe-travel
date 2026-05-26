@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAuthNextFromSearchParams, getSafeAuthNext } from '@/lib/auth-next'
 import { GUEST_SESSION_COOKIE } from '@/lib/dev-auth'
+import { createClient } from '@/lib/supabase-server'
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
@@ -17,6 +18,17 @@ export async function GET(request: Request) {
     redirectTo.hash = new URL(safeNext, url.origin).hash
   }
   const response = NextResponse.redirect(redirectTo)
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user) {
+    response.cookies.set(GUEST_SESSION_COOKIE, '', {
+      path: '/',
+      maxAge: 0,
+    })
+    return response
+  }
+
   const requestedGuestId = url.searchParams.get('id')
   const guestId =
     process.env.NODE_ENV === 'development' &&
