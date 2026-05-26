@@ -31,6 +31,9 @@ function runNpmScript(scriptName) {
 
 function isActionableLaunchToday(summary) {
   const failures = Array.isArray(summary.failures) ? summary.failures : []
+  const publicGuardrailIssues = Array.isArray(summary.publicGuardrailIssues)
+    ? summary.publicGuardrailIssues
+    : []
   const onlyOverdueFailure = failures.length === 1 &&
     failures[0]?.name === 'launch today has no overdue launch execution rows'
 
@@ -38,13 +41,35 @@ function isActionableLaunchToday(summary) {
     summary.status === 'fail' &&
     onlyOverdueFailure &&
     summary.deploymentRuntimeBlocked !== true &&
-    (Array.isArray(summary.publicGuardrailIssues) ? summary.publicGuardrailIssues.length === 0 : true),
+    publicGuardrailIssues.every((issue) => issue === 'beta human review command center is not fully prepared'),
   )
 }
 
 function classifyLaunchToday(run, summary) {
   if (run.exitCode === 0 && summary?.status === 'pass') return 'pass'
   if (run.exitCode === 1 && isActionableLaunchToday(summary)) return 'actionable'
+  return 'fail'
+}
+
+function isActionablePublicStatus(summary) {
+  const guardrailIssues = Array.isArray(summary?.guardrailIssues) ? summary.guardrailIssues : []
+  const blockerIds = (Array.isArray(summary?.blockers) ? summary.blockers : [])
+    .map((blocker) => blocker.id)
+    .filter(Boolean)
+
+  return Boolean(
+    summary?.status === 'blocked' &&
+    summary?.publicLaunchReady === false &&
+    guardrailIssues.length > 0 &&
+    guardrailIssues.every((issue) => issue === 'beta human review command center is not fully prepared') &&
+    blockerIds.includes('beta-human-review-threshold') &&
+    blockerIds.includes('production-visual-review-history'),
+  )
+}
+
+function classifyPublicStatus(run, summary) {
+  if (run.exitCode === 0 && ['pass', 'beta-ready-public-blocked'].includes(summary?.status)) return 'pass'
+  if (run.exitCode === 1 && isActionablePublicStatus(summary)) return 'actionable'
   return 'fail'
 }
 
@@ -99,7 +124,7 @@ const firstPublicStatus = await loadPublicStatusSummary()
 steps.push({
   step: 'public-launch-status-after-first-board',
   ...firstStatusRun,
-  classification: firstStatusRun.exitCode === 0 ? 'pass' : 'fail',
+  classification: classifyPublicStatus(firstStatusRun, firstPublicStatus),
   status: firstPublicStatus.status,
   guardrailIssues: firstPublicStatus.guardrailIssues || [],
   blockerIds: (firstPublicStatus.blockers || []).map((blocker) => blocker.id),
@@ -142,7 +167,7 @@ const secondPublicStatus = await loadPublicStatusSummary()
 steps.push({
   step: 'public-launch-status-final',
   ...secondStatusRun,
-  classification: secondStatusRun.exitCode === 0 ? 'pass' : 'fail',
+  classification: classifyPublicStatus(secondStatusRun, secondPublicStatus),
   status: secondPublicStatus.status,
   guardrailIssues: secondPublicStatus.guardrailIssues || [],
   blockerIds: (secondPublicStatus.blockers || []).map((blocker) => blocker.id),

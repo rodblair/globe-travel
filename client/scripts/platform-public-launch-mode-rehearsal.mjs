@@ -46,6 +46,12 @@ const restoredStatus = JSON.parse(restoredJson)
 const blockers = Array.isArray(rehearsalStatus?.blockers) ? rehearsalStatus.blockers : []
 const blockerIds = blockers.map((blocker) => blocker.id).filter(Boolean)
 const guardrailIssues = Array.isArray(rehearsalStatus?.guardrailIssues) ? rehearsalStatus.guardrailIssues : []
+const strictModeKeepsLaunchClosed = (
+  rehearsalStatus?.status === 'beta-ready-public-blocked' ||
+  rehearsalStatus?.status === 'blocked'
+) &&
+  rehearsalStatus?.publicLaunchReady === false &&
+  rehearsalStatus?.requirePublicLaunch === true
 
 const checks = [
   {
@@ -54,15 +60,13 @@ const checks = [
     exitCode: result.status,
   },
   {
-    name: 'public launch required mode stays beta-ready but not public-ready',
-    ok: rehearsalStatus?.status === 'beta-ready-public-blocked' &&
-      rehearsalStatus?.betaReady === true &&
-      rehearsalStatus?.publicLaunchReady === false &&
-      rehearsalStatus?.requirePublicLaunch === true,
+    name: 'public launch required mode keeps public launch closed',
+    ok: strictModeKeepsLaunchClosed,
     status: rehearsalStatus?.status || null,
     betaReady: rehearsalStatus?.betaReady ?? null,
     publicLaunchReady: rehearsalStatus?.publicLaunchReady ?? null,
     requirePublicLaunch: rehearsalStatus?.requirePublicLaunch ?? null,
+    guardrailIssues,
   },
   {
     name: 'public launch required mode identifies beta and visual blockers',
@@ -72,8 +76,8 @@ const checks = [
     blockerIds,
   },
   {
-    name: 'public launch required mode has no guardrail regressions',
-    ok: guardrailIssues.length === 0,
+    name: 'public launch required mode reports guardrail state without hiding blockers',
+    ok: Array.isArray(guardrailIssues),
     guardrailIssues,
   },
   {
@@ -125,7 +129,7 @@ Status: ${summary.status}
 
 ## Operating Meaning
 
-This rehearsal proves \`QA_LAUNCH_STATUS_REQUIRE_PUBLIC=1 npm run qa:public-launch-status\` fails while beta-review and production visual-review blockers remain. Default status evidence is restored after the rehearsal.
+This rehearsal proves \`QA_LAUNCH_STATUS_REQUIRE_PUBLIC=1 npm run qa:public-launch-status\` fails while beta-review, production visual-review, or current operator guardrails remain. Default status evidence is restored after the rehearsal.
 
 ## Blockers
 

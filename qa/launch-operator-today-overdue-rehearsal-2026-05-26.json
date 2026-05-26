@@ -1,0 +1,71 @@
+{
+  "date": "2026-05-26",
+  "status": "pass",
+  "checked": 7,
+  "passed": 7,
+  "failed": 0,
+  "overdueToday": "2026-05-23",
+  "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
+  "currentLaunchArtifact": "qa/launch-operator-today-2026-05-26.json",
+  "rawLaunchArtifactsCleanedUp": true,
+  "launchOperatorExitCode": 1,
+  "launchOperatorStdoutIncludesFail": true,
+  "expectedFailureName": "launch today has no overdue launch execution rows",
+  "detectedOverdueRows": {
+    "betaDispatchOverdueCount": 5,
+    "visualOverdueCount": 0,
+    "betaDispatchOverdueIds": [
+      "BETA-HR-001",
+      "BETA-HR-002",
+      "BETA-HR-003",
+      "BETA-HR-004",
+      "BETA-HR-005"
+    ],
+    "visualOverdueIds": []
+  },
+  "checks": [
+    {
+      "name": "overdue rehearsal produced a launch-operator artifact",
+      "ok": true
+    },
+    {
+      "name": "overdue rehearsal uses isolated simulated date",
+      "ok": true,
+      "date": "2026-05-23",
+      "today": "2026-05-23",
+      "overdueToday": "2026-05-23"
+    },
+    {
+      "name": "overdue rehearsal exits non-zero",
+      "ok": true,
+      "exitCode": 1
+    },
+    {
+      "name": "overdue rehearsal fails the daily board",
+      "ok": true,
+      "status": "fail",
+      "failed": 1
+    },
+    {
+      "name": "overdue rehearsal detects overdue launch execution rows",
+      "ok": true,
+      "betaDispatchOverdueCount": 5,
+      "visualOverdueCount": 0
+    },
+    {
+      "name": "overdue rehearsal failure reason is explicit",
+      "ok": true,
+      "expectedFailureName": "launch today has no overdue launch execution rows"
+    },
+    {
+      "name": "current launch operator artifact remains actionable",
+      "ok": true,
+      "currentLaunchArtifact": "qa/launch-operator-today-2026-05-26.json",
+      "currentStatus": "fail",
+      "currentOnlyOverdueExecutionFailure": true
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/launch-operator-today-overdue-rehearsal-2026-05-26.json",
+  "reportArtifact": "qa/launch-operator-today-overdue-rehearsal-2026-05-26.md"
+}

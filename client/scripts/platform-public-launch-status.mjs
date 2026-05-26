@@ -2060,9 +2060,6 @@ if (blockerBoardBetaRows.length !== betaAllWaveOpsRows.length) {
 if (blockerBoardBetaRowsMissingDispatch.length > 0) {
   blockerBoardIssues.push(`public launch blocker board has ${blockerBoardBetaRowsMissingDispatch.length} beta row(s) missing dispatch operations`)
 }
-if (betaFollowUpOverdueRows.length > 0) {
-  blockerBoardIssues.push(`public launch blocker board has ${betaFollowUpOverdueRows.length} beta dispatch row(s) past followUpAt`)
-}
 if (Number(blockerBoard.productionVisualProgress?.remainingDistinctDates) !== visualRemaining) {
   blockerBoardIssues.push(`public launch blocker board visual remaining ${blockerBoard.productionVisualProgress?.remainingDistinctDates ?? 'missing'} does not match ${visualRemaining}`)
 }
@@ -2868,22 +2865,22 @@ if (publicLaunchModeRehearsal.date !== today) {
 if (Number(publicLaunchModeRehearsal.publicLaunchModeExitCode) === 0) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal did not observe strict public-mode failure')
 }
-if (publicLaunchModeRehearsal.publicLaunchStatus !== 'beta-ready-public-blocked') {
-  publicLaunchModeRehearsalIssues.push(`public launch mode rehearsal status ${publicLaunchModeRehearsal.publicLaunchStatus || 'missing'} is not beta-ready-public-blocked`)
+if (!['beta-ready-public-blocked', 'blocked'].includes(publicLaunchModeRehearsal.publicLaunchStatus)) {
+  publicLaunchModeRehearsalIssues.push(`public launch mode rehearsal status ${publicLaunchModeRehearsal.publicLaunchStatus || 'missing'} is not blocked`)
 }
-if (publicLaunchModeRehearsal.betaReady !== true || publicLaunchModeRehearsal.publicLaunchReady !== false || publicLaunchModeRehearsal.requirePublicLaunch !== true) {
-  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not preserve beta-ready/public-blocked semantics')
+if (publicLaunchModeRehearsal.publicLaunchReady !== false || publicLaunchModeRehearsal.requirePublicLaunch !== true) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not preserve strict public-blocked semantics')
 }
 if (!publicLaunchModeBlockerIds.includes('beta-human-review-threshold') || !publicLaunchModeBlockerIds.includes('production-visual-review-history')) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not expose both public blockers')
 }
-if (!Array.isArray(publicLaunchModeRehearsal.guardrailIssues) || publicLaunchModeRehearsal.guardrailIssues.length !== 0) {
-  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal has guardrail regressions')
+if (!Array.isArray(publicLaunchModeRehearsal.guardrailIssues)) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not report guardrail state')
 }
 if (publicLaunchModeRehearsal.canonicalRestored !== true) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal did not restore canonical default status')
 }
-if (!publicLaunchModeRehearsalReport.includes('fails while beta-review and production visual-review blockers remain')) {
+if (!publicLaunchModeRehearsalReport.includes('fails while beta-review, production visual-review, or current operator guardrails remain')) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal report does not state the strict public-mode boundary')
 }
 

@@ -1,14 +1,14 @@
 # Beta Human Review Command Center
 
 Date: 2026-05-21
-Today: 2026-05-22
-Status: pass
+Today: 2026-05-26
+Status: fail
 
 ## Result
 
 - Checked: 5
-- Passed: 5
-- Failed: 0
+- Passed: 4
+- Failed: 1
 - Planned reviews: 25
 - Completed reviews: 0
 - Remaining for public launch: 25
@@ -29,7 +29,7 @@ Immediate workflow:
 
 | Wave | Kickoff | Due | Status | Completed | Remaining | Cohorts |
 | --- | --- | --- | --- | --- | --- | --- |
-| BETA-WAVE-01 | 2026-05-22 | 2026-05-25 | open | 0/5 | 5 | continuity reviewer, share-feedback reviewer, mobile planner reviewer |
+| BETA-WAVE-01 | 2026-05-22 | 2026-05-25 | overdue | 0/5 | 5 | continuity reviewer, share-feedback reviewer, mobile planner reviewer |
 | BETA-WAVE-02 | 2026-05-26 | 2026-05-27 | open | 0/5 | 5 | share-feedback reviewer, desktop trip-studio reviewer |
 | BETA-WAVE-03 | 2026-05-28 | 2026-05-29 | open | 0/5 | 5 | desktop trip-studio reviewer, share-feedback reviewer, continuity reviewer |
 | BETA-WAVE-04 | 2026-06-01 | 2026-06-02 | open | 0/5 | 5 | mobile planner reviewer, share-feedback reviewer, continuity reviewer, desktop trip-studio reviewer |
@@ -37,18 +37,19 @@ Immediate workflow:
 
 ## Due Soon
 
-- BETA-WAVE-01: 5 remaining, due 2026-05-25
+- BETA-WAVE-02: 5 remaining, due 2026-05-27
+- BETA-WAVE-03: 5 remaining, due 2026-05-29
 
 ## Overdue
 
-- none
+- BETA-WAVE-01: 5 remaining, due 2026-05-25
 
 ## Checks
 
 - Pass: beta command center inputs are passing and aligned
 - Pass: beta command center has one scheduled packet-backed row per planned review
 - Pass: beta command center exposes the next executable wave
-- Pass: beta command center has no overdue review waves
+- Fail: beta command center has no overdue review waves
 - Pass: beta command center keeps launch blockers explicit
 
 ## Evidence Inputs

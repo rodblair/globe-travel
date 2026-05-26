@@ -1,7 +1,7 @@
 # Public Launch Blocker Board
 
 Date: 2026-05-21
-Today: 2026-05-23
+Today: 2026-05-26
 Status: pass
 
 ## Result
@@ -21,34 +21,34 @@ Status: pass
 
 | Blocker | Type | ID | Send By | Timing | Follow Up | Due | Owner | Dispatch | Status | Evidence Path |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| beta-human-review-threshold | beta-human-review | BETA-HR-001 | 2026-05-22 | send overdue by 1 day | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-002 | 2026-05-22 | send overdue by 1 day | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-003 | 2026-05-22 | send overdue by 1 day | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-004 | 2026-05-22 | send overdue by 1 day | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-005 | 2026-05-22 | send overdue by 1 day | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-006 | 2026-05-26 | send in 3 days | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-006-istanbul.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-007 | 2026-05-26 | send in 3 days | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-007-seoul.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-008 | 2026-05-26 | send in 3 days | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-008-bangkok.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-009 | 2026-05-26 | send in 3 days | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-009-marrakech.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-010 | 2026-05-26 | send in 3 days | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-010-cape-town.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-011 | 2026-05-28 | send in 5 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-011-sydney.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-012 | 2026-05-28 | send in 5 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-012-vancouver.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-013 | 2026-05-28 | send in 5 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-013-rio-de-janeiro.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-014 | 2026-05-28 | send in 5 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-014-reykjavik.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-015 | 2026-05-28 | send in 5 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-015-crete.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-016 | 2026-06-01 | send in 9 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-016-singapore.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-017 | 2026-06-01 | send in 9 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-017-dubai.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-018 | 2026-06-01 | send in 9 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-018-madrid-and-seville.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-019 | 2026-06-01 | send in 9 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-019-kyoto.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-020 | 2026-06-01 | send in 9 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-020-seattle.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-021 | 2026-06-03 | send in 11 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-021-bali.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-022 | 2026-06-03 | send in 11 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-022-nairobi.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-023 | 2026-06-03 | send in 11 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-024 | 2026-06-03 | send in 11 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
-| beta-human-review-threshold | beta-human-review | BETA-HR-025 | 2026-06-03 | send in 11 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| production-visual-review-history | production-visual-review | PROD-VISUAL-HISTORY-002 | n/a | review in 5 days | n/a | 2026-05-28 | Product | planned | required for public launch history | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
-| production-visual-review-history | production-visual-review | PROD-VISUAL-HISTORY-003 | n/a | review in 12 days | n/a | 2026-06-04 | Product | planned | required for public launch history | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json` |
-| production-visual-review-history | production-visual-review | PROD-VISUAL-HISTORY-004 | n/a | review in 19 days | n/a | 2026-06-11 | Product | planned | scheduled buffer review | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-001 | 2026-05-22 | send overdue by 4 days | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-001-athens.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-002 | 2026-05-22 | send overdue by 4 days | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-002-lisbon.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-003 | 2026-05-22 | send overdue by 4 days | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-004 | 2026-05-22 | send overdue by 4 days | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-005 | 2026-05-22 | send overdue by 4 days | 2026-05-24 | 2026-05-25 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-006 | 2026-05-26 | send today | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-006-istanbul.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-007 | 2026-05-26 | send today | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-007-seoul.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-008 | 2026-05-26 | send today | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-008-bangkok.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-009 | 2026-05-26 | send today | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-009-marrakech.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-010 | 2026-05-26 | send today | 2026-05-26 | 2026-05-27 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-010-cape-town.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-011 | 2026-05-28 | send in 2 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-011-sydney.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-012 | 2026-05-28 | send in 2 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-012-vancouver.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-013 | 2026-05-28 | send in 2 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-013-rio-de-janeiro.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-014 | 2026-05-28 | send in 2 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-014-reykjavik.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-015 | 2026-05-28 | send in 2 days | 2026-05-28 | 2026-05-29 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-015-crete.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-016 | 2026-06-01 | send in 6 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-016-singapore.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-017 | 2026-06-01 | send in 6 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-017-dubai.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-018 | 2026-06-01 | send in 6 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-018-madrid-and-seville.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-019 | 2026-06-01 | send in 6 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-019-kyoto.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-020 | 2026-06-01 | send in 6 days | 2026-06-01 | 2026-06-02 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-020-seattle.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-021 | 2026-06-03 | send in 8 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-021-bali.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-022 | 2026-06-03 | send in 8 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-022-nairobi.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-023 | 2026-06-03 | send in 8 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-024 | 2026-06-03 | send in 8 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
+| beta-human-review-threshold | beta-human-review | BETA-HR-025 | 2026-06-03 | send in 8 days | 2026-06-03 | 2026-06-04 | Product | prepared-not-sent | needs completed review submission | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
+| production-visual-review-history | production-visual-review | PROD-VISUAL-HISTORY-002 | n/a | review in 2 days | n/a | 2026-05-28 | Product | planned | required for public launch history | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
+| production-visual-review-history | production-visual-review | PROD-VISUAL-HISTORY-003 | n/a | review in 9 days | n/a | 2026-06-04 | Product | planned | required for public launch history | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json` |
+| production-visual-review-history | production-visual-review | PROD-VISUAL-HISTORY-004 | n/a | review in 16 days | n/a | 2026-06-11 | Product | planned | scheduled buffer review | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## Next Evidence Actions
 
@@ -56,12 +56,12 @@ Status: pass
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-22
-- Send timing: send overdue by 1 day
+- Send timing: send overdue by 4 days
 - Follow up: 2026-05-24
-- Follow-up timing: follow-up in 1 day
+- Follow-up timing: follow-up overdue by 2 days
 - Due: 2026-05-25
-- Due timing: review in 2 days
-- Next action: BETA-HR-001 dispatch is overdue by 1 day; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
+- Due timing: review overdue by 1 day
+- Next action: BETA-HR-001 dispatch is overdue by 4 days; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile couple beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+restful+5-day+Athens+trip+for+a+couple+with+culture%2C+food%2C+and+recovery+time.
@@ -92,12 +92,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-22
-- Send timing: send overdue by 1 day
+- Send timing: send overdue by 4 days
 - Follow up: 2026-05-24
-- Follow-up timing: follow-up in 1 day
+- Follow-up timing: follow-up overdue by 2 days
 - Due: 2026-05-25
-- Due timing: review in 2 days
-- Next action: BETA-HR-002 dispatch is overdue by 1 day; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
+- Due timing: review overdue by 1 day
+- Next action: BETA-HR-002 dispatch is overdue by 4 days; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Lisbon+trip+for+friends+who+want+food%2C+viewpoints%2C+and+nightlife.
@@ -128,12 +128,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-22
-- Send timing: send overdue by 1 day
+- Send timing: send overdue by 4 days
 - Follow up: 2026-05-24
-- Follow-up timing: follow-up in 1 day
+- Follow-up timing: follow-up overdue by 2 days
 - Due: 2026-05-25
-- Due timing: review in 2 days
-- Next action: BETA-HR-003 dispatch is overdue by 1 day; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
+- Due timing: review overdue by 1 day
+- Next action: BETA-HR-003 dispatch is overdue by 4 days; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+budget+3-day+Barcelona+beach+and+neighborhood+trip+for+friends.
@@ -164,12 +164,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-22
-- Send timing: send overdue by 1 day
+- Send timing: send overdue by 4 days
 - Follow up: 2026-05-24
-- Follow-up timing: follow-up in 1 day
+- Follow-up timing: follow-up overdue by 2 days
 - Due: 2026-05-25
-- Due timing: review in 2 days
-- Next action: BETA-HR-004 dispatch is overdue by 1 day; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
+- Due timing: review overdue by 1 day
+- Next action: BETA-HR-004 dispatch is overdue by 4 days; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop couple beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+premium+4-day+Paris+trip+for+a+couple+with+restaurants%2C+art%2C+and+romantic+pacing.
@@ -200,12 +200,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-22
-- Send timing: send overdue by 1 day
+- Send timing: send overdue by 4 days
 - Follow up: 2026-05-24
-- Follow-up timing: follow-up in 1 day
+- Follow-up timing: follow-up overdue by 2 days
 - Due: 2026-05-25
-- Due timing: review in 2 days
-- Next action: BETA-HR-005 dispatch is overdue by 1 day; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
+- Due timing: review overdue by 1 day
+- Next action: BETA-HR-005 dispatch is overdue by 4 days; send or reassign immediately, record sent proof, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+New+York+trip+for+repeat+visitors+who+want+neighborhoods%2C+food%2C+and+fresh+ideas.
@@ -236,12 +236,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-26
-- Send timing: send in 3 days
+- Send timing: send today
 - Follow up: 2026-05-26
-- Follow-up timing: follow-up in 3 days
+- Follow-up timing: follow-up today
 - Due: 2026-05-27
-- Due timing: review in 4 days
-- Next action: Send BETA-HR-006 by 2026-05-26, follow up by 2026-05-26, then validate completed intake after the human review arrives.
+- Due timing: review in 1 day
+- Next action: Send BETA-HR-006 today, record sent proof, follow up by 2026-05-26, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Istanbul+history+and+markets+trip+for+a+small+group.
@@ -272,12 +272,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-26
-- Send timing: send in 3 days
+- Send timing: send today
 - Follow up: 2026-05-26
-- Follow-up timing: follow-up in 3 days
+- Follow-up timing: follow-up today
 - Due: 2026-05-27
-- Due timing: review in 4 days
-- Next action: Send BETA-HR-007 by 2026-05-26, follow up by 2026-05-26, then validate completed intake after the human review arrives.
+- Due timing: review in 1 day
+- Next action: Send BETA-HR-007 today, record sent proof, follow up by 2026-05-26, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Seoul+food+and+shopping+trip+for+friends.
@@ -308,12 +308,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-26
-- Send timing: send in 3 days
+- Send timing: send today
 - Follow up: 2026-05-26
-- Follow-up timing: follow-up in 3 days
+- Follow-up timing: follow-up today
 - Due: 2026-05-27
-- Due timing: review in 4 days
-- Next action: Send BETA-HR-008 by 2026-05-26, follow up by 2026-05-26, then validate completed intake after the human review arrives.
+- Due timing: review in 1 day
+- Next action: Send BETA-HR-008 today, record sent proof, follow up by 2026-05-26, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Bangkok+trip+with+temples%2C+street+food%2C+and+easy+pacing.
@@ -344,12 +344,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-26
-- Send timing: send in 3 days
+- Send timing: send today
 - Follow up: 2026-05-26
-- Follow-up timing: follow-up in 3 days
+- Follow-up timing: follow-up today
 - Due: 2026-05-27
-- Due timing: review in 4 days
-- Next action: Send BETA-HR-009 by 2026-05-26, follow up by 2026-05-26, then validate completed intake after the human review arrives.
+- Due timing: review in 1 day
+- Next action: Send BETA-HR-009 today, record sent proof, follow up by 2026-05-26, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop couple beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Marrakech+trip+around+markets%2C+riads%2C+food%2C+and+culture.
@@ -380,12 +380,12 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-26
-- Send timing: send in 3 days
+- Send timing: send today
 - Follow up: 2026-05-26
-- Follow-up timing: follow-up in 3 days
+- Follow-up timing: follow-up today
 - Due: 2026-05-27
-- Due timing: review in 4 days
-- Next action: Send BETA-HR-010 by 2026-05-26, follow up by 2026-05-26, then validate completed intake after the human review arrives.
+- Due timing: review in 1 day
+- Next action: Send BETA-HR-010 today, record sent proof, follow up by 2026-05-26, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile friend group beta reviewer
 - Start URL: https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Cape+Town+outdoors+and+food+trip+for+friends.
@@ -416,11 +416,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-28
-- Send timing: send in 5 days
+- Send timing: send in 2 days
 - Follow up: 2026-05-28
-- Follow-up timing: follow-up in 5 days
+- Follow-up timing: follow-up in 2 days
 - Due: 2026-05-29
-- Due timing: review in 6 days
+- Due timing: review in 3 days
 - Next action: Send BETA-HR-011 by 2026-05-28, follow up by 2026-05-28, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop friend group beta reviewer
@@ -452,11 +452,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-28
-- Send timing: send in 5 days
+- Send timing: send in 2 days
 - Follow up: 2026-05-28
-- Follow-up timing: follow-up in 5 days
+- Follow-up timing: follow-up in 2 days
 - Due: 2026-05-29
-- Due timing: review in 6 days
+- Due timing: review in 3 days
 - Next action: Send BETA-HR-012 by 2026-05-28, follow up by 2026-05-28, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile friend group beta reviewer
@@ -488,11 +488,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-28
-- Send timing: send in 5 days
+- Send timing: send in 2 days
 - Follow up: 2026-05-28
-- Follow-up timing: follow-up in 5 days
+- Follow-up timing: follow-up in 2 days
 - Due: 2026-05-29
-- Due timing: review in 6 days
+- Due timing: review in 3 days
 - Next action: Send BETA-HR-013 by 2026-05-28, follow up by 2026-05-28, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop friend group beta reviewer
@@ -524,11 +524,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-28
-- Send timing: send in 5 days
+- Send timing: send in 2 days
 - Follow up: 2026-05-28
-- Follow-up timing: follow-up in 5 days
+- Follow-up timing: follow-up in 2 days
 - Due: 2026-05-29
-- Due timing: review in 6 days
+- Due timing: review in 3 days
 - Next action: Send BETA-HR-014 by 2026-05-28, follow up by 2026-05-28, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile couple beta reviewer
@@ -560,11 +560,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-05-28
-- Send timing: send in 5 days
+- Send timing: send in 2 days
 - Follow up: 2026-05-28
-- Follow-up timing: follow-up in 5 days
+- Follow-up timing: follow-up in 2 days
 - Due: 2026-05-29
-- Due timing: review in 6 days
+- Due timing: review in 3 days
 - Next action: Send BETA-HR-015 by 2026-05-28, follow up by 2026-05-28, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop family beta reviewer
@@ -596,11 +596,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-01
-- Send timing: send in 9 days
+- Send timing: send in 6 days
 - Follow up: 2026-06-01
-- Follow-up timing: follow-up in 9 days
+- Follow-up timing: follow-up in 6 days
 - Due: 2026-06-02
-- Due timing: review in 10 days
+- Due timing: review in 7 days
 - Next action: Send BETA-HR-016 by 2026-06-01, follow up by 2026-06-01, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile family beta reviewer
@@ -632,11 +632,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-01
-- Send timing: send in 9 days
+- Send timing: send in 6 days
 - Follow up: 2026-06-01
-- Follow-up timing: follow-up in 9 days
+- Follow-up timing: follow-up in 6 days
 - Due: 2026-06-02
-- Due timing: review in 10 days
+- Due timing: review in 7 days
 - Next action: Send BETA-HR-017 by 2026-06-01, follow up by 2026-06-01, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop family beta reviewer
@@ -668,11 +668,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-01
-- Send timing: send in 9 days
+- Send timing: send in 6 days
 - Follow up: 2026-06-01
-- Follow-up timing: follow-up in 9 days
+- Follow-up timing: follow-up in 6 days
 - Due: 2026-06-02
-- Due timing: review in 10 days
+- Due timing: review in 7 days
 - Next action: Send BETA-HR-018 by 2026-06-01, follow up by 2026-06-01, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile couple beta reviewer
@@ -704,11 +704,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-01
-- Send timing: send in 9 days
+- Send timing: send in 6 days
 - Follow up: 2026-06-01
-- Follow-up timing: follow-up in 9 days
+- Follow-up timing: follow-up in 6 days
 - Due: 2026-06-02
-- Due timing: review in 10 days
+- Due timing: review in 7 days
 - Next action: Send BETA-HR-019 by 2026-06-01, follow up by 2026-06-01, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop solo beta reviewer
@@ -740,11 +740,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-01
-- Send timing: send in 9 days
+- Send timing: send in 6 days
 - Follow up: 2026-06-01
-- Follow-up timing: follow-up in 9 days
+- Follow-up timing: follow-up in 6 days
 - Due: 2026-06-02
-- Due timing: review in 10 days
+- Due timing: review in 7 days
 - Next action: Send BETA-HR-020 by 2026-06-01, follow up by 2026-06-01, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile solo beta reviewer
@@ -776,11 +776,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-03
-- Send timing: send in 11 days
+- Send timing: send in 8 days
 - Follow up: 2026-06-03
-- Follow-up timing: follow-up in 11 days
+- Follow-up timing: follow-up in 8 days
 - Due: 2026-06-04
-- Due timing: review in 12 days
+- Due timing: review in 9 days
 - Next action: Send BETA-HR-021 by 2026-06-03, follow up by 2026-06-03, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop solo beta reviewer
@@ -812,11 +812,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-03
-- Send timing: send in 11 days
+- Send timing: send in 8 days
 - Follow up: 2026-06-03
-- Follow-up timing: follow-up in 11 days
+- Follow-up timing: follow-up in 8 days
 - Due: 2026-06-04
-- Due timing: review in 12 days
+- Due timing: review in 9 days
 - Next action: Send BETA-HR-022 by 2026-06-03, follow up by 2026-06-03, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile solo beta reviewer
@@ -848,11 +848,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-03
-- Send timing: send in 11 days
+- Send timing: send in 8 days
 - Follow up: 2026-06-03
-- Follow-up timing: follow-up in 11 days
+- Follow-up timing: follow-up in 8 days
 - Due: 2026-06-04
-- Due timing: review in 12 days
+- Due timing: review in 9 days
 - Next action: Send BETA-HR-023 by 2026-06-03, follow up by 2026-06-03, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop family beta reviewer
@@ -884,11 +884,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-03
-- Send timing: send in 11 days
+- Send timing: send in 8 days
 - Follow up: 2026-06-03
-- Follow-up timing: follow-up in 11 days
+- Follow-up timing: follow-up in 8 days
 - Due: 2026-06-04
-- Due timing: review in 12 days
+- Due timing: review in 9 days
 - Next action: Send BETA-HR-024 by 2026-06-03, follow up by 2026-06-03, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: mobile friend group beta reviewer
@@ -920,11 +920,11 @@ Operator checklist:
 
 - Dispatch status: prepared-not-sent
 - Send by: 2026-06-03
-- Send timing: send in 11 days
+- Send timing: send in 8 days
 - Follow up: 2026-06-03
-- Follow-up timing: follow-up in 11 days
+- Follow-up timing: follow-up in 8 days
 - Due: 2026-06-04
-- Due timing: review in 12 days
+- Due timing: review in 9 days
 - Next action: Send BETA-HR-025 by 2026-06-03, follow up by 2026-06-03, then validate completed intake after the human review arrives.
 - Timebox: 45 minutes
 - Reviewer role: desktop friend group beta reviewer
@@ -955,7 +955,7 @@ Operator checklist:
 ### PROD-VISUAL-HISTORY-002: required for public launch history
 
 - Due: 2026-05-28
-- Due timing: review in 5 days
+- Due timing: review in 2 days
 - Next action: Run production visual review PROD-VISUAL-HISTORY-002 by 2026-05-28, inspect screenshots, then validate intake.
 - Reviewer role: visual QA reviewer
 - Run: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production`
@@ -989,7 +989,7 @@ Operator checklist:
 ### PROD-VISUAL-HISTORY-003: required for public launch history
 
 - Due: 2026-06-04
-- Due timing: review in 12 days
+- Due timing: review in 9 days
 - Next action: Run production visual review PROD-VISUAL-HISTORY-003 by 2026-06-04, inspect screenshots, then validate intake.
 - Reviewer role: visual QA reviewer
 - Run: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production`
@@ -1023,7 +1023,7 @@ Operator checklist:
 ### PROD-VISUAL-HISTORY-004: scheduled buffer review
 
 - Due: 2026-06-11
-- Due timing: review in 19 days
+- Due timing: review in 16 days
 - Next action: Run production visual review PROD-VISUAL-HISTORY-004 by 2026-06-11, inspect screenshots, then validate intake.
 - Reviewer role: visual QA reviewer
 - Run: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production`

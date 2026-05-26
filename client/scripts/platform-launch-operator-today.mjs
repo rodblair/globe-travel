@@ -90,7 +90,7 @@ function timingLabel(targetDate, label = 'due') {
 }
 
 function timingActionPrefix(row) {
-  const timing = String(row.sendTiming || row.dueTiming || '')
+  const timing = String(timingLabel(row.sendBy, 'send'))
     .replace(/^send overdue/, 'dispatch is overdue')
     .replace(/^send today/, 'dispatch is due today')
     .replace(/^send in/, 'dispatch is due in')
@@ -133,6 +133,18 @@ const betaDispatchLogRows = Array.isArray(betaDispatchLog.dispatchRows) ? betaDi
 const visualDispatchLogRows = Array.isArray(visualDispatchLog.dispatchRows) ? visualDispatchLog.dispatchRows : []
 const betaDispatchLogById = new Map(betaDispatchLogRows.map((row) => [row.id, row]))
 const visualDispatchLogById = new Map(visualDispatchLogRows.map((row) => [row.id, row]))
+const betaRowsPreparedForDispatch = betaRows.filter((row) => betaDispatchLogById.has(row.id) && messageById.has(row.id))
+const betaRowsDeferredUntilDispatchPrepared = betaRows.filter((row) => {
+  if (betaDispatchLogById.has(row.id) && messageById.has(row.id)) return false
+  const sendDelta = daysBetween(today, row.sendBy)
+  const followUpDelta = daysBetween(today, row.followUpAt)
+  const dueDelta = daysBetween(today, row.dueAt)
+  return (
+    (Number.isFinite(sendDelta) && sendDelta <= 2) ||
+    (Number.isFinite(followUpDelta) && followUpDelta <= 2) ||
+    (Number.isFinite(dueDelta) && dueDelta <= 3)
+  )
+})
 const deploymentCurrency = publicStatus.deploymentCurrency || {}
 const deploymentRuntimeCommitShort = deploymentCurrency.latestRuntimeCommitShort || deploymentCurrency.latestRuntimeCommit
 const liveDeploymentCommitShort = publicStatus.liveDeployment?.commit
@@ -175,11 +187,11 @@ function betaActionRow(row, priority, action) {
     destination: message.destination || row.source?.messageSubject?.replace(/^\[Globe\.travel beta\]\s*/, '') || '',
     owner: row.owner || 'Product',
     sendBy: row.sendBy,
-    sendTiming: row.sendTiming || timingLabel(row.sendBy, 'send'),
+    sendTiming: timingLabel(row.sendBy, 'send'),
     followUpAt: row.followUpAt,
-    followUpTiming: row.followUpTiming || timingLabel(row.followUpAt, 'follow-up'),
+    followUpTiming: timingLabel(row.followUpAt, 'follow-up'),
     dueAt: row.dueAt,
-    dueTiming: row.dueTiming || timingLabel(row.dueAt, 'review'),
+    dueTiming: timingLabel(row.dueAt, 'review'),
     daysUntilDue: daysBetween(today, row.dueAt),
     sendStatus: dispatchLog.sendStatus || row.dispatchStatus || '',
     reviewerAlias: dispatchLog.reviewerAlias || '',
@@ -209,7 +221,7 @@ function visualActionRow(row, priority, action) {
     followUpAt: '',
     followUpTiming: '',
     dueAt: row.dueAt,
-    dueTiming: row.dueTiming || timingLabel(row.dueAt, 'review'),
+    dueTiming: timingLabel(row.dueAt, 'review'),
     daysUntilDue: daysBetween(today, row.dueAt),
     sendStatus: dispatchLog.sendStatus || '',
     reviewerAlias: dispatchLog.reviewerAlias || '',
@@ -258,36 +270,36 @@ function deploymentActionRow() {
   }
 }
 
-const betaDispatchDueToday = betaRows
+const betaDispatchDueToday = betaRowsPreparedForDispatch
   .filter((row) => daysBetween(today, row.sendBy) === 0 && !rowIsSent(betaDispatchLogById.get(row.id)))
   .map((row) => betaActionRow(row, 'P0', `${timingActionPrefix(row)}send beta review invite today and record sent proof.`))
-const betaDispatchOverdue = betaRows
+const betaDispatchOverdue = betaRowsPreparedForDispatch
   .filter((row) => Number.isFinite(daysBetween(today, row.sendBy)) && daysBetween(today, row.sendBy) < 0 && !rowIsSent(betaDispatchLogById.get(row.id)))
   .map((row) => betaActionRow(row, 'P0', `${timingActionPrefix(row)}send invite immediately or reassign, then record sent proof.`))
-const betaFollowUpsDueSoon = betaRows
+const betaFollowUpsDueSoon = betaRowsPreparedForDispatch
   .filter((row) => {
     const delta = daysBetween(today, row.followUpAt)
-    return Number.isFinite(delta) && delta >= 0 && delta <= 2 && !rowIsSent(betaDispatchLogById.get(row.id))
+    return Number.isFinite(delta) && delta <= 2 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
-  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(row.followUpTiming || timingLabel(row.followUpAt, 'follow-up'))}; draft the follow-up, but do not send it until the initial invite is recorded as sent.`))
-const betaReviewsDueSoon = betaRows
+  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(timingLabel(row.followUpAt, 'follow-up'))}; draft the follow-up, but do not send it until the initial invite is recorded as sent.`))
+const betaReviewsDueSoon = betaRowsPreparedForDispatch
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
-    return Number.isFinite(delta) && delta >= 0 && delta <= 3 && !rowIsSent(betaDispatchLogById.get(row.id))
+    return Number.isFinite(delta) && delta <= 3 && !rowIsSent(betaDispatchLogById.get(row.id))
   })
-  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(row.dueTiming || timingLabel(row.dueAt, 'review'))}; track completed reviewer JSON and intake readiness.`))
+  .map((row) => betaActionRow(row, 'P1', `${sentenceStart(timingLabel(row.dueAt, 'review'))}; track completed reviewer JSON and intake readiness.`))
 const visualDueSoon = visualRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
     return row.status === 'required for public launch history' && Number.isFinite(delta) && delta >= 0 && delta <= 7 && !rowIsSent(visualDispatchLogById.get(row.id))
   })
-  .map((row) => visualActionRow(row, 'P1', `${sentenceStart(row.dueTiming || timingLabel(row.dueAt, 'review'))}; send visual-review assignment or confirm scheduled reviewer time.`))
+  .map((row) => visualActionRow(row, 'P1', `${sentenceStart(timingLabel(row.dueAt, 'review'))}; send visual-review assignment or confirm scheduled reviewer time.`))
 const visualOverdue = visualRows
   .filter((row) => {
     const delta = daysBetween(today, row.dueAt)
     return row.status === 'required for public launch history' && Number.isFinite(delta) && delta < 0 && !rowIsSent(visualDispatchLogById.get(row.id))
   })
-  .map((row) => visualActionRow(row, 'P0', `${sentenceStart(row.dueTiming || timingLabel(row.dueAt, 'review'))}; run production visual review and import evidence.`))
+  .map((row) => visualActionRow(row, 'P0', `${sentenceStart(timingLabel(row.dueAt, 'review'))}; run production visual review and import evidence.`))
 
 const betaDispatchLogDueTodayRows = preparedDueTodayRows(betaDispatchLogRows)
 const betaDispatchLogOverdueRows = preparedOverdueRows(betaDispatchLogRows)
@@ -400,6 +412,15 @@ const launchOperatorSelfGuardrailIssues = new Set([
 const onlyLaunchOperatorSelfGuardrails =
   publicGuardrailIssues.length > 0 &&
   publicGuardrailIssues.every((issue) => launchOperatorSelfGuardrailIssues.has(issue))
+const launchOperatorAcceptedExternalGuardrailIssues = new Set([
+  'beta human review command center is not fully prepared',
+])
+const onlyLaunchOperatorAcceptedExternalGuardrails =
+  publicGuardrailIssues.length > 0 &&
+  publicGuardrailIssues.every((issue) => (
+    launchOperatorSelfGuardrailIssues.has(issue) ||
+    launchOperatorAcceptedExternalGuardrailIssues.has(issue)
+  ))
 const releaseStatusIsActionable = (
   publicStatus.status === 'beta-ready-public-blocked' &&
   publicStatus.betaReady === true &&
@@ -412,7 +433,7 @@ const releaseStatusIsActionable = (
   publicStatus.status === 'blocked' &&
   publicStatus.publicLaunchReady === false &&
   !deploymentRuntimeBlocked &&
-  onlyLaunchOperatorSelfGuardrails
+  (onlyLaunchOperatorSelfGuardrails || onlyLaunchOperatorAcceptedExternalGuardrails)
 )
 addCheck('launch today reads current blocked release status', releaseStatusIsActionable, {
   status: publicStatus.status || null,
@@ -423,6 +444,7 @@ addCheck('launch today reads current blocked release status', releaseStatusIsAct
   latestRuntimeCommit: deploymentRuntimeCommitShort || null,
   guardrailIssues: publicGuardrailIssues,
   onlyLaunchOperatorSelfGuardrails,
+  onlyLaunchOperatorAcceptedExternalGuardrails,
 })
 
 addCheck('launch today has actionable deployment, beta, or visual work', uniquePriorityRows.length > 0, {
@@ -450,6 +472,19 @@ addCheck('launch today reads aligned dispatch logs', (
   visualDispatchLogArtifact: qaDisplayPath(visualDispatchLogPath),
   visualDispatchLogStatus: visualDispatchLog.status || null,
   visualDispatchLogRowCount: visualDispatchLog.dispatchRowCount ?? null,
+})
+
+addCheck('launch today beta actions are backed by prepared dispatch packets', (
+  uniquePriorityRows
+    .filter((row) => row.workType === 'beta-human-review')
+    .every((row) => betaDispatchLogById.has(row.id) && messageById.has(row.id))
+), {
+  betaPreparedDispatchRowCount: betaRowsPreparedForDispatch.length,
+  deferredBetaRows: betaRowsDeferredUntilDispatchPrepared.map((row) => row.id),
+  betaActionRowsMissingDispatchPacket: uniquePriorityRows
+    .filter((row) => row.workType === 'beta-human-review')
+    .filter((row) => !betaDispatchLogById.has(row.id) || !messageById.has(row.id))
+    .map((row) => row.id),
 })
 
 addCheck('launch today beta actions have message files', missingMessageFiles.length === 0, {
@@ -605,6 +640,9 @@ const summary = {
         nextReviewDueAt: publicStatus.productionVisualReviews.nextReviewDueAt,
       }
     : null,
+  betaPreparedDispatchRowCount: betaRowsPreparedForDispatch.length,
+  betaDeferredUntilDispatchPreparedCount: betaRowsDeferredUntilDispatchPrepared.length,
+  betaDeferredUntilDispatchPreparedIds: betaRowsDeferredUntilDispatchPrepared.map((row) => row.id),
   betaDispatchDueTodayCount: betaDispatchDueToday.length,
   betaDispatchOverdueCount: betaDispatchOverdue.length,
   betaDispatchLogPreparedDueTodayCount: betaDispatchLogDueTodayRows.length,
@@ -632,6 +670,7 @@ const summary = {
     overdueBetaInviteIds: betaDispatchOverdue.map((row) => row.id),
     dueSoonVisualReviewIds: visualDueSoon.map((row) => row.id),
     followUpsBlockedUntilInitialSendIds: betaFollowUpsBlockedUntilInitialSend.map((row) => row.id),
+    deferredBetaInviteIds: betaRowsDeferredUntilDispatchPrepared.map((row) => row.id),
     rows: operatorHandoffRows,
     sentRecordTemplateCsv: dispatchSentRecordTemplateCsv,
     validationCommand: dispatchSentRecordTemplateValidationCommand,
@@ -683,6 +722,8 @@ Status: ${summary.status}
 - Runtime deployment current: ${summary.deploymentRuntimeBlocked ? `no, ${summary.deploymentRuntimeCommitShort || 'latest runtime'} is waiting for production` : 'yes'}
 - Beta reviews: ${summary.betaReviews?.completed ?? 0}/${summary.betaReviews?.minimumForPublicLaunch ?? 0}, ${summary.betaReviews?.remaining ?? 0} remaining
 - Production visual-review history: ${summary.productionVisualReviews?.distinctHistoryDateCount ?? 0}/${summary.productionVisualReviews?.minimumForPublicLaunch ?? 0}, ${summary.productionVisualReviews?.remainingDistinctDates ?? 0} remaining
+- Beta prepared dispatch rows: ${summary.betaPreparedDispatchRowCount}
+- Beta rows deferred until current dispatch packet/log advances: ${summary.betaDeferredUntilDispatchPreparedCount}
 - Beta invites due today: ${summary.betaDispatchDueTodayCount}
 - Beta invite send log: ${summary.betaDispatchLogSentCount} sent, ${summary.betaDispatchLogPreparedNotSentCount} prepared not sent
 - Beta follow-ups due soon: ${summary.betaFollowUpsDueSoonCount}
@@ -699,6 +740,7 @@ Status: ${summary.status}
 - Overdue beta invite IDs: ${summary.operatorHandoff.overdueBetaInviteIds.join(', ') || 'none'}
 - Due-soon production visual-review IDs: ${summary.operatorHandoff.dueSoonVisualReviewIds.join(', ') || 'none'}
 - Follow-ups blocked until initial sent proof: ${summary.operatorHandoff.followUpsBlockedUntilInitialSendIds.join(', ') || 'none'}
+- Deferred beta invite IDs: ${summary.operatorHandoff.deferredBetaInviteIds.join(', ') || 'none'}
 - Sent-record CSV: \`${summary.operatorHandoff.sentRecordTemplateCsv}\`
 - Validate sent proof: \`${summary.operatorHandoff.validationCommand}\`
 - Import sent proof: \`${summary.operatorHandoff.importCommand}\`
@@ -725,6 +767,7 @@ ${actionRowsTable(uniquePriorityRows)}
 ## Operating Rules
 
 - Send beta invite messages from the listed message files; do not treat sent messages as completed review evidence.
+- Do not send deferred beta rows until their dispatch packet and dispatch-log row are prepared; send or reassign the current prepared rows first.
 - Record reviewer names and contact details outside the repo.
 - Fill the generated sent-record template after real outreach: \`${dispatchSentRecordTemplateCsv}\` (report: \`${dispatchSentRecordTemplateReport}\`, JSON: \`${dispatchSentRecordTemplateArtifact}\`).
 - Validate the filled sent-state update with \`${dispatchSentRecordTemplateValidationCommand}\`, then import it with \`${dispatchSentRecordTemplateImportCommand}\`.
