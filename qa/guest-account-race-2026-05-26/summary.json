@@ -1,0 +1,153 @@
+{
+  "date": "2026-05-26",
+  "baseUrl": "http://localhost:3000",
+  "guestId": "4fcae8e6-dc4a-466d-8cbc-05d6db58275c",
+  "requestPaths": [
+    "/api/trips",
+    "/api/journal",
+    "/api/trips",
+    "/api/journal",
+    "/api/trips",
+    "/api/journal"
+  ],
+  "checked": 2,
+  "passed": 2,
+  "failed": 0,
+  "status": "pass",
+  "waves": [
+    {
+      "wave": "initial-parallel",
+      "results": [
+        {
+          "path": "/api/trips",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 3248,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/journal",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 3140,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/trips",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 3138,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/journal",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 3294,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/trips",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 3135,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/journal",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 3291,
+          "error": null,
+          "bodyPreview": "[]"
+        }
+      ]
+    },
+    {
+      "wave": "follow-up-parallel",
+      "results": [
+        {
+          "path": "/api/trips",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 576,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/journal",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 858,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/trips",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 606,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/journal",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 869,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/trips",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 590,
+          "error": null,
+          "bodyPreview": "[]"
+        },
+        {
+          "path": "/api/journal",
+          "status": 200,
+          "ok": true,
+          "elapsedMs": 753,
+          "error": null,
+          "bodyPreview": "[]"
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "attempted": true,
+    "reason": null,
+    "guestId": "4fcae8e6-dc4a-466d-8cbc-05d6db58275c",
+    "profileDeleted": true,
+    "userDeleted": true,
+    "error": null
+  },
+  "checks": [
+    {
+      "name": "parallel guest API requests all returned 2xx",
+      "ok": true,
+      "failedRequests": []
+    },
+    {
+      "name": "generated guest cleanup completed",
+      "ok": true,
+      "cleanup": {
+        "attempted": true,
+        "reason": null,
+        "guestId": "4fcae8e6-dc4a-466d-8cbc-05d6db58275c",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    }
+  ],
+  "failures": []
+}

@@ -53,28 +53,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const supabase = createClient()
 
-  const fetchProfile = useCallback(async (userId: string) => {
+  const fetchProfile = useCallback(async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (authUser) {
+      clearBrowserGuestSession()
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single()
+      setProfile(data)
+      return
+    }
+
     const guestId = getBrowserGuestId()
     if (guestId) {
       setProfile(createGuestProfile(guestId))
       return
     }
+
     if (isDevAuthBypassEnabled) {
       setProfile(devProfile)
       return
     }
-
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    setProfile(data)
   }, [supabase])
 
   const refreshProfile = useCallback(async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (authUser) {
+      clearBrowserGuestSession()
+      setUser(authUser)
+      await fetchProfile()
+      return
+    }
+
     const guestId = getBrowserGuestId()
     if (guestId) {
+      setUser(createGuestUser(guestId))
       setProfile(createGuestProfile(guestId))
       return
     }
@@ -82,13 +97,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(devProfile)
       return
     }
-    if (user) await fetchProfile(user.id)
-  }, [user, fetchProfile])
+    if (user) await fetchProfile()
+  }, [user, supabase, fetchProfile])
 
   useEffect(() => {
     let cancelled = false
 
     const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (cancelled) return
+      if (user) {
+        clearBrowserGuestSession()
+        setUser(user)
+        await fetchProfile()
+        setIsLoading(false)
+        return
+      }
+
       const guestId = getBrowserGuestId()
       if (guestId) {
         if (!cancelled) {
@@ -108,10 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return
       }
 
-      const { data: { user } } = await supabase.auth.getUser()
-      if (cancelled) return
       setUser(user)
-      if (user) await fetchProfile(user.id)
       setIsLoading(false)
     }
 
@@ -121,7 +143,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setUser(session?.user ?? null)
         if (session?.user) {
-          await fetchProfile(session.user.id)
+          clearBrowserGuestSession()
+          await fetchProfile()
         } else {
           setProfile(null)
         }
@@ -136,6 +159,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase, fetchProfile])
 
   const signOut = async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (authUser) {
+      clearBrowserGuestSession()
+      await supabase.auth.signOut()
+      setUser(null)
+      setProfile(null)
+      return
+    }
+
     if (getBrowserGuestId()) {
       clearBrowserGuestSession()
       setUser(null)
