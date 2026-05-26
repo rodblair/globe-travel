@@ -20,6 +20,7 @@ const DAY_NUMBER_WORDS: Record<string, number> = {
 const DAY_NUMBER_SOURCE = String.raw`\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen`
 const DAY_DURATION_SOURCE = String.raw`(?:${DAY_NUMBER_SOURCE})\s*[- ]?\s*(?:day|days)`
 const DAY_DURATION_PATTERN = new RegExp(String.raw`\b(${DAY_NUMBER_SOURCE})\s*[- ]?\s*(?:day|days)\b`, 'i')
+const LEADING_TRIP_DESCRIPTOR_SOURCE = String.raw`(?:restful|rest|relaxed|relaxing|calm|slow|easy|balanced|budget|cheap|premium|luxury|romantic|family|friend|friends|group|solo|first[- ]?time|food(?:ie)?|cultural|culture|history|historic|beach(?:es)?|walkable|walking|outdoor|outdoors|quick|long|short)`
 const DESTINATION_TRAILING_THEME_PATTERN =
   /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|design|architecture|shops?|shopping|bakeries|bakery|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|markets?)\b.*$/i
 
@@ -103,6 +104,8 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
   const patterns = [
     new RegExp(String.raw`${commandSource}(?:${DAY_DURATION_SOURCE})\s+(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|around|over|as|trip|itinerary|city break)\b|[,.!?]|$)`, 'i'),
     new RegExp(String.raw`${commandSource}(?:${DAY_DURATION_SOURCE})\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:trip|itinerary|city break)\b`, 'i'),
+    new RegExp(String.raw`${commandSource}(?:${LEADING_TRIP_DESCRIPTOR_SOURCE}\s+){1,4}(?:${DAY_DURATION_SOURCE})\s+(?:(?:in|to|for)\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|around|over|as|trip|itinerary|city break)\b|[,.!?]|$)`, 'i'),
+    new RegExp(String.raw`${commandSource}(?:${LEADING_TRIP_DESCRIPTOR_SOURCE}\s+){1,4}(?:${DAY_DURATION_SOURCE})\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:trip|itinerary|city break)\b`, 'i'),
     new RegExp(String.raw`${commandSource}(?:(?:${DAY_DURATION_SOURCE})\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:(?:${DAY_DURATION_SOURCE})|for|with|around|over|as|trip|itinerary|weekend|city break)\b|[,.!?]|$)`, 'i'),
     new RegExp(String.raw`${commandSource}([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:${DAY_DURATION_SOURCE}|weekend)\b`, 'i'),
     new RegExp(String.raw`\b(?:${DAY_DURATION_SOURCE})\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b`, 'i'),

@@ -10,6 +10,11 @@
     "expected": { "destination": "Athens", "country": "Greece", "days": 5, "themes": ["food", "beach", "relaxed"] }
   },
   {
+    "id": "athens-restful-five-day-prefix",
+    "prompt": "Plan a restful 5-day Athens trip for a couple with culture, food, and recovery time.",
+    "expected": { "destination": "Athens", "country": "Greece", "days": 5, "themes": ["culture", "food", "rest"], "requiresRestDay": true }
+  },
+  {
     "id": "lisbon-two-day-hyphen-word-duration",
     "prompt": "Build a two-day Lisbon itinerary with viewpoints, seafood, and easy walking.",
     "expected": { "destination": "Lisbon", "country": "Portugal", "days": 2, "themes": ["viewpoints", "food", "walkable"] }
