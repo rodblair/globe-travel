@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-26T20:32:08.724Z
+Generated at: 2026-05-26T21:47:15.435Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -10,8 +10,8 @@ Status: blocked
 
 - Beta/release-ops ready: no
 - Public-launch ready: no
-- Production commit: ff37da18eebbfcc954e0101db73d91f63ee72f41
-- Production deployment: globe-travel-g62dg00di-rodney-blairs-projects.vercel.app
+- Production commit: 39b36598d64c39961db626141386a754e7181d0e
+- Production deployment: globe-travel-pr2fa76tw-rodney-blairs-projects.vercel.app
 - Runtime deployment current: yes
 - Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
@@ -37,9 +37,9 @@ Status: blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1
-- Latest production visual commit: ff37da18eebbfcc954e0101db73d91f63ee72f41
-- Latest production visual deployment: globe-travel-g62dg00di-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-26-39b3659
+- Latest production visual commit: 39b36598d64c39961db626141386a754e7181d0e
+- Latest production visual deployment: globe-travel-pr2fa76tw-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
@@ -229,7 +229,7 @@ Public metadata:
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-05-26.md` and `qa/public-launch-threshold-rehearsal-2026-05-26.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-21.json`
-- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1` and `qa/visual-baseline-production-runtime-current-2026-05-23-ff37da1/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-26-39b3659` and `qa/visual-baseline-production-runtime-current-2026-05-26-39b3659/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`

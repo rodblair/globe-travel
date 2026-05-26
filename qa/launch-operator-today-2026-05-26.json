@@ -2,7 +2,7 @@
   "date": "2026-05-26",
   "today": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T20:32:06.713Z",
+  "generatedAt": "2026-05-26T21:46:53.743Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -24,10 +24,13 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41",
+  "liveDeploymentCommit": "39b36598d64c39961db626141386a754e7181d0e",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
-    "beta human review command center is not fully prepared"
+    "beta human review command center is not fully prepared",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "dispatch sent-record template is not ready for operator handoff",
+    "dispatch sent-record blank-template rejection is not proving pre-import safety"
   ],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
@@ -386,7 +389,10 @@
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
       "guardrailIssues": [
-        "beta human review command center is not fully prepared"
+        "beta human review command center is not fully prepared",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "dispatch sent-record template is not ready for operator handoff",
+        "dispatch sent-record blank-template rejection is not proving pre-import safety"
       ],
       "onlyLaunchOperatorSelfGuardrails": false,
       "onlyLaunchOperatorAcceptedExternalGuardrails": true
@@ -401,7 +407,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "ff37da18eebbfcc954e0101db73d91f63ee72f41"
+      "liveCommit": "39b36598d64c39961db626141386a754e7181d0e"
     },
     {
       "name": "launch today reads aligned dispatch logs",

@@ -258,12 +258,16 @@ try {
     signupSource.includes("appendAuthNext('/api/guest/start', authNext)") &&
     guestStartSource.includes('getAuthNextFromSearchParams(url.searchParams)')
   ))
-  record('guest identity wins consistently until account auth succeeds', (
+  record('account auth wins over guest cookies while guest remains fallback', (
+    authUtilsSource.indexOf("const { data: { user } } = await supabase.auth.getUser()") > -1 &&
     authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) > -1 &&
-    authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) <
-      authUtilsSource.indexOf("const { data: { user } } = await supabase.auth.getUser()") &&
+    authUtilsSource.indexOf("const { data: { user } } = await supabase.auth.getUser()") <
+      authUtilsSource.indexOf(`const guestId = (await cookies()).get(GUEST_SESSION_COOKIE)?.value`) &&
+    authUtilsSource.includes('if (user) return { supabase, user }') &&
     authUtilsSource.includes('guestId && isValidGuestId(guestId)') &&
-    chatRouteSource.includes('const user = (guestId ? createGuestUser(guestId) : null) || authUser') &&
+    chatRouteSource.includes('const user = authUser || (guestId ? createGuestUser(guestId) : null)') &&
+    guestStartSource.includes('const existingGuestId = getGuestIdFromCookieHeader(request.headers.get') &&
+    guestStartSource.includes('if (existingGuestId)') &&
     devAuthSource.includes('isValidGuestId(guestId) ? guestId : null') &&
     loginSource.includes('clearBrowserGuestSession()') &&
     signupSource.includes('clearBrowserGuestSession()') &&
