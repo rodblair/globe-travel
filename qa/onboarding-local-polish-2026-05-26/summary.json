@@ -1,0 +1,18 @@
+{
+  "date": "2026-05-26",
+  "url": "http://localhost:3000/onboarding",
+  "status": "pass",
+  "directCaption": {
+    "backgroundColor": "oklab(0.959019 0.00101283 0.0155295 / 0.7)",
+    "borderColor": "rgba(12, 31, 51, 0.1)",
+    "className": "inline-flex max-w-[min(28rem,calc(100%-3rem))] items-center justify-center rounded-full border border-rule bg-paper/70 px-4 py-2 text-sm text-foreground/70 shadow-sm backdrop-blur-sm",
+    "color": "oklab(0.234706 -0.0146732 -0.043769 / 0.7)",
+    "rect": {
+      "height": 38,
+      "width": 362,
+      "x": 106,
+      "y": 650
+    },
+    "text": "Your group trip ideas will appear here as you chat"
+  }
+}

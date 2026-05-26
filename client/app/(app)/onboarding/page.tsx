@@ -127,7 +127,7 @@ export default function OnboardingPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="text-foreground/30 text-sm"
+                  className="inline-flex max-w-[min(28rem,calc(100%-3rem))] items-center justify-center rounded-full border border-rule bg-paper/70 px-4 py-2 text-sm text-foreground/70 shadow-sm backdrop-blur-sm"
                 >
                   Your group trip ideas will appear here as you chat
                 </motion.p>
