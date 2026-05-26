@@ -2,7 +2,7 @@
   "date": "2026-05-26",
   "today": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T22:32:27.353Z",
+  "generatedAt": "2026-05-26T22:35:45.062Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -27,9 +27,7 @@
   "liveDeploymentCommit": "913e0a6b76f2f096c1cacc1004a172af909d6d74",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
-    "beta human review command center is not fully prepared",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "dispatch mark-sent dry run is not proving safe sent-state imports"
+    "beta human review command center is not fully prepared"
   ],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
@@ -388,9 +386,7 @@
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
       "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "dispatch mark-sent dry run is not proving safe sent-state imports"
+        "beta human review command center is not fully prepared"
       ],
       "onlyLaunchOperatorSelfGuardrails": false,
       "onlyLaunchOperatorAcceptedExternalGuardrails": true

@@ -27,7 +27,7 @@ Status: pass
 | 3 | BETA-HR-003 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-003 Barcelona review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-003-barcelona.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-003-barcelona.json` |
 | 4 | BETA-HR-004 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-004 Paris review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-004-paris.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-004-paris.json` |
 | 5 | BETA-HR-005 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-005 New York review due 2026-05-25 | `qa/beta-human-review-dispatch-outbox-2026-05-21/beta-hr-005-new-york.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-005-new-york.json` |
-| 6 | PROD-VISUAL-HISTORY-002 | production-visual-review | P1 | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
+| 6 | PROD-VISUAL-HISTORY-002 | production-visual-review | P1 | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Operating Meaning
 
@@ -311,7 +311,7 @@ This message is reviewer outreach, not completed review evidence. Public launch 
 
 - Priority: P1
 - Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28
-- Message source: `qa/production-visual-review-dispatch-outbox-2026-05-21/prod-visual-history-002-2026-05-28.txt`
+- Message source: `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt`
 - Start URL or command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production`
 - Packet or artifact: `qa/visual-baseline-production-review-2026-05-28`
 - Submission template: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json`
