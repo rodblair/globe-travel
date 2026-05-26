@@ -52,6 +52,88 @@ const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
   practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
 }
 
+function SharedTripLoadingState() {
+  return (
+    <section
+      role="status"
+      aria-live="polite"
+      aria-label="Loading shared trip map"
+      className="grid min-h-[68vh] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]"
+    >
+      <div className="rounded-[34px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-7">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-ink-2">
+            <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--brass)]" />
+            Preparing shared map
+          </div>
+          <h1 className="mt-5 max-w-xl font-serif text-4xl font-semibold leading-[1.03] text-foreground md:text-6xl">
+            Loading the itinerary, route, and group notes.
+          </h1>
+          <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-2">
+            Globe.travel is pulling together the day plan and verified map stops so the shared link opens cleanly.
+          </p>
+        </div>
+
+        <div className="mt-8 overflow-hidden rounded-[28px] border border-rule bg-paper-recessed">
+          <div className="relative h-56 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--brass),transparent_88%),var(--paper-raised))]">
+            <div className="absolute inset-0 opacity-60">
+              <ContourOverlay density="sparse" />
+            </div>
+            <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-rule bg-paper-raised px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brass)]">
+              <Compass className="h-3.5 w-3.5" />
+              Trip map
+            </div>
+            {[0, 1, 2].map((item) => (
+              <span
+                key={item}
+                className={cn(
+                  'absolute flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-[var(--brass)] text-xs font-semibold text-[var(--brass-text)] shadow-sm',
+                  item === 0 && 'left-[36%] top-[48%]',
+                  item === 1 && 'left-[49%] top-[38%]',
+                  item === 2 && 'left-[61%] top-[54%]'
+                )}
+              >
+                {item + 1}
+              </span>
+            ))}
+          </div>
+          <div className="space-y-3 p-5">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="flex items-center gap-3 rounded-2xl bg-paper-raised px-4 py-3">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--brass-subtle)] text-xs font-semibold text-[var(--brass)]">
+                  {item + 1}
+                </span>
+                <span className={cn('h-3 animate-pulse rounded-full bg-paper-recessed', item === 0 ? 'w-52' : item === 1 ? 'w-40' : 'w-48')} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <aside className="space-y-4">
+        <div className="rounded-[28px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6">
+          <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Friend feedback</p>
+          <h2 className="mt-2 font-serif text-2xl font-semibold text-foreground">Getting reactions ready</h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink-2">
+            The feedback form and existing notes will appear with the map.
+          </p>
+          <div className="mt-5 space-y-3">
+            <div className="h-11 animate-pulse rounded-2xl bg-paper-recessed" />
+            <div className="h-11 animate-pulse rounded-2xl bg-paper-recessed" />
+            <div className="h-24 animate-pulse rounded-2xl bg-paper-recessed" />
+          </div>
+        </div>
+        <div className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[linear-gradient(135deg,var(--brass-subtle),var(--paper-raised))] p-5 shadow-[var(--panel-shadow)] md:p-6">
+          <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-[var(--brass)]">Shareable artifact</p>
+          <div className="mt-4 h-3 w-40 animate-pulse rounded-full bg-paper-recessed" />
+          <div className="mt-3 h-3 w-56 animate-pulse rounded-full bg-paper-recessed" />
+          <div className="mt-5 h-11 animate-pulse rounded-full bg-[var(--brass)]/35" />
+        </div>
+      </aside>
+    </section>
+  )
+}
+
 function isValidOptionalEmail(value: string) {
   const trimmed = value.trim()
   if (!trimmed) return true
@@ -184,13 +266,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-5 md:px-6 md:pt-7">
         {isLoading ? (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="h-[680px] animate-pulse rounded-[34px] bg-paper-recessed" />
-            <div className="space-y-4">
-              <div className="h-64 animate-pulse rounded-[28px] bg-paper-recessed" />
-              <div className="h-64 animate-pulse rounded-[28px] bg-paper-recessed" />
-            </div>
-          </div>
+          <SharedTripLoadingState />
         ) : isError || !trip ? (
           <section className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center text-center">
             <Compass className="h-10 w-10 text-[var(--brass)]" />
