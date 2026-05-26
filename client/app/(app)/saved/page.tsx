@@ -375,7 +375,7 @@ function SavedPageContent() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.035 }}
                     >
-                      <ArtifactFrame className="group relative min-h-64 transition-all duration-200 hover:-translate-y-0.5" ribbon={trip.is_public}>
+                      <ArtifactFrame className="group relative min-h-64 transition-all duration-200 hover:-translate-y-0.5" ribbon={false}>
                         <div className="flex h-full min-h-64 flex-col justify-between gap-7 p-5 pb-20 md:p-6 md:pb-20">
                           <div className="flex items-start justify-between gap-4">
                             <Link

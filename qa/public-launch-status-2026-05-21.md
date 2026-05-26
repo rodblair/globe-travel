@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-26T23:24:10.004Z
+Generated at: 2026-05-26T23:36:19.061Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -248,7 +248,7 @@ Public metadata:
 - Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-26.json` and `qa/public-metadata-smoke-2026-05-26.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-05-26.json`
-- Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-23.json`
+- Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-26.json`
 - Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-05-26.json`
 
 ## Operating Meaning
