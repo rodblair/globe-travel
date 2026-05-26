@@ -174,6 +174,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
         </Link>
         <Link
           href={trip ? starterHref : '/chat'}
+          prefetch={false}
           className="touch-target inline-flex items-center justify-center gap-2 rounded-full border border-rule bg-paper-raised px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover"
         >
           Start your own trip

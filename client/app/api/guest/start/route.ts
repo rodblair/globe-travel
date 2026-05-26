@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthNextFromSearchParams, getSafeAuthNext } from '@/lib/auth-next'
-import { GUEST_SESSION_COOKIE } from '@/lib/dev-auth'
+import { GUEST_SESSION_COOKIE, getGuestIdFromCookieHeader } from '@/lib/dev-auth'
 import { createClient } from '@/lib/supabase-server'
 
 export async function GET(request: Request) {
@@ -26,6 +26,11 @@ export async function GET(request: Request) {
       path: '/',
       maxAge: 0,
     })
+    return response
+  }
+
+  const existingGuestId = getGuestIdFromCookieHeader(request.headers.get('cookie'))
+  if (existingGuestId) {
     return response
   }
 
