@@ -1,19 +1,15 @@
 {
   "date": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T21:46:15.034Z",
+  "generatedAt": "2026-05-26T22:07:19.665Z",
   "status": "fail",
   "checked": 10,
-  "passed": 4,
-  "failed": 6,
-  "actionableStepCount": 1,
+  "passed": 9,
+  "failed": 1,
+  "actionableStepCount": 3,
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
-    "beta human review command center is not fully prepared",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "dispatch sent-record template is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety",
-    "open accepted P2 launch risks are not aligned with current launch evidence counts"
+    "beta human review command center is not fully prepared"
   ],
   "blockers": [
     {
@@ -144,7 +140,7 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "actionable",
+      "classification": "fail",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"
@@ -181,11 +177,10 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "blocked",
       "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
+        "beta human review command center is not fully prepared"
       ],
       "blockerIds": [
         "beta-human-review-threshold",
@@ -198,10 +193,9 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "fail",
       "failures": [
-        "launch today reads current blocked release status",
         "launch today has no overdue launch execution rows"
       ],
       "actionRowCount": 6
@@ -209,26 +203,26 @@
     {
       "step": "dispatch-sent-record-template-after-final-board",
       "scriptName": "qa:dispatch-sent-record-template",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail"
+      "classification": "pass"
     },
     {
       "step": "launch-dispatch-packet-after-final-template",
       "scriptName": "qa:launch-dispatch-packet",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail"
+      "classification": "pass"
     },
     {
       "step": "dispatch-sent-record-template-rejection-after-final-board",
       "scriptName": "qa:dispatch-sent-record-template-rejection",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail"
+      "classification": "pass"
     },
     {
       "step": "public-launch-status-final",
@@ -236,14 +230,10 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "blocked",
       "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "dispatch sent-record template is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
+        "beta human review command center is not fully prepared"
       ],
       "blockerIds": [
         "beta-human-review-threshold",
