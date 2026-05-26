@@ -5,12 +5,12 @@ Base URL: https://globe-travel-two.vercel.app
 
 ## Result
 
-- Checked shares: 9
-- Checked viewports: 18
+- Checked shares: 7
+- Checked viewports: 14
 - Passed shares: 7
-- Failed shares: 3
+- Failed shares: 0
 - Discovery mode: yes
-- Discovered public shares: 9/9
+- Discovered public shares: 7/7
 - Requires usable route lines: yes
 
 | Share | Result | Trip | Days | Expected country | Rendered viewports |
@@ -18,32 +18,26 @@ Base URL: https://globe-travel-two.vercel.app
 | x3m2c8cnws | Pass | 5 Days in Athens Greece in mid september | 5 | Greece | 2 |
 | rzkusu9x3y | Pass | 2 Days in Athens | 2 | any | 2 |
 | 8kjd475zi5 | Pass | 2 Days in Athens | 2 | any | 2 |
-| 87ye88fo9k | Fail | Cookie QA Athens | 1 | any | 2 |
 | zb6mfid1pm | Pass | 2 Days in Athens | 2 | any | 2 |
 | 76fbnwxzrv | Pass | 2 Days in Athens | 2 | any | 2 |
 | 5l315vjxp2 | Pass | 2 Days in Athens | 2 | any | 2 |
 | 76mu18j69x | Pass | 2 Days in Athens | 2 | any | 2 |
-| 670sgblw65 | Fail | 2 Days in Athens | 2 | any | 2 |
 
 ## Feedback Cleanliness
 
 - x3m2c8cnws: 1 visible reaction(s), 0 internal QA row(s)
 - rzkusu9x3y: 0 visible reaction(s), 0 internal QA row(s)
 - 8kjd475zi5: 0 visible reaction(s), 0 internal QA row(s)
-- 87ye88fo9k: 0 visible reaction(s), 0 internal QA row(s)
 - zb6mfid1pm: 0 visible reaction(s), 0 internal QA row(s)
 - 76fbnwxzrv: 0 visible reaction(s), 0 internal QA row(s)
 - 5l315vjxp2: 0 visible reaction(s), 0 internal QA row(s)
 - 76mu18j69x: 0 visible reaction(s), 0 internal QA row(s)
-- 670sgblw65: 1 visible reaction(s), 1 internal QA row(s)
 
 ## Failures
 
-- 87ye88fo9k: public share API map/itinerary integrity
-- 670sgblw65: public share feedback cleanliness
-- 670sgblw65: public share rendered map/itinerary desktop
+- none
 
 ## Evidence
 
-- JSON: `qa/public-share-map-itinerary-integrity-2026-05-26.json`
-- Screenshots: `qa/public-share-map-itinerary-integrity-2026-05-26/screenshots`
+- JSON: `qa/public-share-map-catalog-2026-05-26.json`
+- Screenshots: `qa/public-share-map-catalog-2026-05-26/screenshots`

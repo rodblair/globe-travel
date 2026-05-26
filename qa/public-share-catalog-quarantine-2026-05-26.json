@@ -1,0 +1,75 @@
+{
+  "date": "2026-05-26",
+  "catalogArtifact": "qa/public-share-map-itinerary-integrity-2026-05-26.json",
+  "jsonArtifact": "qa/public-share-catalog-quarantine-2026-05-26.json",
+  "reportArtifact": "qa/public-share-catalog-quarantine-2026-05-26.md",
+  "apply": true,
+  "keepSlugs": [
+    "x3m2c8cnws"
+  ],
+  "quarantineQaShares": true,
+  "checkedShares": 9,
+  "catalogFailures": 2,
+  "candidates": [
+    {
+      "tripId": "1dbadc45-807e-4ee1-adbd-52c1a93fa7f0",
+      "title": "Cookie QA Athens",
+      "shareSlug": "87ye88fo9k",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ]
+    },
+    {
+      "tripId": "54e8c693-f45f-41d7-9793-08abc857c7e7",
+      "title": "2 Days in Athens",
+      "shareSlug": "670sgblw65",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ]
+    }
+  ],
+  "candidateCount": 2,
+  "appliedCount": 2,
+  "failedUpdateCount": 0,
+  "updates": [
+    {
+      "tripId": "1dbadc45-807e-4ee1-adbd-52c1a93fa7f0",
+      "title": "Cookie QA Athens",
+      "shareSlug": "87ye88fo9k",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "1dbadc45-807e-4ee1-adbd-52c1a93fa7f0",
+        "title": "Cookie QA Athens",
+        "share_slug": "87ye88fo9k",
+        "is_public": false,
+        "updated_at": "2026-05-26T23:02:44.94+00:00"
+      }
+    },
+    {
+      "tripId": "54e8c693-f45f-41d7-9793-08abc857c7e7",
+      "title": "2 Days in Athens",
+      "shareSlug": "670sgblw65",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "54e8c693-f45f-41d7-9793-08abc857c7e7",
+        "title": "2 Days in Athens",
+        "share_slug": "670sgblw65",
+        "is_public": false,
+        "updated_at": "2026-05-26T23:02:45.544+00:00"
+      }
+    }
+  ],
+  "ok": true
+}

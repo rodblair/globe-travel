@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T22:55:10.900Z",
+  "generatedAt": "2026-05-26T23:07:16.708Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "blocked",
   "betaReady": false,
@@ -1033,24 +1033,60 @@
     "ready": true
   },
   "publicShareMapIntegrity": {
-    "artifact": "qa/public-share-map-itinerary-integrity-2026-05-23.json",
-    "report": "qa/public-share-map-itinerary-integrity-2026-05-23.md",
-    "artifactDir": "qa/public-share-map-itinerary-integrity-2026-05-23",
+    "artifact": "qa/public-share-map-catalog-2026-05-26.json",
+    "report": "qa/public-share-map-catalog-2026-05-26.md",
+    "artifactDir": "qa/public-share-map-catalog-2026-05-26",
     "baseUrl": "https://globe-travel-two.vercel.app",
-    "checked": 1,
-    "checkedViewports": 2,
-    "passed": 1,
+    "checked": 7,
+    "checkedViewports": 14,
+    "passed": 7,
     "failed": 0,
     "shareSlugs": [
-      "x3m2c8cnws"
+      "x3m2c8cnws",
+      "rzkusu9x3y",
+      "8kjd475zi5",
+      "zb6mfid1pm",
+      "76fbnwxzrv",
+      "5l315vjxp2",
+      "76mu18j69x"
     ],
-    "shareCount": 1,
+    "shareCount": 7,
     "discovery": {
       "enabled": true,
       "limit": 25,
-      "totalPublicShares": 1,
-      "shareCount": 1,
+      "totalPublicShares": 7,
+      "shareCount": 7,
       "shares": [
+        {
+          "shareSlug": "rzkusu9x3y",
+          "title": "2 Days in Athens",
+          "updatedAt": "2026-05-26T21:31:25.806+00:00"
+        },
+        {
+          "shareSlug": "8kjd475zi5",
+          "title": "2 Days in Athens",
+          "updatedAt": "2026-05-26T21:11:17.877+00:00"
+        },
+        {
+          "shareSlug": "zb6mfid1pm",
+          "title": "2 Days in Athens",
+          "updatedAt": "2026-05-26T21:04:32.233+00:00"
+        },
+        {
+          "shareSlug": "76fbnwxzrv",
+          "title": "2 Days in Athens",
+          "updatedAt": "2026-05-26T20:59:12.622+00:00"
+        },
+        {
+          "shareSlug": "5l315vjxp2",
+          "title": "2 Days in Athens",
+          "updatedAt": "2026-05-26T20:54:22.128+00:00"
+        },
+        {
+          "shareSlug": "76mu18j69x",
+          "title": "2 Days in Athens",
+          "updatedAt": "2026-05-26T20:48:43.516+00:00"
+        },
         {
           "shareSlug": "x3m2c8cnws",
           "title": "5 Days in Athens Greece in mid september",
@@ -1061,7 +1097,7 @@
     "badShareCount": 0,
     "badRenderedResults": [],
     "badDays": [],
-    "screenshotCount": 2,
+    "screenshotCount": 14,
     "missingScreenshots": [],
     "failureCount": 0,
     "issues": [],
@@ -1230,7 +1266,7 @@
     "designSystemReadiness": "qa/design-system-readiness-2026-05-26.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "plannerHandoff": "qa/planner-handoff-smoke-2026-05-26.json",
-    "publicShareMapIntegrity": "qa/public-share-map-itinerary-integrity-2026-05-23.json",
+    "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-26.json",
     "publicMetadata": "qa/public-metadata-smoke-2026-05-23.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-05-23.json",

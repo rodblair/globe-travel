@@ -82,7 +82,7 @@ const plannerHandoffPath = process.env.QA_PLANNER_HANDOFF_ARTIFACT ||
   latestQaArtifact(/^planner-handoff-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/planner-handoff-smoke-2026-05-23.json')
 const publicShareMapIntegrityPath = process.env.QA_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_SHARE_MAP_INTEGRITY_ARTIFACT ||
-  'qa/public-share-map-itinerary-integrity-2026-05-23.json'
+  latestQaArtifact(/^public-share-map-catalog-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-share-map-itinerary-integrity-2026-05-23.json')
 const publicMetadataPath = process.env.QA_PUBLIC_METADATA_ARTIFACT ||
   process.env.QA_LAUNCH_PUBLIC_METADATA_ARTIFACT ||
   latestQaArtifact(/^public-metadata-smoke-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-metadata-smoke-2026-05-22.json')

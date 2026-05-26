@@ -5,12 +5,10 @@
     "x3m2c8cnws",
     "rzkusu9x3y",
     "8kjd475zi5",
-    "87ye88fo9k",
     "zb6mfid1pm",
     "76fbnwxzrv",
     "5l315vjxp2",
-    "76mu18j69x",
-    "670sgblw65"
+    "76mu18j69x"
   ],
   "requestedShareSlugs": [
     "x3m2c8cnws"
@@ -18,8 +16,8 @@
   "discovery": {
     "enabled": true,
     "limit": 25,
-    "totalPublicShares": 9,
-    "shareCount": 9,
+    "totalPublicShares": 7,
+    "shareCount": 7,
     "shares": [
       {
         "tripId": "f694fc77-e225-44ba-a98c-24cac177f080",
@@ -34,13 +32,6 @@
         "shareSlug": "8kjd475zi5",
         "updatedAt": "2026-05-26T21:11:17.877+00:00",
         "createdAt": "2026-05-26T21:10:24.990853+00:00"
-      },
-      {
-        "tripId": "1dbadc45-807e-4ee1-adbd-52c1a93fa7f0",
-        "title": "Cookie QA Athens",
-        "shareSlug": "87ye88fo9k",
-        "updatedAt": "2026-05-26T21:05:27.684+00:00",
-        "createdAt": "2026-05-26T21:05:25.599538+00:00"
       },
       {
         "tripId": "fdddcf46-824b-43c9-8659-06314edc797c",
@@ -71,13 +62,6 @@
         "createdAt": "2026-05-26T20:47:52.088274+00:00"
       },
       {
-        "tripId": "54e8c693-f45f-41d7-9793-08abc857c7e7",
-        "title": "2 Days in Athens",
-        "shareSlug": "670sgblw65",
-        "updatedAt": "2026-05-26T20:39:40.217+00:00",
-        "createdAt": "2026-05-26T20:38:39.935385+00:00"
-      },
-      {
         "tripId": "0746a2c6-2b9b-4753-bbb7-8c3e9b193d38",
         "title": "5 Days in Athens Greece in mid september",
         "shareSlug": "x3m2c8cnws",
@@ -91,13 +75,13 @@
   "expectedCountryMap": {
     "x3m2c8cnws": "Greece"
   },
-  "artifactDir": "qa/public-share-map-itinerary-integrity-2026-05-26",
-  "jsonArtifact": "qa/public-share-map-itinerary-integrity-2026-05-26.json",
-  "reportArtifact": "qa/public-share-map-itinerary-integrity-2026-05-26.md",
-  "checked": 9,
-  "checkedViewports": 18,
+  "artifactDir": "qa/public-share-map-catalog-2026-05-26",
+  "jsonArtifact": "qa/public-share-map-catalog-2026-05-26.json",
+  "reportArtifact": "qa/public-share-map-catalog-2026-05-26.md",
+  "checked": 7,
+  "checkedViewports": 14,
   "passed": 7,
-  "failed": 3,
+  "failed": 0,
   "shareResults": [
     {
       "shareSlug": "x3m2c8cnws",
@@ -209,7 +193,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/x3m2c8cnws-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/x3m2c8cnws-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -246,7 +230,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/x3m2c8cnws-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/x3m2c8cnws-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -338,7 +322,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/rzkusu9x3y-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/rzkusu9x3y-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -372,7 +356,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/rzkusu9x3y-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/rzkusu9x3y-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -461,7 +445,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/8kjd475zi5-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/8kjd475zi5-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -495,7 +479,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/8kjd475zi5-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/8kjd475zi5-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -527,107 +511,6 @@
         }
       ],
       "ok": true
-    },
-    {
-      "shareSlug": "87ye88fo9k",
-      "expectedCountry": null,
-      "tripTitle": "Cookie QA Athens",
-      "apiStatus": 200,
-      "dayCount": 1,
-      "dayIntegrity": [
-        {
-          "dayIndex": 1,
-          "title": null,
-          "itemCount": 0,
-          "mappedItemCount": 0,
-          "uniqueMappedStopCount": 0,
-          "duplicateMappedStops": [],
-          "countries": [],
-          "expectedCountry": null,
-          "usableRouteCount": 0,
-          "routeDistanceMeters": [],
-          "issues": [
-            "day has no itinerary items"
-          ],
-          "ok": false
-        }
-      ],
-      "publicFeedback": {
-        "status": 200,
-        "count": 0,
-        "internalRows": [],
-        "issues": [],
-        "ok": true
-      },
-      "rendered": [
-        {
-          "viewport": "phone",
-          "width": 390,
-          "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/87ye88fo9k-phone.png",
-          "ok": true,
-          "issues": [],
-          "state": {
-            "url": "https://globe-travel-two.vercel.app/t/87ye88fo9k",
-            "title": "Cookie QA Athens · Globe.travel",
-            "hasSharedMapLabel": true,
-            "hasItineraryHeading": true,
-            "hasDayPlanHeading": true,
-            "hasStartCta": true,
-            "hasFeedback": true,
-            "hasShareControls": true,
-            "routeLabelCount": 2,
-            "routeLabels": [
-              "Trip Map",
-              "Trip Map"
-            ],
-            "mapboxCanvasCount": 2,
-            "mapSurfaceCount": 2,
-            "stopChipMentions": 5,
-            "visibleDayTitleCount": 0,
-            "missingDayTitles": [],
-            "hasUnavailableState": false,
-            "hasAppError": false,
-            "horizontalOverflow": false,
-            "clientWidth": 390,
-            "scrollWidth": 390
-          }
-        },
-        {
-          "viewport": "desktop",
-          "width": 1280,
-          "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/87ye88fo9k-desktop.png",
-          "ok": true,
-          "issues": [],
-          "state": {
-            "url": "https://globe-travel-two.vercel.app/t/87ye88fo9k",
-            "title": "Cookie QA Athens · Globe.travel",
-            "hasSharedMapLabel": true,
-            "hasItineraryHeading": true,
-            "hasDayPlanHeading": true,
-            "hasStartCta": true,
-            "hasFeedback": true,
-            "hasShareControls": true,
-            "routeLabelCount": 2,
-            "routeLabels": [
-              "Trip Map",
-              "Trip Map"
-            ],
-            "mapboxCanvasCount": 2,
-            "mapSurfaceCount": 2,
-            "stopChipMentions": 5,
-            "visibleDayTitleCount": 0,
-            "missingDayTitles": [],
-            "hasUnavailableState": false,
-            "hasAppError": false,
-            "horizontalOverflow": false,
-            "clientWidth": 1280,
-            "scrollWidth": 1280
-          }
-        }
-      ],
-      "ok": false
     },
     {
       "shareSlug": "zb6mfid1pm",
@@ -685,7 +568,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/zb6mfid1pm-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/zb6mfid1pm-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -719,7 +602,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/zb6mfid1pm-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/zb6mfid1pm-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -808,7 +691,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/76fbnwxzrv-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/76fbnwxzrv-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -842,7 +725,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/76fbnwxzrv-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/76fbnwxzrv-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -931,7 +814,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/5l315vjxp2-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/5l315vjxp2-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -965,7 +848,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/5l315vjxp2-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/5l315vjxp2-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -1054,7 +937,7 @@
           "viewport": "phone",
           "width": 390,
           "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/76mu18j69x-phone.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/76mu18j69x-phone.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -1088,7 +971,7 @@
           "viewport": "desktop",
           "width": 1280,
           "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/76mu18j69x-desktop.png",
+          "screenshot": "qa/public-share-map-catalog-2026-05-26/screenshots/76mu18j69x-desktop.png",
           "ok": true,
           "issues": [],
           "state": {
@@ -1120,216 +1003,7 @@
         }
       ],
       "ok": true
-    },
-    {
-      "shareSlug": "670sgblw65",
-      "expectedCountry": null,
-      "tripTitle": "2 Days in Athens",
-      "apiStatus": 200,
-      "dayCount": 2,
-      "dayIntegrity": [
-        {
-          "dayIndex": 1,
-          "title": "Acropolis & Old Athens",
-          "itemCount": 4,
-          "mappedItemCount": 4,
-          "uniqueMappedStopCount": 4,
-          "duplicateMappedStops": [],
-          "countries": [
-            "Greece"
-          ],
-          "expectedCountry": null,
-          "usableRouteCount": 1,
-          "routeDistanceMeters": [
-            4680
-          ],
-          "issues": [],
-          "ok": true
-        },
-        {
-          "dayIndex": 2,
-          "title": "Agora, Gardens & Classic Athens",
-          "itemCount": 4,
-          "mappedItemCount": 4,
-          "uniqueMappedStopCount": 4,
-          "duplicateMappedStops": [],
-          "countries": [
-            "Greece"
-          ],
-          "expectedCountry": null,
-          "usableRouteCount": 1,
-          "routeDistanceMeters": [
-            3084
-          ],
-          "issues": [],
-          "ok": true
-        }
-      ],
-      "publicFeedback": {
-        "status": 200,
-        "count": 1,
-        "internalRows": [
-          {
-            "id": "f02965fa-03d6-4eed-b26b-4d2f45c79c7a",
-            "authorName": "QA Friend",
-            "comment": "This Athens plan is clear. Day 1 feels realistic and the map order makes sense.",
-            "sentiment": "love_it",
-            "createdAt": "2026-05-26T20:40:03.048414+00:00",
-            "reason": "internal QA feedback is visible"
-          }
-        ],
-        "issues": [
-          "1 internal QA feedback row(s) visible on public share"
-        ],
-        "ok": false
-      },
-      "rendered": [
-        {
-          "viewport": "phone",
-          "width": 390,
-          "height": 844,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/670sgblw65-phone.png",
-          "ok": true,
-          "issues": [],
-          "state": {
-            "url": "https://globe-travel-two.vercel.app/t/670sgblw65",
-            "title": "2 Days in Athens · Globe.travel",
-            "hasSharedMapLabel": true,
-            "hasItineraryHeading": true,
-            "hasDayPlanHeading": true,
-            "hasStartCta": true,
-            "hasFeedback": true,
-            "hasShareControls": true,
-            "routeLabelCount": 3,
-            "routeLabels": [
-              "Trip Map",
-              "Trip Map",
-              "Trip Map"
-            ],
-            "mapboxCanvasCount": 3,
-            "mapSurfaceCount": 3,
-            "stopChipMentions": 7,
-            "visibleDayTitleCount": 2,
-            "missingDayTitles": [],
-            "hasUnavailableState": false,
-            "hasAppError": false,
-            "horizontalOverflow": false,
-            "clientWidth": 390,
-            "scrollWidth": 390
-          }
-        },
-        {
-          "viewport": "desktop",
-          "width": 1280,
-          "height": 900,
-          "screenshot": "qa/public-share-map-itinerary-integrity-2026-05-26/screenshots/670sgblw65-desktop.png",
-          "ok": false,
-          "issues": [
-            "page.evaluate: Target page, context or browser has been closed"
-          ],
-          "state": {
-            "url": "https://globe-travel-two.vercel.app/t/670sgblw65",
-            "title": null,
-            "hasSharedMapLabel": false,
-            "hasItineraryHeading": false,
-            "hasDayPlanHeading": false,
-            "hasStartCta": false,
-            "hasFeedback": false,
-            "hasShareControls": false,
-            "routeLabelCount": 0,
-            "routeLabels": [],
-            "mapboxCanvasCount": 0,
-            "mapSurfaceCount": 0,
-            "stopChipMentions": 0,
-            "visibleDayTitleCount": 0,
-            "missingDayTitles": [
-              "Acropolis & Old Athens",
-              "Agora, Gardens & Classic Athens"
-            ],
-            "hasUnavailableState": false,
-            "hasAppError": false,
-            "horizontalOverflow": false,
-            "clientWidth": 1280,
-            "scrollWidth": 1280
-          }
-        }
-      ],
-      "ok": false
     }
   ],
-  "failures": [
-    {
-      "shareSlug": "87ye88fo9k",
-      "name": "public share API map/itinerary integrity",
-      "apiIssues": [],
-      "badDays": [
-        {
-          "dayIndex": 1,
-          "title": null,
-          "itemCount": 0,
-          "mappedItemCount": 0,
-          "uniqueMappedStopCount": 0,
-          "duplicateMappedStops": [],
-          "countries": [],
-          "expectedCountry": null,
-          "usableRouteCount": 0,
-          "routeDistanceMeters": [],
-          "issues": [
-            "day has no itinerary items"
-          ],
-          "ok": false
-        }
-      ]
-    },
-    {
-      "shareSlug": "670sgblw65",
-      "name": "public share feedback cleanliness",
-      "issues": [
-        "1 internal QA feedback row(s) visible on public share"
-      ],
-      "internalRows": [
-        {
-          "id": "f02965fa-03d6-4eed-b26b-4d2f45c79c7a",
-          "authorName": "QA Friend",
-          "comment": "This Athens plan is clear. Day 1 feels realistic and the map order makes sense.",
-          "sentiment": "love_it",
-          "createdAt": "2026-05-26T20:40:03.048414+00:00",
-          "reason": "internal QA feedback is visible"
-        }
-      ],
-      "feedbackCount": 1
-    },
-    {
-      "shareSlug": "670sgblw65",
-      "name": "public share rendered map/itinerary desktop",
-      "issues": [
-        "page.evaluate: Target page, context or browser has been closed"
-      ],
-      "state": {
-        "url": "https://globe-travel-two.vercel.app/t/670sgblw65",
-        "title": null,
-        "hasSharedMapLabel": false,
-        "hasItineraryHeading": false,
-        "hasDayPlanHeading": false,
-        "hasStartCta": false,
-        "hasFeedback": false,
-        "hasShareControls": false,
-        "routeLabelCount": 0,
-        "routeLabels": [],
-        "mapboxCanvasCount": 0,
-        "mapSurfaceCount": 0,
-        "stopChipMentions": 0,
-        "visibleDayTitleCount": 0,
-        "missingDayTitles": [
-          "Acropolis & Old Athens",
-          "Agora, Gardens & Classic Athens"
-        ],
-        "hasUnavailableState": false,
-        "hasAppError": false,
-        "horizontalOverflow": false,
-        "clientWidth": 1280,
-        "scrollWidth": 1280
-      }
-    }
-  ]
+  "failures": []
 }
