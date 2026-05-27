@@ -27,8 +27,10 @@ type GlobePin = {
 export default function OnboardingPage() {
   const router = useRouter()
   const [completing, setCompleting] = useState(false)
+  const [completionError, setCompletionError] = useState<string | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
   const [showDesktopGlobe, setShowDesktopGlobe] = useState(false)
+  const [qaCanFinish, setQaCanFinish] = useState(false)
   const [globePins, setGlobePins] = useState<GlobePin[]>([])
 
   useEffect(() => {
@@ -39,6 +41,12 @@ export default function OnboardingPage() {
     mediaQuery.addEventListener('change', updateDesktopGlobe)
 
     return () => mediaQuery.removeEventListener('change', updateDesktopGlobe)
+  }, [])
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return
+    const params = new URLSearchParams(window.location.search)
+    setQaCanFinish(params.get('qaCanFinish') === '1')
   }, [])
 
   const handlePlaceAdded = useCallback((event: PlaceEvent) => {
@@ -56,18 +64,34 @@ export default function OnboardingPage() {
   const handleComplete = useCallback(async () => {
     if (completing) return
     setCompleting(true)
-    setShowCelebration(true)
+    setCompletionError(null)
 
     // Complete onboarding before leaving this fullscreen flow so middleware allows the app shell.
     try {
-      await fetch('/api/profile', {
+      const params = new URLSearchParams(window.location.search)
+      if (process.env.NODE_ENV !== 'production' && params.get('qaProfileSave') === 'fail') {
+        throw new Error('QA profile save failure')
+      }
+
+      const response = await fetch('/api/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ onboarding_completed: true }),
       })
-    } catch (err) {
-      console.error('Profile update error:', err)
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null)
+        const message = typeof body?.error === 'string' ? body.error : 'Profile update failed.'
+        throw new Error(message)
+      }
+    } catch {
+      setCompleting(false)
+      setShowCelebration(false)
+      setCompletionError('We could not save your setup yet. Check your connection and try again.')
+      return
     }
+
+    setShowCelebration(true)
 
     // Navigate after short celebration
     setTimeout(() => {
@@ -185,6 +209,9 @@ export default function OnboardingPage() {
             <OnboardingChat
               onComplete={handleComplete}
               onPlaceAdded={handlePlaceAdded}
+              isCompleting={completing}
+              completionError={completionError}
+              canFinishOverride={qaCanFinish}
             />
           </div>
 

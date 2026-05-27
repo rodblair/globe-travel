@@ -9,6 +9,9 @@ import ChatInterface from './ChatInterface'
 interface OnboardingChatProps {
   onComplete: () => void
   onPlaceAdded?: (event: PlaceEvent) => void
+  isCompleting?: boolean
+  completionError?: string | null
+  canFinishOverride?: boolean
 }
 
 const INITIAL_GREETING: Message = {
@@ -24,7 +27,13 @@ const ONBOARDING_SUGGESTIONS = [
   'We want a trip with design hotels, markets, and one great night out.',
 ]
 
-export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedProp }: OnboardingChatProps) {
+export default function OnboardingChat({
+  onComplete,
+  onPlaceAdded: onPlaceAddedProp,
+  isCompleting = false,
+  completionError = null,
+  canFinishOverride = false,
+}: OnboardingChatProps) {
   const [placesAdded, setPlacesAdded] = useState<PlaceEvent['place'][]>([])
 
   const handlePlaceAdded = useCallback((event: PlaceEvent) => {
@@ -38,7 +47,7 @@ export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedP
   })
 
   const allMessages = [INITIAL_GREETING, ...messages]
-  const canFinish = placesAdded.length >= 3
+  const canFinish = placesAdded.length >= 3 || canFinishOverride
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden pb-3 sm:pb-4 lg:pb-0">
@@ -77,15 +86,31 @@ export default function OnboardingChat({ onComplete, onPlaceAdded: onPlaceAddedP
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={onComplete}
-                  className="ml-1 flex items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+                  disabled={isCompleting}
+                  aria-busy={isCompleting}
+                  className="ml-1 flex min-h-8 items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-wait disabled:opacity-70"
                 >
-                  Done
+                  {isCompleting ? 'Saving' : completionError ? 'Try again' : 'Done'}
                   <ArrowRight className="w-3 h-3" />
                 </motion.button>
               )}
             </AnimatePresence>
           </div>
         </div>
+
+        <AnimatePresence>
+          {completionError && (
+            <motion.div
+              role="alert"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              className="mx-auto mt-2 max-w-3xl rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-950"
+            >
+              {completionError}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Chat area */}

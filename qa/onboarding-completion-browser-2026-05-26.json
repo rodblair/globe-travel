@@ -1,0 +1,29 @@
+{
+  "date": "2026-05-26",
+  "baseUrl": "http://localhost:3000",
+  "status": "pass",
+  "surface": "/onboarding",
+  "tool": "Browser in-app browser",
+  "checks": [
+    {
+      "name": "profile save failure stays on onboarding and shows retryable error",
+      "status": "pass",
+      "url": "http://localhost:3000/onboarding?qaCanFinish=1&qaProfileSave=fail",
+      "observedText": "We could not save your setup yet. Check your connection and try again.",
+      "buttonLabelAfterFailure": "Try again",
+      "browserErrorLogs": []
+    },
+    {
+      "name": "profile save success celebrates then opens planner",
+      "status": "pass",
+      "url": "http://localhost:3000/chat",
+      "observedCelebration": "You're all set!",
+      "landedOnPlanner": true,
+      "browserErrorLogs": []
+    }
+  ],
+  "notes": [
+    "QA-only query flags were used locally to unlock the finish button and force the failure path without creating fake planner activity.",
+    "Browser screenshot capture timed out on the map canvas, so visual evidence is kept in qa/app-surfaces-smoke-2026-05-26/screenshots."
+  ]
+}
