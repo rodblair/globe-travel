@@ -135,11 +135,12 @@ const validationCommands = [
   dispatchPacket.csvImportCommand,
   ...(Array.isArray(dispatchPacket.postImportCommands) ? dispatchPacket.postImportCommands : []),
 ].filter(hasText)
+const actionablePublicStatuses = new Set(['blocked', 'beta-ready-public-blocked'])
 
 const checks = [
   {
     name: 'launch outreach brief reads current status, operator board, and dispatch packet',
-    ok: publicStatus.status === 'blocked' &&
+    ok: actionablePublicStatuses.has(publicStatus.status) &&
       launchOperator.today === date &&
       dispatchPacket.date === date &&
       dispatchPacket.status === 'pass',

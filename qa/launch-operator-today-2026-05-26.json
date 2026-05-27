@@ -2,7 +2,7 @@
   "date": "2026-05-26",
   "today": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T04:31:57.095Z",
+  "generatedAt": "2026-05-27T05:07:16.217Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -24,15 +24,9 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "129c05b495f68753becb03614a95ce14c60fe259",
-  "publicLaunchStatus": "blocked",
-  "publicGuardrailIssues": [
-    "beta human review command center is not fully prepared",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "dispatch sent-record template is not ready for operator handoff",
-    "launch outreach brief is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety"
-  ],
+  "liveDeploymentCommit": "3c786f28a812fc0c48dc871e0e2a840555f766a1",
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
     "completed": 0,
@@ -788,21 +782,15 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "dispatch sent-record template is not ready for operator handoff",
-        "launch outreach brief is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety"
-      ],
+      "guardrailIssues": [],
       "onlyLaunchOperatorSelfGuardrails": false,
-      "onlyLaunchOperatorAcceptedExternalGuardrails": true
+      "onlyLaunchOperatorAcceptedExternalGuardrails": false
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -814,7 +802,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "129c05b495f68753becb03614a95ce14c60fe259"
+      "liveCommit": "3c786f28a812fc0c48dc871e0e2a840555f766a1"
     },
     {
       "name": "launch today reads aligned dispatch logs",

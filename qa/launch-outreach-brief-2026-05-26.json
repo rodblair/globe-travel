@@ -8,20 +8,14 @@
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-26.json",
   "dispatchPacketArtifact": "qa/launch-dispatch-packet-2026-05-26.json",
   "sentRecordCsv": "qa/dispatch-sent-record-template-2026-05-26.csv",
-  "publicLaunchStatus": "blocked",
+  "publicLaunchStatus": "beta-ready-public-blocked",
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-5cbbzof8k-rodney-blairs-projects.vercel.app",
-    "commit": "129c05b495f68753becb03614a95ce14c60fe259"
+    "url": "globe-travel-boo9ak9fb-rodney-blairs-projects.vercel.app",
+    "commit": "3c786f28a812fc0c48dc871e0e2a840555f766a1"
   },
-  "guardrailIssues": [
-    "beta human review command center is not fully prepared",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "dispatch sent-record template is not ready for operator handoff",
-    "launch outreach brief is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety"
-  ],
+  "guardrailIssues": [],
   "blockerIds": [
     "beta-human-review-threshold",
     "production-visual-review-history"
@@ -268,7 +262,7 @@
     {
       "name": "launch outreach brief reads current status, operator board, and dispatch packet",
       "ok": true,
-      "publicStatus": "blocked",
+      "publicStatus": "beta-ready-public-blocked",
       "launchOperatorToday": "2026-05-26",
       "dispatchPacketDate": "2026-05-26",
       "dispatchPacketStatus": "pass"
@@ -280,13 +274,7 @@
         "beta-human-review-threshold",
         "production-visual-review-history"
       ],
-      "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "dispatch sent-record template is not ready for operator handoff",
-        "launch outreach brief is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety"
-      ],
+      "guardrailIssues": [],
       "runtimeCommitAhead": false
     },
     {
