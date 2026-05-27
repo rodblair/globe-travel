@@ -4,10 +4,10 @@ Date: 2026-05-21
 
 ## Current Production Runtime Evidence - 2026-05-27 Current
 
-Commit `e46610afb6a8218b308bbf7e9baa71ada079b1e5` deployed to Vercel production on 2026-05-27.
+Commit `53e2aac3483569aa69493ea4c65f472abf0c3be5` deployed to Vercel production on 2026-05-27.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-8h3wd1g4n-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-375bgo0gm-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,13 +16,14 @@ Commit `e46610afb6a8218b308bbf7e9baa71ada079b1e5` deployed to Vercel production 
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-e46610a/`
-- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-27-e46610a/summary.json`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-53e2aac/`
+- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-27-53e2aac/summary.json`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `61/61`
 - Public launch status remains blocked by external beta/human review and production visual-review history requirements, not by the current deployment.
-- Current production commit: `e46610afb6a8218b308bbf7e9baa71ada079b1e5`
+- Current production commit: `53e2aac3483569aa69493ea4c65f472abf0c3be5`
+- Current production includes itinerary day/map accessibility semantics: selected day controls expose pressed/current state, focused route maps are labelled by day/title, and map stop markers expose stop order/name/role.
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Current Production Runtime Evidence - 2026-05-26 Current

@@ -12,8 +12,8 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-11mnlyb8o-rodney-blairs-projects.vercel.app",
-    "commit": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8"
+    "url": "globe-travel-375bgo0gm-rodney-blairs-projects.vercel.app",
+    "commit": "53e2aac3483569aa69493ea4c65f472abf0c3be5"
   },
   "guardrailIssues": [],
   "blockerIds": [

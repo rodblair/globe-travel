@@ -1,12 +1,12 @@
 {
   "date": "2026-05-27",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-05-27T05:36:29.311Z",
+  "generatedAt": "2026-05-27T06:29:20.615Z",
   "status": "pass",
   "checked": 26,
-  "passed": 25,
+  "passed": 26,
   "failed": 0,
-  "actionableStepCount": 1,
+  "actionableStepCount": 2,
   "publicLaunchStatus": "beta-ready-public-blocked",
   "publicGuardrailIssues": [],
   "blockers": [
@@ -251,7 +251,7 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"
