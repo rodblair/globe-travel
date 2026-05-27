@@ -1677,6 +1677,11 @@ if (!betaDispatchOutboxReport.includes('This dispatch outbox is assignment and o
 
 const betaDispatchLogIssues = []
 const betaDispatchLogRows = Array.isArray(betaDispatchLog.dispatchRows) ? betaDispatchLog.dispatchRows : []
+const betaDispatchLogDueTodayRows = betaDispatchLogRows.filter((row) => row.sendStatus !== 'sent' && daysBetween(today, row.expectedSendBy) === 0)
+const betaDispatchLogOverdueRows = betaDispatchLogRows.filter((row) => {
+  const delta = daysBetween(today, row.expectedSendBy)
+  return row.sendStatus !== 'sent' && Number.isFinite(delta) && delta < 0
+})
 const betaDispatchLogChecks = Array.isArray(betaDispatchLog.checks) ? betaDispatchLog.checks : []
 if (betaDispatchLog.status !== 'pass') betaDispatchLogIssues.push('beta dispatch log status is not pass')
 if (betaDispatchLog.dispatchOutboxArtifact && betaDispatchLog.dispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
@@ -3529,14 +3534,14 @@ const summary = {
     dispatchLogRowCount: betaDispatchLog.dispatchRowCount ?? null,
     dispatchLogSentCount: betaDispatchLog.sentCount ?? null,
     dispatchLogPreparedNotSentCount: betaDispatchLog.preparedNotSentCount ?? null,
-    dispatchLogPreparedDueTodayCount: betaDispatchLog.preparedDueTodayCount ?? null,
-    dispatchLogPreparedOverdueCount: betaDispatchLog.preparedOverdueCount ?? null,
+    dispatchLogPreparedDueTodayCount: betaDispatchLogDueTodayRows.length,
+    dispatchLogPreparedOverdueCount: betaDispatchLogOverdueRows.length,
     dispatchLogRequireSent: betaDispatchLog.requireSent ?? null,
     operatorDispatchLogArtifact: qaDisplayPath(betaOperatorDispatchLogPath),
     operatorDispatchLogRowCount: betaOperatorDispatchLog.dispatchRowCount ?? null,
     operatorDispatchLogPreparedNotSentCount: betaOperatorDispatchLog.preparedNotSentCount ?? null,
-    operatorDispatchLogPreparedDueTodayCount: betaOperatorDispatchLog.preparedDueTodayCount ?? null,
-    operatorDispatchLogPreparedOverdueCount: betaOperatorDispatchLog.preparedOverdueCount ?? null,
+    operatorDispatchLogPreparedDueTodayCount: betaOperatorDispatchLogDueTodayRows.length,
+    operatorDispatchLogPreparedOverdueCount: betaOperatorDispatchLogOverdueRows.length,
     followUpOutboxArtifact: qaDisplayPath(betaFollowUpOutboxPath),
     followUpOutboxReport: qaDisplayPath(betaFollowUpOutboxReportPath),
     followUpOutboxCsv: qaDisplayPath(betaFollowUpOutboxCsvPath),
