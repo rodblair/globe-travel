@@ -1,0 +1,221 @@
+{
+  "date": "2026-05-27",
+  "baseUrl": "http://localhost:3000",
+  "shareSlugs": [
+    "pvyqwtujjq"
+  ],
+  "requestedShareSlugs": [
+    "pvyqwtujjq"
+  ],
+  "discovery": {
+    "enabled": false,
+    "limit": null,
+    "totalPublicShares": null,
+    "shareCount": 0,
+    "shares": [],
+    "includeRequestedSlugs": true
+  },
+  "requireUsableRoutes": true,
+  "expectedCountryMap": {
+    "pvyqwtujjq": "Greece"
+  },
+  "artifactDir": "qa/public-share-map-itinerary-integrity-local-preview-2026-05-27",
+  "jsonArtifact": "qa/public-share-map-itinerary-integrity-local-preview-2026-05-27.json",
+  "reportArtifact": "qa/public-share-map-itinerary-integrity-local-preview-2026-05-27.md",
+  "checked": 1,
+  "checkedViewports": 2,
+  "passed": 1,
+  "failed": 0,
+  "shareResults": [
+    {
+      "shareSlug": "pvyqwtujjq",
+      "expectedCountry": "Greece",
+      "tripTitle": "5 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 5,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka Ease-In",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2959
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Ancient Athens at a Soft Pace",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2711
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 3,
+          "title": "Museum Day with Breathing Room",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            5027
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 4,
+          "title": "Coastal Recovery Day",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            13445
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 5,
+          "title": "Final Views & Slow Farewell",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2973
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-itinerary-integrity-local-preview-2026-05-27/screenshots/pvyqwtujjq-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "http://localhost:3000/t/pvyqwtujjq",
+            "title": "5 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 6,
+            "routeLabels": [
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 1,
+            "previewOverflowLabel": "1 more day in the full itinerary",
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-itinerary-integrity-local-preview-2026-05-27/screenshots/pvyqwtujjq-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "http://localhost:3000/t/pvyqwtujjq",
+            "title": "5 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 6,
+            "routeLabels": [
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map",
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 1,
+            "previewOverflowLabel": "1 more day in the full itinerary",
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "failures": []
+}

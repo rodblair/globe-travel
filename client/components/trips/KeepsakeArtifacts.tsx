@@ -166,6 +166,8 @@ export function TripPosterPreview({
   const posterDestination = destinationTimingMatch?.[1] || meta.destination
   const posterTiming = destinationTimingMatch?.[2] || null
   const firstDay = days[0]
+  const previewDays = days.slice(0, 4)
+  const hiddenDayCount = Math.max(0, days.length - previewDays.length)
   const stopCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
   const body = (
     <ArtifactFrame className={cn('transition-transform duration-300 hover:-translate-y-1', className)}>
@@ -189,7 +191,7 @@ export function TripPosterPreview({
             </p>
           </div>
           <div className="mt-7 grid gap-2">
-            {days.slice(0, 4).map((day) => (
+            {previewDays.map((day) => (
               <div key={day.id} className="flex items-center gap-2 text-sm text-foreground">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
                   {String(day.day_index).padStart(2, '0')}
@@ -197,6 +199,16 @@ export function TripPosterPreview({
                 <span className="truncate">{day.title || `Day ${day.day_index}`}</span>
               </div>
             ))}
+            {hiddenDayCount > 0 && (
+              <div className="flex items-center gap-2 text-sm text-ink-2">
+                <span className="flex h-6 min-w-6 items-center justify-center rounded-full border border-dashed border-[color:var(--brass)]/40 bg-paper-recessed t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
+                  +
+                </span>
+                <span className="truncate">
+                  {hiddenDayCount} more {hiddenDayCount === 1 ? 'day' : 'days'} in the full itinerary
+                </span>
+              </div>
+            )}
           </div>
         </div>
         <div className="space-y-4 md:space-y-5">

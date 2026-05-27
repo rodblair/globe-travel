@@ -318,6 +318,10 @@ async function readRenderedShareState(page, shareSlug, expectedDayTitles) {
       ))
       .map((value) => value.spaced)
     const visibleDayTitles = dayTitles.filter((title) => title && text.includes(title))
+    const hiddenPreviewDayCount = Math.max(0, dayTitles.length - 4)
+    const previewOverflowLabel = hiddenPreviewDayCount > 0
+      ? `${hiddenPreviewDayCount} more ${hiddenPreviewDayCount === 1 ? 'day' : 'days'} in the full itinerary`
+      : null
     const stopChipMentions = (text.match(/\b\d+\s+stops?\b/gi) || []).length
     const buttons = Array.from(document.querySelectorAll('button'))
       .map((button) => (button.textContent || '').trim().replace(/\s+/g, ' '))
@@ -340,6 +344,9 @@ async function readRenderedShareState(page, shareSlug, expectedDayTitles) {
       stopChipMentions,
       visibleDayTitleCount: visibleDayTitles.length,
       missingDayTitles: dayTitles.filter((title) => title && !text.includes(title)),
+      hiddenPreviewDayCount,
+      previewOverflowLabel,
+      hasPreviewOverflowIndicator: !previewOverflowLabel || text.includes(previewOverflowLabel),
       hasUnavailableState: text.includes('This itinerary link is unavailable.'),
       hasAppError: ['Application error', 'Unhandled Runtime Error', 'Hydration failed'].some((pattern) => text.includes(pattern)),
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
@@ -423,6 +430,7 @@ async function checkShareSlug(shareSlug) {
       if (state.mapSurfaceCount < Math.max(1, days.length)) issues.push(`found ${state.mapSurfaceCount} rendered map surfaces for ${days.length} days`)
       if (state.stopChipMentions < Math.max(1, days.length)) issues.push(`found ${state.stopChipMentions} stop-count chips for ${days.length} days`)
       if (state.missingDayTitles.length > 0) issues.push(`missing visible day titles: ${state.missingDayTitles.join(', ')}`)
+      if (days.length > 4 && !state.hasPreviewOverflowIndicator) issues.push(`missing itinerary preview overflow label: ${state.previewOverflowLabel}`)
       if (state.hasUnavailableState) issues.push('rendered unavailable state')
       if (state.hasAppError) issues.push('rendered application error')
       if (state.horizontalOverflow) issues.push(`horizontal overflow ${state.scrollWidth}px > ${state.clientWidth}px`)
@@ -431,6 +439,7 @@ async function checkShareSlug(shareSlug) {
       ok = issues.length === 0
     } catch (error) {
       issues.push(error instanceof Error ? error.message : String(error))
+      const hiddenPreviewDayCount = Math.max(0, dayIntegrity.length - 4)
       state = {
         url: `${baseUrl}/t/${shareSlug}`,
         title: null,
@@ -447,6 +456,11 @@ async function checkShareSlug(shareSlug) {
         stopChipMentions: 0,
         visibleDayTitleCount: 0,
         missingDayTitles: dayIntegrity.map((day) => day.title).filter(Boolean),
+        hiddenPreviewDayCount,
+        previewOverflowLabel: hiddenPreviewDayCount > 0
+          ? `${hiddenPreviewDayCount} more ${hiddenPreviewDayCount === 1 ? 'day' : 'days'} in the full itinerary`
+          : null,
+        hasPreviewOverflowIndicator: dayIntegrity.length <= 4,
         hasUnavailableState: false,
         hasAppError: false,
         horizontalOverflow: false,
