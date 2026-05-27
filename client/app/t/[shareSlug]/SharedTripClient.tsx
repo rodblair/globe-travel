@@ -196,7 +196,9 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   const emailIsValid = isValidOptionalEmail(authorEmail)
   const trimmedCommentLength = comment.trim().length
   const canSubmit = authorName.trim().length > 1 && trimmedCommentLength >= 8 && trimmedCommentLength <= 600 && emailIsValid && !submitting
-  const feedbackHelperText = !emailIsValid
+  const feedbackHelperText = submitted
+    ? 'Feedback sent. It is now visible to the group.'
+    : !emailIsValid
     ? 'Use a valid email address or leave it blank.'
     : canSubmit
       ? 'Ready to send'
@@ -228,7 +230,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
         setAuthorEmail('')
         setSubmitted(true)
         await refetchFeedback()
-        setTimeout(() => setSubmitted(false), 2600)
+        setTimeout(() => setSubmitted(false), 8000)
       } else {
         const payload = await res.json().catch(() => null)
         setSubmitError(payload?.error === 'Invalid feedback'
@@ -342,33 +344,56 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                 </div>
 
                 <div className="mt-5 space-y-3">
-                  <input
-                    aria-label="Your name"
-                    value={authorName}
-                    onChange={(e) => setAuthorName(e.target.value)}
-                    placeholder="Your name"
-                    className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
-                  />
-                  <input
-                    aria-label="Email optional"
-                    aria-invalid={!emailIsValid}
-                    aria-describedby={!emailIsValid ? 'public-feedback-email-error' : undefined}
-                    value={authorEmail}
-                    onChange={(e) => setAuthorEmail(e.target.value)}
-                    placeholder="Email (optional)"
-                    className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
-                  />
+                  <div className="space-y-1.5">
+                    <label htmlFor="public-feedback-name" className="block text-xs font-medium text-ink-2">
+                      Your name
+                    </label>
+                    <input
+                      id="public-feedback-name"
+                      type="text"
+                      value={authorName}
+                      onChange={(e) => {
+                        setSubmitted(false)
+                        setAuthorName(e.target.value)
+                      }}
+                      placeholder="Maya"
+                      className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="public-feedback-email" className="block text-xs font-medium text-ink-2">
+                      Email <span className="font-normal text-ink-3">(optional)</span>
+                    </label>
+                    <input
+                      id="public-feedback-email"
+                      type="email"
+                      aria-label="Email optional"
+                      aria-invalid={!emailIsValid}
+                      aria-describedby={!emailIsValid ? 'public-feedback-email-error' : undefined}
+                      value={authorEmail}
+                      onChange={(e) => {
+                        setSubmitted(false)
+                        setAuthorEmail(e.target.value)
+                      }}
+                      placeholder="maya@example.com"
+                      className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
+                    />
+                  </div>
                   {!emailIsValid && (
                     <p id="public-feedback-email-error" className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
                       Use a valid email address or leave it blank.
                     </p>
                   )}
-                  <div className="grid gap-2">
+                  <fieldset className="grid gap-2">
+                    <legend className="mb-1 text-xs font-medium text-ink-2">Reaction</legend>
                     {sentimentOptions.map((option) => (
                       <button
                         key={option.value}
                         type="button"
-                        onClick={() => setSentiment(option.value)}
+                        onClick={() => {
+                          setSubmitted(false)
+                          setSentiment(option.value)
+                        }}
                         aria-pressed={sentiment === option.value}
                         aria-label={`${option.label}: ${option.helper}`}
                         className={cn(
@@ -382,21 +407,30 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                         <span className="mt-0.5 block text-xs">{option.helper}</span>
                       </button>
                     ))}
-                  </div>
+                  </fieldset>
                   {submitError && (
                     <p role="alert" className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
                       {submitError}
                     </p>
                   )}
-                  <textarea
-                    aria-label="Trip feedback"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    maxLength={600}
-                    rows={5}
-                    placeholder="Example: Day 2 looks perfect, but can we leave more space before dinner?"
-                    className="w-full resize-none rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
-                  />
+                  <div className="space-y-1.5">
+                    <label htmlFor="public-feedback-comment" className="block text-xs font-medium text-ink-2">
+                      What should the group know?
+                    </label>
+                    <textarea
+                      id="public-feedback-comment"
+                      aria-label="Trip feedback"
+                      value={comment}
+                      onChange={(e) => {
+                        setSubmitted(false)
+                        setComment(e.target.value)
+                      }}
+                      maxLength={600}
+                      rows={5}
+                      placeholder="Example: Day 2 looks perfect, but can we leave more space before dinner?"
+                      className="w-full resize-none rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
+                    />
+                  </div>
                   <div className="flex items-center justify-between gap-3 text-xs text-ink-3">
                     <span>{feedbackHelperText}</span>
                     <span>{trimmedCommentLength}/600</span>
