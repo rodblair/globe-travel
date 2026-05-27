@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "today": "2026-05-22",
+  "today": "2026-05-26",
   "status": "pass",
   "checked": 5,
   "passed": 5,
@@ -8,14 +8,15 @@
   "dispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
   "dispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
   "intakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
+  "allowOverdue": true,
   "artifact": "qa/beta-human-review-follow-up-outbox-2026-05-21.json",
   "report": "qa/beta-human-review-follow-up-outbox-2026-05-21.md",
   "csv": "qa/beta-human-review-follow-up-outbox-2026-05-21.csv",
   "artifactDir": "qa/beta-human-review-follow-up-outbox-2026-05-21",
   "followUpRowCount": 5,
   "messageFileCount": 5,
-  "dueSoonCount": 5,
-  "followUpOverdueCount": 0,
+  "dueSoonCount": 0,
+  "followUpOverdueCount": 5,
   "sendEligibleCount": 0,
   "blockedUntilInitialSendCount": 5,
   "messageRows": [
@@ -188,7 +189,9 @@
       "ok": true,
       "dispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-2026-05-21.json",
       "dispatchOutboxStatus": "pass",
-      "dispatchOutboxFollowUpDueSoonCount": 5,
+      "dispatchOutboxFollowUpDueSoonCount": 0,
+      "dispatchOutboxFollowUpOverdueCount": 5,
+      "allowOverdue": true,
       "dispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
       "dispatchLogStatus": "pass",
       "intakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
@@ -203,8 +206,15 @@
     {
       "name": "follow-up rows are actionable and not overdue",
       "ok": true,
+      "allowOverdue": true,
       "malformedRows": [],
-      "followUpOverdueRows": []
+      "followUpOverdueRows": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ]
     },
     {
       "name": "follow-up send eligibility is gated by dispatch sent state",

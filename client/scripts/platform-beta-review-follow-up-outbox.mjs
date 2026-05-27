@@ -8,6 +8,7 @@ const requestedToday = process.env.QA_BETA_REVIEW_TODAY || ''
 const dispatchOutboxPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX || 'qa/beta-human-review-dispatch-outbox-2026-05-21.json'
 const dispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
 const intakePath = process.env.QA_BETA_REVIEW_INTAKE || 'qa/beta-human-review-intake-2026-05-21.json'
+const allowOverdue = ['1', 'true', 'yes', 'catch-up'].includes(String(process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_ALLOW_OVERDUE || '').toLowerCase())
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
@@ -134,7 +135,11 @@ for (const row of dispatchRows) {
   const dueInDays = daysBetween(today, row.dueAt)
   const completedFileExists = row.completedSubmissionPath ? await fileExists(row.completedSubmissionPath) : false
   const alreadyCompleted = importedIds.has(row.id) || submittedIds.has(row.id) || completedFileExists
-  if (!alreadyCompleted && Number.isFinite(followUpInDays) && followUpInDays >= 0 && followUpInDays <= 2) {
+  const followUpIsReady = Number.isFinite(followUpInDays) && (
+    (followUpInDays >= 0 && followUpInDays <= 2) ||
+    (allowOverdue && followUpInDays < 0)
+  )
+  if (!alreadyCompleted && followUpIsReady) {
     const fileName = `${safeFileStem(row.id)}-${safeFileStem(row.destination)}-follow-up.txt`
     const dispatchLogRow = dispatchLogById.get(row.id) || {}
     const initialSendStatus = dispatchLogRow.sendStatus || row.dispatchStatus || ''
@@ -249,11 +254,13 @@ addCheck('follow-up outbox reads passing dispatch and intake artifacts', (
   dispatchOutbox.status === 'pass' &&
   dispatchLog.status === 'pass' &&
   intake.status === 'pass' &&
-  Number(dispatchOutbox.followUpDueSoonCount) >= candidateRows.length
+  Number(dispatchOutbox.followUpDueSoonCount || 0) + (allowOverdue ? Number(dispatchOutbox.followUpOverdueCount || 0) : 0) >= candidateRows.length
 ), {
   dispatchOutboxArtifact: qaDisplayPath(dispatchOutboxPath),
   dispatchOutboxStatus: dispatchOutbox.status || null,
   dispatchOutboxFollowUpDueSoonCount: dispatchOutbox.followUpDueSoonCount ?? null,
+  dispatchOutboxFollowUpOverdueCount: dispatchOutbox.followUpOverdueCount ?? null,
+  allowOverdue,
   dispatchLogArtifact: qaDisplayPath(dispatchLogPath),
   dispatchLogStatus: dispatchLog.status || null,
   intakeArtifact: qaDisplayPath(intakePath),
@@ -271,8 +278,9 @@ addCheck('follow-up outbox has one message file per due-soon incomplete review',
 
 addCheck('follow-up rows are actionable and not overdue', (
   malformedRows.length === 0 &&
-  followUpOverdueRows.length === 0
+  (allowOverdue || followUpOverdueRows.length === 0)
 ), {
+  allowOverdue,
   malformedRows: malformedRows.map((row) => row.id || '(missing id)'),
   followUpOverdueRows: followUpOverdueRows.map((row) => row.id || '(missing id)'),
 })
@@ -303,6 +311,7 @@ const summary = {
   dispatchOutboxArtifact: qaDisplayPath(dispatchOutboxPath),
   dispatchLogArtifact: qaDisplayPath(dispatchLogPath),
   intakeArtifact: qaDisplayPath(intakePath),
+  allowOverdue,
   artifact: `qa/${jsonName}`,
   report: `qa/${reportName}`,
   csv: `qa/${csvName}`,
@@ -331,6 +340,7 @@ Source: ${summary.dispatchOutboxArtifact}
 - Checked: ${summary.checked}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
+- Catch-up overdue follow-ups allowed: ${summary.allowOverdue ? 'yes' : 'no'}
 - Follow-up message files: ${summary.messageFileCount}
 - Due within 3 days: ${summary.dueSoonCount}
 - Follow-ups overdue: ${summary.followUpOverdueCount}

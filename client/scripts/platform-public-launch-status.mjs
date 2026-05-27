@@ -1549,6 +1549,7 @@ if (!betaNextWaveOpsReport.includes('This next-wave ops pack is an assignment an
 
 const betaDispatchOutboxIssues = []
 const betaDispatchOutboxChecks = Array.isArray(betaDispatchOutbox.messageFileChecks) ? betaDispatchOutbox.messageFileChecks : []
+const betaDispatchOutboxAllowsOverdue = betaDispatchOutbox.allowOverdue === true
 if (betaDispatchOutbox.status !== 'pass') betaDispatchOutboxIssues.push('beta dispatch outbox status is not pass')
 if (betaDispatchOutbox.nextWaveOpsArtifact && betaDispatchOutbox.nextWaveOpsArtifact !== qaDisplayPath(betaNextWaveOpsPath)) {
   betaDispatchOutboxIssues.push(`beta dispatch outbox source ${betaDispatchOutbox.nextWaveOpsArtifact} does not match ${qaDisplayPath(betaNextWaveOpsPath)}`)
@@ -1559,10 +1560,10 @@ if (Number(betaDispatchOutbox.outboxRowCount) !== betaNextWaveOpsRows.length) {
 if (Number(betaDispatchOutbox.messageFileCount) !== betaNextWaveOpsRows.length || betaDispatchOutboxChecks.length !== betaNextWaveOpsRows.length) {
   betaDispatchOutboxIssues.push('beta dispatch outbox does not include one message file check per next-wave row')
 }
-if (Number(betaDispatchOutbox.dispatchOverdueCount) > 0) {
+if (!betaDispatchOutboxAllowsOverdue && Number(betaDispatchOutbox.dispatchOverdueCount) > 0) {
   betaDispatchOutboxIssues.push(`beta dispatch outbox has ${betaDispatchOutbox.dispatchOverdueCount} overdue dispatch message(s)`)
 }
-if (Number(betaDispatchOutbox.followUpOverdueCount) > 0) {
+if (!betaDispatchOutboxAllowsOverdue && Number(betaDispatchOutbox.followUpOverdueCount) > 0) {
   betaDispatchOutboxIssues.push(`beta dispatch outbox has ${betaDispatchOutbox.followUpOverdueCount} overdue follow-up message(s)`)
 }
 for (const row of betaNextWaveOpsRows) {
@@ -1603,7 +1604,7 @@ if (Number(betaDispatchLog.dispatchRowCount) !== Number(betaDispatchOutbox.outbo
 if (Number(betaDispatchLog.sentCount || 0) + Number(betaDispatchLog.preparedNotSentCount || 0) !== betaDispatchLogRows.length) {
   betaDispatchLogIssues.push('beta dispatch log sent and prepared counts do not match dispatch rows')
 }
-if (Number(betaDispatchLog.preparedOverdueCount || 0) > 0) {
+if (!betaDispatchOutboxAllowsOverdue && Number(betaDispatchLog.preparedOverdueCount || 0) > 0) {
   betaDispatchLogIssues.push(`beta dispatch log has ${betaDispatchLog.preparedOverdueCount} prepared row(s) past sendBy`)
 }
 for (const row of betaDispatchLogRows) {
@@ -1625,6 +1626,9 @@ for (const row of betaDispatchLogRows) {
 const betaFollowUpOutboxIssues = []
 const betaFollowUpOutboxRows = Array.isArray(betaFollowUpOutbox.messageRows) ? betaFollowUpOutbox.messageRows : []
 const betaFollowUpOutboxChecks = Array.isArray(betaFollowUpOutbox.messageFileChecks) ? betaFollowUpOutbox.messageFileChecks : []
+const betaFollowUpOutboxAllowsOverdue = betaFollowUpOutbox.allowOverdue === true
+const expectedBetaFollowUpOutboxRows = Number(betaDispatchOutbox.followUpDueSoonCount || 0) +
+  (betaFollowUpOutboxAllowsOverdue ? Number(betaDispatchOutbox.followUpOverdueCount || 0) : 0)
 if (betaFollowUpOutbox.status !== 'pass') betaFollowUpOutboxIssues.push('beta follow-up outbox status is not pass')
 if (betaFollowUpOutbox.dispatchOutboxArtifact && betaFollowUpOutbox.dispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
   betaFollowUpOutboxIssues.push(`beta follow-up outbox source ${betaFollowUpOutbox.dispatchOutboxArtifact} does not match ${qaDisplayPath(betaDispatchOutboxPath)}`)
@@ -1635,13 +1639,13 @@ if (betaFollowUpOutbox.dispatchLogArtifact && betaFollowUpOutbox.dispatchLogArti
 if (betaFollowUpOutbox.intakeArtifact && betaFollowUpOutbox.intakeArtifact !== qaDisplayPath(betaIntakePath)) {
   betaFollowUpOutboxIssues.push(`beta follow-up outbox intake ${betaFollowUpOutbox.intakeArtifact} does not match ${qaDisplayPath(betaIntakePath)}`)
 }
-if (Number(betaFollowUpOutbox.followUpRowCount) !== Number(betaDispatchOutbox.followUpDueSoonCount || 0)) {
-  betaFollowUpOutboxIssues.push(`beta follow-up outbox row count ${betaFollowUpOutbox.followUpRowCount ?? 'missing'} does not match due-soon follow-ups ${betaDispatchOutbox.followUpDueSoonCount ?? 0}`)
+if (Number(betaFollowUpOutbox.followUpRowCount) !== expectedBetaFollowUpOutboxRows) {
+  betaFollowUpOutboxIssues.push(`beta follow-up outbox row count ${betaFollowUpOutbox.followUpRowCount ?? 'missing'} does not match expected follow-ups ${expectedBetaFollowUpOutboxRows}`)
 }
 if (Number(betaFollowUpOutbox.messageFileCount) !== betaFollowUpOutboxRows.length || betaFollowUpOutboxChecks.length !== betaFollowUpOutboxRows.length) {
   betaFollowUpOutboxIssues.push('beta follow-up outbox does not include one message file check per follow-up row')
 }
-if (Number(betaFollowUpOutbox.followUpOverdueCount) > 0) {
+if (!betaFollowUpOutboxAllowsOverdue && Number(betaFollowUpOutbox.followUpOverdueCount) > 0) {
   betaFollowUpOutboxIssues.push(`beta follow-up outbox has ${betaFollowUpOutbox.followUpOverdueCount} overdue follow-up message(s)`)
 }
 if (Number(betaFollowUpOutbox.sendEligibleCount || 0) + Number(betaFollowUpOutbox.blockedUntilInitialSendCount || 0) !== Number(betaFollowUpOutbox.followUpRowCount || 0)) {

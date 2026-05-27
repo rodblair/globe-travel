@@ -1,11 +1,14 @@
 {
   "date": "2026-05-21",
-  "today": "2026-05-22",
+  "today": "2026-05-26",
   "status": "pass",
   "checked": 4,
   "passed": 4,
   "failed": 0,
   "nextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
+  "opsScope": "next-wave",
+  "allowAllWaves": false,
+  "allowOverdue": true,
   "nextWave": {
     "waveId": "BETA-WAVE-01",
     "kickoffAt": "2026-05-22",
@@ -34,10 +37,10 @@
   "artifactDir": "qa/beta-human-review-dispatch-outbox-2026-05-21",
   "outboxRowCount": 5,
   "messageFileCount": 5,
-  "dispatchDueTodayCount": 5,
-  "dispatchOverdueCount": 0,
-  "followUpDueSoonCount": 5,
-  "followUpOverdueCount": 0,
+  "dispatchDueTodayCount": 0,
+  "dispatchOverdueCount": 5,
+  "followUpDueSoonCount": 0,
+  "followUpOverdueCount": 5,
   "messageRows": [
     {
       "id": "BETA-HR-001",
@@ -194,16 +197,17 @@
   ],
   "checks": [
     {
-      "name": "dispatch outbox reads passing next-wave ops",
+      "name": "dispatch outbox reads passing beta-review ops source",
       "ok": true,
       "nextWaveOpsPath": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
       "nextWaveOpsStatus": "pass",
       "nextWaveOpsScope": "next-wave",
+      "allowAllWaves": false,
       "nextWaveOpsRowCount": 5,
       "rowCount": 5
     },
     {
-      "name": "dispatch outbox has one message file per next-wave row",
+      "name": "dispatch outbox has one message file per beta-review ops row",
       "ok": true,
       "messageRowCount": 5,
       "badMessageFiles": []
@@ -211,9 +215,22 @@
     {
       "name": "dispatch outbox message rows are send-ready",
       "ok": true,
+      "allowOverdue": true,
       "malformedRows": [],
-      "dispatchOverdueRows": [],
-      "followUpOverdueRows": []
+      "dispatchOverdueRows": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ],
+      "followUpOverdueRows": [
+        "BETA-HR-001",
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005"
+      ]
     },
     {
       "name": "dispatch outbox CSV includes every message file and completed-submission path",

@@ -1,7 +1,7 @@
 # Beta Human Review Follow-Up Outbox
 
 Date: 2026-05-21
-Today: 2026-05-22
+Today: 2026-05-26
 Status: pass
 Source: qa/beta-human-review-dispatch-outbox-2026-05-21.json
 
@@ -10,9 +10,10 @@ Source: qa/beta-human-review-dispatch-outbox-2026-05-21.json
 - Checked: 5
 - Passed: 5
 - Failed: 0
+- Catch-up overdue follow-ups allowed: yes
 - Follow-up message files: 5
-- Due within 3 days: 5
-- Follow-ups overdue: 0
+- Due within 3 days: 0
+- Follow-ups overdue: 5
 - Eligible to send now: 0
 - Draft-only until initial invite is sent: 5
 

@@ -1,7 +1,7 @@
 # Beta Human Review Dispatch Log
 
 Date: 2026-05-21
-Today: 2026-05-22
+Today: 2026-05-26
 Status: pass
 Source: qa/beta-human-review-dispatch-outbox-2026-05-21.json
 
@@ -13,8 +13,8 @@ Source: qa/beta-human-review-dispatch-outbox-2026-05-21.json
 - Require sent proof: no
 - Sent: 0
 - Prepared not sent: 5
-- Prepared due today: 5
-- Prepared overdue: 0
+- Prepared due today: 0
+- Prepared overdue: 5
 
 ## Operator Workflow
 

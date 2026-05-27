@@ -6,6 +6,8 @@ const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_DATE || ''
 const requestedToday = process.env.QA_BETA_REVIEW_TODAY || ''
 const nextWaveOpsPath = process.env.QA_BETA_REVIEW_NEXT_WAVE_OPS || 'qa/beta-human-review-next-wave-ops-2026-05-21.json'
+const allowAllWaves = ['1', 'true', 'yes', 'all-waves'].includes(String(process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_ALLOW_ALL_WAVES || '').toLowerCase())
+const allowOverdue = ['1', 'true', 'yes', 'catch-up'].includes(String(process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_ALLOW_OVERDUE || '').toLowerCase())
 
 function hasText(value, minLength = 1) {
   return typeof value === 'string' && value.trim().length >= minLength
@@ -118,6 +120,7 @@ const csvName = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_CSV || `beta-human-re
 const outboxDirName = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_DIR || `beta-human-review-dispatch-outbox-${date}`
 const outboxDir = `qa/${outboxDirName}`
 const operatorRows = Array.isArray(nextWaveOps.operatorRows) ? nextWaveOps.operatorRows : []
+const opsScope = nextWaveOps.scope || 'next-wave'
 
 const messageRows = operatorRows.map((row) => {
   const fileName = `${safeFileStem(row.id)}-${safeFileStem(row.destination)}.txt`
@@ -226,20 +229,21 @@ function addCheck(name, ok, detail = {}) {
   checks.push({ name, ok: Boolean(ok), ...detail })
 }
 
-addCheck('dispatch outbox reads passing next-wave ops', (
+addCheck('dispatch outbox reads passing beta-review ops source', (
   nextWaveOps.status === 'pass' &&
-  nextWaveOps.scope === 'next-wave' &&
+  (opsScope === 'next-wave' || (allowAllWaves && opsScope === 'all-waves')) &&
   Number(nextWaveOps.operatorRowCount) === operatorRows.length &&
   operatorRows.length > 0
 ), {
   nextWaveOpsPath: qaDisplayPath(nextWaveOpsPath),
   nextWaveOpsStatus: nextWaveOps.status || null,
-  nextWaveOpsScope: nextWaveOps.scope || null,
+  nextWaveOpsScope: opsScope,
+  allowAllWaves,
   nextWaveOpsRowCount: nextWaveOps.operatorRowCount ?? null,
   rowCount: operatorRows.length,
 })
 
-addCheck('dispatch outbox has one message file per next-wave row', (
+addCheck('dispatch outbox has one message file per beta-review ops row', (
   messageRows.length === operatorRows.length &&
   badMessageFiles.length === 0
 ), {
@@ -249,9 +253,9 @@ addCheck('dispatch outbox has one message file per next-wave row', (
 
 addCheck('dispatch outbox message rows are send-ready', (
   malformedRows.length === 0 &&
-  dispatchOverdueRows.length === 0 &&
-  followUpOverdueRows.length === 0
+  (allowOverdue || (dispatchOverdueRows.length === 0 && followUpOverdueRows.length === 0))
 ), {
+  allowOverdue,
   malformedRows: malformedRows.map((row) => row.id || '(missing id)'),
   dispatchOverdueRows: dispatchOverdueRows.map((row) => row.id || '(missing id)'),
   followUpOverdueRows: followUpOverdueRows.map((row) => row.id || '(missing id)'),
@@ -273,6 +277,9 @@ const summary = {
   passed: checks.length - failures.length,
   failed: failures.length,
   nextWaveOpsArtifact: qaDisplayPath(nextWaveOpsPath),
+  opsScope,
+  allowAllWaves,
+  allowOverdue,
   nextWave: nextWaveOps.nextWave || null,
   artifact: `qa/${jsonName}`,
   report: `qa/${reportName}`,
@@ -302,7 +309,9 @@ Source: ${summary.nextWaveOpsArtifact}
 - Checked: ${summary.checked}
 - Passed: ${summary.passed}
 - Failed: ${summary.failed}
+- Scope: ${summary.opsScope}
 - Next wave: ${summary.nextWave?.waveId || 'none'}
+- Catch-up overdue rows allowed: ${summary.allowOverdue ? 'yes' : 'no'}
 - Message files: ${summary.messageFileCount}
 - Dispatch due today: ${summary.dispatchDueTodayCount}
 - Dispatch overdue: ${summary.dispatchOverdueCount}

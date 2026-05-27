@@ -1,7 +1,7 @@
 # Beta Human Review Dispatch Outbox
 
 Date: 2026-05-21
-Today: 2026-05-22
+Today: 2026-05-26
 Status: pass
 Source: qa/beta-human-review-next-wave-ops-2026-05-21.json
 
@@ -10,12 +10,14 @@ Source: qa/beta-human-review-next-wave-ops-2026-05-21.json
 - Checked: 4
 - Passed: 4
 - Failed: 0
+- Scope: next-wave
 - Next wave: BETA-WAVE-01
+- Catch-up overdue rows allowed: yes
 - Message files: 5
-- Dispatch due today: 5
-- Dispatch overdue: 0
-- Follow-ups due soon: 5
-- Follow-ups overdue: 0
+- Dispatch due today: 0
+- Dispatch overdue: 5
+- Follow-ups due soon: 0
+- Follow-ups overdue: 5
 
 ## Operator Workflow
 
@@ -38,8 +40,8 @@ Source: qa/beta-human-review-next-wave-ops-2026-05-21.json
 
 ## Checks
 
-- Pass: dispatch outbox reads passing next-wave ops
-- Pass: dispatch outbox has one message file per next-wave row
+- Pass: dispatch outbox reads passing beta-review ops source
+- Pass: dispatch outbox has one message file per beta-review ops row
 - Pass: dispatch outbox message rows are send-ready
 - Pass: dispatch outbox CSV includes every message file and completed-submission path
 

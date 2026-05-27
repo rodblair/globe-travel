@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "today": "2026-05-22",
+  "today": "2026-05-26",
   "status": "pass",
   "checked": 4,
   "passed": 4,
@@ -13,8 +13,8 @@
   "dispatchRowCount": 5,
   "sentCount": 0,
   "preparedNotSentCount": 5,
-  "preparedDueTodayCount": 5,
-  "preparedOverdueCount": 0,
+  "preparedDueTodayCount": 0,
+  "preparedOverdueCount": 5,
   "dispatchRows": [
     {
       "id": "BETA-HR-001",
