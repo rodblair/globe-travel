@@ -8,7 +8,7 @@ Status: pass
 - Checked: 8
 - Passed: 8
 - Failed: 0
-- Public launch status: beta-ready-public-blocked
+- Public launch status: blocked
 - Current blockers: beta-human-review-threshold, production-visual-review-history
 - Outreach rows: 16 (15 beta, 1 visual)
 - Sent-record CSV to fill only after real outreach: `qa/dispatch-sent-record-template-2026-05-27.csv`

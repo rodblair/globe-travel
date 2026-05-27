@@ -3,7 +3,7 @@
 Date: 2026-05-27
 Today: 2026-05-27
 Time zone: America/Toronto
-Generated at: 2026-05-27T06:29:16.622Z
+Generated at: 2026-05-27T06:49:38.408Z
 Status: fail
 
 ## Result
@@ -11,7 +11,7 @@ Status: fail
 - Checked: 14
 - Passed: 13
 - Failed: 1
-- Public launch status: beta-ready-public-blocked
+- Public launch status: blocked
 - Runtime deployment current: yes
 - Beta reviews: 0/25, 25 remaining
 - Production visual-review history: 2/4, 2 remaining

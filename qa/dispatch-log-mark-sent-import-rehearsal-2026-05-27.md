@@ -15,7 +15,7 @@ Status: pass
 - CSV beta row imported on isolated log: BETA-HR-001
 - CSV visual row imported on isolated log: PROD-VISUAL-HISTORY-002
 - Launch operator status after isolated import: fail
-- Launch public status after isolated import: beta-ready-public-blocked
+- Launch public status after isolated import: blocked
 - Canonical beta sent count: 0
 - Canonical visual sent count: 0
 - Raw artifacts cleaned up: yes

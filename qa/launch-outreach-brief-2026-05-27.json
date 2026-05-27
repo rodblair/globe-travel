@@ -8,14 +8,16 @@
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-27.json",
   "dispatchPacketArtifact": "qa/launch-dispatch-packet-2026-05-27.json",
   "sentRecordCsv": "qa/dispatch-sent-record-template-2026-05-27.csv",
-  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicLaunchStatus": "blocked",
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-375bgo0gm-rodney-blairs-projects.vercel.app",
-    "commit": "53e2aac3483569aa69493ea4c65f472abf0c3be5"
+    "url": "globe-travel-jokivae1y-rodney-blairs-projects.vercel.app",
+    "commit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc"
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "launch outreach brief is not ready for operator handoff"
+  ],
   "blockerIds": [
     "beta-human-review-threshold",
     "production-visual-review-history"
@@ -262,7 +264,7 @@
     {
       "name": "launch outreach brief reads current status, operator board, and dispatch packet",
       "ok": true,
-      "publicStatus": "beta-ready-public-blocked",
+      "publicStatus": "blocked",
       "launchOperatorToday": "2026-05-27",
       "dispatchPacketDate": "2026-05-27",
       "dispatchPacketStatus": "pass"
@@ -274,7 +276,9 @@
         "beta-human-review-threshold",
         "production-visual-review-history"
       ],
-      "guardrailIssues": [],
+      "guardrailIssues": [
+        "launch outreach brief is not ready for operator handoff"
+      ],
       "runtimeCommitAhead": false
     },
     {

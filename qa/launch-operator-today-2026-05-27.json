@@ -2,7 +2,7 @@
   "date": "2026-05-27",
   "today": "2026-05-27",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-05-27T06:29:16.622Z",
+  "generatedAt": "2026-05-27T06:49:38.408Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -24,10 +24,12 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "53e2aac3483569aa69493ea4c65f472abf0c3be5",
-  "publicLaunchStatus": "beta-ready-public-blocked",
-  "publicGuardrailIssues": [],
-  "publicOnlyLaunchOperatorSelfGuardrails": false,
+  "liveDeploymentCommit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc",
+  "publicLaunchStatus": "blocked",
+  "publicGuardrailIssues": [
+    "launch outreach brief is not ready for operator handoff"
+  ],
+  "publicOnlyLaunchOperatorSelfGuardrails": true,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -781,15 +783,17 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "beta-ready-public-blocked",
-      "betaReady": true,
+      "status": "blocked",
+      "betaReady": false,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [],
-      "onlyLaunchOperatorSelfGuardrails": false,
-      "onlyLaunchOperatorAcceptedExternalGuardrails": false
+      "guardrailIssues": [
+        "launch outreach brief is not ready for operator handoff"
+      ],
+      "onlyLaunchOperatorSelfGuardrails": true,
+      "onlyLaunchOperatorAcceptedExternalGuardrails": true
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -801,7 +805,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "53e2aac3483569aa69493ea4c65f472abf0c3be5"
+      "liveCommit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc"
     },
     {
       "name": "launch today reads aligned dispatch logs",

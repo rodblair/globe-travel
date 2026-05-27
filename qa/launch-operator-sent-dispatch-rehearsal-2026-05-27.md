@@ -11,7 +11,7 @@ Status: pass
 - Beta row rehearsed as sent: BETA-HR-006
 - Visual row rehearsed as sent: PROD-VISUAL-HISTORY-002
 - Launch operator status: fail
-- Launch public status after rehearsal: beta-ready-public-blocked
+- Launch public status after rehearsal: blocked
 - Raw artifacts cleaned up: yes
 
 ## Operating Meaning

@@ -2,15 +2,15 @@
 
 Date: 2026-05-27
 Time zone: America/Toronto
-Generated at: 2026-05-27T06:29:20.615Z
-Status: pass
+Generated at: 2026-05-27T06:49:42.810Z
+Status: fail
 
 ## Result
 
 - Checked: 26
-- Passed or actionable: 26
-- Failed: 0
-- Actionable launch-board failures tolerated: 2
+- Passed or actionable: 23
+- Failed: 1
+- Actionable launch-board failures tolerated: 0
 - Public launch status: beta-ready-public-blocked
 - Public guardrail issues: 0
 - Public blockers: beta-human-review-threshold, production-visual-review-history
@@ -21,7 +21,7 @@ Status: pass
 
 ## Steps
 
-- ACTIONABLE: launch-today-before-status (qa:launch-today, exit 1)
+- FAIL: launch-today-before-status (qa:launch-today, exit 1)
 - PASS: dispatch-sent-record-template-after-first-board (qa:dispatch-sent-record-template, exit 0)
 - PASS: launch-dispatch-packet-after-first-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-first-board (qa:dispatch-sent-record-template-rejection, exit 0)
@@ -34,8 +34,8 @@ Status: pass
 - PASS: review-intake-import-rehearsal-after-first-board (qa:review-intake-import-rehearsal, exit 0)
 - PASS: public-launch-mode-rehearsal-after-first-board (qa:public-launch-mode-rehearsal, exit 0)
 - PASS: public-launch-threshold-rehearsal-after-first-board (qa:public-launch-threshold-rehearsal, exit 0)
-- PASS: public-launch-status-after-first-board (qa:public-launch-status, exit 0)
-- ACTIONABLE: launch-today-after-status (qa:launch-today, exit 1)
+- FAIL: public-launch-status-after-first-board (qa:public-launch-status, exit 1)
+- FAIL: launch-today-after-status (qa:launch-today, exit 1)
 - PASS: dispatch-sent-record-template-after-final-board (qa:dispatch-sent-record-template, exit 0)
 - PASS: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 0)
