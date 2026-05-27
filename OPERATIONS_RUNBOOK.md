@@ -67,7 +67,7 @@ If Vercel returns `api-deployments-free-per-day` or `more than 100`, stop retryi
 
 ## Public Launch Evidence Dispatch
 
-The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8` at `globe-travel-11mnlyb8o-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` reports `beta-ready-public-blocked`: release operations are ready, public launch remains closed until external beta and visual-review evidence is imported. After every deploy, refresh production visual, monitoring, rollback, launch status, and signoff evidence before relying on public-launch status. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:
+The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `e46610afb6a8218b308bbf7e9baa71ada079b1e5` at `globe-travel-8h3wd1g4n-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` reports `beta-ready-public-blocked`: release operations are ready, public launch remains closed until external beta and visual-review evidence is imported. After every deploy, refresh production visual, monitoring, rollback, launch status, and signoff evidence before relying on public-launch status. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:
 
 ```bash
 npm run qa:launch-today

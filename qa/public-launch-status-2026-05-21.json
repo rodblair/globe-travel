@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-05-27T05:37:43.491Z",
+  "generatedAt": "2026-05-27T05:51:37.744Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -11,14 +11,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-11mnlyb8o-rodney-blairs-projects.vercel.app",
-    "commit": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8"
+    "url": "globe-travel-8h3wd1g4n-rodney-blairs-projects.vercel.app",
+    "commit": "e46610afb6a8218b308bbf7e9baa71ada079b1e5"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8",
-    "shortHead": "a717ab3",
-    "liveCommit": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8",
+    "head": "e46610afb6a8218b308bbf7e9baa71ada079b1e5",
+    "shortHead": "e46610a",
+    "liveCommit": "e46610afb6a8218b308bbf7e9baa71ada079b1e5",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -453,17 +453,17 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-a717ab3",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-a717ab3/summary.json",
-    "latestProductionCommit": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8",
-    "latestProductionDeploymentUrl": "globe-travel-11mnlyb8o-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e46610a",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e46610a/summary.json",
+    "latestProductionCommit": "e46610afb6a8218b308bbf7e9baa71ada079b1e5",
+    "latestProductionDeploymentUrl": "globe-travel-8h3wd1g4n-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
       {
         "id": "PROD-VISUAL-HISTORY-002",
         "dueAt": "2026-05-28",
-        "daysUntilDue": 2,
+        "daysUntilDue": 1,
         "completed": false,
         "status": "planned"
       }
@@ -940,8 +940,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8",
-    "knownGoodDeploymentUrl": "globe-travel-11mnlyb8o-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "e46610afb6a8218b308bbf7e9baa71ada079b1e5",
+    "knownGoodDeploymentUrl": "globe-travel-8h3wd1g4n-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -980,7 +980,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "a717ab309ed3ee39b1b2cedf10b06030c5fc7ec8",
+    "latestVerificationExpectedLiveCommit": "e46610afb6a8218b308bbf7e9baa71ada079b1e5",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -1029,8 +1029,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-a717ab3/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-a717ab3/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e46610a/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e46610a/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
