@@ -2217,6 +2217,7 @@ if (!blockerBoardReport.includes('prepared-not-sent')) {
 const launchTodayIssues = []
 const launchTodayRows = Array.isArray(launchOperatorToday.actionRows) ? launchOperatorToday.actionRows : []
 const launchTodayBetaRows = launchTodayRows.filter((row) => row.workType === 'beta-human-review')
+const launchTodayBetaRowIds = new Set(launchTodayBetaRows.map((row) => row.id).filter(Boolean))
 const launchTodayVisualRows = launchTodayRows.filter((row) => row.workType === 'production-visual-review')
 const launchTodayDeploymentRows = launchTodayRows.filter((row) => row.workType === 'production-runtime-deployment')
 const launchTodayOutreachRows = launchTodayRows.filter((row) => (
@@ -2247,6 +2248,10 @@ const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' ||
   launchOperatorOnlyOverdueExecutionFailure
 const betaOperatorDispatchLogRows = Array.isArray(betaOperatorDispatchLog.dispatchRows) ? betaOperatorDispatchLog.dispatchRows : []
 const betaOperatorDispatchLogDueTodayRows = betaOperatorDispatchLogRows.filter((row) => row.sendStatus !== 'sent' && daysBetween(today, row.expectedSendBy) === 0)
+const betaOperatorDispatchLogDueSoonRows = betaOperatorDispatchLogRows.filter((row) => {
+  const delta = daysBetween(today, row.expectedSendBy)
+  return row.sendStatus !== 'sent' && Number.isFinite(delta) && delta > 0 && delta <= 2
+})
 const betaOperatorDispatchLogOverdueRows = betaOperatorDispatchLogRows.filter((row) => {
   const delta = daysBetween(today, row.expectedSendBy)
   return row.sendStatus !== 'sent' && Number.isFinite(delta) && delta < 0
@@ -2331,6 +2336,12 @@ if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaOperatorDispat
 if (Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount) !== betaOperatorDispatchLogDueTodayRows.length) {
   launchTodayIssues.push('launch operator today beta dispatch-log due-today count does not match dispatch log')
 }
+if (Number(launchOperatorToday.betaDispatchDueSoonCount) !== betaOperatorDispatchLogDueSoonRows.length) {
+  launchTodayIssues.push(`launch operator today beta invites due soon ${launchOperatorToday.betaDispatchDueSoonCount ?? 'missing'} does not match dispatch log ${betaOperatorDispatchLogDueSoonRows.length}`)
+}
+if (Number(launchOperatorToday.betaDispatchLogPreparedDueSoonCount) !== betaOperatorDispatchLogDueSoonRows.length) {
+  launchTodayIssues.push('launch operator today beta dispatch-log due-soon count does not match dispatch log')
+}
 if (Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount) !== betaOperatorDispatchLogOverdueRows.length) {
   launchTodayIssues.push('launch operator today beta dispatch-log overdue count does not match dispatch log')
 }
@@ -2352,8 +2363,17 @@ if (Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount) !== visual
 if (Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount) !== visualDispatchLogRequiredOverdueRows.length) {
   launchTodayIssues.push('launch operator today visual dispatch-log overdue count does not match required visual dispatch log rows')
 }
-if (launchTodayBetaRows.length < betaOperatorDispatchLogDueTodayRows.length) {
-  launchTodayIssues.push('launch operator today does not include every unsent beta invite due today')
+const missingLaunchTodayDueTodayBetaIds = betaOperatorDispatchLogDueTodayRows
+  .filter((row) => row.id && !launchTodayBetaRowIds.has(row.id))
+  .map((row) => row.id)
+const missingLaunchTodayDueSoonBetaIds = betaOperatorDispatchLogDueSoonRows
+  .filter((row) => row.id && !launchTodayBetaRowIds.has(row.id))
+  .map((row) => row.id)
+if (missingLaunchTodayDueTodayBetaIds.length > 0) {
+  launchTodayIssues.push(`launch operator today does not include every unsent beta invite due today: ${missingLaunchTodayDueTodayBetaIds.join(', ')}`)
+}
+if (missingLaunchTodayDueSoonBetaIds.length > 0) {
+  launchTodayIssues.push(`launch operator today does not include every unsent beta invite due soon: ${missingLaunchTodayDueSoonBetaIds.join(', ')}`)
 }
 if (launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
   launchTodayIssues.push('launch operator today does not include every due-soon production visual review')
@@ -3541,6 +3561,7 @@ const summary = {
     operatorDispatchLogRowCount: betaOperatorDispatchLog.dispatchRowCount ?? null,
     operatorDispatchLogPreparedNotSentCount: betaOperatorDispatchLog.preparedNotSentCount ?? null,
     operatorDispatchLogPreparedDueTodayCount: betaOperatorDispatchLogDueTodayRows.length,
+    operatorDispatchLogPreparedDueSoonCount: betaOperatorDispatchLogDueSoonRows.length,
     operatorDispatchLogPreparedOverdueCount: betaOperatorDispatchLogOverdueRows.length,
     followUpOutboxArtifact: qaDisplayPath(betaFollowUpOutboxPath),
     followUpOutboxReport: qaDisplayPath(betaFollowUpOutboxReportPath),
@@ -3613,6 +3634,13 @@ const summary = {
     commandCenterOverdueWaveCount: betaCommandCenterOverdueWaves.length,
     dispatchPreparedRowCount: betaDispatchRowsPrepared.length,
     dispatchDueTodayCount: betaDispatchDueTodayRows.length,
+    dispatchDueSoonCount: betaOperatorDispatchLogDueSoonRows.length,
+    dispatchDueSoonRows: betaOperatorDispatchLogDueSoonRows.map((row) => ({
+      id: row.id,
+      sendBy: row.expectedSendBy,
+      dueAt: row.dueAt,
+      submissionPath: row.completedSubmissionPath,
+    })),
     dispatchDueTodayRows: betaDispatchDueTodayRows.map((row) => ({
       id: row.id,
       sendBy: row.sendBy,
@@ -4376,6 +4404,9 @@ const summary = {
     Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount || 0) > 0
       ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${launchOperatorToday.betaDispatchOutboxArtifact || qaDisplayPath(betaOperatorDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
+    Number(launchOperatorToday.betaDispatchLogPreparedDueSoonCount || 0) > 0
+      ? `Prepare and send ${launchOperatorToday.betaDispatchLogPreparedDueSoonCount} beta review dispatch message(s) due soon from ${launchOperatorToday.betaDispatchOutboxArtifact || qaDisplayPath(betaOperatorDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
+      : null,
     Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount || 0) > 0
       ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
@@ -4453,6 +4484,7 @@ Status: ${status}
 - Beta review due-soon waves: ${summary.betaHumanReviews.dueSoonWaveCount || 0}
 - Beta review dispatch prepared rows: ${summary.betaHumanReviews.dispatchPreparedRowCount || 0}
 - Beta review dispatch due today: ${summary.betaHumanReviews.dispatchDueTodayCount || 0}
+- Beta review dispatch due soon: ${summary.betaHumanReviews.dispatchDueSoonCount || 0}
 - Beta review dispatch overdue: ${summary.betaHumanReviews.dispatchOverdueCount || 0}
 - Beta review follow-ups due soon: ${summary.betaHumanReviews.followUpDueSoonCount || 0}
 - Beta review follow-ups overdue: ${summary.betaHumanReviews.followUpOverdueCount || 0}
