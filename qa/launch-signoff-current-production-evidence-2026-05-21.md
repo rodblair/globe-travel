@@ -4,10 +4,10 @@ Date: 2026-05-21
 
 ## Current Production Runtime Evidence - 2026-05-26
 
-Commit `ddd91eed7fb2064e189d600e908d89800210f000` deployed to Vercel production on 2026-05-26.
+Commit `15db880f24b1ef03dd45e400f31b1368f611d9a1` deployed to Vercel production on 2026-05-26.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-n9k68skys-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-46j0xoepf-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,14 +16,14 @@ Commit `ddd91eed7fb2064e189d600e908d89800210f000` deployed to Vercel production 
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-26-ddd91ee/`
-- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-26-ddd91ee/summary.json`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-26-15db880/`
+- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-26-15db880/summary.json`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `61/61`
 - Styled-duration Athens planner Browser proof: `qa/browser-planner-parser-fix-2026-05-26/`, verifying `Plan a restful 5-day Athens trip...` renders `5 Days in Athens` and not `5 Days in restful`.
 - Public launch status is `blocked`; deployment currency is clear, and the active guardrail issue is `beta human review command center is not fully prepared`.
-- Current production commit: `ddd91eed7fb2064e189d600e908d89800210f000`
+- Current production commit: `15db880f24b1ef03dd45e400f31b1368f611d9a1`
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Current Production Runtime Evidence
