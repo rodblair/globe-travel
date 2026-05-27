@@ -8,8 +8,12 @@ const requestedDate = process.env.QA_LAUNCH_TODAY_DATE || ''
 const requestedToday = process.env.QA_LAUNCH_TODAY || ''
 const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS || 'qa/public-launch-status-2026-05-21.json'
 const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
-const betaDispatchOutboxPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX || 'qa/beta-human-review-dispatch-outbox-2026-05-21.json'
-const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
+const betaDispatchOutboxPath = process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_OUTBOX ||
+  process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX ||
+  latestQaArtifact(/^beta-human-review-dispatch-outbox-all-wave-\d{4}-\d{2}-\d{2}\.json$/, 'qa/beta-human-review-dispatch-outbox-2026-05-21.json')
+const betaDispatchLogPath = process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_LOG ||
+  process.env.QA_BETA_REVIEW_DISPATCH_LOG ||
+  latestQaArtifact(/^beta-human-review-dispatch-log-all-wave-\d{4}-\d{2}-\d{2}\.json$/, 'qa/beta-human-review-dispatch-log-2026-05-21.json')
 const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
   latestQaArtifact(/^production-visual-review-dispatch-log-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-log-2026-05-21.json')
 
@@ -604,7 +608,7 @@ addCheck('launch today has no overdue launch execution rows', (
 
 const failures = checks.filter((check) => !check.ok)
 const executionOrder = [
-  `Send every P0/P1 message file in the Send Packet Index; beta rows are overdue and the visual row is due soon.`,
+  `Send every P0/P1 message file in the Send Packet Index; ${plural(betaDispatchOverdue.length, 'beta invite')} overdue, ${plural(betaDispatchDueToday.length, 'beta invite')} due today, and ${plural(visualDueSoon.length, 'production visual review')} due soon.`,
   `Record each real send in \`${dispatchSentRecordTemplateCsv}\` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.`,
   `Validate the filled sent-record CSV with \`${dispatchSentRecordTemplateValidationCommand}\`.`,
   `Import the sent state with \`${dispatchSentRecordTemplateImportCommand}\` only after validation passes.`,
@@ -674,13 +678,16 @@ const summary = {
   deploymentActionCount: deploymentRuntimeBlocked ? 1 : 0,
   operatorHandoff: {
     immediateExternalAction: betaDispatchOverdue.length > 0
-      ? `Send or reassign ${plural(betaDispatchOverdue.length, 'overdue beta invite')} now.`
+      ? `Send or reassign ${plural(betaDispatchOverdue.length, 'overdue beta invite')} now${betaDispatchDueToday.length > 0 ? `, and send ${plural(betaDispatchDueToday.length, 'beta invite')} due today` : ''}.`
       : visualOverdue.length > 0
         ? `Run or reassign ${plural(visualOverdue.length, 'overdue production visual review')} now.`
-        : visualDueSoon.length > 0
-          ? `Confirm ${plural(visualDueSoon.length, 'due-soon production visual review')} before the due date.`
-          : 'No overdue external launch action is currently queued.',
+        : betaDispatchDueToday.length > 0
+          ? `Send ${plural(betaDispatchDueToday.length, 'beta invite')} due today.`
+          : visualDueSoon.length > 0
+            ? `Confirm ${plural(visualDueSoon.length, 'due-soon production visual review')} before the due date.`
+            : 'No overdue external launch action is currently queued.',
     overdueBetaInviteIds: betaDispatchOverdue.map((row) => row.id),
+    dueTodayBetaInviteIds: betaDispatchDueToday.map((row) => row.id),
     dueSoonVisualReviewIds: visualDueSoon.map((row) => row.id),
     followUpsBlockedUntilInitialSendIds: betaFollowUpsBlockedUntilInitialSend.map((row) => row.id),
     deferredBetaInviteIds: betaRowsDeferredUntilDispatchPrepared.map((row) => row.id),
@@ -751,6 +758,7 @@ Status: ${summary.status}
 
 - Immediate action: ${summary.operatorHandoff.immediateExternalAction}
 - Overdue beta invite IDs: ${summary.operatorHandoff.overdueBetaInviteIds.join(', ') || 'none'}
+- Beta invite IDs due today: ${summary.operatorHandoff.dueTodayBetaInviteIds.join(', ') || 'none'}
 - Due-soon production visual-review IDs: ${summary.operatorHandoff.dueSoonVisualReviewIds.join(', ') || 'none'}
 - Follow-ups blocked until initial sent proof: ${summary.operatorHandoff.followUpsBlockedUntilInitialSendIds.join(', ') || 'none'}
 - Deferred beta invite IDs: ${summary.operatorHandoff.deferredBetaInviteIds.join(', ') || 'none'}

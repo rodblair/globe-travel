@@ -11,10 +11,10 @@
   "markSentExitCode": 1,
   "markSentStatus": "fail",
   "markSentImportMode": true,
-  "requestedUpdateCount": 6,
+  "requestedUpdateCount": 16,
   "betaUpdateCount": 0,
   "visualUpdateCount": 0,
-  "rejectionIssueCount": 24,
+  "rejectionIssueCount": 74,
   "invalidProofExitCode": 1,
   "invalidProofStatus": "fail",
   "invalidProofIssueCount": 6,
@@ -42,7 +42,7 @@
       "ok": true,
       "templateStatus": "pass",
       "readyForImport": false,
-      "rowCount": 6
+      "rowCount": 16
     },
     {
       "name": "blank sent-record template report states the evidence boundary",
@@ -54,8 +54,8 @@
       "exitCode": 1,
       "status": "fail",
       "importMode": true,
-      "requestedUpdateCount": 6,
-      "templateRowCount": 6
+      "requestedUpdateCount": 16,
+      "templateRowCount": 16
     },
     {
       "name": "blank sent-record template rejection names every required proof field",

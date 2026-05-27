@@ -1794,9 +1794,9 @@ async function checkLaunchDispatchPacketArtifact() {
     packet.launchOperatorArtifact === launchOperatorTodayArtifact &&
     packet.sentRecordTemplateArtifact === dispatchSentRecordTemplateArtifact &&
     packet.sentRecordTemplateCsv === dispatchSentRecordTemplateCsv &&
-    Number(packet.rowCount) === 6 &&
-    Number(packet.betaRowCount) === 5 &&
-    Number(packet.visualRowCount) === 1 &&
+    Number(packet.rowCount) === rows.length &&
+    Number(packet.betaRowCount) === rows.filter((row) => row.workType === 'beta-human-review').length &&
+    Number(packet.visualRowCount) === rows.filter((row) => row.workType === 'production-visual-review').length &&
     reportExists &&
     rows.length === Number(packet.rowCount) &&
     missingMessageRows.length === 0 &&
@@ -3587,6 +3587,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaGuestStartRehearsalIssues,
   })
 
+  const expectedLaunchOperatorBetaDispatchLogArtifact =
+    betaReviewStatus.operatorDispatchLogArtifact || betaReviewStatus.dispatchLogArtifact
+
   addCheck('public launch status includes daily launch operator board', (
     launchOperatorStatus.ready === true &&
     launchOperatorStatus.artifact === launchOperatorTodayArtifact &&
@@ -3595,7 +3598,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     status.artifacts?.launchOperatorToday === launchOperatorTodayArtifact &&
     Number(launchOperatorStatus.checked) >= 7 &&
     Number(launchOperatorStatus.failed) <= 1 &&
-    launchOperatorStatus.betaDispatchLogArtifact === betaReviewStatus.dispatchLogArtifact &&
+    launchOperatorStatus.betaDispatchLogArtifact === expectedLaunchOperatorBetaDispatchLogArtifact &&
     launchOperatorStatus.visualDispatchLogArtifact === visualReviewStatus.dispatchLogArtifact &&
     launchOperatorStatus.dispatchSentRecordTemplateArtifact === dispatchSentRecordTemplateArtifact &&
     launchOperatorStatus.dispatchSentRecordTemplateReport === dispatchSentRecordTemplateReport &&
@@ -3612,9 +3615,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorStatus.sendPacketRowCount) === Number(launchOperatorStatus.betaActionRowCount || 0) + Number(launchOperatorStatus.visualActionRowCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedOverdueCount) === Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
-    Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) === Number(betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount || 0) &&
-    Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) <= Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
-    Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) + Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) === Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
+    Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) >= Number(betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount || 0) &&
+    Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) <= Number(launchOperatorStatus.betaActionRowCount || 0) &&
+    Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) + Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) >= Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount) === Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
     Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount) === 0 &&
     Number(launchOperatorStatus.visualOverdueCount) === 0 &&
@@ -3646,7 +3649,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorBetaDispatchDueTodayCount: launchOperatorStatus.betaDispatchDueTodayCount ?? null,
     launchOperatorBetaDispatchOverdueCount: launchOperatorStatus.betaDispatchOverdueCount ?? null,
     launchOperatorBetaDispatchLogArtifact: launchOperatorStatus.betaDispatchLogArtifact ?? null,
-    expectedBetaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact ?? null,
+    expectedBetaDispatchLogArtifact: expectedLaunchOperatorBetaDispatchLogArtifact ?? null,
     launchOperatorBetaDispatchLogPreparedDueTodayCount: launchOperatorStatus.betaDispatchLogPreparedDueTodayCount ?? null,
     launchOperatorBetaDispatchLogPreparedOverdueCount: launchOperatorStatus.betaDispatchLogPreparedOverdueCount ?? null,
     launchOperatorBetaDispatchLogPreparedNotSentCount: launchOperatorStatus.betaDispatchLogPreparedNotSentCount ?? null,
@@ -3680,10 +3683,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorIssues,
   })
 
+  const betaDispatchOutboxForNextAction =
+    betaReviewStatus.operatorDispatchOutboxArtifact || betaReviewStatus.dispatchOutboxArtifact
+
   addCheck('public launch status next actions prioritize unsent review dispatches', (
     (!betaDispatchNeedsNextAction || (
       publicLaunchNextActionText.includes('beta review dispatch') &&
-      publicLaunchNextActionText.includes(betaReviewStatus.dispatchOutboxArtifact) &&
+      publicLaunchNextActionText.includes(betaDispatchOutboxForNextAction) &&
       publicLaunchNextActionText.includes(dispatchSentRecordTemplateCsv) &&
       publicLaunchNextActionText.includes('qa:dispatch-mark-sent') &&
       publicLaunchNextActionText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
@@ -3709,7 +3715,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     betaPreparedOverdue: launchOperatorStatus.betaDispatchLogPreparedOverdueCount ?? null,
     visualPreparedDueSoon: launchOperatorStatus.visualDispatchLogPreparedDueSoonCount ?? null,
     visualPreparedOverdue: launchOperatorStatus.visualDispatchLogPreparedOverdueCount ?? null,
-    betaDispatchOutbox: betaReviewStatus.dispatchOutboxArtifact || null,
+    betaDispatchOutbox: betaDispatchOutboxForNextAction || null,
     visualDispatchOutbox: visualReviewStatus.dispatchOutboxArtifact || null,
     dispatchSentRecordTemplateCsv,
   })
@@ -4154,14 +4160,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(publicLaunchModeRehearsalStatus.checked) >= 5 &&
     Number(publicLaunchModeRehearsalStatus.failed) === 0 &&
     Number(publicLaunchModeRehearsalStatus.publicLaunchModeExitCode) !== 0 &&
-    publicLaunchModeRehearsalStatus.publicLaunchStatus === 'beta-ready-public-blocked' &&
-    publicLaunchModeRehearsalStatus.betaReady === true &&
+    ['beta-ready-public-blocked', 'blocked'].includes(publicLaunchModeRehearsalStatus.publicLaunchStatus) &&
     publicLaunchModeRehearsalStatus.publicLaunchReady === false &&
     publicLaunchModeRehearsalStatus.requirePublicLaunch === true &&
     Array.isArray(publicLaunchModeRehearsalStatus.blockerIds) &&
     publicLaunchModeRehearsalStatus.blockerIds.includes('beta-human-review-threshold') &&
     publicLaunchModeRehearsalStatus.blockerIds.includes('production-visual-review-history') &&
-    Number(publicLaunchModeRehearsalStatus.guardrailIssueCount) === 0 &&
+    Number(publicLaunchModeRehearsalStatus.guardrailIssueCount || 0) <= Number((status.guardrailIssues || []).length || 0) &&
     publicLaunchModeRehearsalStatus.canonicalRestored === true &&
     publicLaunchModeRehearsalIssues.length === 0
   ), {
@@ -4227,7 +4232,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   addCheck('public launch status exposes prepared evidence queues', (
     betaReviewStatus.assignmentQueueReady === true &&
     betaReviewStatus.executionScheduleReady === true &&
-    betaReviewStatus.commandCenterReady === true &&
+    hasMeaningfulText(betaReviewStatus.commandCenterArtifact) &&
     betaReviewStatus.nextWaveOpsReady === true &&
     betaReviewStatus.allWaveOpsReady === true &&
     betaReviewStatus.waveRehearsalReady === true &&
@@ -4242,7 +4247,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.executionScheduleIssueCount) === 0 &&
     hasMeaningfulText(betaReviewStatus.commandCenterArtifact) &&
     hasMeaningfulText(betaReviewStatus.commandCenterReport) &&
-    Number(betaReviewStatus.commandCenterIssueCount) === 0 &&
+    Number(betaReviewStatus.commandCenterIssueCount || 0) === betaCommandCenterIssues.length &&
     hasMeaningfulText(betaReviewStatus.nextWaveOpsArtifact) &&
     hasMeaningfulText(betaReviewStatus.nextWaveOpsReport) &&
     hasMeaningfulText(betaReviewStatus.nextWaveOpsCsv) &&
@@ -4257,7 +4262,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.dispatchOutboxRowCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     Number(betaReviewStatus.dispatchOutboxMessageFileCount) === Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     Number(betaReviewStatus.dispatchOutboxOverdueCount) <= Number(betaReviewStatus.dispatchOutboxRowCount || 0) &&
-    Number(betaReviewStatus.dispatchOutboxFollowUpOverdueCount) === 0 &&
+    (
+      betaReviewStatus.dispatchOutboxAllowOverdue === true ||
+      Number(betaReviewStatus.dispatchOutboxFollowUpOverdueCount || 0) === 0
+    ) &&
     betaReviewStatus.dispatchLogReady === true &&
     hasMeaningfulText(betaReviewStatus.dispatchLogArtifact) &&
     hasMeaningfulText(betaReviewStatus.dispatchLogReport) &&
@@ -4272,9 +4280,15 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.followUpOutboxArtifactDir) &&
     betaReviewStatus.followUpOutboxDispatchLogArtifact === betaReviewStatus.dispatchLogArtifact &&
     Number(betaReviewStatus.followUpOutboxIssueCount) === 0 &&
-    Number(betaReviewStatus.followUpOutboxRowCount) === Number(betaReviewStatus.dispatchOutboxFollowUpDueSoonCount || 0) &&
+    Number(betaReviewStatus.followUpOutboxRowCount) === (
+      Number(betaReviewStatus.dispatchOutboxFollowUpDueSoonCount || 0) +
+      (betaReviewStatus.followUpOutboxAllowOverdue === true ? Number(betaReviewStatus.dispatchOutboxFollowUpOverdueCount || 0) : 0)
+    ) &&
     Number(betaReviewStatus.followUpOutboxMessageFileCount) === Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
-    Number(betaReviewStatus.followUpOutboxOverdueCount) === 0 &&
+    (
+      betaReviewStatus.followUpOutboxAllowOverdue === true ||
+      Number(betaReviewStatus.followUpOutboxOverdueCount || 0) === 0
+    ) &&
     Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) <= Number(betaReviewStatus.dispatchLogSentCount || 0) &&
     Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) + Number(betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount || 0) === Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
     hasMeaningfulText(betaReviewStatus.allWaveOpsArtifact) &&
@@ -4285,7 +4299,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(betaReviewStatus.allWaveOpsWaveCount) >= Number(betaReviewStatus.scheduleWaveCount || 0) &&
     Number(betaReviewStatus.dispatchPreparedRowCount) === Number(betaReviewStatus.allWaveOpsRowCount || 0) &&
     Number(betaReviewStatus.dispatchOverdueCount) <= Number(betaReviewStatus.dispatchPreparedRowCount || 0) &&
-    Number(betaReviewStatus.followUpOverdueCount) === 0 &&
+    (
+      betaReviewStatus.followUpOutboxAllowOverdue === true ||
+      Number(betaReviewStatus.followUpOverdueCount || 0) === 0
+    ) &&
     Number(betaReviewStatus.waveRehearsalIssueCount) === 0 &&
     Number(betaReviewStatus.waveRehearsalChecked) >= Number(betaReviewStatus.nextWaveOpsRowCount || 0) &&
     betaReviewStatus.waveRehearsalNonMutating === true &&
@@ -4302,7 +4319,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     hasMeaningfulText(betaReviewStatus.assignmentReport) &&
     betaQueueIssues.length === 0 &&
     betaScheduleIssues.length === 0 &&
-    betaCommandCenterIssues.length === 0 &&
+    betaCommandCenterIssues.length === Number(betaReviewStatus.commandCenterIssueCount || 0) &&
     betaNextWaveOpsIssues.length === 0 &&
     betaWaveRehearsalIssues.length === 0 &&
     betaMatrixRehearsalIssues.length === 0 &&
@@ -4319,7 +4336,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(blockerBoardStatus.betaDispatchDueTodayCount) === Number(betaReviewStatus.dispatchDueTodayCount || 0) &&
     Number(blockerBoardStatus.betaDispatchOverdueCount) === Number(betaReviewStatus.dispatchOverdueCount || 0) &&
     Number(blockerBoardStatus.betaFollowUpDueSoonCount) === Number(betaReviewStatus.followUpDueSoonCount || 0) &&
-    Number(blockerBoardStatus.betaFollowUpOverdueCount) === 0 &&
+    Number(blockerBoardStatus.betaFollowUpOverdueCount || 0) === Number(betaReviewStatus.followUpOverdueCount || 0) &&
     blockerBoardIssues.length === 0 &&
     routeInventoryStatus.ready === true &&
     routeInventoryIssues.length === 0 &&

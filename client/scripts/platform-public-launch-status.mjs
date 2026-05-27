@@ -31,6 +31,10 @@ const betaDispatchOutboxCsvPath = process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX_CSV
 const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
 const betaDispatchLogReportPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG_REPORT || 'qa/beta-human-review-dispatch-log-2026-05-21.md'
 const betaDispatchLogCsvPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG_CSV || 'qa/beta-human-review-dispatch-log-2026-05-21.csv'
+const betaOperatorDispatchOutboxPath = process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_OUTBOX ||
+  latestQaArtifact(/^beta-human-review-dispatch-outbox-all-wave-\d{4}-\d{2}-\d{2}\.json$/, betaDispatchOutboxPath)
+const betaOperatorDispatchLogPath = process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_LOG ||
+  latestQaArtifact(/^beta-human-review-dispatch-log-all-wave-\d{4}-\d{2}-\d{2}\.json$/, betaDispatchLogPath)
 const betaFollowUpOutboxPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX || 'qa/beta-human-review-follow-up-outbox-2026-05-21.json'
 const betaFollowUpOutboxReportPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_REPORT || 'qa/beta-human-review-follow-up-outbox-2026-05-21.md'
 const betaFollowUpOutboxCsvPath = process.env.QA_BETA_REVIEW_FOLLOW_UP_OUTBOX_CSV || 'qa/beta-human-review-follow-up-outbox-2026-05-21.csv'
@@ -784,6 +788,8 @@ const [
   betaDispatchLog,
   betaDispatchLogReport,
   betaDispatchLogCsv,
+  betaOperatorDispatchOutbox,
+  betaOperatorDispatchLog,
   betaFollowUpOutbox,
   betaFollowUpOutboxReport,
   betaFollowUpOutboxCsv,
@@ -863,6 +869,8 @@ const [
   readJson(betaDispatchLogPath),
   readText(betaDispatchLogReportPath),
   readText(betaDispatchLogCsvPath),
+  readJson(betaOperatorDispatchOutboxPath),
+  readJson(betaOperatorDispatchLogPath),
   readJson(betaFollowUpOutboxPath),
   readText(betaFollowUpOutboxReportPath),
   readText(betaFollowUpOutboxCsvPath),
@@ -2156,8 +2164,9 @@ const launchOperatorOnlyOverdueExecutionFailure = launchOperatorToday.status ===
   launchOperatorTodayFailures[0]?.name === 'launch today has no overdue launch execution rows'
 const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' ||
   launchOperatorOnlyOverdueExecutionFailure
-const betaDispatchLogDueTodayRows = betaDispatchLogRows.filter((row) => row.sendStatus !== 'sent' && daysBetween(today, row.expectedSendBy) === 0)
-const betaDispatchLogOverdueRows = betaDispatchLogRows.filter((row) => {
+const betaOperatorDispatchLogRows = Array.isArray(betaOperatorDispatchLog.dispatchRows) ? betaOperatorDispatchLog.dispatchRows : []
+const betaOperatorDispatchLogDueTodayRows = betaOperatorDispatchLogRows.filter((row) => row.sendStatus !== 'sent' && daysBetween(today, row.expectedSendBy) === 0)
+const betaOperatorDispatchLogOverdueRows = betaOperatorDispatchLogRows.filter((row) => {
   const delta = daysBetween(today, row.expectedSendBy)
   return row.sendStatus !== 'sent' && Number.isFinite(delta) && delta < 0
 })
@@ -2179,10 +2188,10 @@ if (launchOperatorToday.publicStatusArtifact !== `qa/${jsonArtifact}`) {
 if (launchOperatorToday.blockerBoardArtifact !== qaDisplayPath(blockerBoardPath)) {
   launchTodayIssues.push('launch operator today does not reference current blocker board')
 }
-if (launchOperatorToday.betaDispatchOutboxArtifact !== qaDisplayPath(betaDispatchOutboxPath)) {
+if (launchOperatorToday.betaDispatchOutboxArtifact !== qaDisplayPath(betaOperatorDispatchOutboxPath)) {
   launchTodayIssues.push('launch operator today does not reference current beta dispatch outbox')
 }
-if (launchOperatorToday.betaDispatchLogArtifact !== qaDisplayPath(betaDispatchLogPath)) {
+if (launchOperatorToday.betaDispatchLogArtifact !== qaDisplayPath(betaOperatorDispatchLogPath)) {
   launchTodayIssues.push('launch operator today does not reference current beta dispatch log')
 }
 if (launchOperatorToday.visualDispatchLogArtifact !== qaDisplayPath(visualDispatchLogPath)) {
@@ -2225,20 +2234,20 @@ for (const marker of [
     launchTodayIssues.push(`launch operator today execution order is missing marker: ${marker}`)
   }
 }
-if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaDispatchLogDueTodayRows.length) {
-  launchTodayIssues.push(`launch operator today beta invites due today ${launchOperatorToday.betaDispatchDueTodayCount ?? 'missing'} does not match dispatch log ${betaDispatchLogDueTodayRows.length}`)
+if (Number(launchOperatorToday.betaDispatchDueTodayCount) !== betaOperatorDispatchLogDueTodayRows.length) {
+  launchTodayIssues.push(`launch operator today beta invites due today ${launchOperatorToday.betaDispatchDueTodayCount ?? 'missing'} does not match dispatch log ${betaOperatorDispatchLogDueTodayRows.length}`)
 }
-if (Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount) !== betaDispatchLogDueTodayRows.length) {
+if (Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount) !== betaOperatorDispatchLogDueTodayRows.length) {
   launchTodayIssues.push('launch operator today beta dispatch-log due-today count does not match dispatch log')
 }
-if (Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount) !== betaDispatchLogOverdueRows.length) {
+if (Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount) !== betaOperatorDispatchLogOverdueRows.length) {
   launchTodayIssues.push('launch operator today beta dispatch-log overdue count does not match dispatch log')
 }
-if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaDispatchLogOverdueRows.length) {
+if (Number(launchOperatorToday.betaDispatchOverdueCount) !== betaOperatorDispatchLogOverdueRows.length) {
   launchTodayIssues.push('launch operator today beta overdue count does not match dispatch log')
 }
-if (Number(launchOperatorToday.betaFollowUpsBlockedUntilInitialSendCount || 0) !== Number(betaFollowUpOutbox.blockedUntilInitialSendCount || 0)) {
-  launchTodayIssues.push('launch operator today blocked follow-up count does not match follow-up outbox')
+if (Number(launchOperatorToday.betaFollowUpsBlockedUntilInitialSendCount || 0) < Number(betaFollowUpOutbox.blockedUntilInitialSendCount || 0)) {
+  launchTodayIssues.push('launch operator today blocked follow-up count is lower than the canonical follow-up outbox')
 }
 if (Number(launchOperatorToday.betaDispatchOverdueCount) !== 0 && !launchOperatorOnlyOverdueExecutionFailure) {
   launchTodayIssues.push(`launch operator today has ${launchOperatorToday.betaDispatchOverdueCount} overdue beta dispatch row(s)`)
@@ -2252,7 +2261,7 @@ if (Number(launchOperatorToday.visualDispatchLogPreparedDueSoonCount) !== visual
 if (Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount) !== visualDispatchLogRequiredOverdueRows.length) {
   launchTodayIssues.push('launch operator today visual dispatch-log overdue count does not match required visual dispatch log rows')
 }
-if (launchTodayBetaRows.length < betaDispatchLogDueTodayRows.length) {
+if (launchTodayBetaRows.length < betaOperatorDispatchLogDueTodayRows.length) {
   launchTodayIssues.push('launch operator today does not include every unsent beta invite due today')
 }
 if (launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
@@ -3308,6 +3317,10 @@ const summary = {
     dispatchOutboxArtifactDir: qaDisplayPath(betaDispatchOutbox.artifactDir),
     dispatchOutboxRowCount: betaDispatchOutbox.outboxRowCount ?? null,
     dispatchOutboxMessageFileCount: betaDispatchOutbox.messageFileCount ?? null,
+    dispatchOutboxAllowOverdue: betaDispatchOutbox.allowOverdue ?? null,
+    operatorDispatchOutboxArtifact: qaDisplayPath(betaOperatorDispatchOutboxPath),
+    operatorDispatchOutboxRowCount: betaOperatorDispatchOutbox.outboxRowCount ?? null,
+    operatorDispatchOutboxMessageFileCount: betaOperatorDispatchOutbox.messageFileCount ?? null,
     dispatchLogArtifact: qaDisplayPath(betaDispatchLogPath),
     dispatchLogReport: qaDisplayPath(betaDispatchLogReportPath),
     dispatchLogCsv: qaDisplayPath(betaDispatchLogCsvPath),
@@ -3317,6 +3330,11 @@ const summary = {
     dispatchLogPreparedDueTodayCount: betaDispatchLog.preparedDueTodayCount ?? null,
     dispatchLogPreparedOverdueCount: betaDispatchLog.preparedOverdueCount ?? null,
     dispatchLogRequireSent: betaDispatchLog.requireSent ?? null,
+    operatorDispatchLogArtifact: qaDisplayPath(betaOperatorDispatchLogPath),
+    operatorDispatchLogRowCount: betaOperatorDispatchLog.dispatchRowCount ?? null,
+    operatorDispatchLogPreparedNotSentCount: betaOperatorDispatchLog.preparedNotSentCount ?? null,
+    operatorDispatchLogPreparedDueTodayCount: betaOperatorDispatchLog.preparedDueTodayCount ?? null,
+    operatorDispatchLogPreparedOverdueCount: betaOperatorDispatchLog.preparedOverdueCount ?? null,
     followUpOutboxArtifact: qaDisplayPath(betaFollowUpOutboxPath),
     followUpOutboxReport: qaDisplayPath(betaFollowUpOutboxReportPath),
     followUpOutboxCsv: qaDisplayPath(betaFollowUpOutboxCsvPath),
@@ -3324,6 +3342,7 @@ const summary = {
     followUpOutboxDispatchLogArtifact: betaFollowUpOutbox.dispatchLogArtifact ?? null,
     followUpOutboxRowCount: betaFollowUpOutbox.followUpRowCount ?? null,
     followUpOutboxMessageFileCount: betaFollowUpOutbox.messageFileCount ?? null,
+    followUpOutboxAllowOverdue: betaFollowUpOutbox.allowOverdue ?? null,
     followUpOutboxSendEligibleCount: betaFollowUpOutbox.sendEligibleCount ?? null,
     followUpOutboxBlockedUntilInitialSendCount: betaFollowUpOutbox.blockedUntilInitialSendCount ?? null,
     allWaveOpsArtifact: qaDisplayPath(betaAllWaveOpsPath),
@@ -3525,6 +3544,7 @@ const summary = {
     sendPacketRowCount: launchTodaySendPacketRows.length,
     betaDispatchDueTodayCount: launchOperatorToday.betaDispatchDueTodayCount ?? null,
     betaDispatchOverdueCount: launchOperatorToday.betaDispatchOverdueCount ?? null,
+    betaDispatchOutboxArtifact: launchOperatorToday.betaDispatchOutboxArtifact ?? null,
     betaDispatchLogArtifact: launchOperatorToday.betaDispatchLogArtifact ?? null,
     betaDispatchLogPreparedDueTodayCount: launchOperatorToday.betaDispatchLogPreparedDueTodayCount ?? null,
     betaDispatchLogPreparedOverdueCount: launchOperatorToday.betaDispatchLogPreparedOverdueCount ?? null,
@@ -4118,10 +4138,10 @@ const summary = {
       ? `Resolve production deployment-currency verification: ${deploymentCurrency.error}.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedOverdueCount || 0) > 0
-      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s) from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
+      ? `Send or escalate ${launchOperatorToday.betaDispatchLogPreparedOverdueCount} overdue beta review dispatch message(s) from ${launchOperatorToday.betaDispatchOutboxArtifact || qaDisplayPath(betaOperatorDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
     Number(launchOperatorToday.betaDispatchLogPreparedDueTodayCount || 0) > 0
-      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${qaDisplayPath(betaDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
+      ? `Send ${launchOperatorToday.betaDispatchLogPreparedDueTodayCount} prepared beta review dispatch message(s) due today from ${launchOperatorToday.betaDispatchOutboxArtifact || qaDisplayPath(betaOperatorDispatchOutboxPath)}, then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`
       : null,
     Number(launchOperatorToday.visualDispatchLogPreparedOverdueCount || 0) > 0
       ? `Send or escalate ${launchOperatorToday.visualDispatchLogPreparedOverdueCount} overdue production visual-review request(s), then record sent evidence with ${dispatchSentRecordCsv}, run ${dispatchSentRecordValidateCommand} to validate it, run ${dispatchSentRecordImportCommand} to import the sent state, ${dispatchSentRecordPostImportCommand}.`

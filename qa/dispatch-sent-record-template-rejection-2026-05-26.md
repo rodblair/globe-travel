@@ -9,7 +9,7 @@ Status: pass
 - Mark-sent exit code: 1
 - Mark-sent status: fail
 - Import mode attempted: yes
-- Requested updates: 6
+- Requested updates: 16
 - Beta rows imported: 0
 - Visual rows imported: 0
 - Required proof fields rejected: reviewerAlias, deliveryChannel, sentAt, contactRecordLocation
