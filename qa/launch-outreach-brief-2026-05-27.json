@@ -8,21 +8,19 @@
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-27.json",
   "dispatchPacketArtifact": "qa/launch-dispatch-packet-2026-05-27.json",
   "sentRecordCsv": "qa/dispatch-sent-record-template-2026-05-27.csv",
-  "publicLaunchStatus": "blocked",
+  "publicLaunchStatus": "beta-ready-public-blocked",
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-jokivae1y-rodney-blairs-projects.vercel.app",
-    "commit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc"
+    "url": "globe-travel-3y1hgwc01-rodney-blairs-projects.vercel.app",
+    "commit": "c3456d52fac34f19a6236841c0b4d5409860f1df"
   },
-  "guardrailIssues": [
-    "launch outreach brief is not ready for operator handoff"
-  ],
+  "guardrailIssues": [],
   "blockerIds": [
     "beta-human-review-threshold",
     "production-visual-review-history"
   ],
-  "immediateExternalAction": "Send or reassign 10 overdue beta invites now.",
+  "immediateExternalAction": "Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.",
   "rowCount": 16,
   "betaRowCount": 15,
   "visualRowCount": 1,
@@ -264,7 +262,7 @@
     {
       "name": "launch outreach brief reads current status, operator board, and dispatch packet",
       "ok": true,
-      "publicStatus": "blocked",
+      "publicStatus": "beta-ready-public-blocked",
       "launchOperatorToday": "2026-05-27",
       "dispatchPacketDate": "2026-05-27",
       "dispatchPacketStatus": "pass"
@@ -276,9 +274,7 @@
         "beta-human-review-threshold",
         "production-visual-review-history"
       ],
-      "guardrailIssues": [
-        "launch outreach brief is not ready for operator handoff"
-      ],
+      "guardrailIssues": [],
       "runtimeCommitAhead": false
     },
     {

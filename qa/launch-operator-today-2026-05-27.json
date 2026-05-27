@@ -2,7 +2,7 @@
   "date": "2026-05-27",
   "today": "2026-05-27",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-05-27T06:49:38.408Z",
+  "generatedAt": "2026-05-27T07:27:53.908Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -24,12 +24,10 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc",
-  "publicLaunchStatus": "blocked",
-  "publicGuardrailIssues": [
-    "launch outreach brief is not ready for operator handoff"
-  ],
-  "publicOnlyLaunchOperatorSelfGuardrails": true,
+  "liveDeploymentCommit": "c3456d52fac34f19a6236841c0b4d5409860f1df",
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicGuardrailIssues": [],
+  "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -45,8 +43,10 @@
   "betaDeferredUntilDispatchPreparedCount": 0,
   "betaDeferredUntilDispatchPreparedIds": [],
   "betaDispatchDueTodayCount": 0,
+  "betaDispatchDueSoonCount": 5,
   "betaDispatchOverdueCount": 10,
   "betaDispatchLogPreparedDueTodayCount": 0,
+  "betaDispatchLogPreparedDueSoonCount": 5,
   "betaDispatchLogPreparedOverdueCount": 10,
   "betaDispatchLogPreparedNotSentCount": 25,
   "betaDispatchLogSentCount": 0,
@@ -61,7 +61,7 @@
   "visualDispatchLogSentCount": 0,
   "deploymentActionCount": 0,
   "operatorHandoff": {
-    "immediateExternalAction": "Send or reassign 10 overdue beta invites now.",
+    "immediateExternalAction": "Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.",
     "overdueBetaInviteIds": [
       "BETA-HR-001",
       "BETA-HR-002",
@@ -75,6 +75,13 @@
       "BETA-HR-010"
     ],
     "dueTodayBetaInviteIds": [],
+    "dueSoonBetaInviteIds": [
+      "BETA-HR-011",
+      "BETA-HR-012",
+      "BETA-HR-013",
+      "BETA-HR-014",
+      "BETA-HR-015"
+    ],
     "dueSoonVisualReviewIds": [
       "PROD-VISUAL-HISTORY-002"
     ],
@@ -545,7 +552,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-011 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-011-sydney.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Sydney+trip+for+beaches%2C+neighborhoods%2C+and+easy+food+stops.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-011-sydney.md",
@@ -571,7 +578,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-012 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-012-vancouver.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+3-day+Vancouver+outdoors+and+food+trip+for+a+mixed+group.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-012-vancouver.md",
@@ -597,7 +604,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-013 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-013-rio-de-janeiro.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Rio+beach+and+nightlife+trip+for+friends.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-013-rio-de-janeiro.md",
@@ -623,7 +630,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-014 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-014-reykjavik.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+4-day+Reykjavik+outdoors+trip+with+weather-safe+pacing.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-014-reykjavik.md",
@@ -649,7 +656,7 @@
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
+      "action": "BETA-HR-015 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness.",
       "messageFile": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-015-crete.txt",
       "startUrlOrCommand": "https://globe-travel-two.vercel.app/chat?q=Plan+a+5-day+Crete+family+beach+trip+with+culture+and+relaxed+travel+days.",
       "packetOrArtifact": "qa/beta-human-review-packets-2026-05-21/BETA-HR-015-crete.md",
@@ -772,7 +779,7 @@
   ],
   "visualActionContextIssues": [],
   "executionOrder": [
-    "Send every P0/P1 message file in the Send Packet Index; 10 beta invites overdue, 0 beta invites due today, and 1 production visual review due soon.",
+    "Send every P0/P1 message file in the Send Packet Index; 10 beta invites overdue, 0 beta invites due today, 5 beta invites due soon, and 1 production visual review due soon.",
     "Record each real send in `qa/dispatch-sent-record-template-2026-05-27.csv` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.",
     "Validate the filled sent-record CSV with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-27.csv npm run qa:dispatch-mark-sent`.",
     "Import the sent state with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-27.csv npm run qa:dispatch-mark-sent` only after validation passes.",
@@ -783,17 +790,15 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [
-        "launch outreach brief is not ready for operator handoff"
-      ],
-      "onlyLaunchOperatorSelfGuardrails": true,
-      "onlyLaunchOperatorAcceptedExternalGuardrails": true
+      "guardrailIssues": [],
+      "onlyLaunchOperatorSelfGuardrails": false,
+      "onlyLaunchOperatorAcceptedExternalGuardrails": false
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -805,7 +810,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc"
+      "liveCommit": "c3456d52fac34f19a6236841c0b4d5409860f1df"
     },
     {
       "name": "launch today reads aligned dispatch logs",
@@ -867,6 +872,20 @@
         "BETA-HR-008",
         "BETA-HR-009",
         "BETA-HR-010"
+      ],
+      "betaDispatchDueSoon": [
+        "BETA-HR-011",
+        "BETA-HR-012",
+        "BETA-HR-013",
+        "BETA-HR-014",
+        "BETA-HR-015"
+      ],
+      "betaDispatchLogDueSoon": [
+        "BETA-HR-011",
+        "BETA-HR-012",
+        "BETA-HR-013",
+        "BETA-HR-014",
+        "BETA-HR-015"
       ],
       "visualDueSoon": [
         "PROD-VISUAL-HISTORY-002"

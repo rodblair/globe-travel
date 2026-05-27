@@ -11,7 +11,7 @@
   "betaRowCount": 15,
   "visualRowCount": 1,
   "operatorBrief": {
-    "immediateExternalAction": "Send or reassign 10 overdue beta invites now.",
+    "immediateExternalAction": "Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.",
     "publicLaunchBoundary": "This packet is outreach material only; it is not completed beta-review or production visual-review evidence.",
     "sendOrder": [
       {
@@ -740,7 +740,7 @@
     {
       "name": "launch dispatch packet includes a concise operator brief and send order",
       "ok": true,
-      "immediateExternalAction": "Send or reassign 10 overdue beta invites now.",
+      "immediateExternalAction": "Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.",
       "sendOrderCount": 16,
       "missingOperatorBriefRows": [],
       "missingOperatorBriefProofFields": []

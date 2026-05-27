@@ -8,14 +8,14 @@ Status: pass
 - Checked: 8
 - Passed: 8
 - Failed: 0
-- Public launch status: blocked
+- Public launch status: beta-ready-public-blocked
 - Current blockers: beta-human-review-threshold, production-visual-review-history
 - Outreach rows: 16 (15 beta, 1 visual)
 - Sent-record CSV to fill only after real outreach: `qa/dispatch-sent-record-template-2026-05-27.csv`
 
 ## Do Now
 
-Send or reassign 10 overdue beta invites now.
+Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.
 
 ## Boundaries
 

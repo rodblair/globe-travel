@@ -3,7 +3,7 @@
 Date: 2026-05-27
 Today: 2026-05-27
 Time zone: America/Toronto
-Generated at: 2026-05-27T06:49:38.408Z
+Generated at: 2026-05-27T07:27:53.908Z
 Status: fail
 
 ## Result
@@ -11,13 +11,14 @@ Status: fail
 - Checked: 14
 - Passed: 13
 - Failed: 1
-- Public launch status: blocked
+- Public launch status: beta-ready-public-blocked
 - Runtime deployment current: yes
 - Beta reviews: 0/25, 25 remaining
 - Production visual-review history: 2/4, 2 remaining
 - Beta prepared dispatch rows: 25
 - Beta rows deferred until current dispatch packet/log advances: 0
 - Beta invites due today: 0
+- Beta invites due soon: 5
 - Beta invite send log: 0 sent, 25 prepared not sent
 - Beta follow-ups due soon: 15
 - Beta follow-ups blocked until initial sent proof: 15
@@ -29,9 +30,10 @@ Status: fail
 
 ## Operator Handoff
 
-- Immediate action: Send or reassign 10 overdue beta invites now.
+- Immediate action: Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.
 - Overdue beta invite IDs: BETA-HR-001, BETA-HR-002, BETA-HR-003, BETA-HR-004, BETA-HR-005, BETA-HR-006, BETA-HR-007, BETA-HR-008, BETA-HR-009, BETA-HR-010
 - Beta invite IDs due today: none
+- Beta invite IDs due soon: BETA-HR-011, BETA-HR-012, BETA-HR-013, BETA-HR-014, BETA-HR-015
 - Due-soon production visual-review IDs: PROD-VISUAL-HISTORY-002
 - Follow-ups blocked until initial sent proof: BETA-HR-001, BETA-HR-002, BETA-HR-003, BETA-HR-004, BETA-HR-005, BETA-HR-006, BETA-HR-007, BETA-HR-008, BETA-HR-009, BETA-HR-010, BETA-HR-011, BETA-HR-012, BETA-HR-013, BETA-HR-014, BETA-HR-015
 - Deferred beta invite IDs: none
@@ -44,7 +46,7 @@ Status: fail
 
 ## Execution Order
 
-1. Send every P0/P1 message file in the Send Packet Index; 10 beta invites overdue, 0 beta invites due today, and 1 production visual review due soon.
+1. Send every P0/P1 message file in the Send Packet Index; 10 beta invites overdue, 0 beta invites due today, 5 beta invites due soon, and 1 production visual review due soon.
 2. Record each real send in `qa/dispatch-sent-record-template-2026-05-27.csv` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.
 3. Validate the filled sent-record CSV with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-27.csv npm run qa:dispatch-mark-sent`.
 4. Import the sent state with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-27.csv npm run qa:dispatch-mark-sent` only after validation passes.
@@ -86,11 +88,11 @@ Status: fail
 | P0 | beta-human-review | BETA-HR-008 | 2026-05-26 | send overdue by 1 day | 2026-05-27 | prepared-not-sent | BETA-HR-008 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up overdue by 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review today; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-008 Bangkok review due 2026-05-27 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-008-bangkok.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-008-bangkok.json` |
 | P0 | beta-human-review | BETA-HR-009 | 2026-05-26 | send overdue by 1 day | 2026-05-27 | prepared-not-sent | BETA-HR-009 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up overdue by 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review today; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-009 Marrakech review due 2026-05-27 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-009-marrakech.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-009-marrakech.json` |
 | P0 | beta-human-review | BETA-HR-010 | 2026-05-26 | send overdue by 1 day | 2026-05-27 | prepared-not-sent | BETA-HR-010 dispatch is overdue by 1 day; send invite immediately or reassign, then record sent proof. Follow-up overdue by 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review today; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-010 Cape Town review due 2026-05-27 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-010-cape-town.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-010-cape-town.json` |
-| P1 | beta-human-review | BETA-HR-011 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-011 Sydney review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-011-sydney.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-011-sydney.json` |
-| P1 | beta-human-review | BETA-HR-012 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-012 Vancouver review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-012-vancouver.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-012-vancouver.json` |
-| P1 | beta-human-review | BETA-HR-013 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-013 Rio de Janeiro review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-013-rio-de-janeiro.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-013-rio-de-janeiro.json` |
-| P1 | beta-human-review | BETA-HR-014 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-014 Reykjavik review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-014-reykjavik.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-014-reykjavik.json` |
-| P1 | beta-human-review | BETA-HR-015 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-015 Crete review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-015-crete.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-015-crete.json` |
+| P1 | beta-human-review | BETA-HR-011 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | BETA-HR-011 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-011 Sydney review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-011-sydney.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-011-sydney.json` |
+| P1 | beta-human-review | BETA-HR-012 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | BETA-HR-012 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-012 Vancouver review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-012-vancouver.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-012-vancouver.json` |
+| P1 | beta-human-review | BETA-HR-013 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | BETA-HR-013 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-013 Rio de Janeiro review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-013-rio-de-janeiro.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-013-rio-de-janeiro.json` |
+| P1 | beta-human-review | BETA-HR-014 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | BETA-HR-014 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-014 Reykjavik review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-014-reykjavik.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-014-reykjavik.json` |
+| P1 | beta-human-review | BETA-HR-015 | 2026-05-28 | send in 1 day | 2026-05-29 | prepared-not-sent | BETA-HR-015 dispatch is due in 1 day; send beta review invite before the deadline and record sent proof. Follow-up in 1 day; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review in 2 days; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-015 Crete review due 2026-05-29 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-015-crete.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-015-crete.json` |
 | P1 | production-visual-review | PROD-VISUAL-HISTORY-002 | n/a | review in 1 day | 2026-05-28 | prepared-not-sent | Review in 1 day; send visual-review assignment or confirm scheduled reviewer time. | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
 
 ## Operating Rules

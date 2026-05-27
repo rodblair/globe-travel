@@ -1,12 +1,12 @@
 {
   "date": "2026-05-27",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-05-27T06:49:42.810Z",
-  "status": "fail",
+  "generatedAt": "2026-05-27T07:27:58.555Z",
+  "status": "pass",
   "checked": 26,
-  "passed": 23,
-  "failed": 1,
-  "actionableStepCount": 0,
+  "passed": 26,
+  "failed": 0,
+  "actionableStepCount": 2,
   "publicLaunchStatus": "beta-ready-public-blocked",
   "publicGuardrailIssues": [],
   "blockers": [
@@ -28,7 +28,7 @@
     "Run, review, and import 2 scheduled production visual review date(s)."
   ],
   "operatorHandoff": {
-    "immediateExternalAction": "Send or reassign 10 overdue beta invites now.",
+    "immediateExternalAction": "Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.",
     "overdueBetaInviteIds": [
       "BETA-HR-001",
       "BETA-HR-002",
@@ -42,6 +42,13 @@
       "BETA-HR-010"
     ],
     "dueTodayBetaInviteIds": [],
+    "dueSoonBetaInviteIds": [
+      "BETA-HR-011",
+      "BETA-HR-012",
+      "BETA-HR-013",
+      "BETA-HR-014",
+      "BETA-HR-015"
+    ],
     "dueSoonVisualReviewIds": [
       "PROD-VISUAL-HISTORY-002"
     ],
@@ -251,7 +258,7 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"
@@ -358,14 +365,12 @@
     {
       "step": "public-launch-status-after-first-board",
       "scriptName": "qa:public-launch-status",
-      "exitCode": 1,
+      "exitCode": 0,
       "signal": null,
       "error": null,
-      "classification": "fail",
-      "status": "blocked",
-      "guardrailIssues": [
-        "launch outreach brief is not ready for operator handoff"
-      ],
+      "classification": "pass",
+      "status": "beta-ready-public-blocked",
+      "guardrailIssues": [],
       "blockerIds": [
         "beta-human-review-threshold",
         "production-visual-review-history"
@@ -377,7 +382,7 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "fail",
+      "classification": "actionable",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"

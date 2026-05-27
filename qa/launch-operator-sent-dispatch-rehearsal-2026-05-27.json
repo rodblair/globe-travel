@@ -14,9 +14,9 @@
   "launchOperatorExitCode": 1,
   "launchOperatorStatus": "fail",
   "launchOperatorOnlyOverdueExecutionFailure": true,
-  "launchOperatorPublicLaunchStatus": "blocked",
+  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
   "launchOperatorDeploymentRuntimeBlocked": false,
-  "launchOperatorOnlySelfGuardrails": true,
+  "launchOperatorOnlySelfGuardrails": false,
   "launchOperatorActionRowCount": 14,
   "launchOperatorActionIds": [
     "BETA-HR-001",
@@ -95,9 +95,9 @@
     {
       "name": "sent-dispatch rehearsal does not advance launch evidence",
       "ok": true,
-      "publicLaunchStatus": "blocked",
+      "publicLaunchStatus": "beta-ready-public-blocked",
       "deploymentRuntimeBlocked": false,
-      "onlySelfGuardrails": true,
+      "onlySelfGuardrails": false,
       "betaCompleted": 0,
       "visualHistoryCount": 2
     },

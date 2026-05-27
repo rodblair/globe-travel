@@ -15,7 +15,7 @@ Status: pass
 
 ## Operator Brief
 
-- Immediate external action: Send or reassign 10 overdue beta invites now.
+- Immediate external action: Send or reassign 10 overdue beta invites now, and prepare 5 beta invites due soon.
 - Boundary: This packet is outreach material only; it is not completed beta-review or production visual-review evidence.
 - Privacy rule: Keep names, emails, phone numbers, and other contact details in the external contact system; store only aliases and external proof pointers in repo artifacts.
 - Proof fields to fill after sending: `reviewerAlias`, `deliveryChannel`, `sentAt`, `contactRecordLocation`
