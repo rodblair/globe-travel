@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { readdirSync } from 'node:fs'
 import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate } from './qa-date-utils.mjs'
@@ -11,9 +12,10 @@ const templatePath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE ||
 const templateReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REPORT ||
   `qa/dispatch-sent-record-template-${date}.md`
 const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG ||
-  'qa/beta-human-review-dispatch-log-2026-05-21.json'
+  process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_LOG ||
+  latestQaArtifact(/^beta-human-review-dispatch-log-all-wave-\d{4}-\d{2}-\d{2}\.json$/, 'qa/beta-human-review-dispatch-log-2026-05-21.json')
 const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
-  'qa/production-visual-review-dispatch-log-2026-05-21.json'
+  latestQaArtifact(/^production-visual-review-dispatch-log-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-log-2026-05-21.json')
 const rawArtifactName = `dispatch-sent-record-template-rejection-raw-${date}`
 const rawJson = `qa/${rawArtifactName}.json`
 const rawReport = `qa/${rawArtifactName}.md`
@@ -26,6 +28,17 @@ const artifactName = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTI
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
 }
 
 function repoPath(path) {
@@ -74,6 +87,8 @@ const markSentResult = spawnSync(process.execPath, ['scripts/platform-dispatch-l
   encoding: 'utf8',
   env: {
     ...process.env,
+    QA_BETA_REVIEW_DISPATCH_LOG: betaDispatchLogPath,
+    QA_VISUAL_REVIEW_DISPATCH_LOG: visualDispatchLogPath,
     QA_DISPATCH_MARK_SENT_IMPORT: '1',
     QA_DISPATCH_MARK_SENT_RECORD: templatePath,
     QA_DISPATCH_MARK_SENT_ARTIFACT_NAME: rawArtifactName,
@@ -146,6 +161,8 @@ const invalidProofResult = spawnSync(process.execPath, ['scripts/platform-dispat
   encoding: 'utf8',
   env: {
     ...process.env,
+    QA_BETA_REVIEW_DISPATCH_LOG: betaDispatchLogPath,
+    QA_VISUAL_REVIEW_DISPATCH_LOG: visualDispatchLogPath,
     QA_DISPATCH_MARK_SENT_IMPORT: '1',
     QA_DISPATCH_MARK_SENT_RECORD: invalidProofRecord,
     QA_DISPATCH_MARK_SENT_ARTIFACT_NAME: invalidProofArtifactName,

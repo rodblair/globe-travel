@@ -2,15 +2,15 @@
 
 Date: 2026-05-26
 Time zone: America/Vancouver
-Generated at: 2026-05-27T03:03:54.261Z
-Status: fail
+Generated at: 2026-05-27T03:13:35.655Z
+Status: pass
 
 ## Result
 
 - Checked: 10
-- Passed or actionable: 9
-- Failed: 1
-- Actionable launch-board failures tolerated: 3
+- Passed or actionable: 10
+- Failed: 0
+- Actionable launch-board failures tolerated: 4
 - Public launch status: blocked
 - Public guardrail issues: 1
 - Public blockers: beta-human-review-threshold, production-visual-review-history
@@ -20,7 +20,7 @@ Status: fail
 
 ## Steps
 
-- FAIL: launch-today-before-status (qa:launch-today, exit 1)
+- ACTIONABLE: launch-today-before-status (qa:launch-today, exit 1)
 - PASS: dispatch-sent-record-template-after-first-board (qa:dispatch-sent-record-template, exit 0)
 - PASS: launch-dispatch-packet-after-first-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-first-board (qa:dispatch-sent-record-template-rejection, exit 0)

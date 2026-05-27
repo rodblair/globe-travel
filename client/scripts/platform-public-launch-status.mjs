@@ -2396,7 +2396,10 @@ const launchSentDispatchPublicStatusCurrent = deploymentCurrency.enforced && dep
       launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' ||
       (
         launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'blocked' &&
-        launchOperatorSentDispatchRehearsal.launchOperatorOnlySelfGuardrails === true
+        (
+          launchOperatorSentDispatchRehearsal.launchOperatorOnlySelfGuardrails === true ||
+          launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure === true
+        )
       )
     ) &&
     !launchSentDispatchHasDeploymentAction

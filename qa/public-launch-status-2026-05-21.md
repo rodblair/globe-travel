@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-27T03:04:05.699Z
+Generated at: 2026-05-27T03:13:35.642Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -47,7 +47,7 @@ Status: blocked
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
 - Launch operator today ready: yes (16 action rows, 15 beta, 1 visual, 16 send-packet rows, 6 execution steps, 25 beta unsent, 15 follow-ups blocked until initial sent proof, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
-- Launch operator sent-dispatch rehearsal ready: yes (4 action rows after rehearsed sends)
+- Launch operator sent-dispatch rehearsal ready: yes (14 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (2 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (2 beta sent on isolated log, 1 visual sent on isolated log)
 - Dispatch sent-record template ready: yes (16 rows, ready for import: no, missing commands: 0, missing context: 0)

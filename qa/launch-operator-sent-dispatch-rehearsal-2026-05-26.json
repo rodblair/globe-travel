@@ -4,25 +4,35 @@
   "checked": 7,
   "passed": 7,
   "failed": 0,
-  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-21.json",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
   "selectedRows": {
-    "beta": "BETA-HR-001",
+    "beta": "BETA-HR-006",
     "visual": "PROD-VISUAL-HISTORY-002"
   },
   "sentAt": "2026-05-26T12:00:00.000Z",
   "launchOperatorExitCode": 1,
   "launchOperatorStatus": "fail",
   "launchOperatorOnlyOverdueExecutionFailure": true,
-  "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
+  "launchOperatorPublicLaunchStatus": "blocked",
   "launchOperatorDeploymentRuntimeBlocked": false,
   "launchOperatorOnlySelfGuardrails": false,
-  "launchOperatorActionRowCount": 4,
+  "launchOperatorActionRowCount": 14,
   "launchOperatorActionIds": [
+    "BETA-HR-001",
     "BETA-HR-002",
     "BETA-HR-003",
     "BETA-HR-004",
-    "BETA-HR-005"
+    "BETA-HR-005",
+    "BETA-HR-007",
+    "BETA-HR-008",
+    "BETA-HR-009",
+    "BETA-HR-010",
+    "BETA-HR-011",
+    "BETA-HR-012",
+    "BETA-HR-013",
+    "BETA-HR-014",
+    "BETA-HR-015"
   ],
   "currentLaunchArtifact": "qa/launch-operator-today-2026-05-26.json",
   "rawArtifactsCleanedUp": true,
@@ -30,7 +40,7 @@
     {
       "name": "sent-dispatch rehearsal selects beta and visual rows",
       "ok": true,
-      "betaSelectedId": "BETA-HR-001",
+      "betaSelectedId": "BETA-HR-006",
       "visualSelectedId": "PROD-VISUAL-HISTORY-002"
     },
     {
@@ -43,12 +53,22 @@
     {
       "name": "sent beta dispatch row is removed from send actions",
       "ok": true,
-      "betaSelectedId": "BETA-HR-001",
+      "betaSelectedId": "BETA-HR-006",
       "actionIds": [
+        "BETA-HR-001",
         "BETA-HR-002",
         "BETA-HR-003",
         "BETA-HR-004",
-        "BETA-HR-005"
+        "BETA-HR-005",
+        "BETA-HR-007",
+        "BETA-HR-008",
+        "BETA-HR-009",
+        "BETA-HR-010",
+        "BETA-HR-011",
+        "BETA-HR-012",
+        "BETA-HR-013",
+        "BETA-HR-014",
+        "BETA-HR-015"
       ]
     },
     {
@@ -56,17 +76,28 @@
       "ok": true,
       "visualSelectedId": "PROD-VISUAL-HISTORY-002",
       "actionIds": [
+        "BETA-HR-001",
         "BETA-HR-002",
         "BETA-HR-003",
         "BETA-HR-004",
-        "BETA-HR-005"
+        "BETA-HR-005",
+        "BETA-HR-007",
+        "BETA-HR-008",
+        "BETA-HR-009",
+        "BETA-HR-010",
+        "BETA-HR-011",
+        "BETA-HR-012",
+        "BETA-HR-013",
+        "BETA-HR-014",
+        "BETA-HR-015"
       ]
     },
     {
       "name": "sent-dispatch rehearsal does not advance launch evidence",
       "ok": true,
-      "publicLaunchStatus": "beta-ready-public-blocked",
+      "publicLaunchStatus": "blocked",
       "deploymentRuntimeBlocked": false,
+      "onlySelfGuardrails": false,
       "betaCompleted": 0,
       "visualHistoryCount": 2
     },

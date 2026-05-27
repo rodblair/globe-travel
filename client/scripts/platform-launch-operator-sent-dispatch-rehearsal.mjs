@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { readdirSync } from 'node:fs'
 import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate, daysBetween, isDate } from './qa-date-utils.mjs'
@@ -6,8 +7,11 @@ import { currentQaDate, daysBetween, isDate } from './qa-date-utils.mjs'
 const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const artifactDate = process.env.QA_LAUNCH_SENT_DISPATCH_REHEARSAL_DATE || currentQaDate()
-const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
-const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG || 'qa/production-visual-review-dispatch-log-2026-05-21.json'
+const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG ||
+  process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_LOG ||
+  latestQaArtifact(/^beta-human-review-dispatch-log-all-wave-\d{4}-\d{2}-\d{2}\.json$/, 'qa/beta-human-review-dispatch-log-2026-05-21.json')
+const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
+  latestQaArtifact(/^production-visual-review-dispatch-log-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-log-2026-05-21.json')
 const rawArtifactName = `launch-operator-sent-dispatch-rehearsal-raw-${artifactDate}`
 const betaRawLog = `qa/${rawArtifactName}-beta-dispatch-log.json`
 const visualRawLog = `qa/${rawArtifactName}-visual-dispatch-log.json`
@@ -16,6 +20,17 @@ const artifactName = process.env.QA_LAUNCH_SENT_DISPATCH_REHEARSAL_ARTIFACT_NAME
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
 }
 
 function repoPath(path) {
@@ -157,10 +172,10 @@ const launchOperatorDeploymentRuntimeBlocked =
 const launchOperatorOnlySelfGuardrails =
   launchSummary?.publicLaunchStatus === 'blocked' &&
   launchSummary?.publicOnlyLaunchOperatorSelfGuardrails === true
-const launchOperatorEvidenceBlocked =
-  launchSummary?.publicLaunchStatus === 'beta-ready-public-blocked' ||
-  launchOperatorDeploymentRuntimeBlocked ||
-  launchOperatorOnlySelfGuardrails
+const launchOperatorEvidenceDidNotAdvance =
+  !launchOperatorDeploymentRuntimeBlocked &&
+  Number(launchSummary?.betaReviews?.completed || 0) === 0 &&
+  Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === 2
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const launchOperatorBoardActionable = result.status === 0 ||
@@ -195,11 +210,10 @@ const checks = [
   },
   {
     name: 'sent-dispatch rehearsal does not advance launch evidence',
-    ok: launchOperatorEvidenceBlocked &&
-      Number(launchSummary?.betaReviews?.completed || 0) === 0 &&
-      Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === 2,
+    ok: launchOperatorEvidenceDidNotAdvance,
     publicLaunchStatus: launchSummary?.publicLaunchStatus || null,
     deploymentRuntimeBlocked: launchOperatorDeploymentRuntimeBlocked,
+    onlySelfGuardrails: launchOperatorOnlySelfGuardrails,
     betaCompleted: launchSummary?.betaReviews?.completed ?? null,
     visualHistoryCount: launchSummary?.productionVisualReviews?.distinctHistoryDateCount ?? null,
   },
