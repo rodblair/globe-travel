@@ -1683,7 +1683,7 @@
       "betaReady": false,
       "publicLaunchReady": false,
       "selfReferentialGuardrailCount": 0,
-      "acceptedBlockedGuardrailCount": 1,
+      "acceptedBlockedGuardrailCount": 2,
       "blockers": [
         {
           "id": "beta-human-review-threshold",
