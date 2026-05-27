@@ -4,13 +4,13 @@
   "importMode": false,
   "recordArtifact": "qa/dispatch-log-mark-sent-fixture-2026-05-26.json",
   "recordFormat": "json",
-  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
-  "requestedUpdateCount": 2,
-  "betaUpdateCount": 1,
+  "requestedUpdateCount": 3,
+  "betaUpdateCount": 2,
   "visualUpdateCount": 1,
   "updatedLogArtifacts": [
-    "qa/beta-human-review-dispatch-log-2026-05-21.json",
+    "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
     "qa/production-visual-review-dispatch-log-2026-05-26.json"
   ],
   "validationResults": [
@@ -18,6 +18,13 @@
       "ok": true,
       "issues": [],
       "id": "BETA-HR-001",
+      "kind": "beta",
+      "currentStatus": "prepared-not-sent"
+    },
+    {
+      "ok": true,
+      "issues": [],
+      "id": "BETA-HR-006",
       "kind": "beta",
       "currentStatus": "prepared-not-sent"
     },

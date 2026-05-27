@@ -3589,6 +3589,10 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
 
   const expectedLaunchOperatorBetaDispatchLogArtifact =
     betaReviewStatus.operatorDispatchLogArtifact || betaReviewStatus.dispatchLogArtifact
+  const expectedDispatchSentRecordMarkSentEnv = [
+    `QA_BETA_REVIEW_DISPATCH_LOG=${expectedLaunchOperatorBetaDispatchLogArtifact}`,
+    `QA_VISUAL_REVIEW_DISPATCH_LOG=${visualReviewStatus.dispatchLogArtifact}`,
+  ].join(' ')
 
   addCheck('public launch status includes daily launch operator board', (
     launchOperatorStatus.ready === true &&
@@ -3603,7 +3607,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorStatus.dispatchSentRecordTemplateArtifact === dispatchSentRecordTemplateArtifact &&
     launchOperatorStatus.dispatchSentRecordTemplateReport === dispatchSentRecordTemplateReport &&
     launchOperatorStatus.dispatchSentRecordTemplateCsv === dispatchSentRecordTemplateCsv &&
+    String(launchOperatorStatus.dispatchSentRecordTemplateValidationCommand || '').includes(expectedDispatchSentRecordMarkSentEnv) &&
     String(launchOperatorStatus.dispatchSentRecordTemplateValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    String(launchOperatorStatus.dispatchSentRecordTemplateImportCommand || '').includes(expectedDispatchSentRecordMarkSentEnv) &&
     String(launchOperatorStatus.dispatchSentRecordTemplateImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
     Array.isArray(launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands) &&
     launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-refresh') &&
@@ -3798,7 +3804,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchMarkSentDryRunStatus.betaUpdateCount) > 0 &&
     Number(dispatchMarkSentDryRunStatus.visualUpdateCount) > 0 &&
     Array.isArray(dispatchMarkSentDryRunStatus.updatedLogArtifacts) &&
-    dispatchMarkSentDryRunStatus.updatedLogArtifacts.includes(betaReviewStatus.dispatchLogArtifact) &&
+    dispatchMarkSentDryRunStatus.updatedLogArtifacts.includes(expectedLaunchOperatorBetaDispatchLogArtifact) &&
     dispatchMarkSentDryRunStatus.updatedLogArtifacts.includes(visualReviewStatus.dispatchLogArtifact) &&
     dispatchMarkSentDryRunIssues.length === 0
   ), {
@@ -3815,7 +3821,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchMarkSentDryRunBetaUpdateCount: dispatchMarkSentDryRunStatus.betaUpdateCount ?? null,
     dispatchMarkSentDryRunVisualUpdateCount: dispatchMarkSentDryRunStatus.visualUpdateCount ?? null,
     dispatchMarkSentDryRunUpdatedLogArtifacts: dispatchMarkSentDryRunStatus.updatedLogArtifacts || null,
-    expectedBetaDispatchLogArtifact: betaReviewStatus.dispatchLogArtifact || null,
+    expectedBetaDispatchLogArtifact: expectedLaunchOperatorBetaDispatchLogArtifact || null,
     expectedVisualDispatchLogArtifact: visualReviewStatus.dispatchLogArtifact || null,
     dispatchMarkSentDryRunIssues,
   })
@@ -3913,10 +3919,14 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(dispatchSentRecordTemplateStatus.csvRowCount) === Number(dispatchSentRecordTemplateStatus.rowCount) &&
     Number(dispatchSentRecordTemplateStatus.missingMessageFileCount) === 0 &&
     Number(dispatchSentRecordTemplateStatus.missingSubmissionTemplateCount) === 0 &&
+    String(dispatchSentRecordTemplateStatus.validationCommand || '').includes(expectedDispatchSentRecordMarkSentEnv) &&
     String(dispatchSentRecordTemplateStatus.validationCommand || '').includes('qa:dispatch-mark-sent') &&
+    String(dispatchSentRecordTemplateStatus.importCommand || '').includes(expectedDispatchSentRecordMarkSentEnv) &&
     String(dispatchSentRecordTemplateStatus.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+    String(dispatchSentRecordTemplateStatus.csvValidationCommand || '').includes(expectedDispatchSentRecordMarkSentEnv) &&
     String(dispatchSentRecordTemplateStatus.csvValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
     String(dispatchSentRecordTemplateStatus.csvValidationCommand || '').includes('qa:dispatch-mark-sent') &&
+    String(dispatchSentRecordTemplateStatus.csvImportCommand || '').includes(expectedDispatchSentRecordMarkSentEnv) &&
     String(dispatchSentRecordTemplateStatus.csvImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
     String(dispatchSentRecordTemplateStatus.csvImportCommand || '').includes('qa:dispatch-mark-sent') &&
     Array.isArray(dispatchSentRecordTemplateStatus.postImportCommands) &&

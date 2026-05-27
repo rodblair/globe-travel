@@ -132,10 +132,14 @@ const csvName = process.env.QA_LAUNCH_TODAY_CSV || `launch-operator-today-${date
 const dispatchSentRecordTemplateArtifact = `qa/dispatch-sent-record-template-${date}.json`
 const dispatchSentRecordTemplateReport = `qa/dispatch-sent-record-template-${date}.md`
 const dispatchSentRecordTemplateCsv = `qa/dispatch-sent-record-template-${date}.csv`
+const dispatchSentRecordTemplateMarkSentEnv = [
+  `QA_BETA_REVIEW_DISPATCH_LOG=${qaDisplayPath(betaDispatchLogPath)}`,
+  `QA_VISUAL_REVIEW_DISPATCH_LOG=${qaDisplayPath(visualDispatchLogPath)}`,
+].join(' ')
 const dispatchSentRecordTemplateValidationCommand =
-  `QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv} npm run qa:dispatch-mark-sent`
+  `${dispatchSentRecordTemplateMarkSentEnv} QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv} npm run qa:dispatch-mark-sent`
 const dispatchSentRecordTemplateImportCommand =
-  `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv} npm run qa:dispatch-mark-sent`
+  `${dispatchSentRecordTemplateMarkSentEnv} QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv} npm run qa:dispatch-mark-sent`
 const dispatchSentRecordTemplatePostImportCommands = [
   'npm run qa:launch-refresh',
   'npm run qa:launch-signoff',

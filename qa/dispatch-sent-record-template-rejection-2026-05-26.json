@@ -14,7 +14,7 @@
   "requestedUpdateCount": 16,
   "betaUpdateCount": 0,
   "visualUpdateCount": 0,
-  "rejectionIssueCount": 74,
+  "rejectionIssueCount": 64,
   "invalidProofExitCode": 1,
   "invalidProofStatus": "fail",
   "invalidProofIssueCount": 6,

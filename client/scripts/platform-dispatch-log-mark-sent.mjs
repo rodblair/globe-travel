@@ -6,7 +6,9 @@ import { currentQaDate, isDate } from './qa-date-utils.mjs'
 const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const date = process.env.QA_DISPATCH_MARK_SENT_DATE || currentQaDate()
-const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG || 'qa/beta-human-review-dispatch-log-2026-05-21.json'
+const betaDispatchLogPath = process.env.QA_BETA_REVIEW_DISPATCH_LOG ||
+  process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_LOG ||
+  latestQaArtifact(/^beta-human-review-dispatch-log-all-wave-\d{4}-\d{2}-\d{2}\.json$/, 'qa/beta-human-review-dispatch-log-2026-05-21.json')
 const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
   latestQaArtifact(/^production-visual-review-dispatch-log-\d{4}-\d{2}-\d{2}\.json$/, 'qa/production-visual-review-dispatch-log-2026-05-21.json')
 const recordPath = process.env.QA_DISPATCH_MARK_SENT_RECORD || ''

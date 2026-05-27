@@ -2179,6 +2179,10 @@ const visualDispatchLogRequiredOverdueRows = visualDispatchLogRows.filter((row) 
   return row.sendStatus !== 'sent' && row.requiredForPublicLaunch === true && Number.isFinite(delta) && delta < 0
 })
 if (!launchOperatorBoardActionable) launchTodayIssues.push('launch operator today status is not pass')
+const expectedDispatchSentRecordMarkSentEnv = [
+  `QA_BETA_REVIEW_DISPATCH_LOG=${qaDisplayPath(betaOperatorDispatchLogPath)}`,
+  `QA_VISUAL_REVIEW_DISPATCH_LOG=${qaDisplayPath(visualDispatchLogPath)}`,
+].join(' ')
 if (launchOperatorToday.today !== today) {
   launchTodayIssues.push(`launch operator today date ${launchOperatorToday.today || 'missing'} does not match ${today}`)
 }
@@ -2209,8 +2213,14 @@ if (launchOperatorToday.dispatchSentRecordTemplateCsv !== qaDisplayPath(dispatch
 if (!String(launchOperatorToday.dispatchSentRecordTemplateValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`)) {
   launchTodayIssues.push('launch operator today validation command does not point to the current sent-record CSV template')
 }
+if (!String(launchOperatorToday.dispatchSentRecordTemplateValidationCommand || '').includes(expectedDispatchSentRecordMarkSentEnv)) {
+  launchTodayIssues.push('launch operator today validation command does not target current beta and visual dispatch logs')
+}
 if (!String(launchOperatorToday.dispatchSentRecordTemplateImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`)) {
   launchTodayIssues.push('launch operator today import command does not point to the current sent-record CSV template')
+}
+if (!String(launchOperatorToday.dispatchSentRecordTemplateImportCommand || '').includes(expectedDispatchSentRecordMarkSentEnv)) {
+  launchTodayIssues.push('launch operator today import command does not target current beta and visual dispatch logs')
 }
 if (!Array.isArray(launchOperatorToday.dispatchSentRecordTemplatePostImportCommands) ||
   !launchOperatorToday.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-refresh') ||
@@ -2454,8 +2464,8 @@ if (Number(dispatchMarkSentDryRun.betaUpdateCount || 0) <= 0) {
 if (Number(dispatchMarkSentDryRun.visualUpdateCount || 0) <= 0) {
   dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run did not validate a visual row')
 }
-if (!dispatchMarkSentUpdatedArtifacts.includes(qaDisplayPath(betaDispatchLogPath))) {
-  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run does not target the beta dispatch log')
+if (!dispatchMarkSentUpdatedArtifacts.includes(qaDisplayPath(betaOperatorDispatchLogPath))) {
+  dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run does not target the operator beta dispatch log')
 }
 if (!dispatchMarkSentUpdatedArtifacts.includes(qaDisplayPath(visualDispatchLogPath))) {
   dispatchMarkSentDryRunIssues.push('dispatch mark-sent dry run does not target the visual dispatch log')
@@ -2652,16 +2662,28 @@ if (!dispatchSentRecordSubmissionTemplateChecks.every((check) => check.exists ==
 if (!String(dispatchSentRecordTemplate.validationCommand || '').includes('qa:dispatch-mark-sent')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template validation command is missing mark-sent dry run')
 }
+if (!String(dispatchSentRecordTemplate.validationCommand || '').includes(expectedDispatchSentRecordMarkSentEnv)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template validation command does not target current beta and visual dispatch logs')
+}
 if (!String(dispatchSentRecordTemplate.importCommand || '').includes('QA_DISPATCH_MARK_SENT_IMPORT=1')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template import command is missing import mode')
+}
+if (!String(dispatchSentRecordTemplate.importCommand || '').includes(expectedDispatchSentRecordMarkSentEnv)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template import command does not target current beta and visual dispatch logs')
 }
 if (!String(dispatchSentRecordTemplate.csvValidationCommand || '').includes(`QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`) ||
   !String(dispatchSentRecordTemplate.csvValidationCommand || '').includes('qa:dispatch-mark-sent')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV validation command is missing mark-sent dry run')
 }
+if (!String(dispatchSentRecordTemplate.csvValidationCommand || '').includes(expectedDispatchSentRecordMarkSentEnv)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV validation command does not target current beta and visual dispatch logs')
+}
 if (!String(dispatchSentRecordTemplate.csvImportCommand || '').includes(`QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`) ||
   !String(dispatchSentRecordTemplate.csvImportCommand || '').includes('qa:dispatch-mark-sent')) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV import command is missing import mode')
+}
+if (!String(dispatchSentRecordTemplate.csvImportCommand || '').includes(expectedDispatchSentRecordMarkSentEnv)) {
+  dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV import command does not target current beta and visual dispatch logs')
 }
 if (!Array.isArray(dispatchSentRecordTemplate.postImportCommands) ||
   !dispatchSentRecordTemplate.postImportCommands.includes('npm run qa:launch-refresh') ||
@@ -3262,8 +3284,12 @@ const betaReady = guardrailIssues.length === 0
 const status = publicLaunchReady ? 'public-launch-ready' : betaReady ? 'beta-ready-public-blocked' : 'blocked'
 const shouldFail = guardrailIssues.length > 0 || (requirePublicLaunch && !publicLaunchReady)
 const dispatchSentRecordCsv = qaDisplayPath(dispatchSentRecordTemplateCsvPath)
-const dispatchSentRecordValidateCommand = `QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsv} npm run qa:dispatch-mark-sent`
-const dispatchSentRecordImportCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsv} npm run qa:dispatch-mark-sent`
+const dispatchSentRecordMarkSentEnv = [
+  `QA_BETA_REVIEW_DISPATCH_LOG=${qaDisplayPath(betaOperatorDispatchLogPath)}`,
+  `QA_VISUAL_REVIEW_DISPATCH_LOG=${qaDisplayPath(visualDispatchLogPath)}`,
+].join(' ')
+const dispatchSentRecordValidateCommand = `${dispatchSentRecordMarkSentEnv} QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsv} npm run qa:dispatch-mark-sent`
+const dispatchSentRecordImportCommand = `${dispatchSentRecordMarkSentEnv} QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordCsv} npm run qa:dispatch-mark-sent`
 const dispatchSentRecordPostImportCommand = 'then rerun npm run qa:launch-refresh and npm run qa:launch-signoff'
 
 const summary = {

@@ -6,7 +6,7 @@
   "failed": 0,
   "fixtureArtifact": "qa/dispatch-log-mark-sent-fixture-2026-05-26.json",
   "csvFixtureArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-raw-2026-05-26-fixture.csv",
-  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-2026-05-21.json",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
   "markSentExitCode": 0,
   "markSentStatus": "pass",
@@ -24,20 +24,29 @@
     "beta": "BETA-HR-001",
     "visual": "PROD-VISUAL-HISTORY-002"
   },
-  "tempBetaSentCount": 1,
+  "tempBetaSentCount": 2,
   "tempVisualSentCount": 1,
-  "tempBetaCsvSentCount": 1,
+  "tempBetaCsvSentCount": 2,
   "tempVisualCsvSentCount": 1,
   "launchOperatorExitCode": 1,
   "launchOperatorStatus": "fail",
   "launchOperatorOnlyOverdueExecutionFailure": true,
   "launchOperatorPublicLaunchStatus": "blocked",
-  "launchOperatorActionRowCount": 4,
+  "launchOperatorActionRowCount": 13,
   "launchOperatorActionIds": [
     "BETA-HR-002",
     "BETA-HR-003",
     "BETA-HR-004",
-    "BETA-HR-005"
+    "BETA-HR-005",
+    "BETA-HR-007",
+    "BETA-HR-008",
+    "BETA-HR-009",
+    "BETA-HR-010",
+    "BETA-HR-011",
+    "BETA-HR-012",
+    "BETA-HR-013",
+    "BETA-HR-014",
+    "BETA-HR-015"
   ],
   "launchOperatorBetaCompleted": 0,
   "launchOperatorVisualHistoryCount": 2,
@@ -70,7 +79,7 @@
       "rowId": "BETA-HR-001",
       "sendStatus": "sent",
       "reviewerAlias": "beta-reviewer-001",
-      "tempBetaSentCount": 1
+      "tempBetaSentCount": 2
     },
     {
       "name": "mark-sent import rehearsal imports visual fixture row",
@@ -90,7 +99,16 @@
         "BETA-HR-002",
         "BETA-HR-003",
         "BETA-HR-004",
-        "BETA-HR-005"
+        "BETA-HR-005",
+        "BETA-HR-007",
+        "BETA-HR-008",
+        "BETA-HR-009",
+        "BETA-HR-010",
+        "BETA-HR-011",
+        "BETA-HR-012",
+        "BETA-HR-013",
+        "BETA-HR-014",
+        "BETA-HR-015"
       ]
     },
     {

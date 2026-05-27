@@ -6,8 +6,8 @@ Mode: dry run
 
 ## Result
 
-- Requested updates: 2
-- Beta rows: 1
+- Requested updates: 3
+- Beta rows: 2
 - Visual rows: 1
 - Record: `qa/dispatch-log-mark-sent-fixture-2026-05-26.json`
 - Record format: json
@@ -20,6 +20,7 @@ Use this command after real outreach happens outside the repo. The sent record m
 ## Rows
 
 - Pass: BETA-HR-001 (beta)
+- Pass: BETA-HR-006 (beta)
 - Pass: PROD-VISUAL-HISTORY-002 (visual)
 
 ## Issues

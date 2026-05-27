@@ -10,6 +10,14 @@
       "notes": "Dry-run fixture only. Real reviewer contact details stay outside the repo."
     },
     {
+      "id": "BETA-HR-006",
+      "reviewerAlias": "beta-reviewer-006",
+      "deliveryChannel": "external-outreach-log",
+      "sentAt": "2026-05-26T12:03:00.000Z",
+      "contactRecordLocation": "external-record:beta-reviewer-006",
+      "notes": "Dry-run fixture only. Real reviewer contact details stay outside the repo."
+    },
+    {
       "id": "PROD-VISUAL-HISTORY-002",
       "reviewerAlias": "visual-reviewer-002",
       "deliveryChannel": "external-outreach-log",

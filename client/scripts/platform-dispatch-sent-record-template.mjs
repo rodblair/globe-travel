@@ -105,6 +105,12 @@ function templatePathFor(completedSubmissionPath) {
 }
 
 const launchOperatorToday = await readJson(launchOperatorTodayPath)
+const betaDispatchLogArtifact = qaDisplayPath(launchOperatorToday.betaDispatchLogArtifact)
+const visualDispatchLogArtifact = qaDisplayPath(launchOperatorToday.visualDispatchLogArtifact)
+const markSentEnvPrefix = [
+  betaDispatchLogArtifact ? `QA_BETA_REVIEW_DISPATCH_LOG=${betaDispatchLogArtifact}` : '',
+  visualDispatchLogArtifact ? `QA_VISUAL_REVIEW_DISPATCH_LOG=${visualDispatchLogArtifact}` : '',
+].filter(Boolean).join(' ')
 const actionRows = Array.isArray(launchOperatorToday.actionRows) ? launchOperatorToday.actionRows : []
 const launchOperatorFailures = Array.isArray(launchOperatorToday.failures) ? launchOperatorToday.failures : []
 const onlyOverdueLaunchExecutionFailure = launchOperatorToday.status === 'fail' &&
@@ -138,10 +144,10 @@ const templateRows = sendRows.map((row) => ({
   sentAtExample: `${date}T12:00:00.000Z`,
   contactRecordLocationExample: `external-record:${String(row.id || 'row').toLowerCase()}-sent-proof`,
 }))
-const validationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
-const importCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`
-const csvValidationCommand = `QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
-const csvImportCommand = `QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`
+const validationCommand = `${markSentEnvPrefix} QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`.trim()
+const importCommand = `${markSentEnvPrefix} QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.json npm run qa:dispatch-mark-sent`.trim()
+const csvValidationCommand = `${markSentEnvPrefix} QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`.trim()
+const csvImportCommand = `${markSentEnvPrefix} QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/${artifactName}.csv npm run qa:dispatch-mark-sent`.trim()
 
 const messageFileChecks = await Promise.all(templateRows.map(async (row) => ({
   id: row.id,
@@ -192,11 +198,15 @@ const checks = [
       csvValidationCommand.includes('.csv') &&
       csvImportCommand.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
       csvImportCommand.includes('.csv') &&
+      (!betaDispatchLogArtifact || csvValidationCommand.includes(`QA_BETA_REVIEW_DISPATCH_LOG=${betaDispatchLogArtifact}`)) &&
+      (!visualDispatchLogArtifact || csvValidationCommand.includes(`QA_VISUAL_REVIEW_DISPATCH_LOG=${visualDispatchLogArtifact}`)) &&
       templateRows.every((row) => hasText(row.validateCommand) && hasText(row.importCommand)),
     validationCommand,
     importCommand,
     csvValidationCommand,
     csvImportCommand,
+    betaDispatchLogArtifact,
+    visualDispatchLogArtifact,
     rowsMissingCommands: templateRows
       .filter((row) => !hasText(row.validateCommand) || !hasText(row.importCommand))
       .map((row) => row.id),

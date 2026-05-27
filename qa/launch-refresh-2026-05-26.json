@@ -1,12 +1,12 @@
 {
   "date": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T02:47:56.095Z",
-  "status": "pass",
+  "generatedAt": "2026-05-27T03:03:54.261Z",
+  "status": "fail",
   "checked": 10,
-  "passed": 10,
-  "failed": 0,
-  "actionableStepCount": 4,
+  "passed": 9,
+  "failed": 1,
+  "actionableStepCount": 3,
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
     "beta human review command center is not fully prepared"
@@ -24,9 +24,9 @@
     }
   ],
   "nextActions": [
-    "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
-    "Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
-    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-26.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
+    "Send or escalate 5 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
+    "Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
+    "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-26.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
     "Run, review, and import 2 scheduled production visual review date(s).",
     "Fix guardrail issues before relying on public-launch status."
@@ -231,8 +231,8 @@
       }
     ],
     "sentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-26.csv",
-    "validationCommand": "QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent",
-    "importCommand": "QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent",
+    "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent",
+    "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent",
     "postImportCommands": [
       "npm run qa:launch-refresh",
       "npm run qa:launch-signoff"
@@ -247,7 +247,7 @@
       "exitCode": 1,
       "signal": null,
       "error": null,
-      "classification": "actionable",
+      "classification": "fail",
       "status": "fail",
       "failures": [
         "launch today has no overdue launch execution rows"

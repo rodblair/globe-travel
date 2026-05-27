@@ -1,0 +1,45 @@
+{
+  "date": "2026-05-26",
+  "tool": "Browser in-app browser",
+  "screenshotStatus": "captureScreenshot timed out twice; DOM/browser smoke evidence recorded instead",
+  "checked": 3,
+  "passed": 3,
+  "results": [
+    {
+      "url": "http://localhost:3000/",
+      "actionish": 8,
+      "appError": false,
+      "bodySnippet": "Skip to content\nGlobe.travel\nGROUP TRIP MAPS\nHOW IT WORKS\nFOR GROUPS\nSIGN IN\n\nGLOBE.TRAVEL MAPS FOR GROUP TRIPS\n\nPlan the trip everyone can say yes to.\n\nAI itineraries, friend feedback, and shareable route snapshots in one calm workspace fo",
+      "h1": "Plan the trip everyone can say yes to.",
+      "mapLikeCount": 0,
+      "overflow": false,
+      "scrollWidth": 1280,
+      "title": "Globe.travel — Plan the trip everyone can say yes to",
+      "viewportWidth": 1280
+    },
+    {
+      "url": "http://localhost:3000/t/x3m2c8cnws",
+      "actionish": 28,
+      "appError": false,
+      "bodySnippet": "Skip to content\nGlobe.travel\nStart your own trip\n\nSHARED GLOBE.TRAVEL MAP\n\n5 Days in Athens, Greece\n\nIN MID‑SEPTEMBER\n\nReview the route, react to the day plan, and help the group turn the Athens, Greece, mid‑September plan into the trip eve",
+      "h1": "5 Days in Athens, Greece",
+      "mapLikeCount": 120,
+      "overflow": false,
+      "scrollWidth": 1280,
+      "title": "5 Days in Athens, Greece, mid‑September · Globe.travel",
+      "viewportWidth": 1280
+    },
+    {
+      "url": "http://localhost:3000/trips/571b2728-3a8c-4391-9ef9-883fef1c0764",
+      "actionish": 11,
+      "appError": false,
+      "bodySnippet": "Skip to content\nGlobe.travel\nPlan\nConversations & ideas\nTrips\nItineraries & notes\nAccount\nProfile & settings\n\nGlobe Pro\n\n7-DAY FREE TRIAL\n\nQA Browser Traveler\n\n@qa-browser-traveler\n\nTRIP UNAVAILABLE\nWe could not open this trip.\n\nThe trip ma",
+      "h1": "We could not open this trip.",
+      "mapLikeCount": 3,
+      "overflow": false,
+      "scrollWidth": 1280,
+      "title": "Globe.travel — Plan the trip everyone can say yes to",
+      "viewportWidth": 1280
+    }
+  ]
+}
