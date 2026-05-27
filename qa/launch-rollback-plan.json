@@ -1,14 +1,14 @@
 {
-  "reviewedAt": "2026-05-26",
+  "reviewedAt": "2026-05-27",
   "owner": "release operator",
   "production": {
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "aa6bf5d77a182abb11156d369bac55af7ab80aa5",
-      "url": "globe-travel-petdla30s-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "QA_LAUNCH_EXPECTED_COMMIT=aa6bf5d77a182abb11156d369bac55af7ab80aa5 npm run qa:launch-signoff after QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-26-aa6bf5d npm run qa:release-production passed 10/10",
-      "verifiedAt": "2026-05-26"
+      "commit": "e385f03cb670983ff44e8a0669a68a467fc6fd25",
+      "url": "globe-travel-5zuj6vhhy-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "QA_LAUNCH_EXPECTED_COMMIT=e385f03cb670983ff44e8a0669a68a467fc6fd25 npm run qa:launch-signoff after QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-27-e385f03 npm run qa:release-production passed 10/10",
+      "verifiedAt": "2026-05-27"
     }
   },
   "rollbackTriggers": [
