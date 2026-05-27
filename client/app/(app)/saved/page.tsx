@@ -119,14 +119,18 @@ function SavedPageContent() {
   const [readingEntry, setReadingEntry] = useState<JournalEntry | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirmingTripId, setConfirmingTripId] = useState<string | null>(null)
+  const [tripDeleteError, setTripDeleteError] = useState<string | null>(null)
   const qaForceUpgradeOpen = process.env.NODE_ENV === 'development' && searchParams.get('qaUpgradeModal') === '1'
   const [upgradeOpen, setUpgradeOpen] = useState(qaForceUpgradeOpen)
   const readingDialogRef = useRef<HTMLDivElement>(null)
   const deleteDialogRef = useRef<HTMLDivElement>(null)
+  const tripDeleteDialogRef = useRef<HTMLDivElement>(null)
   const readingDialogTitleId = useId()
   const readingDialogDescriptionId = useId()
   const deleteDialogTitleId = useId()
   const deleteDialogDescriptionId = useId()
+  const tripDeleteDialogTitleId = useId()
+  const tripDeleteDialogDescriptionId = useId()
 
   const queryClient = useQueryClient()
   const { isPro } = useSubscription()
@@ -169,6 +173,10 @@ function SavedPageContent() {
   const journalTrips = useMemo<JournalTripOption[]>(
     () => trips.map((trip) => ({ id: trip.id, title: trip.title })),
     [trips]
+  )
+  const pendingTripDelete = useMemo(
+    () => trips.find((trip) => trip.id === confirmingTripId) || null,
+    [confirmingTripId, trips]
   )
 
   const createEntry = useMutation({
@@ -217,7 +225,22 @@ function SavedPageContent() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['saved-trips'] })
       setConfirmingTripId(null)
+      setTripDeleteError(null)
     },
+    onError: () => {
+      setTripDeleteError('Could not delete this trip. Please try again, or reopen it to confirm you still own it.')
+    },
+  })
+
+  useDialogFocus({
+    isOpen: Boolean(confirmingTripId),
+    onClose: () => {
+      if (!deleteTrip.isPending) {
+        setConfirmingTripId(null)
+        setTripDeleteError(null)
+      }
+    },
+    dialogRef: tripDeleteDialogRef,
   })
 
   const switchTab = (tab: SavedTab) => {
@@ -338,6 +361,15 @@ function SavedPageContent() {
               </Link>
             </div>
 
+            {tripDeleteError && (
+              <div
+                className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]"
+                role="alert"
+              >
+                {tripDeleteError}
+              </div>
+            )}
+
             {tripsLoading ? (
               <SavedLoadingState
                 icon={Calendar}
@@ -444,27 +476,19 @@ function SavedPageContent() {
                         </div>
                         <button
                           onClick={() => {
-                            if (confirmingTripId === trip.id) {
-                              deleteTrip.mutate(trip.id)
-                              return
-                            }
+                            setTripDeleteError(null)
                             setConfirmingTripId(trip.id)
                           }}
                           disabled={deleteTrip.isPending}
-                            className={cn(
-                              'touch-target absolute bottom-5 right-5 z-10 inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
-                            confirmingTripId === trip.id
-                              ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] hover:bg-[color:var(--pillar-desert-wash)]'
-                              : 'border-rule bg-paper/28 text-foreground/70 hover:border-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]'
+                          className={cn(
+                            'touch-target absolute bottom-5 right-5 z-10 inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                            'border-rule bg-paper/28 text-foreground/70 hover:border-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]'
                           )}
-                          title={confirmingTripId === trip.id ? 'Click again to delete this trip' : 'Delete this saved trip'}
+                          aria-label={`Delete ${trip.title}`}
+                          title={`Delete ${trip.title}`}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
-                          {deleteTrip.isPending && confirmingTripId === trip.id
-                            ? 'Deleting...'
-                            : confirmingTripId === trip.id
-                              ? 'Confirm delete'
-                              : 'Delete'}
+                          Delete
                         </button>
                       </ArtifactFrame>
                     </motion.div>
@@ -702,6 +726,73 @@ function SavedPageContent() {
                     className="touch-target flex-1 rounded-xl bg-[color:var(--pillar-desert-wash)] px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-[var(--terracotta)] disabled:opacity-50"
                   >
                     {deleteEntry.isPending ? 'Deleting…' : 'Delete'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {pendingTripDelete && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-paper/60"
+              onClick={() => {
+                if (!deleteTrip.isPending) {
+                  setConfirmingTripId(null)
+                  setTripDeleteError(null)
+                }
+              }}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 10 }}
+              ref={tripDeleteDialogRef}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby={tripDeleteDialogTitleId}
+              aria-describedby={tripDeleteDialogDescriptionId}
+              tabIndex={-1}
+              className="fixed inset-x-4 bottom-4 z-50 md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-sm md:-translate-x-1/2 md:-translate-y-1/2"
+            >
+              <div className="rounded-2xl border border-rule bg-paper-raised p-5 shadow-[var(--shadow-lg)]">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--terracotta)]">
+                  Remove itinerary
+                </p>
+                <h3 id={tripDeleteDialogTitleId} className="font-serif text-xl font-semibold text-foreground">
+                  Delete {pendingTripDelete.title}?
+                </h3>
+                <p id={tripDeleteDialogDescriptionId} className="mt-2 text-sm leading-relaxed text-foreground/50">
+                  This removes the saved trip from this account or guest session. Public links and friend review context may stop working.
+                </p>
+                {tripDeleteError && (
+                  <p className="mt-3 rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-sm text-[var(--terracotta)]">
+                    {tripDeleteError}
+                  </p>
+                )}
+                <div className="mt-5 flex gap-2">
+                  <button
+                    onClick={() => {
+                      setConfirmingTripId(null)
+                      setTripDeleteError(null)
+                    }}
+                    disabled={deleteTrip.isPending}
+                    className="touch-target flex-1 rounded-xl bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+                  >
+                    Keep trip
+                  </button>
+                  <button
+                    onClick={() => deleteTrip.mutate(pendingTripDelete.id)}
+                    disabled={deleteTrip.isPending}
+                    className="touch-target flex-1 rounded-xl bg-[color:var(--pillar-desert-wash)] px-4 py-2 text-sm font-semibold text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)] hover:text-white disabled:opacity-50"
+                  >
+                    {deleteTrip.isPending ? 'Deleting...' : 'Delete trip'}
                   </button>
                 </div>
               </div>

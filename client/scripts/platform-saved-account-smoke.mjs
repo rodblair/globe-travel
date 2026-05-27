@@ -297,6 +297,44 @@ try {
     hasAppError: savedState.hasAppError,
   })
 
+  const tripDeleteButton = page.getByRole('button', { name: new RegExp(`^Delete ${escapeRegExp(tripTitle)}$`, 'i') })
+  await tripDeleteButton.click({ timeout: 8000 })
+  const tripDeleteDialog = page.getByRole('alertdialog', { name: new RegExp(`Delete ${escapeRegExp(tripTitle)}`, 'i') })
+  await tripDeleteDialog.waitFor({ state: 'visible', timeout: 8000 })
+  const tripDeleteDialogState = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="alertdialog"]')
+    return {
+      activeInsideDialog: Boolean(dialog && document.activeElement && dialog.contains(document.activeElement)),
+      ariaModal: dialog?.getAttribute('aria-modal'),
+      hasKeepTrip: Boolean([...document.querySelectorAll('button')].some((button) => button.textContent?.trim() === 'Keep trip')),
+      hasDeleteTrip: Boolean([...document.querySelectorAll('button')].some((button) => button.textContent?.trim() === 'Delete trip')),
+    }
+  })
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Tab')
+  const tripDeleteFocusStayedInDialog = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="alertdialog"]')
+    return Boolean(dialog && document.activeElement && dialog.contains(document.activeElement))
+  })
+  await page.keyboard.press('Escape')
+  await tripDeleteDialog.waitFor({ state: 'hidden', timeout: 2000 }).catch(() => {})
+  const tripDeleteVisibleAfterEscape = await tripDeleteDialog.isVisible().catch(() => false)
+  const tripStillVisibleAfterCancel = await page.evaluate((title) => document.body.innerText.includes(title), tripTitle)
+  record('saved trip delete confirmation is keyboard-safe and cancelable', (
+    tripDeleteDialogState.activeInsideDialog &&
+    tripDeleteDialogState.ariaModal === 'true' &&
+    tripDeleteDialogState.hasKeepTrip &&
+    tripDeleteDialogState.hasDeleteTrip &&
+    tripDeleteFocusStayedInDialog &&
+    !tripDeleteVisibleAfterEscape &&
+    tripStillVisibleAfterCancel
+  ), {
+    ...tripDeleteDialogState,
+    focusStayedInDialog: tripDeleteFocusStayedInDialog,
+    visibleAfterEscape: tripDeleteVisibleAfterEscape,
+    tripStillVisibleAfterCancel,
+  })
+
   await page.goto(`${baseUrl}/saved?tab=journal`, { waitUntil: 'domcontentloaded', timeout: 30000 })
   await page.getByText(`${journalTitle} updated`, { exact: false }).waitFor({ state: 'visible', timeout: 12000 }).catch(() => {})
   const journalState = await readPageState(page)
