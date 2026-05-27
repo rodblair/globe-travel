@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-26T23:48:20.332Z",
+  "generatedAt": "2026-05-27T00:01:05.571Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "blocked",
   "betaReady": false,
@@ -11,14 +11,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-qv5qkcov0-rodney-blairs-projects.vercel.app",
-    "commit": "6926e6c77cca6196ca297395b904342f63f43794"
+    "url": "globe-travel-kd5qo46dt-rodney-blairs-projects.vercel.app",
+    "commit": "4b15f840dc6c3cda9798996273c893d08b3861ff"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "6926e6c77cca6196ca297395b904342f63f43794",
-    "shortHead": "6926e6c",
-    "liveCommit": "6926e6c77cca6196ca297395b904342f63f43794",
+    "head": "4b15f840dc6c3cda9798996273c893d08b3861ff",
+    "shortHead": "4b15f84",
+    "liveCommit": "4b15f840dc6c3cda9798996273c893d08b3861ff",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -448,10 +448,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-6926e6c",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-6926e6c/summary.json",
-    "latestProductionCommit": "6926e6c77cca6196ca297395b904342f63f43794",
-    "latestProductionDeploymentUrl": "globe-travel-qv5qkcov0-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-4b15f84",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-4b15f84/summary.json",
+    "latestProductionCommit": "4b15f840dc6c3cda9798996273c893d08b3861ff",
+    "latestProductionDeploymentUrl": "globe-travel-kd5qo46dt-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -886,8 +886,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "6926e6c77cca6196ca297395b904342f63f43794",
-    "knownGoodDeploymentUrl": "globe-travel-qv5qkcov0-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "4b15f840dc6c3cda9798996273c893d08b3861ff",
+    "knownGoodDeploymentUrl": "globe-travel-kd5qo46dt-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -926,7 +926,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "6926e6c77cca6196ca297395b904342f63f43794",
+    "latestVerificationExpectedLiveCommit": "4b15f840dc6c3cda9798996273c893d08b3861ff",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -966,7 +966,7 @@
     "ready": true
   },
   "designSystem": {
-    "artifact": "qa/design-system-readiness-2026-05-26.json",
+    "artifact": "qa/design-system-readiness-2026-05-27.json",
     "checked": 11,
     "passed": 11,
     "failed": 0,
@@ -975,8 +975,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-6926e6c/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-6926e6c/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-4b15f84/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-4b15f84/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -1263,7 +1263,7 @@
     "riskRegister": "qa/launch-risk-register.json",
     "paidPathReadiness": "qa/paid-path-readiness-2026-05-23.json",
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
-    "designSystemReadiness": "qa/design-system-readiness-2026-05-26.json",
+    "designSystemReadiness": "qa/design-system-readiness-2026-05-27.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
     "plannerHandoff": "qa/planner-handoff-smoke-2026-05-26.json",
     "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-26.json",
