@@ -1,10 +1,10 @@
 {
   "date": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T03:31:16.838Z",
+  "generatedAt": "2026-05-27T03:36:53.148Z",
   "status": "pass",
-  "checked": 10,
-  "passed": 10,
+  "checked": 11,
+  "passed": 11,
   "failed": 0,
   "actionableStepCount": 4,
   "publicLaunchStatus": "blocked",
@@ -240,6 +240,15 @@
     "privacyRule": "Keep reviewer names and contact details in the external contact system; store only aliases and proof pointers in repo evidence.",
     "completionRule": "Sent proof is not completed review evidence. Public launch still requires completed beta and visual-review JSON intake imports."
   },
+  "outreachBrief": {
+    "artifact": "qa/launch-outreach-brief-2026-05-26.json",
+    "report": "qa/launch-outreach-brief-2026-05-26.md",
+    "csv": "qa/launch-outreach-brief-2026-05-26.csv",
+    "status": "pass",
+    "rowCount": 16,
+    "betaRowCount": 15,
+    "visualRowCount": 1
+  },
   "steps": [
     {
       "step": "launch-today-before-status",
@@ -346,6 +355,18 @@
         "beta-human-review-threshold",
         "production-visual-review-history"
       ]
+    },
+    {
+      "step": "launch-outreach-brief-final",
+      "scriptName": "qa:launch-outreach-brief",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "classification": "pass",
+      "status": "pass",
+      "rowCount": 16,
+      "betaRowCount": 15,
+      "visualRowCount": 1
     }
   ],
   "jsonArtifact": "qa/launch-refresh-2026-05-26.json",

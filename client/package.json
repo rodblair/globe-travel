@@ -39,6 +39,7 @@
     "qa:launch-signoff": "node scripts/platform-launch-signoff.mjs",
     "qa:launch-refresh": "node scripts/platform-launch-refresh.mjs",
     "qa:launch-dispatch-packet": "node scripts/platform-launch-dispatch-packet.mjs",
+    "qa:launch-outreach-brief": "node scripts/platform-launch-outreach-brief.mjs",
     "qa:launch-today": "node scripts/platform-launch-operator-today.mjs",
     "qa:launch-today-overdue-rehearsal": "node scripts/platform-launch-operator-today-rehearsal.mjs",
     "qa:launch-today-sent-dispatch-rehearsal": "node scripts/platform-launch-operator-sent-dispatch-rehearsal.mjs",

@@ -81,6 +81,10 @@ async function loadPublicStatusSummary() {
   return readJson('qa/public-launch-status-2026-05-21.json')
 }
 
+async function loadOutreachBriefSummary() {
+  return readJson(`qa/launch-outreach-brief-${date}.json`)
+}
+
 const steps = []
 
 function passOrFail(run) {
@@ -173,6 +177,18 @@ steps.push({
   blockerIds: (secondPublicStatus.blockers || []).map((blocker) => blocker.id),
 })
 
+const outreachBriefRun = runNpmScript('qa:launch-outreach-brief')
+const outreachBriefSummary = await loadOutreachBriefSummary()
+steps.push({
+  step: 'launch-outreach-brief-final',
+  ...outreachBriefRun,
+  classification: passOrFail(outreachBriefRun),
+  status: outreachBriefSummary.status,
+  rowCount: outreachBriefSummary.rowCount || 0,
+  betaRowCount: outreachBriefSummary.betaRowCount || 0,
+  visualRowCount: outreachBriefSummary.visualRowCount || 0,
+})
+
 const hardFailures = steps.filter((step) => step.classification === 'fail')
 const summary = {
   date,
@@ -188,6 +204,15 @@ const summary = {
   blockers: secondPublicStatus.blockers || [],
   nextActions: secondPublicStatus.nextActions || [],
   operatorHandoff: secondLaunchSummary.operatorHandoff || null,
+  outreachBrief: {
+    artifact: outreachBriefSummary.jsonArtifact,
+    report: outreachBriefSummary.reportArtifact,
+    csv: outreachBriefSummary.csvArtifact,
+    status: outreachBriefSummary.status,
+    rowCount: outreachBriefSummary.rowCount || 0,
+    betaRowCount: outreachBriefSummary.betaRowCount || 0,
+    visualRowCount: outreachBriefSummary.visualRowCount || 0,
+  },
   steps,
   jsonArtifact: `qa/launch-refresh-${date}.json`,
   reportArtifact: `qa/launch-refresh-${date}.md`,
@@ -212,6 +237,7 @@ Status: ${summary.status}
 - Immediate operator action: ${summary.operatorHandoff?.immediateExternalAction || 'none'}
 - Sent-record CSV: ${summary.operatorHandoff?.sentRecordTemplateCsv || 'none'}
 - Handoff rows: ${summary.operatorHandoff?.rows?.length ?? 0}
+- Outreach brief: ${summary.outreachBrief.report || 'none'} (${summary.outreachBrief.rowCount} rows)
 
 ## Steps
 
@@ -224,6 +250,8 @@ ${steps.map((step) => `- ${step.classification.toUpperCase()}: ${step.step} (${s
 - Refresh after import: ${summary.operatorHandoff?.postImportCommands?.length ? summary.operatorHandoff.postImportCommands.map((command) => `\`${command}\``).join(' and ') : 'none'}
 - Privacy rule: ${summary.operatorHandoff?.privacyRule || 'none'}
 - Completion rule: ${summary.operatorHandoff?.completionRule || 'none'}
+- Concise outreach brief: ${summary.outreachBrief.report ? `\`${summary.outreachBrief.report}\`` : 'none'}
+- Outreach CSV: ${summary.outreachBrief.csv ? `\`${summary.outreachBrief.csv}\`` : 'none'}
 
 ## Next Actions
 

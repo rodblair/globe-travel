@@ -2,13 +2,13 @@
 
 Date: 2026-05-26
 Time zone: America/Vancouver
-Generated at: 2026-05-27T03:31:16.838Z
+Generated at: 2026-05-27T03:36:53.148Z
 Status: pass
 
 ## Result
 
-- Checked: 10
-- Passed or actionable: 10
+- Checked: 11
+- Passed or actionable: 11
 - Failed: 0
 - Actionable launch-board failures tolerated: 4
 - Public launch status: blocked
@@ -17,6 +17,7 @@ Status: pass
 - Immediate operator action: Send or reassign 5 overdue beta invites now, and send 5 beta invites due today.
 - Sent-record CSV: qa/dispatch-sent-record-template-2026-05-26.csv
 - Handoff rows: 16
+- Outreach brief: qa/launch-outreach-brief-2026-05-26.md (16 rows)
 
 ## Steps
 
@@ -30,6 +31,7 @@ Status: pass
 - PASS: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 0)
 - PASS: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 0)
 - ACTIONABLE: public-launch-status-final (qa:public-launch-status, exit 1)
+- PASS: launch-outreach-brief-final (qa:launch-outreach-brief, exit 0)
 
 ## Operator Handoff
 
@@ -38,6 +40,8 @@ Status: pass
 - Refresh after import: `npm run qa:launch-refresh` and `npm run qa:launch-signoff`
 - Privacy rule: Keep reviewer names and contact details in the external contact system; store only aliases and proof pointers in repo evidence.
 - Completion rule: Sent proof is not completed review evidence. Public launch still requires completed beta and visual-review JSON intake imports.
+- Concise outreach brief: `qa/launch-outreach-brief-2026-05-26.md`
+- Outreach CSV: `qa/launch-outreach-brief-2026-05-26.csv`
 
 ## Next Actions
 
