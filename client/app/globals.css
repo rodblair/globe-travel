@@ -1094,3 +1094,10 @@
   font-size: 11px;
   line-height: 1.35;
 }
+
+.mapboxgl-map .mapboxgl-ctrl-attrib a,
+.mapboxgl-map .mapboxgl-ctrl-logo {
+  display: inline-flex;
+  min-height: 24px !important;
+  align-items: center;
+}
