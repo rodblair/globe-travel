@@ -100,10 +100,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-26",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-27-057bf65",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-057bf65/summary.json",
-    "productionCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
-    "deploymentUrl": "globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-27-129c05b",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-129c05b/summary.json",
+    "productionCommit": "129c05b495f68753becb03614a95ce14c60fe259",
+    "deploymentUrl": "globe-travel-5cbbzof8k-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 057bf65 deployment after the public itinerary preview/map fallback release. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 129c05b deployment after the saved loading-state and public share-link control polish release. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
   },
   "reviewHistory": [
     {
