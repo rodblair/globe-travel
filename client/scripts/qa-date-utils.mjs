@@ -1,7 +1,7 @@
 export const qaTimeZone = process.env.QA_TIME_ZONE ||
   process.env.QA_RELEASE_TIME_ZONE ||
   process.env.TZ ||
-  'America/Vancouver'
+  'America/Toronto'
 
 export function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim()) && Number.isFinite(Date.parse(`${value}T00:00:00Z`))

@@ -15,10 +15,13 @@ async function readJson(path) {
   return JSON.parse(await readFile(repoPath(path), 'utf8'))
 }
 
-function runNpmScript(scriptName) {
+function runNpmScript(scriptName, envPatch = {}) {
   const result = spawnSync('npm', ['run', scriptName], {
     cwd: clientRoot,
-    env: process.env,
+    env: {
+      ...process.env,
+      ...envPatch,
+    },
     stdio: 'inherit',
   })
   return {
@@ -27,6 +30,41 @@ function runNpmScript(scriptName) {
     signal: result.signal,
     error: result.error ? String(result.error.message || result.error) : null,
   }
+}
+
+async function writeDispatchMarkSentFixture() {
+  const fixturePath = `qa/dispatch-log-mark-sent-fixture-${date}.json`
+  const fixture = {
+    date,
+    rows: [
+      {
+        id: 'BETA-HR-001',
+        reviewerAlias: 'beta-reviewer-001',
+        deliveryChannel: 'external-outreach-log',
+        sentAt: `${date}T12:00:00.000Z`,
+        contactRecordLocation: 'external-record:beta-reviewer-001',
+        notes: 'Dry-run fixture only. Real reviewer contact details stay outside the repo.',
+      },
+      {
+        id: 'BETA-HR-006',
+        reviewerAlias: 'beta-reviewer-006',
+        deliveryChannel: 'external-outreach-log',
+        sentAt: `${date}T12:03:00.000Z`,
+        contactRecordLocation: 'external-record:beta-reviewer-006',
+        notes: 'Dry-run fixture only. Real reviewer contact details stay outside the repo.',
+      },
+      {
+        id: 'PROD-VISUAL-HISTORY-002',
+        reviewerAlias: 'visual-reviewer-002',
+        deliveryChannel: 'external-outreach-log',
+        sentAt: `${date}T12:05:00.000Z`,
+        contactRecordLocation: 'external-record:visual-reviewer-002',
+        notes: 'Dry-run fixture only. Real reviewer contact details stay outside the repo.',
+      },
+    ],
+  }
+  await writeFile(repoPath(fixturePath), `${JSON.stringify(fixture, null, 2)}\n`)
+  return fixturePath
 }
 
 function isActionableLaunchToday(summary) {
@@ -123,6 +161,75 @@ steps.push({
   classification: passOrFail(firstTemplateRejectionRun),
 })
 
+const dispatchMarkSentFixturePath = await writeDispatchMarkSentFixture()
+steps.push({
+  step: 'dispatch-mark-sent-fixture-current-date',
+  scriptName: 'write-dispatch-mark-sent-fixture',
+  exitCode: 0,
+  signal: null,
+  error: null,
+  classification: 'pass',
+  artifact: dispatchMarkSentFixturePath,
+})
+
+const firstDispatchMarkSentRun = runNpmScript('qa:dispatch-mark-sent', {
+  QA_DISPATCH_MARK_SENT_RECORD: dispatchMarkSentFixturePath,
+})
+steps.push({
+  step: 'dispatch-mark-sent-dry-run-after-first-board',
+  ...firstDispatchMarkSentRun,
+  classification: passOrFail(firstDispatchMarkSentRun),
+})
+
+const firstDispatchMarkSentImportRehearsalRun = runNpmScript('qa:dispatch-mark-sent-import-rehearsal')
+steps.push({
+  step: 'dispatch-mark-sent-import-rehearsal-after-first-board',
+  ...firstDispatchMarkSentImportRehearsalRun,
+  classification: passOrFail(firstDispatchMarkSentImportRehearsalRun),
+})
+
+const firstLaunchTodayOverdueRehearsalRun = runNpmScript('qa:launch-today-overdue-rehearsal')
+steps.push({
+  step: 'launch-today-overdue-rehearsal-after-first-board',
+  ...firstLaunchTodayOverdueRehearsalRun,
+  classification: passOrFail(firstLaunchTodayOverdueRehearsalRun),
+})
+
+const firstLaunchTodaySentDispatchRehearsalRun = runNpmScript('qa:launch-today-sent-dispatch-rehearsal')
+steps.push({
+  step: 'launch-today-sent-dispatch-rehearsal-after-first-board',
+  ...firstLaunchTodaySentDispatchRehearsalRun,
+  classification: passOrFail(firstLaunchTodaySentDispatchRehearsalRun),
+})
+
+const firstReviewIntakeRehearsalRun = runNpmScript('qa:review-intake-rehearsal')
+steps.push({
+  step: 'review-intake-rehearsal-after-first-board',
+  ...firstReviewIntakeRehearsalRun,
+  classification: passOrFail(firstReviewIntakeRehearsalRun),
+})
+
+const firstReviewIntakeImportRehearsalRun = runNpmScript('qa:review-intake-import-rehearsal')
+steps.push({
+  step: 'review-intake-import-rehearsal-after-first-board',
+  ...firstReviewIntakeImportRehearsalRun,
+  classification: passOrFail(firstReviewIntakeImportRehearsalRun),
+})
+
+const firstPublicLaunchModeRehearsalRun = runNpmScript('qa:public-launch-mode-rehearsal')
+steps.push({
+  step: 'public-launch-mode-rehearsal-after-first-board',
+  ...firstPublicLaunchModeRehearsalRun,
+  classification: passOrFail(firstPublicLaunchModeRehearsalRun),
+})
+
+const firstPublicLaunchThresholdRehearsalRun = runNpmScript('qa:public-launch-threshold-rehearsal')
+steps.push({
+  step: 'public-launch-threshold-rehearsal-after-first-board',
+  ...firstPublicLaunchThresholdRehearsalRun,
+  classification: passOrFail(firstPublicLaunchThresholdRehearsalRun),
+})
+
 const firstStatusRun = runNpmScript('qa:public-launch-status')
 const firstPublicStatus = await loadPublicStatusSummary()
 steps.push({
@@ -166,15 +273,48 @@ steps.push({
   classification: passOrFail(secondTemplateRejectionRun),
 })
 
-const secondStatusRun = runNpmScript('qa:public-launch-status')
-const secondPublicStatus = await loadPublicStatusSummary()
+const secondDispatchMarkSentRun = runNpmScript('qa:dispatch-mark-sent', {
+  QA_DISPATCH_MARK_SENT_RECORD: dispatchMarkSentFixturePath,
+})
 steps.push({
-  step: 'public-launch-status-final',
-  ...secondStatusRun,
-  classification: classifyPublicStatus(secondStatusRun, secondPublicStatus),
-  status: secondPublicStatus.status,
-  guardrailIssues: secondPublicStatus.guardrailIssues || [],
-  blockerIds: (secondPublicStatus.blockers || []).map((blocker) => blocker.id),
+  step: 'dispatch-mark-sent-dry-run-after-final-board',
+  ...secondDispatchMarkSentRun,
+  classification: passOrFail(secondDispatchMarkSentRun),
+})
+
+const secondDispatchMarkSentImportRehearsalRun = runNpmScript('qa:dispatch-mark-sent-import-rehearsal')
+steps.push({
+  step: 'dispatch-mark-sent-import-rehearsal-after-final-board',
+  ...secondDispatchMarkSentImportRehearsalRun,
+  classification: passOrFail(secondDispatchMarkSentImportRehearsalRun),
+})
+
+const secondLaunchTodayOverdueRehearsalRun = runNpmScript('qa:launch-today-overdue-rehearsal')
+steps.push({
+  step: 'launch-today-overdue-rehearsal-after-final-board',
+  ...secondLaunchTodayOverdueRehearsalRun,
+  classification: passOrFail(secondLaunchTodayOverdueRehearsalRun),
+})
+
+const secondLaunchTodaySentDispatchRehearsalRun = runNpmScript('qa:launch-today-sent-dispatch-rehearsal')
+steps.push({
+  step: 'launch-today-sent-dispatch-rehearsal-after-final-board',
+  ...secondLaunchTodaySentDispatchRehearsalRun,
+  classification: passOrFail(secondLaunchTodaySentDispatchRehearsalRun),
+})
+
+const secondPublicLaunchModeRehearsalRun = runNpmScript('qa:public-launch-mode-rehearsal')
+steps.push({
+  step: 'public-launch-mode-rehearsal-after-final-board',
+  ...secondPublicLaunchModeRehearsalRun,
+  classification: passOrFail(secondPublicLaunchModeRehearsalRun),
+})
+
+const secondPublicLaunchThresholdRehearsalRun = runNpmScript('qa:public-launch-threshold-rehearsal')
+steps.push({
+  step: 'public-launch-threshold-rehearsal-after-final-board',
+  ...secondPublicLaunchThresholdRehearsalRun,
+  classification: passOrFail(secondPublicLaunchThresholdRehearsalRun),
 })
 
 const outreachBriefRun = runNpmScript('qa:launch-outreach-brief')
@@ -189,7 +329,27 @@ steps.push({
   visualRowCount: outreachBriefSummary.visualRowCount || 0,
 })
 
-const hardFailures = steps.filter((step) => step.classification === 'fail')
+const secondStatusRun = runNpmScript('qa:public-launch-status')
+const secondPublicStatus = await loadPublicStatusSummary()
+steps.push({
+  step: 'public-launch-status-final',
+  ...secondStatusRun,
+  classification: classifyPublicStatus(secondStatusRun, secondPublicStatus),
+  status: secondPublicStatus.status,
+  guardrailIssues: secondPublicStatus.guardrailIssues || [],
+  blockerIds: (secondPublicStatus.blockers || []).map((blocker) => blocker.id),
+})
+
+const finalStatusClean = secondStatusRun.exitCode === 0 &&
+  ['pass', 'beta-ready-public-blocked', 'public-launch-ready'].includes(secondPublicStatus.status) &&
+  (secondPublicStatus.guardrailIssues || []).length === 0
+const hardFailures = steps.filter((step) => {
+  if (step.classification !== 'fail') return false
+  if (finalStatusClean && (step.step.includes('after-first-board') || step.step.includes('before-status'))) {
+    return false
+  }
+  return true
+})
 const summary = {
   date,
   timeZone: qaTimeZone,

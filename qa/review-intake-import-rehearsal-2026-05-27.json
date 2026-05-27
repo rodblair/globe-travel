@@ -1,0 +1,86 @@
+{
+  "date": "2026-05-27",
+  "status": "pass",
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "betaReviewId": "BETA-HR-001",
+  "visualReviewId": "PROD-VISUAL-IMPORT-REHEARSAL",
+  "visualReviewDate": "2026-05-27",
+  "visualSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json",
+  "betaIntakeExitCode": 0,
+  "betaIntakeStatus": "pass",
+  "betaImported": true,
+  "betaValidSubmissionCount": 1,
+  "betaInvalidSubmissionCount": 0,
+  "tempBetaCompletedBefore": 0,
+  "tempBetaCompletedAfter": 1,
+  "visualIntakeExitCode": 0,
+  "visualIntakeStatus": "pass",
+  "visualImported": true,
+  "visualValidSubmissionCount": 1,
+  "visualInvalidSubmissionCount": 0,
+  "tempVisualHistoryBefore": 2,
+  "tempVisualHistoryAfter": 3,
+  "canonicalBetaUnchanged": true,
+  "canonicalVisualUnchanged": true,
+  "canonicalBetaCompletedBefore": 0,
+  "canonicalBetaCompletedAfter": 0,
+  "canonicalVisualHistoryBefore": 2,
+  "canonicalVisualHistoryAfter": 2,
+  "rawArtifactsCleanedUp": true,
+  "checks": [
+    {
+      "name": "beta intake import succeeds against copied register",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "imported": true,
+      "validSubmissionCount": 1,
+      "invalidSubmissionCount": 0
+    },
+    {
+      "name": "beta copied register records completed review evidence",
+      "ok": true,
+      "completedBefore": 0,
+      "completedAfter": 1,
+      "importedReviewId": "BETA-HR-001",
+      "reviewSubmissionFile": "qa/review-intake-import-rehearsal-2026-05-27-raw/beta-submissions/BETA-HR-001.json"
+    },
+    {
+      "name": "visual intake import succeeds against copied register",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "imported": true,
+      "validSubmissionCount": 1,
+      "invalidSubmissionCount": 0
+    },
+    {
+      "name": "visual copied register records completed history evidence",
+      "ok": true,
+      "historyBefore": 2,
+      "historyAfter": 3,
+      "importedReviewedAt": "2026-05-27",
+      "importedProductionCommit": "e6294047034a653f45f489cfa5d0c6e45d601bcf"
+    },
+    {
+      "name": "review intake import rehearsal does not mutate canonical launch evidence",
+      "ok": true,
+      "canonicalBetaUnchanged": true,
+      "canonicalVisualUnchanged": true,
+      "canonicalBetaCompletedBefore": 0,
+      "canonicalBetaCompletedAfter": 0,
+      "canonicalVisualHistoryBefore": 2,
+      "canonicalVisualHistoryAfter": 2
+    },
+    {
+      "name": "review intake import rehearsal cleans up temporary registers and artifacts",
+      "ok": true,
+      "rawArtifactsCleanedUp": true
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/review-intake-import-rehearsal-2026-05-27.json",
+  "reportArtifact": "qa/review-intake-import-rehearsal-2026-05-27.md"
+}
