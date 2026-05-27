@@ -283,7 +283,7 @@ function AccountPageContent() {
                       {profile?.display_name || 'Traveler'}
                     </p>
                     <p className="truncate text-sm text-foreground/40">
-                      {profile?.username ? `@${profile.username}` : 'No username set yet'}
+                      {profile?.username ? `@${profile.username}` : 'Username not set'}
                     </p>
                     {profile?.bio && (
                       <p className="mt-1 line-clamp-2 text-sm text-foreground/35">{profile.bio}</p>
