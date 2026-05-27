@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-27T01:04:39.287Z
+Generated at: 2026-05-27T01:28:31.643Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -10,8 +10,8 @@ Status: blocked
 
 - Beta/release-ops ready: no
 - Public-launch ready: no
-- Production commit: 3e0295cc02e06df4db9515dbdb030e09fd4b1f17
-- Production deployment: globe-travel-l4s6zbwmn-rodney-blairs-projects.vercel.app
+- Production commit: eae6aefe1e7a4a04bfdd35e3f79db32d9f06211f
+- Production deployment: globe-travel-r1b3dmzk9-rodney-blairs-projects.vercel.app
 - Runtime deployment current: yes
 - Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
@@ -37,9 +37,9 @@ Status: blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-26-3e0295c
-- Latest production visual commit: 3e0295cc02e06df4db9515dbdb030e09fd4b1f17
-- Latest production visual deployment: globe-travel-l4s6zbwmn-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-27-eae6aef
+- Latest production visual commit: eae6aefe1e7a4a04bfdd35e3f79db32d9f06211f
+- Latest production visual deployment: globe-travel-r1b3dmzk9-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
@@ -229,7 +229,7 @@ Public metadata:
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-05-26.md` and `qa/public-launch-threshold-rehearsal-2026-05-26.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-26.json`
-- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-26-3e0295c` and `qa/visual-baseline-production-runtime-current-2026-05-26-3e0295c/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-eae6aef` and `qa/visual-baseline-production-runtime-current-2026-05-27-eae6aef/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
@@ -241,7 +241,7 @@ Public metadata:
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-23.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-26/summary.json`
-- Design-system readiness: `qa/design-system-readiness-2026-05-26.json`
+- Design-system readiness: `qa/design-system-readiness-2026-05-27.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Planner handoff: `qa/planner-handoff-smoke-2026-05-26.json` and `qa/planner-handoff-smoke-2026-05-26.md`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-26.json` and `qa/public-share-map-catalog-2026-05-26.md`

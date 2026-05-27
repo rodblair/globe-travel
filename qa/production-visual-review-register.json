@@ -100,10 +100,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-26",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-26-3e0295c",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-26-3e0295c/summary.json",
-    "productionCommit": "3e0295cc02e06df4db9515dbdb030e09fd4b1f17",
-    "deploymentUrl": "globe-travel-l4s6zbwmn-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-27-eae6aef",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-eae6aef/summary.json",
+    "productionCommit": "eae6aefe1e7a4a04bfdd35e3f79db32d9f06211f",
+    "deploymentUrl": "globe-travel-r1b3dmzk9-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 4b15f84 deployment after the sidebar profile fallback copy polish. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live eae6aef deployment after the guest profile persistence and account save confirmation release. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
   },
   "reviewHistory": [
     {
