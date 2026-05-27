@@ -114,6 +114,11 @@ function SavedPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeTab = normalizeTab(searchParams.get('tab'))
+  const activeTabMeta = tabs.find((tab) => tab.key === activeTab) || tabs[0]
+  const HeaderIcon = activeTabMeta.icon
+  const headerDescription = activeTab === 'journal'
+    ? 'Capture memories, decisions, and notes from the trips you are shaping.'
+    : 'Saved itineraries and trip notes in one calm workspace.'
   const [editorOpen, setEditorOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null)
   const [readingEntry, setReadingEntry] = useState<JournalEntry | null>(null)
@@ -307,11 +312,11 @@ function SavedPageContent() {
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
                 <h1 className="flex items-center gap-3 text-3xl font-serif font-semibold text-foreground">
-                  <Calendar className="h-7 w-7 text-[var(--brass)]" />
-                  Trips
+                  <HeaderIcon className="h-7 w-7 text-[var(--brass)]" />
+                  {activeTabMeta.label}
                 </h1>
                 <p className="mt-1 text-sm text-foreground/45">
-                  Saved itineraries and trip notes in one calm workspace.
+                  {headerDescription}
                 </p>
               </div>
               <div className="grid w-full grid-cols-2 gap-2 sm:w-auto">

@@ -1,0 +1,273 @@
+{
+  "generatedAt": "2026-05-27T04:50:17.472Z",
+  "baseUrl": "http://localhost:3000",
+  "checked": 11,
+  "failed": 0,
+  "results": [
+    {
+      "id": "landing",
+      "url": "http://localhost:3000/",
+      "readyText": "Plan the trip everyone can say yes to.",
+      "finalUrl": "http://localhost:3000/",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 1575,
+        "clientWidth": 1280,
+        "h1": [
+          "Plan the trip everyone can say yes to."
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS FOR GROUPS SIGN IN GLOBE.TRAVEL MAPS FOR GROUP TRIPS Plan the trip everyone can say yes to. AI itineraries, friend feedback, and shareable route snapshots in one calm workspace for small groups planning city trips. Start planning See the Globe.travel map PLANNED TOGETHER CITY PLANS · FRIEND FEEDBACK MADE TO SHARE WHY IT WORKS A group trip is easier to book when the plan feels clear. Globe turns the messy chat into one calm itinerary with "
+      }
+    },
+    {
+      "id": "pricing",
+      "url": "http://localhost:3000/pricing",
+      "readyText": "Start free. Upgrade when the trip gets real.",
+      "finalUrl": "http://localhost:3000/pricing",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 1495,
+        "clientWidth": 1280,
+        "h1": [
+          "Start free. Upgrade when the trip gets real."
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/pricing",
+        "scrollWidth": 1280,
+        "title": "Pricing · Globe.travel",
+        "visibleText": "Skip to content Globe.travel GROUP TRIP MAPS HOW IT WORKS SIGN IN GLOBE.TRAVEL PRICING Start free. Upgrade when the trip gets real. Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace. Start 7-day free trial Try as guest No charge today Cancel anytime Your share links stay yours ADVENTURER $4.99 / month Or $4.08/month when billed yearly at $49. Includes a 7-day free t"
+      }
+    },
+    {
+      "id": "planner",
+      "url": "http://localhost:3000/chat",
+      "readyText": "Planner",
+      "finalUrl": "http://localhost:3000/chat",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 1264,
+        "clientWidth": 1280,
+        "h1": [
+          "Planner"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/chat",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler Username not set CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each person"
+      }
+    },
+    {
+      "id": "saved",
+      "url": "http://localhost:3000/saved",
+      "readyText": "Trips",
+      "finalUrl": "http://localhost:3000/saved",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 464,
+        "clientWidth": 1280,
+        "h1": [
+          "Trips"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/saved",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler Username not set Trips Saved itineraries and trip notes in one calm workspace. TRIPS — NOTES — Trips Trip notes Your itineraries Checking this session for itineraries, maps, and friend-ready plans. Plan another trip Loading saved trips Checking this session for itineraries, maps, and friend-ready plans."
+      }
+    },
+    {
+      "id": "journal",
+      "url": "http://localhost:3000/journal",
+      "readyText": "Trip notes",
+      "finalUrl": "http://localhost:3000/saved?tab=journal",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 472,
+        "clientWidth": 1280,
+        "h1": [
+          "Trip notes"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/saved?tab=journal",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler Username not set Trip notes Capture memories, decisions, and notes from the trips you are shaping. TRIPS — NOTES — Trips Trip notes Trip notes Gathering private notes, decisions, and reminders tied to your itineraries. Loading trip notes Gathering private notes, decisions, and reminders tied to your itineraries."
+      }
+    },
+    {
+      "id": "account",
+      "url": "http://localhost:3000/account",
+      "readyText": "Account",
+      "finalUrl": "http://localhost:3000/account",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 735,
+        "clientWidth": 1280,
+        "h1": [
+          "Account"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/account",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler Username not set Account Manage your identity, guest handoff, and subscription for shared trip planning. Profile Billing Traveler Username not set DISPLAY NAME 0/80 characters USERNAME @ 3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private. BIO 0/240 characters Save changes Sharing profile This is the lightweight identit"
+      }
+    },
+    {
+      "id": "trips",
+      "url": "http://localhost:3000/trips",
+      "readyText": "Trips",
+      "finalUrl": "http://localhost:3000/saved",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 464,
+        "clientWidth": 1280,
+        "h1": [
+          "Trips"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/saved",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler Username not set Trips Saved itineraries and trip notes in one calm workspace. TRIPS — NOTES — Trips Trip notes Your itineraries Checking this session for itineraries, maps, and friend-ready plans. Plan another trip Loading saved trips Checking this session for itineraries, maps, and friend-ready plans."
+      }
+    },
+    {
+      "id": "new-trip",
+      "url": "http://localhost:3000/trips/new",
+      "readyText": "Planner",
+      "finalUrl": "http://localhost:3000/chat",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 1264,
+        "clientWidth": 1280,
+        "h1": [
+          "Planner"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/chat",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel Plan Conversations & ideas Trips Itineraries & notes Account Profile & settings Globe Pro 7-DAY FREE TRIAL Traveler Username not set CHAT · DISCOVER Planner AI TRIP PLANNER START HERE Plan the trip your friends will actually say yes to. Describe the group, the vibe, and the constraints. Globe will help choose the city, shape the itinerary, and move it into Trip Studio when ready. STEP 01 Start with the crew Tell us who is going, the pace, budget, and what each person"
+      }
+    },
+    {
+      "id": "login",
+      "url": "http://localhost:3000/login",
+      "readyText": "Welcome back.",
+      "finalUrl": "http://localhost:3000/login",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 523,
+        "clientWidth": 1280,
+        "h1": [
+          "Welcome back."
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/login",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel RETURN / FAMILIAR PORT Welcome back to the journey. Pick up the itinerary, rejoin the conversation, keep the trip moving forward. EST. 2024 FOR FRIENDS SIGN IN Welcome back. Sign in to keep planning your next break. QUICK PREVIEW Try Globe without an account Plan a trip, create a share link, and let friends react before you commit to an account. Continue as guest Continue with Google OR Email Password Forgot? Sign in Sign in with magic link instead New to Globe? Begi"
+      }
+    },
+    {
+      "id": "signup",
+      "url": "http://localhost:3000/signup",
+      "readyText": "Create your account.",
+      "finalUrl": "http://localhost:3000/signup",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 571,
+        "clientWidth": 1280,
+        "h1": [
+          "Create your account."
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/signup",
+        "scrollWidth": 1280,
+        "title": "Globe.travel — Plan the trip everyone can say yes to",
+        "visibleText": "Skip to content Globe.travel DEPARTURE / NEW JOURNEY Pick the crew, pick the city. Bring your friends, line up the vibe, and turn a loose idea into a trip you all remember. EST. 2024 FOR FRIENDS BEGIN Create your account. Coordinate city trips with friends. QUICK PREVIEW Start as a guest first Plan a trip now, share it with friends, then create an account when you want to keep it. Continue as guest Continue with Google OR Full name Email Password Create account By signing up, you agree to our Te"
+      }
+    },
+    {
+      "id": "public-share",
+      "url": "http://localhost:3000/t/x3m2c8cnws",
+      "readyText": "5 Days in Athens, Greece",
+      "finalUrl": "http://localhost:3000/t/x3m2c8cnws",
+      "readyError": null,
+      "errorLogCount": 0,
+      "errorLogs": [],
+      "metrics": {
+        "bodyChars": 2846,
+        "clientWidth": 1280,
+        "h1": [
+          "5 Days in Athens, Greece"
+        ],
+        "hasAppError": false,
+        "hasLoadingOnly": false,
+        "horizontalOverflow": false,
+        "mainCount": 1,
+        "path": "/t/x3m2c8cnws",
+        "scrollWidth": 1280,
+        "title": "5 Days in Athens, Greece, mid‑September · Globe.travel",
+        "visibleText": "Skip to content Globe.travel Start your own trip SHARED GLOBE.TRAVEL MAP 5 Days in Athens, Greece IN MID‑SEPTEMBER Review the route, react to the day plan, and help the group turn the Athens, Greece, mid‑September plan into the trip everyone can say yes to. 5 DAYS GLOBE.TRAVEL MAP ATHENS, GREECE IN MID‑SEPTEMBER A shareable route, day-by-day plan, and friend feedback in one calm trip artifact. 01 Plaka arrival 02 Acropolis essentials 03 Museums & hill views 04 Coastal culture + 1 more day in the"
+      }
+    }
+  ],
+  "issues": []
+}
