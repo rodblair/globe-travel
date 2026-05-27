@@ -8,7 +8,7 @@
   "auth": {
     "requestedMode": "auto",
     "mode": "guest",
-    "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
+    "guestId": "8b38c21f-3356-467c-8d2c-04a79bcaf466",
     "protectedRoutes": [
       "planner",
       "saved-trips",
@@ -23,20 +23,20 @@
       {
         "viewportId": "phone",
         "mode": "guest",
-        "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
+        "guestId": "8b38c21f-3356-467c-8d2c-04a79bcaf466",
         "cookieSet": true
       },
       {
         "viewportId": "desktop",
         "mode": "guest",
-        "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
+        "guestId": "8b38c21f-3356-467c-8d2c-04a79bcaf466",
         "cookieSet": true
       }
     ],
     "cleanup": {
       "attempted": true,
       "reason": null,
-      "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
+      "guestId": "8b38c21f-3356-467c-8d2c-04a79bcaf466",
       "profileDeleted": true,
       "userDeleted": true,
       "error": null
@@ -196,7 +196,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": 8,
+              "y": 5,
               "width": 150,
               "height": 44
             }
@@ -224,7 +224,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 402,
+              "y": 442,
               "width": 358,
               "height": 48
             }
@@ -238,7 +238,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 462,
+              "y": 502,
               "width": 358,
               "height": 48
             }
@@ -266,7 +266,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": 8,
+              "y": 5,
               "width": 150,
               "height": 44
             }
@@ -567,20 +567,6 @@
           },
           {
             "tag": "a",
-            "label": "Open Planner",
-            "role": "",
-            "href": "/chat",
-            "visible": true,
-            "hasAccessibleName": true,
-            "rect": {
-              "x": 107,
-              "y": 720,
-              "width": 177,
-              "height": 48
-            }
-          },
-          {
-            "tag": "a",
             "label": "Plan",
             "role": "",
             "href": "/chat",
@@ -672,9 +658,23 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 16,
-              "y": 388,
+              "y": 392,
               "width": 192,
               "height": 46
+            }
+          },
+          {
+            "tag": "a",
+            "label": "Plan",
+            "role": "",
+            "href": "/chat",
+            "visible": true,
+            "hasAccessibleName": true,
+            "rect": {
+              "x": 4,
+              "y": 780,
+              "width": 127,
+              "height": 56
             }
           }
         ],

@@ -24,6 +24,7 @@ const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i
 const markerTimeoutMs = Number(process.env.QA_APP_SURFACES_MARKER_TIMEOUT_MS || '10000')
 const navigationTimeoutMs = Number(process.env.QA_APP_SURFACES_NAVIGATION_TIMEOUT_MS || '30000')
 const settleMs = Number(process.env.QA_APP_SURFACES_SETTLE_MS || '900')
+const teardownTimeoutMs = Number(process.env.QA_APP_SURFACES_TEARDOWN_TIMEOUT_MS || '5000')
 
 const viewports = [
   { id: 'phone', width: 390, height: 844 },
@@ -133,6 +134,17 @@ function markdownList(items) {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : '- none'
 }
 
+function withTimeout(promise, label, timeoutMs = teardownTimeoutMs) {
+  let timer = null
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs}ms`))
+    }, timeoutMs)
+  })
+
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
+}
+
 async function loadDotEnv() {
   const envPath = resolve(process.cwd(), '.env.local')
   let text = ''
@@ -194,17 +206,35 @@ async function cleanupGeneratedGuest() {
   const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: { persistSession: false },
   })
-  const { error: profileError } = await supabase.from('profiles').delete().eq('id', guestId)
-  const { error: userError } = await supabase.auth.admin.deleteUser(guestId)
+  let profileError = null
+  let userError = null
+  let cleanupTimeoutError = null
+
+  try {
+    const profileResult = await withTimeout(
+      supabase.from('profiles').delete().eq('id', guestId),
+      'guest profile cleanup',
+    )
+    profileError = profileResult.error
+
+    const userResult = await withTimeout(
+      supabase.auth.admin.deleteUser(guestId),
+      'guest auth-user cleanup',
+    )
+    userError = userResult.error
+  } catch (error) {
+    cleanupTimeoutError = error instanceof Error ? error.message : String(error)
+  }
+
   const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
 
   return {
     attempted: true,
     reason: null,
     guestId,
-    profileDeleted: !profileError,
-    userDeleted: !userError || Boolean(userAlreadyAbsent),
-    error: profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
+    profileDeleted: !profileError && !cleanupTimeoutError,
+    userDeleted: (!userError || Boolean(userAlreadyAbsent)) && !cleanupTimeoutError,
+    error: cleanupTimeoutError || profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
   }
 }
 
@@ -442,10 +472,10 @@ for (const viewport of viewports) {
     results.push(await collectSurface(page, surface, viewport))
   }
 
-  await context.close()
+  await withTimeout(context.close().catch(() => {}), `browser context close for ${viewport.id}`).catch(() => {})
 }
 
-await browser.close()
+await withTimeout(browser.close().catch(() => {}), 'browser close').catch(() => {})
 const cleanup = await cleanupGeneratedGuest()
 
 const failures = results.filter((result) => !result.ok)
@@ -510,6 +540,4 @@ await writeFile(repoPath(`qa/${reportArtifact}`), report)
 
 console.log(JSON.stringify(summary, null, 2))
 
-if (failures.length > 0) {
-  process.exitCode = 1
-}
+process.exit(failures.length > 0 ? 1 : 0)
