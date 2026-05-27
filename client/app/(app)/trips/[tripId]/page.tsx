@@ -31,6 +31,7 @@ type TripLoadError = Error & {
 
 const EMPTY_DAYS: TripDay[] = []
 const TRIP_LOAD_TIMEOUT_MS = 12000
+const ACTION_NOTICE_TIMEOUT_MS = 8000
 
 function isTerminalTripLoadStatus(status?: number) {
   return status === 401 || status === 403 || status === 404 || status === 408
@@ -211,9 +212,25 @@ function TripStudioPageContent() {
   const qaForceShareFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaShareFailure') === '1'
   const qaWorkflowFailureMode = process.env.NODE_ENV === 'development' ? searchParams.get('qaWorkflowFailure') : null
   const qaWorkflowFailureConsumedRef = useRef(false)
+  const actionNoticeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Capture window.location.origin after mount to avoid SSR ↔ client mismatch
   useEffect(() => { setPageOrigin(window.location.origin) }, [])
+  useEffect(() => {
+    return () => {
+      if (actionNoticeTimeoutRef.current) {
+        clearTimeout(actionNoticeTimeoutRef.current)
+      }
+    }
+  }, [])
+  const showActionNotice = useCallback((notice: string) => {
+    setActionNotice(notice)
+    if (actionNoticeTimeoutRef.current) clearTimeout(actionNoticeTimeoutRef.current)
+    actionNoticeTimeoutRef.current = setTimeout(() => {
+      setActionNotice((current) => (current === notice ? null : current))
+    }, ACTION_NOTICE_TIMEOUT_MS)
+  }, [])
+
   useEffect(() => {
     if (!tripId || typeof window === 'undefined') return
 
@@ -621,12 +638,11 @@ function TripStudioPageContent() {
     setActionError(null)
     try {
       await navigator.clipboard.writeText(shareUrl)
-      setActionNotice('Invite link copied.')
-      setTimeout(() => setActionNotice((current) => (current === 'Invite link copied.' ? null : current)), 2400)
+      showActionNotice('Public invite link copied. Send it to your group for feedback.')
     } catch {
       setActionError('Could not copy the invite link automatically. Select the link and copy it manually.')
     }
-  }, [shareUrl])
+  }, [shareUrl, showActionNotice])
 
   const shareInvite = useCallback(async () => {
     if (!shareUrl) return
@@ -638,17 +654,15 @@ function TripStudioPageContent() {
           text: inviteMessage,
           url: shareUrl,
         })
-        setActionNotice('Share sheet opened.')
-        setTimeout(() => setActionNotice((current) => (current === 'Share sheet opened.' ? null : current)), 2400)
+        showActionNotice('Share sheet opened with the public invite link.')
         return
       }
       await navigator.clipboard.writeText(inviteMessage || shareUrl)
-      setActionNotice('Invite message copied.')
-      setTimeout(() => setActionNotice((current) => (current === 'Invite message copied.' ? null : current)), 2400)
+      showActionNotice('Invite message copied. Paste it anywhere your group is planning.')
     } catch {
       setActionError('Could not open sharing automatically. The public link is still available above.')
     }
-  }, [shareUrl, inviteMessage, trip?.title])
+  }, [shareUrl, inviteMessage, trip?.title, showActionNotice])
 
   const shareWithFriends = useCallback(async () => {
     if (!trip || isSharingTrip) return
@@ -680,18 +694,20 @@ function TripStudioPageContent() {
           text: inviteMessage || `Review my trip ideas: ${shareUrl}`,
           url: shareUrl,
         })
+        showActionNotice('Share sheet opened with the public review link.')
       } else {
         await navigator.clipboard.writeText(inviteMessage || shareUrl)
+        showActionNotice('Invite message copied. Paste it anywhere your group is planning.')
       }
 
       setShareDone(true)
-      setTimeout(() => setShareDone(false), 2800)
+      setTimeout(() => setShareDone(false), 5000)
     } catch {
       setActionError('Could not create a share link for this trip. Make sure you are using the account or guest session that created it.')
     } finally {
       setIsSharingTrip(false)
     }
-  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip, qaForceShareFailure])
+  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip, qaForceShareFailure, showActionNotice])
 
   const latestWorkflowJob = workflowJobs[0]
 
