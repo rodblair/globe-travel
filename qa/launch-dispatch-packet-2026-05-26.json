@@ -1,9 +1,9 @@
 {
   "date": "2026-05-26",
-  "status": "pass",
+  "status": "fail",
   "checked": 8,
-  "passed": 8,
-  "failed": 0,
+  "passed": 7,
+  "failed": 1,
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-26.json",
   "sentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-05-26.json",
   "sentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-05-26.csv",
@@ -498,10 +498,10 @@
   "checks": [
     {
       "name": "launch dispatch packet reads current launch operator and sent-record template",
-      "ok": true,
+      "ok": false,
       "launchOperatorToday": "2026-05-26",
       "sentRecordTemplateDate": "2026-05-26",
-      "sentRecordTemplateStatus": "pass",
+      "sentRecordTemplateStatus": "fail",
       "readyForImport": false
     },
     {
@@ -746,7 +746,16 @@
       "missingOperatorBriefProofFields": []
     }
   ],
-  "failures": [],
+  "failures": [
+    {
+      "name": "launch dispatch packet reads current launch operator and sent-record template",
+      "ok": false,
+      "launchOperatorToday": "2026-05-26",
+      "sentRecordTemplateDate": "2026-05-26",
+      "sentRecordTemplateStatus": "fail",
+      "readyForImport": false
+    }
+  ],
   "jsonArtifact": "qa/launch-dispatch-packet-2026-05-26.json",
   "reportArtifact": "qa/launch-dispatch-packet-2026-05-26.md"
 }

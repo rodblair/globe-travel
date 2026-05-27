@@ -1,7 +1,7 @@
 # Dispatch Sent-Record Template Rejection
 
 Date: 2026-05-26
-Status: pass
+Status: fail
 
 ## Result
 
@@ -24,7 +24,7 @@ The blank sent-record template is rejected before import and cannot mutate canon
 
 ## Checks
 
-- Pass: blank sent-record template is still marked as not ready for import
+- Fail: blank sent-record template is still marked as not ready for import
 - Pass: blank sent-record template report states the evidence boundary
 - Pass: blank sent-record template import attempt is rejected
 - Pass: blank sent-record template rejection names every required proof field
@@ -35,4 +35,4 @@ The blank sent-record template is rejected before import and cannot mutate canon
 
 ## Issues
 
-- none
+- blank sent-record template is still marked as not ready for import

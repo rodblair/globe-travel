@@ -124,12 +124,12 @@
     "command": "npm run qa:production-monitoring",
     "relatedCommands": [
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-27-e385f03 npm run qa:release-production",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-27-057bf65 npm run qa:release-production",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:app-surfaces-production",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_A11Y_AUTH_MODE=guest QA_A11Y_ALLOW_REMOTE_GUEST=1 npm run qa:a11y",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=e385f03cb670983ff44e8a0669a68a467fc6fd25 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=057bf6519b6355333dbd6f89abe6cec509f2b6cd npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "e385f03cb670983ff44e8a0669a68a467fc6fd25"
+    "expectedLiveCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd"
   }
 }

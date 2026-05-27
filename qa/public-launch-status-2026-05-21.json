@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T03:46:53.106Z",
+  "generatedAt": "2026-05-27T04:12:22.496Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "blocked",
   "betaReady": false,
@@ -11,14 +11,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-5zuj6vhhy-rodney-blairs-projects.vercel.app",
-    "commit": "e385f03cb670983ff44e8a0669a68a467fc6fd25"
+    "url": "globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app",
+    "commit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "e385f03cb670983ff44e8a0669a68a467fc6fd25",
-    "shortHead": "e385f03",
-    "liveCommit": "e385f03cb670983ff44e8a0669a68a467fc6fd25",
+    "head": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
+    "shortHead": "057bf65",
+    "liveCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -458,10 +458,10 @@
     "distinctHistoryDateCount": 2,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 2,
-    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e385f03",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e385f03/summary.json",
-    "latestProductionCommit": "e385f03cb670983ff44e8a0669a68a467fc6fd25",
-    "latestProductionDeploymentUrl": "globe-travel-5zuj6vhhy-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-057bf65",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-057bf65/summary.json",
+    "latestProductionCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
+    "latestProductionDeploymentUrl": "globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 3,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -533,15 +533,15 @@
     "issues": []
   },
   "launchOperatorToday": {
-    "ready": true,
-    "issueCount": 0,
+    "ready": false,
+    "issueCount": 2,
     "artifact": "qa/launch-operator-today-2026-05-26.json",
     "report": "qa/launch-operator-today-2026-05-26.md",
     "csv": "qa/launch-operator-today-2026-05-26.csv",
     "today": "2026-05-26",
     "checked": 14,
-    "passed": 13,
-    "failed": 1,
+    "passed": 12,
+    "failed": 2,
     "actionRowCount": 16,
     "betaActionRowCount": 15,
     "visualActionRowCount": 1,
@@ -580,7 +580,10 @@
     "missingVisualMessageFileCount": 0,
     "visualActionContextIssueCount": 0,
     "visualActionContextIssues": [],
-    "issues": []
+    "issues": [
+      "launch operator today status is not pass",
+      "launch operator today has 5 overdue beta dispatch row(s)"
+    ]
   },
   "launchOperatorTodayOverdueRehearsal": {
     "ready": true,
@@ -706,8 +709,8 @@
     "issues": []
   },
   "dispatchSentRecordTemplate": {
-    "ready": true,
-    "issueCount": 0,
+    "ready": false,
+    "issueCount": 1,
     "artifact": "qa/dispatch-sent-record-template-2026-05-26.json",
     "report": "qa/dispatch-sent-record-template-2026-05-26.md",
     "csv": "qa/dispatch-sent-record-template-2026-05-26.csv",
@@ -754,11 +757,13 @@
     ],
     "missingMessageFileCount": 0,
     "missingSubmissionTemplateCount": 0,
-    "issues": []
+    "issues": [
+      "dispatch sent-record template status is not pass"
+    ]
   },
   "launchOutreachBrief": {
-    "ready": true,
-    "issueCount": 0,
+    "ready": false,
+    "issueCount": 1,
     "artifact": "qa/launch-outreach-brief-2026-05-26.json",
     "report": "qa/launch-outreach-brief-2026-05-26.md",
     "csv": "qa/launch-outreach-brief-2026-05-26.csv",
@@ -783,11 +788,13 @@
     ],
     "privacyRule": "Keep names, emails, phone numbers, and other contact details in the external contact system; store only aliases and external proof pointers in repo artifacts.",
     "evidenceBoundary": "This packet is outreach material only; it is not completed beta-review or production visual-review evidence.",
-    "issues": []
+    "issues": [
+      "launch outreach brief status is not pass"
+    ]
   },
   "dispatchSentRecordTemplateRejection": {
-    "ready": true,
-    "issueCount": 0,
+    "ready": false,
+    "issueCount": 1,
     "artifact": "qa/dispatch-sent-record-template-rejection-2026-05-26.json",
     "report": "qa/dispatch-sent-record-template-rejection-2026-05-26.md",
     "date": "2026-05-26",
@@ -820,7 +827,9 @@
     "canonicalBetaSentCount": 0,
     "canonicalVisualSentCount": 0,
     "rawArtifactsCleanedUp": true,
-    "issues": []
+    "issues": [
+      "dispatch sent-record template rejection status is not pass"
+    ]
   },
   "reviewIntakeRehearsal": {
     "ready": true,
@@ -945,8 +954,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "e385f03cb670983ff44e8a0669a68a467fc6fd25",
-    "knownGoodDeploymentUrl": "globe-travel-5zuj6vhhy-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
+    "knownGoodDeploymentUrl": "globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -985,7 +994,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "e385f03cb670983ff44e8a0669a68a467fc6fd25",
+    "latestVerificationExpectedLiveCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -1034,8 +1043,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e385f03/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-e385f03/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-057bf65/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-057bf65/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -1292,7 +1301,11 @@
     "ready": true
   },
   "guardrailIssues": [
-    "beta human review command center is not fully prepared"
+    "beta human review command center is not fully prepared",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "dispatch sent-record template is not ready for operator handoff",
+    "launch outreach brief is not ready for operator handoff",
+    "dispatch sent-record blank-template rejection is not proving pre-import safety"
   ],
   "blockers": [
     {

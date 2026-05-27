@@ -1,13 +1,13 @@
 # Launch Outreach Brief
 
 Date: 2026-05-26
-Status: pass
+Status: fail
 
 ## Result
 
 - Checked: 8
-- Passed: 8
-- Failed: 0
+- Passed: 7
+- Failed: 1
 - Public launch status: blocked
 - Current blockers: beta-human-review-threshold, production-visual-review-history
 - Outreach rows: 16 (15 beta, 1 visual)
@@ -53,7 +53,7 @@ Send or reassign 5 overdue beta invites now, and send 5 beta invites due today.
 
 ## Checks
 
-- Pass: launch outreach brief reads current status, operator board, and dispatch packet
+- Fail: launch outreach brief reads current status, operator board, and dispatch packet
 - Pass: launch outreach brief is tied to external review blockers, not runtime drift
 - Pass: launch outreach brief includes every current outreach row
 - Pass: launch outreach brief points at existing message files
@@ -64,4 +64,4 @@ Send or reassign 5 overdue beta invites now, and send 5 beta invites due today.
 
 ## Failures
 
-- none
+- launch outreach brief reads current status, operator board, and dispatch packet

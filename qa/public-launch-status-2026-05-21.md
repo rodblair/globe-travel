@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-27T03:46:53.106Z
+Generated at: 2026-05-27T04:12:22.496Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -10,8 +10,8 @@ Status: blocked
 
 - Beta/release-ops ready: no
 - Public-launch ready: no
-- Production commit: e385f03cb670983ff44e8a0669a68a467fc6fd25
-- Production deployment: globe-travel-5zuj6vhhy-rodney-blairs-projects.vercel.app
+- Production commit: 057bf6519b6355333dbd6f89abe6cec509f2b6cd
+- Production deployment: globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app
 - Runtime deployment current: yes
 - Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
@@ -37,22 +37,22 @@ Status: blocked
 - Production visual review history: 2/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-27-e385f03
-- Latest production visual commit: e385f03cb670983ff44e8a0669a68a467fc6fd25
-- Latest production visual deployment: globe-travel-5zuj6vhhy-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-27-057bf65
+- Latest production visual commit: 057bf6519b6355333dbd6f89abe6cec509f2b6cd
+- Latest production visual deployment: globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (3 message files, 2 required)
 - Production visual review dispatch log ready: yes (0 sent, 3 prepared not sent)
 - Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
-- Launch operator today ready: yes (16 action rows, 15 beta, 1 visual, 16 send-packet rows, 6 execution steps, 25 beta unsent, 15 follow-ups blocked until initial sent proof, 2 required visual unsent)
+- Launch operator today ready: no (16 action rows, 15 beta, 1 visual, 16 send-packet rows, 6 execution steps, 25 beta unsent, 15 follow-ups blocked until initial sent proof, 2 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
 - Launch operator sent-dispatch rehearsal ready: yes (14 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (2 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (2 beta sent on isolated log, 1 visual sent on isolated log)
-- Dispatch sent-record template ready: yes (16 rows, ready for import: no, missing commands: 0, missing context: 0)
-- Launch outreach brief ready: yes (16 rows, 16 CSV rows)
-- Dispatch sent-record blank-template rejection ready: yes (16 rejected rows, canonical logs unchanged: yes)
+- Dispatch sent-record template ready: no (16 rows, ready for import: no, missing commands: 0, missing context: 0)
+- Launch outreach brief ready: no (16 rows, 16 CSV rows)
+- Dispatch sent-record blank-template rejection ready: no (16 rejected rows, canonical logs unchanged: yes)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
 - Review intake import rehearsal ready: yes (beta copied count 0->1, visual copied count 2->3)
 - Public launch mode rehearsal ready: yes (1 strict-mode exit)
@@ -83,6 +83,10 @@ Status: blocked
 ## Guardrail Issues
 
 - beta human review command center is not fully prepared
+- daily launch operator board is not aligned with current blocker evidence
+- dispatch sent-record template is not ready for operator handoff
+- launch outreach brief is not ready for operator handoff
+- dispatch sent-record blank-template rejection is not proving pre-import safety
 
 ## Evidence Queue Issues
 
@@ -137,7 +141,8 @@ Public launch blocker board:
 - none
 
 Launch operator today:
-- none
+- launch operator today status is not pass
+- launch operator today has 5 overdue beta dispatch row(s)
 
 Launch operator overdue rehearsal:
 - none
@@ -152,10 +157,10 @@ Dispatch mark-sent import rehearsal:
 - none
 
 Dispatch sent-record template:
-- none
+- dispatch sent-record template status is not pass
 
 Launch outreach brief:
-- none
+- launch outreach brief status is not pass
 
 Dispatch sent-record commands:
 - JSON validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.json npm run qa:dispatch-mark-sent`
@@ -165,7 +170,7 @@ Dispatch sent-record commands:
 - Post-import checks: `npm run qa:launch-refresh`, `npm run qa:launch-signoff`
 
 Dispatch sent-record blank-template rejection:
-- none
+- dispatch sent-record template rejection status is not pass
 
 Review intake rehearsal:
 - none
@@ -235,7 +240,7 @@ Public metadata:
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-05-26.md` and `qa/public-launch-threshold-rehearsal-2026-05-26.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-05-26.json`
-- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-e385f03` and `qa/visual-baseline-production-runtime-current-2026-05-27-e385f03/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-057bf65` and `qa/visual-baseline-production-runtime-current-2026-05-27-057bf65/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`

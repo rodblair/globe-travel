@@ -2,17 +2,17 @@
 
 Date: 2026-05-26
 Time zone: America/Vancouver
-Generated at: 2026-05-27T03:46:53.418Z
-Status: pass
+Generated at: 2026-05-27T04:11:45.838Z
+Status: fail
 
 ## Result
 
 - Checked: 11
-- Passed or actionable: 11
-- Failed: 0
-- Actionable launch-board failures tolerated: 4
+- Passed or actionable: 0
+- Failed: 11
+- Actionable launch-board failures tolerated: 0
 - Public launch status: blocked
-- Public guardrail issues: 1
+- Public guardrail issues: 6
 - Public blockers: beta-human-review-threshold, production-visual-review-history
 - Immediate operator action: Send or reassign 5 overdue beta invites now, and send 5 beta invites due today.
 - Sent-record CSV: qa/dispatch-sent-record-template-2026-05-26.csv
@@ -21,17 +21,17 @@ Status: pass
 
 ## Steps
 
-- ACTIONABLE: launch-today-before-status (qa:launch-today, exit 1)
-- PASS: dispatch-sent-record-template-after-first-board (qa:dispatch-sent-record-template, exit 0)
-- PASS: launch-dispatch-packet-after-first-template (qa:launch-dispatch-packet, exit 0)
-- PASS: dispatch-sent-record-template-rejection-after-first-board (qa:dispatch-sent-record-template-rejection, exit 0)
-- ACTIONABLE: public-launch-status-after-first-board (qa:public-launch-status, exit 1)
-- ACTIONABLE: launch-today-after-status (qa:launch-today, exit 1)
-- PASS: dispatch-sent-record-template-after-final-board (qa:dispatch-sent-record-template, exit 0)
-- PASS: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 0)
-- PASS: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 0)
-- ACTIONABLE: public-launch-status-final (qa:public-launch-status, exit 1)
-- PASS: launch-outreach-brief-final (qa:launch-outreach-brief, exit 0)
+- FAIL: launch-today-before-status (qa:launch-today, exit 1)
+- FAIL: dispatch-sent-record-template-after-first-board (qa:dispatch-sent-record-template, exit 1)
+- FAIL: launch-dispatch-packet-after-first-template (qa:launch-dispatch-packet, exit 1)
+- FAIL: dispatch-sent-record-template-rejection-after-first-board (qa:dispatch-sent-record-template-rejection, exit 1)
+- FAIL: public-launch-status-after-first-board (qa:public-launch-status, exit 1)
+- FAIL: launch-today-after-status (qa:launch-today, exit 1)
+- FAIL: dispatch-sent-record-template-after-final-board (qa:dispatch-sent-record-template, exit 1)
+- FAIL: launch-dispatch-packet-after-final-template (qa:launch-dispatch-packet, exit 1)
+- FAIL: dispatch-sent-record-template-rejection-after-final-board (qa:dispatch-sent-record-template-rejection, exit 1)
+- FAIL: public-launch-status-final (qa:public-launch-status, exit 1)
+- FAIL: launch-outreach-brief-final (qa:launch-outreach-brief, exit 1)
 
 ## Operator Handoff
 
