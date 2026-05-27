@@ -42,6 +42,19 @@ const AuthContext = createContext<AuthContextType>({
   refreshProfile: async () => {},
 })
 
+async function fetchGuestProfile(guestId: string): Promise<Profile> {
+  try {
+    const response = await fetch('/api/profile', { cache: 'no-store' })
+    if (response.ok) {
+      return await response.json() as Profile
+    }
+  } catch {
+    // Fall through to the local guest profile so protected routes remain usable offline.
+  }
+
+  return createGuestProfile(guestId)
+}
+
 function getBrowserGuestId() {
   if (typeof document === 'undefined') return null
   return getGuestIdFromCookieHeader(document.cookie)
@@ -67,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const guestId = getBrowserGuestId()
     if (guestId) {
-      setProfile(createGuestProfile(guestId))
+      setProfile(await fetchGuestProfile(guestId))
       return
     }
 
@@ -88,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const guestId = getBrowserGuestId()
     if (guestId) {
       setUser(createGuestUser(guestId))
-      setProfile(createGuestProfile(guestId))
+      setProfile(await fetchGuestProfile(guestId))
       return
     }
     if (isDevAuthBypassEnabled) {
@@ -113,11 +126,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const guestId = getBrowserGuestId()
       if (guestId) {
-        if (!cancelled) {
-          setUser(createGuestUser(guestId))
-          setProfile(createGuestProfile(guestId))
-          setIsLoading(false)
-        }
+        const guestProfile = await fetchGuestProfile(guestId)
+        if (cancelled) return
+        setUser(createGuestUser(guestId))
+        setProfile(guestProfile)
+        setIsLoading(false)
         return
       }
 

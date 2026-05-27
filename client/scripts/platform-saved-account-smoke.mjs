@@ -442,6 +442,29 @@ try {
     horizontalOverflow: accountState.horizontalOverflow,
     hasAppError: accountState.hasAppError,
   })
+  await page.waitForFunction(
+    (expectedValue) => document.querySelector('#profile-display-name')?.value === expectedValue,
+    `QA Traveler ${runId}`,
+    { timeout: 12000 }
+  )
+  await page.getByRole('button', { name: /Save changes/i }).click({ timeout: 8000 })
+  await page.getByText('Profile saved. Friends will see this identity on new feedback and shared planning links.', { exact: true }).waitFor({
+    state: 'visible',
+    timeout: 12000,
+  }).catch(() => {})
+  const accountSaveState = await readPageState(page)
+  record('account profile save shows clear success confirmation', (
+    accountSaveState.text.includes('Profile saved. Friends will see this identity on new feedback and shared planning links.') &&
+    accountSaveState.text.includes('Saved') &&
+    !accountSaveState.hasAppError &&
+    !accountSaveState.horizontalOverflow
+  ), {
+    url: accountSaveState.url,
+    hasSavedNotice: accountSaveState.text.includes('Profile saved. Friends will see this identity on new feedback and shared planning links.'),
+    hasSavedButton: accountSaveState.text.includes('Saved'),
+    horizontalOverflow: accountSaveState.horizontalOverflow,
+    hasAppError: accountSaveState.hasAppError,
+  })
 
   await page.goto(`${baseUrl}/saved`, { waitUntil: 'domcontentloaded', timeout: 30000 })
   await page.getByText(tripTitle, { exact: false }).waitFor({ state: 'visible', timeout: 12000 }).catch(() => {})

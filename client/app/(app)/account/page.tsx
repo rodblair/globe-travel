@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -26,6 +26,7 @@ const tabs: { key: AccountTab; label: string; icon: typeof User }[] = [
   { key: 'profile', label: 'Profile', icon: User },
   { key: 'billing', label: 'Billing', icon: Crown },
 ]
+const PROFILE_SAVE_NOTICE_TIMEOUT_MS = 8000
 
 function normalizeTab(value: string | null): AccountTab {
   return value === 'billing' ? 'billing' : 'profile'
@@ -113,6 +114,8 @@ function AccountPageContent() {
   const [billingLoading, setBillingLoading] = useState(false)
   const [billingError, setBillingError] = useState<string | null>(null)
   const [billingNotice, setBillingNotice] = useState<string | null>(null)
+  const profileSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const previousProfileIdRef = useRef<string | null>(profile?.id || null)
   const billingActionDisabled = billingLoading || (checkoutReturned && !canOpenBillingPortal)
   const qaForceCheckoutFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaCheckoutFailure') === '1'
   const qaForcePortalFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaPortalFailure') === '1'
@@ -122,8 +125,19 @@ function AccountPageContent() {
     setUsername(profile?.username || '')
     setBio(profile?.bio || '')
     setProfileError(null)
-    setSaved(false)
+    const nextProfileId = profile?.id || null
+    if (previousProfileIdRef.current !== nextProfileId) {
+      previousProfileIdRef.current = nextProfileId
+      if (profileSaveTimeoutRef.current) clearTimeout(profileSaveTimeoutRef.current)
+      setSaved(false)
+    }
   }, [profile?.bio, profile?.display_name, profile?.id, profile?.username])
+
+  useEffect(() => {
+    return () => {
+      if (profileSaveTimeoutRef.current) clearTimeout(profileSaveTimeoutRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (activeTab !== 'billing') return
@@ -174,7 +188,10 @@ function AccountPageContent() {
       }
       await refreshProfile()
       setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
+      if (profileSaveTimeoutRef.current) clearTimeout(profileSaveTimeoutRef.current)
+      profileSaveTimeoutRef.current = setTimeout(() => {
+        setSaved(false)
+      }, PROFILE_SAVE_NOTICE_TIMEOUT_MS)
     } catch (error) {
       setProfileError(error instanceof Error ? error.message : 'Could not save your profile. Check your connection and try again.')
     } finally {
@@ -366,6 +383,14 @@ function AccountPageContent() {
                       <p role="alert" className="text-sm text-[var(--terracotta)]">{profileError}</p>
                     )}
                   </div>
+                  {saved && !profileError && (
+                    <p
+                      className="rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-4 py-3 text-sm text-[var(--moss)]"
+                      role="status"
+                    >
+                      Profile saved. Friends will see this identity on new feedback and shared planning links.
+                    </p>
+                  )}
                 </div>
               </div>
 

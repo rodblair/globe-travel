@@ -46,22 +46,33 @@ async function ensureProfileBackedAccount({
     }
   }
 
+  const { data: existingProfile, error: existingProfileError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', profile.id)
+    .maybeSingle()
+
+  if (existingProfileError) {
+    throw new Error(existingProfileError.message)
+  }
+
+  if (existingProfile) {
+    return profile
+  }
+
   const { error: profileError } = await supabase
     .from('profiles')
-    .upsert(
-      {
-        id: profile.id,
-        username: profile.username,
-        display_name: profile.display_name,
-        avatar_url: profile.avatar_url,
-        bio: profile.bio,
-        travel_style: profile.travel_style,
-        onboarding_completed: profile.onboarding_completed,
-      },
-      { onConflict: 'id' }
-    )
+    .insert({
+      id: profile.id,
+      username: profile.username,
+      display_name: profile.display_name,
+      avatar_url: profile.avatar_url,
+      bio: profile.bio,
+      travel_style: profile.travel_style,
+      onboarding_completed: profile.onboarding_completed,
+    })
 
-  if (profileError) {
+  if (profileError && !/duplicate|already exists/i.test(profileError.message)) {
     throw new Error(profileError.message)
   }
 
