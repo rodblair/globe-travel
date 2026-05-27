@@ -451,6 +451,9 @@ export default function ItineraryArtifact({
             <button
               key={d.id}
               onClick={() => setSelectedDayIndex(d.day_index)}
+              aria-pressed={d.day_index === selectedDay.day_index}
+              aria-current={d.day_index === selectedDay.day_index ? 'true' : undefined}
+              aria-label={`Show Day ${d.day_index}${d.title ? `: ${d.title}` : ''}`}
               className={cn(
                 'touch-target flex-shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
                 d.day_index === selectedDay.day_index

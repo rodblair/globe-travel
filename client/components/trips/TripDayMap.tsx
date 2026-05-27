@@ -1,5 +1,6 @@
 'use client'
 
+import type { KeyboardEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -68,6 +69,13 @@ function getRoleColors(role: ReturnType<typeof getStopRole>, active: boolean) {
     halo: active ? 'rgba(125,211,252,0.16)' : 'rgba(125,211,252,0.12)',
     fill: active ? 'rgba(125,211,252,0.98)' : 'rgba(125,211,252,0.94)',
   }
+}
+
+function formatStopRole(role: ReturnType<typeof getStopRole>) {
+  if (role === 'solo') return 'only stop'
+  if (role === 'start') return 'start'
+  if (role === 'finish') return 'finish'
+  return 'waypoint'
 }
 
 function buildStopPath(stops: TripDayMapStop[]) {
@@ -219,6 +227,13 @@ export default function TripDayMap({
     ariaLabel ||
     `${title} ${mapLabel.toLowerCase()} with ${validStops.length} mapped stop${validStops.length === 1 ? '' : 's'}`
   const canvasAriaLabelRef = useRef(canvasAriaLabel)
+
+  const handleCardKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
+    if (!onClick) return
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    onClick()
+  }, [onClick])
 
   useEffect(() => {
     canvasAriaLabelRef.current = canvasAriaLabel
@@ -437,8 +452,12 @@ export default function TripDayMap({
       const role = getStopRole(stop.index - 1, validStops.length)
       const colors = getRoleColors(role, active)
       const element = document.createElement('div')
+      const markerLabel = `${title} ${formatStopRole(role)} stop ${stop.index} of ${validStops.length}: ${stop.title}`
+      element.setAttribute('role', 'img')
+      element.setAttribute('aria-label', markerLabel)
+      element.setAttribute('title', markerLabel)
       element.innerHTML = `
-        <div style="
+        <div aria-hidden="true" style="
           width:${interactive ? 24 : 20}px;
           height:${interactive ? 24 : 20}px;
           border-radius:999px;
@@ -461,7 +480,7 @@ export default function TripDayMap({
     })
 
     fitMapToStops(map)
-  }, [validStops, active, mapReady, interactive, fitMapToStops])
+  }, [validStops, active, mapReady, interactive, fitMapToStops, title])
 
   useEffect(() => {
     const map = mapRef.current
@@ -484,6 +503,11 @@ export default function TripDayMap({
   return (
     <div
       onClick={onClick}
+      onKeyDown={handleCardKeyDown}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-current={onClick && active ? 'true' : undefined}
+      aria-label={onClick ? `${title}${subtitle ? `: ${subtitle}` : ''}. ${canvasAriaLabel}` : undefined}
       className={cn(
         'group min-w-[220px] overflow-hidden rounded-[24px] border bg-paper-raised/85 text-left transition-colors shadow-[var(--panel-shadow)]',
         active
@@ -528,7 +552,7 @@ export default function TripDayMap({
           <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--horizon),transparent_82%),transparent_58%),linear-gradient(180deg,var(--paper-raised),var(--paper-recessed))]">
             <div className="absolute inset-0 bg-[linear-gradient(color-mix(in_oklch,var(--ink-3),transparent_88%)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_oklch,var(--ink-3),transparent_88%)_1px,transparent_1px)] bg-[size:28px_28px] opacity-45" />
             {(previewGeometry || stopOnlyPreview) && (
-              <svg viewBox="0 0 100 100" className="h-full w-full">
+              <svg viewBox="0 0 100 100" role="img" aria-label={canvasAriaLabel} className="h-full w-full">
                 {(previewGeometry || stopOnlyPreview)?.linePoints && (
                   <polyline
                     points={(previewGeometry || stopOnlyPreview)!.linePoints}
