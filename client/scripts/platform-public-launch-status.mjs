@@ -6,6 +6,7 @@ import { currentQaDate, qaTimeZone } from './qa-date-utils.mjs'
 
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_PUBLIC_LAUNCH_STATUS_DATE || ''
+const requestedToday = process.env.QA_PUBLIC_LAUNCH_STATUS_TODAY || ''
 const dailyLaunchOpsDate = process.env.QA_DAILY_LAUNCH_OPS_DATE || currentQaDate()
 const dispatchMarkSentFixturePath = process.env.QA_DISPATCH_MARK_SENT_FIXTURE ||
   `qa/dispatch-log-mark-sent-fixture-${dailyLaunchOpsDate}.json`
@@ -609,6 +610,41 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))]
 }
 
+function reviewIsComplete(review) {
+  return completedStatuses.has(String(review?.status || '').toLowerCase())
+}
+
+function buildOperationalBetaWaves(scheduledReviews, plannedById, operationalDate) {
+  const waveIds = unique(scheduledReviews.map((review) => review.waveId))
+  return waveIds.map((waveId) => {
+    const reviews = scheduledReviews.filter((review) => review.waveId === waveId)
+    const completedReviews = reviews.filter((review) => reviewIsComplete(plannedById.get(review.id)))
+    const dueAt = reviews[0]?.dueAt || ''
+    const kickoffAt = reviews[0]?.kickoffAt || ''
+    const daysUntilDue = daysBetween(operationalDate, dueAt)
+    return {
+      waveId,
+      kickoffAt,
+      dueAt,
+      daysUntilDue,
+      status: completedReviews.length === reviews.length
+        ? 'complete'
+        : daysUntilDue != null && daysUntilDue < 0
+          ? 'overdue'
+          : 'open',
+      scheduledReviewCount: reviews.length,
+      completedReviewCount: completedReviews.length,
+      remainingReviewCount: reviews.length - completedReviews.length,
+      reviewerCohorts: unique(reviews.map((review) => review.reviewerCohort)),
+      reviewIds: reviews.map((review) => review.id),
+    }
+  }).sort((a, b) => String(a.dueAt).localeCompare(String(b.dueAt)))
+}
+
+function nextOpenBetaWave(waves) {
+  return waves.filter((wave) => wave.status !== 'complete')[0] || null
+}
+
 function missingFrom(actual, expected) {
   const actualSet = new Set(Array.isArray(actual) ? actual : [])
   return expected.filter((item) => !actualSet.has(item))
@@ -951,7 +987,8 @@ const [
 const publicMetadata = publicMetadataRead.json || {}
 const publicMetadataPresent = publicMetadataRead.ok
 const plannedBetaReviews = Array.isArray(betaRegister.plannedReviews) ? betaRegister.plannedReviews : []
-const completedBetaReviews = plannedBetaReviews.filter((review) => completedStatuses.has(review.status))
+const plannedBetaById = new Map(plannedBetaReviews.map((review) => [review.id, review]))
+const completedBetaReviews = plannedBetaReviews.filter(reviewIsComplete)
 const publicBetaMinimum = Number(betaRegister.minimumCompletedReviewsForPublicLaunch) || 25
 const betaRemaining = Math.max(0, publicBetaMinimum - completedBetaReviews.length)
 const plannedBetaIds = plannedBetaReviews.map((review) => review.id).filter(Boolean)
@@ -971,7 +1008,12 @@ const scheduledVisualReviews = Array.isArray(visualRegister.scheduledPublicLaunc
 const liveDeployment = health.body?.deployment || null
 const deploymentCurrency = inspectRuntimeDeploymentCurrency(liveDeployment?.commit)
 const runtimeToday = currentQaDate()
-const today = requestedDate || runtimeToday
+const today = requestedToday || dailyLaunchOpsDate || runtimeToday
+const todaySource = requestedToday
+  ? 'QA_PUBLIC_LAUNCH_STATUS_TODAY'
+  : process.env.QA_DAILY_LAUNCH_OPS_DATE
+    ? 'QA_DAILY_LAUNCH_OPS_DATE'
+    : 'current date'
 const date = requestedDate ||
   dateOnly(betaRegister.reviewedAt) ||
   dateOnly(visualRegister.reviewedAt) ||
@@ -1519,6 +1561,15 @@ for (const review of scheduledBetaReviews) {
 const betaCommandCenterIssues = []
 const betaCommandCenterOverdueWaves = Array.isArray(betaCommandCenter.overdueWaves) ? betaCommandCenter.overdueWaves : []
 const betaCommandCenterDueSoonWaves = Array.isArray(betaCommandCenter.dueSoonWaves) ? betaCommandCenter.dueSoonWaves : []
+const operationalBetaWaves = buildOperationalBetaWaves(scheduledBetaReviews, plannedBetaById, today)
+const operationalBetaNextWave = nextOpenBetaWave(operationalBetaWaves)
+const operationalBetaOverdueWaves = operationalBetaWaves.filter((wave) => wave.status === 'overdue')
+const operationalBetaDueSoonWaves = operationalBetaWaves.filter((wave) => (
+  wave.status === 'open' &&
+  Number.isFinite(wave.daysUntilDue) &&
+  wave.daysUntilDue >= 0 &&
+  wave.daysUntilDue <= 3
+))
 if (betaCommandCenter.status !== 'pass') betaCommandCenterIssues.push('beta review command center status is not pass')
 if (Number(betaCommandCenter.plannedReviewCount) !== plannedBetaReviews.length) {
   betaCommandCenterIssues.push(`beta review command center planned count ${betaCommandCenter.plannedReviewCount ?? 'missing'} does not match ${plannedBetaReviews.length}`)
@@ -1558,7 +1609,7 @@ if (betaCommandCenterOverdueWaves.length > 0 &&
 
 const betaNextWaveOpsIssues = []
 const betaNextWaveOpsRows = Array.isArray(betaNextWaveOps.operatorRows) ? betaNextWaveOps.operatorRows : []
-const betaNextWave = betaCommandCenter.nextWave || null
+const betaNextWave = operationalBetaNextWave || betaCommandCenter.nextWave || null
 if (betaNextWaveOps.status !== 'pass') betaNextWaveOpsIssues.push('beta next-wave ops artifact status is not pass')
 if (betaNextWave?.waveId && betaNextWaveOps.nextWave?.waveId !== betaNextWave.waveId) {
   betaNextWaveOpsIssues.push(`beta next-wave ops wave ${betaNextWaveOps.nextWave?.waveId || 'missing'} does not match command center ${betaNextWave.waveId}`)
@@ -3416,6 +3467,8 @@ const dispatchSentRecordPostImportCommand = 'then rerun npm run qa:launch-refres
 const summary = {
   date,
   dateSource: requestedDate ? 'QA_PUBLIC_LAUNCH_STATUS_DATE' : 'release evidence',
+  today,
+  todaySource,
   timeZone: qaTimeZone,
   generatedAt: new Date().toISOString(),
   baseUrl,
@@ -3439,6 +3492,8 @@ const summary = {
     executionScheduleIssueCount: betaScheduleIssues.length,
     commandCenterReady: betaCommandCenterIssues.length === 0,
     commandCenterIssueCount: betaCommandCenterIssues.length,
+    commandCenterToday: betaCommandCenter.today || null,
+    operationalWaveStatusSource: 'beta schedule and review register',
     nextWaveOpsReady: betaNextWaveOpsIssues.length === 0,
     nextWaveOpsIssueCount: betaNextWaveOpsIssues.length,
     dispatchOutboxReady: betaDispatchOutboxIssues.length === 0,
@@ -3544,11 +3599,13 @@ const summary = {
     guestStartRehearsalMissingResults: missingBetaGuestStartRehearsalResults,
     guestStartRehearsalMissingScreenshots: missingBetaGuestStartRehearsalScreenshots,
     guestStartRehearsalIssues: betaGuestStartRehearsalIssues,
-    nextWave: betaCommandCenter.nextWave || null,
-    dueSoonWaveCount: betaCommandCenterDueSoonWaves.length,
-    dueSoonWaves: betaCommandCenterDueSoonWaves,
-    overdueWaveCount: betaCommandCenterOverdueWaves.length,
-    overdueWaves: betaCommandCenterOverdueWaves,
+    nextWave: betaNextWave,
+    dueSoonWaveCount: operationalBetaDueSoonWaves.length,
+    dueSoonWaves: operationalBetaDueSoonWaves,
+    overdueWaveCount: operationalBetaOverdueWaves.length,
+    overdueWaves: operationalBetaOverdueWaves,
+    commandCenterDueSoonWaveCount: betaCommandCenterDueSoonWaves.length,
+    commandCenterOverdueWaveCount: betaCommandCenterOverdueWaves.length,
     dispatchPreparedRowCount: betaDispatchRowsPrepared.length,
     dispatchDueTodayCount: betaDispatchDueTodayRows.length,
     dispatchDueTodayRows: betaDispatchDueTodayRows.map((row) => ({
@@ -4368,6 +4425,7 @@ const summary = {
 const report = `# Public Launch Status
 
 Date: ${date}
+Operational date: ${summary.today}
 Time zone: ${summary.timeZone}
 Generated at: ${summary.generatedAt}
 Base URL: ${baseUrl}
