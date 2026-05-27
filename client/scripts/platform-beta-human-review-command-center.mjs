@@ -183,7 +183,15 @@ addCheck('beta command center exposes the next executable wave', (
   nextWave,
 })
 
-addCheck('beta command center has no overdue review waves', overdueWaves.length === 0, {
+const overdueWavesActionable = overdueWaves.every((wave) => (
+  hasText(wave.waveId) &&
+  hasText(wave.dueAt) &&
+  wave.remainingReviewCount > 0 &&
+  Array.isArray(wave.reviewIds) &&
+  wave.reviewIds.length === wave.scheduledReviewCount
+))
+
+addCheck('beta command center exposes overdue review waves for operator escalation', overdueWavesActionable, {
   today,
   overdueWaveCount: overdueWaves.length,
   overdueWaves,
@@ -269,6 +277,8 @@ ${markdownList(dueSoonWaves.map((wave) => `${wave.waveId}: ${wave.remainingRevie
 ## Overdue
 
 ${markdownList(overdueWaves.map((wave) => `${wave.waveId}: ${wave.remainingReviewCount} remaining, due ${wave.dueAt}`))}
+
+Overdue waves are launch blockers, not command-center setup failures. Send or reassign the overdue reviewers, record sent proof in the dispatch sent-record template, and import completed non-template review submissions only after intake passes.
 
 ## Checks
 

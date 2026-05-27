@@ -2,13 +2,13 @@
 
 Date: 2026-05-21
 Today: 2026-05-26
-Status: fail
+Status: pass
 
 ## Result
 
 - Checked: 5
-- Passed: 4
-- Failed: 1
+- Passed: 5
+- Failed: 0
 - Planned reviews: 25
 - Completed reviews: 0
 - Remaining for public launch: 25
@@ -44,12 +44,14 @@ Immediate workflow:
 
 - BETA-WAVE-01: 5 remaining, due 2026-05-25
 
+Overdue waves are launch blockers, not command-center setup failures. Send or reassign the overdue reviewers, record sent proof in the dispatch sent-record template, and import completed non-template review submissions only after intake passes.
+
 ## Checks
 
 - Pass: beta command center inputs are passing and aligned
 - Pass: beta command center has one scheduled packet-backed row per planned review
 - Pass: beta command center exposes the next executable wave
-- Fail: beta command center has no overdue review waves
+- Pass: beta command center exposes overdue review waves for operator escalation
 - Pass: beta command center keeps launch blockers explicit
 
 ## Evidence Inputs

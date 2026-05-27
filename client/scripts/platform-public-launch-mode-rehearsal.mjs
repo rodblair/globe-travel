@@ -104,6 +104,7 @@ const summary = {
   publicLaunchModeExitCode: result.status,
   blockers,
   guardrailIssues,
+  guardrailIssueCount: guardrailIssues.length,
   canonicalRestored: restoredJson === originalJson,
   checks,
   failures,

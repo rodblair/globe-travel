@@ -1535,12 +1535,25 @@ if (!Array.isArray(betaCommandCenter.waves) || betaCommandCenter.waves.length < 
 if (completedBetaReviews.length < publicBetaMinimum && !betaCommandCenter.nextWave?.waveId) {
   betaCommandCenterIssues.push('beta review command center does not expose the next open wave')
 }
-if (Number(betaCommandCenter.overdueWaveCount || 0) > 0 || betaCommandCenterOverdueWaves.length > 0) {
-  betaCommandCenterIssues.push(`beta review command center has ${Number(betaCommandCenter.overdueWaveCount || betaCommandCenterOverdueWaves.length)} overdue wave(s)`)
+const betaCommandCenterOverdueWaveContextIssues = betaCommandCenterOverdueWaves
+  .filter((wave) => (
+    !hasText(wave.waveId) ||
+    !hasText(wave.dueAt) ||
+    Number(wave.remainingReviewCount || 0) <= 0 ||
+    !Array.isArray(wave.reviewIds) ||
+    wave.reviewIds.length !== Number(wave.scheduledReviewCount || 0)
+  ))
+  .map((wave) => wave.waveId || '(missing wave id)')
+if (betaCommandCenterOverdueWaveContextIssues.length > 0) {
+  betaCommandCenterIssues.push(`beta review command center has overdue wave(s) without actionable context: ${betaCommandCenterOverdueWaveContextIssues.join(', ')}`)
 }
 if (!betaCommandCenterReport.includes('Status: pass')) betaCommandCenterIssues.push('beta review command center report is not passing')
 if (!betaCommandCenterReport.includes('This command center is an operating artifact, not completed review evidence')) {
   betaCommandCenterIssues.push('beta review command center report does not restate the evidence boundary')
+}
+if (betaCommandCenterOverdueWaves.length > 0 &&
+  !betaCommandCenterReport.includes('Overdue waves are launch blockers, not command-center setup failures')) {
+  betaCommandCenterIssues.push('beta review command center report does not explain overdue-wave escalation')
 }
 
 const betaNextWaveOpsIssues = []

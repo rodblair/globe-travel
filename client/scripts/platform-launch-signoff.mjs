@@ -3287,6 +3287,9 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const publicLaunchModeRehearsalIssues = Array.isArray(publicLaunchModeRehearsalStatus.issues)
     ? publicLaunchModeRehearsalStatus.issues
     : []
+  const publicLaunchModeRehearsalGuardrailIssueCount = Array.isArray(publicLaunchModeRehearsalStatus.guardrailIssues)
+    ? publicLaunchModeRehearsalStatus.guardrailIssues.length
+    : Number(publicLaunchModeRehearsalStatus.guardrailIssueCount || 0)
   const publicLaunchThresholdRehearsalStatus = status.publicLaunchThresholdRehearsal || {}
   const publicLaunchThresholdRehearsalIssues = Array.isArray(publicLaunchThresholdRehearsalStatus.issues)
     ? publicLaunchThresholdRehearsalStatus.issues
@@ -4367,7 +4370,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Array.isArray(publicLaunchModeRehearsalStatus.blockerIds) &&
     publicLaunchModeRehearsalStatus.blockerIds.includes('beta-human-review-threshold') &&
     publicLaunchModeRehearsalStatus.blockerIds.includes('production-visual-review-history') &&
-    Number(publicLaunchModeRehearsalStatus.guardrailIssueCount || 0) <= Number((status.guardrailIssues || []).length || 0) &&
+    publicLaunchModeRehearsalGuardrailIssueCount <= Number((status.guardrailIssues || []).length || 0) &&
     publicLaunchModeRehearsalStatus.canonicalRestored === true &&
     publicLaunchModeRehearsalIssues.length === 0
   ), {
@@ -4381,7 +4384,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     publicLaunchModeRehearsalFailed: publicLaunchModeRehearsalStatus.failed ?? null,
     publicLaunchModeRehearsalExitCode: publicLaunchModeRehearsalStatus.publicLaunchModeExitCode ?? null,
     publicLaunchModeRehearsalBlockerIds: publicLaunchModeRehearsalStatus.blockerIds || [],
-    publicLaunchModeRehearsalGuardrailIssueCount: publicLaunchModeRehearsalStatus.guardrailIssueCount ?? null,
+    publicLaunchModeRehearsalGuardrailIssueCount,
     publicLaunchModeRehearsalCanonicalRestored: publicLaunchModeRehearsalStatus.canonicalRestored ?? null,
     publicLaunchModeRehearsalIssues,
   })

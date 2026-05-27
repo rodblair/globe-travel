@@ -6,8 +6,8 @@
   "failed": 0,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "publicStatusReport": "qa/public-launch-status-2026-05-21.md",
-  "publicLaunchStatus": "blocked",
-  "betaReady": false,
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "betaReady": true,
   "publicLaunchReady": false,
   "requirePublicLaunch": true,
   "publicLaunchModeExitCode": 1,
@@ -23,9 +23,8 @@
       "detail": "2/4 distinct review dates recorded; 2 remaining."
     }
   ],
-  "guardrailIssues": [
-    "beta human review command center is not fully prepared"
-  ],
+  "guardrailIssues": [],
+  "guardrailIssueCount": 0,
   "canonicalRestored": true,
   "checks": [
     {
@@ -36,13 +35,11 @@
     {
       "name": "public launch required mode keeps public launch closed",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
       "requirePublicLaunch": true,
-      "guardrailIssues": [
-        "beta human review command center is not fully prepared"
-      ]
+      "guardrailIssues": []
     },
     {
       "name": "public launch required mode identifies beta and visual blockers",
@@ -55,15 +52,13 @@
     {
       "name": "public launch required mode reports guardrail state without hiding blockers",
       "ok": true,
-      "guardrailIssues": [
-        "beta human review command center is not fully prepared"
-      ]
+      "guardrailIssues": []
     },
     {
       "name": "public launch required mode does not mutate canonical default status",
       "ok": true,
       "restoredRequirePublicLaunch": false,
-      "restoredStatus": "blocked"
+      "restoredStatus": "beta-ready-public-blocked"
     }
   ],
   "failures": [],

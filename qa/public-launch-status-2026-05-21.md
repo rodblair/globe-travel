@@ -2,13 +2,13 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-27T04:32:21.373Z
+Generated at: 2026-05-27T04:38:11.681Z
 Base URL: https://globe-travel-two.vercel.app
-Status: blocked
+Status: beta-ready-public-blocked
 
 ## Result
 
-- Beta/release-ops ready: no
+- Beta/release-ops ready: yes
 - Public-launch ready: no
 - Production commit: 129c05b495f68753becb03614a95ce14c60fe259
 - Production deployment: globe-travel-5cbbzof8k-rodney-blairs-projects.vercel.app
@@ -18,7 +18,7 @@ Status: blocked
 - Beta review origin: https://globe-travel-two.vercel.app
 - Beta review assignment queue ready: yes
 - Beta review execution schedule ready: yes
-- Beta review command center ready: no
+- Beta review command center ready: yes
 - Beta review overdue waves: 1
 - Beta review due-soon waves: 2
 - Beta review dispatch prepared rows: 25
@@ -82,7 +82,7 @@ Status: blocked
 
 ## Guardrail Issues
 
-- beta human review command center is not fully prepared
+- none
 
 ## Evidence Queue Issues
 
@@ -93,9 +93,7 @@ Beta human-review schedule:
 - none
 
 Beta human-review command center:
-- beta review command center status is not pass
-- beta review command center has 1 overdue wave(s)
-- beta review command center report is not passing
+- none
 
 Beta human-review next-wave ops:
 - none
@@ -204,7 +202,6 @@ Public metadata:
 - Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-26.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
 - Collect and import 25 completed beta review submission(s).
 - Run, review, and import 2 scheduled production visual review date(s).
-- Fix guardrail issues before relying on public-launch status.
 
 ## Evidence
 

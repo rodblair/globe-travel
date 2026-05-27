@@ -9,8 +9,8 @@ Status: pass
 - Passed: 5
 - Failed: 0
 - Public-mode exit code: 1
-- Public launch status: blocked
-- Beta ready: no
+- Public launch status: beta-ready-public-blocked
+- Beta ready: yes
 - Public launch ready: no
 - Canonical status restored: yes
 

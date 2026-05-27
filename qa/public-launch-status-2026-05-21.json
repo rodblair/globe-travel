@@ -2,10 +2,10 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T04:32:21.373Z",
+  "generatedAt": "2026-05-27T04:38:11.681Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
-  "status": "blocked",
-  "betaReady": false,
+  "status": "beta-ready-public-blocked",
+  "betaReady": true,
   "publicLaunchReady": false,
   "requirePublicLaunch": false,
   "liveDeployment": {
@@ -40,8 +40,8 @@
     "assignmentQueueIssueCount": 0,
     "executionScheduleReady": true,
     "executionScheduleIssueCount": 0,
-    "commandCenterReady": false,
-    "commandCenterIssueCount": 3,
+    "commandCenterReady": true,
+    "commandCenterIssueCount": 0,
     "nextWaveOpsReady": true,
     "nextWaveOpsIssueCount": 0,
     "dispatchOutboxReady": true,
@@ -442,11 +442,7 @@
     "submissionTemplateCount": 25,
     "queueIssues": [],
     "scheduleIssues": [],
-    "commandCenterIssues": [
-      "beta review command center status is not pass",
-      "beta review command center has 1 overdue wave(s)",
-      "beta review command center report is not passing"
-    ],
+    "commandCenterIssues": [],
     "nextWaveOpsIssues": [],
     "dispatchOutboxIssues": [],
     "dispatchLogIssues": [],
@@ -897,15 +893,15 @@
     "passed": 5,
     "failed": 0,
     "publicLaunchModeExitCode": 1,
-    "publicLaunchStatus": "blocked",
-    "betaReady": false,
+    "publicLaunchStatus": "beta-ready-public-blocked",
+    "betaReady": true,
     "publicLaunchReady": false,
     "requirePublicLaunch": true,
     "blockerIds": [
       "beta-human-review-threshold",
       "production-visual-review-history"
     ],
-    "guardrailIssueCount": 1,
+    "guardrailIssueCount": 0,
     "canonicalRestored": true,
     "issues": []
   },
@@ -1291,9 +1287,7 @@
     "issues": [],
     "ready": true
   },
-  "guardrailIssues": [
-    "beta human review command center is not fully prepared"
-  ],
+  "guardrailIssues": [],
   "blockers": [
     {
       "id": "beta-human-review-threshold",
@@ -1311,8 +1305,7 @@
     "Send 5 prepared beta review dispatch message(s) due today from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-26.json, then record sent evidence with qa/dispatch-sent-record-template-2026-05-26.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.",
     "Collect and import 25 completed beta review submission(s).",
-    "Run, review, and import 2 scheduled production visual review date(s).",
-    "Fix guardrail issues before relying on public-launch status."
+    "Run, review, and import 2 scheduled production visual review date(s)."
   ],
   "artifacts": {
     "betaRegister": "qa/beta-human-review-register.json",

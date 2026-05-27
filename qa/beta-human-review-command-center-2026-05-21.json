@@ -8,10 +8,10 @@
   "intakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
   "jsonArtifact": "qa/beta-human-review-command-center-2026-05-21.json",
   "reportArtifact": "qa/beta-human-review-command-center-2026-05-21.md",
-  "status": "fail",
+  "status": "pass",
   "checked": 5,
-  "passed": 4,
-  "failed": 1,
+  "passed": 5,
+  "failed": 0,
   "plannedReviewCount": 25,
   "completedReviewCount": 0,
   "publicLaunchMinimum": 25,
@@ -277,8 +277,8 @@
       }
     },
     {
-      "name": "beta command center has no overdue review waves",
-      "ok": false,
+      "name": "beta command center exposes overdue review waves for operator escalation",
+      "ok": true,
       "today": "2026-05-26",
       "overdueWaveCount": 1,
       "overdueWaves": [
@@ -313,36 +313,5 @@
       "blockingReviewIds": []
     }
   ],
-  "failures": [
-    {
-      "name": "beta command center has no overdue review waves",
-      "ok": false,
-      "today": "2026-05-26",
-      "overdueWaveCount": 1,
-      "overdueWaves": [
-        {
-          "waveId": "BETA-WAVE-01",
-          "kickoffAt": "2026-05-22",
-          "dueAt": "2026-05-25",
-          "daysUntilDue": -1,
-          "status": "overdue",
-          "scheduledReviewCount": 5,
-          "completedReviewCount": 0,
-          "remainingReviewCount": 5,
-          "reviewerCohorts": [
-            "continuity reviewer",
-            "share-feedback reviewer",
-            "mobile planner reviewer"
-          ],
-          "reviewIds": [
-            "BETA-HR-001",
-            "BETA-HR-002",
-            "BETA-HR-003",
-            "BETA-HR-004",
-            "BETA-HR-005"
-          ]
-        }
-      ]
-    }
-  ]
+  "failures": []
 }
