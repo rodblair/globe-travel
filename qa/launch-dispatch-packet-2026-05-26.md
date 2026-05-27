@@ -1,13 +1,13 @@
 # Launch Dispatch Packet
 
 Date: 2026-05-26
-Status: fail
+Status: pass
 
 ## Result
 
 - Checked: 8
-- Passed: 7
-- Failed: 1
+- Passed: 8
+- Failed: 0
 - Launch operator board: `qa/launch-operator-today-2026-05-26.json`
 - Sent-record template: `qa/dispatch-sent-record-template-2026-05-26.json`
 - Sent-record CSV to fill after real outreach: `qa/dispatch-sent-record-template-2026-05-26.csv`
@@ -901,7 +901,7 @@ This message is visual-review outreach, not completed visual-review history. Pub
 
 ## Checks
 
-- Fail: launch dispatch packet reads current launch operator and sent-record template
+- Pass: launch dispatch packet reads current launch operator and sent-record template
 - Pass: launch dispatch packet includes every current outreach row
 - Pass: launch dispatch packet inlines readable message bodies
 - Pass: launch dispatch packet points at existing submission templates
@@ -912,4 +912,4 @@ This message is visual-review outreach, not completed visual-review history. Pub
 
 ## Failures
 
-- launch dispatch packet reads current launch operator and sent-record template
+- none

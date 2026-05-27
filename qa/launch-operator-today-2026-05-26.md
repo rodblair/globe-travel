@@ -3,14 +3,14 @@
 Date: 2026-05-26
 Today: 2026-05-26
 Time zone: America/Vancouver
-Generated at: 2026-05-27T04:11:43.527Z
+Generated at: 2026-05-27T04:31:57.095Z
 Status: fail
 
 ## Result
 
 - Checked: 14
-- Passed: 12
-- Failed: 2
+- Passed: 13
+- Failed: 1
 - Public launch status: blocked
 - Runtime deployment current: yes
 - Beta reviews: 0/25, 25 remaining
@@ -107,7 +107,7 @@ Status: fail
 
 ## Checks
 
-- Fail: launch today reads current blocked release status
+- Pass: launch today reads current blocked release status
 - Pass: launch today has actionable deployment, beta, or visual work
 - Pass: launch today exposes runtime deployment blocker when production is behind
 - Pass: launch today reads aligned dispatch logs
@@ -124,5 +124,4 @@ Status: fail
 
 ## Failures
 
-- launch today reads current blocked release status
 - launch today has no overdue launch execution rows

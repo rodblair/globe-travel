@@ -1,9 +1,9 @@
 {
   "date": "2026-05-26",
-  "status": "fail",
+  "status": "pass",
   "checked": 8,
-  "passed": 7,
-  "failed": 1,
+  "passed": 8,
+  "failed": 0,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "launchOperatorArtifact": "qa/launch-operator-today-2026-05-26.json",
   "dispatchPacketArtifact": "qa/launch-dispatch-packet-2026-05-26.json",
@@ -12,16 +12,15 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-ex5f341qy-rodney-blairs-projects.vercel.app",
-    "commit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd"
+    "url": "globe-travel-5cbbzof8k-rodney-blairs-projects.vercel.app",
+    "commit": "129c05b495f68753becb03614a95ce14c60fe259"
   },
   "guardrailIssues": [
     "beta human review command center is not fully prepared",
     "daily launch operator board is not aligned with current blocker evidence",
     "dispatch sent-record template is not ready for operator handoff",
     "launch outreach brief is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety",
-    "open accepted P2 launch risks are not aligned with current launch evidence counts"
+    "dispatch sent-record blank-template rejection is not proving pre-import safety"
   ],
   "blockerIds": [
     "beta-human-review-threshold",
@@ -268,11 +267,11 @@
   "checks": [
     {
       "name": "launch outreach brief reads current status, operator board, and dispatch packet",
-      "ok": false,
+      "ok": true,
       "publicStatus": "blocked",
       "launchOperatorToday": "2026-05-26",
       "dispatchPacketDate": "2026-05-26",
-      "dispatchPacketStatus": "fail"
+      "dispatchPacketStatus": "pass"
     },
     {
       "name": "launch outreach brief is tied to external review blockers, not runtime drift",
@@ -286,8 +285,7 @@
         "daily launch operator board is not aligned with current blocker evidence",
         "dispatch sent-record template is not ready for operator handoff",
         "launch outreach brief is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
+        "dispatch sent-record blank-template rejection is not proving pre-import safety"
       ],
       "runtimeCommitAhead": false
     },
@@ -411,16 +409,7 @@
       "missingBriefContextRows": []
     }
   ],
-  "failures": [
-    {
-      "name": "launch outreach brief reads current status, operator board, and dispatch packet",
-      "ok": false,
-      "publicStatus": "blocked",
-      "launchOperatorToday": "2026-05-26",
-      "dispatchPacketDate": "2026-05-26",
-      "dispatchPacketStatus": "fail"
-    }
-  ],
+  "failures": [],
   "jsonArtifact": "qa/launch-outreach-brief-2026-05-26.json",
   "reportArtifact": "qa/launch-outreach-brief-2026-05-26.md",
   "csvArtifact": "qa/launch-outreach-brief-2026-05-26.csv"

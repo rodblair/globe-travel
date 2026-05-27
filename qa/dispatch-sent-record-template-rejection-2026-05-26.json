@@ -1,9 +1,9 @@
 {
   "date": "2026-05-26",
-  "status": "fail",
+  "status": "pass",
   "checked": 8,
-  "passed": 7,
-  "failed": 1,
+  "passed": 8,
+  "failed": 0,
   "templateArtifact": "qa/dispatch-sent-record-template-2026-05-26.json",
   "templateReport": "qa/dispatch-sent-record-template-2026-05-26.md",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
@@ -39,8 +39,8 @@
   "checks": [
     {
       "name": "blank sent-record template is still marked as not ready for import",
-      "ok": false,
-      "templateStatus": "fail",
+      "ok": true,
+      "templateStatus": "pass",
       "readyForImport": false,
       "rowCount": 16
     },
@@ -114,15 +114,7 @@
       "invalidProofArtifactsCleanedUp": true
     }
   ],
-  "failures": [
-    {
-      "name": "blank sent-record template is still marked as not ready for import",
-      "ok": false,
-      "templateStatus": "fail",
-      "readyForImport": false,
-      "rowCount": 16
-    }
-  ],
+  "failures": [],
   "jsonArtifact": "qa/dispatch-sent-record-template-rejection-2026-05-26.json",
   "reportArtifact": "qa/dispatch-sent-record-template-rejection-2026-05-26.md"
 }

@@ -2,11 +2,11 @@
   "date": "2026-05-26",
   "today": "2026-05-26",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T04:11:43.527Z",
+  "generatedAt": "2026-05-27T04:31:57.095Z",
   "status": "fail",
   "checked": 14,
-  "passed": 12,
-  "failed": 2,
+  "passed": 13,
+  "failed": 1,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json",
@@ -24,15 +24,14 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd",
+  "liveDeploymentCommit": "129c05b495f68753becb03614a95ce14c60fe259",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
     "beta human review command center is not fully prepared",
     "daily launch operator board is not aligned with current blocker evidence",
     "dispatch sent-record template is not ready for operator handoff",
     "launch outreach brief is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety",
-    "open accepted P2 launch risks are not aligned with current launch evidence counts"
+    "dispatch sent-record blank-template rejection is not proving pre-import safety"
   ],
   "publicOnlyLaunchOperatorSelfGuardrails": false,
   "betaReviews": {
@@ -788,7 +787,7 @@
   "checks": [
     {
       "name": "launch today reads current blocked release status",
-      "ok": false,
+      "ok": true,
       "status": "blocked",
       "betaReady": false,
       "publicLaunchReady": false,
@@ -800,11 +799,10 @@
         "daily launch operator board is not aligned with current blocker evidence",
         "dispatch sent-record template is not ready for operator handoff",
         "launch outreach brief is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
+        "dispatch sent-record blank-template rejection is not proving pre-import safety"
       ],
       "onlyLaunchOperatorSelfGuardrails": false,
-      "onlyLaunchOperatorAcceptedExternalGuardrails": false
+      "onlyLaunchOperatorAcceptedExternalGuardrails": true
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -816,7 +814,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "057bf6519b6355333dbd6f89abe6cec509f2b6cd"
+      "liveCommit": "129c05b495f68753becb03614a95ce14c60fe259"
     },
     {
       "name": "launch today reads aligned dispatch logs",
@@ -976,26 +974,6 @@
     }
   ],
   "failures": [
-    {
-      "name": "launch today reads current blocked release status",
-      "ok": false,
-      "status": "blocked",
-      "betaReady": false,
-      "publicLaunchReady": false,
-      "deploymentRuntimeBlocked": false,
-      "deploymentCurrencyError": null,
-      "latestRuntimeCommit": null,
-      "guardrailIssues": [
-        "beta human review command center is not fully prepared",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "dispatch sent-record template is not ready for operator handoff",
-        "launch outreach brief is not ready for operator handoff",
-        "dispatch sent-record blank-template rejection is not proving pre-import safety",
-        "open accepted P2 launch risks are not aligned with current launch evidence counts"
-      ],
-      "onlyLaunchOperatorSelfGuardrails": false,
-      "onlyLaunchOperatorAcceptedExternalGuardrails": false
-    },
     {
       "name": "launch today has no overdue launch execution rows",
       "ok": false,

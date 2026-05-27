@@ -306,6 +306,7 @@ const selfReferentialPublicStatusGuardrails = new Set([
   'dispatch mark-sent dry run is not proving safe sent-state imports',
   'dispatch mark-sent import rehearsal is not proving isolated sent-state imports',
   'dispatch sent-record template is not ready for operator handoff',
+  'launch outreach brief is not ready for operator handoff',
   'dispatch sent-record blank-template rejection is not proving pre-import safety',
   'review intake rehearsal is not proving incomplete evidence rejection',
   'review intake import rehearsal is not proving isolated completed-evidence imports',

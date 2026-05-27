@@ -1,13 +1,13 @@
 # Dispatch Sent-Record Template
 
 Date: 2026-05-26
-Status: fail
+Status: pass
 
 ## Result
 
 - Checked: 10
-- Passed: 9
-- Failed: 1
+- Passed: 10
+- Failed: 0
 - Launch operator board: `qa/launch-operator-today-2026-05-26.json`
 - Template rows: 16
 - Beta rows: 15
@@ -65,7 +65,7 @@ The example columns in the JSON and CSV are examples only. Leave them unchanged 
 
 ## Checks
 
-- Fail: sent-record template reads actionable launch operator board
+- Pass: sent-record template reads actionable launch operator board
 - Pass: sent-record template covers every current outreach send action
 - Pass: sent-record template keeps post-send proof fields blank
 - Pass: sent-record template points at existing message files
@@ -78,4 +78,4 @@ The example columns in the JSON and CSV are examples only. Leave them unchanged 
 
 ## Failures
 
-- sent-record template reads actionable launch operator board
+- none

@@ -2,7 +2,7 @@
   "date": "2026-05-21",
   "dateSource": "release evidence",
   "timeZone": "America/Vancouver",
-  "generatedAt": "2026-05-27T04:26:58.664Z",
+  "generatedAt": "2026-05-27T04:32:21.373Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "blocked",
   "betaReady": false,
@@ -533,15 +533,15 @@
     "issues": []
   },
   "launchOperatorToday": {
-    "ready": false,
-    "issueCount": 2,
+    "ready": true,
+    "issueCount": 0,
     "artifact": "qa/launch-operator-today-2026-05-26.json",
     "report": "qa/launch-operator-today-2026-05-26.md",
     "csv": "qa/launch-operator-today-2026-05-26.csv",
     "today": "2026-05-26",
     "checked": 14,
-    "passed": 12,
-    "failed": 2,
+    "passed": 13,
+    "failed": 1,
     "actionRowCount": 16,
     "betaActionRowCount": 15,
     "visualActionRowCount": 1,
@@ -580,10 +580,7 @@
     "missingVisualMessageFileCount": 0,
     "visualActionContextIssueCount": 0,
     "visualActionContextIssues": [],
-    "issues": [
-      "launch operator today status is not pass",
-      "launch operator today has 5 overdue beta dispatch row(s)"
-    ]
+    "issues": []
   },
   "launchOperatorTodayOverdueRehearsal": {
     "ready": true,
@@ -709,8 +706,8 @@
     "issues": []
   },
   "dispatchSentRecordTemplate": {
-    "ready": false,
-    "issueCount": 1,
+    "ready": true,
+    "issueCount": 0,
     "artifact": "qa/dispatch-sent-record-template-2026-05-26.json",
     "report": "qa/dispatch-sent-record-template-2026-05-26.md",
     "csv": "qa/dispatch-sent-record-template-2026-05-26.csv",
@@ -757,13 +754,11 @@
     ],
     "missingMessageFileCount": 0,
     "missingSubmissionTemplateCount": 0,
-    "issues": [
-      "dispatch sent-record template status is not pass"
-    ]
+    "issues": []
   },
   "launchOutreachBrief": {
-    "ready": false,
-    "issueCount": 1,
+    "ready": true,
+    "issueCount": 0,
     "artifact": "qa/launch-outreach-brief-2026-05-26.json",
     "report": "qa/launch-outreach-brief-2026-05-26.md",
     "csv": "qa/launch-outreach-brief-2026-05-26.csv",
@@ -788,13 +783,11 @@
     ],
     "privacyRule": "Keep names, emails, phone numbers, and other contact details in the external contact system; store only aliases and external proof pointers in repo artifacts.",
     "evidenceBoundary": "This packet is outreach material only; it is not completed beta-review or production visual-review evidence.",
-    "issues": [
-      "launch outreach brief status is not pass"
-    ]
+    "issues": []
   },
   "dispatchSentRecordTemplateRejection": {
-    "ready": false,
-    "issueCount": 1,
+    "ready": true,
+    "issueCount": 0,
     "artifact": "qa/dispatch-sent-record-template-rejection-2026-05-26.json",
     "report": "qa/dispatch-sent-record-template-rejection-2026-05-26.md",
     "date": "2026-05-26",
@@ -827,9 +820,7 @@
     "canonicalBetaSentCount": 0,
     "canonicalVisualSentCount": 0,
     "rawArtifactsCleanedUp": true,
-    "issues": [
-      "dispatch sent-record template rejection status is not pass"
-    ]
+    "issues": []
   },
   "reviewIntakeRehearsal": {
     "ready": true,
@@ -1301,11 +1292,7 @@
     "ready": true
   },
   "guardrailIssues": [
-    "beta human review command center is not fully prepared",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "dispatch sent-record template is not ready for operator handoff",
-    "launch outreach brief is not ready for operator handoff",
-    "dispatch sent-record blank-template rejection is not proving pre-import safety"
+    "beta human review command center is not fully prepared"
   ],
   "blockers": [
     {
