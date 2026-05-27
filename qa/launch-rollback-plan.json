@@ -5,9 +5,9 @@
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "c3456d52fac34f19a6236841c0b4d5409860f1df",
-      "url": "globe-travel-3y1hgwc01-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "Commit c3456d52fac34f19a6236841c0b4d5409860f1df verified by QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-27-c3456d5 npm run qa:release-production passed 10/10, Browser verified public Athens map controls on desktop and mobile, and QA_LAUNCH_EXPECTED_COMMIT=c3456d52fac34f19a6236841c0b4d5409860f1df npm run qa:launch-signoff is the current post-rollback verification gate",
+      "commit": "4406b50f756bc3de09f73e56c17c276d34d81eb8",
+      "url": "globe-travel-bb2mty0du-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "Commit 4406b50f756bc3de09f73e56c17c276d34d81eb8 verified by manual Vercel production deployment, https://globe-travel-two.vercel.app/api/health reporting ok for commit 4406b50f756bc3de09f73e56c17c276d34d81eb8, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:app-surfaces-production passing 22/22, and QA_LAUNCH_EXPECTED_COMMIT=4406b50f756bc3de09f73e56c17c276d34d81eb8 npm run qa:launch-signoff is the current post-rollback verification gate",
       "verifiedAt": "2026-05-27"
     }
   },
