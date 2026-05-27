@@ -8,7 +8,7 @@
   "auth": {
     "requestedMode": "auto",
     "mode": "guest",
-    "guestId": "7e1749e0-5ce3-4285-bbef-8220530958a7",
+    "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
     "protectedRoutes": [
       "planner",
       "saved-trips",
@@ -23,20 +23,20 @@
       {
         "viewportId": "phone",
         "mode": "guest",
-        "guestId": "7e1749e0-5ce3-4285-bbef-8220530958a7",
+        "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
         "cookieSet": true
       },
       {
         "viewportId": "desktop",
         "mode": "guest",
-        "guestId": "7e1749e0-5ce3-4285-bbef-8220530958a7",
+        "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
         "cookieSet": true
       }
     ],
     "cleanup": {
       "attempted": true,
       "reason": null,
-      "guestId": "7e1749e0-5ce3-4285-bbef-8220530958a7",
+      "guestId": "03bdd34b-58ab-4f29-85ac-0a1814c2bf3f",
       "profileDeleted": true,
       "userDeleted": true,
       "error": null
@@ -196,7 +196,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": 4,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -266,7 +266,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": 4,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2142,7 +2142,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": 8,
+              "y": -48,
               "width": 150,
               "height": 44
             }
@@ -2212,9 +2212,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 44,
-              "y": 468,
+              "y": 448,
               "width": 88,
-              "height": 24
+              "height": 44
             }
           },
           {
@@ -2254,9 +2254,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 44,
-              "y": 468,
+              "y": 448,
               "width": 88,
-              "height": 24
+              "height": 44
             }
           },
           {
@@ -2296,9 +2296,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 44,
-              "y": 468,
+              "y": 448,
               "width": 88,
-              "height": 24
+              "height": 44
             }
           }
         ],
@@ -2345,7 +2345,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": -48,
+              "y": 8,
               "width": 150,
               "height": 44
             }
@@ -2471,7 +2471,7 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 8,
-              "y": -4,
+              "y": 4,
               "width": 150,
               "height": 44
             }
@@ -4445,9 +4445,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 470,
-              "y": 553,
+              "y": 533,
               "width": 88,
-              "height": 24
+              "height": 44
             }
           },
           {
@@ -4487,9 +4487,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 140,
-              "y": 521,
+              "y": 501,
               "width": 88,
-              "height": 24
+              "height": 44
             }
           },
           {
@@ -4529,9 +4529,9 @@
             "hasAccessibleName": true,
             "rect": {
               "x": 531,
-              "y": 521,
+              "y": 501,
               "width": 88,
-              "height": 24
+              "height": 44
             }
           }
         ],
