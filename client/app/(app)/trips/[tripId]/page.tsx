@@ -674,6 +674,9 @@ function TripStudioPageContent() {
     setIsSharingTrip(true)
     setShareDone(false)
     setActionError(null)
+
+    let publicLinkReady = Boolean(shareUrl)
+
     try {
       if (qaForceShareFailure) throw new Error('Share failed')
       if (!trip.is_public) {
@@ -685,9 +688,22 @@ function TripStudioPageContent() {
         if (!response.ok) throw new Error('Share failed')
         await refetch()
       }
+      publicLinkReady = true
+    } catch {
+      setActionError('Could not create a share link for this trip. Make sure you are using the account or guest session that created it.')
+      setIsSharingTrip(false)
+      return
+    }
 
-      if (!shareUrl) return
+    if (!shareUrl) {
+      showActionNotice('Public review link is ready. Use Copy link in Group review to send it to your crew.')
+      setShareDone(true)
+      setTimeout(() => setShareDone(false), 5000)
+      setIsSharingTrip(false)
+      return
+    }
 
+    try {
       if (navigator.share) {
         await navigator.share({
           title: trip.title || 'Trip ideas',
@@ -702,8 +718,17 @@ function TripStudioPageContent() {
 
       setShareDone(true)
       setTimeout(() => setShareDone(false), 5000)
-    } catch {
-      setActionError('Could not create a share link for this trip. Make sure you are using the account or guest session that created it.')
+    } catch (error) {
+      const shareError = error as Error
+      if (shareError?.name === 'AbortError') {
+        showActionNotice('Share canceled. The public review link is still ready in Group review.')
+      } else {
+        setActionError(
+          publicLinkReady
+            ? 'The public review link is ready, but automatic sharing was blocked. Use Copy link in Group review to send it.'
+            : 'Could not create a share link for this trip. Make sure you are using the account or guest session that created it.'
+        )
+      }
     } finally {
       setIsSharingTrip(false)
     }

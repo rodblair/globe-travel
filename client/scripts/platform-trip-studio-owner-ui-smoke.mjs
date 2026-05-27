@@ -192,6 +192,14 @@ async function runOwnerTripStudioChecks() {
     viewport: { width: 1280, height: 900 },
     deviceScaleFactor: 1,
   })
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async () => {
+        throw new Error('QA blocked share sheet')
+      },
+    })
+  })
   await addGuestCookie(context, fixture.guestId)
   const page = await context.newPage()
 
@@ -240,6 +248,24 @@ async function runOwnerTripStudioChecks() {
       horizontalOverflow: ownerState.horizontalOverflow,
       clientWidth: ownerState.clientWidth,
       scrollWidth: ownerState.scrollWidth,
+    })
+
+    await page.getByRole('button', { name: 'Share with friends', exact: true }).click({ timeout: 8000 })
+    await page.waitForTimeout(700)
+    const blockedShareState = await readPageState(page)
+    record('owner share action keeps ready link when automatic sharing is blocked', (
+      blockedShareState.text.includes('The public review link is ready, but automatic sharing was blocked') &&
+      blockedShareState.text.includes('Copy link') &&
+      !blockedShareState.text.includes('Could not create a share link') &&
+      !blockedShareState.appError &&
+      !blockedShareState.horizontalOverflow
+    ), {
+      url: blockedShareState.url,
+      hasBlockedShareCopy: blockedShareState.text.includes('The public review link is ready, but automatic sharing was blocked'),
+      hasCopyLink: blockedShareState.text.includes('Copy link'),
+      hasCreateLinkFailure: blockedShareState.text.includes('Could not create a share link'),
+      appError: blockedShareState.appError,
+      horizontalOverflow: blockedShareState.horizontalOverflow,
     })
 
     await page.getByRole('button', { name: 'Day 2', exact: true }).click({ timeout: 8000 })
