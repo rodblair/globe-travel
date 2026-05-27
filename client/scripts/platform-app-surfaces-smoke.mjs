@@ -10,8 +10,10 @@ const GUEST_SESSION_COOKIE = 'globe_travel_guest'
 
 const root = resolve(process.cwd(), '..')
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const requestedDate = process.env.QA_APP_SURFACES_DATE || currentQaDate()
-const artifactName = process.env.QA_APP_SURFACES_ARTIFACT_NAME || `app-surfaces-smoke-${requestedDate}`
+const artifactPrefix = isLocalBaseUrl ? 'app-surfaces-smoke' : 'app-surfaces-production-guest'
+const artifactName = process.env.QA_APP_SURFACES_ARTIFACT_NAME || `${artifactPrefix}-${requestedDate}`
 const artifactDir = resolve(root, 'qa', artifactName)
 const screenshotDir = resolve(artifactDir, 'screenshots')
 const jsonArtifact = process.env.QA_APP_SURFACES_JSON || `${artifactName}.json`
@@ -20,7 +22,6 @@ const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.ap
 const providedGuestId = process.env.QA_APP_SURFACES_GUEST_ID || process.env.QA_GUEST_ID || ''
 const guestId = providedGuestId || randomUUID()
 const allowRemoteGuest = process.env.QA_APP_SURFACES_ALLOW_REMOTE_GUEST === '1'
-const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const markerTimeoutMs = Number(process.env.QA_APP_SURFACES_MARKER_TIMEOUT_MS || '10000')
 const navigationTimeoutMs = Number(process.env.QA_APP_SURFACES_NAVIGATION_TIMEOUT_MS || '30000')
 const settleMs = Number(process.env.QA_APP_SURFACES_SETTLE_MS || '900')
