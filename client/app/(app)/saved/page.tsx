@@ -174,6 +174,16 @@ function SavedPageContent() {
     () => trips.map((trip) => ({ id: trip.id, title: trip.title })),
     [trips]
   )
+  const tripCountLabel = tripsLoading ? '—' : trips.length
+  const noteCountLabel = journalLoading ? '—' : entries.length
+  const itinerarySummary = tripsLoading
+    ? 'Checking this session for itineraries, maps, and friend-ready plans.'
+    : trips.length === 0
+      ? 'Start a trip to keep itinerary maps, notes, and friend-ready plans here.'
+      : `${trips.length} ${trips.length === 1 ? 'itinerary' : 'itineraries'} ready to reopen, refine, or share.`
+  const noteSummary = journalLoading
+    ? 'Gathering private notes, decisions, and reminders tied to your itineraries.'
+    : 'Private reminders, decisions, and memories tied to your itineraries.'
   const pendingTripDelete = useMemo(
     () => trips.find((trip) => trip.id === confirmingTripId) || null,
     [confirmingTripId, trips]
@@ -307,11 +317,11 @@ function SavedPageContent() {
               <div className="grid w-full grid-cols-2 gap-2 sm:w-auto">
                 <div className="rounded-2xl border border-rule bg-paper-recessed/60 px-4 py-3">
                   <p className="text-[11px] uppercase tracking-[0.16em] text-foreground/30">Trips</p>
-                  <p className="mt-1 text-lg font-semibold text-foreground">{trips.length}</p>
+                  <p className="mt-1 text-lg font-semibold text-foreground">{tripCountLabel}</p>
                 </div>
                 <div className="rounded-2xl border border-rule bg-paper-recessed/60 px-4 py-3">
                   <p className="text-[11px] uppercase tracking-[0.16em] text-foreground/30">Notes</p>
-                  <p className="mt-1 text-lg font-semibold text-foreground">{entries.length}</p>
+                  <p className="mt-1 text-lg font-semibold text-foreground">{noteCountLabel}</p>
                 </div>
               </div>
             </div>
@@ -347,9 +357,7 @@ function SavedPageContent() {
               <div>
                 <h2 className="text-xl font-serif font-semibold text-foreground">Your itineraries</h2>
                 <p className="mt-1 text-sm text-foreground/40">
-                  {trips.length === 0
-                    ? 'Start a trip to keep itinerary maps, notes, and friend-ready plans here.'
-                    : `${trips.length} ${trips.length === 1 ? 'itinerary' : 'itineraries'} ready to reopen, refine, or share.`}
+                  {itinerarySummary}
                 </p>
               </div>
               <Link
@@ -505,7 +513,7 @@ function SavedPageContent() {
               <div>
                 <h2 className="text-xl font-serif font-semibold text-foreground">Trip notes</h2>
                 <p className="mt-1 text-sm text-foreground/40">
-                  Private reminders, decisions, and memories tied to your itineraries.
+                  {noteSummary}
                 </p>
               </div>
               {entries.length > 0 && (

@@ -403,7 +403,7 @@ export function ShareLinkCard({
           aria-label="Public trip link"
           value={shareUrl || 'Enable sharing to create a public link'}
           onFocus={(event) => event.currentTarget.select()}
-          className="w-full truncate bg-transparent text-xs text-ink-2 outline-none"
+          className="h-11 w-full truncate bg-transparent text-xs text-ink-2 outline-none"
         />
       </div>
       {shareError && (
