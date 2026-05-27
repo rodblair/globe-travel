@@ -100,10 +100,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-05-27",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-27-24bb4f6",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-24bb4f6/summary.json",
-    "productionCommit": "24bb4f66a4aae6e2146d969a8aebeb000a6359dc",
-    "deploymentUrl": "globe-travel-jokivae1y-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-27-c3456d5",
+    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-c3456d5/summary.json",
+    "productionCommit": "c3456d52fac34f19a6236841c0b4d5409860f1df",
+    "deploymentUrl": "globe-travel-3y1hgwc01-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -127,7 +127,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 24bb4f6 deployment after the Mapbox attribution touch-target hardening release. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
+    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live c3456d5 deployment after the Mapbox public map touch-target hardening release. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
   },
   "reviewHistory": [
     {

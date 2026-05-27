@@ -4,10 +4,10 @@ Date: 2026-05-21
 
 ## Current Production Runtime Evidence - 2026-05-27 Current
 
-Commit `24bb4f66a4aae6e2146d969a8aebeb000a6359dc` deployed to Vercel production on 2026-05-27.
+Commit `c3456d52fac34f19a6236841c0b4d5409860f1df` deployed to Vercel production on 2026-05-27.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-jokivae1y-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-3y1hgwc01-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,14 +16,14 @@ Commit `24bb4f66a4aae6e2146d969a8aebeb000a6359dc` deployed to Vercel production 
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-24bb4f6/`
-- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-27-24bb4f6/summary.json`
+- Production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-c3456d5/`
+- Production visual summary: `qa/visual-baseline-production-runtime-current-2026-05-27-c3456d5/summary.json`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `61/61`
 - Public launch status remains blocked by external beta/human review and production visual-review history requirements, not by the current deployment.
-- Current production commit: `24bb4f66a4aae6e2146d969a8aebeb000a6359dc`
-- Current production includes itinerary day/map accessibility semantics and Mapbox attribution touch-target hardening: selected day controls expose pressed/current state, focused route maps are labelled by day/title, map stop markers expose stop order/name/role, and Mapbox attribution/logo controls meet the 24px target floor.
+- Current production commit: `c3456d52fac34f19a6236841c0b4d5409860f1df`
+- Current production includes itinerary day/map accessibility semantics and Mapbox attribution touch-target hardening: selected day controls expose pressed/current state, focused route maps are labelled by day/title, map stop markers expose stop order/name/role, and Mapbox attribution/logo controls meet the 44px touch target floor.
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Current Production Runtime Evidence - 2026-05-26 Current
