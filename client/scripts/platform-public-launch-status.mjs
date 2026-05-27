@@ -130,6 +130,12 @@ const dispatchSentRecordTemplateReportPath = process.env.QA_DISPATCH_SENT_RECORD
   `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.md`
 const dispatchSentRecordTemplateCsvPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_CSV ||
   `qa/dispatch-sent-record-template-${dailyLaunchOpsDate}.csv`
+const launchOutreachBriefPath = process.env.QA_LAUNCH_OUTREACH_BRIEF ||
+  `qa/launch-outreach-brief-${dailyLaunchOpsDate}.json`
+const launchOutreachBriefReportPath = process.env.QA_LAUNCH_OUTREACH_BRIEF_REPORT ||
+  `qa/launch-outreach-brief-${dailyLaunchOpsDate}.md`
+const launchOutreachBriefCsvPath = process.env.QA_LAUNCH_OUTREACH_BRIEF_CSV ||
+  `qa/launch-outreach-brief-${dailyLaunchOpsDate}.csv`
 const dispatchSentRecordTemplateRejectionPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
   `qa/dispatch-sent-record-template-rejection-${dailyLaunchOpsDate}.json`
 const dispatchSentRecordTemplateRejectionReportPath = process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_REPORT ||
@@ -842,6 +848,9 @@ const [
   dispatchSentRecordTemplate,
   dispatchSentRecordTemplateReport,
   dispatchSentRecordTemplateCsv,
+  launchOutreachBrief,
+  launchOutreachBriefReport,
+  launchOutreachBriefCsv,
   dispatchSentRecordTemplateRejection,
   dispatchSentRecordTemplateRejectionReport,
   reviewIntakeRehearsal,
@@ -923,6 +932,9 @@ const [
   readJson(dispatchSentRecordTemplatePath),
   readText(dispatchSentRecordTemplateReportPath),
   readText(dispatchSentRecordTemplateCsvPath),
+  readJson(launchOutreachBriefPath),
+  readText(launchOutreachBriefReportPath),
+  readText(launchOutreachBriefCsvPath),
   readJson(dispatchSentRecordTemplateRejectionPath),
   readText(dispatchSentRecordTemplateRejectionReportPath),
   readJson(reviewIntakeRehearsalPath),
@@ -2733,6 +2745,98 @@ if (dispatchSentRecordCsvRowsMissingPostImportCommands.length > 0) {
   dispatchSentRecordTemplateIssues.push('dispatch sent-record template CSV rows are missing post-import refresh/signoff commands')
 }
 
+const launchOutreachBriefIssues = []
+const launchOutreachBriefRows = Array.isArray(launchOutreachBrief.rows) ? launchOutreachBrief.rows : []
+let launchOutreachBriefCsvRows = []
+let launchOutreachBriefCsvParseError = null
+try {
+  launchOutreachBriefCsvRows = parseCsv(launchOutreachBriefCsv)
+} catch (error) {
+  launchOutreachBriefCsvParseError = error
+}
+const launchOutreachBriefBlankProofRows = launchOutreachBriefRows.filter((row) => (
+  !row.reviewerAlias &&
+  !row.deliveryChannel &&
+  !row.sentAt &&
+  !row.contactRecordLocation
+))
+const launchOutreachBriefRowsMissingContext = launchOutreachBriefRows.filter((row) => (
+  !hasText(row.id) ||
+  !hasText(row.messageSubject) ||
+  !hasText(row.messageFile) ||
+  !hasText(row.startUrlOrCommand) ||
+  !hasText(row.packetOrArtifact) ||
+  !hasText(row.completedEvidenceTarget)
+))
+const launchOutreachBriefValidationCommands = Array.isArray(launchOutreachBrief.validationCommands)
+  ? launchOutreachBrief.validationCommands
+  : []
+const launchOutreachBriefValidationText = launchOutreachBriefValidationCommands.join('\n')
+if (launchOutreachBrief.status !== 'pass') {
+  launchOutreachBriefIssues.push('launch outreach brief status is not pass')
+}
+if (launchOutreachBrief.date !== dailyLaunchOpsDate) {
+  launchOutreachBriefIssues.push(`launch outreach brief date ${launchOutreachBrief.date || 'missing'} does not match ${dailyLaunchOpsDate}`)
+}
+if (launchOutreachBrief.publicStatusArtifact !== `qa/${jsonArtifact}`) {
+  launchOutreachBriefIssues.push(`launch outreach brief public status ${launchOutreachBrief.publicStatusArtifact || 'missing'} does not match qa/${jsonArtifact}`)
+}
+if (launchOutreachBrief.launchOperatorArtifact !== qaDisplayPath(launchOperatorTodayPath)) {
+  launchOutreachBriefIssues.push('launch outreach brief does not reference current launch operator board')
+}
+if (launchOutreachBrief.dispatchPacketArtifact !== `qa/launch-dispatch-packet-${dailyLaunchOpsDate}.json`) {
+  launchOutreachBriefIssues.push('launch outreach brief does not reference current launch dispatch packet')
+}
+if (launchOutreachBrief.sentRecordCsv !== qaDisplayPath(dispatchSentRecordTemplateCsvPath)) {
+  launchOutreachBriefIssues.push('launch outreach brief does not reference current sent-record CSV')
+}
+if (Number(launchOutreachBrief.rowCount || 0) !== launchTodayOutreachRows.length ||
+  launchOutreachBriefRows.length !== launchTodayOutreachRows.length) {
+  launchOutreachBriefIssues.push('launch outreach brief row count does not match launch operator outreach rows')
+}
+if (Number(launchOutreachBrief.betaRowCount || 0) !== launchTodayBetaRows.length) {
+  launchOutreachBriefIssues.push('launch outreach brief beta row count does not match launch operator beta rows')
+}
+if (Number(launchOutreachBrief.visualRowCount || 0) !== launchTodayVisualRows.length) {
+  launchOutreachBriefIssues.push('launch outreach brief visual row count does not match launch operator visual rows')
+}
+if (launchOutreachBriefCsvParseError) {
+  launchOutreachBriefIssues.push(`launch outreach brief CSV could not be parsed: ${launchOutreachBriefCsvParseError.message}`)
+}
+if (!launchOutreachBriefCsvParseError && launchOutreachBriefCsvRows.length !== launchTodayOutreachRows.length) {
+  launchOutreachBriefIssues.push('launch outreach brief CSV row count does not match launch operator outreach rows')
+}
+if (launchOutreachBriefBlankProofRows.length !== launchOutreachBriefRows.length) {
+  launchOutreachBriefIssues.push('launch outreach brief includes prefilled sent proof fields')
+}
+if (launchOutreachBriefRowsMissingContext.length > 0) {
+  launchOutreachBriefIssues.push('launch outreach brief rows are missing operator context')
+}
+if (!String(launchOutreachBrief.evidenceBoundary || '').includes('not completed')) {
+  launchOutreachBriefIssues.push('launch outreach brief does not state the completed-evidence boundary')
+}
+if (!String(launchOutreachBrief.privacyRule || '').includes('external contact system')) {
+  launchOutreachBriefIssues.push('launch outreach brief does not state the external-contact privacy rule')
+}
+if (!launchOutreachBriefValidationText.includes('qa:dispatch-mark-sent') ||
+  !launchOutreachBriefValidationText.includes(`QA_DISPATCH_MARK_SENT_RECORD=${qaDisplayPath(dispatchSentRecordTemplateCsvPath)}`) ||
+  !launchOutreachBriefValidationText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') ||
+  !launchOutreachBriefValidationCommands.includes('npm run qa:launch-refresh') ||
+  !launchOutreachBriefValidationCommands.includes('npm run qa:launch-signoff')) {
+  launchOutreachBriefIssues.push('launch outreach brief is missing post-send validation/import/refresh commands')
+}
+if (!launchOutreachBriefReport.includes('## Do Now') ||
+  !launchOutreachBriefReport.includes('## Boundaries') ||
+  !launchOutreachBriefReport.includes('## Send Order') ||
+  !launchOutreachBriefReport.includes(qaDisplayPath(dispatchSentRecordTemplateCsvPath))) {
+  launchOutreachBriefIssues.push('launch outreach brief report is missing operator-ready sections')
+}
+for (const requiredColumn of ['order', 'priority', 'id', 'workType', 'messageSubject', 'messageFile', 'completedEvidenceTarget']) {
+  if (!launchOutreachBriefCsv.includes(requiredColumn)) {
+    launchOutreachBriefIssues.push(`launch outreach brief CSV is missing ${requiredColumn} column`)
+  }
+}
+
 const dispatchSentRecordTemplateRejectionIssues = []
 const dispatchSentRecordTemplateRejectionMissingFields = Array.isArray(dispatchSentRecordTemplateRejection.missingFieldNames)
   ? dispatchSentRecordTemplateRejection.missingFieldNames
@@ -3196,6 +3300,7 @@ if (launchSentDispatchRehearsalIssues.length > 0) guardrailIssues.push('daily la
 if (dispatchMarkSentDryRunIssues.length > 0) guardrailIssues.push('dispatch mark-sent dry run is not proving safe sent-state imports')
 if (dispatchMarkSentImportRehearsalIssues.length > 0) guardrailIssues.push('dispatch mark-sent import rehearsal is not proving isolated sent-state imports')
 if (dispatchSentRecordTemplateIssues.length > 0) guardrailIssues.push('dispatch sent-record template is not ready for operator handoff')
+if (launchOutreachBriefIssues.length > 0) guardrailIssues.push('launch outreach brief is not ready for operator handoff')
 if (dispatchSentRecordTemplateRejectionIssues.length > 0) guardrailIssues.push('dispatch sent-record blank-template rejection is not proving pre-import safety')
 if (reviewIntakeRehearsalIssues.length > 0) guardrailIssues.push('review intake rehearsal is not proving incomplete evidence rejection')
 if (reviewIntakeImportRehearsalIssues.length > 0) guardrailIssues.push('review intake import rehearsal is not proving isolated completed-evidence imports')
@@ -3720,6 +3825,30 @@ const summary = {
     missingSubmissionTemplateCount: dispatchSentRecordSubmissionTemplateChecks.filter((check) => check.exists !== true).length,
     issues: dispatchSentRecordTemplateIssues,
   },
+  launchOutreachBrief: {
+    ready: launchOutreachBriefIssues.length === 0,
+    issueCount: launchOutreachBriefIssues.length,
+    artifact: qaDisplayPath(launchOutreachBriefPath),
+    report: qaDisplayPath(launchOutreachBriefReportPath),
+    csv: qaDisplayPath(launchOutreachBriefCsvPath),
+    date: launchOutreachBrief.date || null,
+    publicStatusArtifact: launchOutreachBrief.publicStatusArtifact || null,
+    launchOperatorArtifact: launchOutreachBrief.launchOperatorArtifact || null,
+    dispatchPacketArtifact: launchOutreachBrief.dispatchPacketArtifact || null,
+    sentRecordCsv: launchOutreachBrief.sentRecordCsv || null,
+    publicLaunchStatus: launchOutreachBrief.publicLaunchStatus || null,
+    rowCount: launchOutreachBrief.rowCount ?? null,
+    betaRowCount: launchOutreachBrief.betaRowCount ?? null,
+    visualRowCount: launchOutreachBrief.visualRowCount ?? null,
+    csvRowCount: launchOutreachBriefCsvRows.length,
+    blankProofFieldRowCount: launchOutreachBriefBlankProofRows.length,
+    rowsMissingContextCount: launchOutreachBriefRowsMissingContext.length,
+    rowsMissingContext: launchOutreachBriefRowsMissingContext.map((row) => row.id),
+    validationCommands: launchOutreachBriefValidationCommands,
+    privacyRule: launchOutreachBrief.privacyRule || null,
+    evidenceBoundary: launchOutreachBrief.evidenceBoundary || null,
+    issues: launchOutreachBriefIssues,
+  },
   dispatchSentRecordTemplateRejection: {
     ready: dispatchSentRecordTemplateRejectionIssues.length === 0,
     issueCount: dispatchSentRecordTemplateRejectionIssues.length,
@@ -4212,6 +4341,7 @@ const summary = {
     dispatchMarkSentDryRun: qaDisplayPath(dispatchMarkSentDryRunPath),
     dispatchMarkSentImportRehearsal: qaDisplayPath(dispatchMarkSentImportRehearsalPath),
     dispatchSentRecordTemplate: qaDisplayPath(dispatchSentRecordTemplatePath),
+    launchOutreachBrief: qaDisplayPath(launchOutreachBriefPath),
     dispatchSentRecordTemplateRejection: qaDisplayPath(dispatchSentRecordTemplateRejectionPath),
     reviewIntakeRehearsal: qaDisplayPath(reviewIntakeRehearsalPath),
     reviewIntakeImportRehearsal: qaDisplayPath(reviewIntakeImportRehearsalPath),
@@ -4275,6 +4405,7 @@ Status: ${status}
 - Dispatch mark-sent dry run ready: ${summary.dispatchMarkSentDryRun.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentDryRun.betaUpdateCount || 0} beta, ${summary.dispatchMarkSentDryRun.visualUpdateCount || 0} visual)
 - Dispatch mark-sent import rehearsal ready: ${summary.dispatchMarkSentImportRehearsal.ready ? 'yes' : 'no'} (${summary.dispatchMarkSentImportRehearsal.tempBetaSentCount || 0} beta sent on isolated log, ${summary.dispatchMarkSentImportRehearsal.tempVisualSentCount || 0} visual sent on isolated log)
 - Dispatch sent-record template ready: ${summary.dispatchSentRecordTemplate.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplate.rowCount || 0} rows, ready for import: ${summary.dispatchSentRecordTemplate.readyForImport ? 'yes' : 'no'}, missing commands: ${summary.dispatchSentRecordTemplate.rowsMissingCommandCount || 0}, missing context: ${summary.dispatchSentRecordTemplate.rowsMissingOperatorContextCount || 0})
+- Launch outreach brief ready: ${summary.launchOutreachBrief.ready ? 'yes' : 'no'} (${summary.launchOutreachBrief.rowCount || 0} rows, ${summary.launchOutreachBrief.csvRowCount || 0} CSV rows)
 - Dispatch sent-record blank-template rejection ready: ${summary.dispatchSentRecordTemplateRejection.ready ? 'yes' : 'no'} (${summary.dispatchSentRecordTemplateRejection.requestedUpdateCount || 0} rejected rows, canonical logs unchanged: ${summary.dispatchSentRecordTemplateRejection.canonicalBetaUnchanged && summary.dispatchSentRecordTemplateRejection.canonicalVisualUnchanged ? 'yes' : 'no'})
 - Review intake rehearsal ready: ${summary.reviewIntakeRehearsal.ready ? 'yes' : 'no'} (${summary.reviewIntakeRehearsal.betaInvalidSubmissionCount || 0} beta invalid, ${summary.reviewIntakeRehearsal.visualInvalidSubmissionCount || 0} visual invalid)
 - Review intake import rehearsal ready: ${summary.reviewIntakeImportRehearsal.ready ? 'yes' : 'no'} (beta copied count ${summary.reviewIntakeImportRehearsal.tempBetaCompletedBefore || 0}->${summary.reviewIntakeImportRehearsal.tempBetaCompletedAfter || 0}, visual copied count ${summary.reviewIntakeImportRehearsal.tempVisualHistoryBefore || 0}->${summary.reviewIntakeImportRehearsal.tempVisualHistoryAfter || 0})
@@ -4374,6 +4505,9 @@ ${markdownList(dispatchMarkSentImportRehearsalIssues)}
 Dispatch sent-record template:
 ${markdownList(dispatchSentRecordTemplateIssues)}
 
+Launch outreach brief:
+${markdownList(launchOutreachBriefIssues)}
+
 Dispatch sent-record commands:
 - JSON validation: \`${summary.dispatchSentRecordTemplate.validationCommand || 'missing'}\`
 - JSON import after real sends: \`${summary.dispatchSentRecordTemplate.importCommand || 'missing'}\`
@@ -4441,6 +4575,7 @@ ${markdownList(summary.nextActions)}
 - Dispatch mark-sent dry run: \`${summary.dispatchMarkSentDryRun.report}\` and \`${summary.dispatchMarkSentDryRun.artifact}\`
 - Dispatch mark-sent import rehearsal: \`${summary.dispatchMarkSentImportRehearsal.report}\` and \`${summary.dispatchMarkSentImportRehearsal.artifact}\`
 - Dispatch sent-record template: \`${summary.dispatchSentRecordTemplate.report}\`, \`${summary.dispatchSentRecordTemplate.csv}\`, and \`${summary.dispatchSentRecordTemplate.artifact}\`
+- Launch outreach brief: \`${summary.launchOutreachBrief.report}\`, \`${summary.launchOutreachBrief.csv}\`, and \`${summary.launchOutreachBrief.artifact}\`
 - Dispatch sent-record blank-template rejection: \`${summary.dispatchSentRecordTemplateRejection.report}\` and \`${summary.dispatchSentRecordTemplateRejection.artifact}\`
 - Review intake import rehearsal: \`${summary.reviewIntakeImportRehearsal.report}\` and \`${summary.reviewIntakeImportRehearsal.artifact}\`
 - Public launch threshold rehearsal: \`${summary.publicLaunchThresholdRehearsal.report}\` and \`${summary.publicLaunchThresholdRehearsal.artifact}\`

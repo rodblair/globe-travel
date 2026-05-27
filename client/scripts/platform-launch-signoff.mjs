@@ -159,6 +159,16 @@ const launchDispatchPacketArtifact =
 const launchDispatchPacketReport =
   process.env.QA_LAUNCH_DISPATCH_PACKET_REPORT ||
   `qa/launch-dispatch-packet-${dailyLaunchOpsDate}.md`
+const launchOutreachBriefArtifact =
+  process.env.QA_LAUNCH_OUTREACH_BRIEF_ARTIFACT ||
+  process.env.QA_LAUNCH_OUTREACH_BRIEF ||
+  `qa/launch-outreach-brief-${dailyLaunchOpsDate}.json`
+const launchOutreachBriefReport =
+  process.env.QA_LAUNCH_OUTREACH_BRIEF_REPORT ||
+  `qa/launch-outreach-brief-${dailyLaunchOpsDate}.md`
+const launchOutreachBriefCsv =
+  process.env.QA_LAUNCH_OUTREACH_BRIEF_CSV ||
+  `qa/launch-outreach-brief-${dailyLaunchOpsDate}.csv`
 const dispatchSentRecordTemplateRejectionArtifact =
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION_ARTIFACT ||
   process.env.QA_DISPATCH_SENT_RECORD_TEMPLATE_REJECTION ||
@@ -1840,6 +1850,124 @@ async function checkLaunchDispatchPacketArtifact() {
   })
 }
 
+async function checkLaunchOutreachBriefArtifact() {
+  let brief
+  try {
+    brief = await readJson(launchOutreachBriefArtifact)
+  } catch (error) {
+    addCheck('launch outreach brief artifact is readable', false, {
+      artifact: launchOutreachBriefArtifact,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return
+  }
+
+  let report = ''
+  let csv = ''
+  try {
+    report = await readText(launchOutreachBriefReport)
+  } catch {
+    report = ''
+  }
+  try {
+    csv = await readText(launchOutreachBriefCsv)
+  } catch {
+    csv = ''
+  }
+
+  const rows = Array.isArray(brief.rows) ? brief.rows : []
+  const failures = Array.isArray(brief.failures) ? brief.failures : []
+  const failedChecks = Array.isArray(brief.checks)
+    ? brief.checks.filter((check) => check.ok !== true).map((check) => check.name)
+    : []
+  const rowsWithProofFields = rows
+    .filter((row) => hasMeaningfulText(row.reviewerAlias) ||
+      hasMeaningfulText(row.deliveryChannel) ||
+      hasMeaningfulText(row.sentAt) ||
+      hasMeaningfulText(row.contactRecordLocation))
+    .map((row) => row.id)
+  const rowsMissingContext = rows
+    .filter((row) => !hasMeaningfulText(row.id) ||
+      !hasMeaningfulText(row.messageSubject) ||
+      !hasMeaningfulText(row.messageFile) ||
+      !hasMeaningfulText(row.startUrlOrCommand) ||
+      !hasMeaningfulText(row.packetOrArtifact) ||
+      !hasMeaningfulText(row.completedEvidenceTarget))
+    .map((row) => row.id)
+  const validationCommands = Array.isArray(brief.validationCommands) ? brief.validationCommands : []
+  const validationText = validationCommands.join('\n')
+  const reportExists = await fileExists(launchOutreachBriefReport)
+  const csvExists = await fileExists(launchOutreachBriefCsv)
+  const csvLineCount = csv
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .length
+  const csvDataRowCount = Math.max(0, csvLineCount - 1)
+
+  addCheck('launch outreach brief artifact is readable', true, {
+    artifact: launchOutreachBriefArtifact,
+    status: brief.status || null,
+    checked: brief.checked ?? null,
+    failed: brief.failed ?? null,
+  })
+
+  checkEvidenceFreshness('launch outreach brief', evidenceDateFrom(brief, launchOutreachBriefArtifact))
+
+  addCheck('launch outreach brief is operator-ready and evidence-safe', (
+    brief.status === 'pass' &&
+    Number(brief.checked) >= 8 &&
+    Number(brief.failed) === 0 &&
+    failures.length === 0 &&
+    failedChecks.length === 0 &&
+    brief.publicStatusArtifact === publicLaunchStatusArtifact &&
+    brief.launchOperatorArtifact === launchOperatorTodayArtifact &&
+    brief.dispatchPacketArtifact === launchDispatchPacketArtifact &&
+    brief.sentRecordCsv === dispatchSentRecordTemplateCsv &&
+    Number(brief.rowCount) === rows.length &&
+    Number(brief.betaRowCount) === rows.filter((row) => row.workType === 'beta-human-review').length &&
+    Number(brief.visualRowCount) === rows.filter((row) => row.workType === 'production-visual-review').length &&
+    reportExists &&
+    csvExists &&
+    csvDataRowCount === rows.length &&
+    rowsWithProofFields.length === 0 &&
+    rowsMissingContext.length === 0 &&
+    String(brief.evidenceBoundary || '').includes('not completed') &&
+    String(brief.privacyRule || '').includes('external contact system') &&
+    validationText.includes('qa:dispatch-mark-sent') &&
+    validationText.includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    validationText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+    validationCommands.includes('npm run qa:launch-refresh') &&
+    validationCommands.includes('npm run qa:launch-signoff') &&
+    report.includes('## Do Now') &&
+    report.includes('## Boundaries') &&
+    report.includes('## Send Order') &&
+    report.includes(dispatchSentRecordTemplateCsv)
+  ), {
+    expectedReport: launchOutreachBriefReport,
+    expectedCsv: launchOutreachBriefCsv,
+    reportExists,
+    csvExists,
+    publicStatusArtifact: brief.publicStatusArtifact || null,
+    expectedPublicStatusArtifact: publicLaunchStatusArtifact,
+    launchOperatorArtifact: brief.launchOperatorArtifact || null,
+    expectedLaunchOperatorArtifact: launchOperatorTodayArtifact,
+    dispatchPacketArtifact: brief.dispatchPacketArtifact || null,
+    expectedDispatchPacketArtifact: launchDispatchPacketArtifact,
+    sentRecordCsv: brief.sentRecordCsv || null,
+    expectedSentRecordCsv: dispatchSentRecordTemplateCsv,
+    rowCount: brief.rowCount ?? null,
+    betaRowCount: brief.betaRowCount ?? null,
+    visualRowCount: brief.visualRowCount ?? null,
+    csvDataRowCount,
+    rowsWithProofFields,
+    rowsMissingContext,
+    validationCommands,
+    failedChecks,
+    failureCount: failures.length,
+  })
+}
+
 async function checkBetaHumanReviewRegister() {
   let register
   try {
@@ -3136,6 +3264,13 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
   const dispatchSentRecordTemplateIssues = Array.isArray(dispatchSentRecordTemplateStatus.issues)
     ? dispatchSentRecordTemplateStatus.issues
     : []
+  const launchOutreachBriefStatus = status.launchOutreachBrief || {}
+  const launchOutreachBriefIssues = Array.isArray(launchOutreachBriefStatus.issues)
+    ? launchOutreachBriefStatus.issues
+    : []
+  const launchOutreachBriefValidationText = Array.isArray(launchOutreachBriefStatus.validationCommands)
+    ? launchOutreachBriefStatus.validationCommands.join('\n')
+    : ''
   const dispatchSentRecordTemplateRejectionStatus = status.dispatchSentRecordTemplateRejection || {}
   const dispatchSentRecordTemplateRejectionIssues = Array.isArray(dispatchSentRecordTemplateRejectionStatus.issues)
     ? dispatchSentRecordTemplateRejectionStatus.issues
@@ -3985,6 +4120,62 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     dispatchSentRecordTemplateIssues,
   })
 
+  addCheck('public launch status includes launch outreach brief', (
+    launchOutreachBriefStatus.ready === true &&
+    launchOutreachBriefStatus.artifact === launchOutreachBriefArtifact &&
+    launchOutreachBriefStatus.report === launchOutreachBriefReport &&
+    launchOutreachBriefStatus.csv === launchOutreachBriefCsv &&
+    status.artifacts?.launchOutreachBrief === launchOutreachBriefArtifact &&
+    Number(launchOutreachBriefStatus.issueCount) === 0 &&
+    launchOutreachBriefStatus.publicStatusArtifact === publicLaunchStatusArtifact &&
+    launchOutreachBriefStatus.launchOperatorArtifact === launchOperatorTodayArtifact &&
+    launchOutreachBriefStatus.dispatchPacketArtifact === launchDispatchPacketArtifact &&
+    launchOutreachBriefStatus.sentRecordCsv === dispatchSentRecordTemplateCsv &&
+    Number(launchOutreachBriefStatus.rowCount) === (
+      Number(launchOperatorStatus.betaActionRowCount || 0) +
+      Number(launchOperatorStatus.visualActionRowCount || 0)
+    ) &&
+    Number(launchOutreachBriefStatus.betaRowCount) === Number(launchOperatorStatus.betaActionRowCount || 0) &&
+    Number(launchOutreachBriefStatus.visualRowCount) === Number(launchOperatorStatus.visualActionRowCount || 0) &&
+    Number(launchOutreachBriefStatus.csvRowCount) === Number(launchOutreachBriefStatus.rowCount) &&
+    Number(launchOutreachBriefStatus.blankProofFieldRowCount) === Number(launchOutreachBriefStatus.rowCount) &&
+    Number(launchOutreachBriefStatus.rowsMissingContextCount || 0) === 0 &&
+    String(launchOutreachBriefStatus.evidenceBoundary || '').includes('not completed') &&
+    String(launchOutreachBriefStatus.privacyRule || '').includes('external contact system') &&
+    launchOutreachBriefValidationText.includes('qa:dispatch-mark-sent') &&
+    launchOutreachBriefValidationText.includes(`QA_DISPATCH_MARK_SENT_RECORD=${dispatchSentRecordTemplateCsv}`) &&
+    launchOutreachBriefValidationText.includes('QA_DISPATCH_MARK_SENT_IMPORT=1') &&
+    launchOutreachBriefValidationText.includes('npm run qa:launch-refresh') &&
+    launchOutreachBriefValidationText.includes('npm run qa:launch-signoff') &&
+    launchOutreachBriefIssues.length === 0
+  ), {
+    launchOutreachBriefArtifact: launchOutreachBriefStatus.artifact || null,
+    expectedLaunchOutreachBriefArtifact: launchOutreachBriefArtifact,
+    launchOutreachBriefReport: launchOutreachBriefStatus.report || null,
+    expectedLaunchOutreachBriefReport: launchOutreachBriefReport,
+    launchOutreachBriefCsv: launchOutreachBriefStatus.csv || null,
+    expectedLaunchOutreachBriefCsv: launchOutreachBriefCsv,
+    publicStatusArtifact: status.artifacts?.launchOutreachBrief || null,
+    launchOutreachBriefReady: launchOutreachBriefStatus.ready ?? null,
+    launchOutreachBriefIssueCount: launchOutreachBriefStatus.issueCount ?? null,
+    launchOutreachBriefPublicStatusArtifact: launchOutreachBriefStatus.publicStatusArtifact || null,
+    expectedPublicStatusArtifact: publicLaunchStatusArtifact,
+    launchOutreachBriefLaunchOperatorArtifact: launchOutreachBriefStatus.launchOperatorArtifact || null,
+    expectedLaunchOperatorArtifact: launchOperatorTodayArtifact,
+    launchOutreachBriefDispatchPacketArtifact: launchOutreachBriefStatus.dispatchPacketArtifact || null,
+    expectedLaunchDispatchPacketArtifact: launchDispatchPacketArtifact,
+    launchOutreachBriefSentRecordCsv: launchOutreachBriefStatus.sentRecordCsv || null,
+    expectedSentRecordCsv: dispatchSentRecordTemplateCsv,
+    launchOutreachBriefRowCount: launchOutreachBriefStatus.rowCount ?? null,
+    launchOutreachBriefBetaRowCount: launchOutreachBriefStatus.betaRowCount ?? null,
+    launchOutreachBriefVisualRowCount: launchOutreachBriefStatus.visualRowCount ?? null,
+    launchOutreachBriefCsvRowCount: launchOutreachBriefStatus.csvRowCount ?? null,
+    launchOutreachBriefBlankProofFieldRowCount: launchOutreachBriefStatus.blankProofFieldRowCount ?? null,
+    launchOutreachBriefRowsMissingContextCount: launchOutreachBriefStatus.rowsMissingContextCount ?? null,
+    launchOutreachBriefValidationCommands: launchOutreachBriefStatus.validationCommands || null,
+    launchOutreachBriefIssues,
+  })
+
   const dispatchSentRecordTemplateRejectionMissingFields = Array.isArray(dispatchSentRecordTemplateRejectionStatus.missingFieldNames)
     ? dispatchSentRecordTemplateRejectionStatus.missingFieldNames
     : []
@@ -4805,6 +4996,7 @@ await checkPaidPathReadinessArtifact()
 await checkPlannerActualsArtifact()
 await checkPlannerHandoffArtifact()
 await checkLaunchDispatchPacketArtifact()
+await checkLaunchOutreachBriefArtifact()
 await checkBetaHumanReviewRegister()
 await checkProductionEvidence(productionHealth)
 await checkVisualReviewRegister(productionHealth)
@@ -4827,6 +5019,7 @@ const summary = {
   plannerActualsArtifact,
   plannerHandoffArtifact,
   launchDispatchPacketArtifact,
+  launchOutreachBriefArtifact,
   publicShareMapIntegrityArtifact,
   betaHumanReviewRegister,
   betaHumanReviewWaveRehearsal,

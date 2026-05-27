@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 Time zone: America/Vancouver
-Generated at: 2026-05-27T03:36:52.865Z
+Generated at: 2026-05-27T03:46:53.106Z
 Base URL: https://globe-travel-two.vercel.app
 Status: blocked
 
@@ -51,6 +51,7 @@ Status: blocked
 - Dispatch mark-sent dry run ready: yes (2 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (2 beta sent on isolated log, 1 visual sent on isolated log)
 - Dispatch sent-record template ready: yes (16 rows, ready for import: no, missing commands: 0, missing context: 0)
+- Launch outreach brief ready: yes (16 rows, 16 CSV rows)
 - Dispatch sent-record blank-template rejection ready: yes (16 rejected rows, canonical logs unchanged: yes)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
 - Review intake import rehearsal ready: yes (beta copied count 0->1, visual copied count 2->3)
@@ -153,6 +154,9 @@ Dispatch mark-sent import rehearsal:
 Dispatch sent-record template:
 - none
 
+Launch outreach brief:
+- none
+
 Dispatch sent-record commands:
 - JSON validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.json npm run qa:dispatch-mark-sent`
 - JSON import after real sends: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-05-26.json npm run qa:dispatch-mark-sent`
@@ -225,6 +229,7 @@ Public metadata:
 - Dispatch mark-sent dry run: `qa/dispatch-log-mark-sent-2026-05-26.md` and `qa/dispatch-log-mark-sent-2026-05-26.json`
 - Dispatch mark-sent import rehearsal: `qa/dispatch-log-mark-sent-import-rehearsal-2026-05-26.md` and `qa/dispatch-log-mark-sent-import-rehearsal-2026-05-26.json`
 - Dispatch sent-record template: `qa/dispatch-sent-record-template-2026-05-26.md`, `qa/dispatch-sent-record-template-2026-05-26.csv`, and `qa/dispatch-sent-record-template-2026-05-26.json`
+- Launch outreach brief: `qa/launch-outreach-brief-2026-05-26.md`, `qa/launch-outreach-brief-2026-05-26.csv`, and `qa/launch-outreach-brief-2026-05-26.json`
 - Dispatch sent-record blank-template rejection: `qa/dispatch-sent-record-template-rejection-2026-05-26.md` and `qa/dispatch-sent-record-template-rejection-2026-05-26.json`
 - Review intake import rehearsal: `qa/review-intake-import-rehearsal-2026-05-26.md` and `qa/review-intake-import-rehearsal-2026-05-26.json`
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-05-26.md` and `qa/public-launch-threshold-rehearsal-2026-05-26.json`
