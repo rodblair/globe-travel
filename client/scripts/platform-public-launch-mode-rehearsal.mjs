@@ -35,7 +35,11 @@ const result = spawnSync(process.execPath, ['scripts/platform-public-launch-stat
 
 let rehearsalStatus = null
 try {
-  rehearsalStatus = JSON.parse(await readFile(publicStatusJsonPath, 'utf8'))
+  try {
+    rehearsalStatus = JSON.parse(result.stdout)
+  } catch {
+    rehearsalStatus = JSON.parse(await readFile(publicStatusJsonPath, 'utf8'))
+  }
 } finally {
   await writeFile(publicStatusJsonPath, originalJson)
   await writeFile(publicStatusReportPath, originalReport)

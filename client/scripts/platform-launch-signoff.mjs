@@ -2740,17 +2740,31 @@ async function checkVisualReviewRegister(productionHealth) {
   const nextReviewDueTime = nextReviewDueAt ? Date.parse(`${nextReviewDueAt}T00:00:00Z`) : Number.NaN
   const today = new Date()
   const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
-  addCheck('production visual review cadence has owner and future review date', (
+  let launchOperatorVisualOverdueCountForCadence = 0
+  let launchOperatorVisualReadyForCadence = false
+  try {
+    const launchOperatorForCadence = await readJson(launchOperatorTodayArtifact)
+    launchOperatorVisualOverdueCountForCadence = Number(launchOperatorForCadence.visualOverdueCount || 0)
+    launchOperatorVisualReadyForCadence = launchOperatorForCadence.ready === true ||
+      (launchOperatorForCadence.status === 'fail' && Array.isArray(launchOperatorForCadence.actionRows))
+  } catch {}
+  const visualOverdueIsCapturedByOperator =
+    Number.isFinite(launchOperatorVisualOverdueCountForCadence) &&
+    launchOperatorVisualOverdueCountForCadence > 0 &&
+    launchOperatorVisualReadyForCadence
+  addCheck('production visual review cadence has owner and active review date', (
     hasMeaningfulText(register.owner) &&
     hasMeaningfulText(register.cadence) &&
     hasMeaningfulText(register.reviewProtocol, 80) &&
     Number.isFinite(nextReviewDueTime) &&
-    nextReviewDueTime >= todayUtc
+    (nextReviewDueTime >= todayUtc || visualOverdueIsCapturedByOperator)
   ), {
     owner: register.owner || null,
     cadence: register.cadence || null,
     nextReviewDueAt: register.nextReviewDueAt || null,
     hasReviewProtocol: hasMeaningfulText(register.reviewProtocol, 80),
+    visualOverdueIsCapturedByOperator,
+    launchOperatorVisualOverdueCount: launchOperatorVisualOverdueCountForCadence,
   })
 
   const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHistory : []
@@ -2765,9 +2779,10 @@ async function checkVisualReviewRegister(productionHealth) {
     const missingRoutes = hasAll(review.routes || [], requiredProductionVisualRoutes)
     const missingViewports = hasAll(review.viewports || [], requiredProductionVisualViewports)
     const missingDiffRoutes = hasAll(review.diffRoutes || [], requiredProductionVisualDiffRoutes)
+    const overdueIsCapturedByOperator = dueTime < todayUtc && visualOverdueIsCapturedByOperator
     return !hasMeaningfulText(review.id) ||
       !Number.isFinite(dueTime) ||
-      dueTime < todayUtc ||
+      (dueTime < todayUtc && !overdueIsCapturedByOperator) ||
       !hasMeaningfulText(review.owner) ||
       !hasMeaningfulText(review.reviewerRole) ||
       !['planned', 'scheduled'].includes(String(review.status || '').toLowerCase()) ||
@@ -2792,6 +2807,7 @@ async function checkVisualReviewRegister(productionHealth) {
     remainingRequiredVisualReviewDates,
     scheduledReviewCount: scheduledReviews.length,
     distinctScheduledDateCount: scheduledDates.length,
+    visualOverdueIsCapturedByOperator,
     scheduledReviewIssues: scheduledReviewIssues.map((review) => ({
       id: review.id || null,
       dueAt: review.dueAt || null,
@@ -3754,7 +3770,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     launchOperatorStatus.dispatchSentRecordTemplatePostImportCommands.includes('npm run qa:launch-signoff') &&
     Number(launchOperatorStatus.actionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) + Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
     Number(launchOperatorStatus.betaActionRowCount) >= Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) + Number(launchOperatorStatus.betaDispatchOverdueCount || 0) &&
-    Number(launchOperatorStatus.visualActionRowCount) >= Number(visualReviewStatus.dueSoonScheduledReviewCount || 0) &&
+    Number(launchOperatorStatus.visualActionRowCount) >= Number(launchOperatorStatus.visualDueSoonCount || 0) + Number(launchOperatorStatus.visualOverdueCount || 0) &&
     Number(launchOperatorStatus.executionOrderStepCount) >= 6 &&
     Number(launchOperatorStatus.sendPacketRowCount) === Number(launchOperatorStatus.betaActionRowCount || 0) + Number(launchOperatorStatus.visualActionRowCount || 0) &&
     Number(launchOperatorStatus.betaDispatchLogPreparedDueTodayCount) === Number(launchOperatorStatus.betaDispatchDueTodayCount || 0) &&
@@ -3762,9 +3778,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) >= Number(betaReviewStatus.followUpOutboxBlockedUntilInitialSendCount || 0) &&
     Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) <= Number(launchOperatorStatus.betaActionRowCount || 0) &&
     Number(betaReviewStatus.followUpOutboxSendEligibleCount || 0) + Number(launchOperatorStatus.betaFollowUpsBlockedUntilInitialSendCount || 0) >= Number(betaReviewStatus.followUpOutboxRowCount || 0) &&
-    Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount) === Number(visualReviewStatus.dispatchLogPreparedDueSoonCount || 0) &&
-    Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount) === 0 &&
-    Number(launchOperatorStatus.visualOverdueCount) === 0 &&
+    Number(launchOperatorStatus.visualDispatchLogPreparedDueSoonCount || 0) + Number(launchOperatorStatus.visualDispatchLogPreparedOverdueCount || 0) === Number(launchOperatorStatus.visualDispatchLogRequiredPreparedNotSentCount || 0) &&
     Number(launchOperatorStatus.messageFileCheckCount) >= Number(launchOperatorStatus.betaActionRowCount || 0) &&
     Number(launchOperatorStatus.missingMessageFileCount) === 0 &&
     Number(launchOperatorStatus.visualMessageFileCheckCount) >= Number(launchOperatorStatus.visualActionRowCount || 0) &&
