@@ -4,12 +4,13 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { motion, AnimatePresence, useDragControls } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Link as LinkIcon, Copy, Send, MessageSquareQuote, Route, GripHorizontal, Check, Users, Wallet, Plane, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned } from 'lucide-react'
+import { motion, AnimatePresence } from 'motion/react'
+import { Share2, ArrowLeftRight, Calendar, Send, MessageSquareQuote, Route, Check, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned, Navigation2, MoreHorizontal, Plus } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops, hasTransitRouteCue, shouldUseSavedRoute } from '@/components/trips/derivedStops'
+import TripDayMap from '@/components/trips/TripDayMap'
+import { buildDisplayStops, getRouteFallbackLabel, hasTransitRouteCue, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 import { cn } from '@/lib/utils'
 
 type Trip = {
@@ -256,9 +257,6 @@ function TripStudioPageContent() {
   const studioRef = useRef<HTMLDivElement>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
-  const chatDragControls = useDragControls()
-  const itineraryDragControls = useDragControls()
-
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['trip', tripId],
     queryFn: async () => {
@@ -330,7 +328,6 @@ function TripStudioPageContent() {
     practical: feedback.filter((entry) => entry.sentiment === 'practical').length,
   }), [feedback])
   const visibleFeedback = feedback.slice(0, 4)
-  const hiddenFeedbackCount = Math.max(0, feedback.length - visibleFeedback.length)
 
   const ensureSelectedDayExists = useMemo(() => {
     if (days.length === 0) return 1
@@ -735,6 +732,49 @@ function TripStudioPageContent() {
   }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip, qaForceShareFailure, showActionNotice])
 
   const latestWorkflowJob = workflowJobs[0]
+  const studioDayMaps = useMemo(() => {
+    return days.map((day) => {
+      const sortedItems = sortTripItemsForDisplay((day.items || []) as TripItem[])
+      const displayStops = buildDisplayStops(sortedItems)
+      const mappedStops = displayStops.filter((stop) => stop.mapped)
+      const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
+      const savedRoute = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
+      const useSavedRoute = shouldUseSavedRoute(sortedItems, savedRoute, usesDerivedStops)
+      const route = useSavedRoute ? savedRoute : null
+      const routeSummary = route?.distance_m && route?.duration_s
+        ? `${Math.round(route.distance_m / 100) / 10} km • ${Math.round(route.duration_s / 60)} min walk`
+        : getRouteFallbackLabel(sortedItems, savedRoute, usesDerivedStops)
+
+      return {
+        day,
+        sortedItems,
+        displayStops,
+        mappedStops,
+        routeGeojson: useSavedRoute ? savedRoute?.geojson || null : null,
+        routeSummary,
+      }
+    })
+  }, [days])
+  const selectedStudioDay = useMemo(
+    () => studioDayMaps.find(({ day }) => day.day_index === ensureSelectedDayExists) || studioDayMaps[0] || null,
+    [ensureSelectedDayExists, studioDayMaps]
+  )
+  const mappedDayCount = useMemo(
+    () => studioDayMaps.filter(({ mappedStops }) => mappedStops.length > 0).length,
+    [studioDayMaps]
+  )
+  const routeQualityLabel = mappingSummary.needsHydration
+    ? 'Needs map pass'
+    : tripStops.length > 0
+      ? 'Excellent'
+      : 'Drafting'
+  const selectedDaySubtitle = selectedStudioDay
+    ? [
+        selectedStudioDay.day.date,
+        `${selectedStudioDay.mappedStops.length} mapped stop${selectedStudioDay.mappedStops.length === 1 ? '' : 's'}`,
+        selectedStudioDay.routeSummary,
+      ].filter(Boolean).join(' • ')
+    : 'Map appears once Globe has routeable stops.'
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
@@ -809,246 +849,359 @@ function TripStudioPageContent() {
   }
 
   return (
-    <div ref={studioRef} className="relative flex min-h-full w-full flex-col overflow-y-auto bg-paper pb-[calc(5rem+env(safe-area-inset-bottom))] xl:block xl:h-full xl:overflow-hidden xl:pb-0">
-      {/* Globe */}
-      <div className="absolute inset-0">
-        <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--brass),transparent_88%),transparent_38%),radial-gradient(circle_at_80%_20%,color-mix(in_oklch,var(--horizon),transparent_88%),transparent_26%),linear-gradient(180deg,var(--paper),var(--paper-recessed))]" />
-        <div className="paper-grain absolute inset-0 pointer-events-none" />
-        <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--paper-raised),transparent_10%),transparent)]" />
-        <div className="absolute right-4 top-4 z-10 hidden rounded-[28px] border border-rule bg-paper-raised/80 px-4 py-3 shadow-[var(--shadow-md)] backdrop-blur-2xl 2xl:block">
-          <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Map readiness</p>
-          <p className="mt-1 text-sm font-medium text-foreground">{tripDestination || trip?.title || 'Trip Studio'}</p>
-          <p className="mt-2 text-xs text-foreground/62">
-            {tripStops.length > 0
-              ? `${tripStops.length} routed stops across ${days.length} day${days.length === 1 ? '' : 's'}`
-              : 'Using itinerary-first map previews for stability'}
-          </p>
-        </div>
-      </div>
+    <div ref={studioRef} className="relative h-full min-h-full overflow-y-auto bg-paper text-foreground xl:overflow-hidden">
+      <div className="paper-grain pointer-events-none absolute inset-0" />
+      <div className="absolute inset-x-0 top-0 h-52 bg-[linear-gradient(180deg,var(--paper-raised),transparent)]" />
 
-      {/* Top bar */}
-      <div className="relative z-30 order-1 mx-auto w-[min(960px,calc(100%-1rem))] pt-3 md:w-[min(960px,calc(100%-2rem))] xl:absolute xl:left-1/2 xl:top-4 xl:-translate-x-1/2 xl:pt-0">
-        <motion.div
-          initial={{ opacity: 0, y: -15 }}
+      <div className="relative z-10 flex min-h-full flex-col">
+        <motion.header
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-start justify-between gap-3 rounded-[24px] border border-rule bg-paper-raised/95 px-3 py-3 shadow-[var(--shadow-md)] backdrop-blur-2xl lg:flex-row lg:items-center lg:rounded-[28px] lg:px-4"
+          className="flex flex-col gap-3 border-b border-rule bg-paper-raised/86 px-4 py-3 backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between lg:px-6"
         >
-          <div className="min-w-0 w-full lg:w-auto">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)]">
-                <Calendar className="h-4 w-4 text-[var(--brass-text)]" />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-foreground/42">
+              <span>Trip Studio</span>
+              <span className="h-1 w-1 rounded-full bg-foreground/24" />
+              <span>{isBuildingInitialItinerary ? 'Creating your itinerary' : `${mappedDayCount}/${Math.max(days.length, 1)} mapped days`}</span>
+            </div>
+            <div className="mt-1 flex min-w-0 items-center gap-2">
+              <h1 className="truncate font-serif text-2xl leading-tight text-foreground md:text-3xl">
+                {trip?.title || 'Trip workspace'}
+              </h1>
+              <span className="rounded-full border border-rule bg-paper px-2.5 py-1 text-[11px] text-foreground/62">
+                {canEditTrip ? 'Draft' : 'View only'}
               </span>
-              <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/45">
-                  {tripDestination ? `${tripDestination} itinerary` : 'Group itinerary'}
-                </p>
-                <h1 className="truncate text-sm font-medium text-foreground">{trip?.title || 'Trip workspace'}</h1>
-              </div>
             </div>
           </div>
 
-          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center lg:w-auto">
-            <button
-              onClick={saveTrip}
-              disabled={isSavingTrip || !trip || !canEditTrip}
-              className={cn(
-                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold shadow-[0_12px_32px_rgba(245,158,11,0.18)] transition-colors disabled:opacity-50',
-                saveDone
-                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                  : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass)]'
-              )}
-              title="Save the latest trip plan"
-            >
-              {saveDone ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-              {!canEditTrip ? 'View only' : isSavingTrip ? 'Saving…' : saveDone ? 'Saved' : 'Save trip'}
-            </button>
-            <button
-              onClick={() => setChatOpen((current) => !current)}
-              className={cn(
-                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors',
-                chatOpen
-                  ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground'
-                  : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
-              )}
-            >
-              <MessageSquareQuote className="h-4 w-4" />
-              {chatOpen ? 'Hide chat' : 'Planner chat'}
-            </button>
-            <button
-              onClick={() => handleOptimize()}
-              disabled={isOptimizing || !canEditTrip}
-              className={cn(
-                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
-                optimizeDone
-                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                  : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
-              )}
-              title="Optimize the order for this day"
-            >
-              {optimizeDone ? (
-                <Check className="h-4 w-4 text-[var(--moss)]" />
-              ) : (
-                <ArrowLeftRight className={cn('h-4 w-4 text-[var(--brass)]', isOptimizing && 'animate-pulse')} />
-              )}
-              {isOptimizing ? 'Optimizing…' : optimizeDone ? 'Optimized!' : 'Optimize day'}
-            </button>
-            <button
-              onClick={hydrateMaps}
-              disabled={isHydratingMaps || !canEditTrip}
-              className={cn(
-                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
-                buildMapsDone
-                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                  : 'border-rule bg-paper-recessed text-foreground/82 hover:bg-paper-recessed'
-              )}
-              title="Repair or rebuild day map locations and routes"
-            >
-              {buildMapsDone ? <Check className="h-4 w-4" /> : <Route className="h-4 w-4 text-[var(--horizon)]" />}
-              {isHydratingMaps ? 'Building maps…' : buildMapsDone ? 'Maps built' : 'Build maps'}
-            </button>
-            <button
-              onClick={shareWithFriends}
-              disabled={isSharingTrip || !trip || !shareUrl || !canEditTrip}
-              className={cn(
-                'touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
-                shareDone
-                  ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                  : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground hover:bg-[var(--brass)]'
-              )}
-              title="Create a friend review link and share it"
-            >
-              {shareDone ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-              {!canEditTrip ? 'Shared preview' : isSharingTrip ? 'Sharing…' : shareDone ? 'Link copied' : 'Share with friends'}
-            </button>
-            {trip?.is_public && shareUrl && (
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center lg:justify-end">
+            {canEditTrip ? (
+              <>
+                <button
+                  onClick={() => setChatOpen(true)}
+                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-medium text-foreground/78 transition-colors hover:bg-paper-hover min-[1680px]:hidden"
+                >
+                  <MessageSquareQuote className="h-4 w-4" />
+                  Planner chat
+                </button>
+                <button
+                  onClick={saveTrip}
+                  disabled={isSavingTrip || !trip}
+                  className={cn(
+                    'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                    saveDone
+                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                      : 'border-rule bg-paper text-foreground/82 hover:bg-paper-hover'
+                  )}
+                >
+                  {saveDone ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4 text-[var(--brass)]" />}
+                  {isSavingTrip ? 'Saving...' : saveDone ? 'Saved' : 'Save trip'}
+                </button>
+                <button
+                  onClick={hydrateMaps}
+                  disabled={isHydratingMaps}
+                  className={cn(
+                    'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                    buildMapsDone
+                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                      : 'border-rule bg-paper text-foreground/82 hover:bg-paper-hover'
+                  )}
+                >
+                  {buildMapsDone ? <Check className="h-4 w-4" /> : <Route className="h-4 w-4 text-[var(--dusty-aqua)]" />}
+                  {isHydratingMaps ? 'Building maps...' : buildMapsDone ? 'Maps built' : 'Build maps'}
+                </button>
+                <button
+                  onClick={shareWithFriends}
+                  disabled={isSharingTrip || !trip}
+                  className={cn(
+                    'touch-target col-span-2 inline-flex items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50 sm:col-span-1',
+                    shareDone
+                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                      : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)]'
+                  )}
+                >
+                  {shareDone ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                  {isSharingTrip ? 'Sharing...' : shareDone ? 'Link copied' : 'Share with friends'}
+                </button>
+              </>
+            ) : trip?.is_public && trip.share_slug ? (
               <Link
                 href={`/t/${trip.share_slug}`}
-                className="touch-target inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
-                title="Open public share link"
+                className="touch-target col-span-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-4 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] sm:col-span-1"
               >
-                <LinkIcon className="h-4 w-4" />
+                <Send className="h-4 w-4" />
                 View share
               </Link>
-            )}
+            ) : null}
           </div>
-          {actionError ? (
-            <p className="w-full rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-xs text-[var(--terracotta)] lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
-              {actionError}
-            </p>
-          ) : actionNotice ? (
-            <p className="w-full rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-3 py-2 text-xs text-[var(--moss)] lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
-              {actionNotice}
-            </p>
-          ) : !canEditTrip ? (
-            <p className="w-full rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62 lg:absolute lg:right-0 lg:top-full lg:mt-2 lg:max-w-[360px]">
-              Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save.
-            </p>
-          ) : null}
-        </motion.div>
-      </div>
+        </motion.header>
 
-      {/* Trip readiness */}
-      <aside className="relative z-20 order-3 mx-3 mt-3 max-w-[760px] space-y-3 pb-1 xl:absolute xl:right-4 xl:top-44 xl:order-none xl:mx-0 xl:mt-0 xl:max-h-[calc(100dvh-12rem)] xl:w-[340px] xl:overflow-y-auto xl:pb-0">
-        <div className="grid gap-3">
-          <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Group review</p>
-                <p className="mt-1 text-sm font-medium text-foreground">Share this {tripDestination || 'trip'} plan when it is ready for friend review.</p>
+        {(actionError || actionNotice || !canEditTrip) && (
+          <div className="border-b border-rule bg-paper px-4 py-2 lg:px-6">
+            <p className={cn(
+              'rounded-md border px-3 py-2 text-xs',
+              actionError && 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]',
+              actionNotice && !actionError && 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
+              !actionError && !actionNotice && 'border-rule bg-paper-recessed text-foreground/62'
+            )}>
+              {actionError || actionNotice || 'Shared preview. Start your own trip to edit and save.'}
+            </p>
+          </div>
+        )}
+
+        <main className="grid min-h-0 flex-1 gap-4 p-4 lg:p-5 xl:grid-cols-[minmax(0,1fr)_300px] xl:overflow-hidden min-[1680px]:grid-cols-[300px_minmax(0,1fr)_320px]">
+          <section className="hidden min-h-0 overflow-hidden rounded-[22px] border border-rule bg-paper-raised/92 shadow-[var(--panel-shadow)] min-[1680px]:flex min-[1680px]:flex-col">
+            <div className="border-b border-rule px-4 py-3">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
+              <p className="mt-1 text-sm font-medium text-foreground">Chat becomes itinerary edits</p>
+            </div>
+            <div className="border-b border-rule bg-paper px-4 py-4">
+              <div className="rounded-md border border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] px-3 py-3">
+                <p className="text-xs font-semibold text-foreground">Plan with Globe</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-foreground/58">
+                  Ask for a change, then review the route, day list, and group feedback in the same workspace.
+                </p>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
+            </div>
+            <ChatInterface
+              messages={messages}
+              isLoading={chatLoading}
+              error={chatError}
+              onSendMessage={sendMessage}
+              onStop={stop}
+              placeholder="Ask anything... e.g. add food tour on Day 2"
+              storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
+              suggestions={[
+                `Make Day ${ensureSelectedDayExists} more walkable`,
+                `Add one standout dinner and one easy late-night stop`,
+                `Swap a stop for something less crowded`,
+              ]}
+            />
+          </section>
+
+          <section className="min-h-0 space-y-4 xl:overflow-y-auto">
+            <div className="overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--panel-shadow)]">
+              <div className="flex flex-col gap-3 border-b border-rule px-4 py-3 md:flex-row md:items-center md:justify-between">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={cn(
+                      'inline-flex h-7 w-7 items-center justify-center rounded-full border',
+                      mappingSummary.needsHydration
+                        ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-[var(--brass)]'
+                        : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                    )}>
+                      {mappingSummary.needsHydration ? <Navigation2 className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">Route quality: {routeQualityLabel}</p>
+                      <p className="mt-0.5 truncate text-xs text-foreground/55">{selectedDaySubtitle}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => handleOptimize()}
+                    disabled={isOptimizing || !canEditTrip}
+                    className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/82 transition-colors hover:bg-paper-hover disabled:opacity-50"
+                  >
+                    {optimizeDone ? <Check className="h-4 w-4 text-[var(--moss)]" /> : <ArrowLeftRight className={cn('h-4 w-4 text-[var(--brass)]', isOptimizing && 'animate-pulse')} />}
+                    {isOptimizing ? 'Optimizing...' : optimizeDone ? 'Optimized' : 'Re-optimize'}
+                  </button>
+                  <button
+                    onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
+                    disabled={!selectedStudioDay || regeneratingDayIndex != null || isLoading || !canEditTrip}
+                    className="touch-target inline-flex items-center justify-center rounded-full border border-rule bg-paper px-3 py-2 text-foreground/70 transition-colors hover:bg-paper-hover disabled:opacity-50"
+                    aria-label="Rewrite selected day"
+                  >
+                    <Sparkles className="h-4 w-4 text-[var(--brass)]" />
+                  </button>
+                  <button className="touch-target inline-flex items-center justify-center rounded-full border border-rule bg-paper px-3 py-2 text-foreground/60 transition-colors hover:bg-paper-hover" aria-label="More map actions">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid min-h-[520px] lg:grid-cols-[260px_minmax(0,1fr)] min-[1680px]:grid-cols-[300px_minmax(0,1fr)]">
+                <div className="border-b border-rule bg-paper/70 lg:border-b-0 lg:border-r">
+                  <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-rule p-3 lg:block lg:space-y-2 lg:overflow-visible">
+                    {studioDayMaps.map(({ day, mappedStops, routeSummary }) => (
+                      <button
+                        key={day.id}
+                        onClick={() => setSelectedDayIndex(day.day_index)}
+                        aria-pressed={day.day_index === ensureSelectedDayExists}
+                        className={cn(
+                          'touch-target min-w-[220px] rounded-md border px-3 py-3 text-left transition-colors lg:min-w-0 lg:w-full',
+                          day.day_index === ensureSelectedDayExists
+                            ? 'border-[color:var(--brass)]/40 bg-[var(--brass-subtle)] text-foreground'
+                            : 'border-transparent bg-transparent text-foreground/72 hover:bg-paper-hover'
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--brass)] text-xs font-semibold text-[var(--brass-text)]">
+                            {day.day_index}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-medium">{day.title || `Day ${day.day_index}`}</span>
+                            <span className="mt-1 block truncate text-xs text-foreground/52">
+                              {mappedStops.length} stops{routeSummary ? ` • ${routeSummary}` : ''}
+                            </span>
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="hidden p-4 lg:block">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/38">Selected stops</p>
+                    <div className="mt-3 space-y-2">
+                      {(selectedStudioDay?.displayStops || []).slice(0, 5).map((stop, index) => (
+                        <button
+                          key={stop.id}
+                          onClick={() => onSelectItem(stop.item)}
+                          className="touch-target flex w-full items-start gap-2 rounded-md border border-rule bg-paper px-3 py-2 text-left transition-colors hover:bg-paper-hover"
+                        >
+                          <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--paper-recessed)] text-[10px] font-semibold text-[var(--brass)]">
+                            {index + 1}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-xs font-medium text-foreground">{stop.title}</span>
+                            <span className="mt-0.5 block truncate text-[11px] text-foreground/52">
+                              {stop.timeLabel || 'Flexible'} {stop.mapped ? '• pinned' : '• needs map data'}
+                            </span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <TripDayMap
+                  stops={selectedStudioDay?.mappedStops || tripStops}
+                  routeGeojson={selectedStudioDay?.routeGeojson || null}
+                  title={selectedStudioDay ? `Day ${selectedStudioDay.day.day_index}` : (tripDestination || 'Trip map')}
+                  subtitle={selectedStudioDay?.day.title || 'Live route preview'}
+                  routeSummary={selectedStudioDay?.routeSummary}
+                  ariaLabel={`Trip Studio map for ${selectedStudioDay?.day.title || trip?.title || 'the selected trip'}`}
+                  showDetails={false}
+                  interactive={true}
+                  mapHeightClassName="h-[520px] lg:h-full"
+                  className="min-w-0 rounded-none border-0"
+                />
+              </div>
+
+              <div className="grid border-t border-rule bg-paper/80 md:grid-cols-5">
+                {[
+                  ['Overview', `${days.length} days · ${tripStops.length} stops`],
+                  ['Highlights', tripDestination || 'Group trip'],
+                  ['Pace', groupBrief?.vibe || 'Balanced'],
+                  ['Budget', groupBrief?.budget || 'Flexible'],
+                  ['Missing details', mappingSummary.needsHydration ? 'Map pass needed' : 'Looks ready'],
+                ].map(([label, value]) => (
+                  <div key={label} className="border-b border-rule px-4 py-3 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-foreground/38">{label}</p>
+                    <p className="mt-1 truncate text-sm font-medium text-foreground">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--panel-shadow)]">
+              <ItineraryArtifact
+                tripTitle={trip?.title || 'Trip'}
+                days={days}
+                selectedDayIndex={ensureSelectedDayExists}
+                setSelectedDayIndex={setSelectedDayIndex}
+                onSelectItem={onSelectItem}
+                onBulkOps={onBulkOps}
+                onRegenerateDay={handleRegenerateDay}
+                regeneratingDayIndex={regeneratingDayIndex}
+                regenerateDoneDayIndex={regenerateDoneDayIndex}
+                regenerateNotice={regenerateNotice}
+                onSwapItem={handleSwapItem}
+                onApplySwapItem={handleApplySwapItem}
+                onOptimize={handleOptimize}
+                isLoading={isLoading || isBuildingInitialItinerary}
+                loadingLabel={isBuildingInitialItinerary ? 'Building the first itinerary from your trip idea.' : undefined}
+                readOnly={!canEditTrip}
+                showMapPanel={false}
+              />
+            </div>
+          </section>
+
+          <aside className="min-h-0 space-y-4 xl:overflow-y-auto">
+            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Share with crew</p>
+                  <p className="mt-1 text-sm font-medium text-foreground">Public review link</p>
+                </div>
                 <button
                   onClick={togglePublic}
                   disabled={!canEditTrip}
                   className={cn(
-                    'touch-target rounded-full border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50',
+                    'touch-target rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
                     trip?.is_public
                       ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      : 'border-rule bg-paper-recessed text-foreground/78 hover:bg-paper-recessed'
+                      : 'border-rule bg-paper-recessed text-foreground/72 hover:bg-paper-hover'
                   )}
                 >
-                  {trip?.is_public ? 'Public link on' : 'Enable public link'}
+                  {trip?.is_public ? 'On' : 'Off'}
                 </button>
               </div>
-            </div>
-
-            {trip?.is_public && shareUrl ? (
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <div className="min-w-0 flex-1 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72 truncate">
-                  {shareUrl}
+              <div className="mt-4 flex gap-2">
+                <div className="min-w-0 flex-1 rounded-md border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62 truncate">
+                  {shareUrl || 'Enable public link to create one'}
                 </div>
                 <button
                   onClick={copyInviteLink}
-                  className="touch-target inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-medium text-foreground/82 transition-colors hover:bg-paper-recessed"
+                  disabled={!shareUrl}
+                  className="touch-target rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/78 transition-colors hover:bg-paper-hover disabled:opacity-45"
                 >
-                  <Copy className="w-4 h-4" />
-                  Copy link
-                </button>
-                <button
-                  onClick={shareInvite}
-                  className="touch-target inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-medium text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
-                >
-                  <Send className="w-4 h-4" />
-                  Share invite
+                  Copy
                 </button>
               </div>
-            ) : (
-              <p className="mt-4 text-xs text-foreground/58">
-                Reviews open automatically once the trip is public.
-              </p>
-            )}
-          </section>
+              <button
+                onClick={shareInvite}
+                disabled={!shareUrl}
+                className="touch-target mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-45"
+              >
+                <Send className="h-4 w-4" />
+                Share invite
+              </button>
+            </section>
 
-          <div className="grid gap-3">
-            <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Crew brief</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">
-                    {groupBrief?.groupSize ? `${groupBrief.groupSize} travelers` : 'Add crew context in chat'}
-                  </p>
-                </div>
-                <Sparkles className="w-5 h-5 text-[var(--brass)]" />
-              </div>
-
-              <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
-                <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
-                  <Users className="w-4 h-4 text-[var(--brass)]" />
-                  <span>{groupBrief?.groupSize ? `${groupBrief.groupSize} friends` : 'Crew size not set yet'}</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
-                  <Wallet className="w-4 h-4 text-[var(--moss)]" />
-                  <span>{groupBrief?.budget ? `Budget: ${groupBrief.budget}` : 'Budget still flexible'}</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
-                  <Plane className="w-4 h-4 text-[var(--horizon)]" />
-                  <span>{groupBrief?.originCity ? `Leaving from ${groupBrief.originCity}` : 'Origin city not set'}</span>
-                </div>
-                <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/72">
-                  Vibe: {groupBrief?.vibe || 'Balanced trip with broad appeal'}
-                </div>
-                <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs text-[var(--brass-text)] sm:col-span-2 xl:col-span-1">
-                  Trip readiness: {readinessCount}/4 — {trip?.is_public ? 'shareable' : 'turn on sharing'}, {feedback.length > 0 ? 'crew reacting' : 'needs reactions'}.
-                </div>
+            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Crew consensus</p>
+              <div className="mt-4 space-y-3">
+                {[
+                  ['Budget fit', groupBrief?.budget ? 'Good' : 'Needs detail'],
+                  ['Pace fit', groupBrief?.vibe || 'Balanced'],
+                  ['Map fit', routeQualityLabel],
+                  ['Readiness', `${readinessCount}/4`],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-foreground/70">{label}</span>
+                    <span className="inline-flex items-center gap-2 font-medium text-[var(--moss)]">
+                      {value}
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--moss)]" />
+                    </span>
+                  </div>
+                ))}
               </div>
             </section>
 
-            <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
+            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Friend feedback</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">
-                    {feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}
-                  </p>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Friend feedback</p>
+                  <p className="mt-1 text-sm font-medium text-foreground">{feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}</p>
                 </div>
-                <MessageSquareQuote className="w-5 h-5 text-foreground/25" />
+                <MessageSquareQuote className="h-5 w-5 text-foreground/25" />
               </div>
-
-              <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
+              <div className="mt-4 space-y-2">
                 {feedback.length === 0 ? (
-                  <p className="text-xs leading-relaxed text-foreground/58">
-                    No reviews yet. Invite a few friends and ask them where the itinerary feels too busy, expensive, or worth keeping.
-                  </p>
+                  <p className="text-xs leading-relaxed text-foreground/58">Invite friends to flag what feels too busy, expensive, or worth keeping.</p>
                 ) : (
                   <>
                     <div className="grid grid-cols-3 gap-2">
@@ -1057,202 +1210,126 @@ function TripStudioPageContent() {
                         ['curious', 'Curious'],
                         ['practical', 'Notes'],
                       ] as const).map(([key, label]) => (
-                        <div key={key} className={cn('rounded-2xl border px-2.5 py-2 text-center', sentimentClasses[key])}>
+                        <div key={key} className={cn('rounded-md border px-2 py-2 text-center', sentimentClasses[key])}>
                           <p className="text-sm font-semibold leading-none">{feedbackCounts[key]}</p>
                           <p className="mt-1 text-[10px]">{label}</p>
                         </div>
                       ))}
                     </div>
-
                     {visibleFeedback.map((entry) => (
-                      <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="min-w-0 truncate text-xs font-medium text-foreground">{entry.author_name}</p>
-                          <span className={cn('shrink-0 px-2 py-1 rounded-full border text-[10px]', sentimentClasses[entry.sentiment])}>
+                      <div key={entry.id} className="rounded-md border border-rule bg-paper-recessed p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="truncate text-xs font-medium text-foreground">{entry.author_name}</p>
+                          <span className={cn('shrink-0 rounded-full border px-2 py-1 text-[10px]', sentimentClasses[entry.sentiment])}>
                             {sentimentLabel[entry.sentiment]}
                           </span>
                         </div>
-                        <p className="mt-2 break-words text-xs leading-relaxed text-foreground/72 line-clamp-3">{entry.comment}</p>
+                        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-foreground/66">{entry.comment}</p>
                       </div>
                     ))}
-
-                    {hiddenFeedbackCount > 0 && (
-                      <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-3 py-2 text-xs leading-relaxed text-foreground/58">
-                        Showing latest 4 of {feedback.length} reviews. {hiddenFeedbackCount} more {hiddenFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for refresh.
-                      </p>
-                    )}
                   </>
                 )}
               </div>
             </section>
 
-            <section className="rounded-[26px] border border-rule bg-paper-raised/90 px-5 py-4 shadow-[var(--shadow-md)] backdrop-blur-2xl">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/38">Planner workflows</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">Run async planning jobs</p>
-                </div>
-                <Wand2 className="w-5 h-5 text-foreground/25" />
-              </div>
-
-              <div className="mt-4 grid gap-2">
+            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Suggested next step</p>
+              <p className="mt-2 text-sm font-medium leading-snug text-foreground">
+                {mappingSummary.needsHydration ? 'Rebuild map routes before sharing.' : `Ask Globe to tune Day ${ensureSelectedDayExists}.`}
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
-                  onClick={() => startWorkflow('decision_memo')}
-                  disabled={Boolean(creatingWorkflow) || !canEditTrip}
-                  className="touch-target flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+                  onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
+                  disabled={!selectedStudioDay || regeneratingDayIndex != null || !canEditTrip}
+                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
                 >
-                  <span>{creatingWorkflow === 'decision_memo' ? 'Starting decision memo...' : 'Generate decision memo'}</span>
-                  <Scale3d className="w-4 h-4 text-[var(--brass)]" />
-                </button>
-                <button
-                  onClick={() => startWorkflow('generate_variants')}
-                  disabled={Boolean(creatingWorkflow) || !canEditTrip}
-                  className="touch-target flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
-                >
-                  <span>{creatingWorkflow === 'generate_variants' ? 'Starting variants...' : 'Create cheap / balanced / premium variants'}</span>
-                  <Wand2 className="w-4 h-4 text-[var(--horizon)]" />
+                  <Plus className="h-4 w-4" />
+                  Rewrite day
                 </button>
                 <button
                   onClick={() => startWorkflow('feedback_refresh')}
                   disabled={Boolean(creatingWorkflow) || !canEditTrip}
-                  className="touch-target flex items-center justify-between rounded-2xl border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-recessed disabled:opacity-50"
+                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
                 >
-                  <span>{creatingWorkflow === 'feedback_refresh' ? 'Starting refresh...' : 'Refresh plan from feedback'}</span>
-                  <RefreshCcw className="w-4 h-4 text-[var(--moss)]" />
+                  <RefreshCcw className="h-4 w-4" />
+                  Refresh
                 </button>
               </div>
-
-              {workflowError && (
-                <p className="mt-3 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-[11px] text-[var(--terracotta)]">
-                  {workflowError}
-                </p>
-              )}
-
-              <div className="mt-4 rounded-2xl border border-rule bg-paper-recessed p-3">
-                {latestWorkflowJob ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-medium text-foreground capitalize">{latestWorkflowJob.type.replace(/_/g, ' ')}</p>
-                      <span className="text-[10px] uppercase tracking-[0.16em] text-foreground/40">{latestWorkflowJob.status}</span>
-                    </div>
-                    {latestWorkflowJob.status === 'completed' && latestWorkflowJob.result && (
-                      <pre className="whitespace-pre-wrap text-[11px] leading-relaxed text-foreground/70">
-                        {JSON.stringify(latestWorkflowJob.result, null, 2)}
-                      </pre>
-                    )}
-                    {latestWorkflowJob.status === 'failed' && (
-                      <p className="text-[11px] text-[var(--terracotta)]">{latestWorkflowJob.error || 'Workflow failed'}</p>
-                    )}
-                    {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && (
-                      <p className="text-[11px] text-foreground/55">Working through the planner job…</p>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-[11px] leading-relaxed text-foreground/55">
-                    No workflow runs yet. Use these to generate decision support, itinerary variants, or feedback-driven refresh ideas.
-                  </p>
-                )}
-              </div>
             </section>
-          </div>
-        </div>
-      </aside>
 
-      {/* Left panel: chat */}
+            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner workflows</p>
+                  <p className="mt-1 text-sm font-medium text-foreground">{latestWorkflowJob ? latestWorkflowJob.type.replace(/_/g, ' ') : 'Run async planning jobs'}</p>
+                </div>
+                <Wand2 className="h-5 w-5 text-foreground/25" />
+              </div>
+              <div className="mt-4 grid gap-2">
+                <button onClick={() => startWorkflow('decision_memo')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-hover disabled:opacity-50">
+                  <span>{creatingWorkflow === 'decision_memo' ? 'Starting memo...' : 'Generate decision memo'}</span>
+                  <Scale3d className="h-4 w-4 text-[var(--brass)]" />
+                </button>
+                <button onClick={() => startWorkflow('generate_variants')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-hover disabled:opacity-50">
+                  <span>{creatingWorkflow === 'generate_variants' ? 'Starting variants...' : 'Create budget variants'}</span>
+                  <Wand2 className="h-4 w-4 text-[var(--dusty-aqua)]" />
+                </button>
+              </div>
+              {workflowError && <p className="mt-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-[11px] text-[var(--terracotta)]">{workflowError}</p>}
+              {latestWorkflowJob && (
+                <div className="mt-3 rounded-md border border-rule bg-paper-recessed p-3">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-foreground/40">{latestWorkflowJob.status}</p>
+                  {latestWorkflowJob.status === 'completed' && latestWorkflowJob.result && (
+                    <pre className="mt-2 max-h-36 overflow-y-auto whitespace-pre-wrap text-[11px] leading-relaxed text-foreground/66">{JSON.stringify(latestWorkflowJob.result, null, 2)}</pre>
+                  )}
+                  {latestWorkflowJob.status === 'failed' && <p className="mt-2 text-[11px] text-[var(--terracotta)]">{latestWorkflowJob.error || 'Workflow failed'}</p>}
+                  {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && <p className="mt-2 text-[11px] text-foreground/55">Working through the planner job...</p>}
+                </div>
+              )}
+            </section>
+          </aside>
+        </main>
+      </div>
+
       <AnimatePresence>
         {chatOpen && (
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            drag
-            dragControls={chatDragControls}
-            dragListener={false}
-            dragConstraints={studioRef}
-            dragMomentum={false}
-            dragElastic={0.08}
-            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-60 z-50 flex flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl sm:top-32 xl:absolute xl:inset-auto xl:bottom-4 xl:left-4 xl:top-44 xl:z-50 xl:w-[360px]"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--shadow-lg)] xl:hidden"
           >
-            <div
-              onPointerDown={(event) => chatDragControls.start(event)}
-              className="flex flex-shrink-0 items-center justify-between border-b border-rule px-5 py-4 cursor-grab active:cursor-grabbing"
-            >
-              <div className="flex items-center gap-2">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
-                  <p className="text-sm font-medium text-foreground">Guide the crew itinerary</p>
-                </div>
-                <span
-                  className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] text-foreground/55"
-                  title="Drag chat window"
-                >
-                  <GripHorizontal className="h-3.5 w-3.5" />
-                  Move
-                </span>
+            <div className="flex items-center justify-between border-b border-rule px-4 py-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
+                <p className="text-sm font-medium text-foreground">Guide the crew itinerary</p>
               </div>
               <button
-                onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => setChatOpen(false)}
-                className="touch-target flex h-7 w-7 items-center justify-center rounded-lg text-foreground/30 transition-colors hover:bg-paper-recessed hover:text-foreground/60"
+                className="touch-target flex h-9 w-9 items-center justify-center rounded-md border border-rule bg-paper text-foreground/60 transition-colors hover:bg-paper-hover"
+                aria-label="Close planner chat"
               >
                 ×
               </button>
             </div>
-            <div className="flex-1 min-h-0">
-              <ChatInterface
-                messages={messages}
-                isLoading={chatLoading}
-                error={chatError}
-                onSendMessage={sendMessage}
-                onStop={stop}
-                placeholder="Tell me the crew vibe, must-dos, budget tension, and where compromise matters…"
-                storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
-                suggestions={[
-                  `Make Day ${ensureSelectedDayExists} work for ${groupBrief?.groupSize || 4} friends with mixed energy`,
-                  `Keep this trip walkable and group-friendly`,
-                  `Add one standout dinner and one easy late-night stop`,
-                ]}
-              />
-            </div>
+            <ChatInterface
+              messages={messages}
+              isLoading={chatLoading}
+              error={chatError}
+              onSendMessage={sendMessage}
+              onStop={stop}
+              placeholder="Ask anything... e.g. add food tour on Day 2"
+              storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
+              suggestions={[
+                `Make Day ${ensureSelectedDayExists} more walkable`,
+                `Add one standout dinner and one easy late-night stop`,
+                `Swap a stop for something less crowded`,
+              ]}
+            />
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Right panel: itinerary */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        drag
-        dragControls={itineraryDragControls}
-        dragListener={false}
-        dragConstraints={studioRef}
-        dragMomentum={false}
-        dragElastic={0.08}
-        className="relative z-20 order-2 mx-3 mb-3 mt-3 flex min-h-[680px] max-w-[760px] flex-col overflow-hidden rounded-[30px] border border-rule bg-paper-raised/95 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:min-h-[calc(100dvh-13rem)] xl:absolute xl:bottom-4 xl:left-1/2 xl:right-auto xl:top-44 xl:order-none xl:mx-0 xl:mb-0 xl:mt-0 xl:min-h-0 xl:w-[min(760px,calc(100%-27rem))] xl:-translate-x-[calc(50%+8rem)]"
-      >
-        <div className="flex min-h-0 flex-1 flex-col">
-          <ItineraryArtifact
-            tripTitle={trip?.title || 'Trip'}
-            days={days}
-            selectedDayIndex={ensureSelectedDayExists}
-            setSelectedDayIndex={setSelectedDayIndex}
-            onSelectItem={onSelectItem}
-            onBulkOps={onBulkOps}
-            onRegenerateDay={handleRegenerateDay}
-            regeneratingDayIndex={regeneratingDayIndex}
-            regenerateDoneDayIndex={regenerateDoneDayIndex}
-            regenerateNotice={regenerateNotice}
-            onSwapItem={handleSwapItem}
-            onApplySwapItem={handleApplySwapItem}
-            onOptimize={handleOptimize}
-            isLoading={isLoading || isBuildingInitialItinerary}
-            loadingLabel={isBuildingInitialItinerary ? 'Building the first itinerary from your trip idea.' : undefined}
-            readOnly={!canEditTrip}
-          />
-        </div>
-      </motion.div>
     </div>
   )
 }

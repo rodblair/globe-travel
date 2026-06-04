@@ -206,8 +206,16 @@ async function runOwnerTripStudioChecks() {
   try {
     await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await page.waitForFunction(
-      () => document.body.innerText.includes('Save trip') || document.body.innerText.includes('View only'),
-      { timeout: 15000 },
+      () => {
+        const text = document.body.innerText
+        return (
+          text.includes('Save trip') &&
+          text.includes('Share with friends') &&
+          text.includes('Planner workflows') &&
+          text.includes('Rewrite day')
+        )
+      },
+      { timeout: 30000 },
     ).catch(() => {})
 
     const ownerState = await readPageState(page)
@@ -305,8 +313,11 @@ async function runReadOnlyTripStudioChecks() {
   try {
     await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await page.waitForFunction(
-      () => document.body.innerText.includes('View only') || document.body.innerText.includes('Save trip'),
-      { timeout: 15000 },
+      () => {
+        const text = document.body.innerText
+        return text.includes('View only') && text.includes('Shared preview') && text.includes('View share')
+      },
+      { timeout: 30000 },
     ).catch(() => {})
     const directState = await readPageState(page)
 

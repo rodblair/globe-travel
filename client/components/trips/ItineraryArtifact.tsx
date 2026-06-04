@@ -65,6 +65,7 @@ type ItineraryArtifactProps = {
   isLoading?: boolean
   loadingLabel?: string
   readOnly?: boolean
+  showMapPanel?: boolean
 }
 
 const SWAP_OPTIONS = [
@@ -102,6 +103,7 @@ export default function ItineraryArtifact({
   isLoading,
   loadingLabel,
   readOnly = false,
+  showMapPanel = true,
 }: ItineraryArtifactProps) {
   const selectedDay = useMemo(
     () => days.find((d) => d.day_index === selectedDayIndex) || days[0],
@@ -502,7 +504,7 @@ export default function ItineraryArtifact({
           </div>
         )}
 
-        {selectedDayMap && (!isLoading || selectedDayMap.mappedStops.length > 0) && (
+        {showMapPanel && selectedDayMap && (!isLoading || selectedDayMap.mappedStops.length > 0) && (
           <div className="rounded-[26px] border border-rule bg-paper-recessed/60 p-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
