@@ -1,0 +1,67 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "tripId": "66747438-7856-4f77-896e-c97b9d3339a4",
+  "guestId": "d5e10ab5-be83-4011-bd58-a863ae6c2e0f",
+  "results": [
+    {
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshot": "qa/product-design-map-led-studio-2026-06-04/trip-studio-map-led-desktop-1440x1024.png",
+      "consoleErrors": [],
+      "metrics": {
+        "url": "http://localhost:3000/trips/66747438-7856-4f77-896e-c97b9d3339a4",
+        "hasAppError": false,
+        "hasMapLedCopy": true,
+        "hasPlannerChat": true,
+        "hasPlanWithGlobe": false,
+        "hasStudioActions": true,
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "viewport": {
+        "name": "wide",
+        "width": 1728,
+        "height": 1080
+      },
+      "screenshot": "qa/product-design-map-led-studio-2026-06-04/trip-studio-map-led-wide-1728x1080.png",
+      "consoleErrors": [],
+      "metrics": {
+        "url": "http://localhost:3000/trips/66747438-7856-4f77-896e-c97b9d3339a4",
+        "hasAppError": false,
+        "hasMapLedCopy": true,
+        "hasPlannerChat": true,
+        "hasPlanWithGlobe": true,
+        "hasStudioActions": true,
+        "clientWidth": 1728,
+        "scrollWidth": 1728,
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "viewport": {
+        "name": "phone",
+        "width": 390,
+        "height": 844
+      },
+      "screenshot": "qa/product-design-map-led-studio-2026-06-04/trip-studio-map-led-phone-390x844.png",
+      "consoleErrors": [],
+      "metrics": {
+        "url": "http://localhost:3000/trips/66747438-7856-4f77-896e-c97b9d3339a4",
+        "hasAppError": false,
+        "hasMapLedCopy": true,
+        "hasPlannerChat": true,
+        "hasPlanWithGlobe": false,
+        "hasStudioActions": true,
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "horizontalOverflow": false
+      }
+    }
+  ]
+}

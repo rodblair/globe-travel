@@ -390,9 +390,9 @@ function SavedPageContent() {
                 detail="Checking this session for itineraries, maps, and friend-ready plans."
               />
             ) : trips.length === 0 ? (
-              <div className="flex min-h-[340px] flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-10 text-center sm:min-h-[420px] sm:py-16">
-                <div className="mb-6 rounded-full bg-[var(--brass-subtle)] p-6">
-                  <Calendar className="h-8 w-8 text-[var(--brass)]" />
+              <div className="flex min-h-[260px] flex-col items-center justify-center rounded-[28px] border border-rule bg-paper-recessed/60 px-6 py-7 text-center sm:min-h-[320px] sm:py-10 lg:min-h-[340px]">
+                <div className="mb-4 rounded-full bg-[var(--brass-subtle)] p-5 sm:mb-5">
+                  <Calendar className="h-7 w-7 text-[var(--brass)] sm:h-8 sm:w-8" />
                 </div>
                 <h2 className="text-2xl font-serif font-semibold text-foreground">No saved trips yet</h2>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-foreground/45">
@@ -403,7 +403,7 @@ function SavedPageContent() {
                 </p>
                 <Link
                   href="/chat"
-                  className="touch-target mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
+                  className="touch-target mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)] sm:mt-6"
                 >
                   <Sparkles className="h-4 w-4" />
                   Open Planner

@@ -1,0 +1,1298 @@
+[
+  {
+    "id": "istanbul-4-day-history-markets",
+    "shareSlug": "xt6pgxb4ty",
+    "tripId": "03de11c0-c82b-46d1-b5bb-e92bc98f5d27",
+    "tripTitle": "4 Days in Istanbul",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Sultanahmet Classics",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Hagia Sophia Grand Mosque",
+            "type": "activity",
+            "placeName": "Hagia Sophia Grand Mosque",
+            "latitude": 41.00858,
+            "longitude": 28.98017
+          },
+          {
+            "title": "Matbah Restaurant",
+            "type": "meal",
+            "placeName": "Matbah Restaurant",
+            "latitude": 41.00769,
+            "longitude": 28.97973
+          },
+          {
+            "title": "Basilica Cistern",
+            "type": "activity",
+            "placeName": "Basilica Cistern",
+            "latitude": 41.00838,
+            "longitude": 28.97788
+          },
+          {
+            "title": "Grand Bazaar",
+            "type": "activity",
+            "placeName": "Grand Bazaar",
+            "latitude": 41.01068,
+            "longitude": 28.96807
+          },
+          {
+            "title": "Seven Hills Restaurant",
+            "type": "meal",
+            "placeName": "Seven Hills Restaurant",
+            "latitude": 41.00597,
+            "longitude": 28.98072
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Turkey"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3092
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Palace, Bosphorus, and Ferry to Kadıköy",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Topkapı Palace Museum",
+            "type": "activity",
+            "placeName": "Topkapı Palace Museum",
+            "latitude": 41.01152,
+            "longitude": 28.98338
+          },
+          {
+            "title": "Pandeli Restaurant",
+            "type": "meal",
+            "placeName": "Pandeli Restaurant",
+            "latitude": 41.01644,
+            "longitude": 28.97046
+          },
+          {
+            "title": "Mısır Çarşısı",
+            "type": "activity",
+            "placeName": "Mısır Çarşısı",
+            "latitude": 41.01646,
+            "longitude": 28.97055
+          },
+          {
+            "title": "Eminönü Ferry Terminal",
+            "type": "activity",
+            "placeName": "Eminönü Ferry Terminal",
+            "latitude": 41.01728,
+            "longitude": 28.97507
+          },
+          {
+            "title": "Hamdi Restaurant",
+            "type": "meal",
+            "placeName": "Hamdi Restaurant",
+            "latitude": 41.01641,
+            "longitude": 28.97097
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Turkey"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2566
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Galata and Contemporary Waterfront",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Galata Tower",
+            "type": "activity",
+            "placeName": "Galata Tower",
+            "latitude": 41.02557,
+            "longitude": 28.97413
+          },
+          {
+            "title": "Karaköy Lokantası",
+            "type": "meal",
+            "placeName": "Karaköy Lokantası",
+            "latitude": 41.02432,
+            "longitude": 28.97705
+          },
+          {
+            "title": "Istanbul Modern",
+            "type": "activity",
+            "placeName": "Istanbul Modern",
+            "latitude": 41.02589,
+            "longitude": 28.98237
+          },
+          {
+            "title": "Meze By Lemon Tree",
+            "type": "meal",
+            "placeName": "Meze By Lemon Tree",
+            "latitude": 41.03141,
+            "longitude": 28.97301
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Turkey"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3003
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Fener, Balat, and Chora",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Fener Greek Orthodox Patriarchate",
+            "type": "activity",
+            "placeName": "Fener Greek Orthodox Patriarchate",
+            "latitude": 41.02978,
+            "longitude": 28.95151
+          },
+          {
+            "title": "Balat Antik Cafe",
+            "type": "meal",
+            "placeName": "Balat Antik Cafe",
+            "latitude": 41.02924,
+            "longitude": 28.94993
+          },
+          {
+            "title": "Bulgarian St. Stephen Church",
+            "type": "activity",
+            "placeName": "Bulgarian St. Stephen Church",
+            "latitude": 41.0296,
+            "longitude": 28.94952
+          },
+          {
+            "title": "Chora Church",
+            "type": "activity",
+            "placeName": "Chora Church",
+            "latitude": 41.03193,
+            "longitude": 28.93938
+          },
+          {
+            "title": "Mikla",
+            "type": "meal",
+            "placeName": "Mikla",
+            "latitude": 41.02814,
+            "longitude": 28.97493
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Turkey"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6613
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seoul-5-day-food-shopping",
+    "shareSlug": "4verdfiwca",
+    "tripId": "c9731e69-40d7-4a13-9593-f98d8e09bfbd",
+    "tripTitle": "5 Days in Seoul",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Palaces & Ikseon Flavors",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Gyeongbokgung Palace",
+            "type": "activity",
+            "placeName": "Gyeongbokgung Palace",
+            "latitude": 37.57962,
+            "longitude": 126.97704
+          },
+          {
+            "title": "Tosokchon Samgyetang",
+            "type": "meal",
+            "placeName": "Tosokchon Samgyetang",
+            "latitude": 37.57741,
+            "longitude": 126.97191
+          },
+          {
+            "title": "Bukchon Hanok Village",
+            "type": "activity",
+            "placeName": "Bukchon Hanok Village",
+            "latitude": 37.5826,
+            "longitude": 126.984
+          },
+          {
+            "title": "Cheongsudang",
+            "type": "meal",
+            "placeName": "Cheongsudang",
+            "latitude": 37.57438,
+            "longitude": 126.98966
+          },
+          {
+            "title": "Changhwadang Ikseon",
+            "type": "meal",
+            "placeName": "Changhwadang Ikseon",
+            "latitude": 37.57403,
+            "longitude": 126.98992
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Korea"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4088
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Myeongdong Shopping & Night Views",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Myeongdong Cathedral",
+            "type": "activity",
+            "placeName": "Myeongdong Cathedral",
+            "latitude": 37.56337,
+            "longitude": 126.98734
+          },
+          {
+            "title": "Myeongdong Kyoja Main Store",
+            "type": "meal",
+            "placeName": "Myeongdong Kyoja Main Store",
+            "latitude": 37.56255,
+            "longitude": 126.98506
+          },
+          {
+            "title": "Lotte Department Store Main Store",
+            "type": "activity",
+            "placeName": "Lotte Department Store Main Store",
+            "latitude": 37.56482,
+            "longitude": 126.98164
+          },
+          {
+            "title": "Wangbijip Myeongdong Main Store",
+            "type": "meal",
+            "placeName": "Wangbijip Myeongdong Main Store",
+            "latitude": 37.56298,
+            "longitude": 126.9858
+          },
+          {
+            "title": "N Seoul Tower",
+            "type": "activity",
+            "placeName": "N Seoul Tower",
+            "latitude": 37.55117,
+            "longitude": 126.98823
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Korea"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3681
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Gangnam & Spa Reset",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Starfield COEX Mall",
+            "type": "activity",
+            "placeName": "Starfield COEX Mall",
+            "latitude": 37.51168,
+            "longitude": 127.05915
+          },
+          {
+            "title": "Woo Lae Oak COEX",
+            "type": "meal",
+            "placeName": "Woo Lae Oak COEX",
+            "latitude": 37.51282,
+            "longitude": 127.05912
+          },
+          {
+            "title": "Bongeunsa Temple",
+            "type": "activity",
+            "placeName": "Bongeunsa Temple",
+            "latitude": 37.515,
+            "longitude": 127.0574
+          },
+          {
+            "title": "Spa Lei",
+            "type": "activity",
+            "placeName": "Spa Lei",
+            "latitude": 37.51654,
+            "longitude": 127.01935
+          },
+          {
+            "title": "Yang Good Gangnam Main Branch",
+            "type": "meal",
+            "placeName": "Yang Good Gangnam Main Branch",
+            "latitude": 37.5139,
+            "longitude": 127.0287
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Korea"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6499
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Hongdae & Yeonnam Hangout Day",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Gyeongui Line Forest Park",
+            "type": "activity",
+            "placeName": "Gyeongui Line Forest Park",
+            "latitude": 37.5596,
+            "longitude": 126.9237
+          },
+          {
+            "title": "Cafe Layered Yeonnam",
+            "type": "meal",
+            "placeName": "Cafe Layered Yeonnam",
+            "latitude": 37.5623,
+            "longitude": 126.9236
+          },
+          {
+            "title": "Hongdae Shopping Street",
+            "type": "activity",
+            "placeName": "Hongdae Shopping Street",
+            "latitude": 37.553,
+            "longitude": 126.9226
+          },
+          {
+            "title": "KT&G Sangsangmadang Hongdae",
+            "type": "activity",
+            "placeName": "KT&G Sangsangmadang Hongdae",
+            "latitude": 37.5507,
+            "longitude": 126.921
+          },
+          {
+            "title": "Myth Jokbal Hongdae",
+            "type": "meal",
+            "placeName": "Myth Jokbal Hongdae",
+            "latitude": 37.5508,
+            "longitude": 126.9219
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Korea"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2235
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Seongsu & Han River Finale",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Seoul Forest",
+            "type": "activity",
+            "placeName": "Seoul Forest",
+            "latitude": 37.54439,
+            "longitude": 127.03744
+          },
+          {
+            "title": "Center Coffee Seoul Forest",
+            "type": "meal",
+            "placeName": "Center Coffee Seoul Forest",
+            "latitude": 37.5467,
+            "longitude": 127.0436
+          },
+          {
+            "title": "Grandmother's Recipe",
+            "type": "meal",
+            "placeName": "Grandmother's Recipe",
+            "latitude": 37.5471,
+            "longitude": 127.0429
+          },
+          {
+            "title": "Musinsa Standard Seongsu",
+            "type": "activity",
+            "placeName": "Musinsa Standard Seongsu",
+            "latitude": 37.5446,
+            "longitude": 127.054
+          },
+          {
+            "title": "Banpo Hangang Park",
+            "type": "activity",
+            "placeName": "Banpo Hangang Park",
+            "latitude": 37.5126,
+            "longitude": 126.9961
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Korea"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          10059
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bangkok-4-day-temples-street-food",
+    "shareSlug": "4cg4vv6hqb",
+    "tripId": "88f949ec-e4c4-4d0d-a715-4b4bc3474fa7",
+    "tripTitle": "4 Days in Bangkok",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Old City Temples & Riverside",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Grand Palace",
+            "type": "activity",
+            "placeName": "Grand Palace",
+            "latitude": 13.75003,
+            "longitude": 100.49135
+          },
+          {
+            "title": "The Sixth 6th",
+            "type": "meal",
+            "placeName": "The Sixth 6th",
+            "latitude": 13.74496,
+            "longitude": 100.49264
+          },
+          {
+            "title": "Wat Pho",
+            "type": "activity",
+            "placeName": "Wat Pho",
+            "latitude": 13.74651,
+            "longitude": 100.49276
+          },
+          {
+            "title": "Supanniga Eating Room Tha Tien",
+            "type": "meal",
+            "placeName": "Supanniga Eating Room Tha Tien",
+            "latitude": 13.74434,
+            "longitude": 100.49284
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Thailand"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          2252
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Chinatown Street Food & Late Night",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Wat Traimit",
+            "type": "activity",
+            "placeName": "Wat Traimit",
+            "latitude": 13.7378,
+            "longitude": 100.5137
+          },
+          {
+            "title": "Nai Ek Roll Noodle",
+            "type": "meal",
+            "placeName": "Nai Ek Roll Noodle",
+            "latitude": 13.74048,
+            "longitude": 100.51042
+          },
+          {
+            "title": "Pak Khlong Talat",
+            "type": "activity",
+            "placeName": "Pak Khlong Talat",
+            "latitude": 13.7419,
+            "longitude": 100.49643
+          },
+          {
+            "title": "Tep Bar",
+            "type": "meal",
+            "placeName": "Tep Bar",
+            "latitude": 13.73841,
+            "longitude": 100.51308
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Thailand"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5502
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Siam Culture & Night Market",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Jim Thompson House Museum",
+            "type": "activity",
+            "placeName": "Jim Thompson House Museum",
+            "latitude": 13.74912,
+            "longitude": 100.52839
+          },
+          {
+            "title": "Baan Khun Mae",
+            "type": "meal",
+            "placeName": "Baan Khun Mae",
+            "latitude": 13.74652,
+            "longitude": 100.53232
+          },
+          {
+            "title": "Bangkok Art and Culture Centre",
+            "type": "activity",
+            "placeName": "Bangkok Art and Culture Centre",
+            "latitude": 13.74666,
+            "longitude": 100.53005
+          },
+          {
+            "title": "Jodd Fairs Night Market",
+            "type": "meal",
+            "placeName": "Jodd Fairs Night Market",
+            "latitude": 13.75881,
+            "longitude": 100.56551
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Thailand"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6374
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Weekend Market or Park Day",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Chatuchak Weekend Market",
+            "type": "activity",
+            "placeName": "Chatuchak Weekend Market",
+            "latitude": 13.79982,
+            "longitude": 100.55053
+          },
+          {
+            "title": "Or Tor Kor Market",
+            "type": "meal",
+            "placeName": "Or Tor Kor Market",
+            "latitude": 13.79788,
+            "longitude": 100.54879
+          },
+          {
+            "title": "Lumphini Park",
+            "type": "activity",
+            "placeName": "Lumphini Park",
+            "latitude": 13.73072,
+            "longitude": 100.54178
+          },
+          {
+            "title": "Ruen Mallika Royal Thai Cuisine",
+            "type": "meal",
+            "placeName": "Ruen Mallika Royal Thai Cuisine",
+            "latitude": 13.7229,
+            "longitude": 100.53372
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Thailand"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          11055
+        ]
+      }
+    ]
+  },
+  {
+    "id": "marrakech-3-day-markets-riads",
+    "shareSlug": "s0z4my485p",
+    "tripId": "54e4f32e-8765-45e5-9d16-cfbb0454e621",
+    "tripTitle": "3 Days in Marrakech",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Medina Gardens & Riad Atmosphere",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Le Jardin Secret",
+            "type": "activity",
+            "placeName": "Le Jardin Secret",
+            "latitude": 31.63014,
+            "longitude": -7.9892
+          },
+          {
+            "title": "Dar Cherifa",
+            "type": "meal",
+            "placeName": "Dar Cherifa",
+            "latitude": 31.63055,
+            "longitude": -7.9893
+          },
+          {
+            "title": "Maison de la Photographie",
+            "type": "activity",
+            "placeName": "Maison de la Photographie",
+            "latitude": 31.63171,
+            "longitude": -7.98538
+          },
+          {
+            "title": "Nomad",
+            "type": "meal",
+            "placeName": "Nomad",
+            "latitude": 31.62831,
+            "longitude": -7.98757
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Morocco"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1495
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Majorelle & New Town Ease",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Jardin Majorelle",
+            "type": "activity",
+            "placeName": "Jardin Majorelle",
+            "latitude": 31.64172,
+            "longitude": -8.00327
+          },
+          {
+            "title": "Musée Yves Saint Laurent Marrakech",
+            "type": "activity",
+            "placeName": "Musée Yves Saint Laurent Marrakech",
+            "latitude": 31.6429,
+            "longitude": -8.00331
+          },
+          {
+            "title": "Plus61",
+            "type": "meal",
+            "placeName": "Plus61",
+            "latitude": 31.62901,
+            "longitude": -8.01575
+          },
+          {
+            "title": "Cyber Park Arsat Moulay Abdeslam",
+            "type": "activity",
+            "placeName": "Cyber Park Arsat Moulay Abdeslam",
+            "latitude": 31.62679,
+            "longitude": -8.00074
+          },
+          {
+            "title": "Le Jardin",
+            "type": "meal",
+            "placeName": "Le Jardin",
+            "latitude": 31.6306,
+            "longitude": -7.98695
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Morocco"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          6666
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Palaces, Souks & Sunset Farewell",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Bahia Palace",
+            "type": "activity",
+            "placeName": "Bahia Palace",
+            "latitude": 31.62181,
+            "longitude": -7.98204
+          },
+          {
+            "title": "La Famille",
+            "type": "meal",
+            "placeName": "La Famille",
+            "latitude": 31.62347,
+            "longitude": -7.98578
+          },
+          {
+            "title": "Souk Semmarine",
+            "type": "activity",
+            "placeName": "Souk Semmarine",
+            "latitude": 31.62776,
+            "longitude": -7.98813
+          },
+          {
+            "title": "El Badi Palace",
+            "type": "activity",
+            "placeName": "El Badi Palace",
+            "latitude": 31.61872,
+            "longitude": -7.98672
+          },
+          {
+            "title": "Kabana",
+            "type": "meal",
+            "placeName": "Kabana",
+            "latitude": 31.6271,
+            "longitude": -7.99046
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Morocco"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          5600
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cape-town-5-day-outdoors-food",
+    "shareSlug": "dhkhulcdcm",
+    "tripId": "52e38c87-ff6f-4877-8aa2-768d769badeb",
+    "tripTitle": "5 Days in Cape Town",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "City Icons & Sunset",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Table Mountain Aerial Cableway",
+            "type": "activity",
+            "placeName": "Table Mountain Aerial Cableway",
+            "latitude": -33.9486,
+            "longitude": 18.4035
+          },
+          {
+            "title": "Kloof Street House",
+            "type": "meal",
+            "placeName": "Kloof Street House",
+            "latitude": -33.9295,
+            "longitude": 18.4105
+          },
+          {
+            "title": "Bo-Kaap Museum",
+            "type": "activity",
+            "placeName": "Bo-Kaap Museum",
+            "latitude": -33.9219,
+            "longitude": 18.4156
+          },
+          {
+            "title": "Signal Hill",
+            "type": "activity",
+            "placeName": "Signal Hill",
+            "latitude": -33.9177,
+            "longitude": 18.4031
+          },
+          {
+            "title": "The Athletic Club & Social",
+            "type": "meal",
+            "placeName": "The Athletic Club & Social",
+            "latitude": -33.923,
+            "longitude": 18.4173
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Africa"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          9130
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Hike & Atlantic Seaboard Beaches",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Lion's Head Trailhead",
+            "type": "activity",
+            "placeName": "Lion's Head Trailhead",
+            "latitude": -33.9368,
+            "longitude": 18.3926
+          },
+          {
+            "title": "JARRYDS Brunch & Bistro",
+            "type": "meal",
+            "placeName": "JARRYDS Brunch & Bistro",
+            "latitude": -33.9184,
+            "longitude": 18.3852
+          },
+          {
+            "title": "Clifton 4th Beach",
+            "type": "activity",
+            "placeName": "Clifton 4th Beach",
+            "latitude": -33.9408,
+            "longitude": 18.3757
+          },
+          {
+            "title": "Camps Bay Beach",
+            "type": "activity",
+            "placeName": "Camps Bay Beach",
+            "latitude": -33.9513,
+            "longitude": 18.384
+          },
+          {
+            "title": "Codfather Seafood & Sushi",
+            "type": "meal",
+            "placeName": "Codfather Seafood & Sushi",
+            "latitude": -33.9548,
+            "longitude": 18.3814
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Africa"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          10226
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Constantia Wine Day",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Groot Constantia",
+            "type": "activity",
+            "placeName": "Groot Constantia",
+            "latitude": -34.0314,
+            "longitude": 18.4198
+          },
+          {
+            "title": "Chefs Warehouse at Beau Constantia",
+            "type": "meal",
+            "placeName": "Chefs Warehouse at Beau Constantia",
+            "latitude": -34.0206,
+            "longitude": 18.4027
+          },
+          {
+            "title": "Beau Constantia",
+            "type": "activity",
+            "placeName": "Beau Constantia",
+            "latitude": -34.0204,
+            "longitude": 18.4031
+          },
+          {
+            "title": "Constantia Glen",
+            "type": "activity",
+            "placeName": "Constantia Glen",
+            "latitude": -34.0089,
+            "longitude": 18.4053
+          },
+          {
+            "title": "Buitenverwachting Restaurant",
+            "type": "meal",
+            "placeName": "Buitenverwachting",
+            "latitude": -34.0316,
+            "longitude": 18.4318
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Africa"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          12835
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Waterfront & Woodstock",
+        "itemCount": 5,
+        "mappedItemCount": 5,
+        "mappedStops": [
+          {
+            "title": "Oranjezicht City Farm Market",
+            "type": "meal",
+            "placeName": "Oranjezicht City Farm Market",
+            "latitude": -33.9046,
+            "longitude": 18.4148
+          },
+          {
+            "title": "Zeitz MOCAA",
+            "type": "activity",
+            "placeName": "Zeitz MOCAA",
+            "latitude": -33.9085,
+            "longitude": 18.4228
+          },
+          {
+            "title": "V&A Waterfront",
+            "type": "activity",
+            "placeName": "V&A Waterfront",
+            "latitude": -33.9068,
+            "longitude": 18.4206
+          },
+          {
+            "title": "The Old Biscuit Mill",
+            "type": "activity",
+            "placeName": "The Old Biscuit Mill",
+            "latitude": -33.9273,
+            "longitude": 18.4575
+          },
+          {
+            "title": "The Pot Luck Club",
+            "type": "meal",
+            "placeName": "The Pot Luck Club",
+            "latitude": -33.9275,
+            "longitude": 18.4574
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 5,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Africa"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          7661
+        ]
+      },
+      {
+        "dayIndex": 5,
+        "title": "Gardens & Farewell Dinner",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Kirstenbosch National Botanical Garden",
+            "type": "activity",
+            "placeName": "Kirstenbosch National Botanical Garden",
+            "latitude": -33.9881,
+            "longitude": 18.4326
+          },
+          {
+            "title": "The Lawns at the Roundhouse",
+            "type": "meal",
+            "placeName": "The Lawns at the Roundhouse",
+            "latitude": -33.9419,
+            "longitude": 18.3783
+          },
+          {
+            "title": "V&A Waterfront",
+            "type": "activity",
+            "placeName": "V&A Waterfront",
+            "latitude": -33.9068,
+            "longitude": 18.4206
+          },
+          {
+            "title": "GOLD Restaurant",
+            "type": "meal",
+            "placeName": "GOLD Restaurant",
+            "latitude": -33.9141,
+            "longitude": 18.4175
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "South Africa"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          19363
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sydney-4-day-beaches-neighborhoods",
+    "shareSlug": "st1natzqi4",
+    "tripId": "7a9c6439-d3ad-4cc9-bf38-7887adc340c4",
+    "tripTitle": "4 Days in Sydney",
+    "days": [
+      {
+        "dayIndex": 1,
+        "title": "Circular Quay & The Rocks",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Sydney Opera House",
+            "type": "activity",
+            "placeName": "Sydney Opera House",
+            "latitude": -33.85678,
+            "longitude": 151.2153
+          },
+          {
+            "title": "City Extra 24 Hour Restaurant",
+            "type": "meal",
+            "placeName": "City Extra 24 Hour Restaurant",
+            "latitude": -33.86162,
+            "longitude": 151.21197
+          },
+          {
+            "title": "Museum of Contemporary Art Australia",
+            "type": "activity",
+            "placeName": "Museum of Contemporary Art Australia",
+            "latitude": -33.85992,
+            "longitude": 151.20903
+          },
+          {
+            "title": "Mures Circular Quay",
+            "type": "meal",
+            "placeName": "Mures Circular Quay",
+            "latitude": -33.86165,
+            "longitude": 151.21215
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Australia"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          1776
+        ]
+      },
+      {
+        "dayIndex": 2,
+        "title": "Bondi Beach Day",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Bills Bondi",
+            "type": "meal",
+            "placeName": "Bills Bondi",
+            "latitude": -33.88979,
+            "longitude": 151.27011
+          },
+          {
+            "title": "Bondi to Bronte Coastal Walk",
+            "type": "activity",
+            "placeName": "Bondi to Bronte Coastal Walk",
+            "latitude": -33.89954,
+            "longitude": 151.2727
+          },
+          {
+            "title": "Bronte Baths",
+            "type": "activity",
+            "placeName": "Bronte Baths",
+            "latitude": -33.90453,
+            "longitude": 151.26867
+          },
+          {
+            "title": "Bondi Icebergs Club",
+            "type": "meal",
+            "placeName": "Bondi Icebergs Club",
+            "latitude": -33.89502,
+            "longitude": 151.27432
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Australia"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          4800
+        ]
+      },
+      {
+        "dayIndex": 3,
+        "title": "Ferry to Manly",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Manly Wharf",
+            "type": "activity",
+            "placeName": "Manly Wharf",
+            "latitude": -33.8002,
+            "longitude": 151.28448
+          },
+          {
+            "title": "Manly Pavilion",
+            "type": "meal",
+            "placeName": "Manly Pavilion",
+            "latitude": -33.79962,
+            "longitude": 151.28462
+          },
+          {
+            "title": "Shelly Beach",
+            "type": "activity",
+            "placeName": "Shelly Beach",
+            "latitude": -33.80086,
+            "longitude": 151.29865
+          },
+          {
+            "title": "North Head Lookout",
+            "type": "activity",
+            "placeName": "North Head Lookout",
+            "latitude": -33.81362,
+            "longitude": 151.30031
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Australia"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          3546
+        ]
+      },
+      {
+        "dayIndex": 4,
+        "title": "Gardens, Galleries & Inner-City Sydney",
+        "itemCount": 4,
+        "mappedItemCount": 4,
+        "mappedStops": [
+          {
+            "title": "Royal Botanic Garden Sydney",
+            "type": "activity",
+            "placeName": "Royal Botanic Garden Sydney",
+            "latitude": -33.86419,
+            "longitude": 151.21657
+          },
+          {
+            "title": "Art Gallery of New South Wales",
+            "type": "activity",
+            "placeName": "Art Gallery of New South Wales",
+            "latitude": -33.8688,
+            "longitude": 151.2173
+          },
+          {
+            "title": "The Grounds of Alexandria",
+            "type": "meal",
+            "placeName": "The Grounds of Alexandria",
+            "latitude": -33.91078,
+            "longitude": 151.19487
+          },
+          {
+            "title": "Saint Peter",
+            "type": "meal",
+            "placeName": "Saint Peter",
+            "latitude": -33.88984,
+            "longitude": 151.23049
+          }
+        ],
+        "unmappedItems": [],
+        "uniqueMappedStopCount": 4,
+        "duplicateMappedStops": [],
+        "countries": [
+          "Australia"
+        ],
+        "usableRouteCount": 1,
+        "routeDistanceMeters": [
+          12015
+        ]
+      }
+    ]
+  }
+]

@@ -16,6 +16,15 @@ interface ChatInterfaceProps {
   placeholder?: string
   suggestions?: string[]
   storageKey?: string
+  emptyState?: {
+    eyebrow?: string
+    title: string
+    prompts: Array<{
+      label: string
+      detail?: string
+      prompt: string
+    }>
+  }
 }
 
 export default function ChatInterface({
@@ -27,6 +36,7 @@ export default function ChatInterface({
   placeholder = 'Type your message...',
   suggestions = [],
   storageKey: _storageKey,
+  emptyState,
 }: ChatInterfaceProps) {
   void _storageKey
   const [input, setInput] = useState('')
@@ -51,8 +61,29 @@ export default function ChatInterface({
       })
       .slice(0, 3)
   }, [messages, suggestions])
+  const visibleMessages = useMemo(
+    () => messages.filter((message) => message.content || message.role === 'user'),
+    [messages]
+  )
+  const visibleEmptyPrompts = useMemo(() => {
+    const askedPrompts = new Set(
+      messages
+        .filter((message) => message.role === 'user')
+        .map((message) => message.content.trim().toLowerCase())
+    )
+    const seen = new Set<string>()
+
+    return (emptyState?.prompts || [])
+      .filter((prompt) => {
+        const key = prompt.prompt.trim().toLowerCase()
+        if (!key || askedPrompts.has(key) || seen.has(key)) return false
+        seen.add(key)
+        return true
+      })
+      .slice(0, 3)
+  }, [emptyState?.prompts, messages])
   const hasUserMessage = messages.some((message) => message.role === 'user')
-  const showSuggestions = visibleSuggestions.length > 0 && !hasUserMessage && !isLoading
+  const showSuggestions = visibleSuggestions.length > 0 && !hasUserMessage && !isLoading && !emptyState
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -89,14 +120,38 @@ export default function ChatInterface({
   const showTyping =
     isLoading &&
     (messages.length === 0 || messages[messages.length - 1]?.content === '')
+  const showEmptyState = Boolean(emptyState && visibleMessages.length === 0 && !showTyping && !isLoading && !error)
 
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Messages area */}
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
+        {showEmptyState && (
+          <div className="rounded-md border border-rule bg-paper-recessed/55 p-3">
+            {emptyState?.eyebrow && (
+              <p className="text-[10px] uppercase tracking-[0.18em] text-foreground/38">{emptyState.eyebrow}</p>
+            )}
+            <p className="mt-1 text-sm font-semibold text-foreground">{emptyState?.title}</p>
+            <div className="mt-3 grid gap-2">
+              {visibleEmptyPrompts.map((prompt) => (
+                <button
+                  key={prompt.prompt}
+                  type="button"
+                  onClick={() => onSendMessage(prompt.prompt)}
+                  className="touch-target rounded-md border border-rule bg-paper px-3 py-2 text-left transition-colors hover:bg-paper-hover"
+                >
+                  <span className="block text-xs font-semibold text-foreground">{prompt.label}</span>
+                  {prompt.detail && (
+                    <span className="mt-1 block text-[11px] leading-relaxed text-foreground/56">{prompt.detail}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <AnimatePresence mode="popLayout">
-          {messages
-            .filter((m) => m.content || m.role === 'user')
+          {visibleMessages
             .map((message, index) => (
               <ChatMessage key={message.id} message={message} index={index} />
             ))}
@@ -143,14 +198,14 @@ export default function ChatInterface({
             aria-label="Trip planning message"
             placeholder={placeholder}
             rows={1}
-            className="min-h-10 flex-1 resize-none bg-transparent px-1 py-2 text-base leading-5 text-foreground placeholder:text-ink-4 focus:outline-none sm:text-sm"
+            className="min-h-11 flex-1 resize-none bg-transparent px-1 py-2 text-base leading-5 text-foreground placeholder:text-ink-4 focus:outline-none sm:text-sm"
             style={{ maxHeight: '120px' }}
           />
 
           {isLoading ? (
             <button
               onClick={onStop}
-              className="touch-target flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)]/15"
+              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-[var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)]/15"
               aria-label="Stop"
             >
               <Square className="w-4 h-4" />
@@ -159,7 +214,7 @@ export default function ChatInterface({
             <button
               onClick={handleSend}
               disabled={!input.trim()}
-              className="touch-target flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--brass)] text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-default disabled:bg-[var(--paper-recessed)] disabled:text-ink-4 disabled:opacity-60"
+              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-[var(--brass)] text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-default disabled:bg-[var(--paper-recessed)] disabled:text-ink-4 disabled:opacity-60"
               aria-label="Send"
             >
               <Send className="w-4 h-4" />

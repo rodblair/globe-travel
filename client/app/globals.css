@@ -762,14 +762,16 @@
   .app-main {
     min-width: 0;
     min-height: 0;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     height: calc(100dvh - 4.75rem - env(safe-area-inset-bottom));
     padding-bottom: 0;
+    overscroll-behavior: contain;
   }
 
   @media (min-width: 768px) {
     .app-main {
-      height: auto;
+      height: 100dvh;
       padding-bottom: 0;
     }
   }

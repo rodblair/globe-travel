@@ -1,0 +1,48 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "tripId": "de6b573c-7ea7-4670-aae2-13c20fb45b97",
+  "guestId": "623176ca-3317-4ac2-a022-9d06f99d1a97",
+  "fixtureCleanedUp": true,
+  "results": [
+    {
+      "name": "wide-empty-rail",
+      "viewport": {
+        "width": 1728,
+        "height": 1080
+      },
+      "screenshot": "qa/product-design-map-led-studio-2026-06-04/trip-studio-chat-empty-wide-1728x1080.png",
+      "consoleErrors": [],
+      "metrics": {
+        "hasEmptyTitle": true,
+        "hasSmoothPrompt": true,
+        "hasDinnerPrompt": true,
+        "hasGroupPrompt": true,
+        "hasShortPlaceholder": true,
+        "hasAppError": false,
+        "horizontalOverflow": false,
+        "clientWidth": 1728,
+        "scrollWidth": 1728
+      }
+    },
+    {
+      "name": "phone-empty-drawer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshot": "qa/product-design-map-led-studio-2026-06-04/trip-studio-chat-empty-phone-390x844.png",
+      "consoleErrors": [],
+      "metrics": {
+        "hasEmptyTitle": true,
+        "hasSmoothPrompt": true,
+        "hasDinnerPrompt": true,
+        "hasGroupPrompt": true,
+        "hasShortPlaceholder": true,
+        "hasAppError": false,
+        "horizontalOverflow": false,
+        "clientWidth": 390,
+        "scrollWidth": 390
+      }
+    }
+  ]
+}

@@ -32,19 +32,19 @@ const CHAT_MAP_STORAGE_PREFIX = 'globe-travel:chat:explore:map-stops:'
 
 const STARTER_PROMPTS = [
   {
-    label: 'City escape',
-    sub: 'Food, culture, and one memorable night',
-    q: 'Plan a beautiful 3-day city trip for 4 friends who want food, culture, and one memorable night out',
+    label: 'Plan 3 days in Lisbon',
+    sub: 'Food, viewpoints, relaxed mornings',
+    q: 'Plan 3 days in Lisbon for 4 friends who want great food, scenic viewpoints, relaxed mornings, and one memorable night out.',
   },
   {
-    label: 'Choose the city',
-    sub: 'Compare the strongest options',
-    q: 'Compare Lisbon, Copenhagen, and Barcelona for a 3-day city trip for friends in their early 30s',
+    label: 'Compare Paris vs Rome',
+    sub: 'Tradeoffs before committing',
+    q: 'Compare Paris and Rome for a 4-day friend trip by budget, food, walkability, nightlife, and ease of planning.',
   },
   {
-    label: 'Keep it realistic',
-    sub: 'Budget and pace checks',
-    q: 'Where should a group of friends go for a budget-friendly city trip with great food and nightlife?',
+    label: 'Build a realistic group trip',
+    sub: 'Budget, pace, and consensus',
+    q: 'Build a realistic 3-day group trip with a mid-range budget, balanced pacing, food, sightseeing, and one standout evening.',
   },
 ] as const
 
@@ -361,29 +361,28 @@ function ChatPageContent() {
 
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 md:py-5 xl:overflow-hidden">
         <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-6 md:gap-5 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
-          <div className="flex min-h-[420px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[520px] xl:min-h-0">
+          <div className="flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[390px] xl:min-h-0">
             {activeMessages.length === 0 ? (
-              <div className="flex min-h-[420px] flex-col overflow-y-auto sm:min-h-[520px]">
-                <div className="relative flex flex-1 items-start justify-center px-5 py-7 md:px-10 md:py-10">
+              <div className="flex min-h-[360px] flex-col overflow-y-auto sm:min-h-[390px] xl:min-h-0">
+                <div className="relative flex flex-1 items-start justify-center px-5 py-5 md:px-8 md:py-6">
                   <div className="absolute inset-0 -z-0 opacity-40">
                     <ContourOverlay density="sparse" />
                   </div>
                   <div className="relative w-full max-w-3xl">
-                    <div className="mb-7 max-w-xl">
-                      <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-[var(--brass)] mb-3">
+                    <div className="mb-5 max-w-2xl">
+                      <p className="t-mono text-[0.625rem] tracking-[0.24em] uppercase text-[var(--brass)] mb-2">
                         START HERE
                       </p>
-                      <h2 className="h-display text-foreground leading-[1.1] mb-3 max-w-[20ch]">
-                        Plan the trip your friends will{' '}
-                        <span className="t-italic text-ink-2">actually say yes to.</span>
+                      <h2 className="font-serif text-[clamp(2rem,5vw,3.35rem)] font-semibold leading-[1.02] text-foreground mb-2 max-w-[18ch]">
+                        Plan the trip friends can agree on.
                       </h2>
-                      <p className="text-body text-ink-2 leading-relaxed">
-                        Describe the group, the vibe, and the constraints. Globe will help choose
-                        the city, shape the itinerary, and move it into Trip Studio when ready.
+                      <p className="max-w-2xl text-sm leading-relaxed text-ink-2 md:text-[0.9375rem]">
+                        Start with a real group constraint. Globe turns it into a city choice,
+                        Trip Studio itinerary, and shareable map.
                       </p>
                     </div>
 
-                    <div className="mb-5 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
                       {PLANNING_STEPS.map((item, index) => {
                         const Icon = item.icon
                         return (
@@ -392,12 +391,12 @@ function ChatPageContent() {
                             onClick={() => sendMessage(item.q)}
                             disabled={planningInProgress}
                             className={cn(
-                              'touch-target group relative rounded-md border border-rule px-3 py-3 text-left',
+                              'touch-target group relative rounded-md border border-rule px-3 py-2.5 text-left',
                               'bg-paper hover:bg-paper-hover transition-colors',
                               planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
                             )}
                           >
-                            <div className="flex items-center gap-2 mb-1.5">
+                            <div className="mb-1.5 flex items-center gap-2">
                               <Icon className="w-3.5 h-3.5 text-[var(--brass)]" strokeWidth={1.4} />
                               <span className="t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
                                 STEP {String(index + 1).padStart(2, '0')}
@@ -406,7 +405,7 @@ function ChatPageContent() {
                             <p className="text-[0.8125rem] font-medium text-foreground leading-snug">
                               {item.label}
                             </p>
-                            <p className="text-caption text-ink-3 mt-1 leading-snug">
+                            <p className="mt-1 line-clamp-2 text-[0.6875rem] leading-snug text-ink-3">
                               {item.value}
                             </p>
                           </button>
@@ -414,29 +413,29 @@ function ChatPageContent() {
                       })}
                     </div>
 
-                    <div className="mb-3 flex items-center justify-between gap-4">
+                    <div className="mb-2.5 flex items-center justify-between gap-4">
                       <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
-                        OR PICK A STARTING POINT
+                        Pick a starting point
                       </p>
                       <span className="hidden text-caption text-ink-3 sm:inline">
                         type your own below
                       </span>
                     </div>
-                    <div className="grid gap-2.5 sm:grid-cols-2 md:grid-cols-4">
+                    <div className="grid gap-2 sm:grid-cols-3">
                       {STARTER_PROMPTS.map((item) => (
                         <button
                           key={item.label}
                           onClick={() => sendMessage(item.q)}
                           disabled={planningInProgress}
                           className={cn(
-                            'touch-target group min-h-16 rounded-md border border-rule bg-paper p-3 text-left transition-colors hover:bg-paper-hover',
+                            'touch-target group min-h-14 rounded-md border border-rule bg-paper p-3 text-left transition-colors hover:bg-paper-hover',
                             planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
                           )}
                         >
                           <p className="text-[0.8125rem] font-medium text-foreground group-hover:text-foreground transition-colors">
                             {item.label}
                           </p>
-                          <p className="mt-1 text-caption text-ink-3 leading-relaxed md:hidden lg:block">
+                          <p className="mt-1 line-clamp-2 text-[0.6875rem] leading-snug text-ink-3">
                             {item.sub}
                           </p>
                         </button>

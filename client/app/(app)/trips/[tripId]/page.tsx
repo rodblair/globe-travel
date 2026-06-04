@@ -207,6 +207,7 @@ function TripStudioPageContent() {
   const [groupBrief, setGroupBrief] = useState<GroupBrief | null>(null)
   const [creatingWorkflow, setCreatingWorkflow] = useState<string | null>(null)
   const [workflowError, setWorkflowError] = useState<string | null>(null)
+  const [suggestedStepNotice, setSuggestedStepNotice] = useState<string | null>(null)
   const qaForceRewriteUnavailable = process.env.NODE_ENV === 'development' && searchParams.get('qaRewriteUnavailable') === '1'
   const qaForceBuildMapsFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaBuildMapsFailure') === '1'
   const qaForceOptimizeFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaOptimizeFailure') === '1'
@@ -255,6 +256,8 @@ function TripStudioPageContent() {
     }
   }, [tripId, searchParams])
   const studioRef = useRef<HTMLDivElement>(null)
+  const plannerChatPanelRef = useRef<HTMLElement>(null)
+  const workflowPanelRef = useRef<HTMLElement>(null)
   const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -328,6 +331,7 @@ function TripStudioPageContent() {
     practical: feedback.filter((entry) => entry.sentiment === 'practical').length,
   }), [feedback])
   const visibleFeedback = feedback.slice(0, 4)
+  const hiddenFeedbackCount = Math.max(0, feedback.length - visibleFeedback.length)
 
   const ensureSelectedDayExists = useMemo(() => {
     if (days.length === 0) return 1
@@ -455,12 +459,16 @@ function TripStudioPageContent() {
 
   const handleRegenerateDay = useCallback(async (dayIndex: number) => {
     if (!canEditTrip) {
-      setActionError('This is a shared trip preview. Start your own trip to rewrite an editable day.')
+      const message = 'This is a shared trip preview. Start your own trip to rewrite an editable day.'
+      setActionError(message)
+      setSuggestedStepNotice(message)
       return
     }
 
     if (!chatReady || qaForceRewriteUnavailable) {
-      setActionError('Planner chat is still connecting. Try Rewrite day again in a moment.')
+      const message = 'Planner chat is still connecting. Try Rewrite day again in a moment.'
+      setActionError(message)
+      setSuggestedStepNotice(message)
       return
     }
 
@@ -469,20 +477,27 @@ function TripStudioPageContent() {
 
     setActionError(null)
     setRegenerateNotice(pendingNotice)
+    setSuggestedStepNotice(pendingNotice)
     setRegenerateDoneDayIndex(null)
     setRegeneratingDayIndex(dayIndex)
     setChatOpen(true)
+    window.setTimeout(() => {
+      plannerChatPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 50)
 
     try {
       await sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; do not use generic meal labels.`)
       setRegenerateDoneDayIndex(dayIndex)
       setRegenerateNotice(notice)
+      setSuggestedStepNotice(notice)
       setTimeout(() => {
         setRegenerateDoneDayIndex((current) => (current === dayIndex ? null : current))
         setRegenerateNotice((current) => (current === notice ? null : current))
+        setSuggestedStepNotice((current) => (current === notice ? null : current))
       }, 4500)
     } catch {
       setActionError('Could not send the rewrite request. Try again, or use Planner chat directly.')
+      setSuggestedStepNotice('Rewrite did not start. Try Planner chat directly.')
     } finally {
       setRegeneratingDayIndex((current) => (current === dayIndex ? null : current))
     }
@@ -775,11 +790,42 @@ function TripStudioPageContent() {
         selectedStudioDay.routeSummary,
       ].filter(Boolean).join(' • ')
     : 'Map appears once Globe has routeable stops.'
+  const plannerChatEmptyState = useMemo(() => ({
+    eyebrow: 'Ready edits',
+    title: 'Start with one itinerary move',
+    prompts: [
+      {
+        label: `Smooth Day ${ensureSelectedDayExists}`,
+        detail: 'Reorder stops, reduce backtracking, and keep the best parts.',
+        prompt: `Make Day ${ensureSelectedDayExists} more walkable. Reorder the stops to reduce backtracking, keep the strongest sights, and explain what changed.`,
+      },
+      {
+        label: 'Anchor dinner',
+        detail: 'Add one standout restaurant and rebalance the evening.',
+        prompt: `Add one standout dinner to Day ${ensureSelectedDayExists}, then adjust the surrounding stops so the day still feels relaxed.`,
+      },
+      {
+        label: 'Group-ready pass',
+        detail: 'Tune pace, budget, and friend feedback before sharing.',
+        prompt: `Review this itinerary for a group trip. Flag anything that feels too busy or expensive, then suggest the highest-impact edits before I share it.`,
+      },
+    ],
+  }), [ensureSelectedDayExists])
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
+    if (!canEditTrip) {
+      const message = 'This is a shared trip preview. Start your own trip to refresh an editable plan.'
+      setWorkflowError(message)
+      setSuggestedStepNotice(message)
+      return
+    }
     setWorkflowError(null)
+    setSuggestedStepNotice(`${type.replace(/_/g, ' ')} is starting...`)
     setCreatingWorkflow(type)
+    window.setTimeout(() => {
+      workflowPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }, 50)
     try {
       if (qaWorkflowFailureMode === '1' || (qaWorkflowFailureMode === 'once' && !qaWorkflowFailureConsumedRef.current)) {
         qaWorkflowFailureConsumedRef.current = true
@@ -792,12 +838,14 @@ function TripStudioPageContent() {
       })
       if (!res.ok) throw new Error('Planner workflow could not start')
       await refetchWorkflowJobs()
+      setSuggestedStepNotice(`${type.replace(/_/g, ' ')} started. Track it in Planner workflows.`)
     } catch {
       setWorkflowError('Could not start that trip option. Please try again.')
+      setSuggestedStepNotice('Could not start that trip option. Please try again.')
     } finally {
       setCreatingWorkflow(null)
     }
-  }, [tripId, creatingWorkflow, refetchWorkflowJobs, qaWorkflowFailureMode])
+  }, [tripId, creatingWorkflow, canEditTrip, refetchWorkflowJobs, qaWorkflowFailureMode])
 
   if (isLoading && !resolvedPayload) {
     return (
@@ -865,8 +913,8 @@ function TripStudioPageContent() {
               <span className="h-1 w-1 rounded-full bg-foreground/24" />
               <span>{isBuildingInitialItinerary ? 'Creating your itinerary' : `${mappedDayCount}/${Math.max(days.length, 1)} mapped days`}</span>
             </div>
-            <div className="mt-1 flex min-w-0 items-center gap-2">
-              <h1 className="truncate font-serif text-2xl leading-tight text-foreground md:text-3xl">
+            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-2">
+              <h1 className="min-w-0 max-w-full break-words font-serif text-2xl leading-tight text-foreground md:text-3xl">
                 {trip?.title || 'Trip workspace'}
               </h1>
               <span className="rounded-full border border-rule bg-paper px-2.5 py-1 text-[11px] text-foreground/62">
@@ -880,7 +928,7 @@ function TripStudioPageContent() {
               <>
                 <button
                   onClick={() => setChatOpen(true)}
-                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-medium text-foreground/78 transition-colors hover:bg-paper-hover min-[1680px]:hidden"
+                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-medium text-foreground/78 transition-colors hover:bg-paper-hover 2xl:hidden"
                 >
                   <MessageSquareQuote className="h-4 w-4" />
                   Planner chat
@@ -950,8 +998,8 @@ function TripStudioPageContent() {
           </div>
         )}
 
-        <main className="grid min-h-0 flex-1 gap-4 p-4 lg:p-5 xl:grid-cols-[minmax(0,1fr)_300px] xl:overflow-hidden min-[1680px]:grid-cols-[300px_minmax(0,1fr)_320px]">
-          <section className="hidden min-h-0 overflow-hidden rounded-[22px] border border-rule bg-paper-raised/92 shadow-[var(--panel-shadow)] min-[1680px]:flex min-[1680px]:flex-col">
+        <div className="grid min-h-0 flex-1 gap-4 p-4 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:p-5 xl:grid-cols-[minmax(0,1fr)_300px] xl:overflow-hidden 2xl:grid-cols-[300px_minmax(0,1fr)_320px]">
+          <section ref={plannerChatPanelRef} className="hidden min-h-0 overflow-hidden rounded-[22px] border border-rule bg-paper-raised/92 shadow-[var(--panel-shadow)] 2xl:flex 2xl:flex-col">
             <div className="border-b border-rule px-4 py-3">
               <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
               <p className="mt-1 text-sm font-medium text-foreground">Chat becomes itinerary edits</p>
@@ -970,8 +1018,9 @@ function TripStudioPageContent() {
               error={chatError}
               onSendMessage={sendMessage}
               onStop={stop}
-              placeholder="Ask anything... e.g. add food tour on Day 2"
+              placeholder="Ask for an itinerary edit..."
               storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
+              emptyState={plannerChatEmptyState}
               suggestions={[
                 `Make Day ${ensureSelectedDayExists} more walkable`,
                 `Add one standout dinner and one easy late-night stop`,
@@ -1006,7 +1055,7 @@ function TripStudioPageContent() {
                     className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/82 transition-colors hover:bg-paper-hover disabled:opacity-50"
                   >
                     {optimizeDone ? <Check className="h-4 w-4 text-[var(--moss)]" /> : <ArrowLeftRight className={cn('h-4 w-4 text-[var(--brass)]', isOptimizing && 'animate-pulse')} />}
-                    {isOptimizing ? 'Optimizing...' : optimizeDone ? 'Optimized' : 'Re-optimize'}
+                    {isOptimizing ? 'Optimizing...' : optimizeDone ? 'Optimized' : 'Optimize day'}
                   </button>
                   <button
                     onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
@@ -1022,7 +1071,7 @@ function TripStudioPageContent() {
                 </div>
               </div>
 
-              <div className="grid min-h-[520px] lg:grid-cols-[260px_minmax(0,1fr)] min-[1680px]:grid-cols-[300px_minmax(0,1fr)]">
+              <div className="grid min-h-[520px] lg:grid-cols-[260px_minmax(0,1fr)] 2xl:grid-cols-[300px_minmax(0,1fr)]">
                 <div className="border-b border-rule bg-paper/70 lg:border-b-0 lg:border-r">
                   <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-rule p-3 lg:block lg:space-y-2 lg:overflow-visible">
                     {studioDayMaps.map(({ day, mappedStops, routeSummary }) => (
@@ -1085,7 +1134,7 @@ function TripStudioPageContent() {
                   ariaLabel={`Trip Studio map for ${selectedStudioDay?.day.title || trip?.title || 'the selected trip'}`}
                   showDetails={false}
                   interactive={true}
-                  mapHeightClassName="h-[520px] lg:h-full"
+                  mapHeightClassName="h-[88px] sm:h-[360px] lg:h-full"
                   className="min-w-0 rounded-none border-0"
                 />
               </div>
@@ -1196,6 +1245,7 @@ function TripStudioPageContent() {
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Friend feedback</p>
                   <p className="mt-1 text-sm font-medium text-foreground">{feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}</p>
+                  <p className="mt-1 text-xs text-foreground/52">crew reacting to the plan</p>
                 </div>
                 <MessageSquareQuote className="h-5 w-5 text-foreground/25" />
               </div>
@@ -1227,6 +1277,11 @@ function TripStudioPageContent() {
                         <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-foreground/66">{entry.comment}</p>
                       </div>
                     ))}
+                    {hiddenFeedbackCount > 0 && (
+                      <p className="rounded-md border border-dashed border-rule bg-paper-recessed px-3 py-2 text-xs leading-relaxed text-foreground/58">
+                        Showing latest 4 of {feedback.length} reviews. {hiddenFeedbackCount} more {hiddenFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for refresh.
+                      </p>
+                    )}
                   </>
                 )}
               </div>
@@ -1237,10 +1292,23 @@ function TripStudioPageContent() {
               <p className="mt-2 text-sm font-medium leading-snug text-foreground">
                 {mappingSummary.needsHydration ? 'Rebuild map routes before sharing.' : `Ask Globe to tune Day ${ensureSelectedDayExists}.`}
               </p>
+              {suggestedStepNotice && (
+                <p className={cn(
+                  'mt-3 rounded-md border px-3 py-2 text-xs leading-relaxed',
+                  suggestedStepNotice.includes('Could not') ||
+                    suggestedStepNotice.includes('did not') ||
+                    suggestedStepNotice.includes('still connecting') ||
+                    suggestedStepNotice.includes('shared trip preview')
+                    ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]'
+                    : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                )}>
+                  {suggestedStepNotice}
+                </p>
+              )}
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
                   onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
-                  disabled={!selectedStudioDay || regeneratingDayIndex != null || !canEditTrip}
+                  disabled={!selectedStudioDay || regeneratingDayIndex != null}
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
                 >
                   <Plus className="h-4 w-4" />
@@ -1248,16 +1316,16 @@ function TripStudioPageContent() {
                 </button>
                 <button
                   onClick={() => startWorkflow('feedback_refresh')}
-                  disabled={Boolean(creatingWorkflow) || !canEditTrip}
+                  disabled={Boolean(creatingWorkflow)}
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
                 >
                   <RefreshCcw className="h-4 w-4" />
-                  Refresh
+                  Refresh plan from feedback
                 </button>
               </div>
             </section>
 
-            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section ref={workflowPanelRef} className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner workflows</p>
@@ -1288,7 +1356,7 @@ function TripStudioPageContent() {
               )}
             </section>
           </aside>
-        </main>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -1319,8 +1387,9 @@ function TripStudioPageContent() {
               error={chatError}
               onSendMessage={sendMessage}
               onStop={stop}
-              placeholder="Ask anything... e.g. add food tour on Day 2"
+              placeholder="Ask for an itinerary edit..."
               storageKey={tripId ? `globe-travel:chat-input:plan:${tripId}` : undefined}
+              emptyState={plannerChatEmptyState}
               suggestions={[
                 `Make Day ${ensureSelectedDayExists} more walkable`,
                 `Add one standout dinner and one easy late-night stop`,
