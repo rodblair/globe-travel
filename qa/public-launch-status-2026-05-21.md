@@ -3,7 +3,7 @@
 Date: 2026-05-21
 Operational date: 2026-06-04
 Time zone: America/Toronto
-Generated at: 2026-06-04T20:33:39.783Z
+Generated at: 2026-06-04T21:25:52.795Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -11,8 +11,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 71baf0fd534f3e57889c1cb611b086baff46b319
-- Production deployment: globe-travel-g4uaa0zci-rodney-blairs-projects.vercel.app
+- Production commit: 7a5e441df803980d6f1c91734f16915c7a9cf379
+- Production deployment: globe-travel-9uaewfs6t-rodney-blairs-projects.vercel.app
 - Runtime deployment current: yes
 - Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
@@ -247,7 +247,7 @@ Public metadata:
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-26/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-06-04.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
-- Planner handoff: `qa/planner-handoff-smoke-2026-05-26.json` and `qa/planner-handoff-smoke-2026-05-26.md`
+- Planner handoff: `qa/planner-handoff-smoke-2026-06-04.json` and `qa/planner-handoff-smoke-2026-06-04.md`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-26.json` and `qa/public-share-map-catalog-2026-05-26.md`
 - Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-26.json` and `qa/public-metadata-smoke-2026-05-26.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`

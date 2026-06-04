@@ -42,10 +42,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-06-04",
-    "artifact": "qa/visual-baseline-production-release-2026-06-04",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-04/summary.json",
-    "productionCommit": "71baf0fd534f3e57889c1cb611b086baff46b319",
-    "deploymentUrl": "globe-travel-g4uaa0zci-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-release-2026-06-04-7a5e441",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-04-7a5e441/summary.json",
+    "productionCommit": "7a5e441df803980d6f1c91734f16915c7a9cf379",
+    "deploymentUrl": "globe-travel-9uaewfs6t-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -69,7 +69,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 on June 4, 2026, with public visual QA passing 25/25 against the live 71baf0f deployment. Landing, pricing, login, signup, and public-share were reviewed across phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
+    "notes": "Production visual QA passed 25/25 on June 4, 2026, against the live 7a5e441 deployment after the release-ops-only Trip Studio owner-smoke hardening deploy. Landing, pricing, login, signup, and public-share were reviewed across phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
     "reviewSubmissionFile": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json"
   },
   "reviewHistory": [

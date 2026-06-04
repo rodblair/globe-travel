@@ -35,6 +35,7 @@ const allowRemoteGuestAuth = process.env.QA_VISUAL_ALLOW_REMOTE_GUEST === '1'
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const navigationTimeoutMs = Number(process.env.QA_VISUAL_NAVIGATION_TIMEOUT_MS || (isLocalBaseUrl ? '30000' : '60000'))
 const markerTimeoutMs = Number(process.env.QA_VISUAL_MARKER_TIMEOUT_MS || (isLocalBaseUrl ? '8000' : '30000'))
+const screenshotTimeoutMs = Number(process.env.QA_VISUAL_SCREENSHOT_TIMEOUT_MS || (isLocalBaseUrl ? '15000' : '30000'))
 const defaultDiffRoutes = ['landing', 'planner', 'account-profile', 'account-billing', 'login', 'signup']
 const diffRouteFilter = (process.env.QA_VISUAL_DIFF_ROUTES || defaultDiffRoutes.join(','))
   .split(',')
@@ -636,7 +637,7 @@ async function collectPageMetrics(page, route, viewport) {
   let comparison = { enabled: Boolean(baselineDir), ok: !baselineDir, diffRatio: 0, error: null }
 
   try {
-    await page.screenshot({ path: screenshotPath, fullPage: false, timeout: 15000 })
+    await page.screenshot({ path: screenshotPath, fullPage: false, timeout: screenshotTimeoutMs })
     screenshot.ok = true
     comparison = await compareScreenshot({ routeId: route.id, screenshotName, screenshotPath })
   } catch (error) {

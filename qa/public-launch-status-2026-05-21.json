@@ -4,7 +4,7 @@
   "today": "2026-06-04",
   "todaySource": "current date",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-04T20:33:39.783Z",
+  "generatedAt": "2026-06-04T21:25:52.795Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -13,14 +13,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-g4uaa0zci-rodney-blairs-projects.vercel.app",
-    "commit": "71baf0fd534f3e57889c1cb611b086baff46b319"
+    "url": "globe-travel-9uaewfs6t-rodney-blairs-projects.vercel.app",
+    "commit": "7a5e441df803980d6f1c91734f16915c7a9cf379"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "71baf0fd534f3e57889c1cb611b086baff46b319",
-    "shortHead": "71baf0f",
-    "liveCommit": "71baf0fd534f3e57889c1cb611b086baff46b319",
+    "head": "7a5e441df803980d6f1c91734f16915c7a9cf379",
+    "shortHead": "7a5e441",
+    "liveCommit": "7a5e441df803980d6f1c91734f16915c7a9cf379",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -1188,8 +1188,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "71baf0fd534f3e57889c1cb611b086baff46b319",
-    "knownGoodDeploymentUrl": "globe-travel-g4uaa0zci-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "7a5e441df803980d6f1c91734f16915c7a9cf379",
+    "knownGoodDeploymentUrl": "globe-travel-9uaewfs6t-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -1228,7 +1228,7 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "71baf0fd534f3e57889c1cb611b086baff46b319",
+    "latestVerificationExpectedLiveCommit": "7a5e441df803980d6f1c91734f16915c7a9cf379",
     "latestVerificationReady": true
   },
   "paidPath": {
@@ -1277,8 +1277,8 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-04/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-release-2026-06-04/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-04-7a5e441/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-release-2026-06-04-7a5e441/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
@@ -1308,10 +1308,10 @@
     "ready": true
   },
   "plannerHandoff": {
-    "artifact": "qa/planner-handoff-smoke-2026-05-26.json",
-    "report": "qa/planner-handoff-smoke-2026-05-26.md",
-    "date": "2026-05-26",
-    "ageDays": 9,
+    "artifact": "qa/planner-handoff-smoke-2026-06-04.json",
+    "report": "qa/planner-handoff-smoke-2026-06-04.md",
+    "date": "2026-06-04",
+    "ageDays": 0,
     "checked": 17,
     "passed": 17,
     "failed": 0,
@@ -1564,7 +1564,7 @@
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-06-04.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
-    "plannerHandoff": "qa/planner-handoff-smoke-2026-05-26.json",
+    "plannerHandoff": "qa/planner-handoff-smoke-2026-06-04.json",
     "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-26.json",
     "publicMetadata": "qa/public-metadata-smoke-2026-05-26.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",

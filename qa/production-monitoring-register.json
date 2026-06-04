@@ -129,8 +129,8 @@
       "QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:commercial",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=71baf0fd534f3e57889c1cb611b086baff46b319 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=7a5e441df803980d6f1c91734f16915c7a9cf379 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "71baf0fd534f3e57889c1cb611b086baff46b319"
+    "expectedLiveCommit": "7a5e441df803980d6f1c91734f16915c7a9cf379"
   }
 }
