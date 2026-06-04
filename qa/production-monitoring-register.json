@@ -1,5 +1,5 @@
 {
-  "reviewedAt": "2026-05-27",
+  "reviewedAt": "2026-06-04",
   "owner": "release operator",
   "status": "automation-ready",
   "baseUrl": "https://globe-travel-two.vercel.app",
@@ -120,16 +120,17 @@
     ]
   },
   "latestVerification": {
-    "verifiedAt": "2026-05-27",
+    "verifiedAt": "2026-06-04",
     "command": "npm run qa:production-monitoring",
     "relatedCommands": [
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-runtime-current-2026-05-27-c3456d5 npm run qa:release-production",
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:app-surfaces-production",
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_A11Y_AUTH_MODE=guest QA_A11Y_ALLOW_REMOTE_GUEST=1 npm run qa:a11y",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:auth-access",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:commercial",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=4406b50f756bc3de09f73e56c17c276d34d81eb8 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=71baf0fd534f3e57889c1cb611b086baff46b319 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "4406b50f756bc3de09f73e56c17c276d34d81eb8"
+    "expectedLiveCommit": "71baf0fd534f3e57889c1cb611b086baff46b319"
   }
 }

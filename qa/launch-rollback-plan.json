@@ -1,14 +1,14 @@
 {
-  "reviewedAt": "2026-05-27",
+  "reviewedAt": "2026-06-04",
   "owner": "release operator",
   "production": {
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "4406b50f756bc3de09f73e56c17c276d34d81eb8",
-      "url": "globe-travel-bb2mty0du-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "Commit 4406b50f756bc3de09f73e56c17c276d34d81eb8 verified by manual Vercel production deployment, https://globe-travel-two.vercel.app/api/health reporting ok for commit 4406b50f756bc3de09f73e56c17c276d34d81eb8, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:app-surfaces-production passing 22/22, and QA_LAUNCH_EXPECTED_COMMIT=4406b50f756bc3de09f73e56c17c276d34d81eb8 npm run qa:launch-signoff is the current post-rollback verification gate",
-      "verifiedAt": "2026-05-27"
+      "commit": "71baf0fd534f3e57889c1cb611b086baff46b319",
+      "url": "globe-travel-g4uaa0zci-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "Commit 71baf0fd534f3e57889c1cb611b086baff46b319 verified by Vercel production deployment globe-travel-g4uaa0zci-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok 11/11 for commit 71baf0fd534f3e57889c1cb611b086baff46b319, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production passing 10/10 with production visual QA 25/25 and Athens public share/map integrity 5/5, and QA_LAUNCH_EXPECTED_COMMIT=71baf0fd534f3e57889c1cb611b086baff46b319 npm run qa:launch-signoff is the current postdeploy verification gate",
+      "verifiedAt": "2026-06-04"
     }
   },
   "rollbackTriggers": [
