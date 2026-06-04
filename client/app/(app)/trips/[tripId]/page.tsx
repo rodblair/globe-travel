@@ -473,7 +473,7 @@ function TripStudioPageContent() {
     }
 
     const pendingNotice = `Rewrite request for Day ${dayIndex} is opening in Planner chat.`
-    const notice = `Rewrite request sent for Day ${dayIndex}. Planner chat is open so you can watch the update.`
+    const notice = `Day ${dayIndex} rewrite completed. Review the updated itinerary below; Planner chat kept the request history.`
 
     setActionError(null)
     setRegenerateNotice(pendingNotice)
@@ -493,7 +493,6 @@ function TripStudioPageContent() {
       setTimeout(() => {
         setRegenerateDoneDayIndex((current) => (current === dayIndex ? null : current))
         setRegenerateNotice((current) => (current === notice ? null : current))
-        setSuggestedStepNotice((current) => (current === notice ? null : current))
       }, 4500)
     } catch {
       setActionError('Could not send the rewrite request. Try again, or use Planner chat directly.')
@@ -811,6 +810,21 @@ function TripStudioPageContent() {
       },
     ],
   }), [ensureSelectedDayExists])
+  const selectedSuggestedDayIndex = selectedStudioDay?.day.day_index
+  const suggestedRewriteLabel = selectedSuggestedDayIndex && regeneratingDayIndex === selectedSuggestedDayIndex
+    ? 'Requesting rewrite...'
+    : selectedSuggestedDayIndex && regenerateDoneDayIndex === selectedSuggestedDayIndex
+      ? 'Rewrite sent'
+      : 'Rewrite day'
+  const suggestedRefreshLabel = creatingWorkflow === 'feedback_refresh'
+    ? 'Starting refresh...'
+    : 'Refresh plan from feedback'
+  const suggestedNoticeIsWarning = Boolean(suggestedStepNotice && (
+    suggestedStepNotice.toLowerCase().includes('could not') ||
+    suggestedStepNotice.toLowerCase().includes('did not') ||
+    suggestedStepNotice.toLowerCase().includes('still connecting') ||
+    suggestedStepNotice.toLowerCase().includes('shared trip preview')
+  ))
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
@@ -820,8 +834,14 @@ function TripStudioPageContent() {
       setSuggestedStepNotice(message)
       return
     }
+    const workflowLabel = type === 'feedback_refresh'
+      ? 'Feedback refresh'
+      : type === 'decision_memo'
+        ? 'Decision memo'
+        : 'Budget variants'
+
     setWorkflowError(null)
-    setSuggestedStepNotice(`${type.replace(/_/g, ' ')} is starting...`)
+    setSuggestedStepNotice(`${workflowLabel} is starting...`)
     setCreatingWorkflow(type)
     window.setTimeout(() => {
       workflowPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -838,7 +858,7 @@ function TripStudioPageContent() {
       })
       if (!res.ok) throw new Error('Planner workflow could not start')
       await refetchWorkflowJobs()
-      setSuggestedStepNotice(`${type.replace(/_/g, ' ')} started. Track it in Planner workflows.`)
+      setSuggestedStepNotice(`${workflowLabel} started. Track progress in Planner workflows below.`)
     } catch {
       setWorkflowError('Could not start that trip option. Please try again.')
       setSuggestedStepNotice('Could not start that trip option. Please try again.')
@@ -1295,13 +1315,10 @@ function TripStudioPageContent() {
               {suggestedStepNotice && (
                 <p className={cn(
                   'mt-3 rounded-md border px-3 py-2 text-xs leading-relaxed',
-                  suggestedStepNotice.includes('Could not') ||
-                    suggestedStepNotice.includes('did not') ||
-                    suggestedStepNotice.includes('still connecting') ||
-                    suggestedStepNotice.includes('shared trip preview')
+                  suggestedNoticeIsWarning
                     ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]'
                     : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                )}>
+                )} aria-live="polite">
                   {suggestedStepNotice}
                 </p>
               )}
@@ -1312,7 +1329,7 @@ function TripStudioPageContent() {
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
                 >
                   <Plus className="h-4 w-4" />
-                  Rewrite day
+                  {suggestedRewriteLabel}
                 </button>
                 <button
                   onClick={() => startWorkflow('feedback_refresh')}
@@ -1320,7 +1337,7 @@ function TripStudioPageContent() {
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
                 >
                   <RefreshCcw className="h-4 w-4" />
-                  Refresh plan from feedback
+                  {suggestedRefreshLabel}
                 </button>
               </div>
             </section>

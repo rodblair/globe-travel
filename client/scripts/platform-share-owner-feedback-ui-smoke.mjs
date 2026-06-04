@@ -368,11 +368,13 @@ async function runOwnerUiChecks() {
     record('owner feedback refresh workflow completes from visible feedback', (
       refreshText.includes('feedback refresh') &&
       refreshState.text.includes('"status": "ready"') &&
+      refreshState.text.includes('Feedback refresh started. Track progress in Planner workflows below.') &&
       !refreshState.hasAppError &&
       !refreshState.horizontalOverflow
     ), {
       hasFeedbackRefresh: refreshText.includes('feedback refresh'),
       hasReadyStatus: refreshState.text.includes('"status": "ready"'),
+      hasSuggestedStepProgressCopy: refreshState.text.includes('Feedback refresh started. Track progress in Planner workflows below.'),
       hasAppError: refreshState.hasAppError,
       horizontalOverflow: refreshState.horizontalOverflow,
     })
