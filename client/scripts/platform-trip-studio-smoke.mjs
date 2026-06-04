@@ -69,18 +69,18 @@ const ownerControlLabels = [
   'View share',
 ]
 const collaborationLabels = [
-  'Group review',
-  'Crew brief',
+  'Share with crew',
+  'Crew consensus',
   'Friend feedback',
   'Planner workflows',
   'Generate decision memo',
-  'Create cheap / balanced / premium variants',
+  'Create budget variants',
   'Refresh plan from feedback',
 ]
 const readOnlyLabels = [
   'View only',
   'Shared preview',
-  'Shared preview. Use the public share page for friend feedback, or start your own trip to edit and save.',
+  'Shared preview. Start your own trip to edit and save.',
 ]
 const itineraryActionLabels = [
   'Rewrite day',
