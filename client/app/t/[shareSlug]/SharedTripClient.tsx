@@ -404,6 +404,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                         )}
                       >
                         <span className="block text-sm font-semibold">{option.label}</span>
+                        {' '}
                         <span className="mt-0.5 block text-xs">{option.helper}</span>
                       </button>
                     ))}

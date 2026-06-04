@@ -165,20 +165,38 @@ async function cleanupGeneratedGuest() {
     auth: { persistSession: false },
   })
 
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .delete()
-    .eq('id', accessibilityGuestId)
-  const { error: userError } = await supabase.auth.admin.deleteUser(accessibilityGuestId)
-  const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', accessibilityGuestId)
+      const { error: userError } = await supabase.auth.admin.deleteUser(accessibilityGuestId)
+      const userAlreadyAbsent = userError?.message?.toLowerCase().includes('user not found')
 
-  guestCleanup = {
-    attempted: true,
-    reason: null,
-    guestId: accessibilityGuestId,
-    profileDeleted: !profileError,
-    userDeleted: !userError || Boolean(userAlreadyAbsent),
-    error: profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
+      guestCleanup = {
+        attempted: true,
+        reason: null,
+        guestId: accessibilityGuestId,
+        profileDeleted: !profileError,
+        userDeleted: !userError || Boolean(userAlreadyAbsent),
+        error: profileError?.message || (userError && !userAlreadyAbsent ? userError.message : null),
+      }
+      return
+    } catch (error) {
+      if (attempt < 3) {
+        await sleep(750 * attempt)
+        continue
+      }
+      guestCleanup = {
+        attempted: true,
+        reason: null,
+        guestId: accessibilityGuestId,
+        profileDeleted: false,
+        userDeleted: false,
+        error: error instanceof Error ? error.message : String(error),
+      }
+    }
   }
 }
 

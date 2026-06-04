@@ -11,6 +11,13 @@ const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/
 const chromePath = process.env.QA_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const runId = process.env.QA_RUN_ID || randomUUID().slice(0, 8)
 const fixtureLimit = Number.parseInt(process.env.QA_SHARE_MULTI_UI_LIMIT || '3', 10)
+const scriptStartedAt = Date.now()
+const childScriptTimeoutMs = Number.parseInt(process.env.QA_SHARE_MULTI_UI_CHILD_TIMEOUT_MS || '90000', 10)
+const fetchTimeoutMs = Number.parseInt(process.env.QA_SHARE_MULTI_UI_FETCH_TIMEOUT_MS || '30000', 10)
+const phaseTimeoutMs = Number.parseInt(process.env.QA_SHARE_MULTI_UI_PHASE_TIMEOUT_MS || '120000', 10)
+const browserTimeoutMs = Number.parseInt(process.env.QA_SHARE_MULTI_UI_BROWSER_TIMEOUT_MS || '480000', 10)
+const cleanupTimeoutMs = Number.parseInt(process.env.QA_SHARE_MULTI_UI_CLEANUP_TIMEOUT_MS || '45000', 10)
+const totalTimeoutMs = Number.parseInt(process.env.QA_SHARE_MULTI_UI_TOTAL_TIMEOUT_MS || '720000', 10)
 const isLocalBaseUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(baseUrl)
 const allowRemote = process.env.QA_ALLOW_REMOTE_MUTATION === '1'
 const failures = []
@@ -23,11 +30,23 @@ let created = null
 let fixtureCleanup = null
 let ownerCleanup = null
 let shareCardAnalyses = []
+let finishing = false
 
 if (!isLocalBaseUrl && !allowRemote) {
   console.error('qa:share-multi-itinerary-ui creates disposable public trips and only runs against localhost unless QA_ALLOW_REMOTE_MUTATION=1 is set.')
   process.exit(1)
 }
+
+const totalWatchdog = setTimeout(() => {
+  if (finishing) return
+  record('multi-itinerary share UI smoke completed before total timeout', false, {
+    elapsedMs: Date.now() - scriptStartedAt,
+    timeoutMs: totalTimeoutMs,
+  })
+  console.log(JSON.stringify(buildSummary(), null, 2))
+  process.exit(1)
+}, totalTimeoutMs)
+totalWatchdog.unref?.()
 
 async function loadDotEnv() {
   const envPath = resolve(root, '.env.local')
@@ -73,6 +92,65 @@ function record(name, ok, details = {}) {
   return result
 }
 
+function logProgress(message, details = {}) {
+  const suffix = Object.keys(details).length ? ` ${JSON.stringify(details)}` : ''
+  console.error(`[qa:share-multi-itinerary-ui] ${message}${suffix}`)
+}
+
+function buildSummary() {
+  return {
+    baseUrl,
+    runId,
+    ownerUserId,
+    fixtureLimit,
+    fixtureCount: created?.fixtures?.length || 0,
+    checkedFixtureKeys: created?.fixtures?.slice(0, Math.max(1, fixtureLimit)).map((fixture) => fixture.key) || [],
+    shareSlugs: created?.shareSlugs || [],
+    feedbackIds: insertedFeedbackIds,
+    shareCardAnalyses,
+    fixtureCleanup,
+    ownerCleanup,
+    checked: results.length,
+    passed: results.filter((result) => result.ok).length,
+    failed: failures.length,
+    elapsedMs: Date.now() - scriptStartedAt,
+    results,
+    failures,
+  }
+}
+
+async function withTimeout(label, timeoutMs, operation) {
+  let timeout = null
+  try {
+    return await Promise.race([
+      operation(),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => {
+          reject(new Error(`${label} timed out after ${timeoutMs}ms`))
+        }, timeoutMs)
+      }),
+    ])
+  } finally {
+    if (timeout) clearTimeout(timeout)
+  }
+}
+
+async function runPhase(name, operation, timeoutMs = phaseTimeoutMs) {
+  const startedAt = Date.now()
+  logProgress(`${name} started`)
+  try {
+    const value = await withTimeout(name, timeoutMs, operation)
+    logProgress(`${name} completed`, { elapsedMs: Date.now() - startedAt })
+    return value
+  } catch (error) {
+    logProgress(`${name} failed`, {
+      elapsedMs: Date.now() - startedAt,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    throw error
+  }
+}
+
 function runNodeScript(script, env = {}) {
   return new Promise((resolve) => {
     const child = spawn(process.execPath, [script], {
@@ -82,6 +160,20 @@ function runNodeScript(script, env = {}) {
     })
     let stdout = ''
     let stderr = ''
+    let timedOut = false
+    let settled = false
+
+    const timeout = setTimeout(() => {
+      timedOut = true
+      child.kill('SIGKILL')
+    }, childScriptTimeoutMs)
+
+    const finish = (result) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timeout)
+      resolve(result)
+    }
 
     child.stdout.on('data', (chunk) => {
       stdout += chunk.toString()
@@ -89,8 +181,18 @@ function runNodeScript(script, env = {}) {
     child.stderr.on('data', (chunk) => {
       stderr += chunk.toString()
     })
-    child.on('close', (code) => {
-      resolve({ code, stdout, stderr, parsed: parseJsonOutput(stdout) })
+    child.on('error', (error) => {
+      finish({
+        code: null,
+        signal: null,
+        timedOut,
+        stdout,
+        stderr: `${stderr}\n${error instanceof Error ? error.message : String(error)}`.trim(),
+        parsed: parseJsonOutput(stdout),
+      })
+    })
+    child.on('close', (code, signal) => {
+      finish({ code, signal, timedOut, stdout, stderr, parsed: parseJsonOutput(stdout) })
     })
   })
 }
@@ -98,6 +200,7 @@ function runNodeScript(script, env = {}) {
 async function fetchJson(path, init = {}) {
   const response = await fetch(`${baseUrl}${path}`, {
     ...init,
+    signal: init.signal || AbortSignal.timeout(fetchTimeoutMs),
     headers: {
       'user-agent': 'globe-travel-share-multi-itinerary-ui-smoke/1.0',
       ...(init.headers || {}),
@@ -118,6 +221,7 @@ async function fetchJson(path, init = {}) {
 async function fetchBuffer(path, init = {}) {
   const response = await fetch(`${baseUrl}${path}`, {
     ...init,
+    signal: init.signal || AbortSignal.timeout(fetchTimeoutMs),
     headers: {
       'user-agent': 'globe-travel-share-multi-itinerary-ui-smoke/1.0',
       ...(init.headers || {}),
@@ -274,21 +378,25 @@ async function installShareStubs(page) {
 }
 
 async function addOwnerCookie(context) {
+  const cookie = {
+    name: 'globe_travel_guest',
+    value: ownerUserId,
+    httpOnly: false,
+    secure: baseUrl.startsWith('https://'),
+    sameSite: 'Lax',
+  }
+  const cookieUrl = new URL(baseUrl)
+
   await context.addCookies([
-    {
-      name: 'globe_travel_guest',
-      value: ownerUserId,
-      url: baseUrl,
-      httpOnly: false,
-      secure: baseUrl.startsWith('https://'),
-      sameSite: 'Lax',
-    },
+    cookieUrl.hostname === 'localhost'
+      ? { ...cookie, domain: 'localhost', path: '/' }
+      : { ...cookie, url: baseUrl },
   ])
 }
 
 async function pageState(page) {
   await page.waitForLoadState('domcontentloaded', { timeout: 30000 }).catch(() => {})
-  await page.waitForLoadState('networkidle', { timeout: 3500 }).catch(() => {})
+  await page.waitForLoadState('networkidle', { timeout: 1000 }).catch(() => {})
   return page.evaluate(() => {
     const text = document.body?.innerText || ''
     const buttons = Array.from(document.querySelectorAll('button'))
@@ -388,7 +496,7 @@ async function submitFeedback(page, fixture, index) {
   await page.waitForFunction((expectedComment) => {
     const text = document.body?.innerText || ''
     return text.includes('Feedback sent') || text.includes(expectedComment)
-  }, comment, { timeout: 12000 }).catch(() => {})
+  }, comment, { timeout: 5000 }).catch(() => {})
 
   const readback = await fetchJson(`/api/trips/share/${fixture.shareSlug}/feedback`, { cache: 'no-store' })
   const rows = Array.isArray(readback.json) ? readback.json : []
@@ -422,80 +530,86 @@ async function runOwnerFeedbackRefreshChecks(verifications) {
 
   for (const [index, verification] of verifications.entries()) {
     const viewport = ownerViewports[index % ownerViewports.length]
-    const ownerContext = await browser.newContext({
-      viewport: viewport.viewport,
-      deviceScaleFactor: 1,
-      isMobile: viewport.isMobile,
-    })
-    await addOwnerCookie(ownerContext)
-    const ownerPage = await ownerContext.newPage()
-
-    try {
-      await gotoOwnerTrip(ownerPage, verification.fixture.tripId)
-      await ownerPage.waitForFunction((expectedComment) => {
-        const text = document.body?.innerText || ''
-        return text.includes(expectedComment) && text.includes('crew reacting')
-      }, verification.feedback.comment, { timeout: 15000 }).catch(() => {})
-
-      const ownerState = await pageState(ownerPage)
-      const refreshButton = ownerPage.getByRole('button', { name: /Refresh plan from feedback/i })
-      const refreshEnabled = await refreshButton.isEnabled().catch(() => false)
-
-      record(`multi-itinerary ${verification.fixture.key} owner feedback readback works on ${viewport.label}`, (
-        ownerState.text.includes(verification.fixture.title) &&
-        ownerState.text.includes(verification.feedback.author) &&
-        ownerState.text.includes(verification.feedback.comment) &&
-        ownerState.text.includes('crew reacting') &&
-        ownerState.text.includes('Share invite') &&
-        !ownerState.text.includes('View only') &&
-        refreshEnabled &&
-        !ownerState.hasAppError &&
-        !ownerState.horizontalOverflow
-      ), {
-        shareSlug: verification.fixture.shareSlug,
-        tripId: verification.fixture.tripId,
-        viewport: viewport.label,
-        hasTitle: ownerState.text.includes(verification.fixture.title),
-        hasAuthor: ownerState.text.includes(verification.feedback.author),
-        hasComment: ownerState.text.includes(verification.feedback.comment),
-        hasCrewReacting: ownerState.text.includes('crew reacting'),
-        hasShareInvite: ownerState.text.includes('Share invite'),
-        hasViewOnly: ownerState.text.includes('View only'),
-        refreshEnabled,
-        hasAppError: ownerState.hasAppError,
-        horizontalOverflow: ownerState.horizontalOverflow,
-        clientWidth: ownerState.clientWidth,
-        scrollWidth: ownerState.scrollWidth,
+    await runPhase(`verify owner feedback ${verification.fixture.key} on ${viewport.label}`, async () => {
+      const ownerContext = await browser.newContext({
+        viewport: viewport.viewport,
+        deviceScaleFactor: 1,
+        isMobile: viewport.isMobile,
       })
+      await addOwnerCookie(ownerContext)
+      const ownerPage = await ownerContext.newPage()
 
-      await refreshButton.click({ timeout: 8000 })
-      await ownerPage.waitForFunction(() => {
-        const text = document.body?.innerText || ''
-        const lowerText = text.toLowerCase()
-        return lowerText.includes('feedback refresh') && (lowerText.includes('completed') || text.includes('"status": "ready"'))
-      }, { timeout: 15000 }).catch(() => {})
+      try {
+        await gotoOwnerTrip(ownerPage, verification.fixture.tripId)
+        await ownerPage.waitForFunction((expectedComment) => {
+          const text = document.body?.innerText || ''
+          return text.includes(expectedComment) && text.includes('crew reacting')
+        }, verification.feedback.comment, { timeout: 15000 }).catch(() => {})
 
-      const refreshState = await pageState(ownerPage)
-      const refreshText = refreshState.text.toLowerCase()
-      record(`multi-itinerary ${verification.fixture.key} owner feedback refresh completes on ${viewport.label}`, (
-        refreshText.includes('feedback refresh') &&
-        refreshState.text.includes('"status": "ready"') &&
-        !refreshState.hasAppError &&
-        !refreshState.horizontalOverflow
-      ), {
-        shareSlug: verification.fixture.shareSlug,
-        tripId: verification.fixture.tripId,
-        viewport: viewport.label,
-        hasFeedbackRefresh: refreshText.includes('feedback refresh'),
-        hasReadyStatus: refreshState.text.includes('"status": "ready"'),
-        hasAppError: refreshState.hasAppError,
-        horizontalOverflow: refreshState.horizontalOverflow,
-        clientWidth: refreshState.clientWidth,
-        scrollWidth: refreshState.scrollWidth,
-      })
-    } finally {
-      await ownerContext.close().catch(() => {})
-    }
+        const ownerState = await pageState(ownerPage)
+        const refreshButton = ownerPage.getByRole('button', { name: /Refresh plan from feedback/i })
+        const refreshEnabled = await refreshButton.isEnabled().catch(() => false)
+
+        record(`multi-itinerary ${verification.fixture.key} owner feedback readback works on ${viewport.label}`, (
+          ownerState.text.includes(verification.fixture.title) &&
+          ownerState.text.includes(verification.feedback.author) &&
+          ownerState.text.includes(verification.feedback.comment) &&
+          ownerState.text.includes('crew reacting') &&
+          ownerState.text.includes('Share invite') &&
+          !ownerState.text.includes('View only') &&
+          refreshEnabled &&
+          !ownerState.hasAppError &&
+          !ownerState.horizontalOverflow
+        ), {
+          shareSlug: verification.fixture.shareSlug,
+          tripId: verification.fixture.tripId,
+          url: ownerState.url,
+          viewport: viewport.label,
+          hasTitle: ownerState.text.includes(verification.fixture.title),
+          hasAuthor: ownerState.text.includes(verification.feedback.author),
+          hasComment: ownerState.text.includes(verification.feedback.comment),
+          hasCrewReacting: ownerState.text.includes('crew reacting'),
+          hasShareInvite: ownerState.text.includes('Share invite'),
+          hasViewOnly: ownerState.text.includes('View only'),
+          refreshEnabled,
+          hasAppError: ownerState.hasAppError,
+          horizontalOverflow: ownerState.horizontalOverflow,
+          clientWidth: ownerState.clientWidth,
+          scrollWidth: ownerState.scrollWidth,
+          textExcerpt: ownerState.text.trim().replace(/\s+/g, ' ').slice(0, 220),
+        })
+
+        if (!refreshEnabled) return
+
+        await refreshButton.click({ timeout: 8000 })
+        await ownerPage.waitForFunction(() => {
+          const text = document.body?.innerText || ''
+          const lowerText = text.toLowerCase()
+          return lowerText.includes('feedback refresh') && (lowerText.includes('completed') || text.includes('"status": "ready"'))
+        }, { timeout: 15000 }).catch(() => {})
+
+        const refreshState = await pageState(ownerPage)
+        const refreshText = refreshState.text.toLowerCase()
+        record(`multi-itinerary ${verification.fixture.key} owner feedback refresh completes on ${viewport.label}`, (
+          refreshText.includes('feedback refresh') &&
+          refreshState.text.includes('"status": "ready"') &&
+          !refreshState.hasAppError &&
+          !refreshState.horizontalOverflow
+        ), {
+          shareSlug: verification.fixture.shareSlug,
+          tripId: verification.fixture.tripId,
+          viewport: viewport.label,
+          hasFeedbackRefresh: refreshText.includes('feedback refresh'),
+          hasReadyStatus: refreshState.text.includes('"status": "ready"'),
+          hasAppError: refreshState.hasAppError,
+          horizontalOverflow: refreshState.horizontalOverflow,
+          clientWidth: refreshState.clientWidth,
+          scrollWidth: refreshState.scrollWidth,
+        })
+      } finally {
+        await ownerContext.close().catch(() => {})
+      }
+    }, 70000)
   }
 }
 
@@ -510,6 +624,9 @@ async function runBrowserChecks() {
   const desktopVerifications = []
 
   for (const [index, fixture] of fixturesToCheck.entries()) {
+    logProgress(`verify public recipient flow ${fixture.key} on phone started`, {
+      shareSlug: fixture.shareSlug,
+    })
     const phoneContext = await browser.newContext({
       viewport: { width: 390, height: 844 },
       deviceScaleFactor: 1,
@@ -556,6 +673,7 @@ async function runBrowserChecks() {
       feedback: await submitFeedback(phonePage, fixture, index),
     })
     await phoneContext.close().catch(() => {})
+    logProgress(`verify public recipient flow ${fixture.key} on phone completed`)
   }
 
   const desktopContext = await browser.newContext({
@@ -566,11 +684,14 @@ async function runBrowserChecks() {
   await installShareStubs(desktopPage)
 
   for (const [index, verification] of desktopVerifications.entries()) {
+    logProgress(`verify public feedback readback ${verification.fixture.key} on desktop started`, {
+      shareSlug: verification.fixture.shareSlug,
+    })
     await gotoPublicShare(desktopPage, verification.fixture.shareSlug)
     await desktopPage.waitForFunction((expectedComment) => {
       const text = document.body?.innerText || ''
       return text.includes(expectedComment)
-    }, verification.feedback.comment, { timeout: 12000 }).catch(() => {})
+    }, verification.feedback.comment, { timeout: 5000 }).catch(() => {})
     const desktopState = await pageState(desktopPage)
 
     record(`multi-itinerary ${verification.fixture.key} feedback remains visible on desktop`, (
@@ -615,6 +736,7 @@ async function runBrowserChecks() {
         String(nativeShareState.nativeShares[0]?.url || '').includes(`/t/${verification.fixture.shareSlug}`)
       ), nativeShareState)
     }
+    logProgress(`verify public feedback readback ${verification.fixture.key} on desktop completed`)
   }
 
   await desktopContext.close().catch(() => {})
@@ -713,54 +835,59 @@ async function runShareCardImageChecks() {
 }
 
 try {
-  await setupSupabase()
-  await createDisposableOwner()
-  await createFixtureSet()
+  await runPhase('setup Supabase client', setupSupabase, 30000)
+  await runPhase('create disposable owner', createDisposableOwner, 45000)
+  await runPhase('create public share fixture set', createFixtureSet, 90000)
   if (failures.length === 0) {
-    await runNodeScript('scripts/platform-share-smoke.mjs', {
+    const shareSmoke = await runPhase('run public share API smoke across fixture set', () => runNodeScript('scripts/platform-share-smoke.mjs', {
       QA_SHARE_SLUGS: created.shareSlugs.join(','),
-    }).then((shareSmoke) => {
-      record('multi-itinerary fixture set passes public share API smoke', shareSmoke.code === 0 && shareSmoke.parsed?.failed === 0, {
-        code: shareSmoke.code,
-        checked: shareSmoke.parsed?.checked,
-        passed: shareSmoke.parsed?.passed,
-        failed: shareSmoke.parsed?.failed,
-        shareSlugCount: shareSmoke.parsed?.shareSlugs?.length,
-        stderr: shareSmoke.stderr.trim().slice(-300),
-      })
+    }), childScriptTimeoutMs + 5000)
+    record('multi-itinerary fixture set passes public share API smoke', shareSmoke.code === 0 && shareSmoke.parsed?.failed === 0, {
+      code: shareSmoke.code,
+      signal: shareSmoke.signal || null,
+      timedOut: Boolean(shareSmoke.timedOut),
+      checked: shareSmoke.parsed?.checked,
+      passed: shareSmoke.parsed?.passed,
+      failed: shareSmoke.parsed?.failed,
+      shareSlugCount: shareSmoke.parsed?.shareSlugs?.length,
+      stderr: shareSmoke.stderr.trim().slice(-300),
     })
   }
-  if (failures.length === 0) await runShareCardImageChecks()
-  if (failures.length === 0) await runBrowserChecks()
+  if (failures.length === 0) await runPhase('verify multi-itinerary share-card images', runShareCardImageChecks, 120000)
+  if (failures.length === 0) await runPhase('verify multi-itinerary public and owner browser flows', runBrowserChecks, browserTimeoutMs)
 } catch (error) {
   record('multi-itinerary share UI smoke completed without unexpected exception', false, {
     error: error instanceof Error ? error.message : String(error),
   })
 } finally {
-  await browser?.close().catch(() => {})
-  await cleanupFeedback()
-  await cleanupFixtures()
-  await cleanupOwner()
+  await runPhase('close browser', async () => {
+    await browser?.close().catch(() => {})
+  }, cleanupTimeoutMs).catch((error) => {
+    record('multi-itinerary browser cleanup completed before timeout', false, {
+      error: error instanceof Error ? error.message : String(error),
+    })
+  })
+  await runPhase('cleanup inserted feedback', cleanupFeedback, cleanupTimeoutMs).catch((error) => {
+    record('multi-itinerary feedback cleanup completed before timeout', false, {
+      error: error instanceof Error ? error.message : String(error),
+    })
+  })
+  await runPhase('cleanup public share fixtures', cleanupFixtures, cleanupTimeoutMs).catch((error) => {
+    record('multi-itinerary public share fixture cleanup completed before timeout', false, {
+      error: error instanceof Error ? error.message : String(error),
+    })
+  })
+  await runPhase('cleanup disposable owner', cleanupOwner, cleanupTimeoutMs).catch((error) => {
+    record('multi-itinerary owner cleanup completed before timeout', false, {
+      error: error instanceof Error ? error.message : String(error),
+    })
+  })
 }
 
-const summary = {
-  baseUrl,
-  runId,
-  ownerUserId,
-  fixtureLimit,
-  fixtureCount: created?.fixtures?.length || 0,
-  checkedFixtureKeys: created?.fixtures?.slice(0, Math.max(1, fixtureLimit)).map((fixture) => fixture.key) || [],
-  shareSlugs: created?.shareSlugs || [],
-  feedbackIds: insertedFeedbackIds,
-  shareCardAnalyses,
-  fixtureCleanup,
-  ownerCleanup,
-  checked: results.length,
-  passed: results.filter((result) => result.ok).length,
-  failed: failures.length,
-  results,
-  failures,
-}
+finishing = true
+clearTimeout(totalWatchdog)
+
+const summary = buildSummary()
 
 console.log(JSON.stringify(summary, null, 2))
 

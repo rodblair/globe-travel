@@ -3,7 +3,7 @@
 Date: 2026-05-21
 Operational date: 2026-06-04
 Time zone: America/Toronto
-Generated at: 2026-06-04T16:24:15.810Z
+Generated at: 2026-06-04T20:11:30.466Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
