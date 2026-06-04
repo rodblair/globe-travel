@@ -9,17 +9,15 @@ Status: pass
 - Checked: 3
 - Passed: 3
 - Failed: 0
-- Completed visual-review history dates: 2
+- Completed visual-review history dates: 3
 - Required public-launch history dates: 4
-- Remaining required review dates: 2
-- Scheduled review entries: 3
-- Submission templates: 3 written to `qa/production-visual-review-submissions-2026-05-21`
+- Remaining required review dates: 1
+- Scheduled review entries: 1
+- Submission templates: 1 written to `qa/production-visual-review-submissions-2026-05-21`
 - Assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
 
 ## Scheduled Reviews
 
-- PROD-VISUAL-HISTORY-002: 2026-05-28 — planned — Product
-- PROD-VISUAL-HISTORY-003: 2026-06-04 — planned — Product
 - PROD-VISUAL-HISTORY-004: 2026-06-11 — planned — Product
 
 ## Checks

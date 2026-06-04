@@ -6,13 +6,13 @@
   "failed": 0,
   "launchOperatorArtifact": "qa/launch-operator-today-2026-06-04.json",
   "readyForImport": false,
-  "rowCount": 27,
+  "rowCount": 26,
   "betaRowCount": 25,
-  "visualRowCount": 2,
-  "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
-  "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
-  "csvValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
-  "csvImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+  "visualRowCount": 1,
+  "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
+  "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
+  "csvValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+  "csvImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
   "postImportCommands": [
     "npm run qa:launch-refresh",
     "npm run qa:launch-signoff"
@@ -161,13 +161,8 @@
       "exists": true
     },
     {
-      "id": "PROD-VISUAL-HISTORY-002",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
-      "exists": true
-    },
-    {
-      "id": "PROD-VISUAL-HISTORY-003",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt",
+      "id": "PROD-VISUAL-HISTORY-004",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt",
       "exists": true
     }
   ],
@@ -298,13 +293,8 @@
       "exists": true
     },
     {
-      "id": "PROD-VISUAL-HISTORY-002",
-      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
-      "exists": true
-    },
-    {
-      "id": "PROD-VISUAL-HISTORY-003",
-      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
+      "id": "PROD-VISUAL-HISTORY-004",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
       "exists": true
     }
   ],
@@ -960,15 +950,15 @@
       "contactRecordLocationExample": "external-record:beta-hr-025-sent-proof"
     },
     {
-      "id": "PROD-VISUAL-HISTORY-002",
+      "id": "PROD-VISUAL-HISTORY-004",
       "workType": "production-visual-review",
       "destination": "Production visual review",
-      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
-      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
-      "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
-      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json",
-      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt",
+      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+      "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-11",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
+      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
       "validateCommand": "npm run qa:visual-review-intake",
       "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
       "postImportCommands": [
@@ -980,36 +970,10 @@
       "sentAt": "",
       "contactRecordLocation": "",
       "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
-      "reviewerAliasExample": "reviewer-prod-visual-history-002",
+      "reviewerAliasExample": "reviewer-prod-visual-history-004",
       "deliveryChannelExample": "external-outreach-log",
       "sentAtExample": "2026-06-04T12:00:00.000Z",
-      "contactRecordLocationExample": "external-record:prod-visual-history-002-sent-proof"
-    },
-    {
-      "id": "PROD-VISUAL-HISTORY-003",
-      "workType": "production-visual-review",
-      "destination": "Production visual review",
-      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt",
-      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
-      "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-04",
-      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json",
-      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json",
-      "validateCommand": "npm run qa:visual-review-intake",
-      "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
-      "postImportCommands": [
-        "npm run qa:launch-refresh",
-        "npm run qa:launch-signoff"
-      ],
-      "reviewerAlias": "",
-      "deliveryChannel": "",
-      "sentAt": "",
-      "contactRecordLocation": "",
-      "notes": "Fill only after real outreach is sent. Do not store reviewer names, email addresses, phone numbers, or other contact details in this repo.",
-      "reviewerAliasExample": "reviewer-prod-visual-history-003",
-      "deliveryChannelExample": "external-outreach-log",
-      "sentAtExample": "2026-06-04T12:00:00.000Z",
-      "contactRecordLocationExample": "external-record:prod-visual-history-003-sent-proof"
+      "contactRecordLocationExample": "external-record:prod-visual-history-004-sent-proof"
     }
   ],
   "checks": [
@@ -1023,14 +987,14 @@
     {
       "name": "sent-record template covers every current outreach send action",
       "ok": true,
-      "actionRowCount": 27,
-      "outreachSendRowCount": 27,
-      "templateRowCount": 27
+      "actionRowCount": 26,
+      "outreachSendRowCount": 26,
+      "templateRowCount": 26
     },
     {
       "name": "sent-record template keeps post-send proof fields blank",
       "ok": true,
-      "blankFieldCount": 27
+      "blankFieldCount": 26
     },
     {
       "name": "sent-record template points at existing message files",
@@ -1045,12 +1009,12 @@
     {
       "name": "sent-record template includes validation and import commands",
       "ok": true,
-      "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
-      "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
-      "csvValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
-      "csvImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+      "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
+      "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent",
+      "csvValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+      "csvImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
       "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
       "rowsMissingCommands": []
     },
     {

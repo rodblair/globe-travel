@@ -2659,7 +2659,7 @@ if (dispatchMarkSentImportActionIds.includes(dispatchMarkSentImportRehearsal.imp
 if (Number(dispatchMarkSentImportRehearsal.launchOperatorBetaCompleted || 0) !== 0) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal advanced beta review evidence')
 }
-if (Number(dispatchMarkSentImportRehearsal.launchOperatorVisualHistoryCount || 0) !== 2) {
+if (Number(dispatchMarkSentImportRehearsal.launchOperatorVisualHistoryCount || 0) !== visualHistoryDates.length) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal changed production visual review evidence')
 }
 if (Number(dispatchMarkSentImportRehearsal.canonicalBetaSentCount || 0) !== 0) {

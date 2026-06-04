@@ -1,0 +1,2 @@
+id,dueAt,requiredForPublicLaunch,sendStatus,reviewerAlias,deliveryChannel,sentAt,contactRecordLocation,messageFile,command,completedSubmissionPath
+PROD-VISUAL-HISTORY-004,2026-06-11,true,prepared-not-sent,,,,,qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt,QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production,qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json

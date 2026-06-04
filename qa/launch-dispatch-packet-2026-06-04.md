@@ -11,7 +11,7 @@ Status: pass
 - Launch operator board: `qa/launch-operator-today-2026-06-04.json`
 - Sent-record template: `qa/dispatch-sent-record-template-2026-06-04.json`
 - Sent-record CSV to fill after real outreach: `qa/dispatch-sent-record-template-2026-06-04.csv`
-- Outreach rows: 27 (25 beta, 2 visual)
+- Outreach rows: 26 (25 beta, 1 visual)
 
 ## Operator Brief
 
@@ -47,8 +47,7 @@ Status: pass
 | 23 | BETA-HR-023 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-023 Washington DC review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-023-washington-dc.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
 | 24 | BETA-HR-024 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-024 Mexico City review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-024-mexico-city.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
 | 25 | BETA-HR-025 | beta-human-review | P0 | [Globe.travel beta] BETA-HR-025 London review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-025-london.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| 26 | PROD-VISUAL-HISTORY-002 | production-visual-review | P0 | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
-| 27 | PROD-VISUAL-HISTORY-003 | production-visual-review | P1 | [Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json` |
+| 26 | PROD-VISUAL-HISTORY-004 | production-visual-review | P1 | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## Operating Meaning
 
@@ -56,8 +55,8 @@ This packet is a send bundle, not proof that anything was sent. Use it to copy t
 
 ## After Real Sends
 
-- Validate filled CSV: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
-- Import filled CSV: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
+- Validate filled CSV: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
+- Import filled CSV: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
 - Run: `npm run qa:launch-refresh`
 - Run: `npm run qa:launch-signoff`
 
@@ -1388,95 +1387,44 @@ Launch rule:
 This message is reviewer outreach, not completed review evidence. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported.
 ```
 
-### 26. PROD-VISUAL-HISTORY-002 (production-visual-review)
-
-- Priority: P0
-- Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28
-- Message source: `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt`
-- Start URL or command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production`
-- Packet or artifact: `qa/visual-baseline-production-review-2026-05-28`
-- Submission template: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json`
-- Completed evidence target: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json`
-- Validate completed evidence: `npm run qa:visual-review-intake`
-- Import completed evidence: `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`
-
-```text
-Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28
-
-You are assigned PROD-VISUAL-HISTORY-002, a scheduled Globe.travel production visual review for 2026-05-28.
-
-Run command:
-QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production
-
-Expected artifact:
-qa/visual-baseline-production-review-2026-05-28
-
-Submission template:
-qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json
-
-Completed submission filename:
-qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json
-
-Acceptance criteria:
-Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.
-
-Reviewer checklist:
-- Run the production visual command on or after 2026-05-28.
-- Review all 25 screenshots across landing, pricing, login, signup, public-share and phone, tablet, laptop, desktop, wide.
-- Confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs.
-- Replace production commit and deployment placeholders with the current /api/health deployment metadata.
-- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json.
-- Validate with npm run qa:visual-review-intake before import.
-
-Operator checklist:
-- Assign a named visual reviewer and record their contact outside this repo.
-- Send this message file, the command, and the submission template path to the reviewer.
-- Confirm the review is not imported until screenshots have actually been inspected.
-- Import only after validation is clean: QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake.
-- Re-run npm run qa:visual-review-progress, npm run qa:launch-refresh, and npm run qa:launch-signoff after import.
-
-Launch rule:
-This message is visual-review outreach, not completed visual-review history. Public launch can count this review only after the completed non-template JSON passes intake and is explicitly imported into reviewHistory.
-```
-
-### 27. PROD-VISUAL-HISTORY-003 (production-visual-review)
+### 26. PROD-VISUAL-HISTORY-004 (production-visual-review)
 
 - Priority: P1
-- Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04
-- Message source: `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt`
-- Start URL or command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production`
-- Packet or artifact: `qa/visual-baseline-production-review-2026-06-04`
-- Submission template: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json`
-- Completed evidence target: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json`
+- Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11
+- Message source: `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt`
+- Start URL or command: `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production`
+- Packet or artifact: `qa/visual-baseline-production-review-2026-06-11`
+- Submission template: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json`
+- Completed evidence target: `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json`
 - Validate completed evidence: `npm run qa:visual-review-intake`
 - Import completed evidence: `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`
 
 ```text
-Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04
+Subject: [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11
 
-You are assigned PROD-VISUAL-HISTORY-003, a scheduled Globe.travel production visual review for 2026-06-04.
+You are assigned PROD-VISUAL-HISTORY-004, a scheduled Globe.travel production visual review for 2026-06-11.
 
 Run command:
-QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production
+QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production
 
 Expected artifact:
-qa/visual-baseline-production-review-2026-06-04
+qa/visual-baseline-production-review-2026-06-11
 
 Submission template:
-qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json
+qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json
 
 Completed submission filename:
-qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json
+qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json
 
 Acceptance criteria:
 Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.
 
 Reviewer checklist:
-- Run the production visual command on or after 2026-06-04.
+- Run the production visual command on or after 2026-06-11.
 - Review all 25 screenshots across landing, pricing, login, signup, public-share and phone, tablet, laptop, desktop, wide.
 - Confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs.
 - Replace production commit and deployment placeholders with the current /api/health deployment metadata.
-- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json.
+- Save the completed non-template JSON as qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json.
 - Validate with npm run qa:visual-review-intake before import.
 
 Operator checklist:

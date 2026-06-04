@@ -27,8 +27,8 @@
   ],
   "betaCompletedBefore": 0,
   "betaCompletedAfter": 0,
-  "visualHistoryBefore": 2,
-  "visualHistoryAfter": 2,
+  "visualHistoryBefore": 3,
+  "visualHistoryAfter": 3,
   "rawArtifactsCleanedUp": true,
   "checks": [
     {
@@ -87,8 +87,8 @@
       "name": "visual intake reports local-calendar future-dated production evidence",
       "ok": true,
       "issues": [
+        "scheduledReviewId does not match a scheduled review",
         "reviewedAt cannot be in the future",
-        "reviewedAt must match scheduled dueAt 2026-05-28",
         "summaryArtifact is not readable: ENOENT: no such file or directory, open '/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-review-2026-05-28/summary.json'"
       ]
     },
@@ -98,18 +98,18 @@
       "exitCode": 1,
       "status": "fail",
       "issues": [
+        "scheduledReviewId does not match a scheduled review",
         "reviewedAt cannot be in the future",
         "reviewedBy appears to include contact details",
         "notes appears to include contact details",
-        "reviewedAt must match scheduled dueAt 2026-05-28",
         "summaryArtifact is not readable: ENOENT: no such file or directory, open '/Users/rodneyblair/Documents/GitHub/globe-travel/qa/visual-baseline-production-review-2026-05-28/summary.json'"
       ]
     },
     {
       "name": "visual intake rehearsal does not mutate review history",
       "ok": true,
-      "before": 2,
-      "after": 2
+      "before": 3,
+      "after": 3
     },
     {
       "name": "review intake rehearsal cleans up raw temporary artifacts",

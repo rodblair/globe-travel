@@ -241,6 +241,22 @@ const reviewHistory = Array.isArray(register.reviewHistory) ? register.reviewHis
 const existingHistoryDates = new Set(reviewHistory.map((review) => dateOnly(review.reviewedAt)).filter(Boolean))
 const { missingDirectory, submissions } = await readSubmissions()
 
+function importedHistoryMatch(record) {
+  if (!record?.submission) return null
+  const review = normalizeReview(record.submission)
+  const submissionPath = `${qaDisplayPath(submissionDir)}/${basename(record.file)}`
+  return reviewHistory.find((history) => (
+    history.reviewSubmissionFile === submissionPath ||
+    (
+      dateOnly(history.reviewedAt) === review.reviewedAt &&
+      String(history.artifact || '').trim() === review.artifact &&
+      String(history.summaryArtifact || '').trim() === review.summaryArtifact &&
+      String(history.productionCommit || '').trim() === review.productionCommit &&
+      normalizeDeploymentUrl(history.deploymentUrl) === normalizeDeploymentUrl(review.deploymentUrl)
+    )
+  )) || null
+}
+
 const seenScheduledIds = new Map()
 const seenReviewDates = new Map()
 const duplicateScheduledIds = []
@@ -261,21 +277,28 @@ for (const record of submissions) {
 
 const validationResults = []
 for (const record of submissions) {
+  const alreadyImported = importedHistoryMatch(record)
   const scheduledReview = record.submission ? scheduledById.get(record.submission.scheduledReviewId) : null
   const issues = record.parseError
     ? [`invalid JSON: ${record.parseError}`]
-    : await submissionIssues(record.submission, scheduledReview, existingHistoryDates)
+    : alreadyImported
+      ? []
+      : await submissionIssues(record.submission, scheduledReview, existingHistoryDates)
   validationResults.push({
     file: record.file,
     scheduledReviewId: record.submission?.scheduledReviewId || null,
     reviewedAt: dateOnly(record.submission?.reviewedAt),
     ok: issues.length === 0,
+    alreadyImported: Boolean(alreadyImported),
     issues,
   })
 }
 
 const invalidSubmissions = validationResults.filter((result) => !result.ok)
-const validRecords = submissions.filter((record) => validationResults.find((result) => result.file === record.file)?.ok === true)
+const validRecords = submissions.filter((record) => {
+  const result = validationResults.find((item) => item.file === record.file)
+  return result?.ok === true && result.alreadyImported !== true
+})
 let imported = false
 let importedReviewDates = []
 let reviewHistoryCountAfter = reviewHistory.length

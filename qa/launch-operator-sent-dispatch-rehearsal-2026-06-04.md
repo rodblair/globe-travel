@@ -9,7 +9,7 @@ Status: pass
 - Passed: 7
 - Failed: 0
 - Beta row rehearsed as sent: BETA-HR-006
-- Visual row rehearsed as sent: PROD-VISUAL-HISTORY-002
+- Visual row rehearsed as sent: PROD-VISUAL-HISTORY-004
 - Launch operator status: fail
 - Launch public status after rehearsal: beta-ready-public-blocked
 - Raw artifacts cleaned up: yes

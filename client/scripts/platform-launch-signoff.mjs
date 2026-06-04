@@ -4005,7 +4005,7 @@ async function checkPublicLaunchStatusArtifact(productionHealth) {
     !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.beta) &&
     !dispatchMarkSentImportRehearsalStatus.launchOperatorActionIds.includes(dispatchMarkSentImportRehearsalStatus.importedRows?.visual) &&
     Number(dispatchMarkSentImportRehearsalStatus.launchOperatorBetaCompleted) === 0 &&
-    Number(dispatchMarkSentImportRehearsalStatus.launchOperatorVisualHistoryCount) === 2 &&
+    Number(dispatchMarkSentImportRehearsalStatus.launchOperatorVisualHistoryCount) === Number(visualReviewStatus.distinctHistoryDateCount || 0) &&
     Number(dispatchMarkSentImportRehearsalStatus.canonicalBetaSentCount) === 0 &&
     Number(dispatchMarkSentImportRehearsalStatus.canonicalVisualSentCount) === 0 &&
     dispatchMarkSentImportRehearsalStatus.rawArtifactsCleanedUp === true &&

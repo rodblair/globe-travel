@@ -118,6 +118,10 @@ function refreshVisualLog(summary) {
 
 const betaDispatchLog = await readJson(betaDispatchLogPath)
 const visualDispatchLog = await readJson(visualDispatchLogPath)
+const visualRegister = await readJson('qa/production-visual-review-register.json').catch(() => null)
+const expectedVisualHistoryCount = Array.isArray(visualRegister?.reviewHistory)
+  ? visualRegister.reviewHistory.length
+  : 0
 const betaRows = Array.isArray(betaDispatchLog.dispatchRows) ? betaDispatchLog.dispatchRows : []
 const visualRows = Array.isArray(visualDispatchLog.dispatchRows) ? visualDispatchLog.dispatchRows : []
 const betaSelected = betaRows.find((row) => row.sendStatus !== 'sent' && daysBetween(betaDispatchLog.today, row.expectedSendBy) === 0) ||
@@ -175,7 +179,7 @@ const launchOperatorOnlySelfGuardrails =
 const launchOperatorEvidenceDidNotAdvance =
   !launchOperatorDeploymentRuntimeBlocked &&
   Number(launchSummary?.betaReviews?.completed || 0) === 0 &&
-  Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === 2
+  Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === expectedVisualHistoryCount
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const launchOperatorBoardActionable = result.status === 0 ||

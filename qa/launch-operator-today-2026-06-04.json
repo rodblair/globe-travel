@@ -2,7 +2,7 @@
   "date": "2026-06-04",
   "today": "2026-06-04",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-04T15:19:47.236Z",
+  "generatedAt": "2026-06-04T16:24:11.100Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -11,12 +11,12 @@
   "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
   "dispatchSentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-06-04.json",
   "dispatchSentRecordTemplateReport": "qa/dispatch-sent-record-template-2026-06-04.md",
   "dispatchSentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-06-04.csv",
-  "dispatchSentRecordTemplateValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
-  "dispatchSentRecordTemplateImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+  "dispatchSentRecordTemplateValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+  "dispatchSentRecordTemplateImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
   "dispatchSentRecordTemplatePostImportCommands": [
     "npm run qa:launch-refresh",
     "npm run qa:launch-signoff"
@@ -34,10 +34,10 @@
     "remaining": 25
   },
   "productionVisualReviews": {
-    "distinctHistoryDateCount": 2,
+    "distinctHistoryDateCount": 3,
     "minimumForPublicLaunch": 4,
-    "remainingDistinctDates": 2,
-    "nextReviewDueAt": "2026-05-28"
+    "remainingDistinctDates": 1,
+    "nextReviewDueAt": "2026-06-11"
   },
   "betaPreparedDispatchRowCount": 25,
   "betaDeferredUntilDispatchPreparedCount": 0,
@@ -54,10 +54,10 @@
   "betaFollowUpsBlockedUntilInitialSendCount": 25,
   "betaReviewsDueSoonCount": 25,
   "visualDueSoonCount": 1,
-  "visualOverdueCount": 1,
+  "visualOverdueCount": 0,
   "visualDispatchLogPreparedDueSoonCount": 1,
-  "visualDispatchLogPreparedOverdueCount": 1,
-  "visualDispatchLogRequiredPreparedNotSentCount": 2,
+  "visualDispatchLogPreparedOverdueCount": 0,
+  "visualDispatchLogRequiredPreparedNotSentCount": 1,
   "visualDispatchLogSentCount": 0,
   "deploymentActionCount": 0,
   "operatorHandoff": {
@@ -92,7 +92,7 @@
     "dueTodayBetaInviteIds": [],
     "dueSoonBetaInviteIds": [],
     "dueSoonVisualReviewIds": [
-      "PROD-VISUAL-HISTORY-003"
+      "PROD-VISUAL-HISTORY-004"
     ],
     "followUpsBlockedUntilInitialSendIds": [
       "BETA-HR-001",
@@ -374,29 +374,19 @@
         "sendStatus": "prepared-not-sent"
       },
       {
-        "id": "PROD-VISUAL-HISTORY-002",
-        "priority": "P0",
-        "workType": "production-visual-review",
-        "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28",
-        "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
-        "evidencePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
-        "sendTiming": "review overdue by 7 days",
-        "sendStatus": "prepared-not-sent"
-      },
-      {
-        "id": "PROD-VISUAL-HISTORY-003",
+        "id": "PROD-VISUAL-HISTORY-004",
         "priority": "P1",
         "workType": "production-visual-review",
-        "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04",
-        "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt",
-        "evidencePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json",
-        "sendTiming": "review today",
+        "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11",
+        "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt",
+        "evidencePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
+        "sendTiming": "review in 7 days",
         "sendStatus": "prepared-not-sent"
       }
     ],
     "sentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-06-04.csv",
-    "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
-    "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+    "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+    "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
     "postImportCommands": [
       "npm run qa:launch-refresh",
       "npm run qa:launch-signoff"
@@ -1056,56 +1046,30 @@
       "messageSubject": "[Globe.travel beta] BETA-HR-025 London review due 2026-06-04"
     },
     {
-      "priority": "P0",
-      "workType": "production-visual-review",
-      "id": "PROD-VISUAL-HISTORY-002",
-      "destination": "Production visual review",
-      "owner": "Product",
-      "sendBy": "",
-      "sendTiming": "",
-      "followUpAt": "",
-      "followUpTiming": "",
-      "dueAt": "2026-05-28",
-      "dueTiming": "review overdue by 7 days",
-      "daysUntilDue": -7,
-      "sendStatus": "prepared-not-sent",
-      "reviewerAlias": "",
-      "contactRecordLocation": "",
-      "action": "Review overdue by 7 days; run production visual review and import evidence.",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
-      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
-      "packetOrArtifact": "qa/visual-baseline-production-review-2026-05-28",
-      "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json",
-      "validateCommand": "npm run qa:visual-review-intake",
-      "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
-      "reviewerRole": "visual QA reviewer",
-      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28"
-    },
-    {
       "priority": "P1",
       "workType": "production-visual-review",
-      "id": "PROD-VISUAL-HISTORY-003",
+      "id": "PROD-VISUAL-HISTORY-004",
       "destination": "Production visual review",
       "owner": "Product",
       "sendBy": "",
       "sendTiming": "",
       "followUpAt": "",
       "followUpTiming": "",
-      "dueAt": "2026-06-04",
-      "dueTiming": "review today",
-      "daysUntilDue": 0,
+      "dueAt": "2026-06-11",
+      "dueTiming": "review in 7 days",
+      "daysUntilDue": 7,
       "sendStatus": "prepared-not-sent",
       "reviewerAlias": "",
       "contactRecordLocation": "",
-      "action": "Review today; send visual-review assignment or confirm scheduled reviewer time.",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt",
-      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
-      "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-04",
-      "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json",
+      "action": "Review in 7 days; send visual-review assignment or confirm scheduled reviewer time.",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt",
+      "startUrlOrCommand": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+      "packetOrArtifact": "qa/visual-baseline-production-review-2026-06-11",
+      "submissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
       "validateCommand": "npm run qa:visual-review-intake",
       "importCommand": "QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake",
       "reviewerRole": "visual QA reviewer",
-      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04"
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11"
     }
   ],
   "messageFileChecks": [
@@ -1237,13 +1201,8 @@
   ],
   "visualMessageFileChecks": [
     {
-      "id": "PROD-VISUAL-HISTORY-002",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt",
-      "exists": true
-    },
-    {
-      "id": "PROD-VISUAL-HISTORY-003",
-      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt",
+      "id": "PROD-VISUAL-HISTORY-004",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt",
       "exists": true
     }
   ],
@@ -1251,8 +1210,8 @@
   "executionOrder": [
     "Send every P0/P1 message file in the Send Packet Index; 25 beta invites overdue, 0 beta invites due today, 0 beta invites due soon, and 1 production visual review due soon.",
     "Record each real send in `qa/dispatch-sent-record-template-2026-06-04.csv` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.",
-    "Validate the filled sent-record CSV with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`.",
-    "Import the sent state with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent` only after validation passes.",
+    "Validate the filled sent-record CSV with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`.",
+    "Import the sent state with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent` only after validation passes.",
     "Refresh launch evidence with `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.",
     "Collect completed non-template beta and visual review JSON, validate intake, import only after clean validation, then rerun launch gates."
   ],
@@ -1273,7 +1232,7 @@
     {
       "name": "launch today has actionable deployment, beta, or visual work",
       "ok": true,
-      "actionRowCount": 27
+      "actionRowCount": 26
     },
     {
       "name": "launch today exposes runtime deployment blocker when production is behind",
@@ -1288,9 +1247,9 @@
       "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
       "betaDispatchLogStatus": "pass",
       "betaDispatchLogRowCount": 25,
-      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+      "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
       "visualDispatchLogStatus": "pass",
-      "visualDispatchLogRowCount": 3
+      "visualDispatchLogRowCount": 1
     },
     {
       "name": "launch today beta actions are backed by prepared dispatch packets",
@@ -1376,24 +1335,20 @@
       "betaDispatchDueSoon": [],
       "betaDispatchLogDueSoon": [],
       "visualDueSoon": [
-        "PROD-VISUAL-HISTORY-003"
+        "PROD-VISUAL-HISTORY-004"
       ],
       "visualDispatchLogDueSoon": [
-        "PROD-VISUAL-HISTORY-003"
+        "PROD-VISUAL-HISTORY-004"
       ],
-      "visualOverdue": [
-        "PROD-VISUAL-HISTORY-002"
-      ],
-      "visualDispatchLogOverdue": [
-        "PROD-VISUAL-HISTORY-002"
-      ]
+      "visualOverdue": [],
+      "visualDispatchLogOverdue": []
     },
     {
       "name": "launch today exposes time-aware execution actions",
       "ok": true,
       "rowsMissingTiming": [],
       "overdueRowsMissingExplicitAction": [],
-      "timedActionRowCount": 27
+      "timedActionRowCount": 26
     },
     {
       "name": "launch today exposes exact sent-record handoff commands",
@@ -1401,8 +1356,8 @@
       "dispatchSentRecordTemplateArtifact": "qa/dispatch-sent-record-template-2026-06-04.json",
       "dispatchSentRecordTemplateReport": "qa/dispatch-sent-record-template-2026-06-04.md",
       "dispatchSentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-06-04.csv",
-      "dispatchSentRecordTemplateValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
-      "dispatchSentRecordTemplateImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+      "dispatchSentRecordTemplateValidationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+      "dispatchSentRecordTemplateImportCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
       "dispatchSentRecordTemplatePostImportCommands": [
         "npm run qa:launch-refresh",
         "npm run qa:launch-signoff"
@@ -1411,11 +1366,11 @@
     {
       "name": "launch today exposes a complete operator handoff summary",
       "ok": true,
-      "handoffRowCount": 27,
+      "handoffRowCount": 26,
       "missingHandoffFields": [],
       "sentRecordTemplateCsv": "qa/dispatch-sent-record-template-2026-06-04.csv",
-      "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
-      "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+      "validationCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
+      "importCommand": "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent",
       "postImportCommands": [
         "npm run qa:launch-refresh",
         "npm run qa:launch-signoff"
@@ -1510,9 +1465,7 @@
         "BETA-HR-024",
         "BETA-HR-025"
       ],
-      "visualOverdue": [
-        "PROD-VISUAL-HISTORY-002"
-      ]
+      "visualOverdue": []
     }
   ],
   "failures": [
@@ -1546,9 +1499,7 @@
         "BETA-HR-024",
         "BETA-HR-025"
       ],
-      "visualOverdue": [
-        "PROD-VISUAL-HISTORY-002"
-      ]
+      "visualOverdue": []
     }
   ],
   "jsonArtifact": "qa/launch-operator-today-2026-06-04.json",

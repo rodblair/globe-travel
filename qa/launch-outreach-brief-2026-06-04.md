@@ -10,7 +10,7 @@ Status: pass
 - Failed: 0
 - Public launch status: beta-ready-public-blocked
 - Current blockers: beta-human-review-threshold, production-visual-review-history
-- Outreach rows: 27 (25 beta, 2 visual)
+- Outreach rows: 26 (25 beta, 1 visual)
 - Sent-record CSV to fill only after real outreach: `qa/dispatch-sent-record-template-2026-06-04.csv`
 
 ## Do Now
@@ -52,13 +52,12 @@ Send or reassign 25 overdue beta invites now.
 | 23 | P0 | BETA-HR-023 | beta-human-review | send overdue by 1 day | review today | [Globe.travel beta] BETA-HR-023 Washington DC review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-023-washington-dc.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
 | 24 | P0 | BETA-HR-024 | beta-human-review | send overdue by 1 day | review today | [Globe.travel beta] BETA-HR-024 Mexico City review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-024-mexico-city.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
 | 25 | P0 | BETA-HR-025 | beta-human-review | send overdue by 1 day | review today | [Globe.travel beta] BETA-HR-025 London review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-025-london.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| 26 | P0 | PROD-VISUAL-HISTORY-002 | production-visual-review | n/a | review overdue by 7 days | [Globe.travel visual QA] PROD-VISUAL-HISTORY-002 production review due 2026-05-28 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-002-2026-05-28.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.json` |
-| 27 | P1 | PROD-VISUAL-HISTORY-003 | production-visual-review | n/a | review today | [Globe.travel visual QA] PROD-VISUAL-HISTORY-003 production review due 2026-06-04 | `qa/production-visual-review-dispatch-outbox-2026-05-26/prod-visual-history-003-2026-06-04.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json` |
+| 26 | P1 | PROD-VISUAL-HISTORY-004 | production-visual-review | n/a | review in 7 days | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## After Real Sends
 
-- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
-- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
+- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
+- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
 - `npm run qa:launch-refresh`
 - `npm run qa:launch-signoff`
 

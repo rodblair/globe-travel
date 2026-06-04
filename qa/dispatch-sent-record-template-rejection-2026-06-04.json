@@ -7,14 +7,14 @@
   "templateArtifact": "qa/dispatch-sent-record-template-2026-06-04.json",
   "templateReport": "qa/dispatch-sent-record-template-2026-06-04.md",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
   "markSentExitCode": 1,
   "markSentStatus": "fail",
   "markSentImportMode": true,
-  "requestedUpdateCount": 27,
+  "requestedUpdateCount": 26,
   "betaUpdateCount": 0,
   "visualUpdateCount": 0,
-  "rejectionIssueCount": 108,
+  "rejectionIssueCount": 104,
   "invalidProofExitCode": 1,
   "invalidProofStatus": "fail",
   "invalidProofIssueCount": 6,
@@ -42,7 +42,7 @@
       "ok": true,
       "templateStatus": "pass",
       "readyForImport": false,
-      "rowCount": 27
+      "rowCount": 26
     },
     {
       "name": "blank sent-record template report states the evidence boundary",
@@ -54,8 +54,8 @@
       "exitCode": 1,
       "status": "fail",
       "importMode": true,
-      "requestedUpdateCount": 27,
-      "templateRowCount": 27
+      "requestedUpdateCount": 26,
+      "templateRowCount": 26
     },
     {
       "name": "blank sent-record template rejection names every required proof field",

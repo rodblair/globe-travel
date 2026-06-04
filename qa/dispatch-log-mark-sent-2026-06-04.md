@@ -21,7 +21,7 @@ Use this command after real outreach happens outside the repo. The sent record m
 
 - Pass: BETA-HR-001 (beta)
 - Pass: BETA-HR-006 (beta)
-- Pass: PROD-VISUAL-HISTORY-002 (visual)
+- Pass: PROD-VISUAL-HISTORY-004 (visual)
 
 ## Issues
 

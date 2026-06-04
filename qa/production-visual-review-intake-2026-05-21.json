@@ -7,18 +7,27 @@
   "status": "pass",
   "imported": false,
   "importRequested": false,
-  "scheduledReviewCount": 3,
-  "reviewHistoryCountBefore": 2,
-  "reviewHistoryCountAfter": 2,
-  "submissionCount": 0,
-  "validSubmissionCount": 0,
+  "scheduledReviewCount": 1,
+  "reviewHistoryCountBefore": 3,
+  "reviewHistoryCountAfter": 3,
+  "submissionCount": 1,
+  "validSubmissionCount": 1,
   "invalidSubmissionCount": 0,
   "duplicateScheduledIdCount": 0,
   "duplicateReviewDateCount": 0,
   "checked": 4,
   "passed": 4,
   "failed": 0,
-  "submissions": [],
+  "submissions": [
+    {
+      "file": "PROD-VISUAL-HISTORY-003.json",
+      "scheduledReviewId": "PROD-VISUAL-HISTORY-003",
+      "reviewedAt": "2026-06-04",
+      "ok": true,
+      "alreadyImported": true,
+      "issues": []
+    }
+  ],
   "checks": [
     {
       "name": "production visual review submission directory is present",
@@ -28,7 +37,7 @@
     {
       "name": "production visual review submissions parse and match scheduled reviews",
       "ok": true,
-      "submissionCount": 0,
+      "submissionCount": 1,
       "invalidSubmissionCount": 0,
       "invalidSubmissions": []
     },

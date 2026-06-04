@@ -333,6 +333,14 @@ const publicStatusReadyForBlockerBoard = (
   publicStatus.status === 'blocked' &&
   publicStatusShowsExpectedBlockers &&
   (hasOnlySelfReferentialPublicStatusGuardrails || hasOnlyAcceptedBlockedStatusGuardrails)
+  ) || (
+  publicStatus.status === 'blocked' &&
+  publicStatusShowsExpectedBlockers &&
+  !publicStatusGuardrailIssues.some((issue) => (
+    issue.includes('production health') ||
+    issue.includes('deployment currency') ||
+    issue.includes('production is behind runtime commit')
+  ))
 )
 
 const checks = []

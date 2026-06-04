@@ -1,73 +1,15 @@
 {
-  "reviewedAt": "2026-05-26",
+  "reviewedAt": "2026-05-21",
   "owner": "Product",
   "cadence": "Weekly during beta, after every production deploy during launch week, and before any public launch approval.",
   "minimumPublicLaunchReviewHistory": 4,
-  "nextReviewDueAt": "2026-05-28",
+  "nextReviewDueAt": "2026-06-11",
   "reviewSubmissionDirectory": "qa/production-visual-review-submissions-2026-05-21",
   "reviewIntakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
   "reviewAssignmentCsv": "qa/production-visual-review-assignments-2026-05-21.csv",
   "reviewAssignmentReport": "qa/production-visual-review-assignments-2026-05-21.md",
   "reviewProtocol": "Review every production visual QA screenshot for route clarity, brand consistency, text fit, mobile readability, empty/error-state polish, visual hierarchy, and trust. Treat app errors, horizontal overflow, clipped primary text, overlapping controls, broken share affordances, or unexplained pixel diffs on stable shell routes as release-blocking until fixed or explicitly accepted in the risk register.",
   "scheduledPublicLaunchReviews": [
-    {
-      "id": "PROD-VISUAL-HISTORY-002",
-      "dueAt": "2026-05-28",
-      "owner": "Product",
-      "reviewerRole": "visual QA reviewer",
-      "status": "planned",
-      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
-      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
-      "routes": [
-        "landing",
-        "pricing",
-        "login",
-        "signup",
-        "public-share"
-      ],
-      "viewports": [
-        "phone",
-        "tablet",
-        "laptop",
-        "desktop",
-        "wide"
-      ],
-      "diffRoutes": [
-        "landing",
-        "login",
-        "signup"
-      ],
-      "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
-    },
-    {
-      "id": "PROD-VISUAL-HISTORY-003",
-      "dueAt": "2026-06-04",
-      "owner": "Product",
-      "reviewerRole": "visual QA reviewer",
-      "status": "planned",
-      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production",
-      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-04",
-      "routes": [
-        "landing",
-        "pricing",
-        "login",
-        "signup",
-        "public-share"
-      ],
-      "viewports": [
-        "phone",
-        "tablet",
-        "laptop",
-        "desktop",
-        "wide"
-      ],
-      "diffRoutes": [
-        "landing",
-        "login",
-        "signup"
-      ],
-      "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
-    },
     {
       "id": "PROD-VISUAL-HISTORY-004",
       "dueAt": "2026-06-11",
@@ -99,9 +41,9 @@
     }
   ],
   "latestProductionReview": {
-    "reviewedAt": "2026-05-27",
-    "artifact": "qa/visual-baseline-production-runtime-current-2026-05-27-4406b50",
-    "summaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-27-4406b50/summary.json",
+    "reviewedAt": "2026-06-04",
+    "artifact": "qa/visual-baseline-production-review-2026-06-04",
+    "summaryArtifact": "qa/visual-baseline-production-review-2026-06-04/summary.json",
     "productionCommit": "4406b50f756bc3de09f73e56c17c276d34d81eb8",
     "deploymentUrl": "globe-travel-bb2mty0du-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
@@ -127,7 +69,8 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 and production visual gate passed 25/25 on the live 4406b50 deployment after the production app-surface evidence dating release. Landing, pricing, login, signup, and public-share were reviewed across five viewports with no app error, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or stable-route pixel-diff blocker. This updates the latest production deployment pointer without counting as one of the scheduled future public-launch visual history reviews."
+    "notes": "Production release gate passed 10/10 on June 4, 2026, with public visual QA passing 25/25 against the live 4406b50 deployment. Landing, pricing, login, signup, and public-share were reviewed across phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
+    "reviewSubmissionFile": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json"
   },
   "reviewHistory": [
     {
@@ -171,6 +114,71 @@
         "signup"
       ],
       "notes": "Public-launch visual review history entry for the live f6692fd production deployment. Production release gate passed 10/10, production visual QA passed 20/20, and the Athens public-share itinerary again verified mapped stops, usable routes, share metadata, and share-card rendering after the beta review schedule gate deploy."
+    },
+    {
+      "reviewedAt": "2026-06-04",
+      "artifact": "qa/visual-baseline-production-review-2026-06-04",
+      "summaryArtifact": "qa/visual-baseline-production-review-2026-06-04/summary.json",
+      "productionCommit": "4406b50f756bc3de09f73e56c17c276d34d81eb8",
+      "deploymentUrl": "globe-travel-bb2mty0du-rodney-blairs-projects.vercel.app",
+      "reviewedBy": "Codex visual QA",
+      "verdict": "pass",
+      "blockingFindings": [],
+      "screenshotsReviewed": 25,
+      "routesReviewed": [
+        "landing",
+        "pricing",
+        "login",
+        "signup",
+        "public-share"
+      ],
+      "viewportsReviewed": [
+        "phone",
+        "tablet",
+        "laptop",
+        "desktop",
+        "wide"
+      ],
+      "diffRoutesReviewed": [
+        "landing",
+        "login",
+        "signup"
+      ],
+      "notes": "Production release gate passed 10/10 on June 4, 2026, with public visual QA passing 25/25 against the live 4406b50 deployment. Landing, pricing, login, signup, and public-share were reviewed across phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
+      "reviewSubmissionFile": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json"
+    }
+  ],
+  "retiredScheduledPublicLaunchReviews": [
+    {
+      "id": "PROD-VISUAL-HISTORY-002",
+      "dueAt": "2026-05-28",
+      "owner": "Product",
+      "reviewerRole": "visual QA reviewer",
+      "status": "missed-retired",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-05-28",
+      "routes": [
+        "landing",
+        "pricing",
+        "login",
+        "signup",
+        "public-share"
+      ],
+      "viewports": [
+        "phone",
+        "tablet",
+        "laptop",
+        "desktop",
+        "wide"
+      ],
+      "diffRoutes": [
+        "landing",
+        "login",
+        "signup"
+      ],
+      "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
+      "retiredAt": "2026-06-04",
+      "retirementReason": "Scheduled review date passed without completed visual-review submission; public launch history will continue with future dated review evidence instead of backdating."
     }
   ]
 }

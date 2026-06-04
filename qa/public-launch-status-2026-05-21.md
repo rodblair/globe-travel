@@ -3,7 +3,7 @@
 Date: 2026-05-21
 Operational date: 2026-06-04
 Time zone: America/Toronto
-Generated at: 2026-06-04T16:04:03.986Z
+Generated at: 2026-06-04T16:24:15.810Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -36,27 +36,27 @@ Status: beta-ready-public-blocked
 - Beta review wave rehearsal ready: yes (5/5)
 - Beta review matrix rehearsal ready: yes (25/25)
 - Beta review production guest-start rehearsal ready: yes (1 exercised, 0 cleanup failures)
-- Production visual review history: 2/4
+- Production visual review history: 3/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-runtime-current-2026-05-27-4406b50
+- Latest production visual artifact: qa/visual-baseline-production-review-2026-06-04
 - Latest production visual commit: 4406b50f756bc3de09f73e56c17c276d34d81eb8
 - Latest production visual deployment: globe-travel-bb2mty0du-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
-- Production visual review dispatch outbox ready: yes (3 message files, 2 required)
-- Production visual review dispatch log ready: yes (0 sent, 3 prepared not sent)
-- Public launch blocker board ready: yes (25 beta rows, 2 required visual rows, 28 total rows)
-- Launch operator today ready: yes (27 action rows, 25 beta, 2 visual, 27 send-packet rows, 6 execution steps, 25 beta unsent, 25 follow-ups blocked until initial sent proof, 2 required visual unsent)
+- Production visual review dispatch outbox ready: yes (1 message files, 1 required)
+- Production visual review dispatch log ready: yes (0 sent, 1 prepared not sent)
+- Public launch blocker board ready: yes (25 beta rows, 1 required visual rows, 26 total rows)
+- Launch operator today ready: yes (26 action rows, 25 beta, 1 visual, 26 send-packet rows, 6 execution steps, 25 beta unsent, 25 follow-ups blocked until initial sent proof, 1 required visual unsent)
 - Launch operator overdue rehearsal ready: yes (5 overdue rows detected)
-- Launch operator sent-dispatch rehearsal ready: yes (25 action rows after rehearsed sends)
+- Launch operator sent-dispatch rehearsal ready: yes (24 action rows after rehearsed sends)
 - Dispatch mark-sent dry run ready: yes (2 beta, 1 visual)
 - Dispatch mark-sent import rehearsal ready: yes (2 beta sent on isolated log, 1 visual sent on isolated log)
-- Dispatch sent-record template ready: yes (27 rows, ready for import: no, missing commands: 0, missing context: 0)
-- Launch outreach brief ready: yes (27 rows, 27 CSV rows)
-- Dispatch sent-record blank-template rejection ready: yes (27 rejected rows, canonical logs unchanged: yes)
+- Dispatch sent-record template ready: yes (26 rows, ready for import: no, missing commands: 0, missing context: 0)
+- Launch outreach brief ready: yes (26 rows, 26 CSV rows)
+- Dispatch sent-record blank-template rejection ready: yes (26 rejected rows, canonical logs unchanged: yes)
 - Review intake rehearsal ready: yes (1 beta invalid, 1 visual invalid)
-- Review intake import rehearsal ready: yes (beta copied count 0->1, visual copied count 2->3)
+- Review intake import rehearsal ready: yes (beta copied count 0->1, visual copied count 3->4)
 - Public launch mode rehearsal ready: yes (1 strict-mode exit)
 - Public launch threshold rehearsal ready: yes (simulated beta 25/25, simulated visual 4/4)
 - Open P0/P1 risks: 0
@@ -80,7 +80,7 @@ Status: beta-ready-public-blocked
 ## Public-Launch Blockers
 
 - beta-human-review-threshold: 0/25 completed; 25 remaining.
-- production-visual-review-history: 2/4 distinct review dates recorded; 2 remaining.
+- production-visual-review-history: 3/4 distinct review dates recorded; 1 remaining.
 
 ## Guardrail Issues
 
@@ -158,10 +158,10 @@ Launch outreach brief:
 - none
 
 Dispatch sent-record commands:
-- JSON validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent`
-- JSON import after real sends: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent`
-- CSV validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
-- CSV import after real sends: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
+- JSON validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent`
+- JSON import after real sends: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.json npm run qa:dispatch-mark-sent`
+- CSV validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
+- CSV import after real sends: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent`
 - Post-import checks: `npm run qa:launch-refresh`, `npm run qa:launch-signoff`
 
 Dispatch sent-record blank-template rejection:
@@ -199,11 +199,10 @@ Public metadata:
 
 ## Next Actions
 
-- Send or escalate 25 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-06-04.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
-- Send or escalate 1 overdue production visual-review request(s), then record sent evidence with qa/dispatch-sent-record-template-2026-06-04.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
-- Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-05-26.json, then record sent evidence with qa/dispatch-sent-record-template-2026-06-04.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-05-26.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
+- Send or escalate 25 overdue beta review dispatch message(s) from qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json, then record sent evidence with qa/dispatch-sent-record-template-2026-06-04.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
+- Send 1 production visual-review request(s) due soon from qa/production-visual-review-dispatch-outbox-2026-06-04.json, then record sent evidence with qa/dispatch-sent-record-template-2026-06-04.csv, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to validate it, run QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-04.csv npm run qa:dispatch-mark-sent to import the sent state, then rerun npm run qa:launch-refresh and npm run qa:launch-signoff.
 - Collect and import 25 completed beta review submission(s).
-- Run, review, and import 2 scheduled production visual review date(s).
+- Run, review, and import 1 scheduled production visual review date(s).
 
 ## Evidence
 
@@ -233,20 +232,20 @@ Public metadata:
 - Review intake import rehearsal: `qa/review-intake-import-rehearsal-2026-06-04.md` and `qa/review-intake-import-rehearsal-2026-06-04.json`
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-06-04.md` and `qa/public-launch-threshold-rehearsal-2026-06-04.json`
 - Visual register: `qa/production-visual-review-register.json`
-- Visual progress: `qa/production-visual-review-progress-2026-05-26.json`
-- Latest production visual artifact: `qa/visual-baseline-production-runtime-current-2026-05-27-4406b50` and `qa/visual-baseline-production-runtime-current-2026-05-27-4406b50/summary.json`
+- Visual progress: `qa/production-visual-review-progress-2026-06-04.json`
+- Latest production visual artifact: `qa/visual-baseline-production-review-2026-06-04` and `qa/visual-baseline-production-review-2026-06-04/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
-- Visual dispatch outbox: `qa/production-visual-review-dispatch-outbox-2026-05-26.json`, `qa/production-visual-review-dispatch-outbox-2026-05-26.md`, `qa/production-visual-review-dispatch-outbox-2026-05-26.csv`, and `qa/production-visual-review-dispatch-outbox-2026-05-26`
-- Visual dispatch log: `qa/production-visual-review-dispatch-log-2026-05-26.json`, `qa/production-visual-review-dispatch-log-2026-05-26.md`, and `qa/production-visual-review-dispatch-log-2026-05-26.csv`
+- Visual dispatch outbox: `qa/production-visual-review-dispatch-outbox-2026-06-04.json`, `qa/production-visual-review-dispatch-outbox-2026-06-04.md`, `qa/production-visual-review-dispatch-outbox-2026-06-04.csv`, and `qa/production-visual-review-dispatch-outbox-2026-06-04`
+- Visual dispatch log: `qa/production-visual-review-dispatch-log-2026-06-04.json`, `qa/production-visual-review-dispatch-log-2026-06-04.md`, and `qa/production-visual-review-dispatch-log-2026-06-04.csv`
 - Visual submission templates: `qa/production-visual-review-submissions-2026-05-21`
 - Monitoring register: `qa/production-monitoring-register.json`
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`
 - Paid-path readiness: `qa/paid-path-readiness-2026-05-23.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-26/summary.json`
-- Design-system readiness: `qa/design-system-readiness-2026-05-27.json`
+- Design-system readiness: `qa/design-system-readiness-2026-06-04.json`
 - Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
 - Planner handoff: `qa/planner-handoff-smoke-2026-05-26.json` and `qa/planner-handoff-smoke-2026-05-26.md`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-26.json` and `qa/public-share-map-catalog-2026-05-26.md`

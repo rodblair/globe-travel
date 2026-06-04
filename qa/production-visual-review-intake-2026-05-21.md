@@ -10,11 +10,11 @@ Status: pass
 - Checked: 4
 - Passed: 4
 - Failed: 0
-- Scheduled reviews: 3
-- Review history before intake: 2
-- Review history after intake: 2
-- Submission files: 0
-- Valid submissions: 0
+- Scheduled reviews: 1
+- Review history before intake: 3
+- Review history after intake: 3
+- Submission files: 1
+- Valid submissions: 1
 - Invalid submissions: 0
 - Duplicate scheduled ids: 0
 - Duplicate review dates: 0

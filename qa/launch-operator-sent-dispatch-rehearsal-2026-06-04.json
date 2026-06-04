@@ -5,10 +5,10 @@
   "passed": 7,
   "failed": 0,
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
   "selectedRows": {
     "beta": "BETA-HR-006",
-    "visual": "PROD-VISUAL-HISTORY-002"
+    "visual": "PROD-VISUAL-HISTORY-004"
   },
   "sentAt": "2026-06-04T12:00:00.000Z",
   "launchOperatorExitCode": 1,
@@ -17,7 +17,7 @@
   "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
   "launchOperatorDeploymentRuntimeBlocked": false,
   "launchOperatorOnlySelfGuardrails": false,
-  "launchOperatorActionRowCount": 25,
+  "launchOperatorActionRowCount": 24,
   "launchOperatorActionIds": [
     "BETA-HR-001",
     "BETA-HR-002",
@@ -42,8 +42,7 @@
     "BETA-HR-022",
     "BETA-HR-023",
     "BETA-HR-024",
-    "BETA-HR-025",
-    "PROD-VISUAL-HISTORY-003"
+    "BETA-HR-025"
   ],
   "currentLaunchArtifact": "qa/launch-operator-today-2026-06-04.json",
   "rawArtifactsCleanedUp": true,
@@ -52,7 +51,7 @@
       "name": "sent-dispatch rehearsal selects beta and visual rows",
       "ok": true,
       "betaSelectedId": "BETA-HR-006",
-      "visualSelectedId": "PROD-VISUAL-HISTORY-002"
+      "visualSelectedId": "PROD-VISUAL-HISTORY-004"
     },
     {
       "name": "sent-dispatch rehearsal produced an actionable launch board",
@@ -89,14 +88,13 @@
         "BETA-HR-022",
         "BETA-HR-023",
         "BETA-HR-024",
-        "BETA-HR-025",
-        "PROD-VISUAL-HISTORY-003"
+        "BETA-HR-025"
       ]
     },
     {
       "name": "sent visual dispatch row is removed from send actions",
       "ok": true,
-      "visualSelectedId": "PROD-VISUAL-HISTORY-002",
+      "visualSelectedId": "PROD-VISUAL-HISTORY-004",
       "actionIds": [
         "BETA-HR-001",
         "BETA-HR-002",
@@ -121,8 +119,7 @@
         "BETA-HR-022",
         "BETA-HR-023",
         "BETA-HR-024",
-        "BETA-HR-025",
-        "PROD-VISUAL-HISTORY-003"
+        "BETA-HR-025"
       ]
     },
     {
@@ -132,7 +129,7 @@
       "deploymentRuntimeBlocked": false,
       "onlySelfGuardrails": false,
       "betaCompleted": 0,
-      "visualHistoryCount": 2
+      "visualHistoryCount": 3
     },
     {
       "name": "current launch operator artifact remains actionable",

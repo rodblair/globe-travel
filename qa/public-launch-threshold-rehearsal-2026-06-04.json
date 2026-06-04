@@ -17,8 +17,8 @@
   "canonicalVisualUnchanged": true,
   "canonicalBetaCompletedBefore": 0,
   "canonicalBetaCompletedAfter": 0,
-  "canonicalVisualHistoryBefore": 2,
-  "canonicalVisualHistoryAfter": 2,
+  "canonicalVisualHistoryBefore": 3,
+  "canonicalVisualHistoryAfter": 3,
   "rawArtifactsCleanedUp": true,
   "checks": [
     {
@@ -68,8 +68,8 @@
       "canonicalVisualUnchanged": true,
       "canonicalBetaCompletedBefore": 0,
       "canonicalBetaCompletedAfter": 0,
-      "canonicalVisualHistoryBefore": 2,
-      "canonicalVisualHistoryAfter": 2
+      "canonicalVisualHistoryBefore": 3,
+      "canonicalVisualHistoryAfter": 3
     },
     {
       "name": "public launch threshold rehearsal cleans up temporary threshold artifacts",

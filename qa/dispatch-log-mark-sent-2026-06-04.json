@@ -5,13 +5,13 @@
   "recordArtifact": "qa/dispatch-log-mark-sent-fixture-2026-06-04.json",
   "recordFormat": "json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
   "requestedUpdateCount": 3,
   "betaUpdateCount": 2,
   "visualUpdateCount": 1,
   "updatedLogArtifacts": [
     "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-    "qa/production-visual-review-dispatch-log-2026-05-26.json"
+    "qa/production-visual-review-dispatch-log-2026-06-04.json"
   ],
   "validationResults": [
     {
@@ -31,7 +31,7 @@
     {
       "ok": true,
       "issues": [],
-      "id": "PROD-VISUAL-HISTORY-002",
+      "id": "PROD-VISUAL-HISTORY-004",
       "kind": "visual",
       "currentStatus": "prepared-not-sent"
     }

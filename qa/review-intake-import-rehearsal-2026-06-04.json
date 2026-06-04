@@ -6,7 +6,7 @@
   "failed": 0,
   "betaReviewId": "BETA-HR-001",
   "visualReviewId": "PROD-VISUAL-IMPORT-REHEARSAL",
-  "visualReviewDate": "2026-06-04",
+  "visualReviewDate": "2026-06-03",
   "visualSummaryArtifact": "qa/visual-baseline-production-runtime-current-2026-05-22-e629404/summary.json",
   "betaIntakeExitCode": 0,
   "betaIntakeStatus": "pass",
@@ -20,14 +20,14 @@
   "visualImported": true,
   "visualValidSubmissionCount": 1,
   "visualInvalidSubmissionCount": 0,
-  "tempVisualHistoryBefore": 2,
-  "tempVisualHistoryAfter": 3,
+  "tempVisualHistoryBefore": 3,
+  "tempVisualHistoryAfter": 4,
   "canonicalBetaUnchanged": true,
   "canonicalVisualUnchanged": true,
   "canonicalBetaCompletedBefore": 0,
   "canonicalBetaCompletedAfter": 0,
-  "canonicalVisualHistoryBefore": 2,
-  "canonicalVisualHistoryAfter": 2,
+  "canonicalVisualHistoryBefore": 3,
+  "canonicalVisualHistoryAfter": 3,
   "rawArtifactsCleanedUp": true,
   "checks": [
     {
@@ -59,9 +59,9 @@
     {
       "name": "visual copied register records completed history evidence",
       "ok": true,
-      "historyBefore": 2,
-      "historyAfter": 3,
-      "importedReviewedAt": "2026-06-04",
+      "historyBefore": 3,
+      "historyAfter": 4,
+      "importedReviewedAt": "2026-06-03",
       "importedProductionCommit": "e6294047034a653f45f489cfa5d0c6e45d601bcf"
     },
     {
@@ -71,8 +71,8 @@
       "canonicalVisualUnchanged": true,
       "canonicalBetaCompletedBefore": 0,
       "canonicalBetaCompletedAfter": 0,
-      "canonicalVisualHistoryBefore": 2,
-      "canonicalVisualHistoryAfter": 2
+      "canonicalVisualHistoryBefore": 3,
+      "canonicalVisualHistoryAfter": 3
     },
     {
       "name": "review intake import rehearsal cleans up temporary registers and artifacts",

@@ -11,9 +11,9 @@ Status: pass
 - Fixture: `qa/dispatch-log-mark-sent-fixture-2026-06-04.json`
 - CSV fixture: `qa/dispatch-log-mark-sent-import-rehearsal-raw-2026-06-04-fixture.csv`
 - Beta row imported on isolated log: BETA-HR-001
-- Visual row imported on isolated log: PROD-VISUAL-HISTORY-002
+- Visual row imported on isolated log: PROD-VISUAL-HISTORY-004
 - CSV beta row imported on isolated log: BETA-HR-001
-- CSV visual row imported on isolated log: PROD-VISUAL-HISTORY-002
+- CSV visual row imported on isolated log: PROD-VISUAL-HISTORY-004
 - Launch operator status after isolated import: fail
 - Launch public status after isolated import: beta-ready-public-blocked
 - Canonical beta sent count: 0

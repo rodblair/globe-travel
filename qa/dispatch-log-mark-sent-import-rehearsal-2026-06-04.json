@@ -7,7 +7,7 @@
   "fixtureArtifact": "qa/dispatch-log-mark-sent-fixture-2026-06-04.json",
   "csvFixtureArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-raw-2026-06-04-fixture.csv",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-05-26.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
   "markSentExitCode": 0,
   "markSentStatus": "pass",
   "markSentImportMode": true,
@@ -18,11 +18,11 @@
   "markSentCsvRecordFormat": "csv",
   "importedRows": {
     "beta": "BETA-HR-001",
-    "visual": "PROD-VISUAL-HISTORY-002"
+    "visual": "PROD-VISUAL-HISTORY-004"
   },
   "csvImportedRows": {
     "beta": "BETA-HR-001",
-    "visual": "PROD-VISUAL-HISTORY-002"
+    "visual": "PROD-VISUAL-HISTORY-004"
   },
   "tempBetaSentCount": 2,
   "tempVisualSentCount": 1,
@@ -32,7 +32,7 @@
   "launchOperatorStatus": "fail",
   "launchOperatorOnlyOverdueExecutionFailure": true,
   "launchOperatorPublicLaunchStatus": "beta-ready-public-blocked",
-  "launchOperatorActionRowCount": 24,
+  "launchOperatorActionRowCount": 23,
   "launchOperatorActionIds": [
     "BETA-HR-002",
     "BETA-HR-003",
@@ -56,11 +56,10 @@
     "BETA-HR-022",
     "BETA-HR-023",
     "BETA-HR-024",
-    "BETA-HR-025",
-    "PROD-VISUAL-HISTORY-003"
+    "BETA-HR-025"
   ],
   "launchOperatorBetaCompleted": 0,
-  "launchOperatorVisualHistoryCount": 2,
+  "launchOperatorVisualHistoryCount": 3,
   "canonicalBetaSentCount": 0,
   "canonicalVisualSentCount": 0,
   "currentLaunchArtifact": "qa/launch-operator-today-2026-06-04.json",
@@ -81,7 +80,7 @@
       "recordFormat": "csv",
       "importedRows": {
         "beta": "BETA-HR-001",
-        "visual": "PROD-VISUAL-HISTORY-002"
+        "visual": "PROD-VISUAL-HISTORY-004"
       }
     },
     {
@@ -95,7 +94,7 @@
     {
       "name": "mark-sent import rehearsal imports visual fixture row",
       "ok": true,
-      "rowId": "PROD-VISUAL-HISTORY-002",
+      "rowId": "PROD-VISUAL-HISTORY-004",
       "sendStatus": "sent",
       "reviewerAlias": "visual-reviewer-002",
       "tempVisualSentCount": 1
@@ -129,15 +128,14 @@
         "BETA-HR-022",
         "BETA-HR-023",
         "BETA-HR-024",
-        "BETA-HR-025",
-        "PROD-VISUAL-HISTORY-003"
+        "BETA-HR-025"
       ]
     },
     {
       "name": "import rehearsal does not advance external launch evidence",
       "ok": true,
       "betaCompleted": 0,
-      "visualHistoryCount": 2
+      "visualHistoryCount": 3
     },
     {
       "name": "canonical dispatch logs remain unmutated",

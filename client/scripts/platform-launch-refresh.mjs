@@ -32,8 +32,20 @@ function runNpmScript(scriptName, envPatch = {}) {
   }
 }
 
+async function latestPreparedVisualDispatchId() {
+  const visualDispatchLogPath = process.env.QA_VISUAL_REVIEW_DISPATCH_LOG ||
+    'qa/production-visual-review-dispatch-log-2026-06-04.json'
+  const visualDispatchLog = await readJson(visualDispatchLogPath)
+  const rows = Array.isArray(visualDispatchLog.dispatchRows) ? visualDispatchLog.dispatchRows : []
+  return rows.find((row) => row.sendStatus !== 'sent' && row.requiredForPublicLaunch)?.id ||
+    rows.find((row) => row.sendStatus !== 'sent')?.id ||
+    rows[0]?.id ||
+    ''
+}
+
 async function writeDispatchMarkSentFixture() {
   const fixturePath = `qa/dispatch-log-mark-sent-fixture-${date}.json`
+  const visualDispatchId = await latestPreparedVisualDispatchId()
   const fixture = {
     date,
     rows: [
@@ -53,15 +65,15 @@ async function writeDispatchMarkSentFixture() {
         contactRecordLocation: 'external-record:beta-reviewer-006',
         notes: 'Dry-run fixture only. Real reviewer contact details stay outside the repo.',
       },
-      {
-        id: 'PROD-VISUAL-HISTORY-002',
+      visualDispatchId ? {
+        id: visualDispatchId,
         reviewerAlias: 'visual-reviewer-002',
         deliveryChannel: 'external-outreach-log',
         sentAt: `${date}T12:05:00.000Z`,
         contactRecordLocation: 'external-record:visual-reviewer-002',
         notes: 'Dry-run fixture only. Real reviewer contact details stay outside the repo.',
-      },
-    ],
+      } : null,
+    ].filter(Boolean),
   }
   await writeFile(repoPath(fixturePath), `${JSON.stringify(fixture, null, 2)}\n`)
   return fixturePath
@@ -128,6 +140,13 @@ const steps = []
 function passOrFail(run) {
   return run.exitCode === 0 ? 'pass' : 'fail'
 }
+
+const blockerBoardRun = runNpmScript('qa:public-launch-blockers')
+steps.push({
+  step: 'public-launch-blocker-board-before-first-board',
+  ...blockerBoardRun,
+  classification: passOrFail(blockerBoardRun),
+})
 
 const firstLaunchRun = runNpmScript('qa:launch-today')
 const firstLaunchSummary = await loadLaunchTodaySummary()

@@ -11,7 +11,7 @@ Status: pass
 - Beta intake imported into copied register: yes
 - Beta copied-register completed reviews: 0 -> 1
 - Visual intake imported into copied register: yes
-- Visual copied-register history count: 2 -> 3
+- Visual copied-register history count: 3 -> 4
 - Canonical beta register unchanged: yes
 - Canonical visual register unchanged: yes
 - Raw artifacts cleaned up: yes

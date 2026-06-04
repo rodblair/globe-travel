@@ -122,6 +122,11 @@ await copyFile(repoPath(visualDispatchLogPath), repoPath(visualCsvRawLog))
 
 const fixture = await readJson(fixturePath)
 const fixtureRows = Array.isArray(fixture?.rows) ? fixture.rows : []
+const visualFixtureRow = fixtureRows.find((row) => String(row.id || '').startsWith('PROD-VISUAL-HISTORY-')) || null
+const visualRegister = await readJson('qa/production-visual-review-register.json').catch(() => null)
+const expectedVisualHistoryCount = Array.isArray(visualRegister?.reviewHistory)
+  ? visualRegister.reviewHistory.length
+  : 0
 await writeFile(repoPath(csvFixturePath), `${rowsToCsv(fixtureRows)}\n`)
 
 const markSentResult = spawnSync(process.execPath, ['scripts/platform-dispatch-log-mark-sent.mjs'], {
@@ -141,7 +146,7 @@ const markSentSummary = await readJson(markSentRawJson).catch(() => null)
 const tempBetaDispatchLog = await readJson(betaRawLog).catch(() => null)
 const tempVisualDispatchLog = await readJson(visualRawLog).catch(() => null)
 const betaImportedRow = rowById(tempBetaDispatchLog, 'BETA-HR-001')
-const visualImportedRow = rowById(tempVisualDispatchLog, 'PROD-VISUAL-HISTORY-002')
+const visualImportedRow = rowById(tempVisualDispatchLog, visualFixtureRow?.id)
 
 const markSentCsvResult = spawnSync(process.execPath, ['scripts/platform-dispatch-log-mark-sent.mjs'], {
   cwd: clientRoot,
@@ -160,7 +165,7 @@ const markSentCsvSummary = await readJson(markSentCsvRawJson).catch(() => null)
 const tempBetaCsvDispatchLog = await readJson(betaCsvRawLog).catch(() => null)
 const tempVisualCsvDispatchLog = await readJson(visualCsvRawLog).catch(() => null)
 const betaCsvImportedRow = rowById(tempBetaCsvDispatchLog, 'BETA-HR-001')
-const visualCsvImportedRow = rowById(tempVisualCsvDispatchLog, 'PROD-VISUAL-HISTORY-002')
+const visualCsvImportedRow = rowById(tempVisualCsvDispatchLog, visualFixtureRow?.id)
 
 const launchResult = spawnSync(process.execPath, ['scripts/platform-launch-operator-today.mjs'], {
   cwd: clientRoot,
@@ -248,7 +253,7 @@ const checks = [
   {
     name: 'import rehearsal does not advance external launch evidence',
     ok: Number(launchSummary?.betaReviews?.completed || 0) === 0 &&
-      Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === 2,
+      Number(launchSummary?.productionVisualReviews?.distinctHistoryDateCount || 0) === expectedVisualHistoryCount,
     betaCompleted: launchSummary?.betaReviews?.completed ?? null,
     visualHistoryCount: launchSummary?.productionVisualReviews?.distinctHistoryDateCount ?? null,
   },
@@ -257,7 +262,7 @@ const checks = [
     ok: Number(canonicalBetaDispatchLog?.sentCount || 0) === 0 &&
       Number(canonicalVisualDispatchLog?.sentCount || 0) === 0 &&
       rowById(canonicalBetaDispatchLog, 'BETA-HR-001')?.sendStatus !== 'sent' &&
-      rowById(canonicalVisualDispatchLog, 'PROD-VISUAL-HISTORY-002')?.sendStatus !== 'sent',
+      (!visualFixtureRow?.id || rowById(canonicalVisualDispatchLog, visualFixtureRow.id)?.sendStatus !== 'sent'),
     canonicalBetaSentCount: canonicalBetaDispatchLog?.sentCount ?? null,
     canonicalVisualSentCount: canonicalVisualDispatchLog?.sentCount ?? null,
   },

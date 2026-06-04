@@ -16,8 +16,6 @@ Status: ready for scheduled review execution
 
 | ID | Due | Owner | Artifact | Template | Command |
 | --- | --- | --- | --- | --- | --- |
-| PROD-VISUAL-HISTORY-002 | 2026-05-28 | Product | `qa/visual-baseline-production-review-2026-05-28` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-002.template.json` | `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-05-28 npm run qa:release-production` |
-| PROD-VISUAL-HISTORY-003 | 2026-06-04 | Product | `qa/visual-baseline-production-review-2026-06-04` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.template.json` | `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-04 npm run qa:release-production` |
 | PROD-VISUAL-HISTORY-004 | 2026-06-11 | Product | `qa/visual-baseline-production-review-2026-06-11` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json` | `QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production` |
 
 ## Launch Rule

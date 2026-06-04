@@ -21,7 +21,7 @@ This rehearsal proves `QA_LAUNCH_STATUS_REQUIRE_PUBLIC=1 npm run qa:public-launc
 ## Blockers
 
 - beta-human-review-threshold: 0/25 completed; 25 remaining.
-- production-visual-review-history: 2/4 distinct review dates recorded; 2 remaining.
+- production-visual-review-history: 3/4 distinct review dates recorded; 1 remaining.
 
 ## Checks
 
