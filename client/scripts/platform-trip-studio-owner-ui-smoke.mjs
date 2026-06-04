@@ -268,7 +268,10 @@ async function runOwnerTripStudioChecks() {
       horizontalOverflow: blockedShareState.horizontalOverflow,
     })
 
-    await page.getByRole('button', { name: 'Day 2', exact: true }).click({ timeout: 8000 })
+    const dayTwoButton = page.getByRole('button', { name: /^Show Day 2\b/ }).or(
+      page.getByRole('button', { name: 'Day 2', exact: true }),
+    )
+    await dayTwoButton.first().click({ timeout: 8000 })
     await page.waitForFunction(
       () => document.body.innerText.includes('Itinerary for Day 2') || document.body.innerText.includes('Day 2 map'),
       { timeout: 8000 },
