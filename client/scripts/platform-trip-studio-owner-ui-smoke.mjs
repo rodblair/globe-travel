@@ -225,7 +225,7 @@ async function runOwnerTripStudioChecks() {
     })
   })
   await addGuestCookie(context, fixture.guestId)
-  const page = await context.newPage()
+  let page = await context.newPage()
 
   try {
     await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
@@ -335,6 +335,9 @@ async function runOwnerTripStudioChecks() {
       clientWidth: suggestedPrimaryState.clientWidth,
       scrollWidth: suggestedPrimaryState.scrollWidth,
     })
+
+    await page.close().catch(() => {})
+    page = await context.newPage()
 
     await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await page.waitForFunction(
