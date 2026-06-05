@@ -233,6 +233,7 @@ function TripStudioPageContent() {
       setActionNotice((current) => (current === notice ? null : current))
     }, ACTION_NOTICE_TIMEOUT_MS)
   }, [])
+  const mapPassNeedsPlanEdits = Boolean(suggestedStepNotice?.includes('still need place data'))
 
   useEffect(() => {
     if (!tripId || typeof window === 'undefined') return
@@ -622,14 +623,14 @@ function TripStudioPageContent() {
   }, [tripId])
 
   useEffect(() => {
-    if (isLoading || isHydratingMaps || !mappingSummary.needsHydration) return
+    if (isLoading || isHydratingMaps || !mappingSummary.needsHydration || mapPassNeedsPlanEdits) return
 
     const hydrationKey = `${tripId}:${mappingSummary.itemCount}:${mappingSummary.mappedItemCount}:${mappingSummary.routeDayCount}`
     if (hydrationAttemptedRef.current === hydrationKey) return
 
     hydrationAttemptedRef.current = hydrationKey
     void hydrateMaps()
-  }, [tripId, isLoading, isHydratingMaps, mappingSummary, hydrateMaps])
+  }, [tripId, isLoading, isHydratingMaps, mappingSummary, hydrateMaps, mapPassNeedsPlanEdits])
 
   const shareUrl = trip?.share_slug && pageOrigin ? `${pageOrigin}/t/${trip.share_slug}` : null
   const inviteMessage = shareUrl
@@ -857,12 +858,11 @@ function TripStudioPageContent() {
   const suggestedRefreshLabel = creatingWorkflow === 'feedback_refresh'
     ? 'Starting refresh...'
     : 'Refresh plan from feedback'
-  const mapPassNeedsPlanEdits = Boolean(suggestedStepNotice?.includes('still need place data'))
   const suggestedPrimaryIsMapPass = mappingSummary.needsHydration && !mapPassNeedsPlanEdits
   const suggestedPlannerUnavailable = !chatReady || qaForceRewriteUnavailable
   const suggestedStepText = mappingSummary.needsHydration
     ? mapPassNeedsPlanEdits
-      ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
+      ? `Rewrite Day ${ensureSelectedDayExists} with exact places before sharing.`
       : 'Rebuild map routes before sharing.'
     : suggestedPlannerUnavailable
       ? 'Planner chat is connecting. Open it now, then rewrite once Globe is ready.'
@@ -899,12 +899,13 @@ function TripStudioPageContent() {
     suggestedStepNotice.toLowerCase().includes('could not') ||
     suggestedStepNotice.toLowerCase().includes('did not') ||
     suggestedStepNotice.toLowerCase().includes('still connecting') ||
+    suggestedStepNotice.toLowerCase().includes('still need place data') ||
     suggestedStepNotice.toLowerCase().includes('temporarily unavailable') ||
     suggestedStepNotice.toLowerCase().includes('shared trip preview')
   ))
 
   const handleSuggestedPrimaryStep = useCallback(() => {
-    if (mappingSummary.needsHydration) {
+    if (suggestedPrimaryIsMapPass) {
       void hydrateMaps({ suggestedStep: true })
       return
     }
@@ -926,7 +927,7 @@ function TripStudioPageContent() {
     }
 
     setSuggestedStepNotice('Choose a day first, then use Suggested next step to rewrite it.')
-  }, [handleRegenerateDay, hydrateMaps, mappingSummary.needsHydration, selectedStudioDay, suggestedPlannerUnavailable])
+  }, [handleRegenerateDay, hydrateMaps, selectedStudioDay, suggestedPlannerUnavailable, suggestedPrimaryIsMapPass])
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
