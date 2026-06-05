@@ -5,13 +5,13 @@
   "recordArtifact": "qa/dispatch-log-mark-sent-fixture-2026-06-05.json",
   "recordFormat": "json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-05.json",
   "requestedUpdateCount": 3,
   "betaUpdateCount": 2,
   "visualUpdateCount": 1,
   "updatedLogArtifacts": [
     "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-    "qa/production-visual-review-dispatch-log-2026-06-04.json"
+    "qa/production-visual-review-dispatch-log-2026-06-05.json"
   ],
   "validationResults": [
     {

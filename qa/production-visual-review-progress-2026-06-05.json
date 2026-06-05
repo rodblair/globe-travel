@@ -1,0 +1,148 @@
+{
+  "date": "2026-06-05",
+  "today": "2026-06-05",
+  "registerPath": "qa/production-visual-review-register.json",
+  "jsonArtifact": "qa/production-visual-review-progress-2026-06-05.json",
+  "reportArtifact": "qa/production-visual-review-progress-2026-06-05.md",
+  "status": "pass",
+  "requirePublicProgress": false,
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "latestProductionReview": {
+    "artifact": "qa/visual-baseline-production-release-2026-06-05-30afc74",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json",
+    "productionCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
+    "deploymentUrl": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
+    "reviewedBy": "Codex visual QA",
+    "verdict": "pass",
+    "issueCount": 0,
+    "issues": []
+  },
+  "reviewHistoryCount": 3,
+  "distinctHistoryDateCount": 3,
+  "historyDates": [
+    "2026-05-21",
+    "2026-05-22",
+    "2026-06-04"
+  ],
+  "minimumPublicLaunchReviewHistory": 4,
+  "remainingRequiredReviewDates": 1,
+  "scheduledReviewCount": 1,
+  "distinctScheduledDateCount": 1,
+  "scheduledDates": [
+    "2026-06-11"
+  ],
+  "scheduledReviewStatus": [
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "daysUntilDue": 6,
+      "completed": false,
+      "status": "planned"
+    }
+  ],
+  "dueSoonScheduledReviewCount": 1,
+  "dueSoonScheduledReviews": [
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "daysUntilDue": 6,
+      "completed": false,
+      "status": "planned"
+    }
+  ],
+  "overdueScheduledReviewCount": 0,
+  "overdueScheduledReviews": [],
+  "nextReviewDueAt": "2026-06-11",
+  "nextScheduledReview": {
+    "id": "PROD-VISUAL-HISTORY-004",
+    "dueAt": "2026-06-11",
+    "owner": "Product",
+    "reviewerRole": "visual QA reviewer",
+    "status": "planned",
+    "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+    "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-11",
+    "routes": [
+      "landing",
+      "pricing",
+      "login",
+      "signup",
+      "public-share"
+    ],
+    "viewports": [
+      "phone",
+      "tablet",
+      "laptop",
+      "desktop",
+      "wide"
+    ],
+    "diffRoutes": [
+      "landing",
+      "login",
+      "signup"
+    ],
+    "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry."
+  },
+  "invalidHistoryReviewCount": 0,
+  "duplicateHistoryDates": [],
+  "publicLaunchReadiness": {
+    "status": "blocked",
+    "blockers": [
+      "1 more distinct passing production visual-review date(s) required"
+    ]
+  },
+  "checks": [
+    {
+      "name": "production visual review progress register is owned and dated",
+      "ok": true,
+      "owner": "Product",
+      "reviewedAt": "2026-06-05",
+      "cadence": "Weekly during beta, after every production deploy during launch week, and before any public launch approval."
+    },
+    {
+      "name": "latest production visual review is complete and evidence-backed",
+      "ok": true,
+      "artifact": "qa/visual-baseline-production-release-2026-06-05-30afc74",
+      "summaryArtifact": "qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json",
+      "productionCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
+      "deploymentUrl": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
+      "issues": []
+    },
+    {
+      "name": "completed production visual-review history is valid and distinct",
+      "ok": true,
+      "historyCount": 3,
+      "distinctHistoryDateCount": 3,
+      "invalidHistoryReviewCount": 0,
+      "duplicateHistoryDates": [],
+      "invalidHistoryReviews": []
+    },
+    {
+      "name": "scheduled production visual-review queue covers remaining launch dates",
+      "ok": true,
+      "scheduledReviewCount": 1,
+      "distinctScheduledDateCount": 1,
+      "remainingRequiredReviewDates": 1,
+      "nextReviewDueAt": "2026-06-11"
+    },
+    {
+      "name": "scheduled production visual-review queue has no overdue review dates",
+      "ok": true,
+      "today": "2026-06-05",
+      "overdueScheduledReviewCount": 0,
+      "overdueScheduledReviews": []
+    },
+    {
+      "name": "latest production review does not inflate dated public-launch history",
+      "ok": true,
+      "latestReviewDate": "2026-06-05",
+      "historyDates": [
+        "2026-05-21",
+        "2026-05-22",
+        "2026-06-04"
+      ]
+    }
+  ],
+  "failures": []
+}

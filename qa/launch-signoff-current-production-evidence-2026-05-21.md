@@ -4,10 +4,10 @@ Date: 2026-06-05
 
 ## Current Production Runtime Evidence - 2026-06-05 Current
 
-Runtime commit `544b73349ea8cd6e0c8d9fd095577848129e6716` deployed to Vercel production on 2026-06-05.
+Runtime commit `30afc74995f8d1d2d9c0cb4d77727bbddd5590c9` deployed to Vercel production on 2026-06-05.
 
 - Production alias: `https://globe-travel-two.vercel.app`
-- Deployment URL: `globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app`
+- Deployment URL: `globe-travel-anibbmco5-rodney-blairs-projects.vercel.app`
 - Production health: `ok`, `11/11`
 - Production release gate with visual QA passed `10/10`
 - Production ops with public metadata requirement passed `3/3`
@@ -16,14 +16,14 @@ Runtime commit `544b73349ea8cd6e0c8d9fd095577848129e6716` deployed to Vercel pro
 - Public commercial pricing: `4/4`
 - Public share viral loop: `5/5`
 - Production visual QA: `25/25`
-- Production visual artifact: `qa/visual-baseline-production-release-2026-06-05-544b733/`
-- Production visual summary: `qa/visual-baseline-production-release-2026-06-05-544b733/summary.json`
+- Production visual artifact: `qa/visual-baseline-production-release-2026-06-05-30afc74/`
+- Production visual summary: `qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json`
 - Production visual routes: `landing`, `pricing`, `login`, `signup`, and `public-share` across phone, tablet, laptop, desktop, and wide viewports.
 - Athens public share/map integrity: `5/5`, with five itinerary days, mapped stops, usable routes, share metadata, and share-card image.
 - Prompt suite with production actuals: `61/61`
 - Public launch status remains blocked by external beta/human review and production visual-review history requirements, not by the current deployment.
-- Current production commit: `544b73349ea8cd6e0c8d9fd095577848129e6716`
-- Current production includes itinerary day/map accessibility semantics, Mapbox attribution touch-target hardening, public share feedback label spacing, multi-itinerary share QA hardening, accessibility cleanup retry hardening, Trip Studio owner-smoke day selector hardening, durable Trip Studio suggested-step progress/completion feedback, saved-trip title wrapping, and release QA browser watchdog hardening.
+- Current production commit: `30afc74995f8d1d2d9c0cb4d77727bbddd5590c9`
+- Current production includes itinerary day/map accessibility semantics, Mapbox attribution touch-target hardening, public share feedback label spacing, multi-itinerary share QA hardening, accessibility cleanup retry hardening, Trip Studio owner-smoke day selector hardening, durable Trip Studio suggested-step progress/completion feedback, saved-trip title wrapping, release QA browser watchdog hardening, current Vercel-ignore launch-gate evidence, and the Trip Studio suggested-next-step map-action fix.
 - Current-commit launch signoff evidence requirement: enabled.
 
 ## Current Production Runtime Evidence - 2026-05-26 Current

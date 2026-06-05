@@ -3,7 +3,7 @@
 Date: 2026-06-05
 Today: 2026-06-05
 Time zone: America/Toronto
-Generated at: 2026-06-05T10:11:39.583Z
+Generated at: 2026-06-05T11:47:29.334Z
 Status: fail
 
 ## Result
@@ -38,8 +38,8 @@ Status: fail
 - Follow-ups blocked until initial sent proof: BETA-HR-001, BETA-HR-002, BETA-HR-003, BETA-HR-004, BETA-HR-005, BETA-HR-006, BETA-HR-007, BETA-HR-008, BETA-HR-009, BETA-HR-010, BETA-HR-011, BETA-HR-012, BETA-HR-013, BETA-HR-014, BETA-HR-015, BETA-HR-016, BETA-HR-017, BETA-HR-018, BETA-HR-019, BETA-HR-020, BETA-HR-021, BETA-HR-022, BETA-HR-023, BETA-HR-024, BETA-HR-025
 - Deferred beta invite IDs: none
 - Sent-record CSV: `qa/dispatch-sent-record-template-2026-06-05.csv`
-- Validate sent proof: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
-- Import sent proof: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
+- Validate sent proof: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
+- Import sent proof: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
 - Refresh after import: `npm run qa:launch-refresh` and `npm run qa:launch-signoff`
 - Privacy rule: Keep reviewer names and contact details in the external contact system; store only aliases and proof pointers in repo evidence.
 - Completion rule: Sent proof is not completed review evidence. Public launch still requires completed beta and visual-review JSON intake imports.
@@ -48,8 +48,8 @@ Status: fail
 
 1. Send every P0/P1 message file in the Send Packet Index; 25 beta invites overdue, 0 beta invites due today, 0 beta invites due soon, and 1 production visual review due soon.
 2. Record each real send in `qa/dispatch-sent-record-template-2026-06-05.csv` with reviewer alias, delivery channel, sent timestamp, and external contact/proof location.
-3. Validate the filled sent-record CSV with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`.
-4. Import the sent state with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent` only after validation passes.
+3. Validate the filled sent-record CSV with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`.
+4. Import the sent state with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent` only after validation passes.
 5. Refresh launch evidence with `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.
 6. Collect completed non-template beta and visual review JSON, validate intake, import only after clean validation, then rerun launch gates.
 
@@ -82,7 +82,7 @@ Status: fail
 | P0 | BETA-HR-023 | beta-human-review | [Globe.travel beta] BETA-HR-023 Washington DC review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-023-washington-dc.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
 | P0 | BETA-HR-024 | beta-human-review | [Globe.travel beta] BETA-HR-024 Mexico City review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-024-mexico-city.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
 | P0 | BETA-HR-025 | beta-human-review | [Globe.travel beta] BETA-HR-025 London review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-025-london.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| P1 | PROD-VISUAL-HISTORY-004 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
+| P1 | PROD-VISUAL-HISTORY-004 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-05/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## Do Today
 
@@ -113,7 +113,7 @@ Status: fail
 | P0 | beta-human-review | BETA-HR-023 | 2026-06-03 | send overdue by 2 days | 2026-06-04 | prepared-not-sent | BETA-HR-023 dispatch is overdue by 2 days; send invite immediately or reassign, then record sent proof. Follow-up overdue by 2 days; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review overdue by 1 day; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-023 Washington DC review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-023-washington-dc.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
 | P0 | beta-human-review | BETA-HR-024 | 2026-06-03 | send overdue by 2 days | 2026-06-04 | prepared-not-sent | BETA-HR-024 dispatch is overdue by 2 days; send invite immediately or reassign, then record sent proof. Follow-up overdue by 2 days; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review overdue by 1 day; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-024 Mexico City review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-024-mexico-city.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
 | P0 | beta-human-review | BETA-HR-025 | 2026-06-03 | send overdue by 2 days | 2026-06-04 | prepared-not-sent | BETA-HR-025 dispatch is overdue by 2 days; send invite immediately or reassign, then record sent proof. Follow-up overdue by 2 days; draft the follow-up, but do not send it until the initial invite is recorded as sent. Review overdue by 1 day; track completed reviewer JSON and intake readiness. | [Globe.travel beta] BETA-HR-025 London review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-025-london.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| P1 | production-visual-review | PROD-VISUAL-HISTORY-004 | n/a | review in 6 days | 2026-06-11 | prepared-not-sent | Review in 6 days; send visual-review assignment or confirm scheduled reviewer time. | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
+| P1 | production-visual-review | PROD-VISUAL-HISTORY-004 | n/a | review in 6 days | 2026-06-11 | prepared-not-sent | Review in 6 days; send visual-review assignment or confirm scheduled reviewer time. | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-05/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## Operating Rules
 
@@ -121,7 +121,7 @@ Status: fail
 - Do not send deferred beta rows until their dispatch packet and dispatch-log row are prepared; send or reassign the current prepared rows first.
 - Record reviewer names and contact details outside the repo.
 - Fill the generated sent-record template after real outreach: `qa/dispatch-sent-record-template-2026-06-05.csv` (report: `qa/dispatch-sent-record-template-2026-06-05.md`, JSON: `qa/dispatch-sent-record-template-2026-06-05.json`).
-- Validate the filled sent-state update with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`, then import it with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`.
+- Validate the filled sent-state update with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`, then import it with `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`.
 - Completed beta reviews must be non-template JSON files, validated with `npm run qa:beta-review-intake`, then imported only with `QA_BETA_REVIEW_IMPORT=1 npm run qa:beta-review-intake`.
 - Production visual reviews must be inspected by a human, validated with `npm run qa:visual-review-intake`, then imported only with `QA_VISUAL_REVIEW_IMPORT=1 npm run qa:visual-review-intake`.
 - Runtime deployment actions must run from the repo root; after Vercel accepts a production deploy, rerun `npm run qa:launch-refresh` and `npm run qa:launch-signoff`.

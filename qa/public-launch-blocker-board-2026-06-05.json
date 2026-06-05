@@ -9,7 +9,7 @@
   "betaNextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
   "betaAllWaveOpsArtifact": "qa/beta-human-review-all-wave-ops-2026-05-21.json",
   "visualRegisterArtifact": "qa/production-visual-review-register.json",
-  "visualProgressArtifact": "qa/production-visual-review-progress-2026-06-04.json",
+  "visualProgressArtifact": "qa/production-visual-review-progress-2026-06-05.json",
   "jsonArtifact": "qa/public-launch-blocker-board-2026-06-05.json",
   "reportArtifact": "qa/public-launch-blocker-board-2026-06-05.md",
   "csvArtifact": "qa/public-launch-blocker-board-2026-06-05.csv",
@@ -1533,11 +1533,11 @@
     {
       "name": "public launch blocker board reads current blocked status",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
-      "selfReferentialGuardrailCount": 3,
-      "acceptedBlockedGuardrailCount": 3,
+      "selfReferentialGuardrailCount": 0,
+      "acceptedBlockedGuardrailCount": 0,
       "blockers": [
         {
           "id": "beta-human-review-threshold",

@@ -7,7 +7,7 @@
   "fixtureArtifact": "qa/dispatch-log-mark-sent-fixture-2026-06-05.json",
   "csvFixtureArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-raw-2026-06-05-fixture.csv",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
-  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-05.json",
   "markSentExitCode": 0,
   "markSentStatus": "pass",
   "markSentImportMode": true,

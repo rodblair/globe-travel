@@ -5,9 +5,9 @@
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "544b73349ea8cd6e0c8d9fd095577848129e6716",
-      "url": "globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "Commit 544b73349ea8cd6e0c8d9fd095577848129e6716 verified by Vercel production deployment globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok 11/11 for commit 544b73349ea8cd6e0c8d9fd095577848129e6716, npm run lint passing, npm run build passing, qa:studio-owner-ui passing 9/9, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-544b733 npm run qa:release-production passing 10/10, and QA_LAUNCH_EXPECTED_COMMIT=544b73349ea8cd6e0c8d9fd095577848129e6716 npm run qa:launch-signoff verification queued for this current production evidence refresh.",
+      "commit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
+      "url": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "Commit 30afc74995f8d1d2d9c0cb4d77727bbddd5590c9 verified by Vercel production deployment globe-travel-anibbmco5-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok 11/11 for commit 30afc74995f8d1d2d9c0cb4d77727bbddd5590c9, npm run lint passing, npm run build passing, qa:studio-owner-ui passing 9/9, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-30afc74 npm run qa:release-production passing 10/10, and QA_LAUNCH_EXPECTED_COMMIT=30afc74995f8d1d2d9c0cb4d77727bbddd5590c9 npm run qa:launch-signoff verification queued for this current production evidence refresh.",
       "verifiedAt": "2026-06-05"
     }
   },
@@ -27,6 +27,6 @@
   ],
   "verificationCommands": [
     "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
-    "QA_LAUNCH_EXPECTED_COMMIT=544b73349ea8cd6e0c8d9fd095577848129e6716 npm run qa:launch-signoff"
+    "QA_LAUNCH_EXPECTED_COMMIT=30afc74995f8d1d2d9c0cb4d77727bbddd5590c9 npm run qa:launch-signoff"
   ]
 }

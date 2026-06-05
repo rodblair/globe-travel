@@ -29,13 +29,13 @@ The example columns in the JSON and CSV are examples only. Leave them unchanged 
 
 ## Commands After Filling The JSON
 
-- Validate: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.json npm run qa:dispatch-mark-sent`
-- Import: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.json npm run qa:dispatch-mark-sent`
+- Validate: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.json npm run qa:dispatch-mark-sent`
+- Import: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.json npm run qa:dispatch-mark-sent`
 
 ## Commands After Filling The CSV
 
-- Validate: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
-- Import: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
+- Validate: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
+- Import: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
 
 ## After Import
 
@@ -71,7 +71,7 @@ The example columns in the JSON and CSV are examples only. Leave them unchanged 
 | BETA-HR-023 | beta-human-review | [Globe.travel beta] BETA-HR-023 Washington DC review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-023-washington-dc.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-023-washington-dc.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
 | BETA-HR-024 | beta-human-review | [Globe.travel beta] BETA-HR-024 Mexico City review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-024-mexico-city.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-024-mexico-city.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
 | BETA-HR-025 | beta-human-review | [Globe.travel beta] BETA-HR-025 London review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-025-london.txt` | `qa/beta-human-review-packets-2026-05-21/BETA-HR-025-london.md` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.template.json` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| PROD-VISUAL-HISTORY-004 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt` | `qa/visual-baseline-production-review-2026-06-11` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
+| PROD-VISUAL-HISTORY-004 | production-visual-review | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-05/prod-visual-history-004-2026-06-11.txt` | `qa/visual-baseline-production-review-2026-06-11` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## Checks
 
