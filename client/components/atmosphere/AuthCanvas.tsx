@@ -64,9 +64,9 @@ export function AuthCanvas({
               {panelKicker}
             </p>
           )}
-          <h2 className="h-display text-foreground leading-[1.1] mb-4">
+          <p className="h-display text-foreground leading-[1.1] mb-4">
             {panelTitle}
-          </h2>
+          </p>
           <p className="text-body-lg text-ink-2 leading-relaxed">
             {panelSubtitle}
           </p>

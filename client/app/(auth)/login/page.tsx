@@ -267,7 +267,7 @@ export default function LoginPage() {
           href={appendAuthNext('/signup', authNext)}
           className="touch-target inline-flex items-center justify-center rounded-md px-1 text-[var(--brass)] font-medium transition-colors hover:text-[var(--brass-hover)]"
         >
-          Begin a journey
+          Create an account
         </Link>
       </p>
     </AuthCanvas>

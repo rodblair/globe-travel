@@ -341,7 +341,10 @@ try {
   }, encodeURIComponent(protectedPlannerNext), { timeout: 5000 }).catch(() => {})
   const loginHandoff = await handoffPage.evaluate(() => {
     const guestLink = Array.from(document.querySelectorAll('a')).find((link) => link.textContent?.includes('Continue as guest'))
-    const signupLink = Array.from(document.querySelectorAll('a')).find((link) => link.textContent?.includes('Begin a journey'))
+    const signupLink = Array.from(document.querySelectorAll('a')).find((link) => {
+      const href = link.getAttribute('href') || ''
+      return href.startsWith('/signup') || href.includes('/signup?')
+    })
     return {
       url: location.href,
       guestHref: guestLink?.getAttribute('href') || null,

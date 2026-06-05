@@ -254,7 +254,7 @@ export default function SignupPage() {
       </p>
 
       <p className="text-center text-body-sm text-ink-3 mt-7">
-        Already booked?{' '}
+        Already have an account?{' '}
         <Link
           href={appendAuthNext('/login', authNext)}
           className="touch-target inline-flex items-center justify-center rounded-md px-1 text-[var(--brass)] font-medium transition-colors hover:text-[var(--brass-hover)]"
