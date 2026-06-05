@@ -364,16 +364,16 @@ function ChatPageContent() {
           <div className="flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[390px] xl:min-h-0">
             {activeMessages.length === 0 ? (
               <div className="flex min-h-[360px] flex-col overflow-y-auto sm:min-h-[390px] xl:min-h-0">
-                <div className="relative flex flex-1 items-start justify-center px-5 py-5 md:px-8 md:py-6">
+                <div className="relative flex flex-1 items-start justify-center px-5 py-4 md:px-8 md:py-6">
                   <div className="absolute inset-0 -z-0 opacity-40">
                     <ContourOverlay density="sparse" />
                   </div>
                   <div className="relative w-full max-w-3xl">
-                    <div className="mb-5 max-w-2xl">
+                    <div className="mb-4 max-w-2xl">
                       <p className="t-mono text-[0.625rem] tracking-[0.24em] uppercase text-[var(--brass)] mb-2">
                         START HERE
                       </p>
-                      <h2 className="font-serif text-[clamp(2rem,5vw,3.35rem)] font-semibold leading-[1.02] text-foreground mb-2 max-w-[18ch]">
+                      <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.02] text-foreground mb-2 max-w-[18ch] sm:text-[clamp(2rem,5vw,3.35rem)]">
                         Plan the trip friends can agree on.
                       </h2>
                       <p className="max-w-2xl text-sm leading-relaxed text-ink-2 md:text-[0.9375rem]">
@@ -382,7 +382,7 @@ function ChatPageContent() {
                       </p>
                     </div>
 
-                    <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <div className="mb-3 grid grid-cols-1 gap-1.5 sm:mb-4 sm:grid-cols-3 sm:gap-2">
                       {PLANNING_STEPS.map((item, index) => {
                         const Icon = item.icon
                         return (
@@ -391,7 +391,7 @@ function ChatPageContent() {
                             onClick={() => sendMessage(item.q)}
                             disabled={planningInProgress}
                             className={cn(
-                              'touch-target group relative rounded-md border border-rule px-3 py-2.5 text-left',
+                              'touch-target group relative rounded-md border border-rule px-3 py-2 text-left sm:py-2.5',
                               'bg-paper hover:bg-paper-hover transition-colors',
                               planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
                             )}
@@ -405,7 +405,7 @@ function ChatPageContent() {
                             <p className="text-[0.8125rem] font-medium text-foreground leading-snug">
                               {item.label}
                             </p>
-                            <p className="mt-1 line-clamp-2 text-[0.6875rem] leading-snug text-ink-3">
+                            <p className="mt-1 hidden text-[0.6875rem] leading-snug text-ink-3 sm:line-clamp-2">
                               {item.value}
                             </p>
                           </button>
@@ -413,7 +413,7 @@ function ChatPageContent() {
                       })}
                     </div>
 
-                    <div className="mb-2.5 flex items-center justify-between gap-4">
+                    <div className="mb-2 flex items-center justify-between gap-4 sm:mb-2.5">
                       <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
                         Pick a starting point
                       </p>
@@ -428,14 +428,14 @@ function ChatPageContent() {
                           onClick={() => sendMessage(item.q)}
                           disabled={planningInProgress}
                           className={cn(
-                            'touch-target group min-h-14 rounded-md border border-rule bg-paper p-3 text-left transition-colors hover:bg-paper-hover',
+                            'touch-target group min-h-12 rounded-md border border-rule bg-paper px-3 py-2.5 text-left transition-colors hover:bg-paper-hover sm:min-h-14 sm:p-3',
                             planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
                           )}
                         >
                           <p className="text-[0.8125rem] font-medium text-foreground group-hover:text-foreground transition-colors">
                             {item.label}
                           </p>
-                          <p className="mt-1 line-clamp-2 text-[0.6875rem] leading-snug text-ink-3">
+                          <p className="mt-1 hidden text-[0.6875rem] leading-snug text-ink-3 sm:line-clamp-2">
                             {item.sub}
                           </p>
                         </button>

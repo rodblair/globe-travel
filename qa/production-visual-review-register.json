@@ -5,7 +5,7 @@
   "minimumPublicLaunchReviewHistory": 4,
   "nextReviewDueAt": "2026-06-11",
   "reviewSubmissionDirectory": "qa/production-visual-review-submissions-2026-05-21",
-  "reviewIntakeArtifact": "qa/production-visual-review-intake-2026-05-21.json",
+  "reviewIntakeArtifact": "qa/production-visual-review-intake-2026-06-04.json",
   "reviewAssignmentCsv": "qa/production-visual-review-assignments-2026-05-21.csv",
   "reviewAssignmentReport": "qa/production-visual-review-assignments-2026-05-21.md",
   "reviewProtocol": "Review every production visual QA screenshot for route clarity, brand consistency, text fit, mobile readability, empty/error-state polish, visual hierarchy, and trust. Treat app errors, horizontal overflow, clipped primary text, overlapping controls, broken share affordances, or unexplained pixel diffs on stable shell routes as release-blocking until fixed or explicitly accepted in the risk register.",
@@ -42,10 +42,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-06-04",
-    "artifact": "qa/visual-baseline-production-release-2026-06-04-7a5e441",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-04-7a5e441/summary.json",
-    "productionCommit": "7a5e441df803980d6f1c91734f16915c7a9cf379",
-    "deploymentUrl": "globe-travel-9uaewfs6t-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-release-2026-06-04-8436303",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-04-8436303/summary.json",
+    "productionCommit": "84363033b26e606a90254109a178d854d5b7ef0e",
+    "deploymentUrl": "globe-travel-i29dxau5t-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -69,7 +69,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production visual QA passed 25/25 on June 4, 2026, against the live 7a5e441 deployment after the release-ops-only Trip Studio owner-smoke hardening deploy. Landing, pricing, login, signup, and public-share were reviewed across phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
+    "notes": "Production release gate passed 10/10 on June 4, 2026, against the live 8436303 deployment after the Trip Studio suggested-actions production deploy. Production visual QA passed 25/25 across landing, pricing, login, signup, and public-share on phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
     "reviewSubmissionFile": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json"
   },
   "reviewHistory": [

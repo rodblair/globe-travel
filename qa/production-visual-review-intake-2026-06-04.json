@@ -1,0 +1,61 @@
+{
+  "date": "2026-06-04",
+  "registerPath": "qa/production-visual-review-register.json",
+  "submissionDir": "qa/production-visual-review-submissions-2026-05-21",
+  "jsonArtifact": "qa/production-visual-review-intake-2026-06-04.json",
+  "reportArtifact": "qa/production-visual-review-intake-2026-06-04.md",
+  "status": "pass",
+  "imported": false,
+  "importRequested": false,
+  "scheduledReviewCount": 1,
+  "reviewHistoryCountBefore": 3,
+  "reviewHistoryCountAfter": 3,
+  "submissionCount": 1,
+  "validSubmissionCount": 1,
+  "invalidSubmissionCount": 0,
+  "duplicateScheduledIdCount": 0,
+  "duplicateReviewDateCount": 0,
+  "checked": 4,
+  "passed": 4,
+  "failed": 0,
+  "submissions": [
+    {
+      "file": "PROD-VISUAL-HISTORY-003.json",
+      "scheduledReviewId": "PROD-VISUAL-HISTORY-003",
+      "reviewedAt": "2026-06-04",
+      "ok": true,
+      "alreadyImported": true,
+      "issues": []
+    }
+  ],
+  "checks": [
+    {
+      "name": "production visual review submission directory is present",
+      "ok": true,
+      "submissionDir": "qa/production-visual-review-submissions-2026-05-21"
+    },
+    {
+      "name": "production visual review submissions parse and match scheduled reviews",
+      "ok": true,
+      "submissionCount": 1,
+      "invalidSubmissionCount": 0,
+      "invalidSubmissions": []
+    },
+    {
+      "name": "production visual review submissions do not duplicate scheduled ids or dates",
+      "ok": true,
+      "duplicateScheduledIdCount": 0,
+      "duplicateReviewDateCount": 0,
+      "duplicateScheduledIds": [],
+      "duplicateReviewDates": []
+    },
+    {
+      "name": "production visual review intake import is explicit",
+      "ok": true,
+      "importRequested": false,
+      "imported": false,
+      "importedReviewDates": []
+    }
+  ],
+  "failures": []
+}

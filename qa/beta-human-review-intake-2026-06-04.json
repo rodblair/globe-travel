@@ -1,0 +1,58 @@
+{
+  "date": "2026-06-04",
+  "registerPath": "qa/beta-human-review-register.json",
+  "submissionDir": "qa/beta-human-review-submissions-2026-05-21",
+  "jsonArtifact": "qa/beta-human-review-intake-2026-06-04.json",
+  "reportArtifact": "qa/beta-human-review-intake-2026-06-04.md",
+  "expectedReviewOrigin": "https://globe-travel-two.vercel.app",
+  "status": "pass",
+  "imported": false,
+  "importRequested": false,
+  "plannedReviewCount": 25,
+  "completedReviewCountBefore": 0,
+  "completedReviewCountAfter": 0,
+  "submissionCount": 0,
+  "validSubmissionCount": 0,
+  "invalidSubmissionCount": 0,
+  "duplicateSubmissionCount": 0,
+  "unknownReviewCount": 0,
+  "unresolvedBlockingFindingCount": 0,
+  "checked": 5,
+  "passed": 5,
+  "failed": 0,
+  "submissions": [],
+  "checks": [
+    {
+      "name": "beta review submission directory is present",
+      "ok": true,
+      "submissionDir": "qa/beta-human-review-submissions-2026-05-21"
+    },
+    {
+      "name": "beta review submissions parse and match assigned packets",
+      "ok": true,
+      "submissionCount": 0,
+      "invalidSubmissionCount": 0,
+      "invalidSubmissions": []
+    },
+    {
+      "name": "beta review submissions do not duplicate planned review ids",
+      "ok": true,
+      "duplicateSubmissionCount": 0,
+      "duplicateIds": []
+    },
+    {
+      "name": "beta review submissions have no unresolved P0/P1 findings",
+      "ok": true,
+      "unresolvedBlockingFindingCount": 0,
+      "unresolvedBlockingFindings": []
+    },
+    {
+      "name": "beta review intake import is explicit",
+      "ok": true,
+      "importRequested": false,
+      "imported": false,
+      "importedReviewIds": []
+    }
+  ],
+  "failures": []
+}

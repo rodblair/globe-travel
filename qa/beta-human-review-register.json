@@ -14,9 +14,9 @@
   "nextWaveOpsArtifact": "qa/beta-human-review-next-wave-ops-2026-05-21.json",
   "nextWaveOpsReport": "qa/beta-human-review-next-wave-ops-2026-05-21.md",
   "nextWaveOpsCsv": "qa/beta-human-review-next-wave-ops-2026-05-21.csv",
-  "progressArtifact": "qa/beta-human-review-progress-2026-05-21.json",
+  "progressArtifact": "qa/beta-human-review-progress-2026-06-04.json",
   "completedReviewSubmissionDirectory": "qa/beta-human-review-submissions-2026-05-21",
-  "completedReviewIntakeArtifact": "qa/beta-human-review-intake-2026-05-21.json",
+  "completedReviewIntakeArtifact": "qa/beta-human-review-intake-2026-06-04.json",
   "minimumCompletedReviewsForPublicLaunch": 25,
   "targetCompletedReviewsBeforePublicLaunch": 50,
   "minimumAverageScoreForPublicLaunch": 4,
@@ -62,7 +62,14 @@
       "style": "culture",
       "region": "Europe",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback", "save-reopen"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback",
+        "save-reopen"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -75,7 +82,13 @@
       "style": "nightlife",
       "region": "Europe",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -88,7 +101,12 @@
       "style": "budget",
       "region": "Europe",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -101,7 +119,13 @@
       "style": "premium",
       "region": "Europe",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -114,7 +138,13 @@
       "style": "food",
       "region": "North America",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "save-reopen", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -127,7 +157,13 @@
       "style": "culture",
       "region": "Asia",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -140,7 +176,12 @@
       "style": "food",
       "region": "Asia",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -153,7 +194,13 @@
       "style": "food",
       "region": "Asia",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -166,7 +213,12 @@
       "style": "culture",
       "region": "Africa",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -179,7 +231,13 @@
       "style": "outdoors",
       "region": "Africa",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -192,7 +250,12 @@
       "style": "outdoors",
       "region": "Oceania",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -205,7 +268,13 @@
       "style": "outdoors",
       "region": "North America",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -218,7 +287,13 @@
       "style": "nightlife",
       "region": "Latin America",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -231,7 +306,12 @@
       "style": "outdoors",
       "region": "Europe",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "save-reopen"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -244,7 +324,13 @@
       "style": "outdoors",
       "region": "Europe",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -257,7 +343,12 @@
       "style": "food",
       "region": "Asia",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -270,7 +361,13 @@
       "style": "premium",
       "region": "Asia",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -283,7 +380,13 @@
       "style": "culture",
       "region": "Europe",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "save-reopen", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -296,7 +399,12 @@
       "style": "culture",
       "region": "Asia",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -309,7 +417,12 @@
       "style": "budget",
       "region": "North America",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "save-reopen"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -322,7 +435,12 @@
       "style": "outdoors",
       "region": "Asia",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -335,7 +453,13 @@
       "style": "culture",
       "region": "Africa",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -348,7 +472,13 @@
       "style": "culture",
       "region": "North America",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "save-reopen", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -361,7 +491,13 @@
       "style": "nightlife",
       "region": "Latin America",
       "device": "phone",
-      "primarySurfaces": ["planner", "trip-studio", "map", "public-share", "feedback"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "public-share",
+        "feedback"
+      ],
       "status": "not-started",
       "findings": []
     },
@@ -374,7 +510,13 @@
       "style": "budget",
       "region": "Europe",
       "device": "desktop",
-      "primarySurfaces": ["planner", "trip-studio", "map", "save-reopen", "public-share"],
+      "primarySurfaces": [
+        "planner",
+        "trip-studio",
+        "map",
+        "save-reopen",
+        "public-share"
+      ],
       "status": "not-started",
       "findings": []
     }
