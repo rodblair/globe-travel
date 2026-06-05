@@ -865,10 +865,12 @@ function TripStudioPageContent() {
       ? `Rewrite Day ${ensureSelectedDayExists} with exact places before sharing.`
       : 'Rebuild map routes before sharing.'
     : suggestedPlannerUnavailable
-      ? 'Planner chat is connecting. Open it now, then rewrite once Globe is ready.'
-    : mappingSummary.needsStopOrderReview
-      ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
-      : `Ask Globe to tune Day ${ensureSelectedDayExists}.`
+      ? chatOpen
+        ? `Planner chat is open. Finish the Day ${ensureSelectedDayExists} request there, then review the itinerary.`
+        : 'Planner chat is connecting. Open it now, then rewrite once Globe is ready.'
+      : mappingSummary.needsStopOrderReview
+        ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
+        : `Ask Globe to tune Day ${ensureSelectedDayExists}.`
   const suggestedPrimaryAction = suggestedPrimaryIsMapPass
     ? 'build-maps'
     : suggestedPlannerUnavailable

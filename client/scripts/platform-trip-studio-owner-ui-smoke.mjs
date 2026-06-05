@@ -326,7 +326,8 @@ async function runOwnerTripStudioChecks() {
           closePlannerVisible &&
           (
             suggestedPrimaryState.text.includes('Planner chat is still connecting') ||
-            suggestedPrimaryState.text.includes('Planner chat is connecting')
+            suggestedPrimaryState.text.includes('Planner chat is connecting') ||
+            suggestedPrimaryState.text.includes('Planner chat is open')
           )
         )
     record('suggested primary action gives visible progress feedback', (
@@ -343,6 +344,7 @@ async function runOwnerTripStudioChecks() {
       closePlannerVisible,
       hasConnectingNotice: suggestedPrimaryState.text.includes('Planner chat is still connecting'),
       hasPlannerConnectingCopy: suggestedPrimaryState.text.includes('Planner chat is connecting'),
+      hasPlannerOpenCopy: suggestedPrimaryState.text.includes('Planner chat is open'),
       hasMapProgressNotice: suggestedPrimaryState.text.includes('Building map routes for this itinerary'),
       hasMapCompleteNotice: suggestedPrimaryState.text.includes('Map routes rebuilt'),
       hasMapFailureNotice: suggestedPrimaryState.text.includes('Could not rebuild the maps'),
