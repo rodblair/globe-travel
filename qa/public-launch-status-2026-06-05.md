@@ -3,7 +3,7 @@
 Date: 2026-06-05
 Operational date: 2026-06-05
 Time zone: America/Toronto
-Generated at: 2026-06-05T22:14:40.177Z
+Generated at: 2026-06-05T22:20:17.926Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -253,7 +253,7 @@ Public metadata:
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-06-04.json`
 - Authenticated app surfaces: `qa/app-surfaces-smoke-2026-06-05.json`
-- Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-06-04.json`
+- Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-06-05-0d825fb.json`
 
 ## Operating Meaning
 
