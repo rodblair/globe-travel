@@ -18,8 +18,8 @@ Base URL: `https://globe-travel-two.vercel.app`
 {
   "environment": "production",
   "region": "iad1",
-  "url": "globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app",
-  "commit": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54"
+  "url": "globe-travel-ewgh3tcs5-rodney-blairs-projects.vercel.app",
+  "commit": "4376c06cc6564f7932cbe179f295eee6e7d76805"
 }
 ```
 
