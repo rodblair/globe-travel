@@ -73,7 +73,7 @@ export default function PricingPage() {
               Start free. Upgrade when the trip gets real.
             </h1>
             <p className="mt-6 max-w-2xl text-body-lg leading-relaxed text-ink-2">
-              Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. Adventurer removes the limits when Globe becomes the group planning workspace.
+              Plan a city trip, map the days, share the itinerary, and collect friend feedback before anyone commits. {PLANS.pro.name} removes the limits when Globe becomes the group planning workspace.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="xl" className="rounded-full px-8">
@@ -102,7 +102,7 @@ export default function PricingPage() {
             <MeridianFrame inset={10} length={14} color="var(--ink-3)" opacity={0.55} />
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/25 bg-[color:var(--brass-subtle)] px-3 py-1">
               <Crown className="h-4 w-4 text-[var(--brass)]" />
-              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brass)]">Adventurer</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brass)]">{PLANS.pro.name}</span>
             </div>
             <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
               <span className="text-5xl font-bold text-foreground">${proMonthly}</span>
@@ -140,14 +140,14 @@ export default function PricingPage() {
           <div>
             <CompassRose size={46} showLabels={false} className="mb-5" />
             <p className="mb-3 t-mono text-[0.6875rem] uppercase tracking-[0.18em] text-ink-3">Plan comparison</p>
-            <h2 className="h-detail max-w-[14ch] text-foreground">The free plan proves the trip. Adventurer runs the whole crew.</h2>
+            <h2 className="h-detail max-w-[14ch] text-foreground">The free plan proves the trip. {PLANS.pro.name} runs the whole crew.</h2>
           </div>
 
           <div className="overflow-hidden rounded-[24px] border border-rule bg-paper-raised shadow-[var(--panel-shadow)]">
             <div className="grid grid-cols-[1.1fr_0.8fr_0.95fr] border-b border-rule bg-paper px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
               <span>Feature</span>
-              <span>Explorer</span>
-              <span>Adventurer</span>
+              <span>{PLANS.free.name}</span>
+              <span>{PLANS.pro.name}</span>
             </div>
             {comparisonRows.map(([feature, free, pro]) => (
               <div key={feature} className="grid grid-cols-[1.1fr_0.8fr_0.95fr] gap-2 border-b border-rule px-4 py-4 text-sm last:border-b-0">
@@ -164,7 +164,7 @@ export default function PricingPage() {
         <Sparkles className="mx-auto mb-5 h-6 w-6 text-[var(--brass)]" />
         <h2 className="mx-auto max-w-xl h-detail text-foreground">Give the group one plan to react to.</h2>
         <p className="mx-auto mt-4 max-w-md text-body text-ink-2">
-          Start with the free workspace, or begin Adventurer when you already know this trip needs more room.
+          Start with the free workspace, or begin {PLANS.pro.name} when you already know this trip needs more room.
         </p>
         <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
           <Button asChild size="xl" className="rounded-full px-8">

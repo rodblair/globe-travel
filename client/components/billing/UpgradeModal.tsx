@@ -83,7 +83,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                 <div className="min-w-0">
                   <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/25 bg-[color:var(--brass-subtle)] px-3 py-1">
                     <Crown className="h-4 w-4 text-[var(--brass)]" />
-                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brass)]">Adventurer</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brass)]">{PLANS.pro.name}</span>
                   </div>
                   <h2 id={titleId} className="text-2xl font-serif font-bold leading-tight text-foreground">
                     Unlock the full planning workspace

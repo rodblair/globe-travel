@@ -73,22 +73,22 @@ function billingSummary(subscription: Subscription | null | undefined, isPro: bo
   }
 
   if (subscription.status === 'trialing') {
-    return 'Your Adventurer trial is active. Keep planning before the first bill.'
+    return `Your ${PLANS.pro.name} trial is active. Keep planning before the first bill.`
   }
 
   if (subscription.status === 'past_due') {
-    return 'Your Adventurer access needs a payment update before it can continue.'
+    return `Your ${PLANS.pro.name} access needs a payment update before it can continue.`
   }
 
   if (subscription.status === 'canceled') {
-    return 'Your Adventurer subscription is canceled. Your saved work remains available.'
+    return `Your ${PLANS.pro.name} subscription is canceled. Your saved work remains available.`
   }
 
   if (subscription.status === 'active' && subscription.cancelAtPeriodEnd) {
-    return 'Your Adventurer plan stays active until the current period ends.'
+    return `Your ${PLANS.pro.name} plan stays active until the current period ends.`
   }
 
-  return isPro ? 'Pro features are active on this account.' : 'Free plan with generous limits to get started.'
+  return isPro ? `${PLANS.pro.name} features are active on this account.` : 'Free plan with generous limits to get started.'
 }
 
 function AccountPageContent() {
@@ -483,7 +483,7 @@ function AccountPageContent() {
                         ? displayedSubscription?.status === 'past_due'
                           ? 'Update billing'
                           : 'Manage subscription'
-                        : 'Upgrade to Adventurer'}
+                        : `Upgrade to ${PLANS.pro.name}`}
                     </h2>
                     <p className="mt-1 text-sm text-foreground/40">
                       {canOpenBillingPortal
@@ -586,8 +586,8 @@ function AccountPageContent() {
                     <div key={feature} className="grid gap-2 py-3 text-sm">
                       <p className="font-medium text-foreground">{feature}</p>
                       <div className="grid grid-cols-2 gap-2">
-                        <span className="rounded-xl bg-paper px-3 py-2 text-xs text-foreground/70">Explorer: {free}</span>
-                        <span className="rounded-xl bg-[var(--brass-subtle)] px-3 py-2 text-xs font-medium text-[var(--brass)]">Adventurer: {pro}</span>
+                        <span className="rounded-xl bg-paper px-3 py-2 text-xs text-foreground/70">{PLANS.free.name}: {free}</span>
+                        <span className="rounded-xl bg-[var(--brass-subtle)] px-3 py-2 text-xs font-medium text-[var(--brass)]">{PLANS.pro.name}: {pro}</span>
                       </div>
                     </div>
                   ))}

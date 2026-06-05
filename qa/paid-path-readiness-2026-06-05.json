@@ -1,0 +1,137 @@
+{
+  "date": "2026-06-05",
+  "releaseArtifact": "qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json",
+  "checkoutArtifactDir": "qa/stripe-checkout-browser-full-with-multi-planner-2026-06-05",
+  "portalArtifactDir": "qa/stripe-portal-browser-full-with-multi-planner-2026-06-05",
+  "subscriptionStateArtifactDir": "qa/billing-subscription-state-2026-05-21",
+  "jsonArtifact": "qa/paid-path-readiness-2026-06-05.json",
+  "reportArtifact": "qa/paid-path-readiness-2026-06-05.md",
+  "status": "pass",
+  "checked": 6,
+  "passed": 6,
+  "failed": 0,
+  "requiredReleaseTasks": [
+    "local commercial smoke",
+    "billing recovery smoke",
+    "Stripe test-mode readiness",
+    "hosted Stripe checkout browser QA",
+    "hosted Stripe billing portal browser QA"
+  ],
+  "screenshotCount": 6,
+  "checks": [
+    {
+      "name": "paid-path release-candidate artifact is readable",
+      "ok": true,
+      "artifact": "qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json",
+      "checked": 35,
+      "passed": 35,
+      "failed": 0
+    },
+    {
+      "name": "paid-path release-candidate evidence is fresh",
+      "ok": true,
+      "evidenceDate": "2026-06-05",
+      "ageDays": 0,
+      "maxEvidenceAgeDays": 14
+    },
+    {
+      "name": "paid-path release-candidate included checkout and portal browser gates",
+      "ok": true,
+      "includeStripeCheckout": true,
+      "includeStripePortal": true
+    },
+    {
+      "name": "paid-path release-candidate passed every commercial and subscription gate",
+      "ok": true,
+      "taskResults": [
+        {
+          "name": "local commercial smoke",
+          "expectedChecked": 4,
+          "found": true,
+          "ok": true,
+          "checked": 4,
+          "passed": 4,
+          "failed": 0,
+          "mutatesLocal": false,
+          "baseUrl": "http://localhost:3000"
+        },
+        {
+          "name": "billing recovery smoke",
+          "expectedChecked": 15,
+          "found": true,
+          "ok": true,
+          "checked": 15,
+          "passed": 15,
+          "failed": 0,
+          "mutatesLocal": false,
+          "baseUrl": "http://localhost:3000"
+        },
+        {
+          "name": "Stripe test-mode readiness",
+          "expectedChecked": 11,
+          "found": true,
+          "ok": true,
+          "checked": 11,
+          "passed": 11,
+          "failed": 0,
+          "mutatesLocal": false,
+          "baseUrl": null
+        },
+        {
+          "name": "hosted Stripe checkout browser QA",
+          "expectedChecked": 15,
+          "found": true,
+          "ok": true,
+          "checked": 15,
+          "passed": 15,
+          "failed": 0,
+          "mutatesLocal": true,
+          "baseUrl": "http://localhost:3000"
+        },
+        {
+          "name": "hosted Stripe billing portal browser QA",
+          "expectedChecked": 16,
+          "found": true,
+          "ok": true,
+          "checked": 16,
+          "passed": 16,
+          "failed": 0,
+          "mutatesLocal": true,
+          "baseUrl": "http://localhost:3000"
+        }
+      ],
+      "badTaskResults": []
+    },
+    {
+      "name": "paid-path hosted and billing-state screenshots exist",
+      "ok": true,
+      "screenshotCount": 6,
+      "requiredScreenshots": [
+        "qa/stripe-checkout-browser-full-with-multi-planner-2026-06-05/screenshots/stripe-checkout-loaded.png",
+        "qa/stripe-checkout-browser-full-with-multi-planner-2026-06-05/screenshots/stripe-checkout-filled.png",
+        "qa/stripe-checkout-browser-full-with-multi-planner-2026-06-05/screenshots/stripe-checkout-returned.png",
+        "qa/stripe-portal-browser-full-with-multi-planner-2026-06-05/screenshots/stripe-portal-loaded.png",
+        "qa/stripe-portal-browser-full-with-multi-planner-2026-06-05/screenshots/stripe-portal-returned.png",
+        "qa/billing-subscription-state-2026-05-21/screenshots/account-billing-canceling-local-1103x-view.png"
+      ],
+      "missingScreenshots": []
+    },
+    {
+      "name": "paid-path hosted Stripe runs were test-mode local return flows",
+      "ok": true,
+      "checkout": {
+        "baseUrl": "http://localhost:3000",
+        "mutatesLocal": true,
+        "checked": 15,
+        "passed": 15
+      },
+      "portal": {
+        "baseUrl": "http://localhost:3000",
+        "mutatesLocal": true,
+        "checked": 16,
+        "passed": 16
+      }
+    }
+  ],
+  "failures": []
+}
