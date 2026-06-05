@@ -134,10 +134,10 @@ export function KeepsakeRouteCard({
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
                   {index + 1}
                 </span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="break-words text-sm font-medium leading-snug text-foreground">{item.title}</p>
                   {(item.start_time || placeLabel) && (
-                    <p className="mt-0.5 truncate text-xs text-ink-3">
+                    <p className="mt-0.5 break-words text-xs leading-snug text-ink-3">
                       {[item.start_time?.slice(0, 5), placeLabel].filter(Boolean).join(' · ')}
                     </p>
                   )}
@@ -419,10 +419,9 @@ export function ShareLinkCard({
         role="status"
         aria-live="polite"
         className={cn(
-          'mt-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-colors',
           copied
-            ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-            : 'sr-only border-transparent bg-transparent text-transparent',
+            ? 'mt-3 rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-4 py-3 text-sm font-medium text-[var(--moss)] transition-colors'
+            : 'sr-only',
         )}
       >
         {copied ? 'Copied to clipboard.' : 'Copy status'}
