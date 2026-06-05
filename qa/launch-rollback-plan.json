@@ -5,9 +5,9 @@
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
-      "url": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "Commit 30afc74995f8d1d2d9c0cb4d77727bbddd5590c9 verified by Vercel production deployment globe-travel-anibbmco5-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok 11/11 for commit 30afc74995f8d1d2d9c0cb4d77727bbddd5590c9, npm run lint passing, npm run build passing, qa:studio-owner-ui passing 9/9, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-30afc74 npm run qa:release-production passing 10/10, and QA_LAUNCH_EXPECTED_COMMIT=30afc74995f8d1d2d9c0cb4d77727bbddd5590c9 npm run qa:launch-signoff verification queued for this current production evidence refresh.",
+      "commit": "c2dd1d51706a04a35ea3e88b7bd97a9141dc1269",
+      "url": "globe-travel-mrsu6468u-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "Commit c2dd1d51706a04a35ea3e88b7bd97a9141dc1269 verified by Vercel production deployment globe-travel-mrsu6468u-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok for commit c2dd1d51706a04a35ea3e88b7bd97a9141dc1269, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production passing 10/10, and QA_LAUNCH_EXPECTED_COMMIT=c2dd1d51706a04a35ea3e88b7bd97a9141dc1269 npm run qa:launch-signoff queued for current blocker verification.",
       "verifiedAt": "2026-06-05"
     }
   },
@@ -27,6 +27,6 @@
   ],
   "verificationCommands": [
     "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
-    "QA_LAUNCH_EXPECTED_COMMIT=30afc74995f8d1d2d9c0cb4d77727bbddd5590c9 npm run qa:launch-signoff"
+    "QA_LAUNCH_EXPECTED_COMMIT=c2dd1d51706a04a35ea3e88b7bd97a9141dc1269 npm run qa:launch-signoff"
   ]
 }

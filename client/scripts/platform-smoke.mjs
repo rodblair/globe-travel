@@ -1,4 +1,5 @@
 const baseUrl = (process.env.QA_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const fetchTimeoutMs = Number.parseInt(process.env.QA_SMOKE_FETCH_TIMEOUT_MS || '20000', 10)
 
 const routes = [
   { path: '/', markers: ['Globe.travel', 'Plan the trip everyone'] },
@@ -33,14 +34,18 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-async function fetchWithRetry(url, options, attempts = 3) {
+async function fetchTextWithRetry(url, options, attempts = 3) {
   let lastError = null
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      const response = await fetch(url, options)
+      const response = await fetch(url, {
+        ...options,
+        signal: options?.signal || AbortSignal.timeout(fetchTimeoutMs),
+      })
+      const body = await response.text()
       if (response.status < 500 || attempt === attempts) {
-        return { response, attempts: attempt, error: null }
+        return { response, body, attempts: attempt, error: null }
       }
       lastError = new Error(`HTTP ${response.status}`)
     } catch (error) {
@@ -53,6 +58,7 @@ async function fetchWithRetry(url, options, attempts = 3) {
 
   return {
     response: null,
+    body: '',
     attempts,
     error: lastError instanceof Error ? lastError.message : String(lastError),
   }
@@ -61,7 +67,7 @@ async function fetchWithRetry(url, options, attempts = 3) {
 async function checkRoute(route) {
   const url = `${baseUrl}${route.path}`
   const started = Date.now()
-  const fetched = await fetchWithRetry(url, {
+  const fetched = await fetchTextWithRetry(url, {
     redirect: 'follow',
     headers: { 'user-agent': 'globe-travel-platform-smoke/1.0' },
   })
@@ -70,7 +76,7 @@ async function checkRoute(route) {
   }
 
   const response = fetched.response
-  const body = await response.text()
+  const body = fetched.body
   const elapsedMs = Date.now() - started
 
   if (route.kind === 'trip-api') {
