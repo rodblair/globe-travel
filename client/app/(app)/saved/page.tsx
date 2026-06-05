@@ -415,6 +415,8 @@ function SavedPageContent() {
                 {trips.map((trip, index) => {
                   const displayTitle = formatTripTitleForDisplay(trip.title)
                   const { days, destination } = getTripKeepsakeMeta(displayTitle)
+                  const genericDisplayTitle = /^(\d+-day itinerary|trip)$/i.test(displayTitle)
+                  const cardSubtitle = genericDisplayTitle ? 'Saved itinerary ready to refine' : displayTitle
                   return (
                     <motion.div
                       key={trip.id}
@@ -438,7 +440,7 @@ function SavedPageContent() {
                               </h3>
                               <div className="mt-4 flex items-center gap-1.5">
                                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-ink-3" />
-                                <span className="line-clamp-2 break-words text-sm leading-snug text-ink-2">{displayTitle}</span>
+                                <span className="line-clamp-2 break-words text-sm leading-snug text-ink-2">{cardSubtitle}</span>
                               </div>
                             </Link>
                             <Link
