@@ -29,6 +29,7 @@ const includeStripeCheckout = process.env.QA_RELEASE_INCLUDE_STRIPE_CHECKOUT ===
 const includeStripePortal = process.env.QA_RELEASE_INCLUDE_STRIPE_PORTAL === '1'
 const includePromptSuite = process.env.QA_RELEASE_INCLUDE_PROMPT_SUITE !== '0'
 const includeSlowNetwork = process.env.QA_RELEASE_INCLUDE_SLOW_NETWORK !== '0'
+const includeA11y = process.env.QA_RELEASE_INCLUDE_A11Y !== '0'
 const visualRunId = process.env.QA_VISUAL_RUN_ID || `release-candidate-${new Date().toISOString().slice(0, 10)}`
 const plannerActualsPreset = process.env.QA_RELEASE_PLANNER_ACTUALS_PRESET || 'regional-edge-cities'
 const plannerActualsOutput =
@@ -39,6 +40,18 @@ const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const failures = []
 const results = []
 let studioFixture = null
+
+function readPositiveMs(envName, fallbackMs, minMs = 1000) {
+  const value = Number(process.env[envName])
+  if (!Number.isFinite(value) || value <= 0) return fallbackMs
+  return Math.max(minMs, value)
+}
+
+const defaultTaskTimeoutMs = readPositiveMs('QA_RELEASE_TASK_TIMEOUT_MS', 15 * 60 * 1000, 60 * 1000)
+const taskKillGraceMs = readPositiveMs('QA_RELEASE_TASK_KILL_GRACE_MS', 5000)
+const browserHeavyTaskTimeoutMs = readPositiveMs('QA_RELEASE_BROWSER_HEAVY_TASK_TIMEOUT_MS', 30 * 60 * 1000, 60 * 1000)
+const longMutationTaskTimeoutMs = readPositiveMs('QA_RELEASE_LONG_MUTATION_TASK_TIMEOUT_MS', 20 * 60 * 1000, 60 * 1000)
+const studioOwnerTaskTimeoutMs = readPositiveMs('QA_RELEASE_STUDIO_OWNER_UI_TASK_TIMEOUT_MS', 12 * 60 * 1000, 60 * 1000)
 
 async function assertLocalServerReady() {
   if (!isLocalBaseUrl) return
@@ -104,7 +117,16 @@ function summarizeParsed(parsed) {
   }
 }
 
-function runTask({ name, command, args, env = {}, parseJson = false, echoOutput = false, mutatesLocal = false }) {
+function runTask({
+  name,
+  command,
+  args,
+  env = {},
+  parseJson = false,
+  echoOutput = false,
+  mutatesLocal = false,
+  timeoutMs = defaultTaskTimeoutMs,
+}) {
   return new Promise((resolve) => {
     const startedAt = Date.now()
     const child = spawn(command, args, {
@@ -114,27 +136,38 @@ function runTask({ name, command, args, env = {}, parseJson = false, echoOutput 
     })
     let stdout = ''
     let stderr = ''
+    let timedOut = false
+    let settled = false
+    let killTimer = null
 
     console.log(`\n--- ${name}${mutatesLocal ? ' (local mutation)' : ''} ---`)
+    console.log(`[release-candidate] task timeout: ${(timeoutMs / 1000).toFixed(0)}s`)
 
-    child.stdout.on('data', (chunk) => {
-      const text = chunk.toString()
-      stdout += text
-      if (echoOutput) process.stdout.write(text)
-    })
-    child.stderr.on('data', (chunk) => {
-      const text = chunk.toString()
-      stderr += text
-      if (echoOutput) process.stderr.write(text)
-    })
-    child.on('close', (code) => {
+    const timeout = setTimeout(() => {
+      timedOut = true
+      const message = `Timed out after ${timeoutMs}ms while running ${name}.`
+      stderr = `${stderr}\n${message}`.trim()
+      console.error(`[release-candidate] ${message}`)
+      child.kill('SIGTERM')
+      killTimer = setTimeout(() => child.kill('SIGKILL'), taskKillGraceMs)
+      killTimer.unref?.()
+    }, timeoutMs)
+    timeout.unref?.()
+
+    function finish(code) {
+      if (settled) return
+      settled = true
+      clearTimeout(timeout)
+      if (killTimer) clearTimeout(killTimer)
+
       const parsed = parseJson ? parseJsonOutput(stdout) : null
       const result = {
         name,
-        ok: code === 0,
+        ok: code === 0 && !timedOut,
         code,
         elapsedMs: Date.now() - startedAt,
         mutatesLocal,
+        timedOut,
         ...summarizeParsed(parsed),
       }
 
@@ -158,7 +191,23 @@ function runTask({ name, command, args, env = {}, parseJson = false, echoOutput 
       }
       results.push({ ...result, parsed })
       resolve({ ...result, parsed, stdout, stderr })
+    }
+
+    child.stdout.on('data', (chunk) => {
+      const text = chunk.toString()
+      stdout += text
+      if (echoOutput) process.stdout.write(text)
     })
+    child.stderr.on('data', (chunk) => {
+      const text = chunk.toString()
+      stderr += text
+      if (echoOutput) process.stderr.write(text)
+    })
+    child.on('error', (error) => {
+      stderr = `${stderr}\n${error instanceof Error ? error.message : String(error)}`.trim()
+      finish(1)
+    })
+    child.on('close', finish)
   })
 }
 
@@ -227,6 +276,7 @@ Public share slug: ${shareSlug}
 - Owner feedback readback included: ${includeOwnerFeedback ? 'yes' : 'no'}
 - Planner generated actuals included: ${includePlannerActuals ? 'yes' : 'no'}
 - Planner generated actuals preset: ${includePlannerActuals ? plannerActualsPreset : 'n/a'}
+- Accessibility and keyboard included: ${includeA11y ? 'yes' : 'no'}
 - Slow-network recovery included: ${includeSlowNetwork ? 'yes' : 'no'}
 - Hosted Stripe Checkout included: ${includeStripeCheckout ? 'yes' : 'no'}
 - Hosted Stripe billing portal included: ${includeStripePortal ? 'yes' : 'no'}
@@ -317,7 +367,14 @@ try {
   await runNodeTask('auth and guest access smoke', 'scripts/platform-auth-access-smoke.mjs', {}, { mutatesLocal: true })
   await runNodeTask('saved and account smoke', 'scripts/platform-saved-account-smoke.mjs', {}, { mutatesLocal: true })
   await runNodeTask('local commercial smoke', 'scripts/platform-commercial-smoke.mjs')
-  await runNodeTask('local accessibility and keyboard smoke', 'scripts/platform-accessibility-smoke.mjs')
+  if (includeA11y) {
+    await runNodeTask(
+      'local accessibility and keyboard smoke',
+      'scripts/platform-accessibility-smoke.mjs',
+      {},
+      { timeoutMs: browserHeavyTaskTimeoutMs }
+    )
+  }
   await runNodeTask('public share and social preview smoke', 'scripts/platform-share-smoke.mjs')
   await runNodeTask('public share recovery smoke', 'scripts/platform-public-share-recovery-smoke.mjs')
   await runNodeTask('public share viral loop smoke', 'scripts/platform-share-viral-smoke.mjs', {}, { mutatesLocal: isLocalBaseUrl })
@@ -340,14 +397,24 @@ try {
       'public share multi-itinerary browser UI smoke',
       'scripts/platform-share-multi-itinerary-ui-smoke.mjs',
       {},
-      { mutatesLocal: true }
+      { mutatesLocal: true, timeoutMs: longMutationTaskTimeoutMs }
     )
   }
 
   if (includeShareFeedback) {
     await runNodeTask('public share feedback mutation smoke', 'scripts/platform-share-feedback-smoke.mjs', {}, { mutatesLocal: true })
-    await runNodeTask('public share recipient browser feedback smoke', 'scripts/platform-share-recipient-ui-smoke.mjs', {}, { mutatesLocal: true })
-    await runNodeTask('public share feedback states browser smoke', 'scripts/platform-share-feedback-states-ui-smoke.mjs', {}, { mutatesLocal: true })
+    await runNodeTask(
+      'public share recipient browser feedback smoke',
+      'scripts/platform-share-recipient-ui-smoke.mjs',
+      {},
+      { mutatesLocal: true, timeoutMs: browserHeavyTaskTimeoutMs }
+    )
+    await runNodeTask(
+      'public share feedback states browser smoke',
+      'scripts/platform-share-feedback-states-ui-smoke.mjs',
+      {},
+      { mutatesLocal: true, timeoutMs: longMutationTaskTimeoutMs }
+    )
   }
 
   await runNodeTask('planner handoff smoke', 'scripts/platform-planner-handoff-smoke.mjs', {}, { mutatesLocal: true })
@@ -382,7 +449,8 @@ try {
             QA_GUEST_ID: studioFixture.guestId,
             QA_SHARE_SLUG: studioFixture.shareSlug,
             QA_RUN_ID: studioFixture.runId || '',
-          }
+          },
+          { timeoutMs: studioOwnerTaskTimeoutMs }
         )
       } else {
         const failure = {
@@ -415,7 +483,7 @@ try {
               QA_GUEST_ID: studioFixture.guestId,
               QA_RUN_ID: studioFixture.runId || '',
             },
-            { mutatesLocal: true }
+            { mutatesLocal: true, timeoutMs: browserHeavyTaskTimeoutMs }
           )
         } else {
           const failure = {
@@ -437,7 +505,7 @@ try {
             QA_GUEST_ID: studioFixture.guestId,
             QA_SHARE_SLUG: studioFixture.shareSlug,
           },
-          { mutatesLocal: true }
+          { mutatesLocal: true, timeoutMs: browserHeavyTaskTimeoutMs }
         )
       }
     } else {
@@ -467,25 +535,40 @@ try {
   }
 
   if (includeVisual) {
-    await runNodeTask('responsive visual QA', 'scripts/platform-visual-baseline.mjs', {
-      QA_VISUAL_RUN_ID: visualRunId,
-      QA_TRIP_ID: studioFixture?.tripId || process.env.QA_TRIP_ID || '',
-      QA_GUEST_ID: studioFixture?.guestId || process.env.QA_GUEST_ID || '',
-      QA_VISUAL_AUTH_MODE: studioFixture?.guestId ? 'guest' : (process.env.QA_VISUAL_AUTH_MODE || 'auto'),
-      QA_VISUAL_SETTLE_MS: process.env.QA_VISUAL_SETTLE_MS || '1200',
-    })
+    await runNodeTask(
+      'responsive visual QA',
+      'scripts/platform-visual-baseline.mjs',
+      {
+        QA_VISUAL_RUN_ID: visualRunId,
+        QA_TRIP_ID: studioFixture?.tripId || process.env.QA_TRIP_ID || '',
+        QA_GUEST_ID: studioFixture?.guestId || process.env.QA_GUEST_ID || '',
+        QA_VISUAL_AUTH_MODE: studioFixture?.guestId ? 'guest' : (process.env.QA_VISUAL_AUTH_MODE || 'auto'),
+        QA_VISUAL_SETTLE_MS: process.env.QA_VISUAL_SETTLE_MS || '1200',
+      },
+      { timeoutMs: browserHeavyTaskTimeoutMs }
+    )
   }
 
   if (includeStripeCheckout) {
-    await runNodeTask('hosted Stripe checkout browser QA', 'scripts/platform-stripe-checkout-browser.mjs', {
-      QA_STRIPE_RUN_HOSTED_CHECKOUT: '1',
-    }, { mutatesLocal: true })
+    await runNodeTask(
+      'hosted Stripe checkout browser QA',
+      'scripts/platform-stripe-checkout-browser.mjs',
+      {
+        QA_STRIPE_RUN_HOSTED_CHECKOUT: '1',
+      },
+      { mutatesLocal: true, timeoutMs: browserHeavyTaskTimeoutMs }
+    )
   }
 
   if (includeStripePortal) {
-    await runNodeTask('hosted Stripe billing portal browser QA', 'scripts/platform-stripe-portal-browser.mjs', {
-      QA_STRIPE_RUN_PORTAL_BROWSER: '1',
-    }, { mutatesLocal: true })
+    await runNodeTask(
+      'hosted Stripe billing portal browser QA',
+      'scripts/platform-stripe-portal-browser.mjs',
+      {
+        QA_STRIPE_RUN_PORTAL_BROWSER: '1',
+      },
+      { mutatesLocal: true, timeoutMs: browserHeavyTaskTimeoutMs }
+    )
   }
 } finally {
   if (includeStudioFixture) {
@@ -511,6 +594,7 @@ const summary = {
   includePlannerActuals,
   plannerActualsPreset: includePlannerActuals ? plannerActualsPreset : null,
   plannerActualsOutput: includePlannerActuals ? plannerActualsOutput : null,
+  includeA11y,
   includeSlowNetwork,
   includeStripeCheckout,
   includeStripePortal,

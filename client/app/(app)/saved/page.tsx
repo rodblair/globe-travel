@@ -435,8 +435,8 @@ function SavedPageContent() {
                                 {destination}
                               </h3>
                               <div className="mt-4 flex items-center gap-1.5">
-                                <MapPin className="h-4 w-4 text-ink-3" />
-                                <span className="truncate text-sm text-ink-2">{trip.title}</span>
+                                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-ink-3" />
+                                <span className="line-clamp-2 break-words text-sm leading-snug text-ink-2">{trip.title}</span>
                               </div>
                             </Link>
                             <Link

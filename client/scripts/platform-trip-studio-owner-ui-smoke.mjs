@@ -10,7 +10,6 @@ const providedGuestId = process.env.QA_GUEST_ID || ''
 const providedShareSlug = process.env.QA_SHARE_SLUG || ''
 const providedRunId = process.env.QA_RUN_ID || ''
 const shouldCreateFixture = !providedTripId || !providedGuestId || !providedShareSlug
-const childScriptTimeoutMs = Math.max(5000, Number(process.env.QA_STUDIO_OWNER_UI_CHILD_TIMEOUT_MS || 120000) || 120000)
 const generatedRunId = providedRunId || randomUUID().slice(0, 8)
 const generatedGuestId = providedGuestId || randomUUID()
 const failures = []
@@ -27,6 +26,31 @@ let browser = null
 if (!isLocalBaseUrl) {
   console.error('qa:studio-owner-ui mutates disposable fixtures and only runs against localhost.')
   process.exit(1)
+}
+
+function readPositiveMs(envName, fallbackMs, minMs = 1000) {
+  const value = Number(process.env[envName])
+  if (!Number.isFinite(value) || value <= 0) return fallbackMs
+  return Math.max(minMs, value)
+}
+
+const childScriptTimeoutMs = readPositiveMs('QA_STUDIO_OWNER_UI_CHILD_TIMEOUT_MS', 120000, 5000)
+const browserLaunchTimeoutMs = readPositiveMs('QA_BROWSER_LAUNCH_TIMEOUT_MS', 60000, 5000)
+const browserPhaseTimeoutMs = readPositiveMs('QA_STUDIO_OWNER_UI_BROWSER_PHASE_TIMEOUT_MS', 180000, 15000)
+const browserCloseTimeoutMs = readPositiveMs('QA_STUDIO_OWNER_UI_BROWSER_CLOSE_TIMEOUT_MS', 30000, 5000)
+
+function withTimeout(promise, label, timeoutMs) {
+  let timeout = null
+  const timer = new Promise((_, reject) => {
+    timeout = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs}ms.`))
+    }, timeoutMs)
+    timeout.unref?.()
+  })
+
+  return Promise.race([promise, timer]).finally(() => {
+    if (timeout) clearTimeout(timeout)
+  })
 }
 
 function parseJsonOutput(stdout) {
@@ -413,21 +437,28 @@ async function runMissingTripRecoveryChecks() {
 try {
   await createFixtureIfNeeded()
   if (failures.length === 0) {
-    browser = await chromium.launch({
-      executablePath: chromePath,
-      headless: true,
-      args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
-    })
-    await runOwnerTripStudioChecks()
-    await runReadOnlyTripStudioChecks()
-    await runMissingTripRecoveryChecks()
+    browser = await withTimeout(
+      chromium.launch({
+        executablePath: chromePath,
+        headless: true,
+        timeout: browserLaunchTimeoutMs,
+        args: ['--disable-dev-shm-usage', '--disable-gpu', '--disable-extensions', '--disable-background-networking'],
+      }),
+      'Chrome launch',
+      browserLaunchTimeoutMs + 5000,
+    )
+    await withTimeout(runOwnerTripStudioChecks(), 'Owner Trip Studio browser checks', browserPhaseTimeoutMs)
+    await withTimeout(runReadOnlyTripStudioChecks(), 'Read-only Trip Studio browser checks', browserPhaseTimeoutMs)
+    await withTimeout(runMissingTripRecoveryChecks(), 'Missing Trip Studio browser checks', browserPhaseTimeoutMs)
   }
 } catch (error) {
   record('owner UI smoke completed without unexpected exception', false, {
     error: error instanceof Error ? error.message : String(error),
   })
 } finally {
-  await browser?.close().catch(() => {})
+  if (browser) {
+    await withTimeout(browser.close(), 'Chrome close', browserCloseTimeoutMs).catch(() => {})
+  }
   await cleanupFixture()
 }
 
