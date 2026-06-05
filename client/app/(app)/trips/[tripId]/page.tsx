@@ -1235,7 +1235,7 @@ function TripStudioPageContent() {
           </section>
 
           <aside className="min-h-0 space-y-4 xl:overflow-y-auto">
-            <section data-testid="trip-suggested-next-step" className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Share with crew</p>
@@ -1343,42 +1343,73 @@ function TripStudioPageContent() {
               </div>
             </section>
 
-            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section data-testid="trip-suggested-next-step" className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
               <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Suggested next step</p>
-              <p className="mt-2 text-sm font-medium leading-snug text-foreground">
-                {mappingSummary.needsHydration ? 'Rebuild map routes before sharing.' : `Ask Globe to tune Day ${ensureSelectedDayExists}.`}
-              </p>
-              {suggestedStepNotice && (
-                <p className={cn(
-                  'mt-3 rounded-md border px-3 py-2 text-xs leading-relaxed',
-                  suggestedNoticeIsWarning
-                    ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]'
-                    : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                )} aria-live="polite">
-                  {suggestedStepNotice}
-                </p>
+              {!canEditTrip ? (
+                <>
+                  <p className="mt-2 text-sm font-medium leading-snug text-foreground">
+                    Review the shared itinerary, or start your own editable version.
+                  </p>
+                  <div className={cn('mt-4 grid gap-2', trip?.is_public && trip.share_slug ? 'grid-cols-2' : 'grid-cols-1')}>
+                    {trip?.is_public && trip.share_slug && (
+                      <Link
+                        data-testid="trip-suggested-view-share"
+                        href={`/t/${trip.share_slug}`}
+                        className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+                      >
+                        <Send className="h-4 w-4" />
+                        View share
+                      </Link>
+                    )}
+                    <Link
+                      data-testid="trip-suggested-start-trip"
+                      href="/chat"
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Start trip
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="mt-2 text-sm font-medium leading-snug text-foreground">
+                    {mappingSummary.needsHydration ? 'Rebuild map routes before sharing.' : `Ask Globe to tune Day ${ensureSelectedDayExists}.`}
+                  </p>
+                  {suggestedStepNotice && (
+                    <p className={cn(
+                      'mt-3 rounded-md border px-3 py-2 text-xs leading-relaxed',
+                      suggestedNoticeIsWarning
+                        ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]'
+                        : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                    )} aria-live="polite">
+                      {suggestedStepNotice}
+                    </p>
+                  )}
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <button
+                      data-testid={suggestedPrimaryIsMapPass ? 'trip-suggested-build-maps' : 'trip-suggested-rewrite-day'}
+                      data-suggested-action={suggestedPrimaryIsMapPass ? 'build-maps' : 'rewrite-day'}
+                      onClick={handleSuggestedPrimaryStep}
+                      disabled={suggestedPrimaryDisabled}
+                      aria-label={suggestedPrimaryIsMapPass ? 'Build map routes from suggested next step' : `Rewrite Day ${ensureSelectedDayExists} from suggested next step`}
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
+                    >
+                      {suggestedPrimaryIsMapPass ? <Route className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                      {suggestedPrimaryLabel}
+                    </button>
+                    <button
+                      data-testid="trip-suggested-feedback-refresh"
+                      onClick={() => startWorkflow('feedback_refresh')}
+                      disabled={Boolean(creatingWorkflow)}
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
+                    >
+                      <RefreshCcw className="h-4 w-4" />
+                      {suggestedRefreshLabel}
+                    </button>
+                  </div>
+                </>
               )}
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <button
-                  data-testid="trip-suggested-rewrite-day"
-                  onClick={handleSuggestedPrimaryStep}
-                  disabled={suggestedPrimaryDisabled}
-                  aria-label={suggestedPrimaryIsMapPass ? 'Build map routes from suggested next step' : `Rewrite Day ${ensureSelectedDayExists} from suggested next step`}
-                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
-                >
-                  {suggestedPrimaryIsMapPass ? <Route className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  {suggestedPrimaryLabel}
-                </button>
-                <button
-                  data-testid="trip-suggested-feedback-refresh"
-                  onClick={() => startWorkflow('feedback_refresh')}
-                  disabled={Boolean(creatingWorkflow)}
-                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
-                >
-                  <RefreshCcw className="h-4 w-4" />
-                  {suggestedRefreshLabel}
-                </button>
-              </div>
             </section>
 
             <section ref={workflowPanelRef} className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">

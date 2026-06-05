@@ -288,29 +288,52 @@ async function runOwnerTripStudioChecks() {
       { timeout: 30000 },
     ).catch(() => {})
     const suggestedRewriteButton = page.getByTestId('trip-suggested-rewrite-day')
+    const suggestedBuildMapsButton = page.getByTestId('trip-suggested-build-maps')
     const suggestedRewriteButtonCount = await suggestedRewriteButton.count()
-    if (suggestedRewriteButtonCount === 1) {
+    const suggestedBuildMapsButtonCount = await suggestedBuildMapsButton.count()
+    const suggestedActionType = suggestedBuildMapsButtonCount === 1 ? 'build-maps' : 'rewrite-day'
+
+    if (suggestedActionType === 'build-maps') {
+      await suggestedBuildMapsButton.click({ timeout: 8000 })
+    } else if (suggestedRewriteButtonCount === 1) {
       await suggestedRewriteButton.click({ timeout: 8000 })
     }
+
     const closePlannerButton = page.getByRole('button', { name: 'Close planner chat', exact: true })
-    await closePlannerButton.waitFor({ state: 'visible', timeout: 8000 }).catch(() => {})
+    if (suggestedActionType === 'rewrite-day') {
+      await closePlannerButton.waitFor({ state: 'visible', timeout: 8000 }).catch(() => {})
+    }
     const closePlannerVisible = await closePlannerButton.isVisible().catch(() => false)
-    const rewriteUnavailableState = await readPageState(page)
-    record('suggested rewrite opens visible planner drawer at desktop breakpoint', (
-      suggestedRewriteButtonCount === 1 &&
-      closePlannerVisible &&
-      rewriteUnavailableState.text.includes('Planner chat is still connecting') &&
-      !rewriteUnavailableState.appError &&
-      !rewriteUnavailableState.horizontalOverflow
+    const suggestedPrimaryState = await readPageState(page)
+    const hasVisibleSuggestedProgress = suggestedActionType === 'build-maps'
+      ? (
+          suggestedPrimaryState.text.includes('Building map routes for this itinerary') ||
+          suggestedPrimaryState.text.includes('Map routes rebuilt') ||
+          suggestedPrimaryState.text.includes('Could not rebuild the maps')
+        )
+      : (
+          closePlannerVisible &&
+          suggestedPrimaryState.text.includes('Planner chat is still connecting')
+        )
+    record('suggested primary action gives visible progress feedback', (
+      (suggestedRewriteButtonCount === 1 || suggestedBuildMapsButtonCount === 1) &&
+      hasVisibleSuggestedProgress &&
+      !suggestedPrimaryState.appError &&
+      !suggestedPrimaryState.horizontalOverflow
     ), {
-      url: rewriteUnavailableState.url,
+      url: suggestedPrimaryState.url,
+      suggestedActionType,
       suggestedRewriteButtonCount,
+      suggestedBuildMapsButtonCount,
       closePlannerVisible,
-      hasConnectingNotice: rewriteUnavailableState.text.includes('Planner chat is still connecting'),
-      appError: rewriteUnavailableState.appError,
-      horizontalOverflow: rewriteUnavailableState.horizontalOverflow,
-      clientWidth: rewriteUnavailableState.clientWidth,
-      scrollWidth: rewriteUnavailableState.scrollWidth,
+      hasConnectingNotice: suggestedPrimaryState.text.includes('Planner chat is still connecting'),
+      hasMapProgressNotice: suggestedPrimaryState.text.includes('Building map routes for this itinerary'),
+      hasMapCompleteNotice: suggestedPrimaryState.text.includes('Map routes rebuilt'),
+      hasMapFailureNotice: suggestedPrimaryState.text.includes('Could not rebuild the maps'),
+      appError: suggestedPrimaryState.appError,
+      horizontalOverflow: suggestedPrimaryState.horizontalOverflow,
+      clientWidth: suggestedPrimaryState.clientWidth,
+      scrollWidth: suggestedPrimaryState.scrollWidth,
     })
 
     await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
