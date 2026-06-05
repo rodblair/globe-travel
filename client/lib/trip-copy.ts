@@ -89,6 +89,7 @@ function polishMonthPhrases(value: string) {
 
 export function formatTripTitleForDisplay(title: string | null | undefined) {
   let formatted = stripBrandSuffix(title || 'Trip')
+  formatted = formatted.replace(/^(\d+)\s+Days?\s+in\s+(?:itinerary|trip)$/i, '$1-day itinerary')
   for (const [pattern, replacement] of CITY_COUNTRY_REPLACEMENTS) {
     formatted = formatted.replace(pattern, replacement)
   }

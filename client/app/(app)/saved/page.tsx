@@ -27,6 +27,7 @@ import { ArtifactFrame, getTripKeepsakeMeta } from '@/components/trips/KeepsakeA
 import { useDialogFocus } from '@/hooks/useDialogFocus'
 import { useSubscription } from '@/hooks/useSubscription'
 import { PLANS } from '@/lib/plans'
+import { formatTripTitleForDisplay } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
 type SavedTab = 'trips' | 'journal'
@@ -412,7 +413,8 @@ function SavedPageContent() {
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
                 {trips.map((trip, index) => {
-                  const { days, destination } = getTripKeepsakeMeta(trip.title)
+                  const displayTitle = formatTripTitleForDisplay(trip.title)
+                  const { days, destination } = getTripKeepsakeMeta(displayTitle)
                   return (
                     <motion.div
                       key={trip.id}
@@ -426,7 +428,7 @@ function SavedPageContent() {
                             <Link
                               href={`/trips/${trip.id}`}
                               className="min-w-0 rounded-2xl outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-4 focus-visible:ring-offset-paper-raised"
-                              aria-label={`Open ${trip.title}`}
+                              aria-label={`Open ${displayTitle}`}
                             >
                               <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
                                 Globe.travel map
@@ -436,14 +438,14 @@ function SavedPageContent() {
                               </h3>
                               <div className="mt-4 flex items-center gap-1.5">
                                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-ink-3" />
-                                <span className="line-clamp-2 break-words text-sm leading-snug text-ink-2">{trip.title}</span>
+                                <span className="line-clamp-2 break-words text-sm leading-snug text-ink-2">{displayTitle}</span>
                               </div>
                             </Link>
                             <Link
                               href={`/trips/${trip.id}`}
                               className="touch-target inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-paper-recessed text-[var(--brass)] transition-transform hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised"
-                              aria-label={`Open ${trip.title}`}
-                              title={`Open ${trip.title}`}
+                              aria-label={`Open ${displayTitle}`}
+                              title={`Open ${displayTitle}`}
                             >
                               <ArrowRight className="h-4 w-4" />
                             </Link>
@@ -480,7 +482,7 @@ function SavedPageContent() {
                             <Link
                               href={`/trips/${trip.id}`}
                               className="touch-target mt-4 inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper-recessed px-3 py-2 text-xs font-semibold text-foreground/78 transition-colors hover:border-[color:var(--brass)]/30 hover:bg-[var(--brass-subtle)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised"
-                              aria-label={`Open ${trip.title}`}
+                              aria-label={`Open ${displayTitle}`}
                             >
                               Open trip
                               <ArrowRight className="h-3.5 w-3.5" />
@@ -497,8 +499,8 @@ function SavedPageContent() {
                             'touch-target absolute bottom-5 right-5 z-10 inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
                             'border-rule bg-paper/28 text-foreground/70 hover:border-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]'
                           )}
-                          aria-label={`Delete ${trip.title}`}
-                          title={`Delete ${trip.title}`}
+                          aria-label={`Delete ${displayTitle}`}
+                          title={`Delete ${displayTitle}`}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           Delete

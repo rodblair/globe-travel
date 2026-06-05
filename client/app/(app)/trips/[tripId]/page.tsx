@@ -10,7 +10,8 @@ import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
 import TripDayMap from '@/components/trips/TripDayMap'
-import { buildDisplayStops, getRouteFallbackLabel, hasTransitRouteCue, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getRouteFallbackLabel, hasScheduleOrderConflict, hasTransitRouteCue, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { formatTripTitleForDisplay } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
 type Trip = {
@@ -354,36 +355,50 @@ function TripStudioPageContent() {
     [days]
   )
 
-  const tripDestination = useMemo(() => extractDestinationLabel(trip?.title), [trip?.title])
+  const tripDisplayTitle = useMemo(
+    () => formatTripTitleForDisplay(trip?.title || 'Trip workspace'),
+    [trip?.title]
+  )
+  const tripDestination = useMemo(() => extractDestinationLabel(tripDisplayTitle), [tripDisplayTitle])
 
   const mappingSummary = useMemo(() => {
     const itemCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
     let mappedItemCount = 0
     let routeDayCount = 0
     let routeEligibleDayCount = 0
+    let scheduleOrderConflictDayCount = 0
 
     for (const day of days) {
-      const displayStops = buildDisplayStops((day.items || []) as any)
+      const dayItems = (day.items || []) as any
+      const displayStops = buildDisplayStops(dayItems)
       const mappedStops = displayStops.filter((stop) => stop.mapped)
       const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
       const savedRoute = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
 
       mappedItemCount += mappedStops.length
 
-      if (mappedStops.length >= 2 && !usesDerivedStops && !hasTransitRouteCue(day.items || [])) {
+      if (mappedStops.length >= 2 && !usesDerivedStops && !hasTransitRouteCue(dayItems)) {
         routeEligibleDayCount += 1
-        if (shouldUseSavedRoute(day.items || [], savedRoute, usesDerivedStops)) {
+        if (hasScheduleOrderConflict(dayItems)) {
+          scheduleOrderConflictDayCount += 1
+          continue
+        }
+        if (shouldUseSavedRoute(dayItems, savedRoute, usesDerivedStops)) {
           routeDayCount += 1
         }
       }
     }
+
+    const routeBuildNeededCount = Math.max(0, routeEligibleDayCount - scheduleOrderConflictDayCount - routeDayCount)
 
     return {
       itemCount,
       mappedItemCount,
       routeDayCount,
       routeEligibleDayCount,
-      needsHydration: itemCount > 0 && (mappedItemCount < itemCount || routeDayCount < routeEligibleDayCount),
+      scheduleOrderConflictDayCount,
+      needsHydration: itemCount > 0 && (mappedItemCount < itemCount || routeBuildNeededCount > 0),
+      needsStopOrderReview: scheduleOrderConflictDayCount > 0,
     }
   }, [days])
 
@@ -573,10 +588,18 @@ function TripStudioPageContent() {
         const message = typeof payload?.error === 'string' ? payload.error : 'Map rebuild failed'
         throw new Error(message)
       }
+      const payload = await response.json().catch(() => null)
       await refetch()
       setBuildMapsDone(true)
       if (options?.suggestedStep) {
-        setSuggestedStepNotice('Map routes rebuilt. Review the Trip Map, then share the link or tune the selected day.')
+        const geocodedItems = typeof payload?.geocodedItems === 'number' ? payload.geocodedItems : 0
+        const routeDays = typeof payload?.routeDays === 'number' ? payload.routeDays : 0
+        const stillNeedsPlaceData = mappingSummary.mappedItemCount < mappingSummary.itemCount
+        setSuggestedStepNotice(
+          stillNeedsPlaceData || (geocodedItems === 0 && routeDays === 0)
+            ? 'Map pass ran, but some stops still need place data. Rewrite the day or edit unmapped stops before sharing.'
+            : 'Map routes rebuilt. Review the Trip Map, then share the link or tune the selected day.'
+        )
       }
       setTimeout(() => setBuildMapsDone(false), 2500)
     } catch (error) {
@@ -592,7 +615,7 @@ function TripStudioPageContent() {
     } finally {
       setIsHydratingMaps(false)
     }
-  }, [tripId, refetch, isHydratingMaps, canEditTrip, qaForceBuildMapsFailure])
+  }, [tripId, refetch, isHydratingMaps, canEditTrip, qaForceBuildMapsFailure, mappingSummary])
 
   useEffect(() => {
     hydrationAttemptedRef.current = null
@@ -610,7 +633,7 @@ function TripStudioPageContent() {
 
   const shareUrl = trip?.share_slug && pageOrigin ? `${pageOrigin}/t/${trip.share_slug}` : null
   const inviteMessage = shareUrl
-    ? `Review my trip ideas for ${trip?.title || 'this trip'} and tell me what you think: ${shareUrl}`
+    ? `Review my trip ideas for ${tripDisplayTitle || 'this trip'} and tell me what you think: ${shareUrl}`
     : ''
   const readinessCount = Number(Boolean(trip?.is_public)) + Math.min(feedback.length, 2) + Number(Boolean(groupBrief?.groupSize))
 
@@ -674,7 +697,7 @@ function TripStudioPageContent() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: trip?.title || 'Trip ideas',
+          title: tripDisplayTitle || 'Trip ideas',
           text: inviteMessage,
           url: shareUrl,
         })
@@ -686,7 +709,7 @@ function TripStudioPageContent() {
     } catch {
       setActionError('Could not open sharing automatically. The public link is still available above.')
     }
-  }, [shareUrl, inviteMessage, trip?.title, showActionNotice])
+  }, [shareUrl, inviteMessage, tripDisplayTitle, showActionNotice])
 
   const shareWithFriends = useCallback(async () => {
     if (!trip || isSharingTrip) return
@@ -730,7 +753,7 @@ function TripStudioPageContent() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: trip.title || 'Trip ideas',
+          title: tripDisplayTitle || 'Trip ideas',
           text: inviteMessage || `Review my trip ideas: ${shareUrl}`,
           url: shareUrl,
         })
@@ -756,7 +779,7 @@ function TripStudioPageContent() {
     } finally {
       setIsSharingTrip(false)
     }
-  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, canEditTrip, qaForceShareFailure, showActionNotice])
+  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, tripDisplayTitle, canEditTrip, qaForceShareFailure, showActionNotice])
 
   const latestWorkflowJob = workflowJobs[0]
   const studioDayMaps = useMemo(() => {
@@ -792,9 +815,11 @@ function TripStudioPageContent() {
   )
   const routeQualityLabel = mappingSummary.needsHydration
     ? 'Needs map pass'
-    : tripStops.length > 0
-      ? 'Excellent'
-      : 'Drafting'
+    : mappingSummary.needsStopOrderReview
+      ? 'Review stop order'
+      : tripStops.length > 0
+        ? 'Excellent'
+        : 'Drafting'
   const selectedDaySubtitle = selectedStudioDay
     ? [
         selectedStudioDay.day.date,
@@ -832,7 +857,15 @@ function TripStudioPageContent() {
   const suggestedRefreshLabel = creatingWorkflow === 'feedback_refresh'
     ? 'Starting refresh...'
     : 'Refresh plan from feedback'
-  const suggestedPrimaryIsMapPass = mappingSummary.needsHydration
+  const mapPassNeedsPlanEdits = Boolean(suggestedStepNotice?.includes('still need place data'))
+  const suggestedPrimaryIsMapPass = mappingSummary.needsHydration && !mapPassNeedsPlanEdits
+  const suggestedStepText = mappingSummary.needsHydration
+    ? mapPassNeedsPlanEdits
+      ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
+      : 'Rebuild map routes before sharing.'
+    : mappingSummary.needsStopOrderReview
+      ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
+      : `Ask Globe to tune Day ${ensureSelectedDayExists}.`
   const suggestedPrimaryLabel = suggestedPrimaryIsMapPass
     ? isHydratingMaps
       ? 'Building maps...'
@@ -971,7 +1004,7 @@ function TripStudioPageContent() {
             </div>
             <div className="mt-1 flex min-w-0 flex-wrap items-center gap-2">
               <h1 className="min-w-0 max-w-full break-words font-serif text-2xl leading-tight text-foreground md:text-3xl">
-                {trip?.title || 'Trip workspace'}
+                {tripDisplayTitle || 'Trip workspace'}
               </h1>
               <span className="rounded-full border border-rule bg-paper px-2.5 py-1 text-[11px] text-foreground/62">
                 {canEditTrip ? 'Draft' : 'View only'}
@@ -1374,7 +1407,7 @@ function TripStudioPageContent() {
               ) : (
                 <>
                   <p className="mt-2 text-sm font-medium leading-snug text-foreground">
-                    {mappingSummary.needsHydration ? 'Rebuild map routes before sharing.' : `Ask Globe to tune Day ${ensureSelectedDayExists}.`}
+                    {suggestedStepText}
                   </p>
                   {suggestedStepNotice && (
                     <p className={cn(
