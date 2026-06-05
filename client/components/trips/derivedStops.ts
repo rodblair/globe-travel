@@ -337,9 +337,26 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
 
   for (const item of sortedItems) {
     const timeLabel = [item.start_time, item.end_time].filter(Boolean).join('–') || null
-    const derivedStops = DERIVED_STOP_RULES.find((entry) => entry.pattern.test(item.title))?.stops || null
     const latitude = coerceCoordinate(item.place?.latitude)
     const longitude = coerceCoordinate(item.place?.longitude)
+
+    if (latitude != null && longitude != null) {
+      displayStops.push({
+        id: item.id,
+        title: item.place?.name || item.title || 'Untitled stop',
+        latitude,
+        longitude,
+        index: displayStops.length + 1,
+        item,
+        placeName: item.place?.name || null,
+        country: item.place?.country || null,
+        timeLabel,
+        mapped: true,
+      })
+      continue
+    }
+
+    const derivedStops = DERIVED_STOP_RULES.find((entry) => entry.pattern.test(item.title))?.stops || null
 
     if (derivedStops) {
       for (const stop of derivedStops) {
@@ -362,8 +379,8 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
     displayStops.push({
       id: item.id,
       title: item.title || item.place?.name || 'Untitled stop',
-      latitude: latitude || 0,
-      longitude: longitude || 0,
+      latitude: 0,
+      longitude: 0,
       index: displayStops.length + 1,
       item,
       placeName: item.place?.name || null,

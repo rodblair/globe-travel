@@ -153,7 +153,11 @@ export default function TripDayMap({
             longitude,
           }
         })
-        .filter((stop): stop is TripDayMapStop => stop !== null),
+        .filter((stop): stop is TripDayMapStop => stop !== null)
+        .map((stop, index) => ({
+          ...stop,
+          index: index + 1,
+        })),
     [stops]
   )
 
