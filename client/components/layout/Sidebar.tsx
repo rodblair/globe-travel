@@ -13,6 +13,7 @@ import {
 import { useSubscription } from '@/hooks/useSubscription'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
+import { PLANS } from '@/lib/plans'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -141,7 +142,7 @@ export function Sidebar() {
             <Sparkles className="w-4 h-4 text-[var(--brass)] shrink-0" strokeWidth={1.5} />
             <div className="min-w-0">
               <p className="text-[0.8125rem] font-medium text-foreground leading-tight">
-                Globe Pro
+                {PLANS.pro.name}
               </p>
               <p className="t-mono text-[0.625rem] tracking-[0.08em] text-ink-3 leading-tight mt-0.5">
                 7-DAY FREE TRIAL
