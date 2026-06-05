@@ -4,7 +4,7 @@
   "today": "2026-06-05",
   "todaySource": "current date",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-05T23:13:15.552Z",
+  "generatedAt": "2026-06-05T23:16:10.894Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -1466,8 +1466,8 @@
     "ready": true
   },
   "routeInventory": {
-    "artifact": "qa/route-inventory-smoke-2026-06-04.json",
-    "report": "qa/route-inventory-smoke-2026-06-04.md",
+    "artifact": "qa/route-inventory-smoke-2026-06-05.json",
+    "report": "qa/route-inventory-smoke-2026-06-05.md",
     "baseUrl": "https://globe-travel-two.vercel.app",
     "status": "pass",
     "checked": 22,
@@ -1573,7 +1573,7 @@
     "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-06-05.json",
     "publicMetadata": "qa/public-metadata-smoke-2026-06-05.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json",
-    "routeInventory": "qa/route-inventory-smoke-2026-06-04.json",
+    "routeInventory": "qa/route-inventory-smoke-2026-06-05.json",
     "appSurfaces": "qa/app-surfaces-smoke-2026-06-05.json",
     "productionAppSurfaces": "qa/app-surfaces-production-guest-2026-06-05-0d825fb.json",
     "betaWaveRehearsal": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
