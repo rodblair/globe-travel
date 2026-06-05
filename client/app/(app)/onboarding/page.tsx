@@ -183,7 +183,7 @@ export default function OnboardingPage() {
                   <Globe className="w-4 h-4 text-foreground/40" />
                 </div>
                 <div>
-                  <h2 className="font-serif text-lg text-foreground">Start your group trip</h2>
+                  <h1 className="font-serif text-lg text-foreground">Start your group trip</h1>
                   <p className="text-xs text-foreground/40">Tell Globe.travel where your group wants to go</p>
                 </div>
               </div>
