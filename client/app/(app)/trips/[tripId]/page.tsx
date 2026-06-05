@@ -557,9 +557,12 @@ function TripStudioPageContent() {
     }
   }, [tripId, ensureSelectedDayExists, refetch, isOptimizing, canEditTrip, qaForceOptimizeFailure])
 
-  const hydrateMaps = useCallback(async () => {
+  const hydrateMaps = useCallback(async (options?: { suggestedStep?: boolean }) => {
     if (isHydratingMaps || !canEditTrip) return
     setActionError(null)
+    if (options?.suggestedStep) {
+      setSuggestedStepNotice('Building map routes for this itinerary. Keep the Trip Map open while Globe refreshes the pins and walking lines.')
+    }
     setBuildMapsDone(false)
     setIsHydratingMaps(true)
     try {
@@ -572,14 +575,20 @@ function TripStudioPageContent() {
       }
       await refetch()
       setBuildMapsDone(true)
+      if (options?.suggestedStep) {
+        setSuggestedStepNotice('Map routes rebuilt. Review the Trip Map, then share the link or tune the selected day.')
+      }
       setTimeout(() => setBuildMapsDone(false), 2500)
     } catch (error) {
       const message = error instanceof Error ? error.message : ''
-      setActionError(
+      const nextMessage =
         message === 'Mapbox token not configured'
           ? 'Map tools are temporarily unavailable. The itinerary is still saved; try rebuilding maps after the map service is configured.'
           : 'Could not rebuild the maps. Try again, or refresh the page if the trip changed.'
-      )
+      setActionError(nextMessage)
+      if (options?.suggestedStep) {
+        setSuggestedStepNotice(nextMessage)
+      }
     } finally {
       setIsHydratingMaps(false)
     }
@@ -823,12 +832,35 @@ function TripStudioPageContent() {
   const suggestedRefreshLabel = creatingWorkflow === 'feedback_refresh'
     ? 'Starting refresh...'
     : 'Refresh plan from feedback'
+  const suggestedPrimaryIsMapPass = mappingSummary.needsHydration
+  const suggestedPrimaryLabel = suggestedPrimaryIsMapPass
+    ? isHydratingMaps
+      ? 'Building maps...'
+      : buildMapsDone
+        ? 'Maps built'
+        : 'Build maps'
+    : suggestedRewriteLabel
+  const suggestedPrimaryDisabled = suggestedPrimaryIsMapPass
+    ? isHydratingMaps || !canEditTrip
+    : !selectedStudioDay || regeneratingDayIndex != null
   const suggestedNoticeIsWarning = Boolean(suggestedStepNotice && (
     suggestedStepNotice.toLowerCase().includes('could not') ||
     suggestedStepNotice.toLowerCase().includes('did not') ||
     suggestedStepNotice.toLowerCase().includes('still connecting') ||
+    suggestedStepNotice.toLowerCase().includes('temporarily unavailable') ||
     suggestedStepNotice.toLowerCase().includes('shared trip preview')
   ))
+
+  const handleSuggestedPrimaryStep = useCallback(() => {
+    if (mappingSummary.needsHydration) {
+      void hydrateMaps({ suggestedStep: true })
+      return
+    }
+
+    if (selectedStudioDay) {
+      void handleRegenerateDay(selectedStudioDay.day.day_index)
+    }
+  }, [handleRegenerateDay, hydrateMaps, mappingSummary.needsHydration, selectedStudioDay])
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
@@ -971,7 +1003,7 @@ function TripStudioPageContent() {
                   {isSavingTrip ? 'Saving...' : saveDone ? 'Saved' : 'Save trip'}
                 </button>
                 <button
-                  onClick={hydrateMaps}
+                  onClick={() => hydrateMaps()}
                   disabled={isHydratingMaps}
                   className={cn(
                     'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
@@ -1329,12 +1361,13 @@ function TripStudioPageContent() {
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
                   data-testid="trip-suggested-rewrite-day"
-                  onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
-                  disabled={!selectedStudioDay || regeneratingDayIndex != null}
+                  onClick={handleSuggestedPrimaryStep}
+                  disabled={suggestedPrimaryDisabled}
+                  aria-label={suggestedPrimaryIsMapPass ? 'Build map routes from suggested next step' : `Rewrite Day ${ensureSelectedDayExists} from suggested next step`}
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
                 >
-                  <Plus className="h-4 w-4" />
-                  {suggestedRewriteLabel}
+                  {suggestedPrimaryIsMapPass ? <Route className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  {suggestedPrimaryLabel}
                 </button>
                 <button
                   data-testid="trip-suggested-feedback-refresh"
