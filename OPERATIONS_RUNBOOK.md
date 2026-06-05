@@ -55,7 +55,7 @@ Set `QA_INCLUDE_PROMPT_ACTUALS=0` to skip the prompt-suite actuals check. Set `Q
 
 Vercel uses `client/vercel.json` and `client/scripts/vercel-ignore-build.mjs` to skip production builds for commits that only change release evidence, release monitoring workflows, the sibling Expo mobile app, or documentation. The skip list is intentionally conservative: `.github/workflows/**`, `mobile/**`, `qa/**`, `README.md`, `OPERATIONS_RUNBOOK.md`, `PLATFORM_*.md`, and `RELEASE_READINESS_MEMO.md`.
 
-Run `npm run qa:vercel-ignore` before release-ops-only pushes. It writes `qa/vercel-ignore-smoke-2026-05-23.json` and `.md`, proving representative release evidence, workflow, QA-script, and launch QA-hardening commits skip Vercel builds while a known runtime application change still forces a build. `npm run qa:launch-signoff` requires that artifact so deployment hygiene stays repeatable.
+Run `npm run qa:vercel-ignore` before release-ops-only pushes. It writes the latest dated `qa/vercel-ignore-smoke-YYYY-MM-DD.json` and `.md`, proving representative release evidence, workflow, QA-script, and launch QA-hardening commits skip Vercel builds while a known runtime application change still forces a build. `npm run qa:launch-signoff` now reads the newest dated artifact by default so deployment hygiene stays repeatable without a stale fixed-date dependency.
 
 Any `client/**` runtime change, package/config change, or unknown path continues the build. Vercel may briefly show a release-ops-only commit as building before the ignored-build command resolves; wait for the deployment to cancel or skip before removing it manually. If a release-ops-only commit unexpectedly deploys, run the production gate and then tighten the ignore script before adding more evidence commits.
 
