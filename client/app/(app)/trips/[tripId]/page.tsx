@@ -859,22 +859,41 @@ function TripStudioPageContent() {
     : 'Refresh plan from feedback'
   const mapPassNeedsPlanEdits = Boolean(suggestedStepNotice?.includes('still need place data'))
   const suggestedPrimaryIsMapPass = mappingSummary.needsHydration && !mapPassNeedsPlanEdits
+  const suggestedPlannerUnavailable = !chatReady || qaForceRewriteUnavailable
   const suggestedStepText = mappingSummary.needsHydration
     ? mapPassNeedsPlanEdits
       ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
       : 'Rebuild map routes before sharing.'
+    : suggestedPlannerUnavailable
+      ? 'Planner chat is connecting. Open it now, then rewrite once Globe is ready.'
     : mappingSummary.needsStopOrderReview
       ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
       : `Ask Globe to tune Day ${ensureSelectedDayExists}.`
+  const suggestedPrimaryAction = suggestedPrimaryIsMapPass
+    ? 'build-maps'
+    : suggestedPlannerUnavailable
+      ? 'open-planner-chat'
+      : 'rewrite-day'
+  const suggestedPrimaryTestId = suggestedPrimaryAction === 'build-maps'
+    ? 'trip-suggested-build-maps'
+    : suggestedPrimaryAction === 'open-planner-chat'
+      ? 'trip-suggested-open-planner'
+      : 'trip-suggested-rewrite-day'
   const suggestedPrimaryLabel = suggestedPrimaryIsMapPass
     ? isHydratingMaps
       ? 'Building maps...'
       : buildMapsDone
         ? 'Maps built'
         : 'Build maps'
+    : suggestedPlannerUnavailable
+      ? chatOpen
+        ? 'Planner open'
+        : 'Open planner'
     : suggestedRewriteLabel
   const suggestedPrimaryDisabled = suggestedPrimaryIsMapPass
     ? isHydratingMaps || !canEditTrip
+    : suggestedPlannerUnavailable
+      ? false
     : !selectedStudioDay || regeneratingDayIndex != null
   const suggestedNoticeIsWarning = Boolean(suggestedStepNotice && (
     suggestedStepNotice.toLowerCase().includes('could not') ||
@@ -890,10 +909,24 @@ function TripStudioPageContent() {
       return
     }
 
+    if (suggestedPlannerUnavailable) {
+      const message = 'Planner chat is still connecting. Keep this panel open and use Rewrite day once the planner is ready.'
+      setActionError(null)
+      setSuggestedStepNotice(message)
+      setChatOpen(true)
+      window.setTimeout(() => {
+        plannerChatPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
+      return
+    }
+
     if (selectedStudioDay) {
       void handleRegenerateDay(selectedStudioDay.day.day_index)
+      return
     }
-  }, [handleRegenerateDay, hydrateMaps, mappingSummary.needsHydration, selectedStudioDay])
+
+    setSuggestedStepNotice('Choose a day first, then use Suggested next step to rewrite it.')
+  }, [handleRegenerateDay, hydrateMaps, mappingSummary.needsHydration, selectedStudioDay, suggestedPlannerUnavailable])
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
@@ -1421,14 +1454,22 @@ function TripStudioPageContent() {
                   )}
                   <div className="mt-4 grid grid-cols-2 gap-2">
                     <button
-                      data-testid={suggestedPrimaryIsMapPass ? 'trip-suggested-build-maps' : 'trip-suggested-rewrite-day'}
-                      data-suggested-action={suggestedPrimaryIsMapPass ? 'build-maps' : 'rewrite-day'}
+                      data-testid={suggestedPrimaryTestId}
+                      data-suggested-action={suggestedPrimaryAction}
                       onClick={handleSuggestedPrimaryStep}
                       disabled={suggestedPrimaryDisabled}
-                      aria-label={suggestedPrimaryIsMapPass ? 'Build map routes from suggested next step' : `Rewrite Day ${ensureSelectedDayExists} from suggested next step`}
+                      aria-label={suggestedPrimaryAction === 'build-maps'
+                        ? 'Build map routes from suggested next step'
+                        : suggestedPrimaryAction === 'open-planner-chat'
+                          ? 'Open Planner chat from suggested next step'
+                          : `Rewrite Day ${ensureSelectedDayExists} from suggested next step`}
                       className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
                     >
-                      {suggestedPrimaryIsMapPass ? <Route className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                      {suggestedPrimaryAction === 'build-maps'
+                        ? <Route className="h-4 w-4" />
+                        : suggestedPrimaryAction === 'open-planner-chat'
+                          ? <MessageSquareQuote className="h-4 w-4" />
+                          : <Plus className="h-4 w-4" />}
                       {suggestedPrimaryLabel}
                     </button>
                     <button

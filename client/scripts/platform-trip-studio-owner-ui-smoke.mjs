@@ -284,23 +284,34 @@ async function runOwnerTripStudioChecks() {
 
     await page.goto(`${baseUrl}/trips/${fixture.tripId}?qaRewriteUnavailable=1`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await page.waitForFunction(
-      () => document.body.innerText.includes('Suggested next step') && document.body.innerText.includes('Rewrite day'),
+      () => document.body.innerText.includes('Suggested next step') && (
+        document.body.innerText.includes('Rewrite day') ||
+        document.body.innerText.includes('Open planner')
+      ),
       { timeout: 30000 },
     ).catch(() => {})
     const suggestedRewriteButton = page.getByTestId('trip-suggested-rewrite-day')
     const suggestedBuildMapsButton = page.getByTestId('trip-suggested-build-maps')
+    const suggestedOpenPlannerButton = page.getByTestId('trip-suggested-open-planner')
     const suggestedRewriteButtonCount = await suggestedRewriteButton.count()
     const suggestedBuildMapsButtonCount = await suggestedBuildMapsButton.count()
-    const suggestedActionType = suggestedBuildMapsButtonCount === 1 ? 'build-maps' : 'rewrite-day'
+    const suggestedOpenPlannerButtonCount = await suggestedOpenPlannerButton.count()
+    const suggestedActionType = suggestedBuildMapsButtonCount === 1
+      ? 'build-maps'
+      : suggestedOpenPlannerButtonCount === 1
+        ? 'open-planner-chat'
+        : 'rewrite-day'
 
     if (suggestedActionType === 'build-maps') {
       await suggestedBuildMapsButton.click({ timeout: 8000 })
+    } else if (suggestedActionType === 'open-planner-chat') {
+      await suggestedOpenPlannerButton.click({ timeout: 8000 })
     } else if (suggestedRewriteButtonCount === 1) {
       await suggestedRewriteButton.click({ timeout: 8000 })
     }
 
     const closePlannerButton = page.getByRole('button', { name: 'Close planner chat', exact: true })
-    if (suggestedActionType === 'rewrite-day') {
+    if (suggestedActionType === 'rewrite-day' || suggestedActionType === 'open-planner-chat') {
       await closePlannerButton.waitFor({ state: 'visible', timeout: 8000 }).catch(() => {})
     }
     const closePlannerVisible = await closePlannerButton.isVisible().catch(() => false)
@@ -313,10 +324,13 @@ async function runOwnerTripStudioChecks() {
         )
       : (
           closePlannerVisible &&
-          suggestedPrimaryState.text.includes('Planner chat is still connecting')
+          (
+            suggestedPrimaryState.text.includes('Planner chat is still connecting') ||
+            suggestedPrimaryState.text.includes('Planner chat is connecting')
+          )
         )
     record('suggested primary action gives visible progress feedback', (
-      (suggestedRewriteButtonCount === 1 || suggestedBuildMapsButtonCount === 1) &&
+      (suggestedRewriteButtonCount === 1 || suggestedBuildMapsButtonCount === 1 || suggestedOpenPlannerButtonCount === 1) &&
       hasVisibleSuggestedProgress &&
       !suggestedPrimaryState.appError &&
       !suggestedPrimaryState.horizontalOverflow
@@ -325,8 +339,10 @@ async function runOwnerTripStudioChecks() {
       suggestedActionType,
       suggestedRewriteButtonCount,
       suggestedBuildMapsButtonCount,
+      suggestedOpenPlannerButtonCount,
       closePlannerVisible,
       hasConnectingNotice: suggestedPrimaryState.text.includes('Planner chat is still connecting'),
+      hasPlannerConnectingCopy: suggestedPrimaryState.text.includes('Planner chat is connecting'),
       hasMapProgressNotice: suggestedPrimaryState.text.includes('Building map routes for this itinerary'),
       hasMapCompleteNotice: suggestedPrimaryState.text.includes('Map routes rebuilt'),
       hasMapFailureNotice: suggestedPrimaryState.text.includes('Could not rebuild the maps'),
