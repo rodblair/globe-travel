@@ -42,10 +42,10 @@
   ],
   "latestProductionReview": {
     "reviewedAt": "2026-06-05",
-    "artifact": "qa/visual-baseline-production-release-2026-06-05-a2040af",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-05-a2040af/summary.json",
-    "productionCommit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587",
-    "deploymentUrl": "globe-travel-5fj8wfu3w-rodney-blairs-projects.vercel.app",
+    "artifact": "qa/visual-baseline-production-release-2026-06-05-544b733",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-05-544b733/summary.json",
+    "productionCommit": "544b73349ea8cd6e0c8d9fd095577848129e6716",
+    "deploymentUrl": "globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -69,7 +69,7 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 on June 5, 2026, against the live a2040af deployment. Production visual QA passed 25/25 across landing, pricing, login, signup, and public-share on phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
+    "notes": "Production release gate passed 10/10 on June 5, 2026, against the live 544b733 deployment. Production visual QA passed 25/25 across landing, pricing, login, signup, and public-share on phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
     "reviewSubmissionFile": null
   },
   "reviewHistory": [

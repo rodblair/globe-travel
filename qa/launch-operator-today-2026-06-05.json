@@ -2,13 +2,13 @@
   "date": "2026-06-05",
   "today": "2026-06-05",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-05T09:49:54.047Z",
+  "generatedAt": "2026-06-05T10:11:39.583Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
   "failed": 1,
-  "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
-  "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-05-21.json",
+  "publicStatusArtifact": "qa/public-launch-status-2026-06-05.json",
+  "blockerBoardArtifact": "qa/public-launch-blocker-board-2026-06-05.json",
   "betaDispatchOutboxArtifact": "qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21.json",
   "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
   "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-04.json",
@@ -24,10 +24,14 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587",
-  "publicLaunchStatus": "beta-ready-public-blocked",
-  "publicGuardrailIssues": [],
-  "publicOnlyLaunchOperatorSelfGuardrails": false,
+  "liveDeploymentCommit": "544b73349ea8cd6e0c8d9fd095577848129e6716",
+  "publicLaunchStatus": "blocked",
+  "publicGuardrailIssues": [
+    "public launch blocker board is not aligned with current beta and visual blocker evidence",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "launch outreach brief is not ready for operator handoff"
+  ],
+  "publicOnlyLaunchOperatorSelfGuardrails": true,
   "betaReviews": {
     "completed": 0,
     "minimumForPublicLaunch": 25,
@@ -1219,15 +1223,19 @@
     {
       "name": "launch today reads current blocked release status",
       "ok": true,
-      "status": "beta-ready-public-blocked",
-      "betaReady": true,
+      "status": "blocked",
+      "betaReady": false,
       "publicLaunchReady": false,
       "deploymentRuntimeBlocked": false,
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
-      "guardrailIssues": [],
-      "onlyLaunchOperatorSelfGuardrails": false,
-      "onlyLaunchOperatorAcceptedExternalGuardrails": false
+      "guardrailIssues": [
+        "public launch blocker board is not aligned with current beta and visual blocker evidence",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "launch outreach brief is not ready for operator handoff"
+      ],
+      "onlyLaunchOperatorSelfGuardrails": true,
+      "onlyLaunchOperatorAcceptedExternalGuardrails": true
     },
     {
       "name": "launch today has actionable deployment, beta, or visual work",
@@ -1239,7 +1247,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587"
+      "liveCommit": "544b73349ea8cd6e0c8d9fd095577848129e6716"
     },
     {
       "name": "launch today reads aligned dispatch logs",

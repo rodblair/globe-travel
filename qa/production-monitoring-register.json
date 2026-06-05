@@ -130,8 +130,10 @@
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=a2040afddf4a0b8fa70eabe58f164b3b7b191587 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=544b73349ea8cd6e0c8d9fd095577848129e6716 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587"
+    "expectedLiveCommit": "544b73349ea8cd6e0c8d9fd095577848129e6716",
+    "releaseGateArtifact": "qa/visual-baseline-production-release-2026-06-05-544b733/summary.json",
+    "notes": "Production alias health reports ok 11/11 on commit 544b73349ea8cd6e0c8d9fd095577848129e6716; production release gate passed 10/10 with visual artifact qa/visual-baseline-production-release-2026-06-05-544b733."
   }
 }

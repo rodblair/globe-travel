@@ -4,18 +4,22 @@
   "checked": 8,
   "passed": 8,
   "failed": 0,
-  "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
+  "publicStatusArtifact": "qa/public-launch-status-2026-06-05.json",
   "launchOperatorArtifact": "qa/launch-operator-today-2026-06-05.json",
   "dispatchPacketArtifact": "qa/launch-dispatch-packet-2026-06-05.json",
   "sentRecordCsv": "qa/dispatch-sent-record-template-2026-06-05.csv",
-  "publicLaunchStatus": "beta-ready-public-blocked",
+  "publicLaunchStatus": "blocked",
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-5fj8wfu3w-rodney-blairs-projects.vercel.app",
-    "commit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587"
+    "url": "globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app",
+    "commit": "544b73349ea8cd6e0c8d9fd095577848129e6716"
   },
-  "guardrailIssues": [],
+  "guardrailIssues": [
+    "public launch blocker board is not aligned with current beta and visual blocker evidence",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "launch outreach brief is not ready for operator handoff"
+  ],
   "blockerIds": [
     "beta-human-review-threshold",
     "production-visual-review-history"
@@ -402,7 +406,7 @@
     {
       "name": "launch outreach brief reads current status, operator board, and dispatch packet",
       "ok": true,
-      "publicStatus": "beta-ready-public-blocked",
+      "publicStatus": "blocked",
       "launchOperatorToday": "2026-06-05",
       "dispatchPacketDate": "2026-06-05",
       "dispatchPacketStatus": "pass"
@@ -414,7 +418,11 @@
         "beta-human-review-threshold",
         "production-visual-review-history"
       ],
-      "guardrailIssues": [],
+      "guardrailIssues": [
+        "public launch blocker board is not aligned with current beta and visual blocker evidence",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "launch outreach brief is not ready for operator handoff"
+      ],
       "runtimeCommitAhead": false
     },
     {

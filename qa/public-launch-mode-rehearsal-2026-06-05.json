@@ -6,8 +6,8 @@
   "failed": 0,
   "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
   "publicStatusReport": "qa/public-launch-status-2026-05-21.md",
-  "publicLaunchStatus": "blocked",
-  "betaReady": false,
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "betaReady": true,
   "publicLaunchReady": false,
   "requirePublicLaunch": true,
   "publicLaunchModeExitCode": 1,
@@ -23,12 +23,8 @@
       "detail": "3/4 distinct review dates recorded; 1 remaining."
     }
   ],
-  "guardrailIssues": [
-    "public launch blocker board is not aligned with current beta and visual blocker evidence",
-    "daily launch operator board is not aligned with current blocker evidence",
-    "launch outreach brief is not ready for operator handoff"
-  ],
-  "guardrailIssueCount": 3,
+  "guardrailIssues": [],
+  "guardrailIssueCount": 0,
   "canonicalRestored": true,
   "checks": [
     {
@@ -39,15 +35,11 @@
     {
       "name": "public launch required mode keeps public launch closed",
       "ok": true,
-      "status": "blocked",
-      "betaReady": false,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
       "publicLaunchReady": false,
       "requirePublicLaunch": true,
-      "guardrailIssues": [
-        "public launch blocker board is not aligned with current beta and visual blocker evidence",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "launch outreach brief is not ready for operator handoff"
-      ]
+      "guardrailIssues": []
     },
     {
       "name": "public launch required mode identifies beta and visual blockers",
@@ -60,11 +52,7 @@
     {
       "name": "public launch required mode reports guardrail state without hiding blockers",
       "ok": true,
-      "guardrailIssues": [
-        "public launch blocker board is not aligned with current beta and visual blocker evidence",
-        "daily launch operator board is not aligned with current blocker evidence",
-        "launch outreach brief is not ready for operator handoff"
-      ]
+      "guardrailIssues": []
     },
     {
       "name": "public launch required mode does not mutate canonical default status",

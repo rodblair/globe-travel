@@ -5,9 +5,9 @@
     "alias": "https://globe-travel-two.vercel.app",
     "healthEndpoint": "https://globe-travel-two.vercel.app/api/health",
     "knownGoodDeployment": {
-      "commit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587",
-      "url": "globe-travel-5fj8wfu3w-rodney-blairs-projects.vercel.app",
-      "verifiedBy": "Commit a2040afddf4a0b8fa70eabe58f164b3b7b191587 verified by Vercel production deployment globe-travel-5fj8wfu3w-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok 11/11 for commit a2040afddf4a0b8fa70eabe58f164b3b7b191587, npm run lint passing, npm run build passing, qa:studio-owner-ui passing 8/8, qa:saved-account passing 16/16, qa:share-viral passing 5/5, production ops metadata smoke passing 3/3, and QA_LAUNCH_EXPECTED_COMMIT=a2040afddf4a0b8fa70eabe58f164b3b7b191587 npm run qa:launch-signoff is the current postdeploy verification gate.",
+      "commit": "544b73349ea8cd6e0c8d9fd095577848129e6716",
+      "url": "globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app",
+      "verifiedBy": "Commit 544b73349ea8cd6e0c8d9fd095577848129e6716 verified by Vercel production deployment globe-travel-qw7k1fe3u-rodney-blairs-projects.vercel.app, https://globe-travel-two.vercel.app/api/health reporting ok 11/11 for commit 544b73349ea8cd6e0c8d9fd095577848129e6716, npm run lint passing, npm run build passing, qa:studio-owner-ui passing 9/9, QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-544b733 npm run qa:release-production passing 10/10, and QA_LAUNCH_EXPECTED_COMMIT=544b73349ea8cd6e0c8d9fd095577848129e6716 npm run qa:launch-signoff verification queued for this current production evidence refresh.",
       "verifiedAt": "2026-06-05"
     }
   },
@@ -27,6 +27,6 @@
   ],
   "verificationCommands": [
     "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:release-production",
-    "QA_LAUNCH_EXPECTED_COMMIT=a2040afddf4a0b8fa70eabe58f164b3b7b191587 npm run qa:launch-signoff"
+    "QA_LAUNCH_EXPECTED_COMMIT=544b73349ea8cd6e0c8d9fd095577848129e6716 npm run qa:launch-signoff"
   ]
 }
