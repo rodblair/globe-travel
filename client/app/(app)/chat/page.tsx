@@ -406,7 +406,7 @@ function ChatPageContent() {
                             <p className="text-[0.8125rem] font-medium text-foreground leading-snug">
                               {item.label}
                             </p>
-                            <p className="mt-1 hidden text-[0.6875rem] leading-snug text-ink-3 sm:line-clamp-2">
+                            <p className="mt-1 hidden text-[0.6875rem] leading-snug text-ink-3 sm:block">
                               {item.value}
                             </p>
                           </button>
