@@ -4,7 +4,7 @@
   "today": "2026-06-05",
   "todaySource": "current date",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-05T22:20:17.926Z",
+  "generatedAt": "2026-06-05T22:48:18.190Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -1334,16 +1334,17 @@
     "ready": true
   },
   "publicShareMapIntegrity": {
-    "artifact": "qa/public-share-map-catalog-2026-05-26.json",
-    "report": "qa/public-share-map-catalog-2026-05-26.md",
-    "artifactDir": "qa/public-share-map-catalog-2026-05-26",
+    "artifact": "qa/public-share-map-catalog-2026-06-05.json",
+    "report": "qa/public-share-map-catalog-2026-06-05.md",
+    "artifactDir": "qa/public-share-map-catalog-2026-06-05",
     "baseUrl": "https://globe-travel-two.vercel.app",
-    "checked": 7,
-    "checkedViewports": 14,
-    "passed": 7,
+    "checked": 8,
+    "checkedViewports": 16,
+    "passed": 8,
     "failed": 0,
     "shareSlugs": [
       "x3m2c8cnws",
+      "pvyqwtujjq",
       "rzkusu9x3y",
       "8kjd475zi5",
       "zb6mfid1pm",
@@ -1351,13 +1352,18 @@
       "5l315vjxp2",
       "76mu18j69x"
     ],
-    "shareCount": 7,
+    "shareCount": 8,
     "discovery": {
       "enabled": true,
       "limit": 25,
-      "totalPublicShares": 7,
-      "shareCount": 7,
+      "totalPublicShares": 8,
+      "shareCount": 8,
       "shares": [
+        {
+          "shareSlug": "pvyqwtujjq",
+          "title": "5 Days in Athens",
+          "updatedAt": "2026-05-27T03:51:52.719+00:00"
+        },
         {
           "shareSlug": "rzkusu9x3y",
           "title": "2 Days in Athens",
@@ -1398,7 +1404,7 @@
     "badShareCount": 0,
     "badRenderedResults": [],
     "badDays": [],
-    "screenshotCount": 14,
+    "screenshotCount": 16,
     "missingScreenshots": [],
     "failureCount": 0,
     "issues": [],
@@ -1564,7 +1570,7 @@
     "designSystemReadiness": "qa/design-system-readiness-2026-06-05.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-06-05/planner-generated-actuals-regional-edge-cities.json",
     "plannerHandoff": "qa/planner-handoff-smoke-2026-06-05.json",
-    "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-26.json",
+    "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-06-05.json",
     "publicMetadata": "qa/public-metadata-smoke-2026-05-26.json",
     "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-06-04.json",

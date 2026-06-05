@@ -1,0 +1,1180 @@
+{
+  "date": "2026-06-05",
+  "baseUrl": "https://globe-travel-two.vercel.app",
+  "shareSlugs": [
+    "x3m2c8cnws",
+    "pvyqwtujjq",
+    "rzkusu9x3y",
+    "8kjd475zi5",
+    "zb6mfid1pm",
+    "76fbnwxzrv",
+    "5l315vjxp2",
+    "76mu18j69x"
+  ],
+  "requestedShareSlugs": [
+    "x3m2c8cnws"
+  ],
+  "discovery": {
+    "enabled": true,
+    "limit": 25,
+    "totalPublicShares": 8,
+    "shareCount": 8,
+    "shares": [
+      {
+        "tripId": "9360264e-b0cc-408f-bdb5-a76ad81fee81",
+        "title": "5 Days in Athens",
+        "shareSlug": "pvyqwtujjq",
+        "updatedAt": "2026-05-27T03:51:52.719+00:00",
+        "createdAt": "2026-05-27T03:50:46.295237+00:00"
+      },
+      {
+        "tripId": "f694fc77-e225-44ba-a98c-24cac177f080",
+        "title": "2 Days in Athens",
+        "shareSlug": "rzkusu9x3y",
+        "updatedAt": "2026-05-26T21:31:25.806+00:00",
+        "createdAt": "2026-05-26T21:30:48.221988+00:00"
+      },
+      {
+        "tripId": "00b2e966-4307-4459-8b25-9ff672262730",
+        "title": "2 Days in Athens",
+        "shareSlug": "8kjd475zi5",
+        "updatedAt": "2026-05-26T21:11:17.877+00:00",
+        "createdAt": "2026-05-26T21:10:24.990853+00:00"
+      },
+      {
+        "tripId": "fdddcf46-824b-43c9-8659-06314edc797c",
+        "title": "2 Days in Athens",
+        "shareSlug": "zb6mfid1pm",
+        "updatedAt": "2026-05-26T21:04:32.233+00:00",
+        "createdAt": "2026-05-26T21:03:46.871044+00:00"
+      },
+      {
+        "tripId": "958549b8-89ee-4895-921f-1a74be2b4041",
+        "title": "2 Days in Athens",
+        "shareSlug": "76fbnwxzrv",
+        "updatedAt": "2026-05-26T20:59:12.622+00:00",
+        "createdAt": "2026-05-26T20:58:45.4685+00:00"
+      },
+      {
+        "tripId": "c0d8f013-7314-4cdd-a602-eff571081998",
+        "title": "2 Days in Athens",
+        "shareSlug": "5l315vjxp2",
+        "updatedAt": "2026-05-26T20:54:22.128+00:00",
+        "createdAt": "2026-05-26T20:53:30.770749+00:00"
+      },
+      {
+        "tripId": "f77635a5-16ec-41c7-981e-2ded0a35fb46",
+        "title": "2 Days in Athens",
+        "shareSlug": "76mu18j69x",
+        "updatedAt": "2026-05-26T20:48:43.516+00:00",
+        "createdAt": "2026-05-26T20:47:52.088274+00:00"
+      },
+      {
+        "tripId": "0746a2c6-2b9b-4753-bbb7-8c3e9b193d38",
+        "title": "5 Days in Athens Greece in mid september",
+        "shareSlug": "x3m2c8cnws",
+        "updatedAt": "2026-05-11T21:13:40.825+00:00",
+        "createdAt": "2026-05-11T20:51:04.578378+00:00"
+      }
+    ],
+    "includeRequestedSlugs": true
+  },
+  "requireUsableRoutes": true,
+  "expectedCountryMap": {
+    "x3m2c8cnws": "Greece"
+  },
+  "artifactDir": "qa/public-share-map-catalog-2026-06-05",
+  "jsonArtifact": "qa/public-share-map-catalog-2026-06-05.json",
+  "reportArtifact": "qa/public-share-map-catalog-2026-06-05.md",
+  "checked": 8,
+  "checkedViewports": 16,
+  "passed": 8,
+  "failed": 0,
+  "shareResults": [
+    {
+      "shareSlug": "x3m2c8cnws",
+      "expectedCountry": "Greece",
+      "tripTitle": "5 Days in Athens Greece in mid september",
+      "apiStatus": 200,
+      "dayCount": 5,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Plaka arrival",
+          "itemCount": 2,
+          "mappedItemCount": 2,
+          "uniqueMappedStopCount": 2,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            711
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Acropolis essentials",
+          "itemCount": 3,
+          "mappedItemCount": 3,
+          "uniqueMappedStopCount": 3,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            1397
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 3,
+          "title": "Museums & hill views",
+          "itemCount": 3,
+          "mappedItemCount": 3,
+          "uniqueMappedStopCount": 3,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            3449
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 4,
+          "title": "Coastal culture",
+          "itemCount": 3,
+          "mappedItemCount": 3,
+          "uniqueMappedStopCount": 3,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            9883
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 5,
+          "title": "Central Athens finale",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": "Greece",
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            5018
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 1,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/x3m2c8cnws-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+            "title": "5 Days in Athens, Greece, mid‑September · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 1,
+            "routeLabels": [
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 1,
+            "previewOverflowLabel": "1 more day in the full itinerary",
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/x3m2c8cnws-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/x3m2c8cnws",
+            "title": "5 Days in Athens, Greece, mid‑September · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 1,
+            "routeLabels": [
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 1,
+            "previewOverflowLabel": "1 more day in the full itinerary",
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "pvyqwtujjq",
+      "expectedCountry": null,
+      "tripTitle": "5 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 5,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka Ease-In",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2959
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Ancient Athens at a Soft Pace",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2711
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 3,
+          "title": "Museum Day with Breathing Room",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            5027
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 4,
+          "title": "Coastal Recovery Day",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            13445
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 5,
+          "title": "Final Views & Slow Farewell",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2973
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/pvyqwtujjq-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/pvyqwtujjq",
+            "title": "5 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 1,
+            "routeLabels": [
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 1,
+            "previewOverflowLabel": "1 more day in the full itinerary",
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/pvyqwtujjq-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/pvyqwtujjq",
+            "title": "5 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 1,
+            "routeLabels": [
+              "Trip Map"
+            ],
+            "mapboxCanvasCount": 6,
+            "mapSurfaceCount": 6,
+            "stopChipMentions": 13,
+            "visibleDayTitleCount": 5,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 1,
+            "previewOverflowLabel": "1 more day in the full itinerary",
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "rzkusu9x3y",
+      "expectedCountry": null,
+      "tripTitle": "2 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 2,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2765
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Ancient Athens & Central Food Stops",
+          "itemCount": 5,
+          "mappedItemCount": 5,
+          "uniqueMappedStopCount": 5,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            4301
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/rzkusu9x3y-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/rzkusu9x3y",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/rzkusu9x3y-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/rzkusu9x3y",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "8kjd475zi5",
+      "expectedCountry": null,
+      "tripTitle": "2 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 2,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka",
+          "itemCount": 5,
+          "mappedItemCount": 5,
+          "uniqueMappedStopCount": 5,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            3410
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Agora, museum time & a laid-back finale",
+          "itemCount": 5,
+          "mappedItemCount": 5,
+          "uniqueMappedStopCount": 5,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            6262
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/8kjd475zi5-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/8kjd475zi5",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/8kjd475zi5-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/8kjd475zi5",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "zb6mfid1pm",
+      "expectedCountry": null,
+      "tripTitle": "2 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 2,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2765
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Agora, gardens & a classic dinner",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            3084
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/zb6mfid1pm-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/zb6mfid1pm",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/zb6mfid1pm-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/zb6mfid1pm",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "76fbnwxzrv",
+      "expectedCountry": null,
+      "tripTitle": "2 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 2,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            4680
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Agora, Gardens & Classic Athens",
+          "itemCount": 5,
+          "mappedItemCount": 5,
+          "uniqueMappedStopCount": 5,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            4301
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/76fbnwxzrv-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/76fbnwxzrv",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/76fbnwxzrv-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/76fbnwxzrv",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "5l315vjxp2",
+      "expectedCountry": null,
+      "tripTitle": "2 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 2,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & Plaka",
+          "itemCount": 5,
+          "mappedItemCount": 5,
+          "uniqueMappedStopCount": 5,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            3410
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Ancient Athens & a softer modern finish",
+          "itemCount": 5,
+          "mappedItemCount": 5,
+          "uniqueMappedStopCount": 5,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            4983
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/5l315vjxp2-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/5l315vjxp2",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/5l315vjxp2-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/5l315vjxp2",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    },
+    {
+      "shareSlug": "76mu18j69x",
+      "expectedCountry": null,
+      "tripTitle": "2 Days in Athens",
+      "apiStatus": 200,
+      "dayCount": 2,
+      "dayIntegrity": [
+        {
+          "dayIndex": 1,
+          "title": "Acropolis & the historic center",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            2765
+          ],
+          "issues": [],
+          "ok": true
+        },
+        {
+          "dayIndex": 2,
+          "title": "Agora, gardens & a classic dinner",
+          "itemCount": 4,
+          "mappedItemCount": 4,
+          "uniqueMappedStopCount": 4,
+          "duplicateMappedStops": [],
+          "countries": [
+            "Greece"
+          ],
+          "expectedCountry": null,
+          "usableRouteCount": 1,
+          "routeDistanceMeters": [
+            3084
+          ],
+          "issues": [],
+          "ok": true
+        }
+      ],
+      "publicFeedback": {
+        "status": 200,
+        "count": 0,
+        "internalRows": [],
+        "issues": [],
+        "ok": true
+      },
+      "rendered": [
+        {
+          "viewport": "phone",
+          "width": 390,
+          "height": 844,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/76mu18j69x-phone.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/76mu18j69x",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 390,
+            "scrollWidth": 390
+          }
+        },
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "height": 900,
+          "screenshot": "qa/public-share-map-catalog-2026-06-05/screenshots/76mu18j69x-desktop.png",
+          "ok": true,
+          "issues": [],
+          "state": {
+            "url": "https://globe-travel-two.vercel.app/t/76mu18j69x",
+            "title": "2 Days in Athens · Globe.travel",
+            "hasSharedMapLabel": true,
+            "hasItineraryHeading": true,
+            "hasDayPlanHeading": true,
+            "hasStartCta": true,
+            "hasFeedback": true,
+            "hasShareControls": true,
+            "routeLabelCount": 0,
+            "routeLabels": [],
+            "mapboxCanvasCount": 3,
+            "mapSurfaceCount": 3,
+            "stopChipMentions": 7,
+            "visibleDayTitleCount": 2,
+            "missingDayTitles": [],
+            "hiddenPreviewDayCount": 0,
+            "previewOverflowLabel": null,
+            "hasPreviewOverflowIndicator": true,
+            "hasUnavailableState": false,
+            "hasAppError": false,
+            "horizontalOverflow": false,
+            "clientWidth": 1280,
+            "scrollWidth": 1280
+          }
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,324 @@
+{
+  "date": "2026-06-05",
+  "catalogArtifact": "qa/public-share-map-catalog-2026-06-05.json",
+  "jsonArtifact": "qa/public-share-catalog-quarantine-2026-06-05.json",
+  "reportArtifact": "qa/public-share-catalog-quarantine-2026-06-05.md",
+  "apply": true,
+  "keepSlugs": [
+    "x3m2c8cnws"
+  ],
+  "quarantineQaShares": true,
+  "checkedShares": 19,
+  "catalogFailures": 4,
+  "candidates": [
+    {
+      "tripId": "a9fdde20-d137-4d2d-8c09-d2d12369d65b",
+      "title": "3 Days in Athens Greece",
+      "shareSlug": "8bekksk8ui",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ]
+    },
+    {
+      "tripId": "f4c6f7a9-fd4e-44db-94aa-aa7035741c22",
+      "title": "QA 3 Days in Berlin 777da88a",
+      "shareSlug": "qa777da88a10",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "88ef196d-fb34-4462-b4b9-e4e9cb4f0dbb",
+      "title": "QA 2 Days in Copenhagen 777da88a",
+      "shareSlug": "qa777da88a9",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "4060e250-7266-448f-bedb-ad12ab9f6474",
+      "title": "QA 4 Days in Paris 777da88a",
+      "shareSlug": "qa777da88a8",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "706b5759-101b-4a92-8e63-fbfa8501b55e",
+      "title": "QA 3 Days in London 777da88a",
+      "shareSlug": "qa777da88a7",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "80d059a7-2397-48c7-8bd3-e26e59ebffa0",
+      "title": "QA 3 Days in Barcelona 777da88a",
+      "shareSlug": "qa777da88a6",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "fad81467-5b1c-4fa4-a4d5-35dd77b0783a",
+      "title": "QA Rome Weekend 777da88a",
+      "shareSlug": "qa777da88a5",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "601d61b8-112a-4e38-9e3f-a115517c214b",
+      "title": "QA 3 Days in Tokyo 777da88a",
+      "shareSlug": "qa777da88a4",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "e1c9f96e-f728-4cbe-bbaf-b5b6cde0410c",
+      "title": "QA 4 Days in Mexico City 777da88a",
+      "shareSlug": "qa777da88a3",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed",
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "f14b545b-853b-4110-9ad1-205761257e52",
+      "title": "QA 1 Day in Porto 777da88a",
+      "shareSlug": "qa777da88a2",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed",
+        "QA-only public fixture should not be live"
+      ]
+    },
+    {
+      "tripId": "01d12a40-31e3-4109-8b3f-7af03171cd2a",
+      "title": "QA 3 Days in Lisbon 777da88a",
+      "shareSlug": "qa777da88a1",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed",
+        "QA-only public fixture should not be live"
+      ]
+    }
+  ],
+  "candidateCount": 11,
+  "appliedCount": 11,
+  "failedUpdateCount": 0,
+  "updates": [
+    {
+      "tripId": "a9fdde20-d137-4d2d-8c09-d2d12369d65b",
+      "title": "3 Days in Athens Greece",
+      "shareSlug": "8bekksk8ui",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "a9fdde20-d137-4d2d-8c09-d2d12369d65b",
+        "title": "3 Days in Athens Greece",
+        "share_slug": "8bekksk8ui",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:44:59.703+00:00"
+      }
+    },
+    {
+      "tripId": "f4c6f7a9-fd4e-44db-94aa-aa7035741c22",
+      "title": "QA 3 Days in Berlin 777da88a",
+      "shareSlug": "qa777da88a10",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "f4c6f7a9-fd4e-44db-94aa-aa7035741c22",
+        "title": "QA 3 Days in Berlin 777da88a",
+        "share_slug": "qa777da88a10",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:00.689+00:00"
+      }
+    },
+    {
+      "tripId": "88ef196d-fb34-4462-b4b9-e4e9cb4f0dbb",
+      "title": "QA 2 Days in Copenhagen 777da88a",
+      "shareSlug": "qa777da88a9",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "88ef196d-fb34-4462-b4b9-e4e9cb4f0dbb",
+        "title": "QA 2 Days in Copenhagen 777da88a",
+        "share_slug": "qa777da88a9",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:00.901+00:00"
+      }
+    },
+    {
+      "tripId": "4060e250-7266-448f-bedb-ad12ab9f6474",
+      "title": "QA 4 Days in Paris 777da88a",
+      "shareSlug": "qa777da88a8",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "4060e250-7266-448f-bedb-ad12ab9f6474",
+        "title": "QA 4 Days in Paris 777da88a",
+        "share_slug": "qa777da88a8",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.073+00:00"
+      }
+    },
+    {
+      "tripId": "706b5759-101b-4a92-8e63-fbfa8501b55e",
+      "title": "QA 3 Days in London 777da88a",
+      "shareSlug": "qa777da88a7",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "706b5759-101b-4a92-8e63-fbfa8501b55e",
+        "title": "QA 3 Days in London 777da88a",
+        "share_slug": "qa777da88a7",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.226+00:00"
+      }
+    },
+    {
+      "tripId": "80d059a7-2397-48c7-8bd3-e26e59ebffa0",
+      "title": "QA 3 Days in Barcelona 777da88a",
+      "shareSlug": "qa777da88a6",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "80d059a7-2397-48c7-8bd3-e26e59ebffa0",
+        "title": "QA 3 Days in Barcelona 777da88a",
+        "share_slug": "qa777da88a6",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.342+00:00"
+      }
+    },
+    {
+      "tripId": "fad81467-5b1c-4fa4-a4d5-35dd77b0783a",
+      "title": "QA Rome Weekend 777da88a",
+      "shareSlug": "qa777da88a5",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "fad81467-5b1c-4fa4-a4d5-35dd77b0783a",
+        "title": "QA Rome Weekend 777da88a",
+        "share_slug": "qa777da88a5",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.494+00:00"
+      }
+    },
+    {
+      "tripId": "601d61b8-112a-4e38-9e3f-a115517c214b",
+      "title": "QA 3 Days in Tokyo 777da88a",
+      "shareSlug": "qa777da88a4",
+      "wasPublic": true,
+      "reasons": [
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "601d61b8-112a-4e38-9e3f-a115517c214b",
+        "title": "QA 3 Days in Tokyo 777da88a",
+        "share_slug": "qa777da88a4",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.65+00:00"
+      }
+    },
+    {
+      "tripId": "e1c9f96e-f728-4cbe-bbaf-b5b6cde0410c",
+      "title": "QA 4 Days in Mexico City 777da88a",
+      "shareSlug": "qa777da88a3",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed",
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "e1c9f96e-f728-4cbe-bbaf-b5b6cde0410c",
+        "title": "QA 4 Days in Mexico City 777da88a",
+        "share_slug": "qa777da88a3",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.837+00:00"
+      }
+    },
+    {
+      "tripId": "f14b545b-853b-4110-9ad1-205761257e52",
+      "title": "QA 1 Day in Porto 777da88a",
+      "shareSlug": "qa777da88a2",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed",
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "f14b545b-853b-4110-9ad1-205761257e52",
+        "title": "QA 1 Day in Porto 777da88a",
+        "share_slug": "qa777da88a2",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:01.981+00:00"
+      }
+    },
+    {
+      "tripId": "01d12a40-31e3-4109-8b3f-7af03171cd2a",
+      "title": "QA 3 Days in Lisbon 777da88a",
+      "shareSlug": "qa777da88a1",
+      "wasPublic": true,
+      "reasons": [
+        "catalog map/itinerary integrity failed",
+        "QA-only public fixture should not be live"
+      ],
+      "applied": true,
+      "error": null,
+      "resultingTrip": {
+        "id": "01d12a40-31e3-4109-8b3f-7af03171cd2a",
+        "title": "QA 3 Days in Lisbon 777da88a",
+        "share_slug": "qa777da88a1",
+        "is_public": false,
+        "updated_at": "2026-06-05T22:45:02.114+00:00"
+      }
+    }
+  ],
+  "ok": true
+}
