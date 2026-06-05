@@ -1,0 +1,172 @@
+{
+  "date": "2026-06-05",
+  "baseUrl": "http://localhost:3000",
+  "prompt": "Plan a 5 day Athens trip for 4 friends with history food relaxed pacing and one memorable night out",
+  "runId": "0d0f9e91",
+  "tripId": "f128971f-ee78-40c9-ae9b-21cb44b4c9ea",
+  "checked": 17,
+  "passed": 17,
+  "failed": 0,
+  "cleanup": {
+    "attempted": true,
+    "tripDeleted": true,
+    "error": null
+  },
+  "results": [
+    {
+      "name": "Planner source derives query prompt from current search params",
+      "ok": true
+    },
+    {
+      "name": "Planner source does not use stale one-shot query refs",
+      "ok": true
+    },
+    {
+      "name": "Planner query handoff marks query as sent only inside the delayed send",
+      "ok": true,
+      "queryGuardIndex": 9903,
+      "timeoutIndex": 9986,
+      "sentInsideTimerIndex": 10011,
+      "sendInsideTimerIndex": 10052
+    },
+    {
+      "name": "Planner handoff preserves the prompt in the Trip Studio URL",
+      "ok": true
+    },
+    {
+      "name": "Planner handoff creates draft trips with days and destination constraints",
+      "ok": true
+    },
+    {
+      "name": "Planner mobile composer keeps an explicit trip idea label",
+      "ok": true
+    },
+    {
+      "name": "Planner handoff has a visible opening state",
+      "ok": true
+    },
+    {
+      "name": "Planner handoff preserves failed prompts for retry",
+      "ok": true
+    },
+    {
+      "name": "Planner handoff disables starter prompts while opening",
+      "ok": true
+    },
+    {
+      "name": "Trip Studio explains initial prompt generation before stops arrive",
+      "ok": true
+    },
+    {
+      "name": "/chat?q prompt route is reachable",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "http://localhost:3000/chat?q=Plan%20a%205%20day%20Athens%20trip%20for%204%20friends%20with%20history%20food%20relaxed%20pacing%20and%20one%20memorable%20night%20out",
+      "missingMarkers": []
+    },
+    {
+      "name": "Planner draft API accepts the handoff payload",
+      "ok": true,
+      "status": 200,
+      "tripId": "f128971f-ee78-40c9-ae9b-21cb44b4c9ea",
+      "shareSlug": "1tjedeeajy"
+    },
+    {
+      "name": "Planner draft API creates the requested five-day Athens trip shell",
+      "ok": true,
+      "status": 200,
+      "tripTitle": "QA Planner Handoff 0d0f9e91",
+      "dayCount": 5,
+      "destinationQuery": "Athens"
+    },
+    {
+      "name": "Planner handoff smoke cleans up disposable draft trip",
+      "ok": true,
+      "attempted": true,
+      "tripDeleted": true,
+      "error": null
+    },
+    {
+      "name": "Browser planner query failure preserves the trip idea and retry path",
+      "ok": true,
+      "hasRecoveryCopy": true,
+      "inputValue": "Plan a 4 day Lisbon food trip for friends with viewpoints and relaxed mornings",
+      "tryAgainVisible": true,
+      "tryAgainDisabled": false,
+      "metrics": {
+        "url": "http://localhost:3000/chat?q=Plan%20a%204%20day%20Lisbon%20food%20trip%20for%20friends%20with%20viewpoints%20and%20relaxed%20mornings&qaPlannerDraftFailure=1",
+        "path": "/chat",
+        "hasAppError": false,
+        "horizontalOverflow": false,
+        "clientWidth": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "Browser planner delayed query shows progress and reaches Trip Studio",
+      "ok": true,
+      "waitingState": {
+        "hasOpeningState": true,
+        "promptVisible": true,
+        "inputPlaceholder": "Opening Trip Studio...",
+        "inputDisabled": true,
+        "sendDisabled": true,
+        "disabledStepCount": 3,
+        "enabledStepCount": 0,
+        "stepCount": 3
+      },
+      "studioState": {
+        "tripId": "91872ba0-c717-48ca-bd26-9759a52ccc37",
+        "tripTitle": "5 Days in Athens",
+        "dayCount": 5,
+        "destinationQuery": "Athens",
+        "constraintDays": 5,
+        "hasPromptParam": true,
+        "hasStudioActions": true,
+        "hasInitialGenerationCopy": true
+      },
+      "waitingMetrics": {
+        "url": "http://localhost:3000/chat?q=Plan%20five%20days%20in%20Athens%20for%20friends%20with%20food%2C%20beaches%2C%20and%20relaxed%20mornings&qaPlannerDraftDelayMs=2200",
+        "path": "/chat",
+        "hasAppError": false,
+        "horizontalOverflow": false,
+        "clientWidth": 390,
+        "scrollWidth": 390
+      },
+      "studioMetrics": {
+        "url": "http://localhost:3000/trips/91872ba0-c717-48ca-bd26-9759a52ccc37?prompt=Plan%20five%20days%20in%20Athens%20for%20friends%20with%20food%2C%20beaches%2C%20and%20relaxed%20mornings",
+        "path": "/trips/91872ba0-c717-48ca-bd26-9759a52ccc37",
+        "hasAppError": false,
+        "horizontalOverflow": false,
+        "clientWidth": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "Browser planner start checks clean up disposable state",
+      "ok": true,
+      "tripCleanup": {
+        "attempted": true,
+        "tripDeleted": true,
+        "error": null
+      },
+      "failureGuestCleanup": {
+        "attempted": true,
+        "guestId": "5826358f-47c9-4381-8e1a-54ab275294c7",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      },
+      "slowGuestCleanup": {
+        "attempted": true,
+        "guestId": "3998d7b3-6d91-4586-a09c-34fa7f0361ef",
+        "profileDeleted": true,
+        "userDeleted": true,
+        "error": null
+      }
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/planner-handoff-smoke-2026-06-05.json",
+  "reportArtifact": "qa/planner-handoff-smoke-2026-06-05.md"
+}

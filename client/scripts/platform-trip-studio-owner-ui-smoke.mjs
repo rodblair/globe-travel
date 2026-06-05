@@ -282,6 +282,43 @@ async function runOwnerTripStudioChecks() {
       scrollWidth: ownerState.scrollWidth,
     })
 
+    await page.goto(`${baseUrl}/trips/${fixture.tripId}?qaRewriteUnavailable=1`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await page.waitForFunction(
+      () => document.body.innerText.includes('Suggested next step') && document.body.innerText.includes('Rewrite day'),
+      { timeout: 30000 },
+    ).catch(() => {})
+    const suggestedRewriteButton = page.getByTestId('trip-suggested-rewrite-day')
+    const suggestedRewriteButtonCount = await suggestedRewriteButton.count()
+    if (suggestedRewriteButtonCount === 1) {
+      await suggestedRewriteButton.click({ timeout: 8000 })
+    }
+    const closePlannerButton = page.getByRole('button', { name: 'Close planner chat', exact: true })
+    await closePlannerButton.waitFor({ state: 'visible', timeout: 8000 }).catch(() => {})
+    const closePlannerVisible = await closePlannerButton.isVisible().catch(() => false)
+    const rewriteUnavailableState = await readPageState(page)
+    record('suggested rewrite opens visible planner drawer at desktop breakpoint', (
+      suggestedRewriteButtonCount === 1 &&
+      closePlannerVisible &&
+      rewriteUnavailableState.text.includes('Planner chat is still connecting') &&
+      !rewriteUnavailableState.appError &&
+      !rewriteUnavailableState.horizontalOverflow
+    ), {
+      url: rewriteUnavailableState.url,
+      suggestedRewriteButtonCount,
+      closePlannerVisible,
+      hasConnectingNotice: rewriteUnavailableState.text.includes('Planner chat is still connecting'),
+      appError: rewriteUnavailableState.appError,
+      horizontalOverflow: rewriteUnavailableState.horizontalOverflow,
+      clientWidth: rewriteUnavailableState.clientWidth,
+      scrollWidth: rewriteUnavailableState.scrollWidth,
+    })
+
+    await page.goto(`${baseUrl}/trips/${fixture.tripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await page.waitForFunction(
+      () => document.body.innerText.includes('Share with friends') && document.body.innerText.includes('Rewrite day'),
+      { timeout: 30000 },
+    ).catch(() => {})
+
     await page.getByRole('button', { name: 'Share with friends', exact: true }).click({ timeout: 8000 })
     await page.waitForTimeout(700)
     const blockedShareState = await readPageState(page)

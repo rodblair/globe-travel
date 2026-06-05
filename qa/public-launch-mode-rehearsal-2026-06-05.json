@@ -1,0 +1,79 @@
+{
+  "date": "2026-06-05",
+  "status": "pass",
+  "checked": 5,
+  "passed": 5,
+  "failed": 0,
+  "publicStatusArtifact": "qa/public-launch-status-2026-05-21.json",
+  "publicStatusReport": "qa/public-launch-status-2026-05-21.md",
+  "publicLaunchStatus": "blocked",
+  "betaReady": false,
+  "publicLaunchReady": false,
+  "requirePublicLaunch": true,
+  "publicLaunchModeExitCode": 1,
+  "blockers": [
+    {
+      "id": "beta-human-review-threshold",
+      "title": "Complete beta human reviews",
+      "detail": "0/25 completed; 25 remaining."
+    },
+    {
+      "id": "production-visual-review-history",
+      "title": "Complete production visual-review history",
+      "detail": "3/4 distinct review dates recorded; 1 remaining."
+    }
+  ],
+  "guardrailIssues": [
+    "public launch blocker board is not aligned with current beta and visual blocker evidence",
+    "daily launch operator board is not aligned with current blocker evidence",
+    "launch outreach brief is not ready for operator handoff"
+  ],
+  "guardrailIssueCount": 3,
+  "canonicalRestored": true,
+  "checks": [
+    {
+      "name": "public launch required mode exits non-zero while public blockers remain",
+      "ok": true,
+      "exitCode": 1
+    },
+    {
+      "name": "public launch required mode keeps public launch closed",
+      "ok": true,
+      "status": "blocked",
+      "betaReady": false,
+      "publicLaunchReady": false,
+      "requirePublicLaunch": true,
+      "guardrailIssues": [
+        "public launch blocker board is not aligned with current beta and visual blocker evidence",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "launch outreach brief is not ready for operator handoff"
+      ]
+    },
+    {
+      "name": "public launch required mode identifies beta and visual blockers",
+      "ok": true,
+      "blockerIds": [
+        "beta-human-review-threshold",
+        "production-visual-review-history"
+      ]
+    },
+    {
+      "name": "public launch required mode reports guardrail state without hiding blockers",
+      "ok": true,
+      "guardrailIssues": [
+        "public launch blocker board is not aligned with current beta and visual blocker evidence",
+        "daily launch operator board is not aligned with current blocker evidence",
+        "launch outreach brief is not ready for operator handoff"
+      ]
+    },
+    {
+      "name": "public launch required mode does not mutate canonical default status",
+      "ok": true,
+      "restoredRequirePublicLaunch": false,
+      "restoredStatus": "beta-ready-public-blocked"
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/public-launch-mode-rehearsal-2026-06-05.json",
+  "reportArtifact": "qa/public-launch-mode-rehearsal-2026-06-05.md"
+}

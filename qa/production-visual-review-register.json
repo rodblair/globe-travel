@@ -1,5 +1,5 @@
 {
-  "reviewedAt": "2026-06-04",
+  "reviewedAt": "2026-06-05",
   "owner": "Product",
   "cadence": "Weekly during beta, after every production deploy during launch week, and before any public launch approval.",
   "minimumPublicLaunchReviewHistory": 4,
@@ -41,11 +41,11 @@
     }
   ],
   "latestProductionReview": {
-    "reviewedAt": "2026-06-04",
-    "artifact": "qa/visual-baseline-production-release-2026-06-04-8436303",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-04-8436303/summary.json",
-    "productionCommit": "84363033b26e606a90254109a178d854d5b7ef0e",
-    "deploymentUrl": "globe-travel-i29dxau5t-rodney-blairs-projects.vercel.app",
+    "reviewedAt": "2026-06-05",
+    "artifact": "qa/visual-baseline-production-release-2026-06-05-a2040af",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-05-a2040af/summary.json",
+    "productionCommit": "a2040afddf4a0b8fa70eabe58f164b3b7b191587",
+    "deploymentUrl": "globe-travel-5fj8wfu3w-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
     "blockingFindings": [],
@@ -69,8 +69,8 @@
       "login",
       "signup"
     ],
-    "notes": "Production release gate passed 10/10 on June 4, 2026, against the live 8436303 deployment after the Trip Studio suggested-actions production deploy. Production visual QA passed 25/25 across landing, pricing, login, signup, and public-share on phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
-    "reviewSubmissionFile": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-003.json"
+    "notes": "Production release gate passed 10/10 on June 5, 2026, against the live a2040af deployment. Production visual QA passed 25/25 across landing, pricing, login, signup, and public-share on phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs.",
+    "reviewSubmissionFile": null
   },
   "reviewHistory": [
     {

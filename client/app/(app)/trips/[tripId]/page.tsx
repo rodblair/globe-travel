@@ -469,6 +469,10 @@ function TripStudioPageContent() {
       const message = 'Planner chat is still connecting. Try Rewrite day again in a moment.'
       setActionError(message)
       setSuggestedStepNotice(message)
+      setChatOpen(true)
+      window.setTimeout(() => {
+        plannerChatPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
       return
     }
 
@@ -1199,7 +1203,7 @@ function TripStudioPageContent() {
           </section>
 
           <aside className="min-h-0 space-y-4 xl:overflow-y-auto">
-            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section data-testid="trip-suggested-next-step" className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Share with crew</p>
@@ -1324,6 +1328,7 @@ function TripStudioPageContent() {
               )}
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
+                  data-testid="trip-suggested-rewrite-day"
                   onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
                   disabled={!selectedStudioDay || regeneratingDayIndex != null}
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
@@ -1332,6 +1337,7 @@ function TripStudioPageContent() {
                   {suggestedRewriteLabel}
                 </button>
                 <button
+                  data-testid="trip-suggested-feedback-refresh"
                   onClick={() => startWorkflow('feedback_refresh')}
                   disabled={Boolean(creatingWorkflow)}
                   className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
@@ -1383,7 +1389,7 @@ function TripStudioPageContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--shadow-lg)] xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--shadow-lg)] 2xl:hidden"
           >
             <div className="flex items-center justify-between border-b border-rule px-4 py-3">
               <div>
