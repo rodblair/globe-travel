@@ -12,6 +12,7 @@ import { useAuth } from '@/components/providers/AuthProvider'
 import {
   buildDisplayStops,
   getDestinationFallback,
+  getItineraryPlaceLabel,
   shouldUseSavedRoute,
   sortTripItemsForDisplay,
 } from '@/components/trips/derivedStops'
@@ -491,29 +492,33 @@ function ChatPageContent() {
                       />
                       {items.length > 0 && (
                         <div className="border-t border-rule px-3 py-2.5 space-y-1.5">
-                          {items.map((item: TripItem, idx: number) => (
-                            <div key={item.id} className="flex items-start gap-2.5">
-                              <span className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
-                                {idx + 1}
-                              </span>
-                              <div className="min-w-0 flex-1">
-                                <p className="text-[0.8125rem] font-medium text-foreground truncate leading-snug">{item.title}</p>
-                                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                                  {item.start_time && (
-                                    <span className="t-mono text-[0.625rem] text-ink-3 tabular-nums">
-                                      {item.start_time.slice(0, 5)}
+                          {items.map((item: TripItem, idx: number) => {
+                            const placeLabel = getItineraryPlaceLabel(item)
+
+                            return (
+                              <div key={item.id} className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
+                                  {idx + 1}
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[0.8125rem] font-medium text-foreground truncate leading-snug">{item.title}</p>
+                                  <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                    {item.start_time && (
+                                      <span className="t-mono text-[0.625rem] text-ink-3 tabular-nums">
+                                        {item.start_time.slice(0, 5)}
+                                      </span>
+                                    )}
+                                    <span className="t-mono text-[0.625rem] px-1.5 py-0.5 rounded-full bg-[var(--paper-recessed)] text-ink-3 capitalize">
+                                      {item.type}
                                     </span>
-                                  )}
-                                  <span className="t-mono text-[0.625rem] px-1.5 py-0.5 rounded-full bg-[var(--paper-recessed)] text-ink-3 capitalize">
-                                    {item.type}
-                                  </span>
-                                  {item.place?.name && (
-                                    <span className="text-caption text-ink-3 truncate">{item.place.name}</span>
-                                  )}
+                                    {placeLabel && (
+                                      <span className="text-caption text-ink-3 truncate">{placeLabel}</span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       )}
                     </div>

@@ -6,7 +6,7 @@ import { useMemo, useRef, useState } from 'react'
 import { CalendarDays, Check, Copy, Heart, MessageCircleQuestion, Route, Share2, Users } from 'lucide-react'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
-import { buildDisplayStops, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
@@ -126,21 +126,25 @@ export function KeepsakeRouteCard({
           </span>
         </div>
         <div className="space-y-1.5">
-          {sortedItems.slice(0, compact ? 3 : sortedItems.length).map((item, index) => (
-            <div key={item.id} className="flex items-start gap-2.5 rounded-2xl bg-paper-recessed/70 px-3 py-2">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
-                {index + 1}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
-                {(item.start_time || item.place?.name) && (
-                  <p className="mt-0.5 truncate text-xs text-ink-3">
-                    {[item.start_time?.slice(0, 5), item.place?.name].filter(Boolean).join(' · ')}
-                  </p>
-                )}
+          {sortedItems.slice(0, compact ? 3 : sortedItems.length).map((item, index) => {
+            const placeLabel = getItineraryPlaceLabel(item)
+
+            return (
+              <div key={item.id} className="flex items-start gap-2.5 rounded-2xl bg-paper-recessed/70 px-3 py-2">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
+                  {index + 1}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
+                  {(item.start_time || placeLabel) && (
+                    <p className="mt-0.5 truncate text-xs text-ink-3">
+                      {[item.start_time?.slice(0, 5), placeLabel].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </article>

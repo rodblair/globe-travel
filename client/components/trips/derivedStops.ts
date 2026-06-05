@@ -37,6 +37,15 @@ type DerivedStop = {
 
 export const WALK_ROUTE_MAX_METERS = 8500
 
+const LOW_CONFIDENCE_PLACE_LABELS = new Set([
+  'athina',
+  'athens',
+  'αδριανου',
+  'αδριανού',
+  'σολωμου',
+  'σολωμού',
+])
+
 export function coerceCoordinate(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : null
   if (typeof value === 'string' && value.trim().length > 0) {
@@ -161,6 +170,33 @@ export function shouldUseSavedRoute<T extends TripItemLike>(
   if (route.distance_m == null || route.distance_m <= 0 || route.distance_m > WALK_ROUTE_MAX_METERS) return false
 
   return true
+}
+
+function normalizePlaceText(value: string | null | undefined) {
+  return value
+    ?.trim()
+    .toLocaleLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() || ''
+}
+
+export function getItineraryPlaceLabel<T extends TripItemLike>(item: T) {
+  const placeName = item.place?.name?.trim()
+  if (!placeName) return null
+
+  const normalizedPlaceName = normalizePlaceText(placeName)
+  if (!normalizedPlaceName || LOW_CONFIDENCE_PLACE_LABELS.has(normalizedPlaceName)) return null
+
+  const normalizedTitle = normalizePlaceText(item.title)
+  if (normalizedTitle.includes(normalizedPlaceName)) return null
+
+  const normalizedCountry = normalizePlaceText(item.place?.country)
+  if (normalizedCountry && normalizedCountry === normalizedPlaceName) return null
+
+  return placeName
 }
 
 const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
@@ -348,7 +384,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
         longitude,
         index: displayStops.length + 1,
         item,
-        placeName: item.place?.name || null,
+        placeName: getItineraryPlaceLabel(item),
         country: item.place?.country || null,
         timeLabel,
         mapped: true,
@@ -383,7 +419,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
       longitude: 0,
       index: displayStops.length + 1,
       item,
-      placeName: item.place?.name || null,
+      placeName: getItineraryPlaceLabel(item),
       country: item.place?.country || null,
       timeLabel,
       mapped: latitude != null && longitude != null,

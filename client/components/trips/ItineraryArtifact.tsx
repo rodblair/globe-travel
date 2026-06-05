@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
-import { buildDisplayStops, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 
 export type TripDay = {
   id: string
@@ -569,8 +569,10 @@ export default function ItineraryArtifact({
                       )}
                     </div>
                     <p className="mt-1 text-[11px] text-foreground/62 truncate">
-                      {stop.placeName || 'No pinned place yet'}
-                      {stop.country ? ` • ${stop.country}` : ''}
+                      {[
+                        stop.placeName,
+                        stop.country,
+                      ].filter(Boolean).join(' • ') || (stop.mapped ? 'Pinned to the itinerary map' : 'No pinned place yet')}
                     </p>
                   </div>
                   <span className={cn(
@@ -639,7 +641,7 @@ export default function ItineraryArtifact({
 
                   {sortedItems.map((item, index) => {
                     const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped)
-                    const locationLabel = mappedStop?.placeName || item.place?.name || null
+                    const locationLabel = mappedStop?.placeName || getItineraryPlaceLabel(item)
                     const countryLabel = mappedStop?.country || item.place?.country || null
 
                     return (
