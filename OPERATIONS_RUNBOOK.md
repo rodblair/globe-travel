@@ -67,7 +67,7 @@ If Vercel returns `api-deployments-free-per-day` or `more than 100`, stop retryi
 
 ## Public Launch Evidence Dispatch
 
-The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `e46610afb6a8218b308bbf7e9baa71ada079b1e5` at `globe-travel-8h3wd1g4n-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` reports `beta-ready-public-blocked`: release operations are ready, public launch remains closed until external beta and visual-review evidence is imported. After every deploy, refresh production visual, monitoring, rollback, launch status, and signoff evidence before relying on public-launch status. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:
+The current public-launch blocker work is operational, not app-code blocked. Production is healthy on `0d825fb5bbd29c113081b0a6cbaa526cf8590d54` at `globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app`, and `npm run qa:public-launch-status` reports `beta-ready-public-blocked`: release operations are ready, public launch remains closed until external beta and visual-review evidence is imported. After every deploy, refresh production visual, monitoring, rollback, launch status, and signoff evidence before relying on public-launch status. Use the daily launch board, guarded refresh command, and sent-record template as the source of truth:
 
 ```bash
 npm run qa:launch-today
@@ -82,14 +82,14 @@ npm run qa:public-launch-mode-rehearsal
 
 Current artifacts:
 
-- Daily board: `qa/launch-operator-today-2026-06-04.json`, `.md`, and `.csv`
-- Guarded launch refresh: `qa/launch-refresh-2026-06-04.json` and `qa/launch-refresh-2026-06-04.md`
+- Daily board: `qa/launch-operator-today-2026-06-05.json`, `.md`, and `.csv`
+- Guarded launch refresh: `qa/launch-refresh-2026-06-05.json` and `qa/launch-refresh-2026-06-05.md`
 - Sent-record starter: `qa/dispatch-sent-record-template-2026-06-05.json`, `qa/dispatch-sent-record-template-2026-06-05.md`, and `qa/dispatch-sent-record-template-2026-06-05.csv`
 - Sent-record blank-template rejection: `qa/dispatch-sent-record-template-rejection-2026-06-05.json` and `qa/dispatch-sent-record-template-rejection-2026-06-05.md`
-- Sent-record isolated import rehearsal: `qa/dispatch-log-mark-sent-import-rehearsal-2026-06-04.json` and `qa/dispatch-log-mark-sent-import-rehearsal-2026-06-04.md`
-- Review intake isolated import rehearsal: `qa/review-intake-import-rehearsal-2026-06-04.json` and `qa/review-intake-import-rehearsal-2026-06-04.md`
-- Public-launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-06-04.json` and `qa/public-launch-threshold-rehearsal-2026-06-04.md`
-- Public-launch mode rehearsal: `qa/public-launch-mode-rehearsal-2026-06-04.json` and `qa/public-launch-mode-rehearsal-2026-06-04.md`
+- Sent-record isolated import rehearsal: `qa/dispatch-log-mark-sent-import-rehearsal-2026-06-05.json` and `qa/dispatch-log-mark-sent-import-rehearsal-2026-06-05.md`
+- Review intake isolated import rehearsal: `qa/review-intake-import-rehearsal-2026-06-05.json` and `qa/review-intake-import-rehearsal-2026-06-05.md`
+- Public-launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-06-05.json` and `qa/public-launch-threshold-rehearsal-2026-06-05.md`
+- Public-launch mode rehearsal: `qa/public-launch-mode-rehearsal-2026-06-05.json` and `qa/public-launch-mode-rehearsal-2026-06-05.md`
 - Sent-record JSON validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.json npm run qa:dispatch-mark-sent`
 - Sent-record JSON import after real sends: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.json npm run qa:dispatch-mark-sent`
 - Sent-record CSV validation: `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`

@@ -1,10 +1,10 @@
 {
   "date": "2026-06-05",
-  "dateSource": "release evidence",
+  "dateSource": "QA_PUBLIC_LAUNCH_STATUS_DATE",
   "today": "2026-06-05",
-  "todaySource": "QA_DAILY_LAUNCH_OPS_DATE",
+  "todaySource": "current date",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-05T11:49:14.919Z",
+  "generatedAt": "2026-06-05T22:14:40.177Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -13,14 +13,14 @@
   "liveDeployment": {
     "environment": "production",
     "region": "iad1",
-    "url": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
-    "commit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9"
+    "url": "globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app",
+    "commit": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54"
   },
   "deploymentCurrency": {
     "enforced": true,
-    "head": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
-    "shortHead": "30afc74",
-    "liveCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
+    "head": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54",
+    "shortHead": "0d825fb",
+    "liveCommit": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54",
     "liveCommitKnown": true,
     "liveCommitIsAncestor": true,
     "runtimeCommitAhead": false,
@@ -680,10 +680,10 @@
     "distinctHistoryDateCount": 3,
     "minimumForPublicLaunch": 4,
     "remainingDistinctDates": 1,
-    "latestProductionArtifact": "qa/visual-baseline-production-release-2026-06-05-30afc74",
-    "latestProductionSummaryArtifact": "qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json",
-    "latestProductionCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
-    "latestProductionDeploymentUrl": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
+    "latestProductionArtifact": "qa/visual-baseline-production-release-2026-06-05-0d825fb",
+    "latestProductionSummaryArtifact": "qa/visual-baseline-production-release-2026-06-05-0d825fb/summary.json",
+    "latestProductionCommit": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54",
+    "latestProductionDeploymentUrl": "globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app",
     "scheduledReviewCount": 1,
     "dueSoonScheduledReviewCount": 1,
     "dueSoonScheduledReviews": [
@@ -1018,8 +1018,8 @@
     "rowsMissingContextCount": 0,
     "rowsMissingContext": [],
     "validationCommands": [
-      "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent",
-      "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent",
+      "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent",
+      "QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent",
       "npm run qa:launch-refresh",
       "npm run qa:launch-signoff"
     ],
@@ -1187,8 +1187,8 @@
     "incompleteAcceptedP2Risks": []
   },
   "rollback": {
-    "knownGoodDeploymentCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
-    "knownGoodDeploymentUrl": "globe-travel-anibbmco5-rodney-blairs-projects.vercel.app",
+    "knownGoodDeploymentCommit": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54",
+    "knownGoodDeploymentUrl": "globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app",
     "verificationCommandCount": 2,
     "missingCommandMarkers": [],
     "rollbackStepCount": 6,
@@ -1227,11 +1227,11 @@
     "firstResponseStepCount": 6,
     "runbookReadable": true,
     "missingRunbookMarkers": [],
-    "latestVerificationExpectedLiveCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
+    "latestVerificationExpectedLiveCommit": "0d825fb5bbd29c113081b0a6cbaa526cf8590d54",
     "latestVerificationReady": true
   },
   "paidPath": {
-    "artifact": "qa/paid-path-readiness-2026-05-23.json",
+    "artifact": "qa/paid-path-readiness-2026-06-05.json",
     "status": "pass",
     "checked": 6,
     "failed": 0,
@@ -1276,14 +1276,14 @@
     "failedChecks": [],
     "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
     "expectedResponsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
-    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json",
-    "expectedProductionVisualArtifact": "qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json",
+    "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-05-0d825fb/summary.json",
+    "expectedProductionVisualArtifact": "qa/visual-baseline-production-release-2026-06-05-0d825fb/summary.json",
     "failureCount": 0,
     "visualEvidenceReady": true,
     "ready": true
   },
   "plannerActuals": {
-    "artifact": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
+    "artifact": "qa/release-candidate-full-with-multi-planner-2026-06-05/planner-generated-actuals-regional-edge-cities.json",
     "actualCount": 6,
     "requiredActualIds": [
       "istanbul-4-day-history-markets",
@@ -1432,7 +1432,7 @@
     "ready": true
   },
   "releaseCandidate": {
-    "artifact": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
+    "artifact": "qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json",
     "checked": 35,
     "passed": 35,
     "failed": 0,
@@ -1480,9 +1480,9 @@
     "ready": true
   },
   "appSurfaces": {
-    "artifact": "qa/app-surfaces-smoke-2026-05-27.json",
-    "report": "qa/app-surfaces-smoke-2026-05-27.md",
-    "artifactDir": "qa/app-surfaces-smoke-2026-05-27",
+    "artifact": "qa/app-surfaces-smoke-2026-06-05.json",
+    "report": "qa/app-surfaces-smoke-2026-06-05.md",
+    "artifactDir": "qa/app-surfaces-smoke-2026-06-05",
     "baseUrl": "http://localhost:3000",
     "status": "pass",
     "checked": 22,
@@ -1559,16 +1559,16 @@
     "monitoringRegister": "qa/production-monitoring-register.json",
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
-    "paidPathReadiness": "qa/paid-path-readiness-2026-05-23.json",
+    "paidPathReadiness": "qa/paid-path-readiness-2026-06-05.json",
     "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-06-05.json",
-    "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json",
+    "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-06-05/planner-generated-actuals-regional-edge-cities.json",
     "plannerHandoff": "qa/planner-handoff-smoke-2026-06-05.json",
     "publicShareMapIntegrity": "qa/public-share-map-catalog-2026-05-26.json",
     "publicMetadata": "qa/public-metadata-smoke-2026-05-26.json",
-    "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json",
+    "releaseCandidate": "qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json",
     "routeInventory": "qa/route-inventory-smoke-2026-06-04.json",
-    "appSurfaces": "qa/app-surfaces-smoke-2026-05-27.json",
+    "appSurfaces": "qa/app-surfaces-smoke-2026-06-05.json",
     "productionAppSurfaces": "qa/app-surfaces-production-guest-2026-06-04.json",
     "betaWaveRehearsal": "qa/beta-human-review-wave-rehearsal-2026-05-22.json",
     "betaMatrixRehearsal": "qa/beta-human-review-matrix-rehearsal-2026-05-22.json",

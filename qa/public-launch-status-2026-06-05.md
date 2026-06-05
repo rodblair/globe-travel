@@ -3,7 +3,7 @@
 Date: 2026-06-05
 Operational date: 2026-06-05
 Time zone: America/Toronto
-Generated at: 2026-06-05T11:49:14.919Z
+Generated at: 2026-06-05T22:14:40.177Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -11,8 +11,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 30afc74995f8d1d2d9c0cb4d77727bbddd5590c9
-- Production deployment: globe-travel-anibbmco5-rodney-blairs-projects.vercel.app
+- Production commit: 0d825fb5bbd29c113081b0a6cbaa526cf8590d54
+- Production deployment: globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app
 - Runtime deployment current: yes
 - Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
@@ -39,9 +39,9 @@ Status: beta-ready-public-blocked
 - Production visual review history: 3/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-release-2026-06-05-30afc74
-- Latest production visual commit: 30afc74995f8d1d2d9c0cb4d77727bbddd5590c9
-- Latest production visual deployment: globe-travel-anibbmco5-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-release-2026-06-05-0d825fb
+- Latest production visual commit: 0d825fb5bbd29c113081b0a6cbaa526cf8590d54
+- Latest production visual deployment: globe-travel-ghw9a3xqp-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (1 message files, 1 required)
@@ -233,7 +233,7 @@ Public metadata:
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-06-05.md` and `qa/public-launch-threshold-rehearsal-2026-06-05.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-06-05.json`
-- Latest production visual artifact: `qa/visual-baseline-production-release-2026-06-05-30afc74` and `qa/visual-baseline-production-release-2026-06-05-30afc74/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-release-2026-06-05-0d825fb` and `qa/visual-baseline-production-release-2026-06-05-0d825fb/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
@@ -243,16 +243,16 @@ Public metadata:
 - Monitoring register: `qa/production-monitoring-register.json`
 - Rollback plan: `qa/launch-rollback-plan.json`
 - Risk register: `qa/launch-risk-register.json`
-- Paid-path readiness: `qa/paid-path-readiness-2026-05-23.json`
+- Paid-path readiness: `qa/paid-path-readiness-2026-06-05.json`
 - Accessibility: `qa/accessibility-keyboard-production-guest-2026-05-26/summary.json`
 - Design-system readiness: `qa/design-system-readiness-2026-06-05.json`
-- Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-05-21/planner-generated-actuals-regional-edge-cities.json`
+- Planner actuals: `qa/release-candidate-full-with-multi-planner-2026-06-05/planner-generated-actuals-regional-edge-cities.json`
 - Planner handoff: `qa/planner-handoff-smoke-2026-06-05.json` and `qa/planner-handoff-smoke-2026-06-05.md`
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-05-26.json` and `qa/public-share-map-catalog-2026-05-26.md`
 - Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-05-26.json` and `qa/public-metadata-smoke-2026-05-26.md`
-- Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
+- Release candidate: `qa/release-candidate-full-with-multi-planner-2026-06-05/summary.json`
 - Full route inventory: `qa/route-inventory-smoke-2026-06-04.json`
-- Authenticated app surfaces: `qa/app-surfaces-smoke-2026-05-27.json`
+- Authenticated app surfaces: `qa/app-surfaces-smoke-2026-06-05.json`
 - Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-06-04.json`
 
 ## Operating Meaning
