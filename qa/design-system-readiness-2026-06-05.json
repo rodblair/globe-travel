@@ -1,7 +1,7 @@
 {
   "date": "2026-06-05",
   "designContext": ".impeccable.md",
-  "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
+  "responsiveVisualArtifact": "qa/visual-baseline-2026-06-05-full-responsive-local/summary.json",
   "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-05-0d825fb/summary.json",
   "productionVisualArtifactSource": "qa/production-visual-review-register.json",
   "checked": 11,
@@ -84,7 +84,7 @@
     {
       "name": "responsive visual QA covers every design-critical public and protected route",
       "ok": true,
-      "artifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
+      "artifact": "qa/visual-baseline-2026-06-05-full-responsive-local/summary.json",
       "expected": 55,
       "checked": 55,
       "passed": 55,

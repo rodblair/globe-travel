@@ -2,7 +2,7 @@
   "date": "2026-06-05",
   "today": "2026-06-05",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-05T11:47:29.334Z",
+  "generatedAt": "2026-06-05T21:23:51.324Z",
   "status": "fail",
   "checked": 14,
   "passed": 13,
@@ -24,12 +24,12 @@
   "deploymentRuntimeBlocked": false,
   "deploymentRuntimeCommit": null,
   "deploymentRuntimeCommitShort": null,
-  "liveDeploymentCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9",
+  "liveDeploymentCommit": "539dfd4b77d91c6889f2f4cc01953e605d19f4f8",
   "publicLaunchStatus": "blocked",
   "publicGuardrailIssues": [
+    "public launch blocker board is not aligned with current beta and visual blocker evidence",
     "daily launch operator board is not aligned with current blocker evidence",
-    "dispatch mark-sent dry run is not proving safe sent-state imports",
-    "dispatch sent-record template is not ready for operator handoff"
+    "launch outreach brief is not ready for operator handoff"
   ],
   "publicOnlyLaunchOperatorSelfGuardrails": true,
   "betaReviews": {
@@ -1230,9 +1230,9 @@
       "deploymentCurrencyError": null,
       "latestRuntimeCommit": null,
       "guardrailIssues": [
+        "public launch blocker board is not aligned with current beta and visual blocker evidence",
         "daily launch operator board is not aligned with current blocker evidence",
-        "dispatch mark-sent dry run is not proving safe sent-state imports",
-        "dispatch sent-record template is not ready for operator handoff"
+        "launch outreach brief is not ready for operator handoff"
       ],
       "onlyLaunchOperatorSelfGuardrails": true,
       "onlyLaunchOperatorAcceptedExternalGuardrails": true
@@ -1247,7 +1247,7 @@
       "ok": true,
       "deploymentRuntimeBlocked": false,
       "latestRuntimeCommit": null,
-      "liveCommit": "30afc74995f8d1d2d9c0cb4d77727bbddd5590c9"
+      "liveCommit": "539dfd4b77d91c6889f2f4cc01953e605d19f4f8"
     },
     {
       "name": "launch today reads aligned dispatch logs",

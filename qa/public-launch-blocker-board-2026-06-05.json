@@ -1533,11 +1533,11 @@
     {
       "name": "public launch blocker board reads current blocked status",
       "ok": true,
-      "status": "beta-ready-public-blocked",
-      "betaReady": true,
+      "status": "blocked",
+      "betaReady": false,
       "publicLaunchReady": false,
-      "selfReferentialGuardrailCount": 0,
-      "acceptedBlockedGuardrailCount": 0,
+      "selfReferentialGuardrailCount": 3,
+      "acceptedBlockedGuardrailCount": 3,
       "blockers": [
         {
           "id": "beta-human-review-threshold",

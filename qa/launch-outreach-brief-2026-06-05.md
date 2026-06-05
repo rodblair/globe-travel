@@ -52,12 +52,12 @@ Send or reassign 25 overdue beta invites now.
 | 23 | P0 | BETA-HR-023 | beta-human-review | send overdue by 2 days | review overdue by 1 day | [Globe.travel beta] BETA-HR-023 Washington DC review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-023-washington-dc.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-023-washington-dc.json` |
 | 24 | P0 | BETA-HR-024 | beta-human-review | send overdue by 2 days | review overdue by 1 day | [Globe.travel beta] BETA-HR-024 Mexico City review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-024-mexico-city.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-024-mexico-city.json` |
 | 25 | P0 | BETA-HR-025 | beta-human-review | send overdue by 2 days | review overdue by 1 day | [Globe.travel beta] BETA-HR-025 London review due 2026-06-04 | `qa/beta-human-review-dispatch-outbox-all-wave-2026-05-21/beta-hr-025-london.txt` | `qa/beta-human-review-submissions-2026-05-21/BETA-HR-025-london.json` |
-| 26 | P1 | PROD-VISUAL-HISTORY-004 | production-visual-review | n/a | review in 6 days | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-04/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
+| 26 | P1 | PROD-VISUAL-HISTORY-004 | production-visual-review | n/a | review in 6 days | [Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11 | `qa/production-visual-review-dispatch-outbox-2026-06-05/prod-visual-history-004-2026-06-11.txt` | `qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json` |
 
 ## After Real Sends
 
-- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
-- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-04.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
+- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
+- `QA_BETA_REVIEW_DISPATCH_LOG=qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json QA_VISUAL_REVIEW_DISPATCH_LOG=qa/production-visual-review-dispatch-log-2026-06-05.json QA_DISPATCH_MARK_SENT_IMPORT=1 QA_DISPATCH_MARK_SENT_RECORD=qa/dispatch-sent-record-template-2026-06-05.csv npm run qa:dispatch-mark-sent`
 - `npm run qa:launch-refresh`
 - `npm run qa:launch-signoff`
 
