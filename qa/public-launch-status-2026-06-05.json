@@ -4,7 +4,7 @@
   "today": "2026-06-05",
   "todaySource": "current date",
   "timeZone": "America/Toronto",
-  "generatedAt": "2026-06-05T23:02:17.111Z",
+  "generatedAt": "2026-06-05T23:10:17.713Z",
   "baseUrl": "https://globe-travel-two.vercel.app",
   "status": "beta-ready-public-blocked",
   "betaReady": true,
@@ -1249,7 +1249,7 @@
     "ready": true
   },
   "accessibility": {
-    "artifact": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
+    "artifact": "qa/accessibility-keyboard-production-guest-2026-06-05-0d825fb/summary.json",
     "checked": 22,
     "passed": 22,
     "failed": 0,
@@ -1566,7 +1566,7 @@
     "rollbackPlan": "qa/launch-rollback-plan.json",
     "riskRegister": "qa/launch-risk-register.json",
     "paidPathReadiness": "qa/paid-path-readiness-2026-06-05.json",
-    "accessibility": "qa/accessibility-keyboard-production-guest-2026-05-26/summary.json",
+    "accessibility": "qa/accessibility-keyboard-production-guest-2026-06-05-0d825fb/summary.json",
     "designSystemReadiness": "qa/design-system-readiness-2026-06-05.json",
     "plannerActuals": "qa/release-candidate-full-with-multi-planner-2026-06-05/planner-generated-actuals-regional-edge-cities.json",
     "plannerHandoff": "qa/planner-handoff-smoke-2026-06-05.json",
