@@ -343,7 +343,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
     if (latitude != null && longitude != null) {
       displayStops.push({
         id: item.id,
-        title: item.place?.name || item.title || 'Untitled stop',
+        title: item.title || item.place?.name || 'Untitled stop',
         latitude,
         longitude,
         index: displayStops.length + 1,
