@@ -482,7 +482,7 @@ function TripStudioPageContent() {
     }
 
     if (!chatReady || qaForceRewriteUnavailable) {
-      const message = 'Planner chat is still connecting. Try Rewrite day again in a moment.'
+      const message = 'Planner chat is open. Use Rewrite day again once Globe is ready.'
       setActionError(message)
       setSuggestedStepNotice(message)
       setChatOpen(true)
@@ -913,7 +913,7 @@ function TripStudioPageContent() {
     }
 
     if (suggestedPlannerUnavailable) {
-      const message = 'Planner chat is still connecting. Keep this panel open and use Rewrite day once the planner is ready.'
+      const message = 'Planner chat is open. Keep this panel open, then use Rewrite day once Globe is ready.'
       setActionError(null)
       setSuggestedStepNotice(message)
       setChatOpen(true)

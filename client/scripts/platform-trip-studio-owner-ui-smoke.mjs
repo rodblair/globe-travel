@@ -324,11 +324,9 @@ async function runOwnerTripStudioChecks() {
         )
       : (
           closePlannerVisible &&
-          (
-            suggestedPrimaryState.text.includes('Planner chat is still connecting') ||
-            suggestedPrimaryState.text.includes('Planner chat is connecting') ||
-            suggestedPrimaryState.text.includes('Planner chat is open')
-          )
+          suggestedPrimaryState.text.includes('Planner chat is open') &&
+          !suggestedPrimaryState.text.includes('Planner chat is still connecting') &&
+          !suggestedPrimaryState.text.includes('Planner chat is connecting')
         )
     record('suggested primary action gives visible progress feedback', (
       (suggestedRewriteButtonCount === 1 || suggestedBuildMapsButtonCount === 1 || suggestedOpenPlannerButtonCount === 1) &&
