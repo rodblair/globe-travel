@@ -103,12 +103,18 @@ const appSurfacesPath = process.env.QA_APP_SURFACES_ARTIFACT ||
 const productionAppSurfacesPath = process.env.QA_PRODUCTION_APP_SURFACES_ARTIFACT ||
   process.env.QA_LAUNCH_PRODUCTION_APP_SURFACES_ARTIFACT ||
   latestQaArtifact(/^app-surfaces-production-guest-\d{4}-\d{2}-\d{2}\.json$/, 'qa/app-surfaces-production-guest-2026-05-22.json')
-const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
-const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT || 'qa/public-launch-blocker-board-2026-05-21.md'
-const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV || 'qa/public-launch-blocker-board-2026-05-21.csv'
-const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY || `qa/launch-operator-today-${dailyLaunchOpsDate}.json`
-const launchOperatorTodayReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT || `qa/launch-operator-today-${dailyLaunchOpsDate}.md`
-const launchOperatorTodayCsvPath = process.env.QA_LAUNCH_OPERATOR_TODAY_CSV || `qa/launch-operator-today-${dailyLaunchOpsDate}.csv`
+const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD ||
+  latestQaArtifact(/^public-launch-blocker-board-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-launch-blocker-board-2026-05-21.json')
+const blockerBoardReportPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_REPORT ||
+  latestQaArtifact(/^public-launch-blocker-board-\d{4}-\d{2}-\d{2}\.md$/, 'qa/public-launch-blocker-board-2026-05-21.md')
+const blockerBoardCsvPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD_CSV ||
+  latestQaArtifact(/^public-launch-blocker-board-\d{4}-\d{2}-\d{2}\.csv$/, 'qa/public-launch-blocker-board-2026-05-21.csv')
+const launchOperatorTodayPath = process.env.QA_LAUNCH_OPERATOR_TODAY ||
+  latestQaArtifact(/^launch-operator-today-\d{4}-\d{2}-\d{2}\.json$/, `qa/launch-operator-today-${dailyLaunchOpsDate}.json`)
+const launchOperatorTodayReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_REPORT ||
+  latestQaArtifact(/^launch-operator-today-\d{4}-\d{2}-\d{2}\.md$/, `qa/launch-operator-today-${dailyLaunchOpsDate}.md`)
+const launchOperatorTodayCsvPath = process.env.QA_LAUNCH_OPERATOR_TODAY_CSV ||
+  latestQaArtifact(/^launch-operator-today-\d{4}-\d{2}-\d{2}\.csv$/, `qa/launch-operator-today-${dailyLaunchOpsDate}.csv`)
 const launchOperatorTodayOverdueRehearsalPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL ||
   `qa/launch-operator-today-overdue-rehearsal-${dailyLaunchOpsDate}.json`
 const launchOperatorTodayOverdueRehearsalReportPath = process.env.QA_LAUNCH_OPERATOR_TODAY_OVERDUE_REHEARSAL_REPORT ||
@@ -1021,8 +1027,8 @@ const date = requestedDate ||
   dateOnly(rollbackPlan.reviewedAt) ||
   dateOnly(riskRegister.reviewedAt) ||
   runtimeToday
-const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-status-${date}.json`
-const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${date}.md`
+const jsonArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || `public-launch-status-${dailyLaunchOpsDate}.json`
+const reportArtifact = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || `public-launch-status-${dailyLaunchOpsDate}.md`
 const betaAssignmentCsvPath = betaPacketManifest.assignmentCsv || `qa/beta-human-review-assignments-${date}.csv`
 const betaAssignmentReportPath = betaPacketManifest.assignmentReport || `qa/beta-human-review-assignments-${date}.md`
 const betaScheduleCsvPath = betaSchedule.assignmentCsv || betaRegister.reviewScheduleCsv || `qa/beta-human-review-schedule-assignments-${date}.csv`

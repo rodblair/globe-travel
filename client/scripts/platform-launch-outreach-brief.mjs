@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate } from './qa-date-utils.mjs'
@@ -5,13 +6,27 @@ import { currentQaDate } from './qa-date-utils.mjs'
 const clientRoot = process.cwd()
 const root = resolve(clientRoot, '..')
 const date = process.env.QA_LAUNCH_OUTREACH_BRIEF_DATE || currentQaDate()
-const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS || 'qa/public-launch-status-2026-05-21.json'
-const launchOperatorPath = process.env.QA_LAUNCH_OPERATOR_TODAY || `qa/launch-operator-today-${date}.json`
-const dispatchPacketPath = process.env.QA_LAUNCH_DISPATCH_PACKET || `qa/launch-dispatch-packet-${date}.json`
+const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS ||
+  latestQaArtifact(/^public-launch-status-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-launch-status-2026-05-21.json')
+const launchOperatorPath = process.env.QA_LAUNCH_OPERATOR_TODAY ||
+  latestQaArtifact(/^launch-operator-today-\d{4}-\d{2}-\d{2}\.json$/, `qa/launch-operator-today-${date}.json`)
+const dispatchPacketPath = process.env.QA_LAUNCH_DISPATCH_PACKET ||
+  latestQaArtifact(/^launch-dispatch-packet-\d{4}-\d{2}-\d{2}\.json$/, `qa/launch-dispatch-packet-${date}.json`)
 const artifactName = process.env.QA_LAUNCH_OUTREACH_BRIEF_ARTIFACT_NAME || `launch-outreach-brief-${date}`
 
 function qaDisplayPath(value) {
   return String(value || '').replace(/^\.\.\/qa\//, 'qa/').replace(/^\.\.\//, '')
+}
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.length ? `qa/${matches.at(-1)}` : fallbackPath
+  } catch {
+    return fallbackPath
+  }
 }
 
 function repoPath(path) {

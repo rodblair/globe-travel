@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { readdirSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { currentQaDate } from './qa-date-utils.mjs'
@@ -8,11 +9,24 @@ const root = resolve(clientRoot, '..')
 const date = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_DATE || currentQaDate()
 const artifactName = process.env.QA_PUBLIC_LAUNCH_MODE_REHEARSAL_ARTIFACT_NAME ||
   `public-launch-mode-rehearsal-${date}`
-const publicStatusJson = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON || 'public-launch-status-2026-05-21.json'
-const publicStatusReport = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT || 'public-launch-status-2026-05-21.md'
+const publicStatusJson = process.env.QA_PUBLIC_LAUNCH_STATUS_JSON ||
+  latestQaArtifact(/^public-launch-status-\d{4}-\d{2}-\d{2}\.json$/, 'public-launch-status-2026-05-21.json')
+const publicStatusReport = process.env.QA_PUBLIC_LAUNCH_STATUS_REPORT ||
+  latestQaArtifact(/^public-launch-status-\d{4}-\d{2}-\d{2}\.md$/, 'public-launch-status-2026-05-21.md')
 
 function repoPath(path) {
   return resolve(root, String(path || '').replace(/^\.\.\//, '').replace(/^qa\//, 'qa/'))
+}
+
+function latestQaArtifact(filePattern, fallbackPath) {
+  try {
+    const matches = readdirSync(resolve(root, 'qa'))
+      .filter((file) => filePattern.test(file))
+      .sort()
+    return matches.at(-1) || fallbackPath
+  } catch {
+    return fallbackPath
+  }
 }
 
 function markdownList(items) {
@@ -29,6 +43,8 @@ const result = spawnSync(process.execPath, ['scripts/platform-public-launch-stat
   encoding: 'utf8',
   env: {
     ...process.env,
+    QA_PUBLIC_LAUNCH_STATUS_JSON: publicStatusJson,
+    QA_PUBLIC_LAUNCH_STATUS_REPORT: publicStatusReport,
     QA_LAUNCH_STATUS_REQUIRE_PUBLIC: '1',
   },
 })

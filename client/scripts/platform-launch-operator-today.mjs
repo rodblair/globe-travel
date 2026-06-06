@@ -6,8 +6,10 @@ import { currentQaDate, daysBetween, qaTimeZone, requestedOrCurrentDate } from '
 const root = resolve(process.cwd(), '..')
 const requestedDate = process.env.QA_LAUNCH_TODAY_DATE || ''
 const requestedToday = process.env.QA_LAUNCH_TODAY || ''
-const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS || 'qa/public-launch-status-2026-05-21.json'
-const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD || 'qa/public-launch-blocker-board-2026-05-21.json'
+const publicStatusPath = process.env.QA_PUBLIC_LAUNCH_STATUS ||
+  latestQaArtifact(/^public-launch-status-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-launch-status-2026-05-21.json')
+const blockerBoardPath = process.env.QA_PUBLIC_LAUNCH_BLOCKER_BOARD ||
+  latestQaArtifact(/^public-launch-blocker-board-\d{4}-\d{2}-\d{2}\.json$/, 'qa/public-launch-blocker-board-2026-05-21.json')
 const betaDispatchOutboxPath = process.env.QA_BETA_REVIEW_OPERATOR_DISPATCH_OUTBOX ||
   process.env.QA_BETA_REVIEW_DISPATCH_OUTBOX ||
   latestQaArtifact(/^beta-human-review-dispatch-outbox-all-wave-\d{4}-\d{2}-\d{2}\.json$/, 'qa/beta-human-review-dispatch-outbox-2026-05-21.json')
