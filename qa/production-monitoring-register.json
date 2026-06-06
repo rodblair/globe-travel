@@ -124,16 +124,16 @@
     "command": "npm run qa:production-monitoring",
     "relatedCommands": [
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
-      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-4376c06 npm run qa:release-production",
+      "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-7202c7e npm run qa:release-production",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:auth-access",
       "QA_BASE_URL=https://globe-travel-two.vercel.app npm run qa:commercial",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws npm run qa:share",
       "QA_BASE_URL=https://globe-travel-two.vercel.app QA_REQUIRE_PRODUCTION_METADATA=1 npm run qa:ops",
       "npm run qa:production-monitoring",
-      "QA_LAUNCH_EXPECTED_COMMIT=4376c06cc6564f7932cbe179f295eee6e7d76805 npm run qa:launch-signoff"
+      "QA_LAUNCH_EXPECTED_COMMIT=7202c7eb695c887988b5ece363d948d322f50419 npm run qa:launch-signoff"
     ],
-    "expectedLiveCommit": "4376c06cc6564f7932cbe179f295eee6e7d76805",
-    "releaseGateArtifact": "qa/visual-baseline-production-release-2026-06-05-4376c06/summary.json",
-    "notes": "Production alias health reports ok on commit 4376c06cc6564f7932cbe179f295eee6e7d76805; QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-4376c06 npm run qa:release-production passed 10/10 with visual artifact qa/visual-baseline-production-release-2026-06-05-4376c06."
+    "expectedLiveCommit": "7202c7eb695c887988b5ece363d948d322f50419",
+    "releaseGateArtifact": "qa/visual-baseline-production-release-2026-06-05-7202c7e/summary.json",
+    "notes": "Production alias health reports ok on commit 7202c7eb695c887988b5ece363d948d322f50419; QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-release-2026-06-05-7202c7e npm run qa:release-production passed 10/10 with visual artifact qa/visual-baseline-production-release-2026-06-05-7202c7e."
   }
 }
