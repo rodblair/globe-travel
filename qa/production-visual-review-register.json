@@ -41,36 +41,18 @@
     }
   ],
   "latestProductionReview": {
+    "artifact": "qa/visual-baseline-production-release-2026-06-06-4a764fc",
+    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-06-4a764fc/summary.json",
+    "productionCommit": "4a764fc637f18a26a5d4f6f20e4d3a6cfe95e979",
+    "deploymentUrl": "globe-travel-304rofg9s-rodney-blairs-projects.vercel.app",
     "reviewedAt": "2026-06-06",
-    "artifact": "qa/visual-baseline-production-release-2026-06-06-39780e6",
-    "summaryArtifact": "qa/visual-baseline-production-release-2026-06-06-39780e6/summary.json",
-    "productionCommit": "39780e66a9101f7d1af0ae8af3ce50e35efead99",
-    "deploymentUrl": "globe-travel-gtd34hpiv-rodney-blairs-projects.vercel.app",
     "reviewedBy": "Codex visual QA",
     "verdict": "pass",
-    "blockingFindings": [],
     "screenshotsReviewed": 25,
-    "routesReviewed": [
-      "landing",
-      "pricing",
-      "login",
-      "signup",
-      "public-share"
-    ],
-    "viewportsReviewed": [
-      "phone",
-      "tablet",
-      "laptop",
-      "desktop",
-      "wide"
-    ],
-    "diffRoutesReviewed": [
-      "landing",
-      "login",
-      "signup"
-    ],
-    "notes": "Production visual QA passed 25/25 on June 6, 2026, against the live 39780e6 deployment. Landing, pricing, login, signup, and public-share were reviewed across phone, tablet, laptop, desktop, and wide viewports with no app errors, horizontal overflow, clipped app text, overlapping controls, missing screenshots, or unexplained stable-route diffs against the June 5 production baseline.",
-    "reviewSubmissionFile": null
+    "blockingFindings": [],
+    "issueCount": 0,
+    "issues": [],
+    "notes": "Production visual gate passed 25/25 for commit 4a764fc across landing, pricing, login, signup, and public-share routes at phone, tablet, laptop, desktop, and wide viewports. No app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs were found."
   },
   "reviewHistory": [
     {

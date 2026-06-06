@@ -1,9 +1,9 @@
 # Public Launch Status
 
-Date: 2026-06-06
+Date: 2026-06-05
 Operational date: 2026-06-06
 Time zone: America/Toronto
-Generated at: 2026-06-06T04:33:19.793Z
+Generated at: 2026-06-06T13:21:34.476Z
 Base URL: https://globe-travel-two.vercel.app
 Status: beta-ready-public-blocked
 
@@ -11,8 +11,8 @@ Status: beta-ready-public-blocked
 
 - Beta/release-ops ready: yes
 - Public-launch ready: no
-- Production commit: 39780e66a9101f7d1af0ae8af3ce50e35efead99
-- Production deployment: globe-travel-gtd34hpiv-rodney-blairs-projects.vercel.app
+- Production commit: 4a764fc637f18a26a5d4f6f20e4d3a6cfe95e979
+- Production deployment: globe-travel-304rofg9s-rodney-blairs-projects.vercel.app
 - Runtime deployment current: yes
 - Latest runtime commit awaiting production: none
 - Beta reviews: 0/25
@@ -39,9 +39,9 @@ Status: beta-ready-public-blocked
 - Production visual review history: 4/4
 - Production visual due-soon reviews: 1
 - Production visual overdue reviews: 0
-- Latest production visual artifact: qa/visual-baseline-production-release-2026-06-06-39780e6
-- Latest production visual commit: 39780e66a9101f7d1af0ae8af3ce50e35efead99
-- Latest production visual deployment: globe-travel-gtd34hpiv-rodney-blairs-projects.vercel.app
+- Latest production visual artifact: qa/visual-baseline-production-release-2026-06-06-4a764fc
+- Latest production visual commit: 4a764fc637f18a26a5d4f6f20e4d3a6cfe95e979
+- Latest production visual deployment: globe-travel-304rofg9s-rodney-blairs-projects.vercel.app
 - Production visual review progress artifact aligned: yes
 - Production visual review assignment queue ready: yes
 - Production visual review dispatch outbox ready: yes (1 message files, 0 required)
@@ -230,7 +230,7 @@ Public metadata:
 - Public launch threshold rehearsal: `qa/public-launch-threshold-rehearsal-2026-06-06.md` and `qa/public-launch-threshold-rehearsal-2026-06-06.json`
 - Visual register: `qa/production-visual-review-register.json`
 - Visual progress: `qa/production-visual-review-progress-2026-06-06.json`
-- Latest production visual artifact: `qa/visual-baseline-production-release-2026-06-06-39780e6` and `qa/visual-baseline-production-release-2026-06-06-39780e6/summary.json`
+- Latest production visual artifact: `qa/visual-baseline-production-release-2026-06-06-4a764fc` and `qa/visual-baseline-production-release-2026-06-06-4a764fc/summary.json`
 - Visual schedule: `qa/production-visual-review-schedule-2026-05-21.md`
 - Visual intake: `qa/production-visual-review-intake-2026-05-21.json`
 - Visual assignment board: `qa/production-visual-review-assignments-2026-05-21.md` and `qa/production-visual-review-assignments-2026-05-21.csv`
@@ -248,7 +248,7 @@ Public metadata:
 - Public share map/itinerary integrity: `qa/public-share-map-catalog-2026-06-05.json` and `qa/public-share-map-catalog-2026-06-05.md`
 - Public metadata, manifest, robots, and sitemap: `qa/public-metadata-smoke-2026-06-05.json` and `qa/public-metadata-smoke-2026-06-05.md`
 - Release candidate: `qa/release-candidate-full-with-multi-planner-2026-05-21/summary.json`
-- Full route inventory: `qa/route-inventory-smoke-2026-06-05.json`
+- Full route inventory: `qa/route-inventory-smoke-2026-06-06.json`
 - Authenticated app surfaces: `qa/app-surfaces-smoke-2026-06-05.json`
 - Production authenticated app surfaces: `qa/app-surfaces-production-guest-2026-06-04.json`
 

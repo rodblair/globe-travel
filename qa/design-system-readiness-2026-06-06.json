@@ -1,9 +1,9 @@
 {
   "date": "2026-06-06",
   "designContext": ".impeccable.md",
-  "responsiveVisualArtifact": "qa/visual-baseline-2026-06-05-full-responsive-local/summary.json",
-  "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-06-39780e6/summary.json",
-  "productionVisualArtifactSource": "QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_ARTIFACT",
+  "responsiveVisualArtifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
+  "productionVisualArtifact": "qa/visual-baseline-production-release-2026-06-06-4a764fc/summary.json",
+  "productionVisualArtifactSource": "qa/production-visual-review-register.json",
   "checked": 11,
   "passed": 11,
   "failed": 0,
@@ -84,7 +84,7 @@
     {
       "name": "responsive visual QA covers every design-critical public and protected route",
       "ok": true,
-      "artifact": "qa/visual-baseline-2026-06-05-full-responsive-local/summary.json",
+      "artifact": "qa/visual-baseline-2026-05-22-full-with-pricing-local/summary.json",
       "expected": 55,
       "checked": 55,
       "passed": 55,
@@ -101,8 +101,8 @@
     {
       "name": "production visual QA covers public acquisition and sharing surfaces",
       "ok": true,
-      "artifact": "qa/visual-baseline-production-release-2026-06-06-39780e6/summary.json",
-      "artifactSource": "QA_DESIGN_SYSTEM_PRODUCTION_VISUAL_ARTIFACT",
+      "artifact": "qa/visual-baseline-production-release-2026-06-06-4a764fc/summary.json",
+      "artifactSource": "qa/production-visual-review-register.json",
       "expected": 25,
       "checked": 25,
       "passed": 25,
