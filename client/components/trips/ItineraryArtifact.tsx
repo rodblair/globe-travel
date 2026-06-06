@@ -452,6 +452,7 @@ export default function ItineraryArtifact({
           {days.map((d) => (
             <button
               key={d.id}
+              data-testid={`trip-day-tab-${d.day_index}`}
               onClick={() => setSelectedDayIndex(d.day_index)}
               aria-pressed={d.day_index === selectedDay.day_index}
               aria-current={d.day_index === selectedDay.day_index ? 'true' : undefined}

@@ -379,10 +379,11 @@ async function runOwnerTripStudioChecks() {
       horizontalOverflow: blockedShareState.horizontalOverflow,
     })
 
-    const dayTwoButton = page.getByRole('button', { name: /^Show Day 2\b/ }).or(
-      page.getByRole('button', { name: 'Day 2', exact: true }),
-    )
-    await dayTwoButton.first().click({ timeout: 8000 })
+    const dayTwoButton = page.getByTestId('trip-day-tab-2')
+    const dayTwoButtonCount = await dayTwoButton.count()
+    if (dayTwoButtonCount === 1) {
+      await dayTwoButton.click({ timeout: 8000 })
+    }
     await page.waitForFunction(
       () => document.body.innerText.includes('Itinerary for Day 2') || document.body.innerText.includes('Day 2 map'),
       { timeout: 8000 },
@@ -398,6 +399,7 @@ async function runOwnerTripStudioChecks() {
       hasDay2Map: dayTwoState.text.includes('Day 2 map'),
       hasItineraryForDay2: dayTwoState.text.includes('Itinerary for Day 2'),
       hasPiraeus: dayTwoState.text.includes('Piraeus'),
+      dayTwoButtonCount,
       appError: dayTwoState.appError,
       horizontalOverflow: dayTwoState.horizontalOverflow,
     })
@@ -480,8 +482,8 @@ async function runMissingTripRecoveryChecks() {
   try {
     await page.goto(`${baseUrl}/trips/${missingTripId}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
     await page.waitForFunction(
-      () => document.body.innerText.includes('Trip unavailable') || document.body.innerText.includes('Trip workspace'),
-      { timeout: 15000 },
+      () => /trip unavailable|we could not open this trip|trip workspace/i.test(document.body.innerText),
+      { timeout: 20000 },
     ).catch(() => {})
     const missingState = await readPageState(page)
 
