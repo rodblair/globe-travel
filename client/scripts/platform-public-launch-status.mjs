@@ -1363,6 +1363,7 @@ const requiredInventoryRoutes = [
   '/callback',
   '/auth/callback-client',
   `/t/${routeInventory.shareSlug || 'x3m2c8cnws'}`,
+  `/share/${routeInventory.shareSlug || 'x3m2c8cnws'}`,
   '/chat',
   '/explore',
   '/globe',
