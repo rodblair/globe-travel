@@ -50,6 +50,9 @@ const restoredStatus = JSON.parse(restoredJson)
 const blockers = Array.isArray(rehearsalStatus?.blockers) ? rehearsalStatus.blockers : []
 const blockerIds = blockers.map((blocker) => blocker.id).filter(Boolean)
 const guardrailIssues = Array.isArray(rehearsalStatus?.guardrailIssues) ? rehearsalStatus.guardrailIssues : []
+const expectedBlockerIds = (Array.isArray(restoredStatus?.blockers) ? restoredStatus.blockers : [])
+  .map((blocker) => blocker.id)
+  .filter(Boolean)
 const strictModeKeepsLaunchClosed = (
   rehearsalStatus?.status === 'beta-ready-public-blocked' ||
   rehearsalStatus?.status === 'blocked'
@@ -73,11 +76,11 @@ const checks = [
     guardrailIssues,
   },
   {
-    name: 'public launch required mode identifies beta and visual blockers',
-    ok: blockerIds.includes('beta-human-review-threshold') &&
-      blockerIds.includes('production-visual-review-history') &&
-      blockers.length >= 2,
+    name: 'public launch required mode identifies current blockers',
+    ok: expectedBlockerIds.length > 0 &&
+      expectedBlockerIds.every((blockerId) => blockerIds.includes(blockerId)),
     blockerIds,
+    expectedBlockerIds,
   },
   {
     name: 'public launch required mode reports guardrail state without hiding blockers',
@@ -134,7 +137,7 @@ Status: ${summary.status}
 
 ## Operating Meaning
 
-This rehearsal proves \`QA_LAUNCH_STATUS_REQUIRE_PUBLIC=1 npm run qa:public-launch-status\` fails while beta-review, production visual-review, or current operator guardrails remain. Default status evidence is restored after the rehearsal.
+This rehearsal proves \`QA_LAUNCH_STATUS_REQUIRE_PUBLIC=1 npm run qa:public-launch-status\` fails while current public launch blockers or operator guardrails remain. Default status evidence is restored after the rehearsal.
 
 ## Blockers
 

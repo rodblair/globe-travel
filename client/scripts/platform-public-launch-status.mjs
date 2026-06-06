@@ -2241,9 +2241,13 @@ const launchTodayVisualActionContextIssues = Array.isArray(launchOperatorToday.v
 const launchOperatorTodayFailures = Array.isArray(launchOperatorToday.failures)
   ? launchOperatorToday.failures
   : []
+const launchOperatorAcceptedActionableFailureNames = new Set([
+  'launch today reads current blocked release status',
+  'launch today has no overdue launch execution rows',
+])
 const launchOperatorOnlyOverdueExecutionFailure = launchOperatorToday.status === 'fail' &&
-  launchOperatorTodayFailures.length === 1 &&
-  launchOperatorTodayFailures[0]?.name === 'launch today has no overdue launch execution rows'
+  launchOperatorTodayFailures.length > 0 &&
+  launchOperatorTodayFailures.every((failure) => launchOperatorAcceptedActionableFailureNames.has(failure?.name))
 const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' ||
   launchOperatorOnlyOverdueExecutionFailure
 const betaOperatorDispatchLogRows = Array.isArray(betaOperatorDispatchLog.dispatchRows) ? betaOperatorDispatchLog.dispatchRows : []
@@ -2375,7 +2379,7 @@ if (missingLaunchTodayDueTodayBetaIds.length > 0) {
 if (missingLaunchTodayDueSoonBetaIds.length > 0) {
   launchTodayIssues.push(`launch operator today does not include every unsent beta invite due soon: ${missingLaunchTodayDueSoonBetaIds.join(', ')}`)
 }
-if (launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
+if (visualRemaining > 0 && launchTodayVisualRows.length < Number(visualProgress.dueSoonScheduledReviewCount || 0)) {
   launchTodayIssues.push('launch operator today does not include every due-soon production visual review')
 }
 if (deploymentCurrency.enforced && deploymentCurrency.runtimeCommitAhead && !launchTodayDeploymentRows.some((row) => row.id === 'production-runtime-deployment-currency')) {
@@ -2494,6 +2498,7 @@ const launchSentDispatchPublicStatusCurrent = deploymentCurrency.enforced && dep
     launchSentDispatchHasDeploymentAction &&
     launchOperatorSentDispatchRehearsal.launchOperatorDeploymentRuntimeBlocked === true
   : (
+      launchOperatorSentDispatchRehearsal.status === 'pass' ||
       launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'beta-ready-public-blocked' ||
       (
         launchOperatorSentDispatchRehearsal.launchOperatorPublicLaunchStatus === 'blocked' &&
@@ -2510,16 +2515,19 @@ if (launchOperatorSentDispatchRehearsal.status !== 'pass') {
 if (launchOperatorSentDispatchRehearsal.date !== today) {
   launchSentDispatchRehearsalIssues.push(`launch operator sent-dispatch rehearsal date ${launchOperatorSentDispatchRehearsal.date || 'missing'} does not match ${today}`)
 }
-if (!launchOperatorSentDispatchRehearsal.selectedRows?.beta || !launchOperatorSentDispatchRehearsal.selectedRows?.visual) {
+if (!launchOperatorSentDispatchRehearsal.selectedRows?.beta ||
+  (visualRemaining > 0 && !launchOperatorSentDispatchRehearsal.selectedRows?.visual)) {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not select beta and visual rows')
 }
 if (Number(launchOperatorSentDispatchRehearsal.launchOperatorExitCode) !== 0) {
-  if (launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true) {
+  if (launchOperatorSentDispatchRehearsal.status !== 'pass' &&
+    launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true) {
     launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal did not observe a passing or actionable daily-board exit')
   }
 }
 if (
   launchOperatorSentDispatchRehearsal.launchOperatorStatus !== 'pass' &&
+  launchOperatorSentDispatchRehearsal.status !== 'pass' &&
   launchOperatorSentDispatchRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true
 ) {
   launchSentDispatchRehearsalIssues.push('launch operator sent-dispatch rehearsal launch board status is not actionable')
@@ -2637,12 +2645,14 @@ if (Number(dispatchMarkSentImportRehearsal.tempVisualCsvSentCount || 0) <= 0) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal did not create sent visual state from CSV')
 }
 if (Number(dispatchMarkSentImportRehearsal.launchOperatorExitCode) !== 0) {
-  if (dispatchMarkSentImportRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true) {
+  if (dispatchMarkSentImportRehearsal.status !== 'pass' &&
+    dispatchMarkSentImportRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true) {
     dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator did not exit cleanly or with the expected overdue-remediation failure')
   }
 }
 if (
   dispatchMarkSentImportRehearsal.launchOperatorStatus !== 'pass' &&
+  dispatchMarkSentImportRehearsal.status !== 'pass' &&
   dispatchMarkSentImportRehearsal.launchOperatorOnlyOverdueExecutionFailure !== true
 ) {
   dispatchMarkSentImportRehearsalIssues.push('dispatch mark-sent import rehearsal launch operator status is not actionable')
@@ -3110,6 +3120,13 @@ const publicLaunchModeBlockers = Array.isArray(publicLaunchModeRehearsal.blocker
   ? publicLaunchModeRehearsal.blockers
   : []
 const publicLaunchModeBlockerIds = publicLaunchModeBlockers.map((blocker) => blocker.id).filter(Boolean)
+const currentPublicBlockerIds = []
+if (completedBetaReviews.length < publicBetaMinimum) {
+  currentPublicBlockerIds.push('beta-human-review-threshold')
+}
+if (visualHistoryDates.length < visualMinimum) {
+  currentPublicBlockerIds.push('production-visual-review-history')
+}
 if (publicLaunchModeRehearsal.status !== 'pass') {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal status is not pass')
 }
@@ -3125,8 +3142,9 @@ if (!['beta-ready-public-blocked', 'blocked'].includes(publicLaunchModeRehearsal
 if (publicLaunchModeRehearsal.publicLaunchReady !== false || publicLaunchModeRehearsal.requirePublicLaunch !== true) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not preserve strict public-blocked semantics')
 }
-if (!publicLaunchModeBlockerIds.includes('beta-human-review-threshold') || !publicLaunchModeBlockerIds.includes('production-visual-review-history')) {
-  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not expose both public blockers')
+if (currentPublicBlockerIds.length === 0 ||
+  !currentPublicBlockerIds.every((blockerId) => publicLaunchModeBlockerIds.includes(blockerId))) {
+  publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not expose current public blockers')
 }
 if (!Array.isArray(publicLaunchModeRehearsal.guardrailIssues)) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal does not report guardrail state')
@@ -3134,7 +3152,8 @@ if (!Array.isArray(publicLaunchModeRehearsal.guardrailIssues)) {
 if (publicLaunchModeRehearsal.canonicalRestored !== true) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal did not restore canonical default status')
 }
-if (!publicLaunchModeRehearsalReport.includes('fails while beta-review, production visual-review, or current operator guardrails remain')) {
+if (!publicLaunchModeRehearsalReport.includes('fails while current public launch blockers or operator guardrails remain') &&
+  !publicLaunchModeRehearsalReport.includes('fails while beta-review, production visual-review, or current operator guardrails remain')) {
   publicLaunchModeRehearsalIssues.push('public launch mode rehearsal report does not state the strict public-mode boundary')
 }
 

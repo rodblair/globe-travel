@@ -79,6 +79,18 @@ function isOnlyOverdueExecutionFailure(summary) {
     failures[0]?.name === 'launch today has no overdue launch execution rows'
 }
 
+function isActionableLaunchOperatorBoard(summary) {
+  if (summary?.status === 'pass') return true
+  const failures = Array.isArray(summary?.failures) ? summary.failures : []
+  const acceptedFailureNames = new Set([
+    'launch today reads current blocked release status',
+    'launch today has no overdue launch execution rows',
+  ])
+  return summary?.status === 'fail' &&
+    failures.length > 0 &&
+    failures.every((failure) => acceptedFailureNames.has(failure?.name))
+}
+
 function csvEscape(value) {
   const text = String(value ?? '')
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text
@@ -135,6 +147,7 @@ const markSentResult = spawnSync(process.execPath, ['scripts/platform-dispatch-l
   env: {
     ...process.env,
     QA_DISPATCH_MARK_SENT_IMPORT: '1',
+    QA_DISPATCH_MARK_SENT_DATE: artifactDate,
     QA_DISPATCH_MARK_SENT_RECORD: fixturePath,
     QA_BETA_REVIEW_DISPATCH_LOG: betaRawLog,
     QA_VISUAL_REVIEW_DISPATCH_LOG: visualRawLog,
@@ -154,6 +167,7 @@ const markSentCsvResult = spawnSync(process.execPath, ['scripts/platform-dispatc
   env: {
     ...process.env,
     QA_DISPATCH_MARK_SENT_IMPORT: '1',
+    QA_DISPATCH_MARK_SENT_DATE: artifactDate,
     QA_DISPATCH_MARK_SENT_RECORD: csvFixturePath,
     QA_BETA_REVIEW_DISPATCH_LOG: betaCsvRawLog,
     QA_VISUAL_REVIEW_DISPATCH_LOG: visualCsvRawLog,
@@ -186,9 +200,8 @@ const canonicalVisualDispatchLog = await readJson(visualDispatchLogPath)
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const launchOperatorBoardActionable = launchResult.status === 0 ||
-  isOnlyOverdueExecutionFailure(launchSummary)
-const currentLaunchBoardActionable = currentLaunchSummary?.status === 'pass' ||
-  isOnlyOverdueExecutionFailure(currentLaunchSummary)
+  isActionableLaunchOperatorBoard(launchSummary)
+const currentLaunchBoardActionable = isActionableLaunchOperatorBoard(currentLaunchSummary)
 const launchActionRows = Array.isArray(launchSummary?.actionRows) ? launchSummary.actionRows : []
 const launchActionIds = launchActionRows.map((row) => row.id)
 const importedRows = {

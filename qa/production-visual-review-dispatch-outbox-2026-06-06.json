@@ -1,0 +1,99 @@
+{
+  "date": "2026-06-06",
+  "today": "2026-06-06",
+  "status": "pass",
+  "checked": 4,
+  "passed": 4,
+  "failed": 0,
+  "registerPath": "qa/production-visual-review-register.json",
+  "progressArtifact": "qa/production-visual-review-progress-2026-06-06.json",
+  "artifact": "qa/production-visual-review-dispatch-outbox-2026-06-06.json",
+  "report": "qa/production-visual-review-dispatch-outbox-2026-06-06.md",
+  "csv": "qa/production-visual-review-dispatch-outbox-2026-06-06.csv",
+  "artifactDir": "qa/production-visual-review-dispatch-outbox-2026-06-06",
+  "outboxRowCount": 1,
+  "requiredOutboxRowCount": 0,
+  "messageFileCount": 1,
+  "dueSoonCount": 1,
+  "overdueCount": 0,
+  "messageRows": [
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "dueAt": "2026-06-11",
+      "reviewerRole": "visual QA reviewer",
+      "requiredForPublicLaunch": false,
+      "dispatchStatus": "prepared-not-sent",
+      "messageSubject": "[Globe.travel visual QA] PROD-VISUAL-HISTORY-004 production review due 2026-06-11",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-06/prod-visual-history-004-2026-06-11.txt",
+      "command": "QA_BASE_URL=https://globe-travel-two.vercel.app QA_SHARE_SLUG=x3m2c8cnws QA_PRODUCTION_VISUAL_ARTIFACT_NAME=visual-baseline-production-review-2026-06-11 npm run qa:release-production",
+      "expectedArtifactPrefix": "qa/visual-baseline-production-review-2026-06-11",
+      "submissionTemplatePath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.template.json",
+      "completedSubmissionPath": "qa/production-visual-review-submissions-2026-05-21/PROD-VISUAL-HISTORY-004.json",
+      "routes": [
+        "landing",
+        "pricing",
+        "login",
+        "signup",
+        "public-share"
+      ],
+      "viewports": [
+        "phone",
+        "tablet",
+        "laptop",
+        "desktop",
+        "wide"
+      ],
+      "diffRoutes": [
+        "landing",
+        "login",
+        "signup"
+      ],
+      "acceptanceCriteria": "Pass production release gate 10/10, review all 25 production visual screenshots, confirm no app errors, horizontal overflow, clipped primary text, overlapping app controls, missing screenshots, or unexplained stable-route diffs, then append a passing reviewHistory entry.",
+      "screenshotsReviewed": 25,
+      "daysUntilDue": 5
+    }
+  ],
+  "messageFileChecks": [
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "messageFile": "qa/production-visual-review-dispatch-outbox-2026-06-06/prod-visual-history-004-2026-06-11.txt",
+      "exists": true,
+      "hasSubject": true,
+      "hasCommand": true,
+      "hasArtifact": true,
+      "hasTemplate": true,
+      "hasCompletedSubmission": true,
+      "hasIntakeCommand": true,
+      "hasLaunchBoundary": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "visual dispatch outbox reads passing progress and scheduled reviews",
+      "ok": true,
+      "progressArtifact": "qa/production-visual-review-progress-2026-06-06.json",
+      "progressStatus": "pass",
+      "scheduledReviewCount": 1,
+      "remainingRequiredReviewDates": 0,
+      "requiredRows": []
+    },
+    {
+      "name": "visual dispatch outbox has one message file per scheduled review",
+      "ok": true,
+      "messageFileCount": 1,
+      "badMessageFiles": []
+    },
+    {
+      "name": "visual dispatch outbox rows are actionable and not overdue",
+      "ok": true,
+      "malformedRows": [],
+      "overdueRows": []
+    },
+    {
+      "name": "visual dispatch outbox CSV includes every command and completed-submission path",
+      "ok": true,
+      "csvArtifact": "qa/production-visual-review-dispatch-outbox-2026-06-06.csv"
+    }
+  ],
+  "failures": []
+}

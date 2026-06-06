@@ -1,0 +1,162 @@
+{
+  "date": "2026-06-06",
+  "status": "pass",
+  "checked": 9,
+  "passed": 9,
+  "failed": 0,
+  "fixtureArtifact": "qa/dispatch-log-mark-sent-fixture-2026-06-06.json",
+  "csvFixtureArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-raw-2026-06-06-fixture.csv",
+  "betaDispatchLogArtifact": "qa/beta-human-review-dispatch-log-all-wave-2026-05-21.json",
+  "visualDispatchLogArtifact": "qa/production-visual-review-dispatch-log-2026-06-06.json",
+  "markSentExitCode": 0,
+  "markSentStatus": "pass",
+  "markSentImportMode": true,
+  "markSentRecordFormat": "json",
+  "markSentCsvExitCode": 0,
+  "markSentCsvStatus": "pass",
+  "markSentCsvImportMode": true,
+  "markSentCsvRecordFormat": "csv",
+  "importedRows": {
+    "beta": "BETA-HR-001",
+    "visual": "PROD-VISUAL-HISTORY-004"
+  },
+  "csvImportedRows": {
+    "beta": "BETA-HR-001",
+    "visual": "PROD-VISUAL-HISTORY-004"
+  },
+  "tempBetaSentCount": 2,
+  "tempVisualSentCount": 1,
+  "tempBetaCsvSentCount": 2,
+  "tempVisualCsvSentCount": 1,
+  "launchOperatorExitCode": 1,
+  "launchOperatorStatus": "fail",
+  "launchOperatorOnlyOverdueExecutionFailure": false,
+  "launchOperatorPublicLaunchStatus": "blocked",
+  "launchOperatorActionRowCount": 23,
+  "launchOperatorActionIds": [
+    "BETA-HR-002",
+    "BETA-HR-003",
+    "BETA-HR-004",
+    "BETA-HR-005",
+    "BETA-HR-007",
+    "BETA-HR-008",
+    "BETA-HR-009",
+    "BETA-HR-010",
+    "BETA-HR-011",
+    "BETA-HR-012",
+    "BETA-HR-013",
+    "BETA-HR-014",
+    "BETA-HR-015",
+    "BETA-HR-016",
+    "BETA-HR-017",
+    "BETA-HR-018",
+    "BETA-HR-019",
+    "BETA-HR-020",
+    "BETA-HR-021",
+    "BETA-HR-022",
+    "BETA-HR-023",
+    "BETA-HR-024",
+    "BETA-HR-025"
+  ],
+  "launchOperatorBetaCompleted": 0,
+  "launchOperatorVisualHistoryCount": 4,
+  "canonicalBetaSentCount": 0,
+  "canonicalVisualSentCount": 0,
+  "currentLaunchArtifact": "qa/launch-operator-today-2026-06-06.json",
+  "rawArtifactsCleanedUp": true,
+  "checks": [
+    {
+      "name": "mark-sent import rehearsal runs import mode against isolated logs",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "importMode": true
+    },
+    {
+      "name": "mark-sent import rehearsal accepts CSV sent-record fixtures",
+      "ok": true,
+      "exitCode": 0,
+      "status": "pass",
+      "recordFormat": "csv",
+      "importedRows": {
+        "beta": "BETA-HR-001",
+        "visual": "PROD-VISUAL-HISTORY-004"
+      }
+    },
+    {
+      "name": "mark-sent import rehearsal imports beta fixture row",
+      "ok": true,
+      "rowId": "BETA-HR-001",
+      "sendStatus": "sent",
+      "reviewerAlias": "beta-reviewer-001",
+      "tempBetaSentCount": 2
+    },
+    {
+      "name": "mark-sent import rehearsal imports visual fixture row",
+      "ok": true,
+      "rowId": "PROD-VISUAL-HISTORY-004",
+      "sendStatus": "sent",
+      "reviewerAlias": "visual-reviewer-002",
+      "tempVisualSentCount": 1
+    },
+    {
+      "name": "launch operator consumes imported sent state",
+      "ok": true,
+      "exitCode": 1,
+      "status": "fail",
+      "publicLaunchStatus": "blocked",
+      "actionIds": [
+        "BETA-HR-002",
+        "BETA-HR-003",
+        "BETA-HR-004",
+        "BETA-HR-005",
+        "BETA-HR-007",
+        "BETA-HR-008",
+        "BETA-HR-009",
+        "BETA-HR-010",
+        "BETA-HR-011",
+        "BETA-HR-012",
+        "BETA-HR-013",
+        "BETA-HR-014",
+        "BETA-HR-015",
+        "BETA-HR-016",
+        "BETA-HR-017",
+        "BETA-HR-018",
+        "BETA-HR-019",
+        "BETA-HR-020",
+        "BETA-HR-021",
+        "BETA-HR-022",
+        "BETA-HR-023",
+        "BETA-HR-024",
+        "BETA-HR-025"
+      ]
+    },
+    {
+      "name": "import rehearsal does not advance external launch evidence",
+      "ok": true,
+      "betaCompleted": 0,
+      "visualHistoryCount": 4
+    },
+    {
+      "name": "canonical dispatch logs remain unmutated",
+      "ok": true,
+      "canonicalBetaSentCount": 0,
+      "canonicalVisualSentCount": 0
+    },
+    {
+      "name": "current launch operator artifact remains actionable",
+      "ok": true,
+      "currentLaunchArtifact": "qa/launch-operator-today-2026-06-06.json",
+      "currentStatus": "fail",
+      "currentOnlyOverdueExecutionFailure": false
+    },
+    {
+      "name": "mark-sent import rehearsal cleans up temporary logs and boards",
+      "ok": true,
+      "rawArtifactsCleanedUp": true
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-2026-06-06.json",
+  "reportArtifact": "qa/dispatch-log-mark-sent-import-rehearsal-2026-06-06.md"
+}

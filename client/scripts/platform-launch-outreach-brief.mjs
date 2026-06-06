@@ -130,6 +130,11 @@ const missingBriefContextRows = briefRows.filter((row) => (
 )).map((row) => row.id)
 const blockerIds = Array.isArray(publicStatus.blockers) ? publicStatus.blockers.map((blocker) => blocker.id) : []
 const guardrailIssues = Array.isArray(publicStatus.guardrailIssues) ? publicStatus.guardrailIssues : []
+const externalReviewBlockerIds = new Set([
+  'beta-human-review-threshold',
+  'production-visual-review-history',
+])
+const nonExternalReviewBlockerIds = blockerIds.filter((blockerId) => !externalReviewBlockerIds.has(blockerId))
 const validationCommands = [
   dispatchPacket.csvValidationCommand,
   dispatchPacket.csvImportCommand,
@@ -152,9 +157,10 @@ const checks = [
   {
     name: 'launch outreach brief is tied to external review blockers, not runtime drift',
     ok: blockerIds.includes('beta-human-review-threshold') &&
-      blockerIds.includes('production-visual-review-history') &&
+      nonExternalReviewBlockerIds.length === 0 &&
       publicStatus.deploymentCurrency?.runtimeCommitAhead !== true,
     blockerIds,
+    nonExternalReviewBlockerIds,
     guardrailIssues,
     runtimeCommitAhead: publicStatus.deploymentCurrency?.runtimeCommitAhead ?? null,
   },

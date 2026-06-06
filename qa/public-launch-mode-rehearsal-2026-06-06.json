@@ -1,0 +1,64 @@
+{
+  "date": "2026-06-06",
+  "status": "pass",
+  "checked": 5,
+  "passed": 5,
+  "failed": 0,
+  "publicStatusArtifact": "qa/public-launch-status-2026-06-06.json",
+  "publicStatusReport": "qa/public-launch-status-2026-06-06.md",
+  "publicLaunchStatus": "beta-ready-public-blocked",
+  "betaReady": true,
+  "publicLaunchReady": false,
+  "requirePublicLaunch": true,
+  "publicLaunchModeExitCode": 1,
+  "blockers": [
+    {
+      "id": "beta-human-review-threshold",
+      "title": "Complete beta human reviews",
+      "detail": "0/25 completed; 25 remaining."
+    }
+  ],
+  "guardrailIssues": [],
+  "guardrailIssueCount": 0,
+  "canonicalRestored": true,
+  "checks": [
+    {
+      "name": "public launch required mode exits non-zero while public blockers remain",
+      "ok": true,
+      "exitCode": 1
+    },
+    {
+      "name": "public launch required mode keeps public launch closed",
+      "ok": true,
+      "status": "beta-ready-public-blocked",
+      "betaReady": true,
+      "publicLaunchReady": false,
+      "requirePublicLaunch": true,
+      "guardrailIssues": []
+    },
+    {
+      "name": "public launch required mode identifies current blockers",
+      "ok": true,
+      "blockerIds": [
+        "beta-human-review-threshold"
+      ],
+      "expectedBlockerIds": [
+        "beta-human-review-threshold"
+      ]
+    },
+    {
+      "name": "public launch required mode reports guardrail state without hiding blockers",
+      "ok": true,
+      "guardrailIssues": []
+    },
+    {
+      "name": "public launch required mode does not mutate canonical default status",
+      "ok": true,
+      "restoredRequirePublicLaunch": false,
+      "restoredStatus": "beta-ready-public-blocked"
+    }
+  ],
+  "failures": [],
+  "jsonArtifact": "qa/public-launch-mode-rehearsal-2026-06-06.json",
+  "reportArtifact": "qa/public-launch-mode-rehearsal-2026-06-06.md"
+}

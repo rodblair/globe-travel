@@ -1,0 +1,29 @@
+{
+  "date": "2026-06-06",
+  "rows": [
+    {
+      "id": "BETA-HR-001",
+      "reviewerAlias": "beta-reviewer-001",
+      "deliveryChannel": "external-outreach-log",
+      "sentAt": "2026-06-06T12:00:00.000Z",
+      "contactRecordLocation": "external-record:beta-reviewer-001",
+      "notes": "Dry-run fixture only. Real reviewer contact details stay outside the repo."
+    },
+    {
+      "id": "BETA-HR-006",
+      "reviewerAlias": "beta-reviewer-006",
+      "deliveryChannel": "external-outreach-log",
+      "sentAt": "2026-06-06T12:03:00.000Z",
+      "contactRecordLocation": "external-record:beta-reviewer-006",
+      "notes": "Dry-run fixture only. Real reviewer contact details stay outside the repo."
+    },
+    {
+      "id": "PROD-VISUAL-HISTORY-004",
+      "reviewerAlias": "visual-reviewer-002",
+      "deliveryChannel": "external-outreach-log",
+      "sentAt": "2026-06-06T12:05:00.000Z",
+      "contactRecordLocation": "external-record:visual-reviewer-002",
+      "notes": "Dry-run fixture only. Real reviewer contact details stay outside the repo."
+    }
+  ]
+}

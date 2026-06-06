@@ -322,9 +322,16 @@ const acceptedBlockedStatusGuardrails = new Set([
 ])
 const hasOnlyAcceptedBlockedStatusGuardrails = publicStatusGuardrailIssues.length > 0 &&
   publicStatusGuardrailIssues.every((issue) => acceptedBlockedStatusGuardrails.has(issue))
+const expectedPublicStatusBlockerIds = []
+if (Number(betaStatus.remaining || 0) > 0) {
+  expectedPublicStatusBlockerIds.push('beta-human-review-threshold')
+}
+if (Number(visualStatus.remainingDistinctDates || 0) > 0) {
+  expectedPublicStatusBlockerIds.push('production-visual-review-history')
+}
 const publicStatusShowsExpectedBlockers = publicStatus.publicLaunchReady === false &&
-  blockers.some((blocker) => blocker.id === 'beta-human-review-threshold') &&
-  blockers.some((blocker) => blocker.id === 'production-visual-review-history')
+  expectedPublicStatusBlockerIds.length > 0 &&
+  expectedPublicStatusBlockerIds.every((blockerId) => blockers.some((blocker) => blocker.id === blockerId))
 const publicStatusReadyForBlockerBoard = (
   publicStatus.status === 'beta-ready-public-blocked' &&
   publicStatus.betaReady === true &&

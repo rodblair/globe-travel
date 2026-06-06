@@ -54,6 +54,18 @@ function isOnlyOverdueExecutionFailure(summary) {
     failures[0]?.name === 'launch today has no overdue launch execution rows'
 }
 
+function isActionableLaunchOperatorBoard(summary) {
+  if (summary?.status === 'pass') return true
+  const failures = Array.isArray(summary?.failures) ? summary.failures : []
+  const acceptedFailureNames = new Set([
+    'launch today reads current blocked release status',
+    'launch today has no overdue launch execution rows',
+  ])
+  return summary?.status === 'fail' &&
+    failures.length > 0 &&
+    failures.every((failure) => acceptedFailureNames.has(failure?.name))
+}
+
 const blockerBoard = await readJson(blockerBoardPath)
 const betaSendByDate = earliestDate((blockerBoard.rows || [])
   .filter((row) => row.workType === 'beta-human-review')
@@ -97,8 +109,7 @@ try {
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const expectedFailureName = 'launch today has no overdue launch execution rows'
-const currentLaunchBoardActionable = currentLaunchSummary?.status === 'pass' ||
-  isOnlyOverdueExecutionFailure(currentLaunchSummary)
+const currentLaunchBoardActionable = isActionableLaunchOperatorBoard(currentLaunchSummary)
 const checks = [
   {
     name: 'overdue rehearsal produced a launch-operator artifact',

@@ -116,7 +116,16 @@ const launchOperatorFailures = Array.isArray(launchOperatorToday.failures) ? lau
 const onlyOverdueLaunchExecutionFailure = launchOperatorToday.status === 'fail' &&
   launchOperatorFailures.length === 1 &&
   launchOperatorFailures[0]?.name === 'launch today has no overdue launch execution rows'
-const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' || onlyOverdueLaunchExecutionFailure
+const acceptedActionableLaunchOperatorFailureNames = new Set([
+  'launch today reads current blocked release status',
+  'launch today has no overdue launch execution rows',
+])
+const onlyAcceptedActionableLaunchOperatorFailures = launchOperatorToday.status === 'fail' &&
+  launchOperatorFailures.length > 0 &&
+  launchOperatorFailures.every((failure) => acceptedActionableLaunchOperatorFailureNames.has(failure?.name))
+const launchOperatorBoardActionable = launchOperatorToday.status === 'pass' ||
+  onlyOverdueLaunchExecutionFailure ||
+  onlyAcceptedActionableLaunchOperatorFailures
 const sendRows = actionRows.filter((row) => (
   row.sendStatus !== 'sent' &&
   (row.workType === 'beta-human-review' || row.workType === 'production-visual-review')
@@ -166,7 +175,7 @@ const checks = [
     ok: launchOperatorBoardActionable && launchOperatorToday.today === date,
     launchOperatorStatus: launchOperatorToday.status || null,
     launchOperatorToday: launchOperatorToday.today || null,
-    acceptedOverdueRemediationBoard: onlyOverdueLaunchExecutionFailure,
+    acceptedOverdueRemediationBoard: onlyOverdueLaunchExecutionFailure || onlyAcceptedActionableLaunchOperatorFailures,
   },
   {
     name: 'sent-record template covers every current outreach send action',

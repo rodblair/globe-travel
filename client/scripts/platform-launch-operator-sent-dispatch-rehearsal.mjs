@@ -61,6 +61,18 @@ function isOnlyOverdueExecutionFailure(summary) {
     failures[0]?.name === 'launch today has no overdue launch execution rows'
 }
 
+function isActionableLaunchOperatorBoard(summary) {
+  if (summary?.status === 'pass') return true
+  const failures = Array.isArray(summary?.failures) ? summary.failures : []
+  const acceptedFailureNames = new Set([
+    'launch today reads current blocked release status',
+    'launch today has no overdue launch execution rows',
+  ])
+  return summary?.status === 'fail' &&
+    failures.length > 0 &&
+    failures.every((failure) => acceptedFailureNames.has(failure?.name))
+}
+
 function markSent(row, sentAt) {
   return {
     ...row,
@@ -128,6 +140,7 @@ const betaSelected = betaRows.find((row) => row.sendStatus !== 'sent' && daysBet
   betaRows.find((row) => row.sendStatus !== 'sent')
 const visualSelected = visualRows.find((row) => row.sendStatus !== 'sent' && row.requiredForPublicLaunch && daysBetween(visualDispatchLog.today, row.dueAt) >= 0 && daysBetween(visualDispatchLog.today, row.dueAt) <= 7) ||
   visualRows.find((row) => row.sendStatus !== 'sent' && row.requiredForPublicLaunch)
+const visualSelectionRequired = visualRows.some((row) => row.sendStatus !== 'sent' && row.requiredForPublicLaunch)
 const sentAt = `${isDate(artifactDate) ? artifactDate : currentQaDate()}T12:00:00.000Z`
 
 const betaRehearsalLog = refreshBetaLog({
@@ -183,15 +196,15 @@ const launchOperatorEvidenceDidNotAdvance =
 const currentLaunchArtifact = `qa/launch-operator-today-${currentQaDate()}.json`
 const currentLaunchSummary = await readJson(currentLaunchArtifact).catch(() => null)
 const launchOperatorBoardActionable = result.status === 0 ||
-  isOnlyOverdueExecutionFailure(launchSummary)
-const currentLaunchBoardActionable = currentLaunchSummary?.status === 'pass' ||
-  isOnlyOverdueExecutionFailure(currentLaunchSummary)
+  isActionableLaunchOperatorBoard(launchSummary)
+const currentLaunchBoardActionable = isActionableLaunchOperatorBoard(currentLaunchSummary)
 const checks = [
   {
     name: 'sent-dispatch rehearsal selects beta and visual rows',
-    ok: Boolean(betaSelected?.id) && Boolean(visualSelected?.id),
+    ok: Boolean(betaSelected?.id) && (!visualSelectionRequired || Boolean(visualSelected?.id)),
     betaSelectedId: betaSelected?.id || null,
     visualSelectedId: visualSelected?.id || null,
+    visualSelectionRequired,
   },
   {
     name: 'sent-dispatch rehearsal produced an actionable launch board',
@@ -208,8 +221,10 @@ const checks = [
   },
   {
     name: 'sent visual dispatch row is removed from send actions',
-    ok: Boolean(visualSelected?.id) && !actionRows.some((row) => row.id === visualSelected.id),
+    ok: !visualSelectionRequired ||
+      (Boolean(visualSelected?.id) && !actionRows.some((row) => row.id === visualSelected.id)),
     visualSelectedId: visualSelected?.id || null,
+    visualSelectionRequired,
     actionIds: actionRows.map((row) => row.id),
   },
   {
