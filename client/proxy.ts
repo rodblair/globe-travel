@@ -43,6 +43,7 @@ export async function proxy(request: NextRequest) {
     '/reset-password',
     '/callback',
     '/auth',
+    '/share',
     '/t',
     '/manifest.webmanifest',
     '/opengraph-image',
@@ -52,6 +53,7 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isPublicPath = publicPaths.some((path) => {
     if (path === '/auth') return pathname.startsWith('/auth')
+    if (path === '/share') return pathname.startsWith('/share')
     if (path === '/t') return pathname.startsWith('/t')
     return pathname === path
   })

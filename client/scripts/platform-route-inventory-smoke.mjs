@@ -60,6 +60,14 @@ const routes = [
     markers: ['og:site_name', 'twitter:card'],
   },
   {
+    path: `/share/${shareSlug}`,
+    sourceFile: 'client/app/share/[shareSlug]/page.tsx',
+    access: 'public',
+    expectation: 'canonical-redirect',
+    expectedPathname: `/t/${shareSlug}`,
+    markers: ['Start your own trip', 'Friend feedback'],
+  },
+  {
     path: '/chat',
     sourceFile: 'client/app/(app)/chat/page.tsx',
     access: 'protected',
@@ -243,6 +251,13 @@ async function checkRoute(route) {
     if (next !== route.expectedNext) issues.push(`expected next=${route.expectedNext}, got ${next || 'missing'}`)
     for (const marker of ['Welcome back', 'Continue as guest']) {
       if (!body.includes(marker)) issues.push(`missing login marker: ${marker}`)
+    }
+  } else if (route.expectation === 'canonical-redirect') {
+    if (finalUrl.pathname !== route.expectedPathname) {
+      issues.push(`expected final pathname ${route.expectedPathname}, got ${finalUrl.pathname}`)
+    }
+    for (const marker of route.markers || []) {
+      if (!body.includes(marker)) issues.push(`missing marker: ${marker}`)
     }
   } else {
     for (const marker of route.markers || []) {
