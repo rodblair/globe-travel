@@ -201,6 +201,7 @@ function TripStudioPageContent() {
   const [optimizeDone, setOptimizeDone] = useState(false)
   const [regeneratingDayIndex, setRegeneratingDayIndex] = useState<number | null>(null)
   const [regenerateDoneDayIndex, setRegenerateDoneDayIndex] = useState<number | null>(null)
+  const [suggestedRewriteHandoffDayIndex, setSuggestedRewriteHandoffDayIndex] = useState<number | null>(null)
   const [regenerateNotice, setRegenerateNotice] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
   const [actionNotice, setActionNotice] = useState<string | null>(null)
@@ -209,6 +210,7 @@ function TripStudioPageContent() {
   const [creatingWorkflow, setCreatingWorkflow] = useState<string | null>(null)
   const [workflowError, setWorkflowError] = useState<string | null>(null)
   const [suggestedStepNotice, setSuggestedStepNotice] = useState<string | null>(null)
+  const [mapPassNeedsPlanEdits, setMapPassNeedsPlanEdits] = useState(false)
   const qaForceRewriteUnavailable = process.env.NODE_ENV === 'development' && searchParams.get('qaRewriteUnavailable') === '1'
   const qaForceBuildMapsFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaBuildMapsFailure') === '1'
   const qaForceOptimizeFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaOptimizeFailure') === '1'
@@ -233,8 +235,6 @@ function TripStudioPageContent() {
       setActionNotice((current) => (current === notice ? null : current))
     }, ACTION_NOTICE_TIMEOUT_MS)
   }, [])
-  const mapPassNeedsPlanEdits = Boolean(suggestedStepNotice?.includes('still need place data'))
-
   useEffect(() => {
     if (!tripId || typeof window === 'undefined') return
 
@@ -499,6 +499,7 @@ function TripStudioPageContent() {
     setRegenerateNotice(pendingNotice)
     setSuggestedStepNotice(pendingNotice)
     setRegenerateDoneDayIndex(null)
+    setSuggestedRewriteHandoffDayIndex(dayIndex)
     setRegeneratingDayIndex(dayIndex)
     setChatOpen(true)
     window.setTimeout(() => {
@@ -507,14 +508,17 @@ function TripStudioPageContent() {
 
     try {
       await sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; do not use generic meal labels.`)
+      setMapPassNeedsPlanEdits(false)
       setRegenerateDoneDayIndex(dayIndex)
       setRegenerateNotice(notice)
       setSuggestedStepNotice(notice)
       setTimeout(() => {
         setRegenerateDoneDayIndex((current) => (current === dayIndex ? null : current))
+        setSuggestedRewriteHandoffDayIndex((current) => (current === dayIndex ? null : current))
         setRegenerateNotice((current) => (current === notice ? null : current))
       }, 4500)
     } catch {
+      setSuggestedRewriteHandoffDayIndex((current) => (current === dayIndex ? null : current))
       setActionError('Could not send the rewrite request. Try again, or use Planner chat directly.')
       setSuggestedStepNotice('Rewrite did not start. Try Planner chat directly.')
     } finally {
@@ -592,12 +596,14 @@ function TripStudioPageContent() {
       const payload = await response.json().catch(() => null)
       await refetch()
       setBuildMapsDone(true)
+      const geocodedItems = typeof payload?.geocodedItems === 'number' ? payload.geocodedItems : 0
+      const routeDays = typeof payload?.routeDays === 'number' ? payload.routeDays : 0
+      const stillNeedsPlaceData = mappingSummary.mappedItemCount < mappingSummary.itemCount
+      const needsPlanEdits = stillNeedsPlaceData || (geocodedItems === 0 && routeDays === 0)
+      setMapPassNeedsPlanEdits(needsPlanEdits)
       if (options?.suggestedStep) {
-        const geocodedItems = typeof payload?.geocodedItems === 'number' ? payload.geocodedItems : 0
-        const routeDays = typeof payload?.routeDays === 'number' ? payload.routeDays : 0
-        const stillNeedsPlaceData = mappingSummary.mappedItemCount < mappingSummary.itemCount
         setSuggestedStepNotice(
-          stillNeedsPlaceData || (geocodedItems === 0 && routeDays === 0)
+          needsPlanEdits
             ? 'Map pass ran, but some stops still need place data. Rewrite the day or edit unmapped stops before sharing.'
             : 'Map routes rebuilt. Review the Trip Map, then share the link or tune the selected day.'
         )
@@ -610,6 +616,7 @@ function TripStudioPageContent() {
           ? 'Map tools are temporarily unavailable. The itinerary is still saved; try rebuilding maps after the map service is configured.'
           : 'Could not rebuild the maps. Try again, or refresh the page if the trip changed.'
       setActionError(nextMessage)
+      setMapPassNeedsPlanEdits(false)
       if (options?.suggestedStep) {
         setSuggestedStepNotice(nextMessage)
       }
@@ -620,7 +627,15 @@ function TripStudioPageContent() {
 
   useEffect(() => {
     hydrationAttemptedRef.current = null
+    setMapPassNeedsPlanEdits(false)
+    setSuggestedRewriteHandoffDayIndex(null)
   }, [tripId])
+
+  useEffect(() => {
+    if (!mappingSummary.needsHydration) {
+      setMapPassNeedsPlanEdits(false)
+    }
+  }, [mappingSummary.needsHydration])
 
   useEffect(() => {
     if (isLoading || isHydratingMaps || !mappingSummary.needsHydration || mapPassNeedsPlanEdits) return
@@ -850,17 +865,27 @@ function TripStudioPageContent() {
     ],
   }), [ensureSelectedDayExists])
   const selectedSuggestedDayIndex = selectedStudioDay?.day.day_index
-  const suggestedRewriteLabel = selectedSuggestedDayIndex && regeneratingDayIndex === selectedSuggestedDayIndex
+  const suggestedRewriteInProgress = Boolean(selectedSuggestedDayIndex && regeneratingDayIndex === selectedSuggestedDayIndex)
+  const suggestedRewriteHandoffActive = Boolean(
+    selectedSuggestedDayIndex &&
+    suggestedRewriteHandoffDayIndex === selectedSuggestedDayIndex
+  )
+  const suggestedRewriteLabel = suggestedRewriteInProgress
     ? 'Requesting rewrite...'
     : selectedSuggestedDayIndex && regenerateDoneDayIndex === selectedSuggestedDayIndex
       ? 'Rewrite sent'
+      : suggestedRewriteHandoffActive
+        ? 'Requesting rewrite...'
       : 'Rewrite day'
   const suggestedRefreshLabel = creatingWorkflow === 'feedback_refresh'
     ? 'Starting refresh...'
     : 'Refresh plan from feedback'
-  const suggestedPrimaryIsMapPass = mappingSummary.needsHydration && !mapPassNeedsPlanEdits
+  const suggestedRewriteKeepsPrimary = suggestedRewriteInProgress || suggestedRewriteHandoffActive
+  const suggestedPrimaryIsMapPass = mappingSummary.needsHydration && !mapPassNeedsPlanEdits && !suggestedRewriteKeepsPrimary
   const suggestedPlannerUnavailable = !chatReady || qaForceRewriteUnavailable
-  const suggestedStepText = mappingSummary.needsHydration
+  const suggestedStepText = suggestedRewriteKeepsPrimary
+    ? `Rewrite request for Day ${selectedSuggestedDayIndex} is running in Planner chat.`
+    : mappingSummary.needsHydration
     ? mapPassNeedsPlanEdits
       ? `Rewrite Day ${ensureSelectedDayExists} with exact places before sharing.`
       : 'Rebuild map routes before sharing.'
@@ -871,7 +896,9 @@ function TripStudioPageContent() {
       : mappingSummary.needsStopOrderReview
         ? `Tune Day ${ensureSelectedDayExists} timing before sharing.`
         : `Ask Globe to tune Day ${ensureSelectedDayExists}.`
-  const suggestedPrimaryAction = suggestedPrimaryIsMapPass
+  const suggestedPrimaryAction = suggestedRewriteKeepsPrimary
+    ? 'rewrite-day'
+    : suggestedPrimaryIsMapPass
     ? 'build-maps'
     : suggestedPlannerUnavailable
       ? 'open-planner-chat'
@@ -892,7 +919,9 @@ function TripStudioPageContent() {
         ? 'Planner open'
         : 'Open planner'
     : suggestedRewriteLabel
-  const suggestedPrimaryDisabled = suggestedPrimaryIsMapPass
+  const suggestedPrimaryDisabled = suggestedRewriteKeepsPrimary
+    ? true
+    : suggestedPrimaryIsMapPass
     ? isHydratingMaps || !canEditTrip
     : suggestedPlannerUnavailable
       ? false
