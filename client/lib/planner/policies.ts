@@ -1,4 +1,5 @@
 import type { PlanIntent, PlannerPolicyHookResult, PlannerPromptSet, PlannerRuntimeContext } from '@/lib/planner/types'
+import { extractDaysFromPrompt, extractDestinationFromPrompt } from '@/lib/planner/runtime'
 
 export const PLANNER_SYSTEM_PROMPTS: PlannerPromptSet = {
   onboarding: `You are a warm, enthusiastic travel companion helping someone set up their Globe.travel profile for short city breaks with friends. Be concise and energetic — keep responses to 2-3 sentences max.
@@ -39,7 +40,9 @@ Rules:
 - Meal items MUST name an exact restaurant, cafe, bar, bakery, or market hall in the title. Do not use generic titles like "Lunch in Plaka", "Brunch near the museum", "Seafood dinner", or "Coffee stop".
 - For every meal item, title and place_query should both point to the same real venue, for example title "Karamanlidika" and place_query "Karamanlidika, Athens".
 - If tripId is provided in the request, you MUST edit that trip. Do not create a new trip unless explicitly asked.
-- RESPECT THE TRIP’S DAY COUNT. The current trip has a fixed number of days shown in the context. Do not create or populate days beyond that count.
+- If the latest user message names a destination, treat that destination as locked for this turn. Update the trip title/constraints to that requested destination and do not use the previous trip destination for a new full plan.
+- If the latest user message asks for a specific number of days during a full-plan rewrite, generate exactly that many days.
+- RESPECT THE TRIP’S DAY COUNT for scoped edits. Do not create or populate days beyond the current count unless the latest user message explicitly asks for a different full-trip duration.
 - If the user asks to change, rewrite, regenerate, rebuild, or improve one entire day, use replaceTripDayPlan for only that day.
 - If the user asks to swap one stop or activity, use swapTripItem. Do not use addTripItem for swaps.
 - If the user references "Day 2 morning" or a specific item, do a scoped edit (update/move/delete only what’s needed).
@@ -102,6 +105,26 @@ function buildTripContextBlock(runtime: PlannerRuntimeContext) {
     for (const day of trip.days) {
       lines.push(`Day ${day.dayIndex}: ${day.title || 'untitled'} -> ${day.summary}`)
     }
+  }
+
+  return `\n\n${lines.join('\n')}`
+}
+
+function buildLatestRequestBlock(runtime: PlannerRuntimeContext) {
+  if (runtime.mode !== 'plan') return ''
+
+  const requestedDestination = extractDestinationFromPrompt(runtime.latestUserText)
+  const requestedDays = extractDaysFromPrompt(runtime.latestUserText)
+  if (!requestedDestination && !requestedDays) return ''
+
+  const lines = ['LATEST_USER_REQUEST_LOCK:']
+  if (requestedDestination) {
+    lines.push(`Destination: ${requestedDestination}`)
+    lines.push('Use this destination for all new full-plan itinerary items, geocoding context, trip title, and saved constraints this turn.')
+  }
+  if (requestedDays) {
+    lines.push(`Duration: ${requestedDays} day${requestedDays === 1 ? '' : 's'}`)
+    lines.push('If generating a full plan, provide exactly this number of days.')
   }
 
   return `\n\n${lines.join('\n')}`
@@ -276,7 +299,7 @@ Use exact venue names and split beach/ferry days so routes stay readable instead
 
 export function buildPlannerSystemPrompt(runtime: PlannerRuntimeContext) {
   const basePrompt = PLANNER_SYSTEM_PROMPTS[runtime.mode] || PLANNER_SYSTEM_PROMPTS.explore
-  return `${basePrompt}${buildUserContextBlock(runtime)}${buildTripContextBlock(runtime)}${buildTrustedPlaceGuidanceBlock(runtime)}`
+  return `${basePrompt}${buildUserContextBlock(runtime)}${buildTripContextBlock(runtime)}${buildLatestRequestBlock(runtime)}${buildTrustedPlaceGuidanceBlock(runtime)}`
 }
 
 export function runPlannerPolicyHooks({
@@ -323,6 +346,15 @@ export function runPlannerPolicyHooks({
 
   if (intent === 'full-plan') {
     guidance.push('- For full-plan generation, anchor each day around a neighborhood or area, then layer meals and highlights around it.')
+  }
+
+  const requestedDestination = extractDestinationFromPrompt(runtime.latestUserText)
+  const requestedDays = extractDaysFromPrompt(runtime.latestUserText)
+  if (requestedDestination) {
+    guidance.push(`- Destination lock for this turn: ${requestedDestination}. Do not save or describe a full-plan itinerary for any other destination.`)
+  }
+  if (requestedDays && intent === 'full-plan') {
+    guidance.push(`- Duration lock for this turn: generate exactly ${requestedDays} day${requestedDays === 1 ? '' : 's'} in the full-plan tool call.`)
   }
 
   if (intent === 'item-edit') {

@@ -23,6 +23,20 @@ const DAY_DURATION_PATTERN = new RegExp(String.raw`\b(${DAY_NUMBER_SOURCE})\s*[-
 const LEADING_TRIP_DESCRIPTOR_SOURCE = String.raw`(?:restful|rest|relaxed|relaxing|calm|slow|easy|balanced|budget|cheap|premium|luxury|romantic|family|friend|friends|group|solo|first[- ]?time|food(?:ie)?|cultural|culture|history|historic|beach(?:es)?|walkable|walking|outdoor|outdoors|quick|long|short)`
 const DESTINATION_TRAILING_THEME_PATTERN =
   /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|design|architecture|shops?|shopping|bakeries|bakery|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|markets?)\b.*$/i
+const DESTINATION_ALIAS_REPLACEMENTS: Array<[RegExp, string]> = [
+  [/^athens\s+greece$/i, 'Athens, Greece'],
+]
+
+export function normalizeDestinationLabel(value: string | null | undefined): string {
+  const normalized = (value || '').replace(/\s+/g, ' ').trim()
+  if (!normalized) return ''
+
+  for (const [pattern, replacement] of DESTINATION_ALIAS_REPLACEMENTS) {
+    if (pattern.test(normalized)) return replacement
+  }
+
+  return normalized
+}
 
 export function extractDaysFromPrompt(text: string | null | undefined): number | null {
   if (!text) return null
@@ -38,7 +52,7 @@ export function extractDaysFromPrompt(text: string | null | undefined): number |
 }
 
 function cleanDestinationCandidate(candidate: string) {
-  return candidate
+  const cleaned = candidate
     .replace(/[“”"']/g, '')
     .replace(/\s+/g, ' ')
     .replace(/^(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?/i, '')
@@ -49,6 +63,8 @@ function cleanDestinationCandidate(candidate: string) {
     .replace(DESTINATION_TRAILING_THEME_PATTERN, '')
     .replace(/\s+(?:trip|itinerary|city break|escape|weekend|getaway|with friends|for friends)$/i, '')
     .trim()
+
+  return normalizeDestinationLabel(cleaned)
 }
 
 function looksLikeDateOrDuration(candidate: string) {
@@ -109,6 +125,8 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
     new RegExp(String.raw`${commandSource}(?:(?:${DAY_DURATION_SOURCE})\s+)?([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:(?:${DAY_DURATION_SOURCE})|for|with|around|over|as|trip|itinerary|weekend|city break)\b|[,.!?]|$)`, 'i'),
     new RegExp(String.raw`${commandSource}([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:${DAY_DURATION_SOURCE}|weekend)\b`, 'i'),
     new RegExp(String.raw`\b(?:${DAY_DURATION_SOURCE})\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b`, 'i'),
+    new RegExp(String.raw`\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:${DAY_DURATION_SOURCE})\s+(?:trip|itinerary|city break)\b`, 'i'),
+    new RegExp(String.raw`\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+(?:trip|itinerary|city break)\s+(?:for\s+)?(?:${DAY_DURATION_SOURCE})\b`, 'i'),
     /\b(?:in|to|for)\s+([A-Za-z][A-Za-z\s'’-]{1,60}?)(?=\s+\b(?:for|with|from|on|around|near|and|that|who|leaving|including)\b|[,.!?]|$)/i,
     /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+trip\b/i,
     /\b([A-Za-z][A-Za-z\s'’-]{1,60}?)\s+itinerary\b/i,

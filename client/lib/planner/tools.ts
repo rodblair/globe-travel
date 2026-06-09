@@ -25,6 +25,13 @@ export function inferPlanIntent({
     return hasExistingTrip || hasExistingDays || hasExistingItems ? 'item-edit' : 'clarify'
   }
 
+  if (
+    /\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen)\s*[- ]?\s*days?\b/.test(normalized) &&
+    /\b(?:trip|itinerary|schedule|plan)\b/.test(normalized)
+  ) {
+    return 'full-plan'
+  }
+
   const fullPlanPatterns = [
     /\b(plan|build|create|make|generate)\b.*\b(itinerary|trip|days?|schedule)\b/,
     /\b(full itinerary|from scratch|start over|replace the whole trip|whole trip|full trip)\b/,

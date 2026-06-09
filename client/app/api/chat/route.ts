@@ -16,7 +16,7 @@ import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
 import { REGIONAL_PLACE_OVERRIDES } from '@/lib/planner/regional-place-overrides'
 import { getPlanToolChoice, getPlanToolSelection, inferPlanIntent } from '@/lib/planner/tools'
-import { extractDestinationFromPrompt, extractDestinationFromTitle } from '@/lib/planner/runtime'
+import { extractDaysFromPrompt, extractDestinationFromPrompt, extractDestinationFromTitle, normalizeDestinationLabel } from '@/lib/planner/runtime'
 import { loadPlannerSession } from '@/lib/planner/session'
 import { compareDestinations, listScoredDestinations } from '@/lib/planner/scoring'
 
@@ -443,6 +443,56 @@ function normalizeTripItemType(type?: string | null) {
   return type || 'activity'
 }
 
+function normalizeDestinationKey(value: string | null | undefined) {
+  return normalizeDestinationLabel(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+}
+
+function destinationsMatch(a: string | null | undefined, b: string | null | undefined) {
+  const first = normalizeDestinationKey(a)
+  const second = normalizeDestinationKey(b)
+  if (!first || !second) return false
+  if (first === second) return true
+
+  const firstCity = first.split(',')[0]?.trim()
+  const secondCity = second.split(',')[0]?.trim()
+  return Boolean(firstCity && secondCity && firstCity === secondCity)
+}
+
+function getFullPlanDestinationLabel({
+  requestedDestination,
+  title,
+  existingTitle,
+  existingConstraints,
+}: {
+  requestedDestination?: string | null
+  title?: string | null
+  existingTitle?: string | null
+  existingConstraints?: Record<string, unknown> | null
+}) {
+  const titleDestination = extractDestinationFromTitle(title)
+  const existingConstraintDestination =
+    typeof existingConstraints?.destination_query === 'string'
+      ? existingConstraints.destination_query.trim()
+      : ''
+
+  return normalizeDestinationLabel(
+    requestedDestination ||
+    titleDestination ||
+    existingConstraintDestination ||
+    extractDestinationFromTitle(existingTitle)
+  )
+}
+
+function itemNeedsDestinationLockedPlace(type: string, hasRequestedDestination: boolean) {
+  return hasRequestedDestination && (type === 'activity' || type === 'meal' || type === 'lodging')
+}
+
 
 async function computeAndStoreDayRoute(
   supabase: any,
@@ -568,6 +618,8 @@ export async function POST(req: Request) {
       conversationId,
     })
     const latestUserText = plannerSession.latestUserText
+    const requestedDestinationLabel = normalizeDestinationLabel(extractDestinationFromPrompt(latestUserText))
+    const requestedDayCount = extractDaysFromPrompt(latestUserText)
     const hasExistingDays = Boolean(plannerSession.runtime.trip?.hasExistingDays)
     const hasExistingItems = Boolean(plannerSession.runtime.trip?.hasExistingItems)
     const systemPrompt = buildPlannerSystemPrompt(plannerSession.runtime)
@@ -729,9 +781,17 @@ export async function POST(req: Request) {
         }),
         execute: async ({ title, days }) => {
           const slug = randomSlug()
+          const destinationLabel = normalizeDestinationLabel(
+            requestedDestinationLabel ||
+            extractDestinationFromTitle(title)
+          )
+          const constraints = {
+            ...(destinationLabel ? { destination_query: destinationLabel } : {}),
+            ...((requestedDayCount || days) ? { days: requestedDayCount || days } : {}),
+          }
           const { data: created, error } = await db
             .from('trips')
-            .insert({ user_id: user.id, title, share_slug: slug, constraints: {} })
+            .insert({ user_id: user.id, title, share_slug: slug, constraints })
             .select('id')
             .single()
           if (error) return JSON.stringify({ kind: 'error', message: error.message })
@@ -793,13 +853,23 @@ export async function POST(req: Request) {
           const dayId = await ensureTripDay(db, tid, day_index)
           const token = mapboxToken
 
-          const { data: trip } = await db.from('trips').select('title').eq('id', tid).maybeSingle()
-          const destinationLabel = extractDestinationFromTitle(trip?.title)
+          const { data: trip } = await db.from('trips').select('title,constraints').eq('id', tid).maybeSingle()
+          const destinationLabel = getFullPlanDestinationLabel({
+            requestedDestination: requestedDestinationLabel,
+            existingTitle: trip?.title,
+            existingConstraints: (trip?.constraints as Record<string, unknown> | null) || null,
+          })
           const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
           const place = token
             ? await resolvePlannerPlace({ db, token, placeQuery: place_query, destinationLabel, destinationAnchor })
             : null
           const normalizedType = normalizeTripItemType(type)
+          if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+            return JSON.stringify({
+              kind: 'error',
+              message: `The place "${place_query || title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+            })
+          }
           const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, title, place?.name) ? place!.name : title
 
           const { data: existing, error: maxErr } = await db
@@ -870,15 +940,42 @@ export async function POST(req: Request) {
 
           // Fetch current trip title for destination sanity-checking
           const { data: existingTrip } = await db.from('trips').select('title,constraints').eq('id', tid).maybeSingle()
-          const destinationLabel =
-            (typeof existingTrip?.constraints?.destination_query === 'string' && existingTrip.constraints.destination_query.trim()) ||
-            extractDestinationFromTitle(title || existingTrip?.title) ||
-            extractDestinationFromPrompt(latestUserText)
+          const destinationLabel = getFullPlanDestinationLabel({
+            requestedDestination: requestedDestinationLabel,
+            title,
+            existingTitle: existingTrip?.title,
+            existingConstraints: (existingTrip?.constraints as Record<string, unknown> | null) || null,
+          })
+          const titleDestination = title ? extractDestinationFromTitle(title) : ''
+          if (requestedDestinationLabel && titleDestination && !destinationsMatch(requestedDestinationLabel, titleDestination)) {
+            return JSON.stringify({
+              kind: 'error',
+              message: `The user requested ${requestedDestinationLabel}, but the plan title points to ${titleDestination}. Retry setFullTripPlan for ${requestedDestinationLabel}.`,
+            })
+          }
+          if (requestedDayCount) {
+            const dayIndexes = days.map((day) => day.day_index).sort((a, b) => a - b)
+            const expectedDayIndexes = Array.from({ length: requestedDayCount }, (_, index) => index + 1)
+            const dayIndexesMatch =
+              dayIndexes.length === expectedDayIndexes.length &&
+              expectedDayIndexes.every((dayIndex, index) => dayIndexes[index] === dayIndex)
+
+            if (!dayIndexesMatch) {
+              return JSON.stringify({
+                kind: 'error',
+                message: `The user requested exactly ${requestedDayCount} days. Retry setFullTripPlan with Day 1 through Day ${requestedDayCount}.`,
+              })
+            }
+          }
           const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
 
-          if (title || start_date || end_date || pace || budget_level) {
+          if (title || start_date || end_date || pace || budget_level || destinationLabel || requestedDayCount) {
             const nextConstraints = destinationLabel
-              ? { ...(existingTrip?.constraints || {}), destination_query: destinationLabel }
+              ? {
+                  ...(existingTrip?.constraints || {}),
+                  destination_query: destinationLabel,
+                  ...(requestedDayCount ? { days: requestedDayCount } : {}),
+                }
               : existingTrip?.constraints
             const { error: tripErr } = await db
               .from('trips')
@@ -932,6 +1029,18 @@ export async function POST(req: Request) {
                 destinationAnchor,
               })
               const normalizedType = normalizeTripItemType(item.type)
+              if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !item.place_query) {
+                return JSON.stringify({
+                  kind: 'error',
+                  message: `Every ${normalizedType} in a ${requestedDestinationLabel} full plan needs a specific place_query in ${requestedDestinationLabel}. Retry with exact venues or landmarks in the requested destination.`,
+                })
+              }
+              if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+                return JSON.stringify({
+                  kind: 'error',
+                  message: `The place "${item.place_query || item.title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+                })
+              }
               const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
 
               const { error: itemErr } = await db
@@ -987,7 +1096,7 @@ export async function POST(req: Request) {
           if (!token) return JSON.stringify({ kind: 'error', message: 'Mapbox token not configured' })
 
           const [{ data: existingTrip }, { data: existingDay, error: dayLookupErr }] = await Promise.all([
-            db.from('trips').select('title').eq('id', tid).maybeSingle(),
+            db.from('trips').select('title,constraints').eq('id', tid).maybeSingle(),
             db
               .from('trip_days')
               .select('id,day_index')
@@ -1004,7 +1113,11 @@ export async function POST(req: Request) {
             })
           }
 
-          const destinationLabel = extractDestinationFromTitle(existingTrip?.title)
+          const destinationLabel = getFullPlanDestinationLabel({
+            requestedDestination: requestedDestinationLabel,
+            existingTitle: existingTrip?.title,
+            existingConstraints: (existingTrip?.constraints as Record<string, unknown> | null) || null,
+          })
           const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
 
           const { error: dayErr } = await db
@@ -1031,6 +1144,12 @@ export async function POST(req: Request) {
               destinationAnchor,
             })
             const normalizedType = normalizeTripItemType(item.type)
+            if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+              return JSON.stringify({
+                kind: 'error',
+                message: `The place "${item.place_query || item.title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+              })
+            }
             const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
 
             const { error: itemErr } = await db

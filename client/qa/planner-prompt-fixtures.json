@@ -15,6 +15,11 @@
     "expected": { "destination": "Athens", "country": "Greece", "days": 5, "themes": ["culture", "food", "rest"], "requiresRestDay": true }
   },
   {
+    "id": "athens-greece-five-day-destination-first",
+    "prompt": "Athens Greece 5 day trip",
+    "expected": { "destination": "Athens, Greece", "country": "Greece", "days": 5, "themes": ["culture", "food"] }
+  },
+  {
     "id": "lisbon-two-day-hyphen-word-duration",
     "prompt": "Build a two-day Lisbon itinerary with viewpoints, seafood, and easy walking.",
     "expected": { "destination": "Lisbon", "country": "Portugal", "days": 2, "themes": ["viewpoints", "food", "walkable"] }
