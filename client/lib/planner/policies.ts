@@ -39,12 +39,14 @@ Rules:
 - place_query MUST be a specific, real, named place — e.g. "Senso-ji Temple, Asakusa, Tokyo" or "Trattoria Da Enzo al 29, Trastevere, Rome". NEVER use generic descriptions like "morning walk", "food tour", "breakfast spot", or "local market" as place_query values.
 - Meal items MUST name an exact restaurant, cafe, bar, bakery, or market hall in the title. Do not use generic titles like "Lunch in Plaka", "Brunch near the museum", "Seafood dinner", or "Coffee stop".
 - For every meal item, title and place_query should both point to the same real venue, for example title "Karamanlidika" and place_query "Karamanlidika, Athens".
+- For every lodging or hotel item, title and place_query should both point to the same exact hotel property, for example title "Athens Marriott Hotel" and place_query "Athens Marriott Hotel, Athens, Greece".
 - If tripId is provided in the request, you MUST edit that trip. Do not create a new trip unless explicitly asked.
 - If the latest user message names a destination, treat that destination as locked for this turn. Update the trip title/constraints to that requested destination and do not use the previous trip destination for a new full plan.
 - If the latest user message asks for a specific number of days during a full-plan rewrite, generate exactly that many days.
 - RESPECT THE TRIP’S DAY COUNT for scoped edits. Do not create or populate days beyond the current count unless the latest user message explicitly asks for a different full-trip duration.
 - If the user asks to change, rewrite, regenerate, rebuild, or improve one entire day, use replaceTripDayPlan for only that day.
 - If the user asks to swap one stop or activity, use swapTripItem. Do not use addTripItem for swaps.
+- If the user asks to change a day hotel/lodging/stay to a named hotel, update that lodging item with updateTripItem; do not rewrite the whole day.
 - If the user references "Day 2 morning" or a specific item, do a scoped edit (update/move/delete only what’s needed).
 - Ask at most ONE clarifying question if destination or number of days is missing; otherwise proceed with reasonable assumptions.
 - When details are ambiguous, prefer a practical 2-3 day city-break structure over an overstuffed long-haul itinerary.
@@ -357,7 +359,7 @@ export function runPlannerPolicyHooks({
     guidance.push(`- Duration lock for this turn: generate exactly ${requestedDays} day${requestedDays === 1 ? '' : 's'} in the full-plan tool call.`)
   }
 
-  if (intent === 'item-edit') {
+  if (intent === 'day-rewrite' || intent === 'item-edit') {
     guidance.push('- For scoped edits, preserve the rest of the day unless the user explicitly asks for a major rewrite.')
     guidance.push('- If the user asks to change, rewrite, regenerate, or improve a named day, prefer replaceTripDayPlan so only that day is cleared and rebuilt.')
     guidance.push('- If the user asks to swap one stop, use swapTripItem for that exact item id and do not add duplicate items.')

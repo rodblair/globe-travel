@@ -83,7 +83,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
     ? { data: [], error: null }
     : await supabase
       .from('trip_items')
-      .select('id,trip_day_id,type,title,start_time,end_time,duration_minutes,cost_estimate,notes,metadata,order_index,place:places(id,name,country,latitude,longitude)')
+      .select('id,trip_day_id,type,title,start_time,end_time,duration_minutes,cost_estimate,notes,metadata,order_index,place:places(id,name,country,latitude,longitude,photo_url)')
       .in('trip_day_id', dayIds)
       .order('order_index', { ascending: true })
 

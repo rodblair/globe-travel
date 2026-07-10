@@ -62,6 +62,7 @@ const CANONICAL_PLACE_OVERRIDES: CanonicalPlaceOverride[] = [
   { pattern: /mikrolimano/i, name: 'Mikrolimano', country: 'Greece', country_code: 'GR', latitude: 37.94073, longitude: 23.66403, manualId: 'manual:athens:mikrolimano' },
   { pattern: /stavros niarchos/i, name: 'Stavros Niarchos Foundation Cultural Center', country: 'Greece', country_code: 'GR', latitude: 37.93952, longitude: 23.69165, manualId: 'manual:athens:stavros-niarchos' },
   { pattern: /flisvos marina/i, name: 'Flisvos Marina', country: 'Greece', country_code: 'GR', latitude: 37.93183, longitude: 23.68647, manualId: 'manual:athens:flisvos-marina' },
+  { pattern: /athens marriott(?: hotel)?|syngrou avenue 385|syggrou avenue 385/i, name: 'Athens Marriott Hotel', country: 'Greece', country_code: 'GR', latitude: 37.940558, longitude: 23.696906, manualId: 'manual:athens:marriott-hotel' },
   { pattern: /acropolis archaeological site|acropolis.*parthenon|parthenon.*acropolis/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /^acropolis of athens$/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },

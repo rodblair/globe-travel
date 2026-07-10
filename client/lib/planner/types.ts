@@ -2,7 +2,7 @@ import type { UIMessage } from 'ai'
 
 export type PlannerMode = 'onboarding' | 'explore' | 'plan'
 
-export type PlanIntent = 'full-plan' | 'item-edit' | 'add-items' | 'clarify'
+export type PlanIntent = 'full-plan' | 'day-rewrite' | 'item-edit' | 'add-items' | 'clarify'
 
 export type PlannerProfileContext = {
   displayName?: string | null

@@ -322,6 +322,60 @@ if (missingBetaCoverageEntries.length) {
   })
 }
 
+const scopedIntentChecks = [
+  {
+    id: 'trip-studio-rewrite-button-day-1',
+    prompt: 'Rewrite Day 1 using the replaceTripDayPlan tool. Replace only Day 1, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; every lodging or hotel item must be an exact named hotel property in the item title and place_query. Do not use generic meal or hotel labels.',
+    expectedIntent: 'day-rewrite',
+    expectedTools: ['replaceTripDayPlan'],
+    expectedDestination: '',
+  },
+  {
+    id: 'trip-studio-hotel-change-day-1',
+    prompt: 'Make Day 1 hotel Ergon Hotel',
+    expectedIntent: 'item-edit',
+    expectedTools: ['updateTripItem'],
+  },
+  {
+    id: 'initial-make-me-four-day-trip',
+    prompt: 'Make me a four day Mexico City food trip with museums and one big night out.',
+    expectedIntent: 'full-plan',
+    expectedTools: ['createTrip', 'setFullTripPlan'],
+    hasExistingTrip: false,
+    hasExistingDays: false,
+    hasExistingItems: false,
+  },
+]
+
+for (const check of scopedIntentChecks) {
+  const extractedDestination = extractDestinationFromPrompt(check.prompt)
+  const intent = inferPlanIntent({
+    latestUserText: check.prompt,
+    hasExistingTrip: check.hasExistingTrip ?? true,
+    hasExistingDays: check.hasExistingDays ?? true,
+    hasExistingItems: check.hasExistingItems ?? true,
+  })
+  const toolSelection = getPlanToolSelection(intent, check.hasExistingTrip ?? true)
+  const destinationOk =
+    check.expectedDestination === undefined ||
+    normalize(extractedDestination) === normalize(check.expectedDestination)
+  const ok =
+    destinationOk &&
+    intent === check.expectedIntent &&
+    check.expectedTools.every((tool) => toolSelection.includes(tool))
+  if (!ok) {
+    recordFailure(check.id, 'scoped planner intent routed to wrong tools', {
+      prompt: check.prompt,
+      expectedDestination: check.expectedDestination,
+      extractedDestination,
+      expectedIntent: check.expectedIntent,
+      intent,
+      expectedTools: check.expectedTools,
+      toolSelection,
+    })
+  }
+}
+
 const summary = {
   fixturePath: fixturesPath,
   actualsPath: actualsPath || null,

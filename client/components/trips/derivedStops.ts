@@ -131,6 +131,14 @@ export function sortTripItemsForDisplay<T extends TripItemLike>(items: T[]) {
   })
 }
 
+export function sortTripItemsForVisibleItinerary<T extends TripItemLike>(items: T[]) {
+  const sortedItems = sortTripItemsForDisplay(items)
+  return [
+    ...sortedItems.filter((item) => item.type === 'lodging'),
+    ...sortedItems.filter((item) => item.type !== 'lodging'),
+  ]
+}
+
 export function hasScheduleOrderConflict<T extends TripItemLike>(items: T[]) {
   const orderedIds = sortByOrderIndex(items).map((item) => item.id)
   const scheduledIds = sortTripItemsForDisplay(items).map((item) => item.id)
@@ -223,6 +231,7 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
   { pattern: /mikrolimano/i, stops: [{ title: 'Mikrolimano', latitude: 37.94073, longitude: 23.66403, country: 'Greece' }] },
   { pattern: /stavros niarchos/i, stops: [{ title: 'Stavros Niarchos Foundation Cultural Center', latitude: 37.93952, longitude: 23.69165, country: 'Greece' }] },
   { pattern: /flisvos marina/i, stops: [{ title: 'Flisvos Marina', latitude: 37.93183, longitude: 23.68647, country: 'Greece' }] },
+  { pattern: /athens marriott(?: hotel)?|syngrou avenue 385|syggrou avenue 385/i, stops: [{ title: 'Athens Marriott Hotel', latitude: 37.940558, longitude: 23.696906, country: 'Greece' }] },
   { pattern: /praça do comércio|praca do comercio|commerce square/i, stops: [{ title: 'Praça do Comércio', latitude: 38.70775, longitude: -9.13659, country: 'Portugal' }] },
   { pattern: /pastel de nata breakfast|nata breakfast|breakfast stop/i, stops: [{ title: 'Manteigaria Chiado', latitude: 38.71089, longitude: -9.14327, country: 'Portugal' }] },
   {
@@ -270,6 +279,7 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
     ],
   },
   { pattern: /acropolis museum/i, stops: [{ title: 'Acropolis Museum', latitude: 37.96845, longitude: 23.72853, country: 'Greece' }] },
+  { pattern: /athens\s+gate(?:\s+hotel)?|athensgate/i, stops: [{ title: 'Athens Gate Hotel', latitude: 37.96833, longitude: 23.73167, country: 'Greece' }] },
   { pattern: /long lunch in plaka|lunch.*plaka/i, stops: [{ title: 'Plaka', latitude: 37.97308, longitude: 23.73051, country: 'Greece' }] },
   {
     pattern: /plaka.*anafiotika|anafiotika.*plaka/i,
@@ -367,9 +377,13 @@ const DERIVED_STOP_RULES: Array<{ pattern: RegExp; stops: DerivedStop[] }> = [
   { pattern: /^day$/i, stops: [{ title: 'Shinjuku Golden Gai', latitude: 35.69412, longitude: 139.70464, country: 'Japan' }] },
 ]
 
-export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
-  const sortedItems = sortTripItemsForDisplay(items)
+export function buildDisplayStops<T extends TripItemLike>(
+  items: T[],
+  options: { preserveOrder?: boolean } = {}
+) {
+  const sortedItems = options.preserveOrder ? items : sortTripItemsForDisplay(items)
   const displayStops: DisplayStop<T>[] = []
+  let mappedIndex = 0
 
   for (const item of sortedItems) {
     const timeLabel = [item.start_time, item.end_time].filter(Boolean).join('–') || null
@@ -377,12 +391,13 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
     const longitude = coerceCoordinate(item.place?.longitude)
 
     if (latitude != null && longitude != null) {
+      mappedIndex += 1
       displayStops.push({
         id: item.id,
         title: item.title || item.place?.name || 'Untitled stop',
         latitude,
         longitude,
-        index: displayStops.length + 1,
+        index: mappedIndex,
         item,
         placeName: getItineraryPlaceLabel(item),
         country: item.place?.country || null,
@@ -396,12 +411,13 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
 
     if (derivedStops) {
       for (const stop of derivedStops) {
+        mappedIndex += 1
         displayStops.push({
           id: `${item.id}:${stop.title}`,
           title: stop.title,
           latitude: stop.latitude,
           longitude: stop.longitude,
-          index: displayStops.length + 1,
+          index: mappedIndex,
           item,
           placeName: stop.title,
           country: stop.country || item.place?.country || null,
@@ -417,7 +433,7 @@ export function buildDisplayStops<T extends TripItemLike>(items: T[]) {
       title: item.title || item.place?.name || 'Untitled stop',
       latitude: 0,
       longitude: 0,
-      index: displayStops.length + 1,
+      index: 0,
       item,
       placeName: getItineraryPlaceLabel(item),
       country: item.place?.country || null,

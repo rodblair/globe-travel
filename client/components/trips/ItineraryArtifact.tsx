@@ -1,11 +1,13 @@
 'use client'
 
+import Image from 'next/image'
 import { useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown } from 'lucide-react'
+import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown, BedDouble, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
-import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay, sortTripItemsForVisibleItinerary } from '@/components/trips/derivedStops'
+import { getItineraryItemImage } from '@/lib/itinerary-images'
 
 export type TripDay = {
   id: string
@@ -38,6 +40,7 @@ export type TripItem = {
     country: string | null
     latitude: number | null
     longitude: number | null
+    photo_url?: string | null
   } | null
 }
 
@@ -46,6 +49,35 @@ export type SwapCandidate = {
   title: string
   notes: string
   type: 'activity' | 'meal' | 'lodging' | 'transport'
+}
+
+function ItineraryStopImage({
+  image,
+  compact = false,
+}: {
+  image: ReturnType<typeof getItineraryItemImage>
+  compact?: boolean
+}) {
+  return (
+    <span
+      className={cn(
+        'relative block shrink-0 overflow-hidden rounded-xl border border-rule bg-paper-raised',
+        compact ? 'h-12 w-14' : 'h-20 w-20 sm:h-[5.25rem] sm:w-24'
+      )}
+      aria-hidden="true"
+    >
+      <Image
+        src={image.src}
+        alt=""
+        fill
+        sizes={compact ? '56px' : '(max-width: 640px) 80px, 96px'}
+        unoptimized
+        loading="lazy"
+        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+      />
+      <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,16,0.02),rgba(8,12,16,0.28))]" />
+    </span>
+  )
 }
 
 type ItineraryArtifactProps = {
@@ -83,6 +115,53 @@ function timeChip(start: string | null, end: string | null) {
       <Clock className="w-3 h-3 text-foreground/30" />
       {label}
     </span>
+  )
+}
+
+function getMapsUrl({
+  title,
+  placeName,
+  country,
+  latitude,
+  longitude,
+}: {
+  title: string
+  placeName?: string | null
+  country?: string | null
+  latitude?: number | null
+  longitude?: number | null
+}) {
+  const label = placeName?.trim() || title.trim()
+  const textQuery = [label, country?.trim()].filter(Boolean).join(', ')
+  const coordinateQuery = latitude != null && longitude != null ? `${latitude},${longitude}` : ''
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(textQuery || coordinateQuery)}`
+}
+
+function StopUrlLink({
+  href,
+  label,
+  compact = false,
+}: {
+  href: string
+  label: string
+  compact?: boolean
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      onClick={(event) => event.stopPropagation()}
+      aria-label={`Open maps URL for ${label}`}
+      title={`Open maps URL for ${label}`}
+      className={cn(
+        'touch-target inline-flex shrink-0 items-center justify-center rounded-xl border border-rule bg-paper-raised text-foreground/58 transition-colors hover:border-[color:var(--brass)]/30 hover:bg-[var(--brass-subtle)] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brass)]',
+        compact ? 'h-8 w-8' : 'h-9 w-9'
+      )}
+    >
+      <ExternalLink className={compact ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
+      <span className="sr-only">Open maps URL</span>
+    </a>
   )
 }
 
@@ -125,6 +204,7 @@ export default function ItineraryArtifact({
     startX: number
     startY: number
   } | null>(null)
+  const editingInputRef = useRef<HTMLInputElement>(null)
   const [applyingSwapId, setApplyingSwapId] = useState<string | null>(null)
   const [mapExpanded, setMapExpanded] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
@@ -225,7 +305,8 @@ export default function ItineraryArtifact({
     return days.map((day) => {
       const dayItems = day.items || []
       const sortedDayItems = sortTripItemsForDisplay(dayItems)
-      const displayStops = buildDisplayStops(sortedDayItems)
+      const visibleDayItems = sortTripItemsForVisibleItinerary(dayItems)
+      const displayStops = buildDisplayStops(visibleDayItems, { preserveOrder: true })
       const stops = displayStops.filter((stop) => stop.mapped)
       const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
       const savedRoute = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
@@ -246,7 +327,7 @@ export default function ItineraryArtifact({
         routeGeojson,
         subtitle: subtitleParts.join(' • '),
         routeSummary,
-        stopPreview: displayStops.map((stop) => stop.title),
+        stopPreview: stops.map((stop) => stop.title),
       }
     })
   }, [days])
@@ -267,7 +348,6 @@ export default function ItineraryArtifact({
     () => dayMapCards.find(({ day }) => day.day_index === selectedDay?.day_index) || null,
     [dayMapCards, selectedDay]
   )
-
   const runDropOperation = async (itemId: string, fromDayIndex: number, dayIndex: number, sortedDayItems: TripItem[], toIndex: number) => {
     if (fromDayIndex !== dayIndex) {
       await onBulkOps([{ op: 'move', item_id: itemId, to_day_index: dayIndex, to_order_index: toIndex }])
@@ -379,12 +459,21 @@ export default function ItineraryArtifact({
     setEditingTitle(item.title)
   }
 
-  const commitEditing = async () => {
+  const commitEditing = async (nextTitle?: string) => {
     if (!editingItemId) return
-    const trimmed = editingTitle.trim()
+    const trimmed = (nextTitle ?? editingTitle).trim()
     setEditingItemId(null)
     if (!trimmed) return
-    await onBulkOps([{ op: 'update', item_id: editingItemId, fields: { title: trimmed } }])
+    setItemActionError(null)
+    try {
+      await onBulkOps([{
+        op: 'update',
+        item_id: editingItemId,
+        fields: { title: trimmed },
+      }])
+    } catch {
+      setItemActionError('Could not save that edit. Refresh the trip and try again.')
+    }
   }
 
   const deleteItem = async (itemId: string) => {
@@ -543,56 +632,82 @@ export default function ItineraryArtifact({
             </div>
 
             <div className="mt-3 grid gap-2">
-              {selectedDayMap.stopDetails.map((stop, index) => (
-                <button
+              {selectedDayMap.stopDetails.map((stop) => {
+                const mapsUrl = getMapsUrl({
+                  title: stop.title,
+                  placeName: stop.placeName,
+                  country: stop.country,
+                  latitude: stop.mapped ? stop.latitude : null,
+                  longitude: stop.mapped ? stop.longitude : null,
+                })
+
+                return (
+                <div
                   key={stop.id}
-                  onClick={() => onSelectItem?.(stop.item)}
                   className={cn(
-                    'touch-target flex items-start gap-3 rounded-2xl border px-3 py-2.5 text-left transition-colors',
+                    'flex items-start gap-3 rounded-2xl border px-3 py-2.5 transition-colors',
                     stop.mapped
                       ? 'border-rule bg-paper-recessed/60 hover:border-rule hover:bg-paper-recessed/60'
                       : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] hover:bg-[var(--brass-subtle)]'
                   )}
                 >
-                  <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brass)] text-[11px] font-semibold text-black">
-                    {index + 1}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-foreground/38">
-                      Stop {index + 1}
-                    </p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-xs font-medium text-foreground">{stop.title}</p>
-                      {stop.timeLabel && (
-                        <span className="rounded-full border border-rule bg-paper-recessed px-2 py-0.5 text-[10px] text-foreground/62">
-                          {stop.timeLabel}
-                        </span>
+                  <button
+                    type="button"
+                    onClick={() => onSelectItem?.(stop.item)}
+                    className="touch-target flex min-w-0 flex-1 items-start gap-3 text-left"
+                  >
+                    <span
+                      className={cn(
+                        'mt-0.5 inline-flex h-6 min-w-6 flex-shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums',
+                        stop.mapped
+                          ? 'bg-[var(--brass)] text-[var(--brass-text)]'
+                          : 'border border-rule bg-paper-raised text-foreground/42'
                       )}
+                      aria-label={stop.mapped ? `Map stop ${stop.index}` : 'Not numbered on map'}
+                    >
+                      {stop.mapped ? stop.index : '—'}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-foreground/38">
+                        {stop.mapped ? `Map stop ${stop.index}` : 'Not on map'}
+                      </p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="break-words text-xs font-medium leading-snug text-foreground">{stop.title}</p>
+                        {stop.timeLabel && (
+                          <span className="rounded-full border border-rule bg-paper-recessed px-2 py-0.5 text-[10px] text-foreground/62">
+                            {stop.timeLabel}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 break-words text-[11px] leading-snug text-foreground/62">
+                        {[
+                          stop.placeName,
+                          stop.country,
+                        ].filter(Boolean).join(' • ') || (stop.mapped ? 'Pinned to the itinerary map' : 'No pinned place yet')}
+                      </p>
                     </div>
-                    <p className="mt-1 text-[11px] text-foreground/62 truncate">
-                      {[
-                        stop.placeName,
-                        stop.country,
-                      ].filter(Boolean).join(' • ') || (stop.mapped ? 'Pinned to the itinerary map' : 'No pinned place yet')}
-                    </p>
-                  </div>
+                  </button>
+                  <StopUrlLink href={mapsUrl} label={stop.title} compact />
                   <span className={cn(
-                    'inline-flex flex-shrink-0 items-center gap-1 rounded-full border px-2 py-1 text-[10px]',
+                    'inline-flex h-8 flex-shrink-0 items-center justify-center gap-1 rounded-xl border px-2 text-[10px]',
                     stop.mapped
                       ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                       : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground'
                   )}>
                     <MapPin className="h-3 w-3" />
-                    {stop.mapped ? 'Pinned' : 'Needs map data'}
+                    <span className="hidden sm:inline">{stop.mapped ? 'Pinned' : 'Needs map data'}</span>
                   </span>
-                </button>
-              ))}
+                </div>
+                )
+              })}
             </div>
           </div>
         )}
         <AnimatePresence mode="popLayout">
           {selectedDayCard && (() => {
             const { day, sortedItems, subtitle, displayStops } = selectedDayCard
+            const lodgingItems = sortedItems.filter((item) => item.type === 'lodging')
+            const timelineItems = sortedItems.filter((item) => item.type !== 'lodging')
 
             return (
               <motion.section
@@ -627,7 +742,203 @@ export default function ItineraryArtifact({
                   )}
                 </div>
 
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 space-y-4">
+                  <section className="rounded-[22px] border border-rule bg-paper-raised/80 p-3 shadow-[0_10px_28px_rgba(28,42,55,0.05)]">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] text-[var(--brass)]">
+                          <BedDouble className="h-4 w-4" />
+                        </span>
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/42">Stay</p>
+                          <p className="text-sm font-medium text-foreground">
+                            {lodgingItems.length
+                              ? `${lodgingItems.length} hotel${lodgingItems.length === 1 ? '' : 's'} for Day ${day.day_index}`
+                              : `No hotel set for Day ${day.day_index}`}
+                          </p>
+                        </div>
+                      </div>
+                      {!lodgingItems.length && (
+                        <p className="max-w-sm text-xs leading-relaxed text-foreground/55">
+                          Ask Planner to add a specific hotel and it will appear here, separate from the day route.
+                        </p>
+                      )}
+                    </div>
+
+                    {lodgingItems.length > 0 && (
+                      <div className="mt-3 grid gap-2">
+                        {lodgingItems.map((item) => {
+                          const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped)
+                          const locationLabel = mappedStop?.placeName || getItineraryPlaceLabel(item)
+                          const countryLabel = mappedStop?.country || item.place?.country || null
+                          const itemImage = getItineraryItemImage({
+                            title: item.title,
+                            type: item.type,
+                            placeName: locationLabel || item.place?.name,
+                            country: countryLabel,
+                            photoUrl: item.place?.photo_url,
+                          })
+                          const mapsUrl = getMapsUrl({
+                            title: item.title,
+                            placeName: locationLabel || item.place?.name,
+                            country: countryLabel,
+                            latitude: mappedStop?.latitude ?? item.place?.latitude ?? null,
+                            longitude: mappedStop?.longitude ?? item.place?.longitude ?? null,
+                          })
+
+                          return (
+                            <div key={item.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
+                              <div className="flex flex-col gap-3">
+                                <div className="min-w-0 flex-1 text-left">
+                                  <div className="flex min-w-0 gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedDayIndex(day.day_index)
+                                        onSelectItem?.(item)
+                                      }}
+                                      className="shrink-0 text-left"
+                                      aria-label={mappedStop ? `Show map stop ${mappedStop.index}: ${item.title}` : `Show ${item.title} on the map`}
+                                    >
+                                      <ItineraryStopImage image={itemImage} compact />
+                                    </button>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        {mappedStop && (
+                                          <span className="inline-flex items-center rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-2 py-1 text-[10px] font-semibold tabular-nums text-[var(--brass-text)]">
+                                            Map {mappedStop.index}
+                                          </span>
+                                        )}
+                                        {timeChip(item.start_time, item.end_time)}
+                                        <span className="rounded-full border border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] px-2 py-1 text-[10px] font-medium text-[var(--brass)]">
+                                          Hotel
+                                        </span>
+                                      </div>
+                                      <div className="mt-2">
+                                        {editingItemId === item.id ? (
+                                          <div className="flex flex-col gap-2 sm:flex-row">
+                                            <input
+                                              ref={editingInputRef}
+                                              autoFocus
+                                              value={editingTitle}
+                                              onChange={(e) => setEditingTitle(e.target.value)}
+                                              onInput={(e) => setEditingTitle(e.currentTarget.value)}
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter') void commitEditing(e.currentTarget.value)
+                                                if (e.key === 'Escape') setEditingItemId(null)
+                                              }}
+                                              className="w-full rounded-xl border border-rule bg-paper-recessed px-3 py-2 text-sm text-foreground placeholder:text-[var(--ink-4)] focus:border-[color:var(--brass)]/30 focus:outline-none"
+                                            />
+                                            <div className="flex gap-2">
+                                              <button
+                                                type="button"
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                onClick={() => void commitEditing(editingInputRef.current?.value)}
+                                                className="touch-target rounded-xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)]"
+                                              >
+                                                Save
+                                              </button>
+                                              <button
+                                                type="button"
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                onClick={() => setEditingItemId(null)}
+                                                className="touch-target rounded-xl border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/60"
+                                              >
+                                                Cancel
+                                              </button>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              setSelectedDayIndex(day.day_index)
+                                              onSelectItem?.(item)
+                                            }}
+                                            className="max-w-full break-words text-left text-sm font-semibold leading-snug text-foreground transition-colors hover:text-[var(--brass)]"
+                                          >
+                                            {item.title}
+                                          </button>
+                                        )}
+                                        {(locationLabel || countryLabel) && (
+                                          <p className="mt-0.5 break-words text-xs leading-snug text-foreground/55">
+                                            {[locationLabel, countryLabel].filter(Boolean).join(' • ')}
+                                          </p>
+                                        )}
+                                        {item.notes && (
+                                          <p className="mt-2 whitespace-pre-line break-words text-xs leading-relaxed text-foreground/62">{item.notes}</p>
+                                        )}
+                                        <div className="mt-3">
+                                          <StopUrlLink href={mapsUrl} label={item.title} />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {!readOnly && (
+                                  <div className="flex flex-wrap items-center gap-1 border-t border-rule/70 pt-2">
+                                    <button
+                                      onClick={() => startEditing(item)}
+                                      className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:bg-paper-recessed hover:text-foreground/80"
+                                      title="Edit title"
+                                      aria-label={`Edit ${item.title}`}
+                                    >
+                                      <Pencil className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => setPendingDeleteItemId((current) => (current === item.id ? null : item.id))}
+                                      className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)]"
+                                      title="Delete"
+                                      aria-label={`Delete ${item.title}`}
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+
+                              {pendingDeleteItemId === item.id && (
+                                <div className="mt-2 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)]/75 p-3">
+                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <p className="text-xs leading-relaxed text-[var(--terracotta)]">
+                                      Delete “{item.title}” from this day?
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => setPendingDeleteItemId(null)}
+                                        className="touch-target rounded-full border border-rule bg-paper-raised px-3 py-2 text-xs font-medium text-foreground/72"
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => deleteItem(item.id)}
+                                        className="touch-target rounded-full border border-[color:var(--terracotta)]/30 bg-[var(--terracotta)] px-3 py-2 text-xs font-semibold text-white"
+                                      >
+                                        Delete hotel
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </section>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3 px-1">
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/42">Day Plan</p>
+                        <p className="text-xs text-foreground/55">
+                          {timelineItems.length} stop{timelineItems.length === 1 ? '' : 's'} for meals, activities, and movement
+                        </p>
+                      </div>
+                    </div>
                   <div
                     data-trip-drop-day={day.day_index}
                     data-trip-drop-index={0}
@@ -640,16 +951,31 @@ export default function ItineraryArtifact({
                     className="h-2 rounded-lg"
                   />
 
-                  {sortedItems.map((item, index) => {
+                  {timelineItems.map((item) => {
+                    const sortedItemIndex = sortedItems.findIndex((sortedItem) => sortedItem.id === item.id)
                     const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped)
                     const locationLabel = mappedStop?.placeName || getItineraryPlaceLabel(item)
                     const countryLabel = mappedStop?.country || item.place?.country || null
+                    const itemImage = getItineraryItemImage({
+                      title: item.title,
+                      type: item.type,
+                      placeName: locationLabel || item.place?.name,
+                      country: countryLabel,
+                      photoUrl: item.place?.photo_url,
+                    })
+                    const mapsUrl = getMapsUrl({
+                      title: item.title,
+                      placeName: locationLabel || item.place?.name,
+                      country: countryLabel,
+                      latitude: mappedStop?.latitude ?? item.place?.latitude ?? null,
+                      longitude: mappedStop?.longitude ?? item.place?.longitude ?? null,
+                    })
 
                     return (
                     <div key={item.id}>
-                      <div
+                        <div
                         data-trip-drop-day={day.day_index}
-                        data-trip-drop-index={index}
+                        data-trip-drop-index={sortedItemIndex}
                         onDragOver={(e) => {
                           if (readOnly) return
                           e.preventDefault()
@@ -660,14 +986,14 @@ export default function ItineraryArtifact({
                           setDragOverItemId((prev) => (prev === item.id ? null : prev))
                         }}
                         onDrop={(e) => {
-                          if (!readOnly) handleDropOnList(day.day_index, sortedItems, index, e)
+                          if (!readOnly) handleDropOnList(day.day_index, sortedItems, sortedItemIndex, e)
                         }}
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
                           dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]' : 'border-rule bg-paper-recessed hover:border-rule'
                         )}
                       >
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                        <div className="flex flex-col gap-3">
                           {!readOnly && (
                             <div className="flex items-center gap-1 text-foreground/28 transition-colors group-hover:text-foreground/45 sm:mt-0.5 sm:block">
                               <span
@@ -701,7 +1027,7 @@ export default function ItineraryArtifact({
                                   type="button"
                                   draggable={false}
                                   onClick={() => moveItemWithinDay(day.day_index, sortedItems, item.id, -1)}
-                                  disabled={index === 0}
+                                  disabled={sortedItemIndex <= 0}
                                   className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
                                   title="Move earlier"
                                   aria-label={`Move ${item.title} earlier`}
@@ -712,7 +1038,7 @@ export default function ItineraryArtifact({
                                   type="button"
                                   draggable={false}
                                   onClick={() => moveItemWithinDay(day.day_index, sortedItems, item.id, 1)}
-                                  disabled={index === sortedItems.length - 1}
+                                  disabled={sortedItemIndex === sortedItems.length - 1}
                                   className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
                                   title="Move later"
                                   aria-label={`Move ${item.title} later`}
@@ -723,53 +1049,95 @@ export default function ItineraryArtifact({
                             </div>
                           )}
 
-                          <button
-                            onClick={() => {
-                              setSelectedDayIndex(day.day_index)
-                              onSelectItem?.(item)
-                            }}
-                            className="min-w-0 flex-1 text-left"
-                          >
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {timeChip(item.start_time, item.end_time)}
-                              <span className="text-[10px] px-2 py-1 rounded-full bg-paper-raised/85 border border-rule text-foreground/40">
-                                {item.type}
-                              </span>
-                            </div>
+                          <div className="min-w-0 flex-1 text-left">
+                            <div className="flex min-w-0 gap-3">
+                              <ItineraryStopImage image={itemImage} />
+                              <div className="min-w-0 flex-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span
+                                    className={cn(
+                                      'inline-flex items-center rounded-full border px-2 py-1 text-[10px] font-semibold tabular-nums',
+                                      mappedStop
+                                        ? 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)]'
+                                        : 'border-rule bg-paper-raised/85 text-foreground/38'
+                                    )}
+                                  >
+                                    {mappedStop ? `Map ${mappedStop.index}` : 'No map #'}
+                                  </span>
+                                  {timeChip(item.start_time, item.end_time)}
+                                  <span className="rounded-full border border-rule bg-paper-raised/85 px-2 py-1 text-[10px] text-foreground/40">
+                                    {item.type}
+                                  </span>
+                                </div>
 
-                            <div className="mt-2">
-                              {editingItemId === item.id ? (
-                                <input
-                                  autoFocus
-                                  value={editingTitle}
-                                  onChange={(e) => setEditingTitle(e.target.value)}
-                                  onBlur={commitEditing}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') commitEditing()
-                                    if (e.key === 'Escape') setEditingItemId(null)
-                                  }}
-                                  className="w-full bg-paper-recessed border border-rule rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-[var(--ink-4)] focus:outline-none focus:border-[color:var(--brass)]/30"
-                                />
-                              ) : (
-                                <p className="truncate text-sm font-medium text-foreground">
-                                  {item.title}
-                                </p>
-                              )}
-                              {(locationLabel || countryLabel) && (
-                                <p className="mt-0.5 truncate text-xs text-foreground/55">
-                                  {[locationLabel, countryLabel].filter(Boolean).join(' • ')}
-                                </p>
-                              )}
-                              {item.notes && (
-                                <p className="mt-2 line-clamp-2 text-xs text-foreground/62">
-                                  {item.notes}
-                                </p>
-                              )}
+                                <div className="mt-2">
+                                  {editingItemId === item.id ? (
+                                    <div className="flex flex-col gap-2 sm:flex-row">
+                                      <input
+                                        ref={editingInputRef}
+                                        autoFocus
+                                        value={editingTitle}
+                                        onChange={(e) => setEditingTitle(e.target.value)}
+                                        onInput={(e) => setEditingTitle(e.currentTarget.value)}
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter') void commitEditing(e.currentTarget.value)
+                                          if (e.key === 'Escape') setEditingItemId(null)
+                                        }}
+                                        className="w-full rounded-xl border border-rule bg-paper-recessed px-3 py-2 text-sm text-foreground placeholder:text-[var(--ink-4)] focus:border-[color:var(--brass)]/30 focus:outline-none"
+                                      />
+                                      <div className="flex gap-2">
+                                        <button
+                                          type="button"
+                                          onMouseDown={(e) => e.preventDefault()}
+                                          onClick={() => void commitEditing(editingInputRef.current?.value)}
+                                          className="touch-target rounded-xl border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)]"
+                                        >
+                                          Save
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onMouseDown={(e) => e.preventDefault()}
+                                          onClick={() => setEditingItemId(null)}
+                                          className="touch-target rounded-xl border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/60"
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedDayIndex(day.day_index)
+                                        onSelectItem?.(item)
+                                      }}
+                                      className="max-w-full break-words text-left text-sm font-medium leading-snug text-foreground transition-colors hover:text-[var(--brass)]"
+                                      aria-label={mappedStop ? `Show map stop ${mappedStop.index}: ${item.title}` : `Show ${item.title}`}
+                                    >
+                                      {item.title}
+                                    </button>
+                                  )}
+                                  {(locationLabel || countryLabel) && (
+                                    <p className="mt-0.5 break-words text-xs leading-snug text-foreground/55">
+                                      {[locationLabel, countryLabel].filter(Boolean).join(' • ')}
+                                    </p>
+                                  )}
+                                  {item.notes && (
+                                    <p className="mt-2 whitespace-pre-line break-words text-xs leading-relaxed text-foreground/62">
+                                      {item.notes}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                          </button>
+                          </div>
+
+                          <div className="flex">
+                            <StopUrlLink href={mapsUrl} label={item.title} />
+                          </div>
 
                           {!readOnly && (
-                          <div className="flex flex-shrink-0 flex-wrap items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                          <div className="flex flex-wrap items-center gap-1 border-t border-rule/70 pt-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                             <button
                               onClick={() => startEditing(item)}
                               className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-rule bg-paper-recessed text-foreground/55 transition-colors hover:bg-paper-recessed hover:text-foreground/80"
@@ -926,13 +1294,14 @@ export default function ItineraryArtifact({
 
 	                      <div
                         data-trip-drop-day={day.day_index}
-                        data-trip-drop-index={index + 1}
+                        data-trip-drop-index={sortedItemIndex + 1}
                         onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => handleDropOnList(day.day_index, sortedItems, index + 1, e)}
+                        onDrop={(e) => handleDropOnList(day.day_index, sortedItems, sortedItemIndex + 1, e)}
                         className="h-2 rounded-lg"
                       />
                     </div>
                   )})}
+                  </div>
                 </div>
 
                 {isLoading && sortedItems.length === 0 && (

@@ -1,6 +1,6 @@
 'use client'
 
-import type { KeyboardEvent } from 'react'
+import type { KeyboardEvent, WheelEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -78,6 +78,36 @@ function formatStopRole(role: ReturnType<typeof getStopRole>) {
   return 'waypoint'
 }
 
+function distanceMeters(a: Pick<TripDayMapStop, 'latitude' | 'longitude'>, b: Pick<TripDayMapStop, 'latitude' | 'longitude'>) {
+  const earthRadiusMeters = 6371000
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+  const deltaLatitude = toRadians(b.latitude - a.latitude)
+  const deltaLongitude = toRadians(b.longitude - a.longitude)
+  const latitude1 = toRadians(a.latitude)
+  const latitude2 = toRadians(b.latitude)
+  const haversine =
+    Math.sin(deltaLatitude / 2) ** 2 +
+    Math.cos(latitude1) * Math.cos(latitude2) * Math.sin(deltaLongitude / 2) ** 2
+
+  return 2 * earthRadiusMeters * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine))
+}
+
+function getNearbyMarkerOffset(stop: TripDayMapStop, stops: TripDayMapStop[], interactive: boolean): [number, number] {
+  const nearbyStops = stops
+    .filter((candidate) => distanceMeters(stop, candidate) <= 1200)
+    .sort((a, b) => a.index - b.index)
+
+  if (nearbyStops.length <= 1) return [0, 0]
+
+  const nearbyIndex = nearbyStops.findIndex((candidate) => candidate.id === stop.id)
+  if (nearbyIndex < 0) return [0, 0]
+
+  const radius = interactive ? 30 : 22
+  const angle = -Math.PI / 2 + (Math.PI * 2 * nearbyIndex) / nearbyStops.length
+
+  return [Math.round(Math.cos(angle) * radius), Math.round(Math.sin(angle) * radius)]
+}
+
 function buildStopPath(stops: TripDayMapStop[]) {
   if (stops.length === 0) return null
 
@@ -114,6 +144,53 @@ function applyMapCanvasAccessibility(map: mapboxgl.Map, label: string) {
   const canvas = map.getCanvas()
   canvas.setAttribute('role', 'img')
   canvas.setAttribute('aria-label', label)
+}
+
+function normalizeWheelDelta(event: WheelEvent<HTMLDivElement>) {
+  if (event.deltaMode === 1) {
+    return { x: event.deltaX * 16, y: event.deltaY * 16 }
+  }
+
+  if (event.deltaMode === 2) {
+    return { x: event.deltaX * window.innerWidth, y: event.deltaY * window.innerHeight }
+  }
+
+  return { x: event.deltaX, y: event.deltaY }
+}
+
+function canScrollElement(element: HTMLElement, deltaY: number, deltaX: number) {
+  const style = window.getComputedStyle(element)
+  const canScrollY = /(auto|scroll|overlay)/.test(style.overflowY) && element.scrollHeight > element.clientHeight
+  const canScrollX = /(auto|scroll|overlay)/.test(style.overflowX) && element.scrollWidth > element.clientWidth
+  const canMoveY =
+    canScrollY &&
+    ((deltaY < 0 && element.scrollTop > 0) ||
+      (deltaY > 0 && element.scrollTop + element.clientHeight < element.scrollHeight))
+  const canMoveX =
+    canScrollX &&
+    ((deltaX < 0 && element.scrollLeft > 0) ||
+      (deltaX > 0 && element.scrollLeft + element.clientWidth < element.scrollWidth))
+
+  return canMoveY || canMoveX
+}
+
+function findNearestPageScrollSurface(startElement: HTMLElement, deltaY: number, deltaX: number) {
+  let parent = startElement.parentElement
+
+  while (parent && parent !== document.body) {
+    if (canScrollElement(parent, deltaY, deltaX)) {
+      return parent
+    }
+
+    parent = parent.parentElement
+  }
+
+  const scrollingElement = document.scrollingElement
+  if (scrollingElement instanceof HTMLElement && canScrollElement(scrollingElement, deltaY, deltaX)) {
+    return scrollingElement
+  }
+
+  return null
 }
 
 export default function TripDayMap({
@@ -239,6 +316,29 @@ export default function TripDayMap({
     onClick()
   }, [onClick])
 
+  const handleMapWheel = useCallback((event: WheelEvent<HTMLDivElement>) => {
+    if (event.ctrlKey || event.metaKey) return
+
+    const { x, y } = normalizeWheelDelta(event)
+    if (Math.abs(x) < 1 && Math.abs(y) < 1) return
+
+    const scrollSurface = findNearestPageScrollSurface(event.currentTarget, y, x)
+    if (!scrollSurface) return
+
+    const previousScrollTop = scrollSurface.scrollTop
+    const previousScrollLeft = scrollSurface.scrollLeft
+
+    window.requestAnimationFrame(() => {
+      if (!scrollSurface.isConnected) return
+      const nativeScrollHandled =
+        scrollSurface.scrollTop !== previousScrollTop || scrollSurface.scrollLeft !== previousScrollLeft
+
+      if (!nativeScrollHandled) {
+        scrollSurface.scrollBy({ top: y, left: x, behavior: 'auto' })
+      }
+    })
+  }, [])
+
   useEffect(() => {
     canvasAriaLabelRef.current = canvasAriaLabel
   }, [canvasAriaLabel])
@@ -282,7 +382,10 @@ export default function TripDayMap({
         center: [0, 20],
         zoom: 1.25,
         attributionControl: false,
-        // Non-interactive maps must NOT capture pointer/wheel events — doing so
+        // Wheel/trackpad gestures should keep scrolling the page even when the
+        // cursor is over the map. Zoom remains available through map controls.
+        scrollZoom: false,
+        // Non-interactive maps must NOT capture pointer events — doing so
         // prevents the parent page/panel from scrolling between days.
         interactive,
         dragRotate: false,
@@ -356,16 +459,16 @@ export default function TripDayMap({
         type: 'symbol',
         source: 'day-stops',
         layout: {
-          'text-field': ['get', 'title'],
-          'text-size': interactive ? 11 : 10,
-          'text-offset': [0, 1.4],
-          'text-anchor': 'top',
+          'text-field': ['to-string', ['get', 'index']],
+          'text-size': interactive ? 12 : 10,
+          'text-offset': [0, 0.05],
+          'text-anchor': 'center',
           visibility: 'visible',
         },
         paint: {
-          'text-color': 'rgba(28,42,55,0.86)',
+          'text-color': 'rgba(28,42,55,0.94)',
           'text-halo-color': 'rgba(255,252,244,0.96)',
-          'text-halo-width': 1.1,
+          'text-halo-width': 0.9,
         },
       })
     })
@@ -476,7 +579,11 @@ export default function TripDayMap({
         ">${stop.index}</div>
       `
 
-      const marker = new mapboxgl.Marker({ element, anchor: 'center' })
+      const marker = new mapboxgl.Marker({
+        element,
+        anchor: 'center',
+        offset: getNearbyMarkerOffset(stop, validStops, interactive),
+      })
         .setLngLat([stop.longitude, stop.latitude])
         .addTo(map)
 
@@ -521,7 +628,10 @@ export default function TripDayMap({
         className
       )}
     >
-      <div className={cn('relative w-full overflow-hidden border-b border-rule bg-[var(--paper-recessed)]', mapHeightClassName)}>
+      <div
+        className={cn('relative w-full overflow-hidden border-b border-rule bg-[var(--paper-recessed)]', mapHeightClassName)}
+        onWheelCapture={handleMapWheel}
+      >
         <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex items-center justify-between gap-2">
           <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/78 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
             {mapLabel}

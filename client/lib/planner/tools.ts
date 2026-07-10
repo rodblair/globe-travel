@@ -25,6 +25,21 @@ export function inferPlanIntent({
     return hasExistingTrip || hasExistingDays || hasExistingItems ? 'item-edit' : 'clarify'
   }
 
+  const dayRewritePatterns = [
+    /\b(regenerate|rewrite|rebuild|replace)\b.*\bday\s*\d+\b/,
+    /\bday\s*\d+\b.*\b(regenerate|rewrite|rebuild|replace)\b/,
+    /\b(regenerate|rewrite|rebuild|replace)\b.*\b(day|morning|afternoon|evening)\b/,
+  ]
+  if (dayRewritePatterns.some((pattern) => pattern.test(normalized))) return 'day-rewrite'
+
+  const itemEditPatterns = [
+    /\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit)\b.*\b(day|morning|afternoon|evening|activity|meal|item|stop|hotel|lodging|stay|accommodation)\b/,
+    /\b(make|change|set)\b.*\b(activity|meal|item|stop|hotel|lodging|stay|accommodation)\b/,
+    /\b(day\s*\d+)\b.*\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit|make|change|set)\b/,
+    /\b(this activity|this stop|that stop|this item|that item|this hotel|that hotel|the hotel)\b/,
+  ]
+  if (itemEditPatterns.some((pattern) => pattern.test(normalized))) return 'item-edit'
+
   if (
     /\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen)\s*[- ]?\s*days?\b/.test(normalized) &&
     /\b(?:trip|itinerary|schedule|plan)\b/.test(normalized)
@@ -39,15 +54,9 @@ export function inferPlanIntent({
   ]
   if (fullPlanPatterns.some((pattern) => pattern.test(normalized))) return 'full-plan'
 
-  const itemEditPatterns = [
-    /\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit)\b.*\b(day|morning|afternoon|evening|activity|meal|item|stop)\b/,
-    /\b(day\s*\d+)\b.*\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit)\b/,
-    /\b(this activity|this stop|that stop|this item|that item)\b/,
-  ]
-  if (itemEditPatterns.some((pattern) => pattern.test(normalized))) return 'item-edit'
-
   const addPatterns = [
-    /\b(add|insert|append|also add|add another|more)\b.*\b(day trip|stop|activity|meal|museum|restaurant|attraction)\b/,
+    /\b(add|insert|append|also add|add another|more)\b.*\b(day trip|stop|activity|meal|museum|restaurant|attraction|hotel|lodging|stay|accommodation)\b/,
+    /\b(add|insert|append|also add|add another|more)\b.*\b(?:to|into|onto)\s+(?:this|the|current|existing|live|same|my|our)\s+(?:trip|itinerary|plan|day)\b/,
     /\bday trip\b/,
   ]
   if (addPatterns.some((pattern) => pattern.test(normalized))) return 'add-items'
@@ -67,6 +76,12 @@ export function getPlanToolSelection(intent: PlanIntent, hasTripId: boolean) {
       : [...baseSelection, 'createTrip', 'setFullTripPlan']
   }
 
+  if (intent === 'day-rewrite') {
+    return hasTripId
+      ? [...baseSelection, 'replaceTripDayPlan']
+      : [...baseSelection, 'createTrip', 'replaceTripDayPlan']
+  }
+
   if (intent === 'add-items') {
     return hasTripId
       ? [...baseSelection, 'setTripDays', 'addTripItem', 'moveTripItem', 'updateTripItem']
@@ -82,6 +97,9 @@ export function getPlanToolChoice(stepNumber: number, intent: PlanIntent) {
   if (intent === 'clarify') return 'none' as const
   if (stepNumber === 0 && intent === 'full-plan') {
     return { type: 'tool' as const, toolName: 'setFullTripPlan' as const }
+  }
+  if (stepNumber === 0 && intent === 'day-rewrite') {
+    return { type: 'tool' as const, toolName: 'replaceTripDayPlan' as const }
   }
   if (stepNumber === 0) return 'required' as const
   return 'none' as const

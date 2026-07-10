@@ -13,6 +13,26 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "api.mapbox.com",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.thisisathens.org",
+      },
+      {
+        protocol: "https",
+        hostname: "couleurlocaleathens.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.manimani.com.gr",
+      },
+      {
+        protocol: "https",
+        hostname: "athinaikon.gr",
+      },
     ],
   },
 };

@@ -1,16 +1,18 @@
 'use client'
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Send, MessageSquareQuote, Route, Check, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned, Navigation2, MoreHorizontal, Plus } from 'lucide-react'
+import { Share2, ArrowLeftRight, Calendar, Send, MessageSquareQuote, Route, Check, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned, Navigation2, MoreHorizontal, Plus, ExternalLink } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
 import TripDayMap from '@/components/trips/TripDayMap'
-import { buildDisplayStops, getRouteFallbackLabel, hasScheduleOrderConflict, hasTransitRouteCue, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { buildDisplayStops, getRouteFallbackLabel, hasScheduleOrderConflict, hasTransitRouteCue, shouldUseSavedRoute, sortTripItemsForDisplay, sortTripItemsForVisibleItinerary } from '@/components/trips/derivedStops'
+import { getItineraryItemImage } from '@/lib/itinerary-images'
 import { formatTripTitleForDisplay } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
@@ -34,6 +36,25 @@ type TripLoadError = Error & {
 const EMPTY_DAYS: TripDay[] = []
 const TRIP_LOAD_TIMEOUT_MS = 12000
 const ACTION_NOTICE_TIMEOUT_MS = 8000
+
+function getStopMapsUrl({
+  title,
+  placeName,
+  country,
+  latitude,
+  longitude,
+}: {
+  title: string
+  placeName?: string | null
+  country?: string | null
+  latitude?: number | null
+  longitude?: number | null
+}) {
+  const label = placeName?.trim() || title.trim()
+  const textQuery = [label, country?.trim()].filter(Boolean).join(', ')
+  const coordinateQuery = latitude != null && longitude != null ? `${latitude},${longitude}` : ''
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(textQuery || coordinateQuery)}`
+}
 
 function isTerminalTripLoadStatus(status?: number) {
   return status === 401 || status === 403 || status === 404 || status === 408
@@ -68,6 +89,21 @@ type GroupBrief = {
   vibe?: string
   days?: number
   destination?: string
+}
+
+type PlannerQuickEdit = {
+  key: string
+  label: string
+  detail: string
+  prompt: string
+  directItem?: {
+    type: TripItem['type']
+    title: string
+    place_query?: string
+    start_time?: string
+    duration_minutes?: number
+    notes?: string
+  }
 }
 
 const sentimentLabel: Record<TripFeedback['sentiment'], string> = {
@@ -198,6 +234,7 @@ function TripStudioPageContent() {
   const [isSharingTrip, setIsSharingTrip] = useState(false)
   const [saveDone, setSaveDone] = useState(false)
   const [shareDone, setShareDone] = useState(false)
+  const [copyDone, setCopyDone] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
   const [regeneratingDayIndex, setRegeneratingDayIndex] = useState<number | null>(null)
   const [regenerateDoneDayIndex, setRegenerateDoneDayIndex] = useState<number | null>(null)
@@ -234,6 +271,32 @@ function TripStudioPageContent() {
     actionNoticeTimeoutRef.current = setTimeout(() => {
       setActionNotice((current) => (current === notice ? null : current))
     }, ACTION_NOTICE_TIMEOUT_MS)
+  }, [])
+
+  const copyTextToClipboard = useCallback(async (text: string) => {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text)
+        return
+      } catch {
+        // Fall back below for browsers that block async clipboard writes.
+      }
+    }
+
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'fixed'
+    textarea.style.top = '-1000px'
+    textarea.style.left = '-1000px'
+    document.body.appendChild(textarea)
+    textarea.focus()
+    textarea.select()
+    const copied = document.execCommand('copy')
+    document.body.removeChild(textarea)
+    if (!copied) {
+      throw new Error('Clipboard write failed')
+    }
   }, [])
   useEffect(() => {
     if (!tripId || typeof window === 'undefined') return
@@ -404,11 +467,15 @@ function TripStudioPageContent() {
   }, [days])
 
   const onBulkOps = useCallback(async (ops: any[]) => {
-    await fetch(`/api/trips/${tripId}/items/bulk`, {
+    const response = await fetch(`/api/trips/${tripId}/items/bulk`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ops }),
     })
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null)
+      throw new Error(typeof payload?.error === 'string' ? payload.error : 'Bulk itinerary update failed')
+    }
     await refetch()
   }, [tripId, refetch])
 
@@ -507,7 +574,7 @@ function TripStudioPageContent() {
     }, 50)
 
     try {
-      await sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; do not use generic meal labels.`)
+      await sendMessage(`Rewrite Day ${dayIndex} using the replaceTripDayPlan tool. Replace only Day ${dayIndex}, keep the rest of the trip unchanged, and make the day realistic with clear timing, named places, and a better neighborhood flow. Every meal must be an exact named restaurant, cafe, bar, bakery, or market hall in the item title and place_query; every lodging or hotel item must be an exact named hotel property in the item title and place_query. Do not use generic meal or hotel labels.`)
       setMapPassNeedsPlanEdits(false)
       setRegenerateDoneDayIndex(dayIndex)
       setRegenerateNotice(notice)
@@ -700,12 +767,14 @@ function TripStudioPageContent() {
     if (!shareUrl) return
     setActionError(null)
     try {
-      await navigator.clipboard.writeText(shareUrl)
+      await copyTextToClipboard(shareUrl)
+      setCopyDone(true)
+      setTimeout(() => setCopyDone(false), 2600)
       showActionNotice('Public invite link copied. Send it to your group for feedback.')
     } catch {
       setActionError('Could not copy the invite link automatically. Select the link and copy it manually.')
     }
-  }, [shareUrl, showActionNotice])
+  }, [shareUrl, copyTextToClipboard, showActionNotice])
 
   const shareInvite = useCallback(async () => {
     if (!shareUrl) return
@@ -720,12 +789,12 @@ function TripStudioPageContent() {
         showActionNotice('Share sheet opened with the public invite link.')
         return
       }
-      await navigator.clipboard.writeText(inviteMessage || shareUrl)
+      await copyTextToClipboard(inviteMessage || shareUrl)
       showActionNotice('Invite message copied. Paste it anywhere your group is planning.')
     } catch {
       setActionError('Could not open sharing automatically. The public link is still available above.')
     }
-  }, [shareUrl, inviteMessage, tripDisplayTitle, showActionNotice])
+  }, [shareUrl, inviteMessage, tripDisplayTitle, copyTextToClipboard, showActionNotice])
 
   const shareWithFriends = useCallback(async () => {
     if (!trip || isSharingTrip) return
@@ -775,7 +844,7 @@ function TripStudioPageContent() {
         })
         showActionNotice('Share sheet opened with the public review link.')
       } else {
-        await navigator.clipboard.writeText(inviteMessage || shareUrl)
+        await copyTextToClipboard(inviteMessage || shareUrl)
         showActionNotice('Invite message copied. Paste it anywhere your group is planning.')
       }
 
@@ -795,13 +864,14 @@ function TripStudioPageContent() {
     } finally {
       setIsSharingTrip(false)
     }
-  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, tripDisplayTitle, canEditTrip, qaForceShareFailure, showActionNotice])
+  }, [trip, isSharingTrip, tripId, refetch, shareUrl, inviteMessage, tripDisplayTitle, canEditTrip, qaForceShareFailure, copyTextToClipboard, showActionNotice])
 
   const latestWorkflowJob = workflowJobs[0]
   const studioDayMaps = useMemo(() => {
     return days.map((day) => {
       const sortedItems = sortTripItemsForDisplay((day.items || []) as TripItem[])
-      const displayStops = buildDisplayStops(sortedItems)
+      const visibleItems = sortTripItemsForVisibleItinerary((day.items || []) as TripItem[])
+      const displayStops = buildDisplayStops(visibleItems, { preserveOrder: true })
       const mappedStops = displayStops.filter((stop) => stop.mapped)
       const usesDerivedStops = displayStops.some((stop) => stop.id.includes(':'))
       const savedRoute = day.routes?.find((entry) => entry.mode === 'walk') || day.routes?.[0]
@@ -864,6 +934,68 @@ function TripStudioPageContent() {
       },
     ],
   }), [ensureSelectedDayExists])
+  const plannerQuickEdits = useMemo<PlannerQuickEdit[]>(() => {
+    const destination = tripDestination || 'this destination'
+    const isAthens = /\bathens\b/i.test(destination)
+    const selectedDayTitle = selectedStudioDay?.day.title?.trim()
+    const dayContext = `Day ${ensureSelectedDayExists}${selectedDayTitle ? ` (${selectedDayTitle})` : ''}`
+
+    return [
+      {
+        key: 'hotel',
+        label: 'Add hotel',
+        detail: `Stay for Day ${ensureSelectedDayExists}`,
+        prompt: `Add one exact named hotel in ${destination} as the lodging item for ${dayContext} of this live itinerary. Keep every existing stop unchanged. Use addTripItem, classify it as lodging, and include the real hotel name in both the item title and place_query so it appears in the Stay section.`,
+        directItem: isAthens
+          ? {
+              type: 'lodging',
+              title: 'Ergon House Athens',
+              place_query: 'Ergon House Athens, Athens, Greece',
+              start_time: '15:00',
+              notes: 'Added from Planner as selected-day lodging without replacing existing stops.',
+            }
+          : undefined,
+      },
+      {
+        key: 'dinner',
+        label: 'Add dinner',
+        detail: `Restaurant for Day ${ensureSelectedDayExists}`,
+        prompt: `Add one exact named dinner restaurant in ${destination} to ${dayContext} of this live itinerary. Keep the existing day structure intact, place it at a realistic evening time, use addTripItem, and include the real restaurant name in both the item title and place_query.`,
+        directItem: isAthens
+          ? {
+              type: 'meal',
+              title: 'Karamanlidika',
+              place_query: 'Karamanlidika, Athens, Greece',
+              start_time: '20:00',
+              duration_minutes: 90,
+              notes: 'Added from Planner as a named dinner stop for the selected day.',
+            }
+          : undefined,
+      },
+      {
+        key: 'walkable',
+        label: 'Make walkable',
+        detail: `Tighten Day ${ensureSelectedDayExists}`,
+        prompt: `Edit ${dayContext} of this live itinerary to reduce backtracking and make the route more walkable. Keep the strongest stops, preserve exact named places, and explain the itinerary changes after applying them.`,
+      },
+      {
+        key: 'local',
+        label: 'Add local stop',
+        detail: `One useful addition`,
+        prompt: `Add one useful, exact named local stop in ${destination} to ${dayContext} of this live itinerary. Choose something that improves the day without making it too busy, use addTripItem, and include the exact place name in both the item title and place_query.`,
+        directItem: isAthens
+          ? {
+              type: 'activity',
+              title: 'National Garden',
+              place_query: 'National Garden, Athens, Greece',
+              start_time: '16:30',
+              duration_minutes: 60,
+              notes: 'Added from Planner as a low-friction local stop for the selected day.',
+            }
+          : undefined,
+      },
+    ]
+  }, [ensureSelectedDayExists, selectedStudioDay?.day.title, tripDestination])
   const selectedSuggestedDayIndex = selectedStudioDay?.day.day_index
   const suggestedRewriteInProgress = Boolean(selectedSuggestedDayIndex && regeneratingDayIndex === selectedSuggestedDayIndex)
   const suggestedRewriteHandoffActive = Boolean(
@@ -959,6 +1091,116 @@ function TripStudioPageContent() {
 
     setSuggestedStepNotice('Choose a day first, then use Suggested next step to rewrite it.')
   }, [handleRegenerateDay, hydrateMaps, selectedStudioDay, suggestedPlannerUnavailable, suggestedPrimaryIsMapPass])
+
+  const handlePlannerQuickEdit = useCallback(async (edit: PlannerQuickEdit) => {
+    if (!canEditTrip) {
+      const message = 'This is a shared trip preview. Start your own trip to edit the itinerary.'
+      setActionError(message)
+      setSuggestedStepNotice(message)
+      return
+    }
+
+    setChatOpen(true)
+    setActionError(null)
+    window.setTimeout(() => {
+      plannerChatPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 50)
+
+    if (!chatReady || qaForceRewriteUnavailable) {
+      const message = 'Planner chat is still connecting. Keep it open, then try this edit again.'
+      setActionError(message)
+      setSuggestedStepNotice(message)
+      return
+    }
+
+    if (edit.directItem) {
+      const selectedItems = selectedStudioDay?.sortedItems || []
+      if (edit.directItem.type === 'lodging' && selectedItems.some((item) => item.type === 'lodging')) {
+        const message = `Day ${ensureSelectedDayExists} already has a hotel. Use Planner chat to swap or replace it.`
+        setActionError(message)
+        setSuggestedStepNotice(message)
+        return
+      }
+
+      const duplicate = selectedItems.some(
+        (item) => item.title.trim().toLowerCase() === edit.directItem?.title.trim().toLowerCase()
+      )
+      if (duplicate) {
+        const message = `${edit.directItem.title} is already in Day ${ensureSelectedDayExists}.`
+        setActionError(message)
+        setSuggestedStepNotice(message)
+        return
+      }
+
+      const pendingNotice = `${edit.label} is being added to Day ${ensureSelectedDayExists}.`
+      showActionNotice(pendingNotice)
+      setSuggestedStepNotice(pendingNotice)
+
+      try {
+        await onBulkOps([
+          {
+            op: 'add',
+            day_index: ensureSelectedDayExists,
+            ...edit.directItem,
+          },
+        ])
+        const completeNotice = `${edit.directItem.title} was added to Day ${ensureSelectedDayExists}.`
+        showActionNotice(completeNotice)
+        setSuggestedStepNotice(completeNotice)
+      } catch {
+        const message = 'Could not save that itinerary edit. Try typing the request in Planner chat.'
+        setActionError(message)
+        setSuggestedStepNotice(message)
+      }
+      return
+    }
+
+    const pendingNotice = `${edit.label} request sent to Planner for Day ${ensureSelectedDayExists}.`
+    showActionNotice(pendingNotice)
+    setSuggestedStepNotice(pendingNotice)
+
+    try {
+      await sendMessage(edit.prompt)
+      const sentNotice = `${edit.label} request is in Planner chat. Review the itinerary after Globe applies it.`
+      showActionNotice(sentNotice)
+      setSuggestedStepNotice(sentNotice)
+    } catch {
+      const message = 'Could not send that Planner edit. Try typing the request in Planner chat.'
+      setActionError(message)
+      setSuggestedStepNotice(message)
+    }
+  }, [canEditTrip, chatReady, ensureSelectedDayExists, onBulkOps, qaForceRewriteUnavailable, selectedStudioDay?.sortedItems, sendMessage, showActionNotice])
+
+  const renderPlannerEditShortcuts = useCallback((surface: 'panel' | 'drawer') => (
+    <div className="border-b border-rule bg-paper px-4 py-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-foreground">Edit selected day</p>
+          <p className="mt-1 text-[11px] leading-relaxed text-foreground/58">
+            Send a precise Planner edit to Day {ensureSelectedDayExists}. The itinerary refreshes when Globe applies it.
+          </p>
+        </div>
+        <span className="shrink-0 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/48">
+          Day {ensureSelectedDayExists}
+        </span>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {plannerQuickEdits.map((edit) => (
+          <button
+            key={`${surface}-${edit.key}`}
+            type="button"
+            data-testid={`planner-quick-edit-${edit.key}-${surface}`}
+            onClick={() => void handlePlannerQuickEdit(edit)}
+            disabled={chatLoading || !canEditTrip}
+            className="min-h-[58px] rounded-md border border-rule bg-paper-raised px-3 py-2 text-left transition-colors hover:border-[color:var(--brass)]/40 hover:bg-paper-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brass)]/35 disabled:cursor-not-allowed disabled:opacity-55"
+          >
+            <span className="block truncate text-xs font-semibold text-foreground">{edit.label}</span>
+            <span className="mt-1 block text-[11px] leading-snug text-foreground/56">{edit.detail}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  ), [canEditTrip, chatLoading, ensureSelectedDayExists, handlePlannerQuickEdit, plannerQuickEdits])
 
   const startWorkflow = useCallback(async (type: PlannerWorkflowJob['type']) => {
     if (!tripId || creatingWorkflow) return
@@ -1158,14 +1400,7 @@ function TripStudioPageContent() {
               <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
               <p className="mt-1 text-sm font-medium text-foreground">Chat becomes itinerary edits</p>
             </div>
-            <div className="border-b border-rule bg-paper px-4 py-4">
-              <div className="rounded-md border border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] px-3 py-3">
-                <p className="text-xs font-semibold text-foreground">Plan with Globe</p>
-                <p className="mt-1 text-[11px] leading-relaxed text-foreground/58">
-                  Ask for a change, then review the route, day list, and group feedback in the same workspace.
-                </p>
-              </div>
-            </div>
+            {renderPlannerEditShortcuts('panel')}
             <ChatInterface
               messages={messages}
               isLoading={chatLoading}
@@ -1258,23 +1493,66 @@ function TripStudioPageContent() {
                   <div className="hidden p-4 lg:block">
                     <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/38">Selected stops</p>
                     <div className="mt-3 space-y-2">
-                      {(selectedStudioDay?.displayStops || []).slice(0, 5).map((stop, index) => (
-                        <button
-                          key={stop.id}
-                          onClick={() => onSelectItem(stop.item)}
-                          className="touch-target flex w-full items-start gap-2 rounded-md border border-rule bg-paper px-3 py-2 text-left transition-colors hover:bg-paper-hover"
-                        >
-                          <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--paper-recessed)] text-[10px] font-semibold text-[var(--brass)]">
-                            {index + 1}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-xs font-medium text-foreground">{stop.title}</span>
-                            <span className="mt-0.5 block truncate text-[11px] text-foreground/52">
-                              {stop.timeLabel || 'Flexible'} {stop.mapped ? '• pinned' : '• needs map data'}
-                            </span>
-                          </span>
-                        </button>
-                      ))}
+                      {(selectedStudioDay?.displayStops || []).slice(0, 5).map((stop) => {
+                        const stopImage = getItineraryItemImage({
+                          title: stop.title,
+                          type: stop.item.type,
+                          placeName: stop.placeName || stop.item.place?.name,
+                          country: stop.country || stop.item.place?.country,
+                          photoUrl: stop.item.place?.photo_url,
+                        })
+                        const mapsUrl = getStopMapsUrl({
+                          title: stop.title,
+                          placeName: stop.placeName || stop.item.place?.name,
+                          country: stop.country || stop.item.place?.country,
+                          latitude: stop.mapped ? stop.latitude : null,
+                          longitude: stop.mapped ? stop.longitude : null,
+                        })
+
+                        return (
+                          <div
+                            key={stop.id}
+                            className="group flex w-full items-start gap-2 rounded-md border border-rule bg-paper px-2.5 py-2 transition-colors hover:bg-paper-hover"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => onSelectItem(stop.item)}
+                              className="touch-target flex min-w-0 flex-1 items-start gap-2 text-left"
+                            >
+                              <span className="relative h-12 w-14 shrink-0 overflow-hidden rounded-md border border-rule bg-paper-recessed">
+                                <Image
+                                  src={stopImage.src}
+                                  alt=""
+                                  fill
+                                  sizes="56px"
+                                  unoptimized
+                                  loading="lazy"
+                                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                                />
+                              <span className="absolute left-1.5 top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-paper-raised/90 px-1 text-[10px] font-semibold text-[var(--brass)] shadow-sm">
+                                  {stop.mapped ? stop.index : '—'}
+                                </span>
+                              </span>
+                              <span className="min-w-0 flex-1 pt-0.5">
+                                <span className="block truncate text-xs font-medium text-foreground">{stop.title}</span>
+                                <span className="mt-0.5 block truncate text-[11px] text-foreground/52">
+                                  {stop.timeLabel || 'Flexible'} {stop.mapped ? '• pinned' : '• needs map data'}
+                                </span>
+                              </span>
+                            </button>
+                            <a
+                              href={mapsUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="touch-target mt-1 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-rule bg-paper-raised text-foreground/60 transition-colors hover:border-[color:var(--brass)]/30 hover:bg-[var(--brass-subtle)] hover:text-foreground"
+                              aria-label={`Open maps URL for ${stop.title}`}
+                              title="Open maps URL"
+                            >
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </a>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
@@ -1353,15 +1631,25 @@ function TripStudioPageContent() {
                 </button>
               </div>
               <div className="mt-4 flex gap-2">
-                <div className="min-w-0 flex-1 rounded-md border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62 truncate">
-                  {shareUrl || 'Enable public link to create one'}
-                </div>
+                <input
+                  aria-label="Public review link"
+                  readOnly
+                  value={shareUrl || 'Enable public link to create one'}
+                  onFocus={(event) => event.currentTarget.select()}
+                  onClick={(event) => event.currentTarget.select()}
+                  className="min-w-0 flex-1 rounded-md border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62"
+                />
                 <button
                   onClick={copyInviteLink}
                   disabled={!shareUrl}
-                  className="touch-target rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/78 transition-colors hover:bg-paper-hover disabled:opacity-45"
+                  className={cn(
+                    'touch-target rounded-md border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-45',
+                    copyDone
+                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                      : 'border-rule bg-paper text-foreground/78 hover:bg-paper-hover'
+                  )}
                 >
-                  Copy
+                  {copyDone ? 'Copied' : 'Copy'}
                 </button>
               </div>
               <button
@@ -1574,6 +1862,7 @@ function TripStudioPageContent() {
                 ×
               </button>
             </div>
+            {renderPlannerEditShortcuts('drawer')}
             <ChatInterface
               messages={messages}
               isLoading={chatLoading}

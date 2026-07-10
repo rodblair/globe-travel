@@ -61,6 +61,8 @@ const PLANNER_PLACE_OVERRIDES: PlannerPlaceOverride[] = [
   { pattern: /acropolis archaeological site|acropolis.*parthenon|parthenon.*acropolis|^acropolis of athens$/i, name: 'Acropolis of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97153, longitude: 23.72575, manualId: 'manual:athens:acropolis' },
   { pattern: /acropolis museum/i, name: 'Acropolis Museum', country: 'Greece', country_code: 'GR', latitude: 37.96845, longitude: 23.72853, manualId: 'manual:athens:acropolis-museum' },
   { pattern: /\bstrofi\b/i, name: 'Strofi', country: 'Greece', country_code: 'GR', latitude: 37.96801, longitude: 23.72453, manualId: 'manual:athens:strofi' },
+  { pattern: /athens\s+gate(?:\s+hotel)?|athensgate/i, name: 'Athens Gate Hotel', country: 'Greece', country_code: 'GR', latitude: 37.96833, longitude: 23.73167, manualId: 'manual:athens:athens-gate-hotel' },
+  { pattern: /athens marriott(?: hotel)?|syngrou avenue 385|syggrou avenue 385/i, name: 'Athens Marriott Hotel', country: 'Greece', country_code: 'GR', latitude: 37.940558, longitude: 23.696906, manualId: 'manual:athens:marriott-hotel' },
   { pattern: /monastiraki square|flea market.*monastiraki|monastiraki.*flea market/i, name: 'Monastiraki Square', country: 'Greece', country_code: 'GR', latitude: 37.97608, longitude: 23.72557, manualId: 'manual:athens:monastiraki-square' },
   { pattern: /ancient agora/i, name: 'Ancient Agora of Athens', country: 'Greece', country_code: 'GR', latitude: 37.97569, longitude: 23.72247, manualId: 'manual:athens:ancient-agora' },
   { pattern: /lisbon cathedral|sé de lisboa|se de lisboa/i, name: 'Lisbon Cathedral', country: 'Portugal', country_code: 'PT', latitude: 38.70975, longitude: -9.13349, manualId: 'manual:lisbon:cathedral' },
@@ -443,6 +445,29 @@ function normalizeTripItemType(type?: string | null) {
   return type || 'activity'
 }
 
+function normalizeTripItemDuplicateText(value: string | null | undefined) {
+  return (value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+function tripItemDuplicateKey(item: {
+  type?: string | null
+  title?: string | null
+  start_time?: string | null
+  end_time?: string | null
+  place_id?: string | null
+}) {
+  const type = normalizeTripItemType(item.type)
+  const title = normalizeTripItemDuplicateText(item.title)
+  const place = item.place_id || ''
+  const time = type === 'lodging' ? '' : `${item.start_time || ''}-${item.end_time || ''}`
+  return [type, title, place, time].join('|')
+}
+
 function normalizeDestinationKey(value: string | null | undefined) {
   return normalizeDestinationLabel(value)
     .normalize('NFD')
@@ -491,6 +516,26 @@ function getFullPlanDestinationLabel({
 
 function itemNeedsDestinationLockedPlace(type: string, hasRequestedDestination: boolean) {
   return hasRequestedDestination && (type === 'activity' || type === 'meal' || type === 'lodging')
+}
+
+function getPlannerPlaceQuery({
+  type,
+  title,
+  placeQuery,
+}: {
+  type: string
+  title: string
+  placeQuery?: string | null
+}) {
+  const explicitQuery = placeQuery?.trim()
+  if (explicitQuery) return explicitQuery
+
+  const normalizedType = normalizeTripItemType(type)
+  if (normalizedType === 'activity' || normalizedType === 'meal' || normalizedType === 'lodging') {
+    return title.trim()
+  }
+
+  return undefined
 }
 
 
@@ -826,7 +871,6 @@ export async function POST(req: Request) {
                 title: d.title ?? null,
                 date: d.date ?? null,
                 notes: d.notes ?? null,
-                updated_at: new Date().toISOString(),
               })
               .eq('id', dayId)
           }
@@ -860,14 +904,15 @@ export async function POST(req: Request) {
             existingConstraints: (trip?.constraints as Record<string, unknown> | null) || null,
           })
           const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
-          const place = token
-            ? await resolvePlannerPlace({ db, token, placeQuery: place_query, destinationLabel, destinationAnchor })
-            : null
           const normalizedType = normalizeTripItemType(type)
+          const resolvedPlaceQuery = getPlannerPlaceQuery({ type: normalizedType, title, placeQuery: place_query })
+          const place = token
+            ? await resolvePlannerPlace({ db, token, placeQuery: resolvedPlaceQuery, destinationLabel, destinationAnchor })
+            : null
           if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
             return JSON.stringify({
               kind: 'error',
-              message: `The place "${place_query || title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+              message: `The place "${resolvedPlaceQuery || title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
             })
           }
           const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, title, place?.name) ? place!.name : title
@@ -994,6 +1039,7 @@ export async function POST(req: Request) {
 
           for (const day of days) {
             const tripDayId = await ensureTripDay(db, tid, day.day_index)
+            const seenItemKeys = new Set<string>()
             const { count: existingItemCount } = await db
               .from('trip_items')
               .select('id', { count: 'exact', head: true })
@@ -1024,7 +1070,7 @@ export async function POST(req: Request) {
               const place = await resolvePlannerPlace({
                 db,
                 token,
-                placeQuery: item.place_query,
+                placeQuery: getPlannerPlaceQuery({ type: item.type, title: item.title, placeQuery: item.place_query }),
                 destinationLabel,
                 destinationAnchor,
               })
@@ -1042,20 +1088,29 @@ export async function POST(req: Request) {
                 })
               }
               const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
+              const duplicateKey = tripItemDuplicateKey({
+                type: normalizedType,
+                title: itemTitle,
+                start_time: item.start_time ?? null,
+                end_time: item.end_time ?? null,
+                place_id: place?.id || null,
+              })
+              if (seenItemKeys.has(duplicateKey)) continue
+              seenItemKeys.add(duplicateKey)
 
               const { error: itemErr } = await db
                 .from('trip_items')
                 .insert({
-                  trip_day_id: tripDayId,
-                  type: normalizedType,
-                  title: itemTitle,
-                  place_id: place?.id || null,
-                  start_time: item.start_time ?? null,
-                  end_time: item.end_time ?? null,
-                  duration_minutes: item.duration_minutes ?? null,
-                  notes: item.notes ?? null,
-                  order_index: index,
-                })
+                trip_day_id: tripDayId,
+                type: normalizedType,
+                title: itemTitle,
+                place_id: place?.id || null,
+                start_time: item.start_time ?? null,
+                end_time: item.end_time ?? null,
+                duration_minutes: item.duration_minutes ?? null,
+                notes: item.notes ?? null,
+                order_index: seenItemKeys.size - 1,
+              })
               if (itemErr) {
                 console.error('[setFullTripPlan] item insert error:', itemErr.message, JSON.stringify({ trip_day_id: tripDayId, type: item.type, title: item.title }))
                 return JSON.stringify({ kind: 'error', message: itemErr.message })
@@ -1120,13 +1175,58 @@ export async function POST(req: Request) {
           })
           const destinationAnchor = await resolveDestinationAnchor(destinationLabel, token)
 
+          const preparedItems = []
+          const seenItemKeys = new Set<string>()
+          for (let index = 0; index < items.length; index++) {
+            const item = items[index]
+            const normalizedType = normalizeTripItemType(item.type)
+            const resolvedPlaceQuery = getPlannerPlaceQuery({
+              type: normalizedType,
+              title: item.title,
+              placeQuery: item.place_query,
+            })
+            const place = await resolvePlannerPlace({
+              db,
+              token,
+              placeQuery: resolvedPlaceQuery,
+              destinationLabel,
+              destinationAnchor,
+            })
+            if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+              return JSON.stringify({
+                kind: 'error',
+                message: `The place "${resolvedPlaceQuery || item.title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+              })
+            }
+            const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
+            const duplicateKey = tripItemDuplicateKey({
+              type: normalizedType,
+              title: itemTitle,
+              start_time: item.start_time ?? null,
+              end_time: item.end_time ?? null,
+              place_id: place?.id || null,
+            })
+            if (seenItemKeys.has(duplicateKey)) continue
+            seenItemKeys.add(duplicateKey)
+            preparedItems.push({
+              trip_day_id: existingDay.id,
+              type: normalizedType,
+              title: itemTitle,
+              place_id: place?.id || null,
+              start_time: item.start_time ?? null,
+              end_time: item.end_time ?? null,
+              duration_minutes: item.duration_minutes ?? null,
+              notes: item.notes ?? null,
+              order_index: preparedItems.length,
+            })
+          }
+
           const { error: dayErr } = await db
             .from('trip_days')
             .update({
               title: title ?? null,
               date: date ?? null,
               notes: notes ?? null,
-              updated_at: new Date().toISOString(),
             })
             .eq('id', existingDay.id)
           if (dayErr) return JSON.stringify({ kind: 'error', message: dayErr.message })
@@ -1134,41 +1234,12 @@ export async function POST(req: Request) {
           await db.from('trip_items').delete().eq('trip_day_id', existingDay.id)
           await db.from('trip_routes').delete().eq('trip_day_id', existingDay.id)
 
-          for (let index = 0; index < items.length; index++) {
-            const item = items[index]
-            const place = await resolvePlannerPlace({
-              db,
-              token,
-              placeQuery: item.place_query,
-              destinationLabel,
-              destinationAnchor,
-            })
-            const normalizedType = normalizeTripItemType(item.type)
-            if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
-              return JSON.stringify({
-                kind: 'error',
-                message: `The place "${item.place_query || item.title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
-              })
-            }
-            const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
-
-            const { error: itemErr } = await db
-              .from('trip_items')
-              .insert({
-                trip_day_id: existingDay.id,
-                type: normalizedType,
-                title: itemTitle,
-                place_id: place?.id || null,
-                start_time: item.start_time ?? null,
-                end_time: item.end_time ?? null,
-                duration_minutes: item.duration_minutes ?? null,
-                notes: item.notes ?? null,
-                order_index: index,
-              })
-            if (itemErr) {
-              console.error('[replaceTripDayPlan] item insert error:', itemErr.message, JSON.stringify({ trip_day_id: existingDay.id, type: item.type, title: item.title }))
-              return JSON.stringify({ kind: 'error', message: itemErr.message })
-            }
+          const { error: itemErr } = await db
+            .from('trip_items')
+            .insert(preparedItems)
+          if (itemErr) {
+            console.error('[replaceTripDayPlan] item insert error:', itemErr.message, JSON.stringify({ trip_day_id: existingDay.id, items: preparedItems.length }))
+            return JSON.stringify({ kind: 'error', message: itemErr.message })
           }
 
           await computeAndStoreDayRoute(db, existingDay.id, token, 'walk')

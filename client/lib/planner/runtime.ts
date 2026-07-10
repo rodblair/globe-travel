@@ -23,6 +23,10 @@ const DAY_DURATION_PATTERN = new RegExp(String.raw`\b(${DAY_NUMBER_SOURCE})\s*[-
 const LEADING_TRIP_DESCRIPTOR_SOURCE = String.raw`(?:restful|rest|relaxed|relaxing|calm|slow|easy|balanced|budget|cheap|premium|luxury|romantic|family|friend|friends|group|solo|first[- ]?time|food(?:ie)?|cultural|culture|history|historic|beach(?:es)?|walkable|walking|outdoor|outdoors|quick|long|short)`
 const DESTINATION_TRAILING_THEME_PATTERN =
   /\s+\b(?:food(?:ie)?|viewpoints?|views?|restaurants?|cafes?|cafés?|coffee|wine|nightlife|bars?|beach(?:es)?|museums?|galleries|art|history|historic|culture|design|architecture|shops?|shopping|bakeries|bakery|romantic|family|families|friends?|group|walkable|walking|budget|luxury|midrange|cheap|premium|balanced|relaxed|packed|adventure|outdoors?|markets?)\b.*$/i
+const CONTEXTUAL_DESTINATION_PATTERN =
+  /^(?:(?:this|that|the|current|existing|same|my|our)\s+)?(?:live\s+)?(?:trip|itinerary|plan|schedule|route|day|item|stop|edit|request)?$/i
+const CONTEXTUAL_DESTINATION_PHRASE_PATTERN =
+  /^(?:this|that|the|current|existing|same|my|our)(?:\s+live)?(?:\s+(?:trip|itinerary|plan|schedule|route|day|item|stop|edit|request))?$/i
 const DESTINATION_ALIAS_REPLACEMENTS: Array<[RegExp, string]> = [
   [/^athens\s+greece$/i, 'Athens, Greece'],
 ]
@@ -58,7 +62,7 @@ function cleanDestinationCandidate(candidate: string) {
     .replace(/^(?:plan|build|create|make|generate)\s+(?:(?:an|a|the)\s+)?/i, '')
     .replace(new RegExp(String.raw`^(?:${DAY_DURATION_SOURCE})\s+(?:in|to|for)\s+`, 'i'), '')
     .replace(new RegExp(String.raw`^(?:${DAY_DURATION_SOURCE})\s+`, 'i'), '')
-    .replace(/^(?:in|to|for)\s+/i, '')
+    .replace(/^(?:in|to|for|of)\s+/i, '')
     .replace(/\s+\band\s+[A-Z][A-Za-z\s'’-]{1,60}$/g, '')
     .replace(DESTINATION_TRAILING_THEME_PATTERN, '')
     .replace(/\s+(?:trip|itinerary|city break|escape|weekend|getaway|with friends|for friends)$/i, '')
@@ -75,6 +79,21 @@ function looksLikeDateOrDuration(candidate: string) {
     /\b(?:january|february|march|april|may|june|july|august|september|october|november|december)\b/.test(normalized) ||
     /\b(?:spring|summer|fall|autumn|winter|weekend|weekday|tonight|tomorrow|next\s+week|next\s+month|next\s+year)\b/.test(normalized) ||
     new RegExp(String.raw`^(?:${DAY_DURATION_SOURCE}|(?:\d+|${Object.keys(DAY_NUMBER_WORDS).join('|')})\s*[- ]?\s*(?:night|nights|week|weeks))$`, 'i').test(normalized)
+  )
+}
+
+function looksLikeContextualReference(candidate: string) {
+  const normalized = candidate.trim().toLowerCase()
+  if (!normalized) return true
+  return (
+    /^(?:add|insert|append|swap|replace|move|update|edit|delete|remove)\b/.test(normalized) ||
+    /^(?:keep|preserve)\b.*\b(?:rest|unchanged)\b/.test(normalized) ||
+    /\b(?:rest of the|unchanged|same trip|existing trip)\b/.test(normalized) ||
+    CONTEXTUAL_DESTINATION_PATTERN.test(normalized) ||
+    CONTEXTUAL_DESTINATION_PHRASE_PATTERN.test(normalized) ||
+    /^(?:the\s+)?(?:item\s+)?(?:title|place[_\s-]?query|tool|turn|request)\b/.test(normalized) ||
+    /\b(?:this|that|the|current|existing|same|my|our)\s+(?:live\s+)?(?:trip|itinerary|plan|schedule|route)\b/i.test(normalized) ||
+    /\b(?:to|in|for|of)\s+(?:this|that|the|current|existing|same|my|our)\s+live\b/i.test(normalized)
   )
 }
 
@@ -140,6 +159,8 @@ export function extractDestinationFromPrompt(text: string | null | undefined): s
     if (
       normalized &&
       !looksLikeDateOrDuration(normalized) &&
+      !looksLikeContextualReference(normalized) &&
+      !/^(?:day|morning|afternoon|evening)\b/i.test(normalized) &&
       !/^(?:realistic|balanced|beautiful|budget|friendly|group|city|day city|short|weekend|friends?|couples?|family)$/i.test(normalized)
     ) {
       return normalized
