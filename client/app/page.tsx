@@ -32,69 +32,111 @@ export default function Home() {
     <main className="bg-paper text-foreground" aria-label="Globe.travel overview">
       {/* ─────────────── HERO ─────────────── */}
       <div ref={heroRef}>
-        <HorizonHero
-          variant="noon"
-          className="min-h-[88vh] flex flex-col"
-        >
+        <HorizonHero variant="noon" className="flex min-h-[92vh] flex-col">
           {/* Top bar */}
-          <header className="relative z-10 mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-4 pt-5 md:items-center md:px-6 md:pt-6">
+          <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 pt-5 md:px-6 md:pt-6">
             <Link href="/" className="flex min-h-11 items-center justify-self-start">
               <GlobeBrand />
             </Link>
-            <nav className="hidden items-center gap-7 pt-1 t-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-2 md:flex">
+            <nav className="hidden items-center gap-6 pt-1 t-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-2 md:flex">
               <Link href="#how" className="flex min-h-11 items-center hover:text-foreground transition-colors">
                 How it works
               </Link>
               <Link href="#crew" className="flex min-h-11 items-center hover:text-foreground transition-colors">
-                For groups
+                Live preview
               </Link>
               <Link href="/login" className="flex min-h-11 items-center hover:text-foreground transition-colors">
                 Sign in
               </Link>
+              <Button asChild size="sm" className="rounded-full px-5 normal-case tracking-normal">
+                <Link href="/chat">Plan a trip</Link>
+              </Button>
             </nav>
           </header>
 
-          {/* Hero copy */}
-          <motion.div
-            style={{ y: driftY }}
-            className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-14 text-center md:px-6 md:py-10"
-          >
-            <p className="mb-4 t-mono text-[0.6875rem] uppercase tracking-[0.18em] text-[var(--brass)]">
-              Globe.travel maps for group trips
-            </p>
-            <h1 className="h-hero mx-auto mb-5 max-w-[17ch] text-foreground [&>em]:not-italic [&>em]:text-ink-2">
-              Plan the trip everyone <em>can say yes to.</em>
-            </h1>
-            <p className="mx-auto mb-8 max-w-[54ch] text-body-lg leading-relaxed text-ink-2">
-              AI itineraries, friend feedback, and shareable route snapshots in one calm workspace
-              for small groups planning city trips.
-            </p>
-            <div className="flex w-full max-w-md flex-col items-stretch justify-center gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
-              <Button asChild size="xl" className="rounded-full px-7">
-                <Link href="/signup" className="touch-target">
-                  Start planning
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="xl"
-                className="rounded-full px-7 text-foreground hover:bg-paper-raised"
-              >
-                <Link href="#crew" className="touch-target">
-                  See the Globe.travel map
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
+          {/* Hero copy + product proof */}
+          <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-10 px-4 py-12 md:px-6 md:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <motion.div style={{ y: driftY }} className="max-w-xl text-left">
+              <p className="mb-4 t-mono text-[0.6875rem] uppercase tracking-[0.18em] text-[var(--brass)]">
+                One shared plan for the whole group
+              </p>
+              <h1 className="h-hero mb-5 max-w-[13ch] text-foreground [&>em]:not-italic [&>em]:text-ink-2">
+                Plan the trip everyone <em>can say yes to.</em>
+              </h1>
+              <p className="mb-7 max-w-[52ch] text-body-lg leading-relaxed text-ink-2">
+                Describe the trip once. Globe builds a day-by-day itinerary, maps every stop,
+                and gives your friends one clear place to react.
+              </p>
+              <div className="flex w-full max-w-md flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
+                <Button asChild size="xl" className="rounded-full px-7">
+                  <Link href="/chat" className="touch-target">
+                    Plan a trip free
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="xl"
+                  className="rounded-full px-7 text-foreground hover:bg-paper-raised"
+                >
+                  <Link href="#crew" className="touch-target">
+                    See a sample day
+                  </Link>
+                </Button>
+              </div>
+              <p className="mt-4 text-sm text-ink-3">
+                Free to start · Invite friends when you&apos;re ready
+              </p>
+            </motion.div>
 
-          {/* horizon ledger */}
+            <motion.div
+              {...fade}
+              transition={{ ...fade.transition, delay: 0.12 }}
+              className="relative mx-auto w-full max-w-[560px]"
+              aria-label="Sample Kyoto group itinerary"
+            >
+              <div className="absolute -inset-5 rounded-[2rem] bg-[var(--paper-raised)]/45 blur-2xl" aria-hidden />
+              <div className="card-paper relative aspect-[5/4] overflow-hidden rounded-[1.25rem] border border-rule-strong shadow-[var(--shadow-md)]">
+                <MeridianFrame inset={10} length={14} color="var(--ink-3)" opacity={0.6} />
+                <div className="paper-grain pointer-events-none absolute inset-0" />
+                <div className="absolute inset-x-5 top-5 z-10 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-[var(--brass)]">Kyoto · Day 02</p>
+                    <p className="mt-1 t-h3 text-foreground">Lanterns, markets & tea</p>
+                  </div>
+                  <span className="rounded-full border border-rule-strong bg-paper-raised px-3 py-1 text-xs text-ink-2">6 stops</span>
+                </div>
+                <div className="absolute inset-0 opacity-50">
+                  <ContourOverlay density="dense" className="text-ink-2" />
+                </div>
+                <div className="absolute inset-x-4 bottom-10 top-16">
+                  <ThreadDemo />
+                </div>
+                <div className="absolute inset-x-5 bottom-4 z-10 flex items-center justify-between t-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink-3">
+                  <span>09:00 → 22:00</span>
+                  <span>14.2 km · walking</span>
+                </div>
+              </div>
+              <div className="absolute -bottom-5 left-5 z-20 flex items-center gap-3 rounded-full border border-rule-strong bg-paper-raised px-4 py-2.5 shadow-[var(--panel-shadow-hover)]">
+                <div className="flex -space-x-2" aria-hidden>
+                  {["MP", "RB", "JL"].map((initials) => (
+                    <span key={initials} className="grid h-8 w-8 place-items-center rounded-full border-2 border-[var(--paper-raised)] bg-[var(--paper-recessed)] text-[0.625rem] font-semibold text-ink-2">
+                      {initials}
+                    </span>
+                  ))}
+                </div>
+                <span className="text-sm font-medium text-ink-2">3 friends reviewing</span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* value ledger */}
           <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-6 md:px-6 md:pb-8">
-            <div className="flex items-end justify-between gap-6 t-mono text-[0.65625rem] uppercase tracking-[0.16em] text-ink-2">
-              <span>PLANNED TOGETHER</span>
-              <span className="hidden sm:inline">CITY PLANS · FRIEND FEEDBACK</span>
-              <span className="text-right">MADE TO SHARE</span>
+            <div className="grid grid-cols-3 gap-2 border-t border-rule-strong pt-4 t-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-2 sm:tracking-[0.16em]">
+              <span>01 · Describe the trip</span>
+              <span className="text-center">02 · Review one plan</span>
+              <span className="text-right">03 · Share with friends</span>
             </div>
           </div>
         </HorizonHero>
