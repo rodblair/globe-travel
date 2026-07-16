@@ -49,7 +49,7 @@ export default function Home() {
                 Sign in
               </Link>
               <Button asChild size="sm" className="rounded-full px-5 normal-case tracking-normal">
-                <Link href="/chat">Plan a trip</Link>
+                <Link href="/api/guest/start">Plan a trip</Link>
               </Button>
             </nav>
           </header>
@@ -69,7 +69,7 @@ export default function Home() {
               </p>
               <div className="flex w-full max-w-md flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
                 <Button asChild size="xl" className="rounded-full px-7">
-                  <Link href="/chat" className="touch-target">
+                  <Link href="/api/guest/start" className="touch-target">
                     Plan a trip free
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
