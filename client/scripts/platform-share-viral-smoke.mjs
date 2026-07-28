@@ -142,6 +142,9 @@ async function readPublicShareState(page) {
     const buttons = Array.from(document.querySelectorAll('button'))
       .map((button) => (button.textContent || '').trim().replace(/\s+/g, ' '))
       .filter(Boolean)
+    const main = document.querySelector('main')
+    const mainOverflowY = main ? getComputedStyle(main).overflowY : null
+    const verticalScrollRange = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
     return {
       url: location.href,
@@ -154,6 +157,9 @@ async function readPublicShareState(page) {
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
+      verticalScrollRange,
+      mainOverflowY,
+      pageScrollable: verticalScrollRange > 1 && mainOverflowY !== 'hidden',
       startLinks,
       buttons,
     }
@@ -248,7 +254,8 @@ try {
       state.hasShareCard &&
       startLinksOk &&
       !state.hasAppError &&
-      !state.horizontalOverflow
+      !state.horizontalOverflow &&
+      state.pageScrollable
     ), {
       viewport: viewport.id,
       url: state.url,
@@ -263,6 +270,9 @@ try {
       horizontalOverflow: state.horizontalOverflow,
       clientWidth: state.clientWidth,
       scrollWidth: state.scrollWidth,
+      verticalScrollRange: state.verticalScrollRange,
+      mainOverflowY: state.mainOverflowY,
+      pageScrollable: state.pageScrollable,
     })
 
     if (viewport.id === 'desktop') {
