@@ -92,6 +92,9 @@ function looksLikeContextualReference(candidate: string) {
     CONTEXTUAL_DESTINATION_PATTERN.test(normalized) ||
     CONTEXTUAL_DESTINATION_PHRASE_PATTERN.test(normalized) ||
     /^(?:the\s+)?(?:item\s+)?(?:title|place[_\s-]?query|tool|turn|request)\b/.test(normalized) ||
+    /\b(?:item\s+)?title\b/.test(normalized) ||
+    /\bplace[_\s-]?query\b/.test(normalized) ||
+    /\b(?:tool|turn|request)\b/.test(normalized) ||
     /\b(?:this|that|the|current|existing|same|my|our)\s+(?:live\s+)?(?:trip|itinerary|plan|schedule|route)\b/i.test(normalized) ||
     /\b(?:to|in|for|of)\s+(?:this|that|the|current|existing|same|my|our)\s+live\b/i.test(normalized)
   )

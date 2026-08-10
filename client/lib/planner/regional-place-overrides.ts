@@ -145,7 +145,12 @@ export const REGIONAL_PLACE_OVERRIDES: RegionalPlaceOverride[] = [
   { pattern: /saint peter/i, name: 'Saint Peter', country: 'Australia', country_code: 'AU', latitude: -33.88984, longitude: 151.23049, manualId: 'manual:sydney:saint-peter' },
 
   { pattern: /scholarhio/i, name: 'Scholarhio', country: 'Greece', country_code: 'GR', latitude: 37.97224, longitude: 23.73033, manualId: 'manual:athens:scholarhio' },
+  { pattern: /^anafiotika$|plaka.*anafiotika|anafiotika.*plaka/i, name: 'Anafiotika', country: 'Greece', country_code: 'GR', latitude: 37.97233, longitude: 23.72786, manualId: 'manual:athens:anafiotika' },
   { pattern: /anafiotika cafe/i, name: 'Anafiotika Cafe Restaurant', country: 'Greece', country_code: 'GR', latitude: 37.97316, longitude: 23.7283, manualId: 'manual:athens:anafiotika-cafe' },
+  { pattern: /a for athens rooftop|rooftop dinner.*acropolis|acropolis views/i, name: 'A for Athens Rooftop', country: 'Greece', country_code: 'GR', latitude: 37.97615, longitude: 23.72566, manualId: 'manual:athens:a-for-athens-rooftop' },
+  { pattern: /\bbrettos\b/i, name: 'Brettos', country: 'Greece', country_code: 'GR', latitude: 37.97347, longitude: 23.73064, manualId: 'manual:athens:brettos' },
+  { pattern: /ergon(?:\s+house)?(?:\s+athens)?|ergon\s+hotel/i, name: 'Ergon House Athens', country: 'Greece', country_code: 'GR', latitude: 37.9755, longitude: 23.73008, manualId: 'manual:athens:ergon-house-athens' },
+  { pattern: /\blotte\b/i, name: 'Lotte Cafe-Bistrot', country: 'Greece', country_code: 'GR', latitude: 37.97075, longitude: 23.72794, manualId: 'manual:athens:lotte-cafe-bistrot' },
   { pattern: /karamanlidika/i, name: 'Karamanlidika', country: 'Greece', country_code: 'GR', latitude: 37.97964, longitude: 23.72454, manualId: 'manual:athens:karamanlidika' },
   { pattern: /couleur locale/i, name: 'Couleur Locale', country: 'Greece', country_code: 'GR', latitude: 37.97625, longitude: 23.72424, manualId: 'manual:athens:couleur-locale' },
   { pattern: /stavros niarchos|snfcc/i, name: 'Stavros Niarchos Foundation Cultural Center', country: 'Greece', country_code: 'GR', latitude: 37.93952, longitude: 23.69165, manualId: 'manual:athens:stavros-niarchos-foundation-cultural-center' },

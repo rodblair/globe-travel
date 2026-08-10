@@ -909,21 +909,48 @@ export async function POST(req: Request) {
           const place = token
             ? await resolvePlannerPlace({ db, token, placeQuery: resolvedPlaceQuery, destinationLabel, destinationAnchor })
             : null
-          if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+          if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(destinationLabel)) && !place?.id) {
             return JSON.stringify({
               kind: 'error',
-              message: `The place "${resolvedPlaceQuery || title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+              message: `The place "${resolvedPlaceQuery || title}" did not resolve inside ${destinationLabel}. Retry with a specific real place in ${destinationLabel}.`,
             })
           }
           const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, title, place?.name) ? place!.name : title
 
           const { data: existing, error: maxErr } = await db
             .from('trip_items')
-            .select('order_index')
+            .select('id,type,title,start_time,end_time,place_id,order_index')
             .eq('trip_day_id', dayId)
             .order('order_index', { ascending: false })
-            .limit(1)
           if (maxErr) return JSON.stringify({ kind: 'error', message: maxErr.message })
+
+          const duplicateKey = tripItemDuplicateKey({
+            type: normalizedType,
+            title: itemTitle,
+            start_time: start_time ?? null,
+            end_time: end_time ?? null,
+            place_id: place?.id || null,
+          })
+          const duplicate = (existing || []).find((item: any) => tripItemDuplicateKey(item) === duplicateKey)
+          if (duplicate?.id) {
+            const { error: updateErr } = await db
+              .from('trip_items')
+              .update({
+                place_id: place?.id || null,
+                start_time: start_time ?? null,
+                end_time: end_time ?? null,
+                duration_minutes: duration_minutes ?? null,
+                notes: notes ?? null,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', duplicate.id)
+            if (updateErr) return JSON.stringify({ kind: 'error', message: updateErr.message })
+            if (token) {
+              await computeAndStoreDayRoute(db, dayId, token, 'walk')
+            }
+
+            return tripPatch(tid)
+          }
 
           const nextOrder = existing && existing[0]?.order_index != null ? (existing[0].order_index as number) + 1 : 0
 
@@ -1075,16 +1102,16 @@ export async function POST(req: Request) {
                 destinationAnchor,
               })
               const normalizedType = normalizeTripItemType(item.type)
-              if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !item.place_query) {
+              if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(destinationLabel)) && !item.place_query) {
                 return JSON.stringify({
                   kind: 'error',
-                  message: `Every ${normalizedType} in a ${requestedDestinationLabel} full plan needs a specific place_query in ${requestedDestinationLabel}. Retry with exact venues or landmarks in the requested destination.`,
+                  message: `Every ${normalizedType} in a ${destinationLabel} full plan needs a specific place_query in ${destinationLabel}. Retry with exact venues or landmarks in the requested destination.`,
                 })
               }
-              if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+              if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(destinationLabel)) && !place?.id) {
                 return JSON.stringify({
                   kind: 'error',
-                  message: `The place "${item.place_query || item.title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+                  message: `The place "${item.place_query || item.title}" did not resolve inside ${destinationLabel}. Retry with a specific real place in ${destinationLabel}.`,
                 })
               }
               const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
@@ -1192,10 +1219,10 @@ export async function POST(req: Request) {
               destinationLabel,
               destinationAnchor,
             })
-            if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(requestedDestinationLabel)) && !place?.id) {
+            if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(destinationLabel)) && !place?.id) {
               return JSON.stringify({
                 kind: 'error',
-                message: `The place "${resolvedPlaceQuery || item.title}" did not resolve inside ${requestedDestinationLabel}. Retry with a specific real place in ${requestedDestinationLabel}.`,
+                message: `The place "${resolvedPlaceQuery || item.title}" did not resolve inside ${destinationLabel}. Retry with a specific real place in ${destinationLabel}.`,
               })
             }
             const itemTitle = shouldUseResolvedPlaceTitle(normalizedType, item.title, place?.name) ? place!.name : item.title
@@ -1509,7 +1536,7 @@ export async function POST(req: Request) {
       stopWhen: stepCountIs(planMode ? 4 : 12),
       tools: userTools,
       prepareStep: planMode
-        ? ({ stepNumber, steps, messages: stepMessages }) => {
+        ? ({ stepNumber, steps }) => {
             const previousStep = steps[steps.length - 1]
             const previousToolNames = new Set(previousStep?.toolCalls.map((call) => call.toolName) || [])
             const policyHook = runPlannerPolicyHooks({
@@ -1530,7 +1557,6 @@ export async function POST(req: Request) {
               : policyHook.preferredToolChoice ?? fallbackToolChoice
 
             return {
-              messages: stepNumber === 0 ? stepMessages : stepMessages.slice(-8),
               activeTools:
                 policyHook.requiresClarification
                   ? []

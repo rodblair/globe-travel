@@ -29,6 +29,8 @@ export function inferPlanIntent({
     /\b(regenerate|rewrite|rebuild|replace)\b.*\bday\s*\d+\b/,
     /\bday\s*\d+\b.*\b(regenerate|rewrite|rebuild|replace)\b/,
     /\b(regenerate|rewrite|rebuild|replace)\b.*\b(day|morning|afternoon|evening)\b/,
+    /\b(make|optimi[sz]e|improve|reorder)\b.*\bday\s*\d+\b.*\b(walkable|walking|backtracking|route|flow)\b/,
+    /\bday\s*\d+\b.*\b(make|optimi[sz]e|improve|reorder)\b.*\b(walkable|walking|backtracking|route|flow)\b/,
   ]
   if (dayRewritePatterns.some((pattern) => pattern.test(normalized))) return 'day-rewrite'
 
