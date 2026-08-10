@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export const MOODS = [
@@ -21,21 +22,24 @@ export function MoodPicker({ selected, onChange }: MoodPickerProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {MOODS.map((mood) => (
-        <button
+        <Button
           key={mood.emoji}
           type="button"
           onClick={() => onChange(selected === mood.emoji ? '' : mood.emoji)}
+          aria-pressed={selected === mood.emoji}
+          variant={selected === mood.emoji ? 'default' : 'secondary'}
+          size="sm"
           className={cn(
-            'touch-target flex min-h-12 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-all duration-200',
+            'min-h-12 rounded-full px-3 py-1.5 transition-all duration-200',
             selected === mood.emoji
-              ? 'bg-[var(--brass)] ring-1 ring-[color:var(--brass)]/40 text-[var(--brass)] scale-105'
-              : 'bg-paper-recessed hover:bg-paper-recessed text-foreground/60 hover:text-foreground/80'
+              ? 'scale-105 ring-1 ring-[color:var(--brass)]/40'
+              : 'text-foreground/60 hover:bg-paper-recessed hover:text-foreground/80'
           )}
           title={mood.label}
         >
           <span className="text-base leading-none">{mood.emoji}</span>
           <span className="text-xs font-medium">{mood.label}</span>
-        </button>
+        </Button>
       ))}
     </div>
   )

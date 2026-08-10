@@ -2,6 +2,8 @@
 
 import { motion } from 'motion/react'
 import { Calendar, MapPin, Pencil, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { IconButton } from '@/components/ui/icon-button'
 
 type JournalCardProps = {
   id: string
@@ -43,7 +45,13 @@ export function JournalCard({
       transition={{ duration: 0.18 }}
       className="group relative bg-paper-recessed/60 border border-rule rounded-2xl overflow-hidden hover:border-rule hover:bg-paper-recessed/60 transition-all duration-200"
     >
-      <button className="w-full p-5 text-left" onClick={onClick} aria-label={`Open ${title}`}>
+      <Button
+        variant="ghost"
+        className="h-auto w-full justify-start whitespace-normal rounded-none p-5 text-left hover:bg-transparent"
+        onClick={onClick}
+        aria-label={`Open ${title}`}
+      >
+        <div className="min-w-0 flex-1">
         {/* Date + place row */}
         <div className="flex items-center gap-3 mb-3">
           <div className="flex items-center gap-1.5 text-foreground/35">
@@ -77,29 +85,32 @@ export function JournalCard({
         <p className="text-sm text-foreground/45 line-clamp-3 leading-relaxed">
           {content}
         </p>
-      </button>
+        </div>
+      </Button>
 
       {/* Action buttons — visible on hover */}
       <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {onEdit && (
-          <button
+          <IconButton
+            label={`Edit ${title}`}
             onClick={(e) => { e.stopPropagation(); onEdit() }}
-            aria-label={`Edit ${title}`}
-            className="touch-target rounded-lg bg-paper-recessed p-1.5 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
-            title="Edit note"
+            variant="secondary"
+            size="icon-sm"
+            className="text-foreground/40 hover:bg-paper-recessed hover:text-foreground"
           >
             <Pencil className="w-3.5 h-3.5" />
-          </button>
+          </IconButton>
         )}
         {onDelete && (
-          <button
+          <IconButton
+            label={`Delete ${title}`}
             onClick={(e) => { e.stopPropagation(); onDelete() }}
-            aria-label={`Delete ${title}`}
-            className="touch-target rounded-lg bg-paper-recessed p-1.5 text-foreground/40 transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
-            title="Delete note"
+            variant="secondary"
+            size="icon-sm"
+            className="text-foreground/40 hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
           >
             <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          </IconButton>
         )}
       </div>
     </motion.div>

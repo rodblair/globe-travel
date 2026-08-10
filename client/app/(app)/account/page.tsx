@@ -15,6 +15,12 @@ import {
   Zap,
 } from 'lucide-react'
 import { useAuth } from '@/components/providers/AuthProvider'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { Textarea } from '@/components/ui/textarea'
 import { PLANS } from '@/lib/plans'
 import { openBillingPortal, startCheckout, useSubscription } from '@/hooks/useSubscription'
 import { cn } from '@/lib/utils'
@@ -256,11 +262,13 @@ function AccountPageContent() {
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
-                  <button
+                  <Button
                     key={tab.key}
                     onClick={() => switchTab(tab.key)}
+                    variant="ghost"
+                    aria-pressed={activeTab === tab.key}
                     className={cn(
-                      'touch-target inline-flex flex-shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
+                      'flex-shrink-0 rounded-xl px-4 py-2',
                       activeTab === tab.key
                         ? 'bg-[var(--brass-subtle)] text-foreground'
                         : 'text-foreground/45 hover:bg-paper-recessed/60 hover:text-foreground/75'
@@ -268,7 +276,7 @@ function AccountPageContent() {
                   >
                     <Icon className="h-4 w-4" />
                     {tab.label}
-                  </button>
+                  </Button>
                 )
               })}
             </div>
@@ -309,31 +317,31 @@ function AccountPageContent() {
                 </div>
 
                 <div className="space-y-4 sm:space-y-5">
-                  <div>
-                    <label htmlFor="profile-display-name" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
+                  <Field>
+                    <FieldLabel htmlFor="profile-display-name">
                       Display name
-                    </label>
-                    <input
+                    </FieldLabel>
+                    <Input
                       id="profile-display-name"
                       type="text"
                       value={displayName}
                       onChange={(event) => setDisplayName(event.target.value)}
                       placeholder="Your name"
                       maxLength={80}
-                      className="min-h-11 w-full rounded-xl border border-rule bg-paper/40 px-4 py-2.5 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40 sm:py-3"
+                      className="min-h-11 rounded-xl bg-paper/40 sm:py-3"
                     />
-                    <p className="mt-1 text-xs text-foreground/35">{displayName.length}/80 characters</p>
-                  </div>
+                    <FieldDescription>{displayName.length}/80 characters</FieldDescription>
+                  </Field>
 
-                  <div>
-                    <label htmlFor="profile-username" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
+                  <Field>
+                    <FieldLabel htmlFor="profile-username">
                       Username
-                    </label>
+                    </FieldLabel>
                     <div className="relative">
                       <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-foreground/30">
                         @
                       </span>
-                      <input
+                      <Input
                         id="profile-username"
                         type="text"
                         value={username}
@@ -341,55 +349,55 @@ function AccountPageContent() {
                         placeholder="yourusername"
                         maxLength={30}
                         aria-describedby="profile-username-help"
-                        className="min-h-11 w-full rounded-xl border border-rule bg-paper/40 py-2.5 pl-8 pr-4 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40 sm:py-3"
+                        className="min-h-11 rounded-xl bg-paper/40 pl-8 sm:py-3"
                       />
                     </div>
-                    <p id="profile-username-help" className="mt-1 text-xs text-foreground/35">
+                    <FieldDescription id="profile-username-help">
                       3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private.
-                    </p>
-                  </div>
+                    </FieldDescription>
+                  </Field>
 
-                  <div>
-                    <label htmlFor="profile-bio" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/40">
+                  <Field>
+                    <FieldLabel htmlFor="profile-bio">
                       Bio
-                    </label>
-                    <textarea
+                    </FieldLabel>
+                    <Textarea
                       id="profile-bio"
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
                       placeholder="A short note friends will recognize when you share itinerary feedback."
                       rows={3}
                       maxLength={240}
-                      className="w-full resize-none rounded-xl border border-rule bg-paper/40 px-4 py-2.5 text-sm text-foreground placeholder:text-[var(--ink-4)] transition-all focus:border-[color:var(--brass)]/30 focus:outline-none focus:ring-1 focus:ring-[color:var(--brass)]/40 sm:py-3"
+                      className="resize-none rounded-xl bg-paper/40 sm:py-3"
                     />
-                    <p className="mt-1 text-xs text-foreground/35">{bio.length}/240 characters</p>
-                  </div>
+                    <FieldDescription>{bio.length}/240 characters</FieldDescription>
+                  </Field>
 
                   <div className="flex flex-wrap items-center gap-3">
-                    <button
+                    <Button
                       onClick={handleSave}
                       disabled={saving}
+                      variant={saved ? 'outline' : 'default'}
                       className={cn(
-                        'touch-target inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-colors sm:w-auto',
-                        saved
-                          ? 'border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                          : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)] disabled:opacity-40'
+                        'w-full rounded-xl sm:w-auto',
+                        saved && 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
                       )}
                     >
                       <Save className="h-4 w-4" />
                       {saved ? 'Saved' : saving ? 'Saving…' : 'Save changes'}
-                    </button>
+                    </Button>
                     {profileError && (
-                      <p role="alert" className="text-sm text-[var(--terracotta)]">{profileError}</p>
+                      <Alert variant="destructive" className="border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]">
+                        <AlertDescription>{profileError}</AlertDescription>
+                      </Alert>
                     )}
                   </div>
                   {saved && !profileError && (
-                    <p
-                      className="rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-4 py-3 text-sm text-[var(--moss)]"
-                      role="status"
-                    >
-                      Profile saved. Friends will see this identity on new feedback and shared planning links.
-                    </p>
+                    <Alert className="border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]">
+                      <AlertDescription>
+                        Profile saved. Friends will see this identity on new feedback and shared planning links.
+                      </AlertDescription>
+                    </Alert>
                   )}
                 </div>
               </div>
@@ -414,13 +422,14 @@ function AccountPageContent() {
               <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
                 <h2 className="text-lg font-serif font-semibold text-foreground">Session</h2>
                 <p className="mt-1 text-sm text-foreground/40">Signed in and ready to pick up where you left off.</p>
-                <button
+                <Button
                   onClick={handleSignOut}
-                  className="touch-target mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-[color:var(--pillar-desert-wash)] px-4 py-2.5 text-sm font-medium text-[var(--terracotta)] transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
+                  variant="outline"
+                  className="mt-5 rounded-xl border-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
                 >
                   <LogOut className="h-4 w-4" />
                   Sign out
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -446,9 +455,9 @@ function AccountPageContent() {
                         ? 'Checking subscription…'
                         : billingSummary(displayedSubscription, displayedIsPro)}
                     </p>
-                    <p className="mt-3 inline-flex rounded-full border border-rule bg-paper px-3 py-1 text-xs font-semibold text-foreground/55">
+                    <StatusBadge tone={displayedIsPro ? 'success' : 'pending'} className="mt-3">
                       {billingStatusLabel(displayedSubscription)}
-                    </p>
+                    </StatusBadge>
                     {displayedSubscription?.currentPeriodEnd && (
                       <p className="mt-3 text-xs text-foreground/35">
                         Current period ends{' '}
@@ -494,16 +503,19 @@ function AccountPageContent() {
                   {!canOpenBillingPortal && (
                     <div className="flex items-center gap-1 rounded-xl border border-rule bg-paper-recessed/60 p-1">
                       {(['month', 'year'] as const).map((value) => (
-                        <button
+                        <Button
                           key={value}
                           onClick={() => setInterval(value)}
+                          variant={interval === value ? 'default' : 'ghost'}
+                          size="sm"
+                          aria-pressed={interval === value}
                           className={cn(
-                            'touch-target rounded-lg px-3 py-1.5 text-xs font-medium transition-colors duration-200',
-                            interval === value ? 'bg-[var(--brass)] text-[var(--brass-text)]' : 'text-foreground/45 hover:text-foreground'
+                            'h-8 rounded-lg px-3 text-xs',
+                            interval !== value && 'text-foreground/45 hover:text-foreground'
                           )}
                         >
                           {value === 'year' ? 'Yearly' : 'Monthly'}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   )}
@@ -529,33 +541,37 @@ function AccountPageContent() {
                 )}
 
                 {billingNotice && (
-                  <div className="mb-4 rounded-xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-4 py-3 text-sm text-[var(--moss)]">
-                    {billingNotice}
-                  </div>
+                  <Alert className="mb-4 border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]">
+                    <AlertDescription>{billingNotice}</AlertDescription>
+                  </Alert>
                 )}
 
                 {billingError && (
-                  <div className="mb-4 rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
-                    <p>{billingError}</p>
-                    <button
+                  <Alert variant="destructive" className="mb-4 border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]">
+                    <AlertDescription>
+                      <p>{billingError}</p>
+                    <Button
                       type="button"
                       onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
                       disabled={billingLoading}
-                      className="touch-target mt-3 inline-flex items-center justify-center rounded-full border border-[color:var(--terracotta)]/30 bg-paper-raised px-3 py-2 text-xs font-semibold text-[var(--terracotta)] disabled:opacity-60"
+                      variant="outline"
+                      size="sm"
+                      className="mt-3 rounded-full border-[color:var(--terracotta)]/30 bg-paper-raised text-[var(--terracotta)] disabled:opacity-60"
                     >
                       Try again
-                    </button>
-                  </div>
+                    </Button>
+                    </AlertDescription>
+                  </Alert>
                 )}
 
-                <button
+                <Button
                   onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
                   disabled={billingActionDisabled}
+                  variant={canOpenBillingPortal ? 'secondary' : 'default'}
+                  size="xl"
                   className={cn(
-                    'touch-target inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors duration-200 disabled:opacity-60',
-                    canOpenBillingPortal
-                      ? 'bg-paper-recessed text-foreground hover:bg-paper-recessed'
-                      : 'bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)]'
+                    'w-full rounded-xl text-sm font-semibold',
+                    canOpenBillingPortal && 'bg-paper-recessed hover:bg-paper-recessed'
                   )}
                 >
                   {canOpenBillingPortal ? (
@@ -569,7 +585,7 @@ function AccountPageContent() {
                       {billingLoading ? 'Redirecting…' : checkoutReturned ? 'Checking subscription…' : 'Start free trial'}
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -599,13 +615,12 @@ function AccountPageContent() {
                 <p className="mt-1 text-sm text-foreground/40">
                   Keep planning simple: create a city itinerary, share the Globe.travel map link, and collect feedback before anyone books.
                 </p>
-                <Link
-                  href="/chat"
-                  className="touch-target mt-4 inline-flex items-center justify-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-4 py-2 text-sm font-medium text-[var(--brass)] transition-colors hover:bg-[var(--brass)] hover:text-[var(--brass-text)]"
-                >
-                  Start a group trip
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+                <Button asChild variant="outline" className="mt-4 rounded-full border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-[var(--brass)] hover:bg-[var(--brass)] hover:text-[var(--brass-text)]">
+                  <Link href="/chat">
+                    Start a group trip
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

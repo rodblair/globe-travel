@@ -2,7 +2,17 @@
 
 import Image from 'next/image'
 import { X, Star, Calendar, MapPin, BookOpen, Edit3 } from 'lucide-react'
-import { motion, AnimatePresence } from 'motion/react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { IconButton } from '@/components/ui/icon-button'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 
 type PlaceDetail = {
   id: string
@@ -38,27 +48,16 @@ function StarRating({ rating }: { rating: number }) {
 
 export function PlaceDetailSheet({ place, isOpen, onClose }: PlaceDetailSheetProps) {
   return (
-    <AnimatePresence>
-      {isOpen && place && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-paper-raised/85 z-40"
-            onClick={onClose}
-          />
-
-          {/* Sheet */}
-          <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto"
-          >
-            <div className="bg-paper-raised/85 backdrop-blur-xl border-t border-rule rounded-t-3xl">
+    <Sheet open={isOpen && Boolean(place)} onOpenChange={(open) => {
+      if (!open) onClose()
+    }}>
+      <SheetContent
+        side="bottom"
+        showCloseButton={false}
+        className="max-h-[82vh] overflow-y-auto rounded-t-3xl border-rule bg-paper-raised/95 p-0 shadow-[var(--shadow-lg)] backdrop-blur-xl"
+      >
+        {place && (
+          <>
               {/* Handle */}
               <div className="flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 rounded-full bg-paper-recessed" />
@@ -84,41 +83,34 @@ export function PlaceDetailSheet({ place, isOpen, onClose }: PlaceDetailSheetPro
 
               {/* Content */}
               <div className="p-6 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="text-2xl font-serif font-semibold text-foreground">
+                <SheetHeader className="flex-row items-start justify-between gap-4 p-0 text-left">
+                  <div className="min-w-0">
+                    <SheetTitle className="font-serif text-2xl font-semibold text-foreground">
                       {place.name}
-                    </h2>
+                    </SheetTitle>
                     <div className="flex items-center gap-2 mt-1">
                       <MapPin className="w-3.5 h-3.5 text-foreground/40" />
-                      <span className="text-sm text-foreground/50">{place.country}</span>
+                      <SheetDescription className="text-sm text-foreground/50">{place.country}</SheetDescription>
                     </div>
                   </div>
-                  <button
-                    onClick={onClose}
-                    className="p-2 rounded-full bg-paper-recessed hover:bg-paper-recessed transition-colors"
-                  >
-                    <X className="w-5 h-5 text-foreground/60" />
-                  </button>
-                </div>
+                  <SheetClose asChild>
+                    <IconButton label={`Close ${place.name} details`} variant="secondary" className="shrink-0">
+                      <X className="w-5 h-5" />
+                    </IconButton>
+                  </SheetClose>
+                </SheetHeader>
 
                 {/* Status badge */}
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      place.status === 'visited'
-                        ? 'bg-[var(--brass-subtle)] text-foreground'
-                        : place.status === 'bucket_list'
-                        ? 'bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]'
-                        : 'bg-[var(--brass-subtle)] text-foreground'
-                    }`}
+                  <Badge
+                    variant={place.status === 'bucket_list' ? 'coastal' : 'brass'}
                   >
                     {place.status === 'visited'
                       ? 'Visited'
                       : place.status === 'bucket_list'
                       ? 'Saved idea'
                       : 'Planning'}
-                  </span>
+                  </Badge>
                 </div>
 
                 {/* Details grid */}
@@ -157,21 +149,20 @@ export function PlaceDetailSheet({ place, isOpen, onClose }: PlaceDetailSheetPro
 
                 {/* Actions */}
                 <div className="flex gap-3 pt-2">
-                  <button className="flex-1 flex items-center justify-center gap-2 bg-paper-recessed hover:bg-paper-recessed border border-rule rounded-xl py-3 text-sm font-medium text-foreground transition-colors">
+                  <Button variant="secondary" className="flex-1 rounded-xl">
                     <Edit3 className="w-4 h-4" />
                     Edit
-                  </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 bg-paper-recessed hover:bg-paper-recessed border border-rule rounded-xl py-3 text-sm font-medium text-foreground transition-colors">
+                  </Button>
+                  <Button variant="secondary" className="flex-1 rounded-xl">
                     <BookOpen className="w-4 h-4" />
                     View trip notes
-                  </button>
+                  </Button>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          </>
+        )}
+      </SheetContent>
+    </Sheet>
   )
 }
 

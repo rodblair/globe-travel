@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { Suspense, useId, useMemo, useRef, useState } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import {
   BookOpen,
   Calendar,
@@ -24,7 +24,26 @@ import { JournalCard } from '@/components/journal/JournalCard'
 import { JournalEditor, type JournalEntryFields } from '@/components/journal/JournalEditor'
 import { UpgradeModal } from '@/components/billing/UpgradeModal'
 import { ArtifactFrame, getTripKeepsakeMeta } from '@/components/trips/KeepsakeArtifacts'
-import { useDialogFocus } from '@/hooks/useDialogFocus'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { IconButton } from '@/components/ui/icon-button'
 import { useSubscription } from '@/hooks/useSubscription'
 import { PLANS } from '@/lib/plans'
 import { formatTripTitleForDisplay } from '@/lib/trip-copy'
@@ -128,15 +147,6 @@ function SavedPageContent() {
   const [tripDeleteError, setTripDeleteError] = useState<string | null>(null)
   const qaForceUpgradeOpen = process.env.NODE_ENV === 'development' && searchParams.get('qaUpgradeModal') === '1'
   const [upgradeOpen, setUpgradeOpen] = useState(qaForceUpgradeOpen)
-  const readingDialogRef = useRef<HTMLDivElement>(null)
-  const deleteDialogRef = useRef<HTMLDivElement>(null)
-  const tripDeleteDialogRef = useRef<HTMLDivElement>(null)
-  const readingDialogTitleId = useId()
-  const readingDialogDescriptionId = useId()
-  const deleteDialogTitleId = useId()
-  const deleteDialogDescriptionId = useId()
-  const tripDeleteDialogTitleId = useId()
-  const tripDeleteDialogDescriptionId = useId()
 
   const queryClient = useQueryClient()
   const { isPro } = useSubscription()
@@ -145,18 +155,6 @@ function SavedPageContent() {
     process.env.NODE_ENV === 'development' && searchParams.get('qaCheckoutFailure') === '1'
       ? 'Checkout is temporarily unavailable in QA mode.'
       : undefined
-
-  useDialogFocus({
-    isOpen: Boolean(readingEntry),
-    onClose: () => setReadingEntry(null),
-    dialogRef: readingDialogRef,
-  })
-
-  useDialogFocus({
-    isOpen: Boolean(deletingId),
-    onClose: () => setDeletingId(null),
-    dialogRef: deleteDialogRef,
-  })
 
   const { data: entries = [], isLoading: journalLoading } = useQuery<JournalEntry[]>({
     queryKey: ['journal-entries'],
@@ -248,17 +246,6 @@ function SavedPageContent() {
     },
   })
 
-  useDialogFocus({
-    isOpen: Boolean(confirmingTripId),
-    onClose: () => {
-      if (!deleteTrip.isPending) {
-        setConfirmingTripId(null)
-        setTripDeleteError(null)
-      }
-    },
-    dialogRef: tripDeleteDialogRef,
-  })
-
   const switchTab = (tab: SavedTab) => {
     const next = new URLSearchParams(searchParams.toString())
     if (tab === 'trips') {
@@ -336,11 +323,13 @@ function SavedPageContent() {
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
-                  <button
+                  <Button
                     key={tab.key}
                     onClick={() => switchTab(tab.key)}
+                    variant="ghost"
+                    aria-pressed={activeTab === tab.key}
                     className={cn(
-                      'touch-target inline-flex flex-shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
+                      'flex-shrink-0 rounded-xl px-4 py-2',
                       activeTab === tab.key
                         ? 'bg-[var(--brass-subtle)] text-foreground'
                         : 'text-foreground/45 hover:bg-paper-recessed/60 hover:text-foreground/75'
@@ -348,7 +337,7 @@ function SavedPageContent() {
                   >
                     <Icon className="h-4 w-4" />
                     {tab.label}
-                  </button>
+                  </Button>
                 )
               })}
             </div>
@@ -366,13 +355,12 @@ function SavedPageContent() {
                   {itinerarySummary}
                 </p>
               </div>
-              <Link
-                href="/chat"
-                className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
-              >
-                <Plus className="h-4 w-4" />
-                Plan another trip
-              </Link>
+              <Button asChild className="rounded-full">
+                <Link href="/chat">
+                  <Plus className="h-4 w-4" />
+                  Plan another trip
+                </Link>
+              </Button>
             </div>
 
             {tripDeleteError && (
@@ -402,13 +390,12 @@ function SavedPageContent() {
                 <p className="mt-3 hidden max-w-md text-xs leading-relaxed text-foreground/45 sm:block">
                   If you opened a friend&apos;s shared link, that trip stays on its public review page until you create or save your own version.
                 </p>
-                <Link
-                  href="/chat"
-                  className="touch-target mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)] sm:mt-6"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Open Planner
-                </Link>
+                <Button asChild className="mt-5 rounded-full sm:mt-6">
+                  <Link href="/chat">
+                    <Sparkles className="h-4 w-4" />
+                    Open Planner
+                  </Link>
+                </Button>
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
@@ -491,14 +478,16 @@ function SavedPageContent() {
                             </Link>
                           </div>
                         </div>
-                        <button
+                        <Button
                           onClick={() => {
                             setTripDeleteError(null)
                             setConfirmingTripId(trip.id)
                           }}
                           disabled={deleteTrip.isPending}
+                          variant="outline"
+                          size="sm"
                           className={cn(
-                            'touch-target absolute bottom-5 right-5 z-10 inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                            'absolute bottom-5 right-5 z-10 rounded-full text-xs',
                             'border-rule bg-paper/28 text-foreground/70 hover:border-[color:var(--pillar-desert-wash)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]'
                           )}
                           aria-label={`Delete ${displayTitle}`}
@@ -506,7 +495,7 @@ function SavedPageContent() {
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           Delete
-                        </button>
+                        </Button>
                       </ArtifactFrame>
                     </motion.div>
                   )
@@ -526,13 +515,13 @@ function SavedPageContent() {
                 </p>
               </div>
               {entries.length > 0 && (
-                <button
+                <Button
                   onClick={openNewEntry}
-                  className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-5 py-2.5 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
+                  className="rounded-full"
                 >
                   <Plus className="h-4 w-4" />
                   Add note
-                </button>
+                </Button>
               )}
             </div>
 
@@ -540,13 +529,15 @@ function SavedPageContent() {
               <div className="rounded-2xl border border-rule bg-paper-recessed/60 p-4">
                 <div className="mb-1.5 flex items-center justify-between text-xs text-foreground/40">
                   <span>{entries.length} of {FREE_LIMIT} free notes used</span>
-                  <button
+                  <Button
                     onClick={() => setUpgradeOpen(true)}
-                    className="flex items-center gap-1 font-medium text-[var(--brass)] hover:text-[var(--brass)]"
+                    variant="link"
+                    size="sm"
+                    className="h-auto gap-1 p-0 text-xs font-medium"
                   >
                     <Zap className="h-3 w-3" />
                     Upgrade for unlimited
-                  </button>
+                  </Button>
                 </div>
                 <div className="h-1 overflow-hidden rounded-full bg-paper-recessed">
                   <div
@@ -573,13 +564,13 @@ function SavedPageContent() {
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-foreground/45">
                   Capture decisions, reminders, and memories for the itineraries you are building with friends.
                 </p>
-                <button
+                <Button
                   onClick={openNewEntry}
-                  className="touch-target mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-6 py-3 font-semibold text-[var(--brass-text)] transition-colors duration-200 hover:bg-[var(--brass-hover)]"
+                  className="mt-8 rounded-full"
                 >
                   <Feather className="h-4 w-4" />
                   Add first note
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="space-y-3">
@@ -612,211 +603,143 @@ function SavedPageContent() {
         )}
       </div>
 
-      <AnimatePresence>
-        {readingEntry && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-paper/75 backdrop-blur-sm"
-              onClick={() => setReadingEntry(null)}
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 40, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.97 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-              ref={readingDialogRef}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={readingDialogTitleId}
-              aria-describedby={readingDialogDescriptionId}
-              tabIndex={-1}
-              className="fixed inset-x-0 bottom-0 z-50 flex max-h-[90dvh] flex-col md:inset-auto md:top-1/2 md:left-1/2 md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2 md:max-h-[85vh]"
-            >
-              <div className="flex h-full flex-col overflow-hidden rounded-t-3xl border border-rule bg-paper-raised shadow-[var(--shadow-lg)] md:rounded-2xl">
-                <div className="flex justify-center pt-3 pb-1 md:hidden">
-                  <div className="h-1 w-10 rounded-full bg-paper-recessed" />
-                </div>
-
-                <div className="flex items-start justify-between border-b border-rule px-6 pt-5 pb-4">
-                  <div className="min-w-0 flex-1 pr-4">
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <div className="flex items-center gap-1.5 text-foreground/35">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span className="text-xs">{formatEntryDate(readingEntry)}</span>
-                      </div>
-                      {(readingEntry.location || readingEntry.user_place?.place?.name) && (
-                        <div className="flex items-center gap-1 text-foreground/35">
-                          <MapPin className="h-3.5 w-3.5" />
-                          <span className="text-xs">{readingEntry.location || readingEntry.user_place?.place?.name}</span>
-                        </div>
-                      )}
-                      {readingEntry.trip?.title && (
-                        <span className="rounded-full bg-[var(--brass-subtle)] px-2 py-0.5 text-xs text-[var(--brass)]">
-                          {readingEntry.trip.title}
-                        </span>
-                      )}
+      <Dialog open={Boolean(readingEntry)} onOpenChange={(open) => {
+        if (!open) setReadingEntry(null)
+      }}>
+        <DialogContent
+          className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl border-rule bg-paper-raised p-0 shadow-[var(--shadow-lg)] sm:max-w-2xl"
+          showCloseButton={false}
+        >
+          {readingEntry && (
+            <>
+              <DialogHeader className="flex-row items-start justify-between gap-4 border-b border-rule px-6 pb-4 pt-5 text-left">
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-foreground/35">
+                      <Calendar className="h-3.5 w-3.5" />
+                      <span className="text-xs">{formatEntryDate(readingEntry)}</span>
                     </div>
-                    <h2 id={readingDialogTitleId} className="font-serif text-xl font-semibold leading-snug text-foreground">
-                      {readingEntry.mood && <span className="mr-2">{readingEntry.mood}</span>}
-                      {readingEntry.title}
-                    </h2>
+                    {(readingEntry.location || readingEntry.user_place?.place?.name) && (
+                      <div className="flex min-w-0 items-center gap-1 text-foreground/35">
+                        <MapPin className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate text-xs">{readingEntry.location || readingEntry.user_place?.place?.name}</span>
+                      </div>
+                    )}
+                    {readingEntry.trip?.title && (
+                      <span className="rounded-full bg-[var(--brass-subtle)] px-2 py-0.5 text-xs text-[var(--brass)]">
+                        {readingEntry.trip.title}
+                      </span>
+                    )}
                   </div>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <button
-                      onClick={() => openEditEntry(readingEntry)}
-                      aria-label="Edit note"
-                      className="touch-target rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
-                      title="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setDeletingId(readingEntry.id)
-                        setReadingEntry(null)
-                      }}
-                      aria-label="Delete note"
-                      className="touch-target rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => setReadingEntry(null)}
-                      aria-label="Close note"
-                      className="touch-target ml-1 rounded-xl bg-paper-recessed p-2 text-foreground/40 transition-colors hover:bg-paper-recessed hover:text-foreground"
-                    >
+                  <DialogTitle className="font-serif text-xl font-semibold leading-snug text-foreground">
+                    {readingEntry.mood && <span className="mr-2">{readingEntry.mood}</span>}
+                    {readingEntry.title}
+                  </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    Saved trip note content.
+                  </DialogDescription>
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <IconButton
+                    label="Edit note"
+                    variant="secondary"
+                    size="icon-sm"
+                    onClick={() => openEditEntry(readingEntry)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </IconButton>
+                  <IconButton
+                    label="Delete note"
+                    variant="secondary"
+                    size="icon-sm"
+                    className="hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
+                    onClick={() => {
+                      setDeletingId(readingEntry.id)
+                      setReadingEntry(null)
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </IconButton>
+                  <DialogClose asChild>
+                    <IconButton label="Close note" variant="secondary" size="icon-sm">
                       <X className="h-4 w-4" />
-                    </button>
-                  </div>
+                    </IconButton>
+                  </DialogClose>
                 </div>
+              </DialogHeader>
 
-                <div id={readingDialogDescriptionId} className="flex-1 overflow-y-auto px-6 py-6">
-                  <p className="whitespace-pre-wrap text-base font-light leading-[1.85] text-foreground/80">
-                    {readingEntry.content}
-                  </p>
-                </div>
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                <p className="whitespace-pre-wrap text-base font-light leading-[1.85] text-foreground/80">
+                  {readingEntry.content}
+                </p>
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
-      <AnimatePresence>
-        {deletingId && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-paper/60"
-              onClick={() => setDeletingId(null)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              ref={deleteDialogRef}
-              role="alertdialog"
-              aria-modal="true"
-              aria-labelledby={deleteDialogTitleId}
-              aria-describedby={deleteDialogDescriptionId}
-              tabIndex={-1}
-              className="fixed inset-x-4 bottom-4 z-50 md:inset-auto md:top-1/2 md:left-1/2 md:w-80 md:-translate-x-1/2 md:-translate-y-1/2"
-            >
-              <div className="rounded-2xl border border-rule bg-paper-raised p-5 shadow-[var(--shadow-lg)]">
-                <h3 id={deleteDialogTitleId} className="mb-1 font-semibold text-foreground">Delete note?</h3>
-                <p id={deleteDialogDescriptionId} className="mb-4 text-sm text-foreground/50">This can&apos;t be undone.</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setDeletingId(null)}
-                    className="touch-target flex-1 rounded-xl bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:bg-paper-recessed"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => deleteEntry.mutate(deletingId)}
-                    disabled={deleteEntry.isPending}
-                    className="touch-target flex-1 rounded-xl bg-[color:var(--pillar-desert-wash)] px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-[var(--terracotta)] disabled:opacity-50"
-                  >
-                    {deleteEntry.isPending ? 'Deleting…' : 'Delete'}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {pendingTripDelete && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-paper/60"
+      <AlertDialog open={Boolean(deletingId)} onOpenChange={(open) => {
+        if (!open && !deleteEntry.isPending) setDeletingId(null)
+      }}>
+        <AlertDialogContent size="sm" className="border-rule bg-paper-raised">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete note?</AlertDialogTitle>
+            <AlertDialogDescription>This can&apos;t be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteEntry.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              disabled={deleteEntry.isPending || !deletingId}
               onClick={() => {
-                if (!deleteTrip.isPending) {
-                  setConfirmingTripId(null)
-                  setTripDeleteError(null)
-                }
+                if (deletingId) deleteEntry.mutate(deletingId)
               }}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 10 }}
-              ref={tripDeleteDialogRef}
-              role="alertdialog"
-              aria-modal="true"
-              aria-labelledby={tripDeleteDialogTitleId}
-              aria-describedby={tripDeleteDialogDescriptionId}
-              tabIndex={-1}
-              className="fixed inset-x-4 bottom-4 z-50 md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-sm md:-translate-x-1/2 md:-translate-y-1/2"
             >
-              <div className="rounded-2xl border border-rule bg-paper-raised p-5 shadow-[var(--shadow-lg)]">
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--terracotta)]">
+              {deleteEntry.isPending ? 'Deleting...' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={Boolean(pendingTripDelete)} onOpenChange={(open) => {
+        if (!open && !deleteTrip.isPending) {
+          setConfirmingTripId(null)
+          setTripDeleteError(null)
+        }
+      }}>
+        <AlertDialogContent className="border-rule bg-paper-raised">
+          {pendingTripDelete && (
+            <>
+              <AlertDialogHeader>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--terracotta)]">
                   Remove itinerary
                 </p>
-                <h3 id={tripDeleteDialogTitleId} className="font-serif text-xl font-semibold text-foreground">
+                <AlertDialogTitle className="font-serif text-xl">
                   Delete {pendingTripDelete.title}?
-                </h3>
-                <p id={tripDeleteDialogDescriptionId} className="mt-2 text-sm leading-relaxed text-foreground/50">
+                </AlertDialogTitle>
+                <AlertDialogDescription className="leading-relaxed">
                   This removes the saved trip from this account or guest session. Public links and friend review context may stop working.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              {tripDeleteError && (
+                <p className="rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-sm text-[var(--terracotta)]">
+                  {tripDeleteError}
                 </p>
-                {tripDeleteError && (
-                  <p className="mt-3 rounded-xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-sm text-[var(--terracotta)]">
-                    {tripDeleteError}
-                  </p>
-                )}
-                <div className="mt-5 flex gap-2">
-                  <button
-                    onClick={() => {
-                      setConfirmingTripId(null)
-                      setTripDeleteError(null)
-                    }}
-                    disabled={deleteTrip.isPending}
-                    className="touch-target flex-1 rounded-xl bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:bg-paper-recessed disabled:opacity-50"
-                  >
-                    Keep trip
-                  </button>
-                  <button
-                    onClick={() => deleteTrip.mutate(pendingTripDelete.id)}
-                    disabled={deleteTrip.isPending}
-                    className="touch-target flex-1 rounded-xl bg-[color:var(--pillar-desert-wash)] px-4 py-2 text-sm font-semibold text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)] hover:text-white disabled:opacity-50"
-                  >
-                    {deleteTrip.isPending ? 'Deleting...' : 'Delete trip'}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              )}
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={deleteTrip.isPending}>Keep trip</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  disabled={deleteTrip.isPending}
+                  onClick={() => deleteTrip.mutate(pendingTripDelete.id)}
+                >
+                  {deleteTrip.isPending ? 'Deleting...' : 'Delete trip'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </>
+          )}
+        </AlertDialogContent>
+      </AlertDialog>
 
       <JournalEditor
         isOpen={editorOpen}
