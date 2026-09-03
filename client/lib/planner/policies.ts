@@ -47,6 +47,7 @@ Rules:
 - If the user asks to change, rewrite, regenerate, rebuild, or improve one entire day, use replaceTripDayPlan for only that day.
 - If the user asks to swap one stop or activity, use swapTripItem. Do not use addTripItem for swaps.
 - If the user asks to change a day hotel/lodging/stay to a named hotel, update that lodging item with updateTripItem; do not rewrite the whole day.
+- If the user asks to add or include a hotel/lodging/stay/accommodation, use addTripItem with type "lodging". If they name a specific day, add it only to that day. If they do not name a day and the trip has multiple existing days, add lodging to every existing day unless the trip already has lodging for that day.
 - If the user references "Day 2 morning" or a specific item, do a scoped edit (update/move/delete only what’s needed).
 - Ask at most ONE clarifying question if destination or number of days is missing; otherwise proceed with reasonable assumptions.
 - When details are ambiguous, prefer a practical 2-3 day city-break structure over an overstuffed long-haul itinerary.
@@ -363,6 +364,12 @@ export function runPlannerPolicyHooks({
     guidance.push('- For scoped edits, preserve the rest of the day unless the user explicitly asks for a major rewrite.')
     guidance.push('- If the user asks to change, rewrite, regenerate, or improve a named day, prefer replaceTripDayPlan so only that day is cleared and rebuilt.')
     guidance.push('- If the user asks to swap one stop, use swapTripItem for that exact item id and do not add duplicate items.')
+  }
+
+  if (intent === 'add-items') {
+    guidance.push('- For hotel/lodging add requests, call addTripItem with type "lodging"; do not answer with prose only.')
+    guidance.push('- If no day is specified for a hotel/lodging add request, add lodging to each existing trip day that does not already have lodging.')
+    guidance.push('- Use an exact named hotel property in both title and place_query so the Stay section and map can render it.')
   }
 
   const requiresClarification =

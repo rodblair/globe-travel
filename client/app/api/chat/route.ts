@@ -433,8 +433,11 @@ async function resolvePlannerPlace({
 }
 
 function shouldUseResolvedPlaceTitle(type: string, title: string, placeName?: string | null) {
-  if (type !== 'meal' || !placeName) return false
+  if (!placeName) return false
   if (title.toLowerCase().includes(placeName.toLowerCase())) return false
+
+  if (type === 'lodging') return true
+  if (type !== 'meal') return false
 
   return /\b(breakfast|brunch|lunch|dinner|drinks?|coffee|cafe|café|meal|food|seafood|rooftop|taverna|restaurant|bar)\b/i.test(title)
 }
@@ -1550,10 +1553,21 @@ export async function POST(req: Request) {
                 previousToolNames.has(toolName)
               ) &&
               !previousToolNames.has('computeDayRoute')
+            const hasAppliedItineraryEdit = steps.some((step) =>
+              step.toolCalls.some((call) =>
+                ['setFullTripPlan', 'replaceTripDayPlan', 'addTripItem', 'moveTripItem', 'updateTripItem', 'deleteTripItem'].includes(call.toolName)
+              )
+            )
+            const shouldAddItemAfterPlaceResolve =
+              stepNumber > 0 &&
+              latestPlanIntent === 'add-items' &&
+              !hasAppliedItineraryEdit
 
             const fallbackToolChoice = getPlanToolChoice(stepNumber, latestPlanIntent)
             const toolChoice = needsRouteRefresh
               ? 'required'
+              : shouldAddItemAfterPlaceResolve
+                ? { type: 'tool' as const, toolName: 'addTripItem' as const }
               : policyHook.preferredToolChoice ?? fallbackToolChoice
 
             return {
@@ -1562,6 +1576,8 @@ export async function POST(req: Request) {
                   ? []
                   : needsRouteRefresh
                     ? ['computeDayRoute']
+                    : shouldAddItemAfterPlaceResolve
+                      ? ['addTripItem']
                     : activePlanTools,
               toolChoice,
               system:

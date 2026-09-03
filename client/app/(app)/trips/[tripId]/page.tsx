@@ -935,9 +935,18 @@ function TripStudioPageContent() {
     ],
   }), [ensureSelectedDayExists])
   const plannerQuickEdits = useMemo<PlannerQuickEdit[]>(() => {
-    const destination = tripDestination || 'this destination'
-    const isAthens = /\bathens\b/i.test(destination)
     const selectedDayTitle = selectedStudioDay?.day.title?.trim()
+    const selectedDaySearchText = [
+      selectedDayTitle,
+      ...(selectedStudioDay?.sortedItems || []).flatMap((item) => [
+        item.title,
+        item.place?.name,
+        item.place?.country,
+      ]),
+    ].filter(Boolean).join(' ')
+    const isAeginaDay = /\baegina\b/i.test(selectedDaySearchText)
+    const destination = isAeginaDay ? 'Aegina, Greece' : tripDestination || 'this destination'
+    const isAthens = /\bathens\b/i.test(destination)
     const dayContext = `Day ${ensureSelectedDayExists}${selectedDayTitle ? ` (${selectedDayTitle})` : ''}`
 
     return [
@@ -946,7 +955,15 @@ function TripStudioPageContent() {
         label: 'Add hotel',
         detail: `Stay for Day ${ensureSelectedDayExists}`,
         prompt: `Add one exact named hotel in ${destination} as the lodging item for ${dayContext} of this live itinerary. Keep every existing stop unchanged. Use addTripItem, classify it as lodging, and include the real hotel name in both the item title and place_query so it appears in the Stay section.`,
-        directItem: isAthens
+        directItem: isAeginaDay
+          ? {
+              type: 'lodging',
+              title: 'Aeginitikon Archontikon Hotel',
+              place_query: 'Aeginitikon Archontikon Hotel, Aegina, Greece',
+              start_time: '15:00',
+              notes: 'Added from Planner as selected-day lodging for the Aegina overnight.',
+            }
+          : isAthens
           ? {
               type: 'lodging',
               title: 'Ergon House Athens',
@@ -995,7 +1012,7 @@ function TripStudioPageContent() {
           : undefined,
       },
     ]
-  }, [ensureSelectedDayExists, selectedStudioDay?.day.title, tripDestination])
+  }, [ensureSelectedDayExists, selectedStudioDay, tripDestination])
   const selectedSuggestedDayIndex = selectedStudioDay?.day.day_index
   const suggestedRewriteInProgress = Boolean(selectedSuggestedDayIndex && regeneratingDayIndex === selectedSuggestedDayIndex)
   const suggestedRewriteHandoffActive = Boolean(
@@ -1115,6 +1132,13 @@ function TripStudioPageContent() {
 
     if (edit.directItem) {
       const selectedItems = selectedStudioDay?.sortedItems || []
+      const hotelPlaceholder = edit.directItem.type === 'lodging'
+        ? selectedItems.find((item) =>
+            item.type !== 'lodging' &&
+            /\b(?:hotel|lodging|stay)\s+(?:needed|tbd|to be added)|\bhotel needed\b/i.test(item.title)
+          )
+        : null
+
       if (edit.directItem.type === 'lodging' && selectedItems.some((item) => item.type === 'lodging')) {
         const message = `Day ${ensureSelectedDayExists} already has a hotel. Use Planner chat to swap or replace it.`
         setActionError(message)
@@ -1129,6 +1153,37 @@ function TripStudioPageContent() {
         const message = `${edit.directItem.title} is already in Day ${ensureSelectedDayExists}.`
         setActionError(message)
         setSuggestedStepNotice(message)
+        return
+      }
+
+      if (hotelPlaceholder) {
+        const pendingNotice = `${edit.label} is replacing the Day ${ensureSelectedDayExists} hotel placeholder.`
+        showActionNotice(pendingNotice)
+        setSuggestedStepNotice(pendingNotice)
+
+        try {
+          await onBulkOps([
+            {
+              op: 'update',
+              item_id: hotelPlaceholder.id,
+              place_query: edit.directItem.place_query,
+              fields: {
+                type: edit.directItem.type,
+                title: edit.directItem.title,
+                start_time: edit.directItem.start_time ?? null,
+                duration_minutes: edit.directItem.duration_minutes ?? null,
+                notes: edit.directItem.notes ?? null,
+              },
+            },
+          ])
+          const completeNotice = `${edit.directItem.title} replaced the Day ${ensureSelectedDayExists} hotel placeholder.`
+          showActionNotice(completeNotice)
+          setSuggestedStepNotice(completeNotice)
+        } catch {
+          const message = 'Could not save that hotel edit. Try typing the request in Planner chat.'
+          setActionError(message)
+          setSuggestedStepNotice(message)
+        }
         return
       }
 

@@ -3,11 +3,12 @@
 import Image from 'next/image'
 import { useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown, BedDouble, ExternalLink } from 'lucide-react'
+import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown, BedDouble, ExternalLink, CalendarCheck, Utensils } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import TripDayMap from '@/components/trips/TripDayMap'
 import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay, sortTripItemsForVisibleItinerary } from '@/components/trips/derivedStops'
 import { getItineraryItemImage } from '@/lib/itinerary-images'
+import { getTravelBookingAction, type TravelBookingAction } from '@/lib/travel-booking-links'
 
 export type TripDay = {
   id: string
@@ -33,6 +34,7 @@ export type TripItem = {
   end_time: string | null
   duration_minutes: number | null
   notes: string | null
+  metadata?: Record<string, unknown> | null
   order_index: number
   place?: {
     id: string
@@ -161,6 +163,35 @@ function StopUrlLink({
     >
       <ExternalLink className={compact ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
       <span className="sr-only">Open maps URL</span>
+    </a>
+  )
+}
+
+function BookingActionLink({
+  action,
+  compact = false,
+}: {
+  action: TravelBookingAction
+  compact?: boolean
+}) {
+  const Icon = action.kind === 'hotel' ? CalendarCheck : Utensils
+
+  return (
+    <a
+      href={action.href}
+      target="_blank"
+      rel="noreferrer"
+      onClick={(event) => event.stopPropagation()}
+      aria-label={action.ariaLabel}
+      title={`${action.label} via ${action.provider}`}
+      className={cn(
+        'touch-target inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-[color:var(--brass)]/30 bg-[var(--brass)] font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brass)]',
+        compact ? 'h-8 px-2.5 text-[11px]' : 'h-9 px-3 text-xs'
+      )}
+    >
+      <Icon className={compact ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
+      <span>{compact ? action.shortLabel : action.label}</span>
+      <ExternalLink className={compact ? 'h-3 w-3 opacity-75' : 'h-3.5 w-3.5 opacity-75'} />
     </a>
   )
 }
@@ -785,6 +816,11 @@ export default function ItineraryArtifact({
                             latitude: mappedStop?.latitude ?? item.place?.latitude ?? null,
                             longitude: mappedStop?.longitude ?? item.place?.longitude ?? null,
                           })
+                          const bookingAction = getTravelBookingAction({
+                            item,
+                            dayDate: day.date,
+                            destination: tripTitle,
+                          })
 
                           return (
                             <div key={item.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
@@ -868,7 +904,8 @@ export default function ItineraryArtifact({
                                         {item.notes && (
                                           <p className="mt-2 whitespace-pre-line break-words text-xs leading-relaxed text-foreground/62">{item.notes}</p>
                                         )}
-                                        <div className="mt-3">
+                                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                                          {bookingAction && <BookingActionLink action={bookingAction} />}
                                           <StopUrlLink href={mapsUrl} label={item.title} />
                                         </div>
                                       </div>
@@ -969,6 +1006,11 @@ export default function ItineraryArtifact({
                       country: countryLabel,
                       latitude: mappedStop?.latitude ?? item.place?.latitude ?? null,
                       longitude: mappedStop?.longitude ?? item.place?.longitude ?? null,
+                    })
+                    const bookingAction = getTravelBookingAction({
+                      item,
+                      dayDate: day.date,
+                      destination: tripTitle,
                     })
 
                     return (
@@ -1132,7 +1174,8 @@ export default function ItineraryArtifact({
                             </div>
                           </div>
 
-                          <div className="flex">
+                          <div className="flex flex-wrap items-center gap-2">
+                            {bookingAction && <BookingActionLink action={bookingAction} />}
                             <StopUrlLink href={mapsUrl} label={item.title} />
                           </div>
 

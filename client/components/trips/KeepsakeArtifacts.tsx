@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { useMemo, useRef, useState } from 'react'
-import { CalendarDays, Check, Copy, Heart, MessageCircleQuestion, Route, Share2, Users } from 'lucide-react'
+import { CalendarCheck, CalendarDays, Check, Copy, ExternalLink, Heart, MessageCircleQuestion, Route, Share2, Users, Utensils } from 'lucide-react'
 import TripDayMap from '@/components/trips/TripDayMap'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
+import { getTravelBookingAction, type TravelBookingAction } from '@/lib/travel-booking-links'
 import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
 
@@ -38,6 +39,25 @@ const toneClass: Record<FeedbackTone, string> = {
   love_it: 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
   curious: 'border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]',
   practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
+}
+
+function PublicBookingAction({ action }: { action: TravelBookingAction }) {
+  const Icon = action.kind === 'hotel' ? CalendarCheck : Utensils
+
+  return (
+    <a
+      href={action.href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={action.ariaLabel}
+      title={`${action.label} via ${action.provider}`}
+      className="touch-target inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-2.5 py-1 text-[11px] font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+    >
+      <Icon className="h-3 w-3" />
+      <span>{action.shortLabel}</span>
+      <ExternalLink className="h-3 w-3 opacity-75" />
+    </a>
+  )
 }
 
 export function ArtifactFrame({
@@ -128,6 +148,11 @@ export function KeepsakeRouteCard({
         <div className="space-y-1.5">
           {sortedItems.slice(0, compact ? 3 : sortedItems.length).map((item, index) => {
             const placeLabel = getItineraryPlaceLabel(item)
+            const bookingAction = getTravelBookingAction({
+              item,
+              dayDate: day.date,
+              destination: day.title,
+            })
 
             return (
               <div key={item.id} className="flex items-start gap-2.5 rounded-2xl bg-paper-recessed/70 px-3 py-2">
@@ -140,6 +165,11 @@ export function KeepsakeRouteCard({
                     <p className="mt-0.5 break-words text-xs leading-snug text-ink-3">
                       {[item.start_time?.slice(0, 5), placeLabel].filter(Boolean).join(' · ')}
                     </p>
+                  )}
+                  {bookingAction && !compact && (
+                    <div className="mt-2">
+                      <PublicBookingAction action={bookingAction} />
+                    </div>
                   )}
                 </div>
               </div>

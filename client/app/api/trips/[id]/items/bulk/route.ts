@@ -88,6 +88,15 @@ const CANONICAL_ATHENS_PLACES = [
     longitude: 23.73008,
     mapbox_id: 'manual:athens:ergon-house-athens',
   },
+  {
+    pattern: /aeginitik[oo]n?\s+archontik[oo]n?|aeginitik[oo]n?\s+arhontik[oo]n?|aegina mansion hotel/i,
+    name: 'Aeginitikon Archontikon Hotel',
+    country: 'Greece',
+    country_code: 'GR',
+    latitude: 37.74672,
+    longitude: 23.42854,
+    mapbox_id: 'manual:aegina:aeginitikon-archontikon',
+  },
 ]
 
 async function resolvePlaceId(supabase: any, placeQuery?: string | null) {

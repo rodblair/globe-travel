@@ -34,6 +34,13 @@ export function inferPlanIntent({
   ]
   if (dayRewritePatterns.some((pattern) => pattern.test(normalized))) return 'day-rewrite'
 
+  const lodgingAddPatterns = [
+    /\b(add|include|insert|append|also add|add another|recommend|suggest)\b.*\b(hotel|lodging|stay|accommodation|place to stay)\b/,
+    /\b(hotel|lodging|accommodation|place to stay)\b.*\b(add|added|include|included|needed|missing)\b/,
+    /\bwhere\s+(should|can)\s+(i|we)\s+stay\b/,
+  ]
+  if (lodgingAddPatterns.some((pattern) => pattern.test(normalized))) return 'add-items'
+
   const itemEditPatterns = [
     /\b(regenerate|rewrite|rebuild|replace|swap|move|delete|remove|update|edit)\b.*\b(day|morning|afternoon|evening|activity|meal|item|stop|hotel|lodging|stay|accommodation)\b/,
     /\b(make|change|set)\b.*\b(activity|meal|item|stop|hotel|lodging|stay|accommodation)\b/,

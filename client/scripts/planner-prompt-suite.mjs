@@ -337,6 +337,18 @@ const scopedIntentChecks = [
     expectedTools: ['updateTripItem'],
   },
   {
+    id: 'trip-studio-include-hotel',
+    prompt: 'Please include a hotel in the itinerary.',
+    expectedIntent: 'add-items',
+    expectedTools: ['addTripItem'],
+  },
+  {
+    id: 'trip-studio-add-hotel-day-2',
+    prompt: 'Add a hotel to Day 2.',
+    expectedIntent: 'add-items',
+    expectedTools: ['addTripItem'],
+  },
+  {
     id: 'initial-make-me-four-day-trip',
     prompt: 'Make me a four day Mexico City food trip with museums and one big night out.',
     expectedIntent: 'full-plan',

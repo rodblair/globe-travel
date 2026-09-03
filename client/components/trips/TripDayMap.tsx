@@ -40,74 +40,6 @@ type TripDayMapProps = {
   ariaLabel?: string
 }
 
-function getStopRole(index: number, total: number) {
-  if (total <= 1) return 'solo' as const
-  if (index === 0) return 'start' as const
-  if (index === total - 1) return 'finish' as const
-  return 'waypoint' as const
-}
-
-function getRoleColors(role: ReturnType<typeof getStopRole>, active: boolean) {
-  if (role === 'start') {
-    return {
-      outline: active ? 'rgba(110,231,183,0.92)' : 'rgba(110,231,183,0.82)',
-      halo: active ? 'rgba(110,231,183,0.2)' : 'rgba(110,231,183,0.14)',
-      fill: active ? 'rgba(110,231,183,1)' : 'rgba(110,231,183,0.95)',
-    }
-  }
-
-  if (role === 'finish') {
-    return {
-      outline: active ? 'rgba(251,191,36,0.95)' : 'rgba(251,191,36,0.84)',
-      halo: active ? 'rgba(251,191,36,0.2)' : 'rgba(251,191,36,0.14)',
-      fill: active ? 'rgba(251,191,36,1)' : 'rgba(251,191,36,0.95)',
-    }
-  }
-
-  return {
-    outline: active ? 'rgba(125,211,252,0.92)' : 'rgba(125,211,252,0.82)',
-    halo: active ? 'rgba(125,211,252,0.16)' : 'rgba(125,211,252,0.12)',
-    fill: active ? 'rgba(125,211,252,0.98)' : 'rgba(125,211,252,0.94)',
-  }
-}
-
-function formatStopRole(role: ReturnType<typeof getStopRole>) {
-  if (role === 'solo') return 'only stop'
-  if (role === 'start') return 'start'
-  if (role === 'finish') return 'finish'
-  return 'waypoint'
-}
-
-function distanceMeters(a: Pick<TripDayMapStop, 'latitude' | 'longitude'>, b: Pick<TripDayMapStop, 'latitude' | 'longitude'>) {
-  const earthRadiusMeters = 6371000
-  const toRadians = (degrees: number) => (degrees * Math.PI) / 180
-  const deltaLatitude = toRadians(b.latitude - a.latitude)
-  const deltaLongitude = toRadians(b.longitude - a.longitude)
-  const latitude1 = toRadians(a.latitude)
-  const latitude2 = toRadians(b.latitude)
-  const haversine =
-    Math.sin(deltaLatitude / 2) ** 2 +
-    Math.cos(latitude1) * Math.cos(latitude2) * Math.sin(deltaLongitude / 2) ** 2
-
-  return 2 * earthRadiusMeters * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine))
-}
-
-function getNearbyMarkerOffset(stop: TripDayMapStop, stops: TripDayMapStop[], interactive: boolean): [number, number] {
-  const nearbyStops = stops
-    .filter((candidate) => distanceMeters(stop, candidate) <= 1200)
-    .sort((a, b) => a.index - b.index)
-
-  if (nearbyStops.length <= 1) return [0, 0]
-
-  const nearbyIndex = nearbyStops.findIndex((candidate) => candidate.id === stop.id)
-  if (nearbyIndex < 0) return [0, 0]
-
-  const radius = interactive ? 30 : 22
-  const angle = -Math.PI / 2 + (Math.PI * 2 * nearbyIndex) / nearbyStops.length
-
-  return [Math.round(Math.cos(angle) * radius), Math.round(Math.sin(angle) * radius)]
-}
-
 function buildStopPath(stops: TripDayMapStop[]) {
   if (stops.length === 0) return null
 
@@ -211,7 +143,6 @@ export default function TripDayMap({
 }: TripDayMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
-  const markersRef = useRef<mapboxgl.Marker[]>([])
   const [mapReady, setMapReady] = useState(false)
   const [mapFailed, setMapFailed] = useState(false)
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
@@ -431,30 +362,6 @@ export default function TripDayMap({
       })
 
       map.addLayer({
-        id: 'day-stop-outline',
-        type: 'circle',
-        source: 'day-stops',
-        paint: {
-          'circle-radius': interactive ? 18 : 12,
-          'circle-color': 'rgba(125,211,252,0.12)',
-          'circle-stroke-width': interactive ? 2 : 1.5,
-          'circle-stroke-color': 'rgba(159,105,32,0.72)',
-        },
-      })
-
-      map.addLayer({
-        id: 'day-stop-fill',
-        type: 'circle',
-        source: 'day-stops',
-        paint: {
-          'circle-radius': interactive ? 6 : 4,
-          'circle-color': 'rgba(159,105,32,0.9)',
-          'circle-stroke-width': 1,
-          'circle-stroke-color': 'rgba(255,252,244,0.94)',
-        },
-      })
-
-      map.addLayer({
         id: 'day-stop-labels',
         type: 'symbol',
         source: 'day-stops',
@@ -475,8 +382,6 @@ export default function TripDayMap({
 
     return () => {
       setMapReady(false)
-      markersRef.current.forEach((marker) => marker.remove())
-      markersRef.current = []
       map.remove()
       mapRef.current = null
     }
@@ -524,71 +429,11 @@ export default function TripDayMap({
       } as GeoJSON.FeatureCollection)
     }
 
-    if (map.getLayer('day-stop-outline')) {
-      map.setPaintProperty(
-        'day-stop-outline',
-        'circle-color',
-        active ? 'rgba(159,105,32,0.13)' : 'rgba(44,117,134,0.12)'
-      )
-      map.setPaintProperty(
-        'day-stop-outline',
-        'circle-stroke-color',
-        active ? 'rgba(159,105,32,0.78)' : 'rgba(44,117,134,0.72)'
-      )
-      map.setPaintProperty('day-stop-outline', 'circle-radius', interactive ? 18 : 12)
-    }
-
-    if (map.getLayer('day-stop-fill')) {
-      map.setPaintProperty(
-        'day-stop-fill',
-        'circle-color',
-        active ? 'rgba(159,105,32,0.92)' : 'rgba(44,117,134,0.86)'
-      )
-      map.setPaintProperty('day-stop-fill', 'circle-radius', interactive ? 6 : 4)
-    }
-
     if (map.getLayer('day-stop-labels')) {
       map.setLayoutProperty('day-stop-labels', 'visibility', 'visible')
-      map.setLayoutProperty('day-stop-labels', 'text-size', interactive ? 11 : 10)
+      map.setLayoutProperty('day-stop-labels', 'text-size', interactive ? 12 : 10)
+      map.setPaintProperty('day-stop-labels', 'text-color', active ? 'rgba(112,73,26,0.96)' : 'rgba(28,42,55,0.94)')
     }
-
-    markersRef.current.forEach((marker) => marker.remove())
-    markersRef.current = []
-
-    validStops.forEach((stop) => {
-      const role = getStopRole(stop.index - 1, validStops.length)
-      const colors = getRoleColors(role, active)
-      const element = document.createElement('div')
-      const markerLabel = `${title} ${formatStopRole(role)} stop ${stop.index} of ${validStops.length}: ${stop.title}`
-      element.setAttribute('role', 'img')
-      element.setAttribute('aria-label', markerLabel)
-      element.setAttribute('title', markerLabel)
-      element.innerHTML = `
-        <div aria-hidden="true" style="
-          width:${interactive ? 24 : 20}px;
-          height:${interactive ? 24 : 20}px;
-          border-radius:999px;
-          background:${colors.fill};
-          color:#1c2a37;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:${interactive ? 11 : 10}px;
-          font-weight:700;
-          box-shadow:0 0 0 2px rgba(255,252,244,0.92),0 8px 18px rgba(28,42,55,0.18);
-        ">${stop.index}</div>
-      `
-
-      const marker = new mapboxgl.Marker({
-        element,
-        anchor: 'center',
-        offset: getNearbyMarkerOffset(stop, validStops, interactive),
-      })
-        .setLngLat([stop.longitude, stop.latitude])
-        .addTo(map)
-
-      markersRef.current.push(marker)
-    })
 
     fitMapToStops(map)
   }, [validStops, active, mapReady, interactive, fitMapToStops, title])
@@ -677,48 +522,22 @@ export default function TripDayMap({
                     strokeLinejoin="round"
                   />
                 )}
-                {(previewGeometry || stopOnlyPreview)!.pointNodes.map((point, index, points) => {
-                  const role = getStopRole(index, points.length)
-                  const colors = getRoleColors(role, active)
+                {(previewGeometry || stopOnlyPreview)!.pointNodes.map((point) => {
                   return (
                   <g key={point.id}>
-                    <circle
-                      cx={point.x}
-                      cy={point.y}
-                      r="4.8"
-                      fill={colors.halo}
-                      stroke={colors.outline}
-                      strokeWidth="1.2"
-                    />
-                    <circle
-                      cx={point.x}
-                      cy={point.y}
-                      r="2.2"
-                      fill={colors.fill}
-                    />
                     <text
                       x={point.x}
                       y={point.y + 0.8}
                       textAnchor="middle"
-                      fontSize="3.5"
-                      fontWeight="700"
-                        fill="rgba(255,252,244,0.95)"
+                      fontSize="5"
+                      fontWeight="800"
+                      fill={active ? 'rgba(112,73,26,0.96)' : 'rgba(28,42,55,0.94)'}
+                      paintOrder="stroke"
+                      stroke="rgba(255,252,244,0.96)"
+                      strokeWidth="1.15"
                     >
                       {point.index}
                     </text>
-                    {!interactive && (
-                      <text
-                        x={point.x}
-                        y={point.y + 8}
-                        textAnchor="middle"
-                        fontSize="3.25"
-                        fontWeight="600"
-                        letterSpacing="0.02em"
-                        fill="rgba(28,42,55,0.84)"
-                      >
-                        {point.title.slice(0, 18)}
-                      </text>
-                    )}
                   </g>
                 )})}
               </svg>
