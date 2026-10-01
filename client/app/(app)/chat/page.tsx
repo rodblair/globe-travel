@@ -17,6 +17,7 @@ import {
   sortTripItemsForDisplay,
 } from '@/components/trips/derivedStops'
 import { extractDaysFromPrompt, extractDestinationFromPrompt } from '@/lib/planner/runtime'
+import { CartographicPlate } from '@/components/brand/CartographicPlate'
 import { DEFAULT_TRIP_DETAILS, TripDetailsPopover, type TripDetails } from '@/components/chat/TripDetailsPopover'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -326,15 +327,20 @@ function ChatPageContent() {
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground">
       {isEmpty ? (
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col justify-center px-4 py-10 md:py-16">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold md:text-5xl">Where to next?</h1>
-              <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground md:text-lg">
-                Describe your trip and get a mapped, day-by-day itinerary you can share with your group.
+          <div className="mx-auto grid min-h-full w-full max-w-6xl items-center gap-10 px-4 py-10 md:px-8 md:py-16 xl:grid-cols-[1.1fr_0.9fr] xl:gap-14">
+            <div className="flex flex-col">
+            <div>
+              <p className="flex items-center gap-3 text-sm font-semibold">
+                <span aria-hidden className="h-px w-8 bg-primary" />
+                New trip
+              </p>
+              <h1 className="mt-3 text-[clamp(2.75rem,5.4vw,4.75rem)] leading-[0.98] tracking-[-0.03em]">Where to next?</h1>
+              <p className="mt-4 max-w-lg text-lg text-muted-foreground">
+                Describe the trip. You get a mapped, day-by-day plan to refine and share with your group.
               </p>
             </div>
 
-            <Card className="mt-8 gap-0 p-3 shadow-md focus-within:ring-[3px] focus-within:ring-ring/30">
+            <Card className="mt-8 gap-0 border-foreground p-3 shadow-[5px_5px_0_0_var(--foreground)] focus-within:ring-[3px] focus-within:ring-ring/30">
               <Textarea
                 aria-label="Describe your trip idea"
                 placeholder='Try "4 days in Athens with an island overnight, relaxed mornings and great food"'
@@ -357,9 +363,9 @@ function ChatPageContent() {
                   size="lg"
                   onClick={submitDraftInput}
                   disabled={!draftInput.trim() || planningInProgress}
-                  className="rounded-full"
+                  
                   aria-label="Create itinerary"
-                >
+               >
                   {planningInProgress ? <Loader2 className="animate-spin" /> : <Sparkles />}
                   {planningInProgress ? 'Creating…' : 'Create itinerary'}
                 </Button>
@@ -380,7 +386,7 @@ function ChatPageContent() {
             )}
 
             <div className="mt-8">
-              <p className="mb-3 text-center text-sm text-muted-foreground">Need inspiration?</p>
+              <p className="mb-3 text-sm font-semibold">Need inspiration?</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {STARTER_PROMPTS.map((item) => (
                   <button
@@ -402,11 +408,23 @@ function ChatPageContent() {
                   </button>
                 ))}
               </div>
-              <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="size-4" />
                 Planning with friends? Share the finished plan with one link.
               </p>
             </div>
+            </div>
+
+            <figure className="hidden xl:block">
+              <div className="overflow-hidden rounded-lg border border-foreground bg-card shadow-[6px_6px_0_0_var(--foreground)]">
+                <div className="aspect-[4/3]">
+                  <CartographicPlate seed={draftInput.trim() || 'your-next-trip'} stops={5} label="A sample route that redraws as you type" />
+                </div>
+              </div>
+              <figcaption className="mt-3 text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">Your plate.</span> Stops, walking routes and a share link appear here once the plan is drawn.
+              </figcaption>
+            </figure>
           </div>
         </div>
       ) : (
@@ -417,7 +435,7 @@ function ChatPageContent() {
                 <Sparkles className="size-4" />
               </span>
               <div>
-                <h1 className="text-base font-semibold leading-tight">Planner</h1>
+                <h1 className="text-base font-medium leading-tight">Planner</h1>
                 <p className="text-xs text-muted-foreground">Ask about destinations, compare cities, or build an itinerary.</p>
               </div>
             </div>
@@ -451,7 +469,7 @@ function ChatPageContent() {
                 <Card className="min-h-[300px] gap-0 overflow-hidden p-0 xl:min-h-[280px]">
                   <div className="border-b px-4 py-3">
                     <p className="text-xs font-medium text-muted-foreground">{tripPayload ? 'Itinerary map' : 'Map preview'}</p>
-                    <h2 className="mt-0.5 text-base font-semibold leading-tight">
+                    <h2 className="mt-0.5 text-base font-medium leading-tight">
                       {tripPayload ? tripPayload.trip.title : 'Places from this chat'}
                     </h2>
                     <p className="mt-0.5 text-xs text-muted-foreground">{mapSubtitle}</p>

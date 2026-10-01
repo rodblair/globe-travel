@@ -31,7 +31,7 @@ export function AuthCanvas({
         className="absolute inset-0 opacity-80"
         style={{
           background:
-            "radial-gradient(circle at 20% 20%, color-mix(in oklch, var(--brass), transparent 82%) 0%, transparent 34%), linear-gradient(160deg, var(--paper-raised) 0%, var(--paper-recessed) 58%, var(--paper-sumi) 100%)",
+            "radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--brass), transparent 82%) 0%, transparent 34%), linear-gradient(160deg, var(--paper-raised) 0%, var(--paper-recessed) 58%, var(--paper-sumi) 100%)",
         }}
       />
       {/* contour band */}
@@ -46,7 +46,7 @@ export function AuthCanvas({
           top: "70%",
           height: "1px",
           background:
-            "linear-gradient(90deg, transparent 0%, color-mix(in oklch, var(--brass), transparent 30%) 30%, color-mix(in oklch, var(--brass), transparent 30%) 70%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--brass), transparent 30%) 30%, color-mix(in srgb, var(--brass), transparent 30%) 70%, transparent 100%)",
           boxShadow: "0 0 14px var(--brass-glow)",
         }}
       />

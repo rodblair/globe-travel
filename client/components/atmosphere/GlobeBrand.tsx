@@ -9,46 +9,33 @@ type GlobeBrandProps = {
   markOnly?: boolean
 }
 
-/** The Globe.travel mark: a globe with a route pin. Colours follow the theme tokens. */
+/** Globe.travel mark: meridian globe with a route-red waypoint. */
 export function GlobeMark({ className }: { className?: string }) {
   return (
-    <svg
-      role="img"
-      aria-label="Globe.travel"
-      viewBox="0 0 64 64"
-      fill="none"
-      className={cn('size-9 shrink-0', className)}
-    >
-      <rect width="64" height="64" rx="16" className="fill-primary" />
-      <g className="stroke-primary-foreground" strokeWidth="3.4" strokeLinecap="round">
-        <circle cx="32" cy="33" r="17" />
-        <ellipse cx="32" cy="33" rx="7.5" ry="17" />
-        <path d="M15 33h34" />
+    <svg role="img" aria-label="Globe.travel" viewBox="0 0 48 48" fill="none" className={cn('size-9 shrink-0 text-foreground', className)}>
+      <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+        <circle cx="22" cy="26" r="16" />
+        <ellipse cx="22" cy="26" rx="6.5" ry="16" />
+        <path d="M6 26h32M9 16.5h26M9 35.5h26" strokeWidth="1.6" />
       </g>
-      <circle cx="46" cy="18" r="6.2" className="stroke-primary" strokeWidth="3" fill="#ffb84d" />
+      <circle cx="37" cy="12" r="6.5" className="fill-primary stroke-[color:var(--mark-bg,var(--background))]" strokeWidth="3" />
     </svg>
   )
 }
 
-export function GlobeBrand({
-  className,
-  textClassName,
-  markClassName,
-  compact = false,
-  markOnly = false,
-}: GlobeBrandProps) {
+export function GlobeBrand({ className, textClassName, markClassName, compact = false, markOnly = false }: GlobeBrandProps) {
   return (
     <span className={cn('inline-flex items-center gap-2.5 leading-none', className)}>
       <GlobeMark className={cn(compact ? 'size-8' : 'size-9', markClassName)} />
       {!markOnly && (
         <span
           className={cn(
-            'font-semibold tracking-tight text-foreground',
-            compact ? 'text-base' : 'text-lg',
+            'font-serif font-semibold tracking-[-0.03em] text-current',
+            compact ? 'text-xl' : 'text-[1.4rem]',
             textClassName,
           )}
         >
-          Globe<span className="text-muted-foreground">.travel</span>
+          Globe<span className="font-normal italic opacity-70">.travel</span>
         </span>
       )}
     </span>

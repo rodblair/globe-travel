@@ -29,7 +29,7 @@ export function ConstellationField({
         style={{
           filter: "blur(50px)",
           opacity: intensity === "warm" ? 0.9 : 0.45,
-          background: `radial-gradient(ellipse at center, color-mix(in oklch, var(--horizon, var(--dusty-aqua)), transparent 90%) 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse at center, color-mix(in srgb, var(--horizon, var(--dusty-aqua)), transparent 90%) 0%, transparent 70%)`,
         }}
       />
     </div>

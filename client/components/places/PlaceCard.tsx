@@ -75,7 +75,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
 
       {/* Content */}
       <div className="p-4 space-y-2">
-        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+        <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
           {name}
         </h3>
         <div className="flex items-center gap-1.5">

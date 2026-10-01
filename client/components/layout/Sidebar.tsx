@@ -63,7 +63,7 @@ export function Sidebar() {
   return (
     <aside
       aria-label="Primary app navigation"
-      className="hidden h-dvh w-64 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground md:flex"
+      className="dark hidden h-dvh w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex"
     >
       <div className="flex h-16 items-center justify-between px-4">
         <Link href="/chat" aria-label="Globe.travel planner" className="inline-flex rounded-lg">
@@ -72,7 +72,7 @@ export function Sidebar() {
       </div>
 
       <div className="px-3">
-        <Button asChild className="w-full justify-start rounded-lg" size="lg">
+        <Button asChild className="w-full justify-start" size="lg">
           <Link href="/chat">
             <Plus />
             New trip
@@ -90,10 +90,10 @@ export function Sidebar() {
               href={item.href}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors',
+                'relative flex h-11 items-center gap-3 rounded-md px-3 text-[0.9375rem] font-medium transition-colors',
                 isActive
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                  : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
+                  ? 'bg-sidebar-accent text-sidebar-accent-foreground before:absolute before:inset-y-2 before:-left-px before:w-[3px] before:rounded-full before:bg-sidebar-primary'
+                  : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground',
               )}
             >
               <Icon className="size-[18px] shrink-0" />
@@ -106,7 +106,7 @@ export function Sidebar() {
       <div className="mt-6 min-h-0 flex-1 overflow-y-auto px-3">
         {recents && recents.length > 0 ? (
           <>
-            <p className="px-3 pb-2 text-xs font-medium text-muted-foreground">Recent trips</p>
+            <p className="px-3 pb-2 text-xs font-semibold text-sidebar-foreground/50">Recent trips</p>
             <ul className="space-y-0.5">
               {recents.map((trip) => {
                 const href = `/trips/${trip.id}`
@@ -117,10 +117,10 @@ export function Sidebar() {
                       href={href}
                       aria-current={active ? 'page' : undefined}
                       className={cn(
-                        'block truncate rounded-lg px-3 py-2 text-sm transition-colors',
+                        'block truncate rounded-md px-3 py-2 text-sm transition-colors',
                         active
                           ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
-                          : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
+                          : 'text-sidebar-foreground/65 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground',
                       )}
                     >
                       {trip.title || 'Untitled trip'}
@@ -137,14 +137,14 @@ export function Sidebar() {
         <div className="px-3 pb-3">
           <Link
             href="/pricing"
-            className="flex items-center gap-3 rounded-xl border bg-card p-3 shadow-xs transition-shadow hover:shadow-sm"
+            className="flex items-center gap-3 rounded-md border border-sidebar-border bg-sidebar-accent/50 p-3 transition-colors hover:bg-sidebar-accent"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-sidebar-primary text-sidebar-primary-foreground">
               <Sparkles className="size-4" />
             </span>
             <span className="min-w-0">
               <span className="block text-sm font-medium leading-tight">Try {PLANS.pro.name}</span>
-              <span className="block text-xs text-muted-foreground">7-day free trial</span>
+              <span className="block text-xs text-sidebar-foreground/60">7-day free trial</span>
             </span>
           </Link>
         </div>
@@ -152,9 +152,9 @@ export function Sidebar() {
 
       {isGuest && (
         <div className="px-3 pb-3">
-          <div className="rounded-xl border bg-card p-3 shadow-xs">
+          <div className="rounded-md border border-sidebar-border bg-sidebar-accent/50 p-3">
             <p className="text-sm font-medium">You&apos;re browsing as a guest</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">Create a free account to keep your trips.</p>
+            <p className="mt-0.5 text-xs text-sidebar-foreground/60">Create a free account to keep your trips.</p>
             <Button asChild size="sm" className="mt-3 w-full">
               <Link href="/signup?next=%2Fchat">
                 <UserPlus />
@@ -165,13 +165,13 @@ export function Sidebar() {
         </div>
       )}
 
-      <div className="border-t p-3">
+      <div className="border-t border-sidebar-border p-3">
         <div className="flex items-center gap-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="flex min-w-0 flex-1 items-center gap-3 rounded-lg p-2 text-left transition-colors hover:bg-sidebar-accent/60 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="flex min-w-0 flex-1 items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-sidebar-accent/60 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
                 aria-label="Account menu"
               >
                 {isLoading ? (
@@ -187,11 +187,11 @@ export function Sidebar() {
                     </Avatar>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium leading-tight">{displayName}</span>
-                      <span className="block truncate text-xs text-muted-foreground">
+                      <span className="block truncate text-xs text-sidebar-foreground/60">
                         {isGuest ? 'Guest session' : isPro ? PLANS.pro.name : PLANS.free.name}
                       </span>
                     </span>
-                    <MoreHorizontal className="size-4 shrink-0 text-muted-foreground" />
+                    <MoreHorizontal className="size-4 shrink-0 text-sidebar-foreground/60" />
                   </>
                 )}
               </button>

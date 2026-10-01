@@ -5,7 +5,6 @@ import { SiteHeader, GUEST_HREF } from '@/components/marketing/SiteHeader'
 import { SiteFooter } from '@/components/marketing/SiteFooter'
 import { PricingPlans } from '@/components/marketing/PricingPlans'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { PLANS } from '@/lib/plans'
@@ -56,27 +55,29 @@ export default function PricingPage() {
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
       <SiteHeader />
       <main className="flex-1">
-        <section className="relative overflow-hidden">
-          <div aria-hidden className="bg-glow pointer-events-none absolute inset-0" />
-          <div className="relative mx-auto w-full max-w-6xl px-4 pt-16 pb-20 md:px-6 md:pt-24">
-            <div className="mx-auto max-w-2xl text-center">
-              <Badge variant="brass" className="mb-4">Pricing</Badge>
-              <h1 className="text-4xl font-bold md:text-6xl">Start free. Upgrade when the trip gets real.</h1>
-              <p className="mt-5 text-lg text-muted-foreground">
-                Plan a city trip, map the days, share the itinerary and collect feedback before anyone commits.
-                Upgrade when Globe.travel becomes your group&apos;s planning workspace.
-              </p>
-            </div>
+        <section className="border-b border-foreground">
+          <div className="mx-auto w-full max-w-7xl px-4 pt-14 pb-20 md:px-6 md:pt-20">
+            <p className="flex items-center gap-3 text-sm font-semibold">
+              <span aria-hidden className="h-px w-10 bg-primary" />
+              Pricing
+            </p>
+            <h1 className="mt-4 max-w-4xl text-[clamp(2.75rem,6vw,5.25rem)] leading-[0.98] tracking-[-0.03em]">
+              Start free. Upgrade when the trip gets real.
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
+              Plan a city trip, map the days, share the itinerary and collect feedback before anyone commits. Upgrade when
+              Globe.travel becomes your group&apos;s planning workspace.
+            </p>
             <div className="mt-12">
               <PricingPlans />
             </div>
           </div>
         </section>
 
-        <section className="border-t bg-muted/40 py-20">
+        <section className="bg-card py-20">
           <div className="mx-auto w-full max-w-4xl px-4 md:px-6">
-            <h2 className="text-center text-3xl font-bold md:text-4xl">Compare plans</h2>
-            <div className="mt-10 overflow-hidden rounded-xl border bg-card">
+            <h2 className="text-4xl leading-tight md:text-5xl">Compare plans</h2>
+            <div className="mt-8 overflow-hidden border border-foreground bg-background">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -101,7 +102,7 @@ export default function PricingPage() {
 
         <section className="py-20">
           <div className="mx-auto w-full max-w-3xl px-4 md:px-6">
-            <h2 className="text-center text-3xl font-bold md:text-4xl">Pricing questions</h2>
+            <h2 className="text-4xl leading-tight md:text-5xl">Pricing questions</h2>
             <Accordion type="single" collapsible className="mt-8">
               {PRICING_FAQ.map((item) => (
                 <AccordionItem key={item.q} value={item.q}>
@@ -114,18 +115,18 @@ export default function PricingPage() {
         </section>
 
         <section className="px-4 pb-20 md:px-6">
-          <div className="mx-auto max-w-4xl rounded-3xl border bg-card px-6 py-12 text-center shadow-sm">
-            <h2 className="text-2xl font-bold md:text-4xl">Give the group one plan to react to.</h2>
-            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+          <div className="mx-auto max-w-7xl border border-foreground bg-primary px-6 py-14 text-primary-foreground md:px-12">
+            <h2 className="max-w-3xl text-4xl leading-[1.02] md:text-6xl">Give the group one plan to react to.</h2>
+            <p className="mt-4 max-w-xl text-lg text-primary-foreground/85">
               Start with the free workspace, or begin Adventurer when you already know this trip needs more room.
             </p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild size="lg" className="w-full rounded-full sm:w-auto">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+              <Button asChild size="lg" className="bg-background text-foreground hover:bg-background/90">
                 <Link href="/signup?next=%2Faccount%3Ftab%3Dbilling">Start free trial</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="w-full rounded-full sm:w-auto">
-                <Link href={GUEST_HREF}>Try as guest</Link>
-              </Button>
+              <Link href={GUEST_HREF} className="font-semibold underline decoration-2 underline-offset-[6px]">
+                or try it as a guest
+              </Link>
             </div>
           </div>
         </section>

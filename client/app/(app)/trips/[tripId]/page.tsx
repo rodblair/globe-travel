@@ -168,7 +168,7 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
   return (
     <section
       aria-labelledby="trip-studio-recovery-title"
-      className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
+      className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_srgb,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
     >
       <div className="hidden pointer-events-none absolute inset-0" />
       <div className="absolute inset-x-0 top-0 h-px bg-muted" />
@@ -1379,7 +1379,7 @@ function TripStudioPageContent() {
     return (
       <div
         ref={studioRef}
-        className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
+        className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_srgb,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
       >
         <div className="absolute inset-x-0 top-0 h-px bg-muted" />
         <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card/85 p-6 shadow-lg backdrop-blur-2xl md:p-8">
@@ -1436,7 +1436,7 @@ function TripStudioPageContent() {
               {isBuildingInitialItinerary ? 'Creating your itinerary…' : `Trip Studio · ${mappedDayCount}/${Math.max(days.length, 1)} mapped days`}
             </p>
             <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-2">
-              <h1 className="min-w-0 max-w-full break-words text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
+              <h1 className="min-w-0 max-w-full break-words text-2xl font-medium leading-tight tracking-tight text-foreground md:text-3xl">
                 {tripDisplayTitle || 'Trip workspace'}
               </h1>
               <Badge variant={canEditTrip ? 'secondary' : 'outline'}>
@@ -1452,14 +1452,14 @@ function TripStudioPageContent() {
                   variant="outline"
                   size="sm"
                   onClick={() => setChatOpen(true)}
-                  className="rounded-full 2xl:hidden"
-                >
+                  className=" 2xl:hidden"
+               >
                   <MessageSquareQuote />
                   Planner chat
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon-sm" aria-label="More trip actions" className="rounded-full">
+                    <Button variant="outline" size="icon-sm" aria-label="More trip actions" >
                       <MoreHorizontal />
                     </Button>
                   </DropdownMenuTrigger>
@@ -1477,15 +1477,15 @@ function TripStudioPageContent() {
                 <Button
                   onClick={shareWithFriends}
                   disabled={isSharingTrip || !trip}
-                  className="rounded-full"
+                  
                   variant={shareDone ? 'secondary' : 'default'}
-                >
+               >
                   {shareDone ? <Check /> : <Share2 />}
                   {isSharingTrip ? 'Sharing...' : shareDone ? 'Link copied' : 'Share with friends'}
                 </Button>
               </>
             ) : trip?.is_public && trip.share_slug ? (
-              <Button asChild className="rounded-full">
+              <Button asChild >
                 <Link href={`/t/${trip.share_slug}`}>
                   <Send />
                   View share
@@ -1557,8 +1557,8 @@ function TripStudioPageContent() {
                     size="sm"
                     onClick={() => handleOptimize()}
                     disabled={isOptimizing || !canEditTrip}
-                    className="rounded-full"
-                  >
+                    
+                 >
                     {optimizeDone ? <Check className="text-success" /> : <ArrowLeftRight className={cn('text-primary', isOptimizing && 'animate-pulse')} />}
                     {isOptimizing ? 'Optimizing...' : optimizeDone ? 'Optimized' : 'Optimize day'}
                   </Button>
@@ -1567,14 +1567,14 @@ function TripStudioPageContent() {
                     size="sm"
                     onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
                     disabled={!selectedStudioDay || regeneratingDayIndex != null || isLoading || !canEditTrip}
-                    className="rounded-full"
-                  >
+                    
+                 >
                     <Sparkles className="text-primary" />
                     Rewrite day
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="icon-sm" className="rounded-full" aria-label="More map actions">
+                      <Button variant="outline" size="icon-sm"  aria-label="More map actions">
                         <MoreHorizontal />
                       </Button>
                     </DropdownMenuTrigger>

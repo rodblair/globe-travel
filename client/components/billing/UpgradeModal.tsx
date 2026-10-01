@@ -65,11 +65,11 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
         showCloseButton={false}
       >
         <div className="relative overflow-hidden">
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--primary)_10%,transparent),transparent)]" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--primary)_10%,transparent),transparent)]" />
 
               <DialogHeader className="relative flex-row items-start justify-between gap-4 p-5 pb-4 text-left sm:p-6 sm:pb-4">
                 <div className="min-w-0">
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-[color:color-mix(in_oklch,var(--primary)_10%,transparent)] px-3 py-1">
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-[color:color-mix(in_srgb,var(--primary)_10%,transparent)] px-3 py-1">
                     <Crown className="h-4 w-4 text-primary" />
                     <span className="text-xs font-semibold text-primary">{PLANS.pro.name}</span>
                   </div>
@@ -101,7 +101,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                         'relative min-h-11 rounded-lg shadow-none',
                         interval !== i && 'text-muted-foreground hover:bg-accent hover:text-foreground'
                       )}
-                    >
+                   >
                       {i === 'year' ? 'Yearly' : 'Monthly'}
                       {i === 'year' && (
                         <span className="rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success">
@@ -152,7 +152,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                         variant="outline"
                         size="sm"
                         className="mt-3 border-[color:var(--destructive)]/30 bg-card text-destructive disabled:opacity-60"
-                      >
+                     >
                         Try again
                       </Button>
                     </div>
@@ -166,8 +166,8 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                   onClick={handleUpgrade}
                   disabled={loading}
                   size="xl"
-                  className="w-full rounded-xl text-base font-bold shadow-lg shadow-[color:color-mix(in_oklch,var(--primary)_28%,transparent)] hover:scale-[1.01] disabled:scale-100"
-                >
+                  className="w-full rounded-xl text-base font-bold shadow-lg shadow-[color:color-mix(in_srgb,var(--primary)_28%,transparent)] hover:scale-[1.01] disabled:scale-100"
+               >
                   <Zap className="h-4 w-4" />
                   {loading ? 'Redirecting to checkout…' : 'Start 7-day free trial'}
                 </Button>

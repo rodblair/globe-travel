@@ -37,7 +37,7 @@ export function HorizonHero({
           top: "62%",
           height: "1px",
           background:
-            "linear-gradient(90deg, transparent 0%, color-mix(in oklch, var(--brass), transparent 30%) 20%, color-mix(in oklch, var(--brass), transparent 10%) 50%, color-mix(in oklch, var(--brass), transparent 30%) 80%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--brass), transparent 30%) 20%, color-mix(in srgb, var(--brass), transparent 10%) 50%, color-mix(in srgb, var(--brass), transparent 30%) 80%, transparent 100%)",
           boxShadow: "0 0 12px var(--brass-glow)",
         }}
       />

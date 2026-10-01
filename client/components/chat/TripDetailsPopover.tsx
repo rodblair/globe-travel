@@ -32,7 +32,7 @@ export function TripDetailsPopover({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="sm" disabled={disabled} className="rounded-full">
+        <Button type="button" variant="outline" size="sm" disabled={disabled} >
           <SlidersHorizontal />
           {summarizeTripDetails(value)}
         </Button>
@@ -50,7 +50,7 @@ export function TripDetailsPopover({
               aria-label="Fewer travelers"
               disabled={value.travelers <= 1}
               onClick={() => onChange({ ...value, travelers: Math.max(1, value.travelers - 1) })}
-            >
+           >
               <Minus />
             </Button>
             <span className="text-sm font-medium tabular-nums" aria-live="polite">
@@ -63,7 +63,7 @@ export function TripDetailsPopover({
               aria-label="More travelers"
               disabled={value.travelers >= 20}
               onClick={() => onChange({ ...value, travelers: Math.min(20, value.travelers + 1) })}
-            >
+           >
               <Plus />
             </Button>
           </div>

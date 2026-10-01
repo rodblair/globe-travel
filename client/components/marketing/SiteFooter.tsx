@@ -31,24 +31,24 @@ const COLUMNS = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t bg-muted/40">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6">
+    <footer className="bg-plate text-plate-foreground">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 md:px-6">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="max-w-xs space-y-3">
             <Link href="/" aria-label="Globe.travel home" className="inline-flex">
-              <GlobeBrand />
+              <GlobeBrand className="text-plate-foreground" markClassName="text-plate-foreground [--mark-bg:var(--plate)]" />
             </Link>
-            <p className="text-sm text-muted-foreground">
-              Plan the trip everyone says yes to. AI itineraries on a map, ready to share with your group.
+            <p className="text-base text-plate-foreground/70">
+              Plan the trip everyone says yes to. Mapped itineraries your group can react to.
             </p>
           </div>
           {COLUMNS.map((column) => (
             <nav key={column.title} aria-label={column.title} className="space-y-3">
-              <h2 className="text-sm font-semibold tracking-normal">{column.title}</h2>
+              <h2 className="text-sm font-medium tracking-normal">{column.title}</h2>
               <ul className="space-y-2">
                 {column.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+                    <Link href={link.href} className="text-[0.9375rem] text-plate-foreground transition-colors hover:text-[oklch(0.78_0.14_40)]">
                       {link.label}
                     </Link>
                   </li>
@@ -57,8 +57,8 @@ export function SiteFooter() {
             </nav>
           ))}
         </div>
-        <Separator className="my-8" />
-        <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Globe.travel. Built for friends who travel together.</p>
+        <Separator className="my-8 bg-plate-foreground/20" />
+        <p className="text-sm text-plate-foreground/60">© {new Date().getFullYear()} Globe.travel. Built for friends who travel together.</p>
       </div>
     </footer>
   )

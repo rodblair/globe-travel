@@ -126,7 +126,7 @@ export function KeepsakeRouteCard({
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-semibold text-primary">Day {day.day_index}</p>
-            <h3 className="mt-0.5 text-base font-semibold leading-tight text-foreground">
+            <h3 className="mt-0.5 text-base font-medium leading-tight text-foreground">
               {day.title || `Itinerary Day ${day.day_index}`}
             </h3>
           </div>
@@ -200,7 +200,7 @@ export function TripPosterPreview({
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
               {meta.days || days.length || 3} days
             </div>
-            <h2 className="text-balance text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
+            <h2 className="text-balance text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
               {posterDestination}
             </h2>
             {posterTiming && (
@@ -294,7 +294,7 @@ export function FriendFeedbackPanel({
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground">Friend feedback</p>
-          <h2 className="mt-0.5 text-xl font-semibold text-foreground">
+          <h2 className="mt-0.5 text-xl font-medium text-foreground">
             {feedback.length} {feedback.length === 1 ? 'reaction' : 'reactions'}
           </h2>
         </div>
@@ -412,7 +412,7 @@ export function ShareLinkCard({
 
   return (
     <section className={cn('rounded-xl border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
-      <h2 className="text-xl font-semibold text-foreground">Share this trip</h2>
+      <h2 className="text-xl font-medium text-foreground">Share this trip</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         Friends can view the itinerary without signing in and leave lightweight feedback.
       </p>
@@ -444,11 +444,11 @@ export function ShareLinkCard({
         {copied ? 'Copied to clipboard.' : 'Copy status'}
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Button type="button" variant="outline" onClick={copyLink} disabled={!shareUrl} className="rounded-full">
+        <Button type="button" variant="outline" onClick={copyLink} disabled={!shareUrl} >
           {copied ? <Check /> : <Copy />}
           {copied ? 'Copied' : 'Copy link'}
         </Button>
-        <Button type="button" onClick={nativeShare} disabled={!shareUrl} className="rounded-full">
+        <Button type="button" onClick={nativeShare} disabled={!shareUrl} >
           <Share2 />
           Share
         </Button>

@@ -186,7 +186,7 @@ export default function ChatInterface({
             ))}
           </div>
         )}
-        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-md border border-border bg-[var(--muted)]/60 px-3 py-2 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-[color-mix(in_oklch,var(--primary)_28%,transparent)] sm:px-4">
+        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-md border border-border bg-[var(--muted)]/60 px-3 py-2 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-[color-mix(in_srgb,var(--primary)_28%,transparent)] sm:px-4">
           <div className="mb-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
             <Sparkles className="h-4 w-4" strokeWidth={1.5} />
           </div>

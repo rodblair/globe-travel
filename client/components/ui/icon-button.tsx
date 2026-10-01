@@ -25,7 +25,7 @@ function IconButton({
       size={size}
       className={cn("touch-target", className)}
       {...props}
-    >
+   >
       {children}
       <span className="sr-only">{label}</span>
     </Button>

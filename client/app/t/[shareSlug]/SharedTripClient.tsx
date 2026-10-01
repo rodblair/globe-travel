@@ -208,7 +208,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild variant="outline" className="rounded-full">
+          <Button asChild variant="outline" >
             <Link href={trip ? starterHref : '/chat'} prefetch={false}>
               Start your own trip
               <ArrowRight />
@@ -225,11 +225,11 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
             <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Compass className="size-7" />
             </span>
-            <h1 className="mt-5 text-3xl font-bold md:text-4xl">This itinerary link is unavailable</h1>
+            <h1 className="mt-5 text-3xl font-medium md:text-4xl">This itinerary link is unavailable</h1>
             <p className="mt-3 text-muted-foreground">
               It may have been made private or removed. You can still plan your own trip with Globe.travel.
             </p>
-            <Button asChild size="lg" className="mt-8 rounded-full">
+            <Button asChild size="lg" className="mt-8">
               <Link href="/api/guest/start?next=/chat">Plan a trip</Link>
             </Button>
           </section>
@@ -239,7 +239,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
               <section>
                 <div className="mb-6 max-w-2xl">
                   <Badge variant="brass" className="mb-3">Shared trip</Badge>
-                  <h1 className="break-words text-4xl font-bold md:text-5xl">{displayTitleParts.title}</h1>
+                  <h1 className="break-words text-4xl font-medium md:text-5xl">{displayTitleParts.title}</h1>
                   {displayTitleParts.timing && (
                     <p className="mt-2 text-sm font-medium text-primary">In {displayTitleParts.timing}</p>
                   )}
@@ -253,7 +253,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
               <section>
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
                   <div>
-                    <h2 className="text-2xl font-bold">Day-by-day itinerary</h2>
+                    <h2 className="text-2xl font-medium">Day-by-day itinerary</h2>
                     <p className="text-sm text-muted-foreground">What the group will actually do</p>
                   </div>
                   <Badge variant="secondary">
@@ -370,7 +370,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     <span>{feedbackHelperText}</span>
                     <span>{trimmedCommentLength}/600</span>
                   </div>
-                  <Button onClick={submitFeedback} disabled={!canSubmit} size="lg" className="w-full rounded-full">
+                  <Button onClick={submitFeedback} disabled={!canSubmit} size="lg" className="w-full">
                     <Send />
                     {submitting ? 'Sending...' : submitted ? 'Feedback sent' : 'Send feedback'}
                   </Button>
@@ -400,7 +400,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild size="lg" className="w-full rounded-full">
+                  <Button asChild size="lg" className="w-full">
                     <Link href={starterHref}>
                       Start your own trip
                       <ArrowRight />

@@ -7,13 +7,18 @@ export const size = {
 };
 export const contentType = "image/png";
 
-const stops = [
-  { label: "Acropolis at sunrise", time: "09:00" },
-  { label: "Lunch in Plaka", time: "13:00" },
-  { label: "Sunset on Filopappou", time: "19:30" },
-];
+const INK = "#10202a";
+const BONE = "#f6f2e8";
+const ROUTE = "#e0583a";
 
 export default function Image() {
+  const stops: Array<[number, number]> = [
+    [90, 250],
+    [200, 150],
+    [320, 190],
+    [430, 90],
+    [520, 170],
+  ];
   return new ImageResponse(
     (
       <div
@@ -21,75 +26,78 @@ export default function Image() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: "linear-gradient(135deg, #f4f7ff 0%, #ffffff 55%, #fff4e0 100%)",
-          color: "#101a3a",
-          fontFamily: "Inter, Arial, sans-serif",
+          background: INK,
+          color: BONE,
+          fontFamily: "Georgia, serif",
           padding: 72,
+          position: "relative",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <svg width="56" height="56" viewBox="0 0 64 64">
-            <rect width="64" height="64" rx="16" fill="#3358e0" />
-            <g fill="none" stroke="#fff" strokeWidth="3.4" strokeLinecap="round">
-              <circle cx="32" cy="33" r="17" />
-              <ellipse cx="32" cy="33" rx="7.5" ry="17" />
-              <path d="M15 33h34" />
-            </g>
-            <circle cx="46" cy="18" r="6.2" fill="#ffb84d" stroke="#3358e0" strokeWidth="3" />
-          </svg>
-          <div style={{ fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>Globe.travel</div>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 48 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24, width: 640 }}>
-            <div style={{ fontSize: 76, lineHeight: 1.02, fontWeight: 800, letterSpacing: -3 }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 620 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <svg width="52" height="52" viewBox="0 0 48 48" fill="none">
+              <g stroke={BONE} strokeWidth="2.4" strokeLinecap="round" fill="none">
+                <circle cx="22" cy="26" r="16" />
+                <ellipse cx="22" cy="26" rx="6.5" ry="16" />
+                <path d="M6 26h32" strokeWidth="1.6" />
+              </g>
+              <circle cx="37" cy="12" r="6.5" fill={ROUTE} stroke={INK} strokeWidth="3" />
+            </svg>
+            <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>Globe.travel</div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ fontSize: 84, lineHeight: 1, fontWeight: 700, letterSpacing: -3 }}>
               Plan the trip everyone says yes to.
             </div>
-            <div style={{ fontSize: 30, lineHeight: 1.3, color: "#4a5578" }}>
-              AI itineraries on a map. Share a link, collect votes, lock it in.
+            <div style={{ fontSize: 28, lineHeight: 1.35, color: "#b9c2c4", fontFamily: "Arial, sans-serif" }}>
+              Mapped itineraries your group can react to.
             </div>
           </div>
+        </div>
 
-          <div
-            style={{
-              width: 380,
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-              background: "#ffffff",
-              borderRadius: 28,
-              padding: 28,
-              border: "1px solid #e3e8f5",
-              boxShadow: "0 24px 48px -12px rgba(16,26,58,0.18)",
-            }}
-          >
-            {stops.map((stop, index) => (
-              <div key={stop.label} style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <div
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 19,
-                    background: "#3358e0",
-                    color: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 20,
-                    fontWeight: 700,
-                  }}
-                >
-                  {index + 1}
-                </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ fontSize: 22, fontWeight: 600 }}>{stop.label}</div>
-                  <div style={{ fontSize: 17, color: "#6b7599" }}>{stop.time}</div>
-                </div>
-              </div>
+        <div
+          style={{
+            position: "absolute",
+            right: 72,
+            top: 90,
+            width: 440,
+            height: 450,
+            display: "flex",
+            background: BONE,
+            borderRadius: 6,
+            padding: 20,
+          }}
+        >
+          <svg width="400" height="410" viewBox="0 0 600 600">
+            <rect width="600" height="600" fill="#cfdadb" />
+            <path
+              d="M70 330 C60 180 220 60 360 90 C500 120 560 260 500 400 C450 520 280 560 170 500 C100 460 75 400 70 330Z"
+              fill="#faf7ee"
+              stroke="#10202a"
+              strokeWidth="2.5"
+            />
+            <path
+              d="M150 330 C145 220 250 150 350 175 C440 200 470 290 430 380 C395 450 270 470 205 430 C170 405 152 370 150 330Z"
+              fill="none"
+              stroke="#10202a"
+              strokeOpacity="0.28"
+              strokeWidth="2"
+            />
+            <polyline
+              points={stops.map(([x, y]) => `${x + 20},${y + 180}`).join(" ")}
+              fill="none"
+              stroke={ROUTE}
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray="2 14"
+            />
+            {stops.map(([x, y], i) => (
+              <g key={i}>
+                <circle cx={x + 20} cy={y + 180} r="22" fill="#faf7ee" stroke="#10202a" strokeWidth="3" />
+                <circle cx={x + 20} cy={y + 180} r="15" fill={ROUTE} />
+              </g>
             ))}
-          </div>
+          </svg>
         </div>
       </div>
     ),

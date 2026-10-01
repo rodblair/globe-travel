@@ -125,7 +125,7 @@ export default function LoginPage() {
                 onClick={handlePasswordReset}
                 disabled={isResettingPassword || isLoading}
                 className="h-auto text-sm"
-              >
+             >
                 {isResettingPassword ? 'Sending…' : 'Forgot password?'}
               </Button>
             </div>
@@ -167,7 +167,7 @@ export default function LoginPage() {
           setMessage(null)
         }}
         className="mt-3 w-full text-muted-foreground"
-      >
+     >
         {isMagicLink ? 'Sign in with password instead' : 'Email me a magic link instead'}
       </Button>
 

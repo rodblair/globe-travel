@@ -250,7 +250,7 @@ function AccountPageContent() {
     <div className="min-h-dvh bg-background">
       <div className="app-sticky-header">
         <div className="mx-auto w-full max-w-5xl px-4 py-4 md:px-6">
-          <h1 className="text-2xl font-bold md:text-3xl">Account</h1>
+          <h1 className="text-2xl font-medium md:text-3xl">Account</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
             {isGuest ? 'You are browsing as a guest.' : 'Manage your profile and subscription.'}
           </p>
@@ -280,12 +280,12 @@ function AccountPageContent() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
-              <Button asChild className="rounded-full">
+              <Button asChild >
                 <Link href="/signup?next=%2Ftrips">
                   <UserPlus /> Create free account
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-full">
+              <Button asChild variant="outline" >
                 <Link href="/login?next=%2Ftrips">I already have an account</Link>
               </Button>
             </CardContent>
@@ -505,7 +505,7 @@ function AccountPageContent() {
                           variant="outline"
                           size="sm"
                           className="mt-2"
-                        >
+                       >
                           Try again
                         </Button>
                       </AlertDescription>
@@ -518,7 +518,7 @@ function AccountPageContent() {
                     variant={canOpenBillingPortal ? 'outline' : 'default'}
                     size="lg"
                     className="w-full"
-                  >
+                 >
                     {canOpenBillingPortal ? (
                       <>
                         Manage billing

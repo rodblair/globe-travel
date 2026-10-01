@@ -632,7 +632,7 @@ export default function ItineraryArtifact({
         )}
 
         {isLoading && (
-          <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground shadow-xs">
+          <div className="rounded-2xl border border-border bg-accent px-4 py-3 text-sm font-semibold text-foreground shadow-xs">
             <span className="inline-flex items-center gap-2">
               <Sparkles className="h-4 w-4 animate-pulse text-primary" />
               {loadingLabel || 'Building this itinerary.'}
@@ -702,10 +702,10 @@ export default function ItineraryArtifact({
                   className={cn(
                     'flex items-start gap-3 rounded-2xl border px-3 py-2.5 transition-colors',
                     isFocusedItem
-                      ? 'border-primary/45 bg-primary/10 shadow-[0_10px_26px_rgba(190,132,49,0.12)]'
+                      ? 'border-primary/45 bg-accent shadow-[0_10px_26px_rgba(190,132,49,0.12)]'
                       : stop.mapped
                       ? 'border-border bg-muted/60 hover:border-border hover:bg-muted/60'
-                      : 'border-primary/30 bg-primary/10 hover:bg-primary/10'
+                      : 'border-border bg-accent hover:bg-accent'
                   )}
                 >
                   <button
@@ -776,7 +776,7 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className="rounded-2xl border border-primary/30 bg-primary/10 p-4"
+                className="rounded-2xl border border-border bg-accent p-4"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0 text-left">
@@ -860,7 +860,7 @@ export default function ItineraryArtifact({
                               className={cn(
                                 'rounded-2xl border p-3 transition-colors',
                                 isFocusedItem
-                                  ? 'border-primary/45 bg-primary/10 shadow-[0_12px_30px_rgba(190,132,49,0.14)]'
+                                  ? 'border-primary/45 bg-accent shadow-[0_12px_30px_rgba(190,132,49,0.14)]'
                                   : 'border-border bg-muted'
                               )}
                             >
@@ -1082,7 +1082,7 @@ export default function ItineraryArtifact({
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
                           dragOverItemId === item.id || isFocusedItem
-                            ? 'border-primary/40 bg-primary/10 shadow-[0_12px_30px_rgba(190,132,49,0.12)]'
+                            ? 'border-foreground/40 bg-accent shadow-[0_12px_30px_rgba(190,132,49,0.12)]'
                             : 'border-border bg-muted hover:border-border'
                         )}
                       >
@@ -1329,7 +1329,7 @@ export default function ItineraryArtifact({
 	                            'mt-2 rounded-2xl border p-3',
 	                            swapSuccessByItemId[item.id]
 	                              ? 'border-success/30 bg-success/10/70'
-	                              : 'border-primary/25 bg-primary/10/70'
+	                              : 'border-border bg-accent/70'
 	                          )}
 	                        >
 	                          {swapOptionsByItemId[item.id]?.length ? (

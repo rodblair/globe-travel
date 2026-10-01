@@ -30,13 +30,13 @@ export function MoodPicker({ selected, onChange }: MoodPickerProps) {
           variant={selected === mood.emoji ? 'default' : 'secondary'}
           size="sm"
           className={cn(
-            'min-h-12 rounded-full px-3 py-1.5 transition-all duration-200',
+            'min-h-12 px-3 py-1.5 transition-all duration-200',
             selected === mood.emoji
               ? 'scale-105 ring-1 ring-[color:var(--primary)]/40'
               : 'text-muted-foreground hover:bg-muted hover:text-foreground/80'
           )}
           title={mood.label}
-        >
+       >
           <span className="text-base leading-none">{mood.emoji}</span>
           <span className="text-xs font-medium">{mood.label}</span>
         </Button>

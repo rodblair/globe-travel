@@ -57,6 +57,7 @@ import {
 import { EmptyState } from '@/components/ui/empty-state'
 import { IconButton } from '@/components/ui/icon-button'
 import { Input } from '@/components/ui/input'
+import { CartographicPlate } from '@/components/brand/CartographicPlate'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -100,20 +101,6 @@ const tabs: { key: SavedTab; label: string }[] = [
   { key: 'trips', label: 'Trips' },
   { key: 'journal', label: 'Trip notes' },
 ]
-
-const COVER_TONES = [
-  'from-chart-1/25 to-chart-2/20',
-  'from-chart-2/25 to-chart-3/20',
-  'from-chart-4/25 to-chart-3/20',
-  'from-chart-5/25 to-chart-1/20',
-  'from-chart-3/25 to-chart-4/20',
-]
-
-function coverTone(seed: string) {
-  let hash = 0
-  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0
-  return COVER_TONES[hash % COVER_TONES.length]
-}
 
 function TripsGridSkeleton() {
   return (
@@ -300,7 +287,7 @@ function SavedPageContent() {
       <div className="app-sticky-header">
         <div className="app-container flex flex-wrap items-center justify-between gap-3 py-4">
           <div>
-            <h1 className="text-2xl font-bold md:text-3xl">{activeTab === 'journal' ? 'Trip notes' : 'Your trips'}</h1>
+            <h1 className="text-2xl font-medium md:text-3xl">{activeTab === 'journal' ? 'Trip notes' : 'Your trips'}</h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
               {activeTab === 'journal'
                 ? 'Private decisions, reminders and memories tied to your trips.'
@@ -311,11 +298,11 @@ function SavedPageContent() {
           </div>
           <div className="flex items-center gap-2">
             {activeTab === 'journal' && entries.length > 0 ? (
-              <Button onClick={openNewEntry} className="rounded-full">
+              <Button onClick={openNewEntry} >
                 <Plus /> Add note
               </Button>
             ) : (
-              <Button asChild className="rounded-full">
+              <Button asChild >
                 <Link href="/chat">
                   <Plus /> New trip
                 </Link>
@@ -365,7 +352,7 @@ function SavedPageContent() {
                 title="No trips yet"
                 description="Describe a destination and get a mapped, day-by-day itinerary in seconds."
                 action={
-                  <Button asChild className="rounded-full">
+                  <Button asChild >
                     <Link href="/chat">
                       <Sparkles /> Plan your first trip
                     </Link>
@@ -409,14 +396,14 @@ function SavedPageContent() {
                       return (
                         <Card
                           key={trip.id}
-                          className="group relative gap-0 overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-md"
+                          className="group relative gap-0 overflow-hidden border-foreground/80 p-0 transition-transform hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_var(--foreground)]"
                         >
-                          <div className={cn('flex h-28 items-end bg-gradient-to-br p-4', coverTone(trip.id))}>
-                            <Globe2 className="size-10 text-foreground/25" aria-hidden />
+                          <div className="h-36 border-b">
+                            <CartographicPlate seed={trip.id} stops={Math.min(7, Math.max(3, (days ?? 3) + 1))} />
                           </div>
                           <div className="flex flex-1 flex-col gap-3 p-4">
                             <div className="min-w-0">
-                              <h2 className="text-lg font-semibold leading-snug">
+                              <h2 className="text-2xl leading-tight">
                                 <Link
                                   href={`/trips/${trip.id}`}
                                   className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:rounded-xl"
@@ -451,7 +438,7 @@ function SavedPageContent() {
                                 size="icon-sm"
                                 className="absolute top-3 right-3 z-10 bg-background/80 backdrop-blur"
                                 aria-label={`Actions for ${displayTitle}`}
-                              >
+                             >
                                 <MoreHorizontal />
                               </Button>
                             </DropdownMenuTrigger>
@@ -508,7 +495,7 @@ function SavedPageContent() {
                 title="Add a trip note"
                 description="Capture decisions, reminders and memories for the trips you are planning."
                 action={
-                  <Button onClick={openNewEntry} className="rounded-full">
+                  <Button onClick={openNewEntry} >
                     <Feather /> Add first note
                   </Button>
                 }

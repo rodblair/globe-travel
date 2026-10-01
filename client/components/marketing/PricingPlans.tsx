@@ -2,12 +2,10 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Check } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { ArrowRight, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { PLANS } from '@/lib/plans'
+import { cn } from '@/lib/utils'
 
 type Interval = 'monthly' | 'yearly'
 
@@ -35,79 +33,67 @@ export function PricingPlans() {
 
   return (
     <div>
-      <div className="flex justify-center">
-        <ToggleGroup
-          type="single"
-          value={interval}
-          onValueChange={(value) => value && setInterval(value as Interval)}
-          variant="outline"
-          aria-label="Billing interval"
-          className="rounded-full bg-muted p-1"
-        >
-          <ToggleGroupItem value="monthly" className="rounded-full px-5 data-[state=on]:bg-background data-[state=on]:shadow-xs">
-            Monthly
-          </ToggleGroupItem>
-          <ToggleGroupItem value="yearly" className="gap-2 rounded-full px-5 data-[state=on]:bg-background data-[state=on]:shadow-xs">
-            Yearly
-            <Badge variant="success" className="px-1.5 py-0">Save {savings}%</Badge>
-          </ToggleGroupItem>
-        </ToggleGroup>
+      <div role="group" aria-label="Billing interval" className="inline-flex border border-foreground">
+        {(['monthly', 'yearly'] as const).map((value) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={interval === value}
+            onClick={() => setInterval(value)}
+            className={cn(
+              'h-11 px-5 text-sm font-semibold transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
+              interval === value ? 'bg-foreground text-background' : 'hover:bg-accent',
+            )}
+          >
+            {value === 'monthly' ? 'Monthly' : `Yearly · save ${savings}%`}
+          </button>
+        ))}
       </div>
 
-      <div className="mx-auto mt-10 grid max-w-4xl gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">{PLANS.free.name}</CardTitle>
-            <CardDescription>Plan and share your next trip.</CardDescription>
-            <p className="pt-3 text-5xl font-bold tracking-tight">$0</p>
-            <p className="text-sm text-muted-foreground">Free forever</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button asChild variant="outline" size="lg" className="w-full rounded-full">
-              <Link href="/signup">Start free</Link>
-            </Button>
-            <ul className="space-y-2.5">
-              {FREE_FEATURES.map((feature) => (
-                <li key={feature} className="flex items-center gap-2.5 text-sm">
-                  <Check className="size-4 shrink-0 text-success" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+      <div className="mt-8 grid border border-foreground md:grid-cols-2">
+        <div className="p-8 md:p-10">
+          <p className="text-sm font-semibold text-muted-foreground">{PLANS.free.name}</p>
+          <p className="mt-2 text-7xl leading-none" style={{ fontFamily: 'var(--font-serif)' }}>$0</p>
+          <p className="mt-2 text-muted-foreground">Free forever. Plan and share your next trip.</p>
+          <Button asChild variant="outline" size="lg" className="mt-8 w-full sm:w-auto">
+            <Link href="/signup">Start free</Link>
+          </Button>
+          <ul className="mt-8 divide-y divide-foreground/15 border-t border-foreground/15">
+            {FREE_FEATURES.map((feature) => (
+              <li key={feature} className="flex items-center gap-3 py-3">
+                <Check className="size-4 shrink-0 text-success" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <Card className="border-primary shadow-md ring-1 ring-primary/20">
-          <CardHeader>
-            <div className="flex items-center justify-between gap-2">
-              <CardTitle className="text-xl">{PLANS.pro.name}</CardTitle>
-              <Badge>7-day free trial</Badge>
-            </div>
-            <CardDescription>For groups planning together.</CardDescription>
-            <p className="pt-3 text-5xl font-bold tracking-tight">
-              ${interval === 'yearly' ? yearlyMonthly : PLANS.pro.monthlyPrice.toFixed(2)}
-              <span className="text-base font-normal text-muted-foreground"> / month</span>
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {interval === 'yearly' ? `Billed $${PLANS.pro.yearlyPrice} yearly` : 'Billed monthly'}
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button asChild size="lg" className="w-full rounded-full">
-              <Link href={BILLING_HREF}>Start 7-day free trial</Link>
-            </Button>
-            <ul className="space-y-2.5">
-              {PRO_FEATURES.map((feature) => (
-                <li key={feature} className="flex items-center gap-2.5 text-sm">
-                  <Check className="size-4 shrink-0 text-success" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <div className="border-t border-foreground bg-foreground p-8 text-background md:border-t-0 md:border-l md:p-10">
+          <p className="text-sm font-semibold text-background/70">{PLANS.pro.name} · 7-day free trial</p>
+          <p className="mt-2 text-7xl leading-none" style={{ fontFamily: 'var(--font-serif)' }}>
+            ${interval === 'yearly' ? yearlyMonthly : PLANS.pro.monthlyPrice.toFixed(2)}
+            <span className="text-xl font-normal text-background/70"> / month</span>
+          </p>
+          <p className="mt-2 text-background/70">
+            {interval === 'yearly' ? `Billed $${PLANS.pro.yearlyPrice} yearly.` : 'Billed monthly.'} Cancel any time.
+          </p>
+          <Button asChild size="lg" className="mt-8 w-full sm:w-auto">
+            <Link href={BILLING_HREF}>
+              Start 7-day free trial
+              <ArrowRight />
+            </Link>
+          </Button>
+          <ul className="mt-8 divide-y divide-background/20 border-t border-background/20">
+            {PRO_FEATURES.map((feature) => (
+              <li key={feature} className="flex items-center gap-3 py-3">
+                <Check className="size-4 shrink-0 text-[oklch(0.78_0.14_40)]" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <p className="mt-6 text-center text-sm text-muted-foreground">No charge today. Cancel any time. Your share links stay yours.</p>
+      <p className="mt-5 text-sm text-muted-foreground">No charge today. Your share links stay yours.</p>
     </div>
   )
 }

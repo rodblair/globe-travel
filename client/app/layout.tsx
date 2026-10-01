@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { inter, sourceSerif, jetbrainsMono } from "@/lib/fonts";
+import { fraunces, instrumentSans, jetbrainsMono } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#10172b" },
+    { media: "(prefers-color-scheme: light)", color: "#f6f2e8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1c24" },
   ],
 };
 
@@ -58,7 +58,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${fraunces.variable} ${instrumentSans.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <link rel="preconnect" href="https://api.mapbox.com" />

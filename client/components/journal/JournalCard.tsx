@@ -50,7 +50,7 @@ export function JournalCard({
         className="h-auto w-full justify-start whitespace-normal rounded-none p-5 text-left hover:bg-transparent"
         onClick={onClick}
         aria-label={`Open ${title}`}
-      >
+     >
         <div className="min-w-0 flex-1">
         {/* Date + place row */}
         <div className="flex items-center gap-3 mb-3">
@@ -76,7 +76,7 @@ export function JournalCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
+        <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
           {mood && <span className="mr-2 not-italic">{mood}</span>}
           {title}
         </h3>

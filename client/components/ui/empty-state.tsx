@@ -32,7 +32,7 @@ function EmptyState({
           <Icon className="size-6" aria-hidden="true" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+      <h3 className="text-lg font-medium text-foreground">{title}</h3>
       {description && (
         <p className="mt-1.5 max-w-md text-sm leading-relaxed text-muted-foreground">
           {description}

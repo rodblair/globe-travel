@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CalendarCheck, Map, Users } from 'lucide-react'
 import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
+import { CartographicPlate } from '@/components/brand/CartographicPlate'
 import { VoteMock } from '@/components/marketing/ProductMock'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 
@@ -35,22 +36,22 @@ export function AuthShell({
           <ThemeToggle />
         </div>
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
-          <h1 className="text-3xl font-bold">{title}</h1>
+          <h1 className="text-3xl font-medium">{title}</h1>
           {subtitle ? <p className="mt-2 text-muted-foreground">{subtitle}</p> : null}
           <div className="mt-8">{children}</div>
         </div>
       </div>
 
-      <aside className="relative hidden overflow-hidden bg-primary text-primary-foreground lg:flex lg:flex-col lg:justify-between lg:p-14" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_80%_0%,oklch(1_0_0/0.22),transparent),radial-gradient(50%_50%_at_0%_100%,oklch(0.78_0.15_75/0.25),transparent)]" />
+      <aside className="relative hidden overflow-hidden bg-plate text-plate-foreground lg:flex lg:flex-col lg:justify-between lg:p-14" aria-hidden="true">
+        <div aria-hidden className="absolute inset-0 opacity-25 mix-blend-screen"><CartographicPlate seed="auth-panel" stops={6} showPins={false} /></div>
         <div className="relative">
-          <p className="max-w-md text-4xl font-bold leading-tight tracking-tight">{panelTitle}</p>
+          <p className="max-w-md text-5xl leading-[1.02]" style={{ fontFamily: 'var(--font-serif)' }}>{panelTitle}</p>
         </div>
-        <VoteMock className="relative my-10 w-full max-w-sm -rotate-2 self-center text-card-foreground" />
+        <VoteMock className="relative my-10 w-full max-w-sm self-center text-card-foreground" />
         <ul className="relative space-y-4">
           {POINTS.map(({ icon: Icon, text }) => (
             <li key={text} className="flex items-center gap-3 text-lg">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-sm border border-plate-foreground/30">
                 <Icon className="size-5" />
               </span>
               {text}

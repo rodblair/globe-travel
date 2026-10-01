@@ -1,22 +1,25 @@
-import { Inter, Source_Serif_4, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 
-export const inter = Inter({
+/** Display serif: headlines, trip titles, big numerals. */
+export const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-export const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  variable: "--font-source-serif",
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-fraunces",
+  axes: ["opsz"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
+/** Interface sans: body copy, controls, labels. */
+export const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  variable: "--font-instrument",
+  display: "swap",
+});
+
+/** Used sparingly for coordinates and data. */
 export const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   display: "swap",
 });

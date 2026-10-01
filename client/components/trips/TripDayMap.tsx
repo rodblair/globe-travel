@@ -384,7 +384,7 @@ export default function TripDayMap({
         source: 'day-route',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': 'rgba(159,105,32,0.88)',
+          'line-color': 'rgba(200,71,43,0.9)',
           'line-width': 2.75,
           'line-blur': 0.3,
         },
@@ -445,9 +445,9 @@ export default function TripDayMap({
       map.setPaintProperty(
         'day-route-line',
         'line-color',
-        active ? 'rgba(159,105,32,0.95)' : 'rgba(44,117,134,0.82)'
+        active ? 'rgba(200,71,43,0.95)' : 'rgba(200,71,43,0.5)'
       )
-      map.setPaintProperty('day-route-line', 'line-width', active ? 3.5 : 2.75)
+      map.setPaintProperty('day-route-line', 'line-width', active ? 4 : 3)
     }
   }, [routeGeojson, active, mapReady])
 
@@ -554,7 +554,7 @@ export default function TripDayMap({
       className={cn(
         'group min-w-[220px] overflow-hidden rounded-xl border bg-card/85 text-left transition-colors shadow-xs',
         active
-          ? 'border-primary/30 bg-primary/10'
+          ? 'border-border bg-accent'
           : 'border-border hover:border-border hover:bg-muted/60',
         onClick ? 'cursor-pointer' : '',
         className
@@ -595,8 +595,8 @@ export default function TripDayMap({
         {shouldRenderMap ? (
           <div ref={containerRef} className="h-full w-full" />
         ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--chart-2),transparent_82%),transparent_58%),linear-gradient(180deg,var(--card),var(--muted))]">
-            <div className="absolute inset-0 bg-[linear-gradient(color-mix(in_oklch,var(--muted-foreground),transparent_88%)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_oklch,var(--muted-foreground),transparent_88%)_1px,transparent_1px)] bg-[size:28px_28px] opacity-45" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--chart-2),transparent_82%),transparent_58%),linear-gradient(180deg,var(--card),var(--muted))]">
+            <div className="absolute inset-0 bg-[linear-gradient(color-mix(in_srgb,var(--muted-foreground),transparent_88%)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_srgb,var(--muted-foreground),transparent_88%)_1px,transparent_1px)] bg-[size:28px_28px] opacity-45" />
             {(previewGeometry || stopOnlyPreview) && (
               <svg viewBox="0 0 100 100" role="img" aria-label={canvasAriaLabel} className="h-full w-full">
                 {(previewGeometry || stopOnlyPreview)?.linePoints && (
@@ -682,7 +682,7 @@ export default function TripDayMap({
                 <p className="text-xs font-semibold text-success">Start</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{startStop.title}</p>
               </div>
-              <div className="rounded-2xl border border-primary/30 bg-primary/10 px-3 py-2">
+              <div className="rounded-2xl border border-border bg-accent px-3 py-2">
                 <p className="text-xs font-semibold text-primary">Finish</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{endStop.title}</p>
               </div>

@@ -226,7 +226,7 @@ export function JournalEditor({
                       variant="secondary"
                       size="lg"
                       className="min-h-12 rounded-xl"
-                  >
+                 >
                     Cancel
                     </Button>
                   </DialogClose>
@@ -235,7 +235,7 @@ export function JournalEditor({
                     disabled={!canSave || saving || isSaving}
                     size="lg"
                     className="min-h-12 rounded-xl"
-                  >
+                 >
                     <Save className="w-4 h-4" />
                     {saving ? 'Saving...' : 'Save note'}
                   </Button>
