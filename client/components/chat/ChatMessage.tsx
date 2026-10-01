@@ -9,7 +9,7 @@ function renderInlineMarkdown(text: string) {
   return boldParts.map((part, index) => {
     if (index % 2 === 1) {
       return (
-        <strong key={index} className="font-semibold text-foreground">
+        <strong key={index} className="font-semibold">
           {part}
         </strong>
       )
@@ -86,23 +86,25 @@ export default function ChatMessage({ message, index }: { message: Message; inde
       className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 rounded-full border border-border bg-primary/10 flex items-center justify-center">
-          <svg width="14" height="14" viewBox="-50 -50 100 100" aria-hidden>
-            <circle cx="0" cy="0" r="42" fill="none" stroke="currentColor" strokeWidth="1" className="text-primary" opacity="0.6" />
-            <polygon points="0,-36 -3,0 0,2 3,0" fill="currentColor" className="text-primary" />
+        <span
+          aria-hidden
+          className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="9" />
+            <ellipse cx="12" cy="12" rx="3.5" ry="9" />
+            <path d="M3 12h18" />
           </svg>
-        </div>
+        </span>
       )}
 
       <div
-        className={`max-w-[80%] px-4 py-3 rounded-md text-sm leading-relaxed ${
-          isUser
-            ? 'bg-primary/10 border border-border text-foreground'
-            : 'bg-card border border-border text-foreground'
+        className={`max-w-[85%] text-[0.9375rem] leading-relaxed ${
+          isUser ? 'rounded-md bg-foreground px-4 py-3 text-background' : 'py-1 text-foreground'
         }`}
       >
         {message.content ? renderContent(message.content) : (
-          <span className="text-muted-foreground">\u2026</span>
+          <span className="text-muted-foreground">{'…'}</span>
         )}
       </div>
     </motion.div>

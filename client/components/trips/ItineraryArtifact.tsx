@@ -63,7 +63,7 @@ function ItineraryStopImage({
   return (
     <span
       className={cn(
-        'relative block shrink-0 overflow-hidden rounded-xl border border-border bg-card',
+        'relative block shrink-0 overflow-hidden rounded-lg border border-border bg-card',
         compact ? 'h-12 w-14' : 'h-20 w-20 sm:h-[5.25rem] sm:w-24'
       )}
       aria-hidden="true"
@@ -158,7 +158,7 @@ function StopUrlLink({
       aria-label={`Open maps URL for ${label}`}
       title={`Open maps URL for ${label}`}
       className={cn(
-        'touch-target inline-flex shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]',
+        'touch-target inline-flex shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]',
         compact ? 'h-8 w-8' : 'h-9 w-9'
       )}
     >
@@ -186,7 +186,7 @@ function BookingActionLink({
       aria-label={action.ariaLabel}
       title={`${action.label} via ${action.provider}`}
       className={cn(
-        'touch-target inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-primary/30 bg-primary font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]',
+        'touch-target inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]',
         compact ? 'h-8 px-2.5 text-xs' : 'h-9 px-3 text-xs'
       )}
     >
@@ -610,7 +610,7 @@ export default function ItineraryArtifact({
 
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 sm:p-5">
         {swapNotice && (
-          <div className="rounded-2xl border border-success/30 bg-success/10/70 px-4 py-3 text-sm font-semibold text-success shadow-xs">
+          <div className="rounded-lg border border-success/30 bg-success/10/70 px-4 py-3 text-sm font-semibold text-success shadow-xs">
             <span className="inline-flex items-center gap-2">
               <Check className="h-4 w-4" />
               {swapNotice}
@@ -618,7 +618,7 @@ export default function ItineraryArtifact({
           </div>
         )}
         {regenerateNotice && (
-          <div className="rounded-2xl border border-info/30 bg-info/10/70 px-4 py-3 text-sm font-semibold text-chart-2 shadow-xs">
+          <div className="rounded-lg border border-info/30 bg-info/10/70 px-4 py-3 text-sm font-semibold text-chart-2 shadow-xs">
             <span className="inline-flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               {regenerateNotice}
@@ -626,13 +626,13 @@ export default function ItineraryArtifact({
           </div>
         )}
         {itemActionError && (
-          <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive shadow-xs">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive shadow-xs">
             {itemActionError}
           </div>
         )}
 
         {isLoading && (
-          <div className="rounded-2xl border border-border bg-accent px-4 py-3 text-sm font-semibold text-foreground shadow-xs">
+          <div className="rounded-lg border border-border bg-accent px-4 py-3 text-sm font-semibold text-foreground shadow-xs">
             <span className="inline-flex items-center gap-2">
               <Sparkles className="h-4 w-4 animate-pulse text-primary" />
               {loadingLabel || 'Building this itinerary.'}
@@ -644,7 +644,7 @@ export default function ItineraryArtifact({
         )}
 
         {showMapPanel && selectedDayMap && (!isLoading || selectedDayMap.mappedStops.length > 0) && (
-          <div className="rounded-2xl border border-border bg-muted/60 p-3.5">
+          <div className="rounded-lg border border-border bg-muted/60 p-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Selected route</p>
@@ -700,7 +700,7 @@ export default function ItineraryArtifact({
                 <div
                   key={stop.id}
                   className={cn(
-                    'flex items-start gap-3 rounded-2xl border px-3 py-2.5 transition-colors',
+                    'flex items-start gap-3 rounded-lg border px-3 py-2.5 transition-colors',
                     isFocusedItem
                       ? 'border-primary/45 bg-accent shadow-[0_10px_26px_rgba(190,132,49,0.12)]'
                       : stop.mapped
@@ -748,7 +748,7 @@ export default function ItineraryArtifact({
                   </button>
                   <StopUrlLink href={mapsUrl} label={stop.title} compact />
                   <span className={cn(
-                    'inline-flex h-8 flex-shrink-0 items-center justify-center gap-1 rounded-xl border px-2 text-xs',
+                    'inline-flex h-8 flex-shrink-0 items-center justify-center gap-1 rounded-lg border px-2 text-xs',
                     stop.mapped
                       ? 'border-success/30 bg-success/10 text-success'
                       : 'border-primary/30 bg-primary/10 text-foreground'
@@ -776,7 +776,7 @@ export default function ItineraryArtifact({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18 }}
-                className="rounded-2xl border border-border bg-accent p-4"
+                className="rounded-lg border border-border bg-accent p-4"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0 text-left">
@@ -802,7 +802,7 @@ export default function ItineraryArtifact({
                 </div>
 
                 <div className="mt-4 space-y-4">
-                  <section className="rounded-xl border border-border bg-card/80 p-3 shadow-[0_10px_28px_rgba(28,42,55,0.05)]">
+                  <section className="rounded-lg border border-border bg-card/80 p-3 shadow-[0_10px_28px_rgba(28,42,55,0.05)]">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-2">
                         <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary">
@@ -858,7 +858,7 @@ export default function ItineraryArtifact({
                                 itemRefs.current[item.id] = node
                               }}
                               className={cn(
-                                'rounded-2xl border p-3 transition-colors',
+                                'rounded-lg border p-3 transition-colors',
                                 isFocusedItem
                                   ? 'border-primary/45 bg-accent shadow-[0_12px_30px_rgba(190,132,49,0.14)]'
                                   : 'border-border bg-muted'
@@ -906,14 +906,14 @@ export default function ItineraryArtifact({
                                                 if (e.key === 'Enter') void commitEditing(e.currentTarget.value)
                                                 if (e.key === 'Escape') setEditingItemId(null)
                                               }}
-                                              className="w-full rounded-xl border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder:text-[var(--muted-foreground)] focus:border-primary/30 focus:outline-none"
+                                              className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder:text-[var(--muted-foreground)] focus:border-primary/30 focus:outline-none"
                                             />
                                             <div className="flex gap-2">
                                               <button
                                                 type="button"
                                                 onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => void commitEditing(editingInputRef.current?.value)}
-                                                className="touch-target rounded-xl border border-primary/30 bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
+                                                className="touch-target rounded-lg border border-primary/30 bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
                                               >
                                                 Save
                                               </button>
@@ -921,7 +921,7 @@ export default function ItineraryArtifact({
                                                 type="button"
                                                 onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => setEditingItemId(null)}
-                                                className="touch-target rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground"
+                                                className="touch-target rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground"
                                               >
                                                 Cancel
                                               </button>
@@ -960,7 +960,7 @@ export default function ItineraryArtifact({
                                   <div className="flex flex-wrap items-center gap-1 border-t border-border/70 pt-2">
                                     <button
                                       onClick={() => startEditing(item)}
-                                      className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-colors hover:bg-muted hover:text-foreground/80"
+                                      className="touch-target flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:bg-muted hover:text-foreground/80"
                                       title="Edit title"
                                       aria-label={`Edit ${item.title}`}
                                     >
@@ -968,7 +968,7 @@ export default function ItineraryArtifact({
                                     </button>
                                     <button
                                       onClick={() => setPendingDeleteItemId((current) => (current === item.id ? null : item.id))}
-                                      className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-destructive/30 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/10"
+                                      className="touch-target flex h-8 w-8 items-center justify-center rounded-lg border border-destructive/30 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/10"
                                       title="Delete"
                                       aria-label={`Delete ${item.title}`}
                                     >
@@ -979,7 +979,7 @@ export default function ItineraryArtifact({
                               </div>
 
                               {pendingDeleteItemId === item.id && (
-                                <div className="mt-2 rounded-2xl border border-destructive/30 bg-destructive/10/75 p-3">
+                                <div className="mt-2 rounded-lg border border-destructive/30 bg-destructive/10/75 p-3">
                                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <p className="text-xs leading-relaxed text-destructive">
                                       Delete “{item.title}” from this day?
@@ -1080,7 +1080,7 @@ export default function ItineraryArtifact({
                           if (!readOnly) handleDropOnList(day.day_index, sortedItems, sortedItemIndex, e)
                         }}
                         className={cn(
-                          'group rounded-2xl border p-3 transition-colors',
+                          'group rounded-lg border p-3 transition-colors',
                           dragOverItemId === item.id || isFocusedItem
                             ? 'border-foreground/40 bg-accent shadow-[0_12px_30px_rgba(190,132,49,0.12)]'
                             : 'border-border bg-muted hover:border-border'
@@ -1109,7 +1109,7 @@ export default function ItineraryArtifact({
                                   pointerDragRef.current = null
                                   e.currentTarget.releasePointerCapture?.(e.pointerId)
                                 }}
-                                className="inline-flex h-8 w-8 cursor-grab items-center justify-center rounded-xl text-muted-foreground active:cursor-grabbing"
+                                className="inline-flex h-8 w-8 cursor-grab items-center justify-center rounded-lg text-muted-foreground active:cursor-grabbing"
                                 title={`Drag ${item.title}`}
                                 aria-label={`Drag ${item.title}`}
                               >
@@ -1121,7 +1121,7 @@ export default function ItineraryArtifact({
                                   draggable={false}
                                   onClick={() => moveItemWithinDay(day.day_index, sortedItems, item.id, -1)}
                                   disabled={sortedItemIndex <= 0}
-                                  className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
+                                  className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
                                   title="Move earlier"
                                   aria-label={`Move ${item.title} earlier`}
                                 >
@@ -1132,7 +1132,7 @@ export default function ItineraryArtifact({
                                   draggable={false}
                                   onClick={() => moveItemWithinDay(day.day_index, sortedItems, item.id, 1)}
                                   disabled={sortedItemIndex === sortedItems.length - 1}
-                                  className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
+                                  className="touch-target inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
                                   title="Move later"
                                   aria-label={`Move ${item.title} later`}
                                 >
@@ -1178,14 +1178,14 @@ export default function ItineraryArtifact({
                                           if (e.key === 'Enter') void commitEditing(e.currentTarget.value)
                                           if (e.key === 'Escape') setEditingItemId(null)
                                         }}
-                                        className="w-full rounded-xl border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder:text-[var(--muted-foreground)] focus:border-primary/30 focus:outline-none"
+                                        className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder:text-[var(--muted-foreground)] focus:border-primary/30 focus:outline-none"
                                       />
                                       <div className="flex gap-2">
                                         <button
                                           type="button"
                                           onMouseDown={(e) => e.preventDefault()}
                                           onClick={() => void commitEditing(editingInputRef.current?.value)}
-                                          className="touch-target rounded-xl border border-primary/30 bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
+                                          className="touch-target rounded-lg border border-primary/30 bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
                                         >
                                           Save
                                         </button>
@@ -1193,7 +1193,7 @@ export default function ItineraryArtifact({
                                           type="button"
                                           onMouseDown={(e) => e.preventDefault()}
                                           onClick={() => setEditingItemId(null)}
-                                          className="touch-target rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground"
+                                          className="touch-target rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground"
                                         >
                                           Cancel
                                         </button>
@@ -1236,7 +1236,7 @@ export default function ItineraryArtifact({
                           <div className="flex flex-wrap items-center gap-1 border-t border-border/70 pt-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                             <button
                               onClick={() => startEditing(item)}
-                              className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-colors hover:bg-muted hover:text-foreground/80"
+                              className="touch-target flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:bg-muted hover:text-foreground/80"
                               title="Edit title"
                               aria-label={`Edit ${item.title}`}
                             >
@@ -1246,7 +1246,7 @@ export default function ItineraryArtifact({
                               <button
                                 onClick={() => setSwapMenuItemId((current) => (current === item.id ? null : item.id))}
                                 className={cn(
-                                  'touch-target inline-flex h-8 items-center justify-center gap-1.5 rounded-xl border px-2.5 text-xs font-medium transition-colors',
+                                  'touch-target inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors',
                                   swappingItemId === item.id
                                     ? 'border-success/30 bg-success/10 text-success'
                                     : 'border-primary/30 bg-primary/10 text-foreground hover:bg-primary hover:text-primary-foreground'
@@ -1265,7 +1265,7 @@ export default function ItineraryArtifact({
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                                     transition={{ duration: 0.14 }}
-                                    className="fixed inset-x-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-[70] max-h-[min(18rem,calc(100dvh-8rem))] overflow-y-auto rounded-2xl border border-border bg-card p-1.5 shadow-lg sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-10 sm:z-40 sm:max-h-none sm:w-44 sm:overflow-hidden"
+                                    className="fixed inset-x-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-[70] max-h-[min(18rem,calc(100dvh-8rem))] overflow-y-auto rounded-lg border border-border bg-card p-1.5 shadow-lg sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-10 sm:z-40 sm:max-h-none sm:w-44 sm:overflow-hidden"
                                   >
                                     <p className="px-2.5 pb-1.5 pt-1 text-xs text-muted-foreground">
                                       Swap for
@@ -1275,7 +1275,7 @@ export default function ItineraryArtifact({
                                         key={option.label}
                                         type="button"
                                         onClick={() => handleSwapChoice(item, option.value)}
-                                        className="touch-target block w-full rounded-xl px-2.5 py-2 text-left text-xs font-medium text-foreground/82 transition-colors hover:bg-muted hover:text-foreground"
+                                        className="touch-target block w-full rounded-lg px-2.5 py-2 text-left text-xs font-medium text-foreground/82 transition-colors hover:bg-muted hover:text-foreground"
                                       >
                                         {option.label}
                                       </button>
@@ -1286,7 +1286,7 @@ export default function ItineraryArtifact({
                             </div>
                             <button
                               onClick={() => setPendingDeleteItemId((current) => (current === item.id ? null : item.id))}
-                              className="touch-target flex h-8 w-8 items-center justify-center rounded-xl border border-destructive/30 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/10"
+                              className="touch-target flex h-8 w-8 items-center justify-center rounded-lg border border-destructive/30 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/10"
                               title="Delete"
                               aria-label={`Delete ${item.title}`}
                             >
@@ -1298,7 +1298,7 @@ export default function ItineraryArtifact({
 	                      </div>
 
                         {pendingDeleteItemId === item.id && (
-                          <div className="mt-2 rounded-2xl border border-destructive/30 bg-destructive/10/75 p-3">
+                          <div className="mt-2 rounded-lg border border-destructive/30 bg-destructive/10/75 p-3">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                               <p className="text-xs leading-relaxed text-destructive">
                                 Delete “{item.title}” from this day?
@@ -1326,7 +1326,7 @@ export default function ItineraryArtifact({
 	                      {(swapOptionsByItemId[item.id]?.length || swapErrorByItemId[item.id] || swapSuccessByItemId[item.id]) && (
 	                        <div
 	                          className={cn(
-	                            'mt-2 rounded-2xl border p-3',
+	                            'mt-2 rounded-lg border p-3',
 	                            swapSuccessByItemId[item.id]
 	                              ? 'border-success/30 bg-success/10/70'
 	                              : 'border-border bg-accent/70'
@@ -1361,7 +1361,7 @@ export default function ItineraryArtifact({
 	                                      type="button"
 	                                      onClick={() => applySwapChoice(item, option.id)}
 	                                      disabled={applyingSwapId != null}
-	                                      className="rounded-xl border border-border bg-card px-3 py-2 text-left transition-colors hover:border-primary/35 hover:bg-background disabled:cursor-wait disabled:opacity-60"
+	                                      className="rounded-lg border border-border bg-card px-3 py-2 text-left transition-colors hover:border-primary/35 hover:bg-background disabled:cursor-wait disabled:opacity-60"
 	                                    >
 	                                      <span className="flex items-start justify-between gap-3">
 	                                        <span>
@@ -1405,14 +1405,14 @@ export default function ItineraryArtifact({
                     {[0, 1, 2].map((item) => (
                       <div
                         key={item}
-                        className="h-16 animate-pulse rounded-2xl border border-border bg-card/80"
+                        className="h-16 animate-pulse rounded-lg border border-border bg-card/80"
                       />
                     ))}
                   </div>
                 )}
 
                 {!isLoading && sortedItems.length === 0 && (
-                  <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/85 px-4 py-5 text-center">
+                  <div className="mt-6 rounded-lg border border-dashed border-border bg-card/85 px-4 py-5 text-center">
                     <p className="text-sm text-muted-foreground">Ask the AI to build this day.</p>
                     <p className="mt-2 text-xs text-foreground/25">
                       Example: “Plan Day {day.day_index} around great food and neighborhoods.”

@@ -105,7 +105,7 @@ export function JournalEditor({
       if (!open) onClose()
     }}>
       <DialogContent
-        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl border-border bg-card p-0 shadow-lg sm:max-w-2xl"
+        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-lg border-border bg-card p-0 shadow-lg sm:max-w-2xl"
         showCloseButton={false}
       >
               <DialogHeader className="flex-row items-center justify-between border-b border-border px-5 py-4 text-left">
@@ -207,7 +207,7 @@ export function JournalEditor({
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Capture a decision, reminder, or memory from this trip..."
                     rows={9}
-                    className="resize-none rounded-xl bg-muted/60 leading-relaxed"
+                    className="resize-none rounded-lg bg-muted/60 leading-relaxed"
                   />
                 </Field>
               </div>
@@ -225,7 +225,7 @@ export function JournalEditor({
                     <Button
                       variant="secondary"
                       size="lg"
-                      className="min-h-12 rounded-xl"
+                      className="min-h-12 rounded-lg"
                  >
                     Cancel
                     </Button>
@@ -234,7 +234,7 @@ export function JournalEditor({
                     onClick={handleSave}
                     disabled={!canSave || saving || isSaving}
                     size="lg"
-                    className="min-h-12 rounded-xl"
+                    className="min-h-12 rounded-lg"
                  >
                     <Save className="w-4 h-4" />
                     {saving ? 'Saving...' : 'Save note'}

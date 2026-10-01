@@ -199,7 +199,7 @@ export function Sidebar() {
             <DropdownMenuContent side="top" align="start" className="w-56">
               <DropdownMenuLabel className="flex items-center justify-between">
                 {displayName}
-                {isPro ? <Badge variant="brass">Pro</Badge> : null}
+                {isPro ? <Badge variant="route">Pro</Badge> : null}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push('/account')}>

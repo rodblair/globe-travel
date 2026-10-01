@@ -56,7 +56,7 @@ export default function OnboardingChat({
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
             <MapPin className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm font-medium text-muted-foreground">
               {placesAdded.length} place{placesAdded.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -69,7 +69,7 @@ export default function OnboardingChat({
                   key={`${place.name}-${i}`}
                   initial={{ opacity: 0, scale: 0, x: 10 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
-                  className="px-2 py-0.5 rounded-full bg-muted border border-border text-xs text-muted-foreground hidden sm:block"
+                  className="hidden rounded-sm border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground sm:block lg:hidden"
                 >
                   {place.name}
                 </motion.div>
@@ -88,7 +88,7 @@ export default function OnboardingChat({
                   onClick={onComplete}
                   disabled={isCompleting}
                   aria-busy={isCompleting}
-                  className="ml-1 flex min-h-8 items-center gap-1.5 rounded-full border border-primary/30 bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-wait disabled:opacity-70"
+                  className="ml-1 flex min-h-9 items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[var(--primary-hover)] disabled:cursor-wait disabled:opacity-70"
                 >
                   {isCompleting ? 'Saving' : completionError ? 'Try again' : 'Done'}
                   <ArrowRight className="w-3 h-3" />
@@ -105,7 +105,7 @@ export default function OnboardingChat({
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              className="mx-auto mt-2 max-w-3xl rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-950"
+              className="mx-auto mt-2 max-w-3xl rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm leading-5 text-destructive"
             >
               {completionError}
             </motion.div>

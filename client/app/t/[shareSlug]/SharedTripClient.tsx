@@ -73,15 +73,15 @@ function SharedTripLoadingState() {
           <Skeleton className="h-12 w-3/4" />
           <Skeleton className="h-5 w-full max-w-lg" />
         </div>
-        <Skeleton className="h-72 rounded-2xl" />
+        <Skeleton className="h-72 rounded-lg" />
         <div className="grid gap-4 md:grid-cols-2">
-          <Skeleton className="h-40 rounded-2xl" />
-          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-40 rounded-lg" />
+          <Skeleton className="h-40 rounded-lg" />
         </div>
       </div>
       <aside className="space-y-4">
-        <Skeleton className="h-96 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-96 rounded-lg" />
+        <Skeleton className="h-32 rounded-lg" />
       </aside>
       <span className="sr-only">Loading the itinerary, route, and group notes.</span>
     </section>
@@ -200,7 +200,6 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
 
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-background text-foreground" aria-label="Shared itinerary">
-      <div aria-hidden className="bg-glow pointer-events-none absolute inset-x-0 top-0 h-72" />
 
       <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 md:px-6">
         <Link href="/" aria-label="Globe.travel home" className="inline-flex items-center">
@@ -222,7 +221,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
           <SharedTripLoadingState />
         ) : isError || !trip ? (
           <section className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center text-center">
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <span className="flex size-14 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Compass className="size-7" />
             </span>
             <h1 className="mt-5 text-3xl font-medium md:text-4xl">This itinerary link is unavailable</h1>
@@ -238,7 +237,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
             <div className="space-y-8">
               <section>
                 <div className="mb-6 max-w-2xl">
-                  <Badge variant="brass" className="mb-3">Shared trip</Badge>
+                  <Badge variant="route" className="mb-3">Shared trip</Badge>
                   <h1 className="break-words text-4xl font-medium md:text-5xl">{displayTitleParts.title}</h1>
                   {displayTitleParts.timing && (
                     <p className="mt-2 text-sm font-medium text-primary">In {displayTitleParts.timing}</p>
@@ -265,7 +264,7 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                     <KeepsakeRouteCard key={day.id} day={day} active={index === 0} forceStaticMap={qaForceMapFallback} />
                   ))}
                   {days.length === 0 && (
-                    <p className="rounded-xl border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
+                    <p className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
                       This shared trip does not have itinerary days yet.
                     </p>
                   )}

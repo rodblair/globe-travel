@@ -71,7 +71,7 @@ export function ArtifactFrame({
   ribbon?: boolean
 }) {
   return (
-    <div className={cn('relative overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-md', className)}>
+    <div className={cn('relative overflow-hidden rounded-lg border border-foreground bg-card text-card-foreground shadow-[6px_6px_0_0_var(--foreground)]', className)}>
       {children}
     </div>
   )
@@ -108,7 +108,7 @@ export function KeepsakeRouteCard({
     : getRouteFallbackLabel(dayItems, savedRoute, usesDerivedStops)
 
   return (
-    <article className={cn('overflow-hidden rounded-xl border bg-card', active && 'border-primary/40')}>
+    <article className={cn('overflow-hidden rounded-lg border border-foreground/40 bg-card', active && 'border-foreground')}>
       <TripDayMap
         stops={stops}
         routeGeojson={route?.geojson || null}
@@ -237,22 +237,22 @@ export function TripPosterPreview({
           {firstDay ? (
             <KeepsakeRouteCard day={firstDay} active compact forceStaticMap={forceStaticMap} />
           ) : (
-            <div className="flex h-72 items-center justify-center rounded-xl border border-dashed text-sm text-muted-foreground">
+            <div className="flex h-72 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
               The route snapshot appears once the itinerary has stops.
             </div>
           )}
           <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-xl border bg-muted/50 px-3 py-3">
+            <div className="rounded-lg border bg-muted/50 px-3 py-3">
               <CalendarDays className="size-4 text-primary" />
               <p className="mt-2 text-xs text-muted-foreground">Days</p>
               <p className="font-semibold text-foreground">{days.length || 'Draft'}</p>
             </div>
-            <div className="rounded-xl border bg-muted/50 px-3 py-3">
+            <div className="rounded-lg border bg-muted/50 px-3 py-3">
               <Route className="size-4 text-chart-2" />
               <p className="mt-2 text-xs text-muted-foreground">Stops</p>
               <p className="font-semibold text-foreground">{stopCount || 'Soon'}</p>
             </div>
-            <div className="rounded-xl border bg-muted/50 px-3 py-3">
+            <div className="rounded-lg border bg-muted/50 px-3 py-3">
               <Users className="size-4 text-success" />
               <p className="mt-2 text-xs text-muted-foreground">Crew</p>
               <p className="font-semibold text-foreground">Ready</p>
@@ -290,7 +290,7 @@ export function FriendFeedbackPanel({
   }, [feedback])
 
   return (
-    <section className={cn('rounded-xl border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
+    <section className={cn('rounded-lg border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground">Friend feedback</p>
@@ -306,7 +306,7 @@ export function FriendFeedbackPanel({
           ['curious', MessageCircleQuestion, 'Curious'],
           ['practical', Check, 'Notes'],
         ] as const).map(([key, Icon, label]) => (
-          <div key={key} className={cn('rounded-xl border px-3 py-3 text-center', toneClass[key])}>
+          <div key={key} className={cn('rounded-lg border px-3 py-3 text-center', toneClass[key])}>
             <Icon className="mx-auto h-4 w-4" />
             <p className="mt-1 text-lg font-semibold">{counts[key]}</p>
             <p className="text-xs">{label}</p>
@@ -315,13 +315,13 @@ export function FriendFeedbackPanel({
       </div>
       <div className="mt-4 space-y-3">
         {feedback.length === 0 ? (
-          <p className="rounded-xl border border-dashed px-4 py-5 text-sm leading-relaxed text-muted-foreground">
+          <p className="rounded-lg border border-dashed px-4 py-5 text-sm leading-relaxed text-muted-foreground">
             Send this link to the group. They can mark what they love, what needs a question, and what might break the plan.
           </p>
         ) : (
           <>
             {visibleFeedback.map((entry) => (
-              <div key={entry.id} className="rounded-xl border bg-muted/40 p-4">
+              <div key={entry.id} className="rounded-lg border bg-muted/40 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 truncate text-sm font-semibold text-foreground">{entry.author_name}</p>
                   <span className={cn('shrink-0 rounded-full border px-2 py-0.5 text-xs', toneClass[entry.sentiment])}>
@@ -332,7 +332,7 @@ export function FriendFeedbackPanel({
               </div>
             ))}
             {remainingFeedbackCount > 0 && (
-              <p className="rounded-xl border border-dashed px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+              <p className="rounded-lg border border-dashed px-4 py-3 text-sm leading-relaxed text-muted-foreground">
                 Showing latest 4 of {feedback.length} reactions. {remainingFeedbackCount} more {remainingFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for the organizer.
               </p>
             )}
@@ -411,7 +411,7 @@ export function ShareLinkCard({
   }
 
   return (
-    <section className={cn('rounded-xl border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
+    <section className={cn('rounded-lg border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
       <h2 className="text-xl font-medium text-foreground">Share this trip</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         Friends can view the itinerary without signing in and leave lightweight feedback.

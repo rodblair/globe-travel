@@ -250,7 +250,7 @@ function AccountPageContent() {
     <div className="min-h-dvh bg-background">
       <div className="app-sticky-header">
         <div className="mx-auto w-full max-w-5xl px-4 py-4 md:px-6">
-          <h1 className="text-2xl font-medium md:text-3xl">Account</h1>
+          <h1 className="text-3xl md:text-4xl">Account</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
             {isGuest ? 'You are browsing as a guest.' : 'Manage your profile and subscription.'}
           </p>
@@ -472,7 +472,7 @@ function AccountPageContent() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {!canOpenBillingPortal && (
-                    <div className="rounded-xl bg-primary/5 p-4">
+                    <div className="rounded-lg bg-primary/5 p-4">
                       <div className="flex flex-wrap items-end justify-between gap-3">
                         <p className="text-4xl font-bold tracking-tight">
                           ${monthlyCost}

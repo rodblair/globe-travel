@@ -6,11 +6,11 @@ import { cn } from "@/lib/utils"
 type StatusTone = "success" | "warning" | "error" | "info" | "pending"
 
 const toneClassName: Record<StatusTone, string> = {
-  success: "border-status-success/25 bg-[var(--status-success-bg)] text-status-success",
-  warning: "border-status-warning/25 bg-[var(--status-warning-bg)] text-status-warning",
-  error: "border-status-error/25 bg-[var(--status-error-bg)] text-status-error",
-  info: "border-status-info/25 bg-[var(--status-info-bg)] text-status-info",
-  pending: "border-status-pending/25 bg-[var(--status-pending-bg)] text-status-pending",
+  success: "border-success/30 bg-success/10 text-success",
+  warning: "border-warning/40 bg-warning/15 text-foreground",
+  error: "border-destructive/30 bg-destructive/10 text-destructive",
+  info: "border-info/30 bg-info/10 text-info",
+  pending: "border-border bg-muted text-muted-foreground",
 }
 
 type StatusBadgeProps = React.ComponentProps<typeof Badge> & {

@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { AnimatePresence } from 'motion/react'
-import { Send, Sparkles, Square } from 'lucide-react'
+import { Send, Square } from 'lucide-react'
 import type { Message } from '@/hooks/useChat'
 import ChatMessage from './ChatMessage'
 import TypingIndicator from './TypingIndicator'
@@ -160,7 +160,7 @@ export default function ChatInterface({
         {showTyping && <TypingIndicator />}
 
         {error && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-body-sm text-destructive">
+          <div role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -179,18 +179,15 @@ export default function ChatInterface({
               <button
                 key={s}
                 onClick={() => onSendMessage(s)}
-                className="touch-target rounded-full border border-border bg-background px-3 py-1.5 text-caption text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                className="touch-target rounded-sm border border-foreground/30 bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:border-foreground hover:bg-foreground hover:text-background"
               >
                 {s}
               </button>
             ))}
           </div>
         )}
-        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-md border border-border bg-[var(--muted)]/60 px-3 py-2 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-[color-mix(in_srgb,var(--primary)_28%,transparent)] sm:px-4">
-          <div className="mb-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-            <Sparkles className="h-4 w-4" strokeWidth={1.5} />
-          </div>
-          <textarea
+        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-md border border-foreground/40 bg-card px-3 py-2 transition-all focus-within:border-foreground focus-within:ring-[3px] focus-within:ring-ring/30 sm:px-4">
+                    <textarea
             ref={inputRef}
             value={input}
             onChange={handleInputChange}
@@ -214,7 +211,7 @@ export default function ChatInterface({
             <button
               onClick={handleSend}
               disabled={!input.trim()}
-              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-default disabled:bg-[var(--muted)] disabled:text-muted-foreground disabled:opacity-60"
+              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60"
               aria-label="Send"
             >
               <Send className="w-4 h-4" />

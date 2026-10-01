@@ -21,7 +21,7 @@ function FieldLabel({
     <Label
       data-slot="field-label"
       className={cn(
-        "flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground",
+        "flex items-center gap-1.5 text-sm font-semibold text-foreground",
         className,
       )}
       {...props}

@@ -61,7 +61,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
       if (!open) onClose()
     }}>
       <DialogContent
-        className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-2xl border-border bg-card p-0 shadow-lg sm:max-w-xl"
+        className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-lg border-border bg-card p-0 shadow-lg sm:max-w-xl"
         showCloseButton={false}
       >
         <div className="relative overflow-hidden">
@@ -88,7 +88,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
               </DialogHeader>
 
               <div className="relative px-5 pb-4 sm:px-6">
-                <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-muted p-1">
+                <div className="grid grid-cols-2 gap-1 rounded-lg border border-border bg-muted p-1">
                   {(['month', 'year'] as const).map((i) => (
                     <Button
                       type="button"
@@ -166,7 +166,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                   onClick={handleUpgrade}
                   disabled={loading}
                   size="xl"
-                  className="w-full rounded-xl text-base font-bold shadow-lg shadow-[color:color-mix(in_srgb,var(--primary)_28%,transparent)] hover:scale-[1.01] disabled:scale-100"
+                  className="w-full rounded-lg text-base font-bold shadow-lg shadow-[color:color-mix(in_srgb,var(--primary)_28%,transparent)] hover:scale-[1.01] disabled:scale-100"
                >
                   <Zap className="h-4 w-4" />
                   {loading ? 'Redirecting to checkout…' : 'Start 7-day free trial'}

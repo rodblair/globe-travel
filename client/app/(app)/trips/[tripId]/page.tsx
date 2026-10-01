@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'motion/react'
-import { Share2, ArrowLeftRight, Calendar, Send, MessageSquareQuote, Route, Check, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned, Navigation2, MoreHorizontal, Plus, ExternalLink } from 'lucide-react'
+import { ChevronDown, Share2, ArrowLeftRight, Calendar, Send, MessageSquareQuote, Route, Check, Sparkles, Wand2, RefreshCcw, Scale3d, Save, AlertTriangle, MapPinned, Navigation2, MoreHorizontal, Plus, ExternalLink } from 'lucide-react'
 import { useChat } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import ItineraryArtifact, { type SwapCandidate, type TripDay, type TripItem } from '@/components/trips/ItineraryArtifact'
@@ -15,6 +15,8 @@ import { buildDisplayStops, getRouteFallbackLabel, hasScheduleOrderConflict, has
 import { getItineraryItemImage } from '@/lib/itinerary-images'
 import { formatTripTitleForDisplay } from '@/lib/trip-copy'
 import { Badge } from '@/components/ui/badge'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
@@ -172,7 +174,7 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
     >
       <div className="hidden pointer-events-none absolute inset-0" />
       <div className="absolute inset-x-0 top-0 h-px bg-muted" />
-      <section className="relative mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card/90 p-6 shadow-lg backdrop-blur-2xl md:p-8">
+      <section className="relative mx-auto w-full max-w-4xl rounded-lg border border-border bg-card/90 p-6 shadow-lg backdrop-blur-2xl md:p-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-3 py-1.5 text-xs font-semibold text-destructive">
           <AlertTriangle className="h-3.5 w-3.5" />
           Trip unavailable
@@ -193,7 +195,7 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
             <button
               type="button"
               onClick={onRetry}
-              className="touch-target group rounded-xl border border-[color:var(--success)]/25 bg-success/10 p-4 text-left text-success transition-colors hover:bg-[color:var(--success)] hover:text-white sm:col-span-2"
+              className="touch-target group rounded-lg border border-[color:var(--success)]/25 bg-success/10 p-4 text-left text-success transition-colors hover:bg-[color:var(--success)] hover:text-white sm:col-span-2"
             >
               <span className="flex items-center gap-3 text-sm font-semibold">
                 <RefreshCcw className="h-4 w-4" />
@@ -206,7 +208,7 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
           )}
           <Link
             href="/saved"
-            className="touch-target group rounded-xl border border-primary/30 bg-primary p-4 text-primary-foreground shadow-[0_16px_42px_rgba(245,158,11,0.18)] transition-colors hover:bg-primary/90"
+            className="touch-target group rounded-lg border border-primary/30 bg-primary p-4 text-primary-foreground shadow-[0_16px_42px_rgba(245,158,11,0.18)] transition-colors hover:bg-primary/90"
           >
             <span className="flex items-center gap-3 text-sm font-semibold">
               <MapPinned className="h-4 w-4" />
@@ -218,7 +220,7 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
           </Link>
           <Link
             href="/chat"
-            className="touch-target rounded-xl border border-border bg-muted p-4 text-foreground transition-colors hover:bg-background"
+            className="touch-target rounded-lg border border-border bg-muted p-4 text-foreground transition-colors hover:bg-background"
           >
             <span className="flex items-center gap-3 text-sm font-semibold">
               <MessageSquareQuote className="h-4 w-4 text-primary" />
@@ -262,6 +264,7 @@ function TripStudioPageContent() {
   const [workflowError, setWorkflowError] = useState<string | null>(null)
   const [suggestedStepNotice, setSuggestedStepNotice] = useState<string | null>(null)
   const [mapPassNeedsPlanEdits, setMapPassNeedsPlanEdits] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(false)
   const [trackedMapStop, setTrackedMapStop] = useState<TrackedMapStop | null>(null)
   const qaForceRewriteUnavailable = process.env.NODE_ENV === 'development' && searchParams.get('qaRewriteUnavailable') === '1'
   const qaForceBuildMapsFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaBuildMapsFailure') === '1'
@@ -1342,6 +1345,7 @@ function TripStudioPageContent() {
       setSuggestedStepNotice(message)
       return
     }
+    setToolsOpen(true)
     const workflowLabel = type === 'feedback_refresh'
       ? 'Feedback refresh'
       : type === 'decision_memo'
@@ -1366,7 +1370,7 @@ function TripStudioPageContent() {
       })
       if (!res.ok) throw new Error('Planner workflow could not start')
       await refetchWorkflowJobs()
-      setSuggestedStepNotice(`${workflowLabel} started. Track progress in Planner workflows below.`)
+      setSuggestedStepNotice(`${workflowLabel} started. Track progress under More planning tools.`)
     } catch {
       setWorkflowError('Could not start that trip option. Please try again.')
       setSuggestedStepNotice('Could not start that trip option. Please try again.')
@@ -1382,7 +1386,7 @@ function TripStudioPageContent() {
         className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_srgb,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
       >
         <div className="absolute inset-x-0 top-0 h-px bg-muted" />
-        <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card/85 p-6 shadow-lg backdrop-blur-2xl md:p-8">
+        <div className="mx-auto w-full max-w-4xl rounded-lg border border-border bg-card/85 p-6 shadow-lg backdrop-blur-2xl md:p-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
             <Calendar className="h-3.5 w-3.5" />
             Trip Studio
@@ -1395,22 +1399,22 @@ function TripStudioPageContent() {
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
-            <div className="rounded-2xl border border-border bg-background p-5">
+            <div className="rounded-lg border border-border bg-background p-5">
               <div className="mb-4 h-3 w-28 animate-pulse rounded-full bg-muted" />
               <div className="space-y-3">
                 {[0, 1, 2].map((item) => (
-                  <div key={item} className="h-14 animate-pulse rounded-2xl bg-muted" />
+                  <div key={item} className="h-14 animate-pulse rounded-lg bg-muted" />
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-5">
+            <div className="rounded-lg border border-border bg-background p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="h-3 w-32 animate-pulse rounded-full bg-muted" />
                 <div className="h-8 w-20 animate-pulse rounded-full bg-primary" />
               </div>
               <div className="space-y-3">
                 {[0, 1, 2, 3].map((item) => (
-                  <div key={item} className="h-16 animate-pulse rounded-2xl bg-muted" />
+                  <div key={item} className="h-16 animate-pulse rounded-lg bg-muted" />
                 ))}
               </div>
             </div>
@@ -1509,7 +1513,7 @@ function TripStudioPageContent() {
         )}
 
         <div className="grid min-h-0 flex-1 gap-4 p-4 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:p-5 xl:grid-cols-[minmax(0,1fr)_300px] xl:overflow-hidden 2xl:grid-cols-[300px_minmax(0,1fr)_320px]">
-          <section ref={plannerChatPanelRef} className="hidden min-h-0 overflow-hidden rounded-xl border border-border bg-card/92 shadow-xs 2xl:flex 2xl:flex-col">
+          <section ref={plannerChatPanelRef} className="hidden min-h-0 overflow-hidden rounded-lg border border-border bg-card/92 shadow-xs 2xl:flex 2xl:flex-col">
             <div className="border-b border-border px-4 py-3">
               <p className="text-xs text-muted-foreground">Planner chat</p>
               <p className="mt-1 text-sm font-medium text-foreground">Chat becomes itinerary edits</p>
@@ -1533,7 +1537,7 @@ function TripStudioPageContent() {
           </section>
 
           <section className="min-h-0 space-y-4 xl:overflow-y-auto">
-            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+            <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
               <div className="flex flex-col gap-3 border-b border-border px-4 py-3 md:flex-row md:items-center md:justify-between">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -1732,7 +1736,7 @@ function TripStudioPageContent() {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+            <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
               <ItineraryArtifact
                 tripTitle={trip?.title || 'Trip'}
                 days={days}
@@ -1757,87 +1761,63 @@ function TripStudioPageContent() {
           </section>
 
           <aside className="min-h-0 space-y-4 xl:overflow-y-auto">
-            <section className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
+            <section className="rounded-lg border border-foreground/40 bg-card p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">Share with crew</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">Public review link</p>
+                  <h2 className="text-xl leading-tight">Share with the crew</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">Anyone with the link can view and react.</p>
                 </div>
-                <button
-                  onClick={togglePublic}
-                  disabled={!canEditTrip}
-                  className={cn(
-                    'touch-target rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
-                    trip?.is_public
-                      ? 'border-success/30 bg-success/10 text-success'
-                      : 'border-border bg-muted text-muted-foreground hover:bg-accent'
-                  )}
-                >
-                  {trip?.is_public ? 'On' : 'Off'}
-                </button>
+                <label className="flex items-center gap-2 text-sm font-medium">
+                  <span className={trip?.is_public ? 'text-success' : 'text-muted-foreground'}>{trip?.is_public ? 'On' : 'Off'}</span>
+                  <Switch
+                    checked={Boolean(trip?.is_public)}
+                    onCheckedChange={() => void togglePublic()}
+                    disabled={!canEditTrip}
+                    aria-label="Public review link on or off"
+                  />
+                </label>
               </div>
               <div className="mt-4 flex gap-2">
                 <input
                   aria-label="Public review link"
                   readOnly
-                  value={shareUrl || 'Enable public link to create one'}
+                  value={shareUrl || 'Turn the link on to create one'}
                   onFocus={(event) => event.currentTarget.select()}
                   onClick={(event) => event.currentTarget.select()}
-                  className="min-w-0 flex-1 rounded-md border border-border bg-muted px-3 py-2 text-xs text-muted-foreground"
+                  className="h-10 min-w-0 flex-1 rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground"
                 />
-                <button
-                  onClick={copyInviteLink}
-                  disabled={!shareUrl}
-                  className={cn(
-                    'touch-target rounded-md border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-45',
-                    copyDone
-                      ? 'border-success/30 bg-success/10 text-success'
-                      : 'border-border bg-background text-muted-foreground hover:bg-accent'
-                  )}
-                >
+                <Button variant={copyDone ? 'secondary' : 'outline'} onClick={copyInviteLink} disabled={!shareUrl}>
+                  {copyDone ? <Check /> : null}
                   {copyDone ? 'Copied' : 'Copy'}
-                </button>
+                </Button>
               </div>
-              <button
-                onClick={shareInvite}
-                disabled={!shareUrl}
-                className="touch-target mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-primary/30 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-45"
-              >
-                <Send className="h-4 w-4" />
+              <Button onClick={shareInvite} disabled={!shareUrl} size="lg" className="mt-3 w-full">
+                <Send />
                 Share invite
-              </button>
+              </Button>
             </section>
 
-            <section className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
-              <p className="text-xs text-muted-foreground">Crew consensus</p>
-              <div className="mt-4 space-y-3">
+            <section className="rounded-lg border border-foreground/40 bg-card p-4">
+              <h2 className="text-xl leading-tight">Crew</h2>
+              <dl className="mt-3 divide-y divide-border border-y border-border">
                 {[
                   ['Budget fit', groupBrief?.budget ? 'Good' : 'Needs detail'],
                   ['Pace fit', groupBrief?.vibe || 'Balanced'],
                   ['Map fit', routeQualityLabel],
                   ['Readiness', `${readinessCount}/4`],
                 ].map(([label, value]) => (
-                  <div key={label} className="flex items-center justify-between gap-3 text-sm">
-                    <span className="text-muted-foreground">{label}</span>
-                    <span className="inline-flex items-center gap-2 font-medium text-success">
-                      {value}
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
-                    </span>
+                  <div key={label} className="flex items-center justify-between gap-3 py-2 text-sm">
+                    <dt className="text-muted-foreground">{label}</dt>
+                    <dd className="font-medium">{value}</dd>
                   </div>
                 ))}
-              </div>
-            </section>
+              </dl>
 
-            <section className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs text-muted-foreground">Friend feedback</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">{feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">crew reacting to the plan</p>
-                </div>
-                <MessageSquareQuote className="h-5 w-5 text-foreground/25" />
+              <div className="mt-5 flex items-baseline justify-between gap-3">
+                <h3 className="text-lg leading-tight">Friend feedback</h3>
+                <p className="text-sm text-muted-foreground">{feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}</p>
               </div>
-              <div className="mt-4 space-y-2">
+              <div className="mt-3 space-y-2">
                 {feedback.length === 0 ? (
                   <p className="text-xs leading-relaxed text-muted-foreground">Invite friends to flag what feels too busy, expensive, or worth keeping.</p>
                 ) : (
@@ -1875,8 +1855,8 @@ function TripStudioPageContent() {
               </div>
             </section>
 
-            <section data-testid="trip-suggested-next-step" className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
-              <p className="text-xs text-muted-foreground">Suggested next step</p>
+            <section data-testid="trip-suggested-next-step" className="rounded-lg border border-foreground bg-card p-4 shadow-[4px_4px_0_0_var(--foreground)]">
+              <h2 className="text-xl leading-tight">Next step</h2>
               {!canEditTrip ? (
                 <>
                   <p className="mt-2 text-sm font-medium leading-snug text-foreground">
@@ -1950,17 +1930,17 @@ function TripStudioPageContent() {
                   </div>
                 </>
               )}
-            </section>
 
-            <section ref={workflowPanelRef} className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs text-muted-foreground">Planner workflows</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">{latestWorkflowJob ? latestWorkflowJob.type.replace(/_/g, ' ') : 'Run async planning jobs'}</p>
-                </div>
-                <Wand2 className="h-5 w-5 text-foreground/25" />
-              </div>
-              <div className="mt-4 grid gap-2">
+              <Collapsible ref={workflowPanelRef as never} open={toolsOpen} onOpenChange={setToolsOpen} className="mt-5 border-t border-border pt-3">
+                <CollapsibleTrigger className="group flex w-full items-center justify-between gap-3 text-left text-sm font-semibold focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none">
+                  <span>
+                    More planning tools
+                    <span className="block text-xs font-normal text-muted-foreground">{latestWorkflowJob ? `Last job: ${latestWorkflowJob.type.replace(/_/g, ' ')} (${latestWorkflowJob.status})` : 'Decision memo, budget variants'}</span>
+                  </span>
+                  <ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+              <div className="mt-3 grid gap-2">
                 <button onClick={() => startWorkflow('decision_memo')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-border bg-muted px-3 py-3 text-left text-xs text-muted-foreground transition-colors hover:bg-accent disabled:opacity-50">
                   <span>{creatingWorkflow === 'decision_memo' ? 'Starting memo...' : 'Generate decision memo'}</span>
                   <Scale3d className="h-4 w-4 text-primary" />
@@ -1981,6 +1961,8 @@ function TripStudioPageContent() {
                   {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && <p className="mt-2 text-xs text-muted-foreground">Working through the planner job...</p>}
                 </div>
               )}
+                </CollapsibleContent>
+              </Collapsible>
             </section>
           </aside>
         </div>
@@ -1993,7 +1975,7 @@ function TripStudioPageContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg 2xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-lg 2xl:hidden"
           >
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <div>

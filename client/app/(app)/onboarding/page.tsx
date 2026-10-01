@@ -3,19 +3,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'motion/react'
-import { Globe, Sparkles } from 'lucide-react'
-import dynamic from 'next/dynamic'
+import { Sparkles } from 'lucide-react'
+import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
+import { CartographicPlate } from '@/components/brand/CartographicPlate'
 import OnboardingChat from '@/components/chat/OnboardingChat'
 import type { PlaceEvent } from '@/hooks/useChat'
-
-const ProfileGlobe = dynamic(() => import('@/components/globes/ProfileGlobe'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center">
-      <Globe className="w-16 h-16 text-foreground/10 animate-pulse" />
-    </div>
-  ),
-})
 
 type GlobePin = {
   latitude: number
@@ -29,19 +21,8 @@ export default function OnboardingPage() {
   const [completing, setCompleting] = useState(false)
   const [completionError, setCompletionError] = useState<string | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
-  const [showDesktopGlobe, setShowDesktopGlobe] = useState(false)
   const [qaCanFinish, setQaCanFinish] = useState(false)
   const [globePins, setGlobePins] = useState<GlobePin[]>([])
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)')
-    const updateDesktopGlobe = () => setShowDesktopGlobe(mediaQuery.matches)
-
-    updateDesktopGlobe()
-    mediaQuery.addEventListener('change', updateDesktopGlobe)
-
-    return () => mediaQuery.removeEventListener('change', updateDesktopGlobe)
-  }, [])
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') return
@@ -119,11 +100,11 @@ export default function OnboardingPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', delay: 0.2 }}
-                className="w-16 h-16 mx-auto mb-5 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center"
+                className="mx-auto mb-5 flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground"
               >
-                <Sparkles className="w-7 h-7 text-primary" />
+                <Sparkles className="size-7" />
               </motion.div>
-              <h2 className="text-2xl text-foreground mb-1.5">You&apos;re all set!</h2>
+              <h2 className="mb-1.5 text-4xl text-foreground">You&apos;re all set.</h2>
               <p className="text-muted-foreground text-sm">
                 {globePins.length} itinerary idea{globePins.length === 1 ? '' : 's'} captured
               </p>
@@ -134,72 +115,53 @@ export default function OnboardingPage() {
 
       {/* Main layout */}
       <div className="relative z-10 flex h-full">
-        {/* Left side - Live Globe (desktop only) */}
-        <div className="hidden lg:flex lg:w-[45%] items-center justify-center border-r border-border relative overflow-hidden">
-          {showDesktopGlobe && (
-            <div className="absolute inset-0">
-              <ProfileGlobe pins={globePins} />
-            </div>
-          )}
+        {/* Left side - live map plate (desktop only) */}
+        <div className="relative hidden overflow-hidden border-r border-border bg-plate text-plate-foreground lg:flex lg:w-[45%] lg:flex-col lg:justify-between lg:p-12">
+          <GlobeBrand className="text-plate-foreground" markClassName="text-plate-foreground [--mark-bg:var(--plate)]" />
 
-          {/* Overlay text at bottom */}
-          <div className="absolute bottom-8 left-0 right-0 text-center z-10">
-            <AnimatePresence mode="wait">
+          <div>
+            <div className="overflow-hidden rounded-lg border border-plate-foreground/60 bg-card shadow-[6px_6px_0_0_oklch(0.955_0.013_88/0.9)]">
+              <div className="aspect-[4/3]">
+                <CartographicPlate
+                  seed={`onboarding-${globePins.length}`}
+                  stops={Math.max(2, globePins.length + 1)}
+                  label="A route that grows as you add places"
+                />
+              </div>
+            </div>
+            <ol className="mt-8 divide-y divide-plate-foreground/20 border-y border-plate-foreground/20">
               {globePins.length === 0 ? (
-                <motion.p
-                  key="empty"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="inline-flex max-w-[min(28rem,calc(100%-3rem))] items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground shadow-sm backdrop-blur-sm"
-                >
-                  Your group trip ideas will appear here as you chat
-                </motion.p>
+                <li className="py-3 text-plate-foreground/70">Places you mention appear here as numbered stops.</li>
               ) : (
-                <motion.div
-                  key="count"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background backdrop-blur-sm border border-border"
-                >
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-muted-foreground text-sm">
-                    {globePins.length} idea{globePins.length !== 1 ? 's' : ''} ready to plan
-                  </span>
-                </motion.div>
+                globePins.slice(-5).map((pin, index) => (
+                  <li key={`${pin.name}-${index}`} className="flex items-center gap-3 py-3">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                      {Math.max(0, globePins.length - 5) + index + 1}
+                    </span>
+                    <span className="truncate font-medium">{pin.name}</span>
+                  </li>
+                ))
               )}
-            </AnimatePresence>
+            </ol>
           </div>
+
+          <p className="text-sm text-plate-foreground/60">
+            {globePins.length === 0 ? 'Start chatting to draw your first route.' : `${globePins.length} idea${globePins.length !== 1 ? 's' : ''} ready to plan`}
+          </p>
         </div>
 
         {/* Right side - Chat */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Progress header */}
-          <div className="flex-shrink-0 px-6 py-4 border-b border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="lg:hidden w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center">
-                  <Globe className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div>
-                  <h1 className="text-lg text-foreground">Start your group trip</h1>
-                  <p className="text-xs text-muted-foreground">Tell Globe.travel where your group wants to go</p>
-                </div>
+          <div className="flex-shrink-0 border-b border-border px-6 py-5">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <GlobeBrand compact className="mb-3 lg:hidden" />
+                <h1 className="text-3xl leading-tight text-foreground">Start your group trip</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Tell Globe.travel where your group wants to go.</p>
               </div>
-
-              {/* Step indicator */}
-              <div className="flex items-center gap-1.5">
-                {[1, 2, 3].map((step) => (
-                  <div
-                    key={step}
-                    className={`w-8 h-1 rounded-full transition-colors duration-500 ${
-                      step <= Math.min(3, Math.ceil(globePins.length / 2) + 1)
-                        ? 'bg-primary'
-                        : 'bg-muted'
-                    }`}
-                  />
-                ))}
+              <div className="text-right text-sm font-semibold text-muted-foreground" aria-label="Setup progress">
+                Step {Math.min(3, Math.ceil(globePins.length / 2) + 1)} of 3
               </div>
             </div>
           </div>

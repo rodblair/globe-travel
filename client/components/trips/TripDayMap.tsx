@@ -445,7 +445,7 @@ export default function TripDayMap({
       map.setPaintProperty(
         'day-route-line',
         'line-color',
-        active ? 'rgba(200,71,43,0.95)' : 'rgba(200,71,43,0.5)'
+        active ? 'rgba(200,71,43,0.95)' : 'rgba(200,71,43,0.82)'
       )
       map.setPaintProperty('day-route-line', 'line-width', active ? 4 : 3)
     }
@@ -552,7 +552,7 @@ export default function TripDayMap({
       aria-current={onClick && active ? 'true' : undefined}
       aria-label={onClick ? `${title}${subtitle ? `: ${subtitle}` : ''}. ${canvasAriaLabel}` : undefined}
       className={cn(
-        'group min-w-[220px] overflow-hidden rounded-xl border bg-card/85 text-left transition-colors shadow-xs',
+        'group min-w-[220px] overflow-hidden rounded-lg border bg-card/85 text-left transition-colors shadow-xs',
         active
           ? 'border-border bg-accent'
           : 'border-border hover:border-border hover:bg-muted/60',
@@ -678,11 +678,11 @@ export default function TripDayMap({
           )}
           {startStop && endStop && (
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <div className="rounded-2xl border border-success/30 bg-[var(--success)]/[0.08] px-3 py-2">
+              <div className="rounded-lg border border-success/30 bg-[var(--success)]/[0.08] px-3 py-2">
                 <p className="text-xs font-semibold text-success">Start</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{startStop.title}</p>
               </div>
-              <div className="rounded-2xl border border-border bg-accent px-3 py-2">
+              <div className="rounded-lg border border-border bg-accent px-3 py-2">
                 <p className="text-xs font-semibold text-primary">Finish</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{endStop.title}</p>
               </div>

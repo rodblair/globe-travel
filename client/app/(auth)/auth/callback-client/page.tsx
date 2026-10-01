@@ -100,7 +100,7 @@ function CallbackClientContent() {
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-6 text-foreground">
-      <div className="max-w-sm rounded-2xl border border-border bg-muted/60 p-6 text-center">
+      <div className="max-w-sm rounded-lg border border-border bg-muted/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">{message}</p>
       </div>
     </div>

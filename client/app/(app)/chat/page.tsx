@@ -396,7 +396,7 @@ function ChatPageContent() {
                       setDraftInput(item.q)
                     }}
                     disabled={planningInProgress}
-                    className="group flex items-start gap-3 rounded-xl border bg-card p-4 text-left shadow-xs transition-all hover:border-primary/40 hover:shadow-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50"
+                    className="group flex items-start gap-3 rounded-lg border bg-card p-4 text-left shadow-xs transition-all hover:border-primary/40 hover:shadow-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50"
                   >
                     <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       {item.label.includes('?') ? <Compass className="size-4" /> : <MapPin className="size-4" />}
@@ -429,16 +429,9 @@ function ChatPageContent() {
         </div>
       ) : (
         <>
-          <header className="flex shrink-0 items-center justify-between gap-4 border-b px-4 py-3 md:px-6">
-            <div className="flex items-center gap-3">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Sparkles className="size-4" />
-              </span>
-              <div>
-                <h1 className="text-base font-medium leading-tight">Planner</h1>
-                <p className="text-xs text-muted-foreground">Ask about destinations, compare cities, or build an itinerary.</p>
-              </div>
-            </div>
+          <header className="flex shrink-0 items-baseline gap-4 border-b border-foreground px-4 py-3 md:px-6">
+            <h1 className="text-2xl leading-tight">Planner</h1>
+            <p className="hidden text-sm text-muted-foreground sm:block">Ask about destinations, compare cities, or build an itinerary.</p>
           </header>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-6 xl:overflow-hidden">
@@ -478,7 +471,7 @@ function ChatPageContent() {
                     {previewDays.length > 0 ? (
                       <div className="space-y-3">
                         {previewDays.map(({ day, stops, routeGeojson, routeSummary, items }) => (
-                          <div key={day.id} className="overflow-hidden rounded-xl border bg-background">
+                          <div key={day.id} className="overflow-hidden rounded-lg border bg-background">
                             <TripDayMap
                               stops={stops}
                               routeGeojson={routeGeojson}

@@ -43,7 +43,7 @@ export function JournalCard({
     <motion.div
       whileHover={{ y: -1 }}
       transition={{ duration: 0.18 }}
-      className="group relative bg-muted/60 border border-border rounded-2xl overflow-hidden hover:border-border hover:bg-muted/60 transition-all duration-200"
+      className="group relative overflow-hidden rounded-lg border border-foreground/30 bg-card transition-colors hover:border-foreground"
     >
       <Button
         variant="ghost"
@@ -60,7 +60,7 @@ export function JournalCard({
           </div>
           {displayLocation && (
             <>
-              <span className="text-foreground/15 text-xs">·</span>
+              <span className="text-xs text-muted-foreground">·</span>
               <div className="flex items-center gap-1 text-muted-foreground min-w-0">
                 <MapPin className="w-3 h-3 shrink-0" />
                 <span className="text-xs truncate">{displayLocation}</span>
@@ -69,14 +69,14 @@ export function JournalCard({
           )}
           {tripTitle && (
             <>
-              <span className="text-foreground/15 text-xs">·</span>
+              <span className="text-xs text-muted-foreground">·</span>
               <span className="text-xs text-primary truncate">{tripTitle}</span>
             </>
           )}
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
+        <h3 className="mb-2 text-2xl leading-snug text-foreground transition-colors group-hover:text-primary">
           {mood && <span className="mr-2 not-italic">{mood}</span>}
           {title}
         </h3>
@@ -89,7 +89,7 @@ export function JournalCard({
       </Button>
 
       {/* Action buttons — visible on hover */}
-      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-4 right-4 flex gap-1 transition-opacity focus-within:opacity-100 md:opacity-0 md:group-hover:opacity-100">
         {onEdit && (
           <IconButton
             label={`Edit ${title}`}

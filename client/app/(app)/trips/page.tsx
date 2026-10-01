@@ -286,7 +286,7 @@ function SavedPageContent() {
       <div className="app-sticky-header">
         <div className="app-container flex flex-wrap items-center justify-between gap-3 py-4">
           <div>
-            <h1 className="text-2xl font-medium md:text-3xl">{activeTab === 'journal' ? 'Trip notes' : 'Your trips'}</h1>
+            <h1 className="text-3xl md:text-4xl">{activeTab === 'journal' ? 'Trip notes' : 'Your trips'}</h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
               {activeTab === 'journal'
                 ? 'Private decisions, reminders and memories tied to your trips.'
@@ -405,7 +405,7 @@ function SavedPageContent() {
                               <h2 className="text-2xl leading-tight">
                                 <Link
                                   href={`/trips/${trip.id}`}
-                                  className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:rounded-xl"
+                                  className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:rounded-lg"
                                 >
                                   {destination || displayTitle}
                                 </Link>
@@ -485,7 +485,7 @@ function SavedPageContent() {
             {journalLoading ? (
               <div className="space-y-3" role="status" aria-busy="true" aria-label="Loading trip notes">
                 {Array.from({ length: 3 }).map((_, index) => (
-                  <Skeleton key={index} className="h-24 rounded-xl" />
+                  <Skeleton key={index} className="h-24 rounded-lg" />
                 ))}
               </div>
             ) : entries.length === 0 ? (
