@@ -552,42 +552,42 @@ export default function TripDayMap({
       aria-current={onClick && active ? 'true' : undefined}
       aria-label={onClick ? `${title}${subtitle ? `: ${subtitle}` : ''}. ${canvasAriaLabel}` : undefined}
       className={cn(
-        'group min-w-[220px] overflow-hidden rounded-[24px] border bg-paper-raised/85 text-left transition-colors shadow-[var(--panel-shadow)]',
+        'group min-w-[220px] overflow-hidden rounded-xl border bg-card/85 text-left transition-colors shadow-xs',
         active
-          ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]'
-          : 'border-rule hover:border-rule hover:bg-paper-recessed/60',
+          ? 'border-primary/30 bg-primary/10'
+          : 'border-border hover:border-border hover:bg-muted/60',
         onClick ? 'cursor-pointer' : '',
         className
       )}
     >
       <div
-        className={cn('relative w-full overflow-hidden border-b border-rule bg-[var(--paper-recessed)]', mapHeightClassName)}
+        className={cn('relative w-full overflow-hidden border-b border-border bg-[var(--muted)]', mapHeightClassName)}
         onWheelCapture={handleMapWheel}
       >
         <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex items-center justify-between gap-2">
-          <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/78 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
+          <span className="rounded-full border border-border bg-card/88 px-2.5 py-1 text-xs font-semibold text-muted-foreground shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
             {mapLabel}
           </span>
-          <span className="rounded-full border border-rule bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium tabular-nums text-foreground/76 shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
+          <span className="rounded-full border border-border bg-card/88 px-2.5 py-1 text-xs font-medium tabular-nums text-muted-foreground shadow-[0_10px_20px_rgba(28,42,55,0.08)]">
             {validStops.length} stop{validStops.length === 1 ? '' : 's'}
           </span>
         </div>
         {routeSummary && (
           <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10">
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-rule bg-paper-raised/90 px-3 py-1.5 shadow-[0_10px_20px_rgba(28,42,55,0.1)]">
-              <span className={cn('h-2 w-2 rounded-full', active ? 'bg-[var(--brass)]' : 'bg-[var(--horizon)]')} />
-              <span className="truncate text-[11px] font-medium tracking-[0.01em] text-foreground/84">{routeSummary}</span>
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-1.5 shadow-[0_10px_20px_rgba(28,42,55,0.1)]">
+              <span className={cn('h-2 w-2 rounded-full', active ? 'bg-primary' : 'bg-chart-2')} />
+              <span className="truncate text-xs font-medium text-foreground/84">{routeSummary}</span>
             </div>
           </div>
         )}
         {interactive && validStops.length > 1 && (
           <div className="pointer-events-none absolute left-3 top-12 z-10 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--pillar-nature-wash)] bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium text-[var(--moss)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--moss)]" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-success/30 bg-card/88 px-2.5 py-1 text-xs font-medium text-success">
+              <span className="h-2 w-2 rounded-full bg-[var(--success)]" />
               Start: {startStop?.title}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-paper-raised/88 px-2.5 py-1 text-[10px] font-medium text-[var(--brass)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--brass)]" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/88 px-2.5 py-1 text-xs font-medium text-primary">
+              <span className="h-2 w-2 rounded-full bg-primary" />
               Finish: {endStop?.title}
             </span>
           </div>
@@ -595,8 +595,8 @@ export default function TripDayMap({
         {shouldRenderMap ? (
           <div ref={containerRef} className="h-full w-full" />
         ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--horizon),transparent_82%),transparent_58%),linear-gradient(180deg,var(--paper-raised),var(--paper-recessed))]">
-            <div className="absolute inset-0 bg-[linear-gradient(color-mix(in_oklch,var(--ink-3),transparent_88%)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_oklch,var(--ink-3),transparent_88%)_1px,transparent_1px)] bg-[size:28px_28px] opacity-45" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--chart-2),transparent_82%),transparent_58%),linear-gradient(180deg,var(--card),var(--muted))]">
+            <div className="absolute inset-0 bg-[linear-gradient(color-mix(in_oklch,var(--muted-foreground),transparent_88%)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_oklch,var(--muted-foreground),transparent_88%)_1px,transparent_1px)] bg-[size:28px_28px] opacity-45" />
             {(previewGeometry || stopOnlyPreview) && (
               <svg viewBox="0 0 100 100" role="img" aria-label={canvasAriaLabel} className="h-full w-full">
                 {(previewGeometry || stopOnlyPreview)?.linePoints && (
@@ -633,21 +633,21 @@ export default function TripDayMap({
           </div>
         )}
         {validStops.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-paper-raised/85 text-center">
-            <p className="max-w-[160px] text-xs text-foreground/45">
+          <div className="absolute inset-0 flex items-center justify-center bg-card/85 text-center">
+            <p className="max-w-[160px] text-xs text-muted-foreground">
               Add place-aware activities to draw this day on the map.
             </p>
           </div>
         )}
         {!shouldRenderMap && !previewGeometry && !stopOnlyPreview && validStops.length > 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-paper-raised/85 text-center">
-            <p className="max-w-[180px] text-xs text-foreground/45">
+          <div className="absolute inset-0 flex items-center justify-center bg-card/85 text-center">
+            <p className="max-w-[180px] text-xs text-muted-foreground">
               Day preview could not be drawn from the current stop geometry.
             </p>
           </div>
         )}
         {usingStaticFallback && (
-          <div className="pointer-events-none absolute bottom-3 right-3 rounded-full border border-[color:var(--brass)]/30 bg-[rgba(8,10,18,0.82)] px-2.5 py-1 text-[10px] font-medium text-[var(--brass)]">
+          <div className="pointer-events-none absolute bottom-3 right-3 rounded-full border border-primary/30 bg-[rgba(8,10,18,0.82)] px-2.5 py-1 text-xs font-medium text-primary">
             Static route preview
           </div>
         )}
@@ -657,33 +657,33 @@ export default function TripDayMap({
         <div className="px-3.5 py-3.5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium tracking-[0.01em] text-foreground">{title}</p>
-              <p className="mt-1 text-[11px] leading-relaxed text-foreground/62 truncate">
+              <p className="truncate text-sm font-medium text-foreground">{title}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground truncate">
                 {subtitle || `${validStops.length} mapped stop${validStops.length === 1 ? '' : 's'}`}
               </p>
             </div>
-            <span className="inline-flex flex-shrink-0 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/62">
+            <span className="inline-flex flex-shrink-0 rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
               Day
             </span>
           </div>
           {!routeSummary && (
-            <p className="mt-2 text-[11px] font-medium text-foreground/76">
+            <p className="mt-2 text-xs font-medium text-muted-foreground">
               {validStops.length > 0 ? 'Route ready to review' : 'No mapped stops yet'}
             </p>
           )}
           {routeSummary && (
-            <p className="mt-2 text-[11px] font-medium text-[var(--brass)] truncate">
+            <p className="mt-2 text-xs font-medium text-primary truncate">
               {routeSummary}
             </p>
           )}
           {startStop && endStop && (
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <div className="rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[var(--moss)]/[0.08] px-3 py-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--moss)]">Start</p>
+              <div className="rounded-2xl border border-success/30 bg-[var(--success)]/[0.08] px-3 py-2">
+                <p className="text-xs font-semibold text-success">Start</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{startStop.title}</p>
               </div>
-              <div className="rounded-2xl border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-3 py-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--brass)]">Finish</p>
+              <div className="rounded-2xl border border-primary/30 bg-primary/10 px-3 py-2">
+                <p className="text-xs font-semibold text-primary">Finish</p>
                 <p className="mt-1 truncate text-xs font-medium text-foreground">{endStop.title}</p>
               </div>
             </div>
@@ -693,14 +693,14 @@ export default function TripDayMap({
               {stopPreview.slice(0, 3).map((stop, index) => (
                 <span
                   key={`${stop}-${index}`}
-                  className="inline-flex max-w-[142px] items-center gap-1 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] text-foreground/72"
+                  className="inline-flex max-w-[142px] items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-1 text-xs text-muted-foreground"
                 >
-                  <span className="font-semibold tabular-nums text-[var(--brass)]">{index + 1}</span>
+                  <span className="font-semibold tabular-nums text-primary">{index + 1}</span>
                   <span className="truncate">{stop}</span>
                 </span>
               ))}
               {stopPreview.length > 3 && (
-                <span className="inline-flex items-center rounded-full border border-rule bg-paper-raised/85 px-2.5 py-1 text-[10px] text-foreground/55">
+                <span className="inline-flex items-center rounded-full border border-border bg-card/85 px-2.5 py-1 text-xs text-muted-foreground">
                   +{stopPreview.length - 3} more
                 </span>
               )}

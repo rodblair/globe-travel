@@ -38,6 +38,8 @@ export async function proxy(request: NextRequest) {
   const publicPaths = [
     '/',
     '/pricing',
+    '/terms',
+    '/privacy',
     '/login',
     '/signup',
     '/reset-password',
@@ -49,12 +51,13 @@ export async function proxy(request: NextRequest) {
     '/opengraph-image',
     '/sitemap.xml',
     '/twitter-image',
+    '/apple-icon',
   ]
   const pathname = request.nextUrl.pathname
   const isPublicPath = publicPaths.some((path) => {
     if (path === '/auth') return pathname.startsWith('/auth')
-    if (path === '/share') return pathname.startsWith('/share')
-    if (path === '/t') return pathname.startsWith('/t')
+    if (path === '/share') return pathname === '/share' || pathname.startsWith('/share/')
+    if (path === '/t') return pathname === '/t' || pathname.startsWith('/t/')
     return pathname === path
   })
   const isApiPath = request.nextUrl.pathname.startsWith('/api')

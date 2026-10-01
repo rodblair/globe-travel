@@ -293,13 +293,13 @@ export default function TripGlobe({
         style={{ width: '100%', height: '100%' }}
       >
         <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.12),transparent_45%),linear-gradient(180deg,rgba(6,6,16,0.96),rgba(3,4,10,0.98))]">
-          <div className="rounded-3xl border border-rule bg-paper-raised/85 px-6 py-5 text-center backdrop-blur">
-            <p className="text-[11px] uppercase tracking-[0.24em] text-foreground/30">Trip Map</p>
+          <div className="rounded-3xl border border-border bg-card/85 px-6 py-5 text-center backdrop-blur">
+            <p className="text-xs text-muted-foreground">Trip Map</p>
             <p className="mt-2 text-lg font-medium text-foreground/85">{destinationLabel || 'Destination'}</p>
-            <p className="mt-2 text-sm text-foreground/45">
+            <p className="mt-2 text-sm text-muted-foreground">
               {validStops.length} mapped stop{validStops.length === 1 ? '' : 's'}
             </p>
-            <p className="mt-4 text-xs text-foreground/35">
+            <p className="mt-4 text-xs text-muted-foreground">
               Globe preview unavailable on this device. Day maps still render below.
             </p>
           </div>

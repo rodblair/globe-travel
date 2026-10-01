@@ -22,9 +22,9 @@ export function AuthCanvas({
   children: React.ReactNode;
 }) {
   const formClasses =
-    "relative flex w-full lg:w-1/2 items-center justify-center px-6 py-12 bg-paper";
+    "relative flex w-full lg:w-1/2 items-center justify-center px-6 py-12 bg-background";
   const panel = (
-    <div className="relative hidden lg:flex lg:w-1/2 overflow-hidden border-r border-rule bg-[var(--paper-recessed)] text-foreground">
+    <div className="relative hidden lg:flex lg:w-1/2 overflow-hidden border-r border-border bg-[var(--paper-recessed)] text-foreground">
       {/* atmospheric gradient */}
       <div
         aria-hidden
@@ -36,7 +36,7 @@ export function AuthCanvas({
       />
       {/* contour band */}
       <div className="absolute inset-x-0 bottom-0 h-2/3 opacity-50">
-        <ContourOverlay density="normal" className="text-ink-3" />
+        <ContourOverlay density="normal" className="text-muted-foreground" />
       </div>
       {/* horizon line */}
       <div
@@ -51,7 +51,7 @@ export function AuthCanvas({
         }}
       />
       {/* paper grain */}
-      <div className="paper-grain absolute inset-0" />
+      <div className="hidden absolute inset-0" />
 
       <div className="relative z-10 flex flex-col justify-between w-full p-12">
         <Link href="/" className="inline-flex min-h-11 items-center group">
@@ -60,21 +60,21 @@ export function AuthCanvas({
 
         <div className="max-w-md">
           {panelKicker && (
-            <p className="t-mono text-[0.6875rem] tracking-[0.24em] uppercase text-ink-3 mb-4">
+            <p className="text-xs uppercase text-muted-foreground mb-4">
               {panelKicker}
             </p>
           )}
           <p className="h-display text-foreground leading-[1.1] mb-4">
             {panelTitle}
           </p>
-          <p className="text-body-lg text-ink-2 leading-relaxed">
+          <p className="text-body-lg text-muted-foreground leading-relaxed">
             {panelSubtitle}
           </p>
         </div>
 
-        <div className="flex items-center gap-6 t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
+        <div className="flex items-center gap-6 text-xs uppercase text-muted-foreground">
           <span>EST. 2024</span>
-          <span aria-hidden className="h-px flex-1 bg-rule" />
+          <span aria-hidden className="h-px flex-1 bg-border" />
           <span>FOR FRIENDS</span>
         </div>
       </div>
@@ -82,10 +82,10 @@ export function AuthCanvas({
   );
 
   return (
-    <main className="min-h-screen flex bg-paper text-foreground" aria-label="Authentication">
+    <main className="min-h-dvh flex bg-background text-foreground" aria-label="Authentication">
       {side === "left" ? panel : null}
       <div className={formClasses}>
-        <div className="paper-grain absolute inset-0 pointer-events-none" />
+        <div className="hidden absolute inset-0 pointer-events-none" />
         <div className="relative w-full max-w-md">{children}</div>
       </div>
       {side === "right" ? panel : null}

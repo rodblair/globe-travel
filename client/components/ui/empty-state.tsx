@@ -22,23 +22,23 @@ function EmptyState({
     <div
       data-slot="empty-state"
       className={cn(
-        "flex flex-col items-start rounded-lg border border-dashed border-rule bg-paper-raised/60 p-6 text-left",
+        "flex flex-col items-center rounded-xl border border-dashed bg-card/50 px-6 py-14 text-center",
         className,
       )}
       {...props}
     >
       {Icon && (
-        <div className="mb-4 flex size-10 items-center justify-center rounded-md bg-paper-recessed text-muted-foreground">
-          <Icon className="size-5" aria-hidden="true" />
+        <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Icon className="size-6" aria-hidden="true" />
         </div>
       )}
-      <h3 className="text-base font-semibold text-foreground">{title}</h3>
+      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
       {description && (
-        <p className="mt-1 max-w-prose text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-muted-foreground">
           {description}
         </p>
       )}
-      {action && <div className="mt-4">{action}</div>}
+      {action && <div className="mt-6">{action}</div>}
     </div>
   )
 }

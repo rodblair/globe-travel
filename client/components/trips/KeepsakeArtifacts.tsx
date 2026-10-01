@@ -9,6 +9,7 @@ import type { TripDay } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 import { getTravelBookingAction, type TravelBookingAction } from '@/lib/travel-booking-links'
 import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export { getTripKeepsakeMeta } from '@/lib/trip-copy'
@@ -36,9 +37,9 @@ const toneLabel: Record<FeedbackTone, string> = {
 }
 
 const toneClass: Record<FeedbackTone, string> = {
-  love_it: 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
-  curious: 'border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]',
-  practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
+  love_it: 'border-success/30 bg-success/10 text-success',
+  curious: 'border-info/30 bg-info/10 text-info',
+  practical: 'border-warning/40 bg-warning/15 text-foreground',
 }
 
 function PublicBookingAction({ action }: { action: TravelBookingAction }) {
@@ -51,7 +52,7 @@ function PublicBookingAction({ action }: { action: TravelBookingAction }) {
       rel="noreferrer"
       aria-label={action.ariaLabel}
       title={`${action.label} via ${action.provider}`}
-      className="touch-target inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-2.5 py-1 text-[11px] font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+      className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
     >
       <Icon className="h-3 w-3" />
       <span>{action.shortLabel}</span>
@@ -63,27 +64,15 @@ function PublicBookingAction({ action }: { action: TravelBookingAction }) {
 export function ArtifactFrame({
   children,
   className,
-  ribbon = true,
 }: {
   children: ReactNode
   className?: string
+  /** Kept for backwards compatibility; the ribbon was retired with the old visual style. */
   ribbon?: boolean
 }) {
   return (
-    <div
-      className={cn(
-        'relative overflow-hidden rounded-[32px] border border-[color:var(--brass)]/30 bg-[linear-gradient(135deg,var(--paper-raised),var(--paper-recessed))] shadow-[var(--shadow-lg)]',
-        className
-      )}
-    >
-      <div className="paper-grain absolute inset-0 pointer-events-none" />
-      <div className="absolute inset-3 rounded-[24px] border border-rule/80 pointer-events-none md:inset-4 md:rounded-[26px]" />
-      {ribbon && (
-        <div className="absolute right-8 top-0 h-16 w-8 bg-[var(--brass)] shadow-[0_10px_20px_rgba(159,105,32,0.18)]">
-          <div className="absolute bottom-0 h-0 w-0 border-l-[16px] border-r-[16px] border-t-[14px] border-l-transparent border-r-transparent border-t-[var(--paper-raised)]" />
-        </div>
-      )}
-      <div className="relative z-10">{children}</div>
+    <div className={cn('relative overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-md', className)}>
+      {children}
     </div>
   )
 }
@@ -119,7 +108,7 @@ export function KeepsakeRouteCard({
     : getRouteFallbackLabel(dayItems, savedRoute, usesDerivedStops)
 
   return (
-    <article className={cn('overflow-hidden rounded-[22px] border border-rule bg-paper-raised', active && 'border-[color:var(--brass)]/40')}>
+    <article className={cn('overflow-hidden rounded-xl border bg-card', active && 'border-primary/40')}>
       <TripDayMap
         stops={stops}
         routeGeojson={route?.geojson || null}
@@ -136,12 +125,12 @@ export function KeepsakeRouteCard({
       <div className="space-y-3 px-4 py-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="t-mono text-[0.625rem] uppercase tracking-[0.2em] text-[var(--brass)]">Day {day.day_index}</p>
-            <h3 className="mt-1 font-serif text-lg font-semibold leading-tight text-foreground">
+            <p className="text-xs font-semibold text-primary">Day {day.day_index}</p>
+            <h3 className="mt-0.5 text-base font-semibold leading-tight text-foreground">
               {day.title || `Itinerary Day ${day.day_index}`}
             </h3>
           </div>
-          <span className="rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[11px] text-ink-2">
+          <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
             {sortedItems.length} stops
           </span>
         </div>
@@ -155,14 +144,14 @@ export function KeepsakeRouteCard({
             })
 
             return (
-              <div key={item.id} className="flex items-start gap-2.5 rounded-2xl bg-paper-recessed/70 px-3 py-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
+              <div key={item.id} className="flex items-start gap-2.5 rounded-lg bg-muted/60 px-3 py-2">
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                   {index + 1}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="break-words text-sm font-medium leading-snug text-foreground">{item.title}</p>
                   {(item.start_time || placeLabel) && (
-                    <p className="mt-0.5 break-words text-xs leading-snug text-ink-3">
+                    <p className="mt-0.5 break-words text-xs leading-snug text-muted-foreground">
                       {[item.start_time?.slice(0, 5), placeLabel].filter(Boolean).join(' · ')}
                     </p>
                   )}
@@ -204,38 +193,37 @@ export function TripPosterPreview({
   const hiddenDayCount = Math.max(0, days.length - previewDays.length)
   const stopCount = days.reduce((sum, day) => sum + (day.items?.length || 0), 0)
   const body = (
-    <ArtifactFrame className={cn('transition-transform duration-300 hover:-translate-y-1', className)}>
-      <div className="grid gap-6 p-5 sm:p-6 md:grid-cols-[0.82fr_1.18fr] md:gap-7 md:p-7 lg:p-8">
+    <ArtifactFrame className={cn('transition-shadow hover:shadow-lg', className)}>
+      <div className="grid gap-6 p-5 sm:p-6 md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:p-8">
         <div className="flex min-h-64 flex-col justify-between md:min-h-72">
           <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-[var(--horizon)] px-3 py-1.5 t-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-white">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
               {meta.days || days.length || 3} days
             </div>
-            <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Globe.travel map</p>
-            <h2 className="mt-3 max-w-[11ch] text-wrap font-serif text-3xl font-semibold uppercase leading-[0.98] tracking-[0.08em] text-foreground sm:text-4xl">
+            <h2 className="text-balance text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
               {posterDestination}
             </h2>
             {posterTiming && (
-              <p className="mt-3 t-mono text-[0.625rem] uppercase tracking-[0.18em] text-[var(--brass)]">
+              <p className="mt-2 text-sm font-medium text-primary">
                 In {posterTiming}
               </p>
             )}
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-2">
-              A shareable route, day-by-day plan, and friend feedback in one calm trip artifact.
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
+              A mapped route, a day-by-day plan, and friend feedback in one place.
             </p>
           </div>
           <div className="mt-7 grid gap-2">
             {previewDays.map((day) => (
               <div key={day.id} className="flex items-center gap-2 text-sm text-foreground">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
-                  {String(day.day_index).padStart(2, '0')}
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                  {day.day_index}
                 </span>
                 <span className="truncate">{day.title || `Day ${day.day_index}`}</span>
               </div>
             ))}
             {hiddenDayCount > 0 && (
-              <div className="flex items-center gap-2 text-sm text-ink-2">
-                <span className="flex h-6 min-w-6 items-center justify-center rounded-full border border-dashed border-[color:var(--brass)]/40 bg-paper-recessed t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="flex size-6 items-center justify-center rounded-full border border-dashed border-primary/40 text-xs font-semibold text-primary">
                   +
                 </span>
                 <span className="truncate">
@@ -249,24 +237,24 @@ export function TripPosterPreview({
           {firstDay ? (
             <KeepsakeRouteCard day={firstDay} active compact forceStaticMap={forceStaticMap} />
           ) : (
-            <div className="flex h-72 items-center justify-center rounded-[24px] border border-dashed border-rule bg-paper-recessed text-sm text-ink-3">
+            <div className="flex h-72 items-center justify-center rounded-xl border border-dashed text-sm text-muted-foreground">
               The route snapshot appears once the itinerary has stops.
             </div>
           )}
           <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-3">
-              <CalendarDays className="h-4 w-4 text-[var(--brass)]" />
-              <p className="mt-2 text-xs text-ink-3">Days</p>
+            <div className="rounded-xl border bg-muted/50 px-3 py-3">
+              <CalendarDays className="size-4 text-primary" />
+              <p className="mt-2 text-xs text-muted-foreground">Days</p>
               <p className="font-semibold text-foreground">{days.length || 'Draft'}</p>
             </div>
-            <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-3">
-              <Route className="h-4 w-4 text-[var(--horizon)]" />
-              <p className="mt-2 text-xs text-ink-3">Stops</p>
+            <div className="rounded-xl border bg-muted/50 px-3 py-3">
+              <Route className="size-4 text-chart-2" />
+              <p className="mt-2 text-xs text-muted-foreground">Stops</p>
               <p className="font-semibold text-foreground">{stopCount || 'Soon'}</p>
             </div>
-            <div className="rounded-2xl border border-rule bg-paper-recessed px-3 py-3">
-              <Users className="h-4 w-4 text-[var(--moss)]" />
-              <p className="mt-2 text-xs text-ink-3">Crew</p>
+            <div className="rounded-xl border bg-muted/50 px-3 py-3">
+              <Users className="size-4 text-success" />
+              <p className="mt-2 text-xs text-muted-foreground">Crew</p>
               <p className="font-semibold text-foreground">Ready</p>
             </div>
           </div>
@@ -302,15 +290,15 @@ export function FriendFeedbackPanel({
   }, [feedback])
 
   return (
-    <section className={cn('rounded-[26px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6', className)}>
+    <section className={cn('rounded-xl border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Friend feedback</p>
-          <h2 className="mt-1 font-serif text-xl font-semibold text-foreground">
+          <p className="text-sm text-muted-foreground">Friend feedback</p>
+          <h2 className="mt-0.5 text-xl font-semibold text-foreground">
             {feedback.length} {feedback.length === 1 ? 'reaction' : 'reactions'}
           </h2>
         </div>
-        <MessageCircleQuestion className="h-5 w-5 text-[var(--brass)]" />
+        <MessageCircleQuestion className="size-5 text-primary" />
       </div>
       <div className="mt-4 grid grid-cols-3 gap-2">
         {([
@@ -318,33 +306,33 @@ export function FriendFeedbackPanel({
           ['curious', MessageCircleQuestion, 'Curious'],
           ['practical', Check, 'Notes'],
         ] as const).map(([key, Icon, label]) => (
-          <div key={key} className={cn('rounded-2xl border px-3 py-3 text-center', toneClass[key])}>
+          <div key={key} className={cn('rounded-xl border px-3 py-3 text-center', toneClass[key])}>
             <Icon className="mx-auto h-4 w-4" />
             <p className="mt-1 text-lg font-semibold">{counts[key]}</p>
-            <p className="text-[11px]">{label}</p>
+            <p className="text-xs">{label}</p>
           </div>
         ))}
       </div>
       <div className="mt-4 space-y-3">
         {feedback.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-4 py-5 text-sm leading-relaxed text-ink-2">
+          <p className="rounded-xl border border-dashed px-4 py-5 text-sm leading-relaxed text-muted-foreground">
             Send this link to the group. They can mark what they love, what needs a question, and what might break the plan.
           </p>
         ) : (
           <>
             {visibleFeedback.map((entry) => (
-              <div key={entry.id} className="rounded-2xl border border-rule bg-paper-recessed p-4">
+              <div key={entry.id} className="rounded-xl border bg-muted/40 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 truncate text-sm font-semibold text-foreground">{entry.author_name}</p>
-                  <span className={cn('shrink-0 rounded-full border px-2 py-1 text-[10px]', toneClass[entry.sentiment])}>
+                  <span className={cn('shrink-0 rounded-full border px-2 py-0.5 text-xs', toneClass[entry.sentiment])}>
                     {toneLabel[entry.sentiment]}
                   </span>
                 </div>
-                <p className="mt-2 line-clamp-3 break-words text-sm leading-relaxed text-ink-2">{entry.comment}</p>
+                <p className="mt-2 line-clamp-3 break-words text-sm leading-relaxed text-muted-foreground">{entry.comment}</p>
               </div>
             ))}
             {remainingFeedbackCount > 0 && (
-              <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-ink-2">
+              <p className="rounded-xl border border-dashed px-4 py-3 text-sm leading-relaxed text-muted-foreground">
                 Showing latest 4 of {feedback.length} reactions. {remainingFeedbackCount} more {remainingFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for the organizer.
               </p>
             )}
@@ -423,13 +411,12 @@ export function ShareLinkCard({
   }
 
   return (
-    <section className={cn('rounded-[26px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6', className)}>
-      <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Share trip</p>
-      <h2 className="mt-1 font-serif text-xl font-semibold text-foreground">Send the Globe.travel map link</h2>
-      <p className="mt-2 text-sm leading-relaxed text-ink-2">
+    <section className={cn('rounded-xl border bg-card p-5 text-card-foreground shadow-xs md:p-6', className)}>
+      <h2 className="text-xl font-semibold text-foreground">Share this trip</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         Friends can view the itinerary without signing in and leave lightweight feedback.
       </p>
-      <div className="mt-4 rounded-2xl border border-rule bg-paper-recessed px-3 py-2 text-xs text-ink-2">
+      <div className="mt-4 rounded-lg border bg-muted/50 px-3 text-xs text-muted-foreground">
         <input
           ref={shareUrlInputRef}
           type="text"
@@ -437,11 +424,11 @@ export function ShareLinkCard({
           aria-label="Public trip link"
           value={shareUrl || 'Enable sharing to create a public link'}
           onFocus={(event) => event.currentTarget.select()}
-          className="h-11 w-full truncate bg-transparent text-xs text-ink-2 outline-none"
+          className="h-11 w-full truncate bg-transparent text-xs text-muted-foreground outline-none"
         />
       </div>
       {shareError && (
-        <p role="alert" className="mt-3 rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
+        <p role="alert" className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {shareError}
         </p>
       )}
@@ -450,31 +437,21 @@ export function ShareLinkCard({
         aria-live="polite"
         className={cn(
           copied
-            ? 'mt-3 rounded-2xl border border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] px-4 py-3 text-sm font-medium text-[var(--moss)] transition-colors'
+            ? 'mt-3 rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm font-medium text-success transition-colors'
             : 'sr-only',
         )}
       >
         {copied ? 'Copied to clipboard.' : 'Copy status'}
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={copyLink}
-          disabled={!shareUrl}
-          className="touch-target inline-flex items-center justify-center gap-2 rounded-full border border-rule bg-paper-recessed px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+        <Button type="button" variant="outline" onClick={copyLink} disabled={!shareUrl} className="rounded-full">
+          {copied ? <Check /> : <Copy />}
           {copied ? 'Copied' : 'Copy link'}
-        </button>
-        <button
-          type="button"
-          onClick={nativeShare}
-          disabled={!shareUrl}
-          className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-2 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          <Share2 className="h-4 w-4" />
+        </Button>
+        <Button type="button" onClick={nativeShare} disabled={!shareUrl} className="rounded-full">
+          <Share2 />
           Share
-        </button>
+        </Button>
       </div>
     </section>
   )

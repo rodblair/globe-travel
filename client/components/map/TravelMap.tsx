@@ -158,8 +158,8 @@ export function TravelMap({ places, onMarkerClick, className }: TravelMapProps) 
   if (mapUnavailable) {
     return (
       <div className={className} style={{ width: '100%', height: '100%' }}>
-        <div className="flex h-full w-full items-center justify-center bg-paper-recessed text-center">
-          <p className="max-w-[180px] text-xs text-foreground/45">
+        <div className="flex h-full w-full items-center justify-center bg-muted text-center">
+          <p className="max-w-[180px] text-xs text-muted-foreground">
             Map preview unavailable on this device.
           </p>
         </div>

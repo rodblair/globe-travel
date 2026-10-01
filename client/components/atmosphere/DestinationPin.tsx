@@ -69,7 +69,7 @@ export function DestinationPin({
         aria-hidden
         className={cn(
           "relative inline-flex items-center justify-center rounded-full",
-          "bg-[var(--brass)] text-[var(--brass-text)]",
+          "bg-primary text-primary-foreground",
           "shadow-[0_0_0_1.5px_var(--paper),0_2px_6px_rgb(0_0_0/0.18)]",
         )}
         style={{
@@ -81,7 +81,7 @@ export function DestinationPin({
         }}
       >
         {number != null && (
-          <span className="t-mono text-[0.6875rem] font-semibold leading-none">
+          <span className="text-xs font-semibold leading-none">
             {number}
           </span>
         )}

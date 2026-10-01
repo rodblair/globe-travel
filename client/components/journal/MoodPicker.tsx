@@ -32,8 +32,8 @@ export function MoodPicker({ selected, onChange }: MoodPickerProps) {
           className={cn(
             'min-h-12 rounded-full px-3 py-1.5 transition-all duration-200',
             selected === mood.emoji
-              ? 'scale-105 ring-1 ring-[color:var(--brass)]/40'
-              : 'text-foreground/60 hover:bg-paper-recessed hover:text-foreground/80'
+              ? 'scale-105 ring-1 ring-[color:var(--primary)]/40'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground/80'
           )}
           title={mood.label}
         >

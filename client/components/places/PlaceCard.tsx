@@ -33,7 +33,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
       whileHover={{ scale: 1.02, y: -2 }}
       transition={{ duration: 0.2 }}
       onClick={onClick}
-      className="group relative rounded-2xl overflow-hidden bg-paper-recessed backdrop-blur-sm border border-rule cursor-pointer"
+      className="group relative rounded-2xl overflow-hidden bg-muted backdrop-blur-sm border border-border cursor-pointer"
     >
       {/* Image */}
       <div className="relative h-40 overflow-hidden">
@@ -57,10 +57,10 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
           <span
             className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
               status === 'visited'
-                ? 'bg-[var(--brass-subtle)] text-foreground'
+                ? 'bg-primary/10 text-foreground'
                 : status === 'bucket_list'
-                ? 'bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]'
-                : 'bg-[var(--brass-subtle)] text-foreground'
+                ? 'bg-info/10 text-chart-2'
+                : 'bg-primary/10 text-foreground'
             }`}
           >
             {status === 'visited' ? (
@@ -75,12 +75,12 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
 
       {/* Content */}
       <div className="p-4 space-y-2">
-        <h3 className="text-lg font-serif font-semibold text-foreground group-hover:text-[var(--brass)] transition-colors">
+        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
           {name}
         </h3>
         <div className="flex items-center gap-1.5">
-          <MapPin className="w-3.5 h-3.5 text-foreground/40" />
-          <span className="text-sm text-foreground/50">
+          <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
             {getFlagEmoji(country)} {country}
           </span>
         </div>
@@ -90,14 +90,14 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                className={`w-3.5 h-3.5 ${i <= rating ? 'text-[var(--brass)] fill-amber-400' : 'text-foreground/20'}`}
+                className={`w-3.5 h-3.5 ${i <= rating ? 'text-primary fill-amber-400' : 'text-foreground/20'}`}
               />
             ))}
           </div>
         )}
 
         {reason && (
-          <p className="text-sm text-foreground/40 line-clamp-2">{reason}</p>
+          <p className="text-sm text-muted-foreground line-clamp-2">{reason}</p>
         )}
 
         {status === 'bucket_list' && onPlanTrip && (
@@ -106,7 +106,7 @@ export function PlaceCard({ name, country, status, photo_url, rating, reason, on
               e.stopPropagation()
               onPlanTrip()
             }}
-            className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[color:var(--pillar-coastal-wash)] border border-cyan-500/25 text-[var(--horizon)] text-xs font-medium hover:bg-[color:var(--pillar-coastal-wash)] transition-colors"
+            className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-info/10 border border-cyan-500/25 text-chart-2 text-xs font-medium hover:bg-info/10 transition-colors"
             title="Plan a trip here"
           >
             <CalendarPlus className="w-4 h-4" />

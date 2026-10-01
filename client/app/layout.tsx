@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { inter, sourceSerif, jetbrainsMono } from "@/lib/fonts";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const siteUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://globe-travel-two.vercel.app");
@@ -38,11 +40,13 @@ export const metadata: Metadata = {
     title: "Globe.travel — Plan the trip everyone can say yes to",
     description: siteDescription,
   },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#10172b" },
+  ],
 };
 
 export default function RootLayout({
@@ -53,6 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}
     >
       <head>
@@ -60,7 +65,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://tiles.mapbox.com" />
         <link rel="preconnect" href="https://events.mapbox.com" />
       </head>
-      <body className="antialiased bg-background text-foreground [color-scheme:light]">
+      <body className="antialiased bg-background text-foreground">
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
@@ -83,9 +88,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        <div id="main-content" tabIndex={-1}>
-          {children}
-        </div>
+        <ThemeProvider>
+          <div id="main-content" tabIndex={-1}>
+            {children}
+          </div>
+          <Toaster richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -30,6 +30,8 @@ type AuthContextType = {
   user: User | null
   profile: Profile | null
   isLoading: boolean
+  /** True when browsing with a temporary guest session instead of an account. */
+  isGuest: boolean
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -38,6 +40,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
   isLoading: true,
+  isGuest: false,
   signOut: async () => {},
   refreshProfile: async () => {},
 })
@@ -195,7 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, profile, isLoading, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, profile, isLoading, isGuest: user?.app_metadata?.provider === 'guest', signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   )

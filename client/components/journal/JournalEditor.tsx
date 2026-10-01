@@ -105,12 +105,12 @@ export function JournalEditor({
       if (!open) onClose()
     }}>
       <DialogContent
-        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl border-rule bg-paper-raised p-0 shadow-[var(--shadow-lg)] sm:max-w-2xl"
+        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl border-border bg-card p-0 shadow-lg sm:max-w-2xl"
         showCloseButton={false}
       >
-              <DialogHeader className="flex-row items-center justify-between border-b border-rule px-5 py-4 text-left">
+              <DialogHeader className="flex-row items-center justify-between border-b border-border px-5 py-4 text-left">
                 <div>
-                  <DialogTitle className="font-serif text-lg font-semibold text-foreground">
+                  <DialogTitle className="text-lg font-semibold text-foreground">
                   {initialData?.id ? 'Edit trip note' : 'New trip note'}
                   </DialogTitle>
                   <DialogDescription className="mt-1 text-xs text-muted-foreground">
@@ -137,7 +137,7 @@ export function JournalEditor({
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Note title..."
                     autoFocus
-                    className="h-auto rounded-none border-x-0 border-t-0 bg-transparent px-0 pb-2 text-xl font-serif font-semibold shadow-none focus-visible:ring-0"
+                    className="h-auto rounded-none border-x-0 border-t-0 bg-transparent px-0 pb-2 text-xl font-semibold shadow-none focus-visible:ring-0"
                   />
                 </Field>
 
@@ -185,7 +185,7 @@ export function JournalEditor({
                       value={selectedTrip || 'none'}
                       onValueChange={(value) => setSelectedTrip(value === 'none' ? '' : value)}
                     >
-                      <SelectTrigger id="journal-trip" className="w-full bg-paper-recessed">
+                      <SelectTrigger id="journal-trip" className="w-full bg-muted">
                         <SelectValue placeholder="No trip linked" />
                       </SelectTrigger>
                       <SelectContent>
@@ -207,16 +207,16 @@ export function JournalEditor({
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Capture a decision, reminder, or memory from this trip..."
                     rows={9}
-                    className="resize-none rounded-xl bg-paper-recessed/60 leading-relaxed"
+                    className="resize-none rounded-xl bg-muted/60 leading-relaxed"
                   />
                 </Field>
               </div>
 
               {/* Footer */}
-              <DialogFooter className="flex-col items-stretch justify-between gap-3 border-t border-rule bg-paper-raised px-5 py-4 sm:flex-row sm:items-center">
+              <DialogFooter className="flex-col items-stretch justify-between gap-3 border-t border-border bg-card px-5 py-4 sm:flex-row sm:items-center">
                 <p className={cn(
                   'text-xs transition-colors',
-                  canSave ? 'text-foreground/30' : 'text-[var(--brass)]'
+                  canSave ? 'text-muted-foreground' : 'text-primary'
                 )}>
                   {!title.trim() ? 'Add a title to save' : !content.trim() ? 'Add a note to save' : `${content.trim().split(/\s+/).length} words`}
                 </p>

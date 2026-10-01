@@ -4,8 +4,7 @@ import { useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { motion } from 'motion/react'
-import { ArrowRight, Compass, Send, Sparkles } from 'lucide-react'
+import { ArrowRight, Compass, Send, TriangleAlert } from 'lucide-react'
 import type { TripDay } from '@/components/trips/ItineraryArtifact'
 import {
   FriendFeedbackPanel,
@@ -15,7 +14,15 @@ import {
   getTripKeepsakeMeta,
 } from '@/components/trips/KeepsakeArtifacts'
 import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
-import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Textarea } from '@/components/ui/textarea'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { formatTripTitleForDisplay, splitTripTitleTiming } from '@/lib/trip-copy'
 import { cn } from '@/lib/utils'
@@ -47,9 +54,9 @@ const sentimentOptions = [
 ] as const
 
 const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
-  love_it: 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
-  curious: 'border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]',
-  practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
+  love_it: 'border-success/40 bg-success/10 text-foreground',
+  curious: 'border-info/40 bg-info/10 text-foreground',
+  practical: 'border-warning/50 bg-warning/15 text-foreground',
 }
 
 function SharedTripLoadingState() {
@@ -58,78 +65,25 @@ function SharedTripLoadingState() {
       role="status"
       aria-live="polite"
       aria-label="Loading shared trip map"
-      className="grid min-h-[68vh] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]"
+      className="grid min-h-[68vh] gap-6 lg:grid-cols-[minmax(0,1fr)_380px]"
     >
-      <div className="rounded-[34px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-7">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs font-medium text-ink-2">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--brass)]" />
-            Preparing shared map
-          </div>
-          <h1 className="mt-5 max-w-xl font-serif text-4xl font-semibold leading-[1.03] text-foreground md:text-6xl">
-            Loading the itinerary, route, and group notes.
-          </h1>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-2">
-            Globe.travel is pulling together the day plan and verified map stops so the shared link opens cleanly.
-          </p>
+      <div className="space-y-5">
+        <div className="space-y-3">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-12 w-3/4" />
+          <Skeleton className="h-5 w-full max-w-lg" />
         </div>
-
-        <div className="mt-8 overflow-hidden rounded-[28px] border border-rule bg-paper-recessed">
-          <div className="relative h-56 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--brass),transparent_88%),var(--paper-raised))]">
-            <div className="absolute inset-0 opacity-60">
-              <ContourOverlay density="sparse" />
-            </div>
-            <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-rule bg-paper-raised px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brass)]">
-              <Compass className="h-3.5 w-3.5" />
-              Trip map
-            </div>
-            {[0, 1, 2].map((item) => (
-              <span
-                key={item}
-                className={cn(
-                  'absolute flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-[var(--brass)] text-xs font-semibold text-[var(--brass-text)] shadow-sm',
-                  item === 0 && 'left-[36%] top-[48%]',
-                  item === 1 && 'left-[49%] top-[38%]',
-                  item === 2 && 'left-[61%] top-[54%]'
-                )}
-              >
-                {item + 1}
-              </span>
-            ))}
-          </div>
-          <div className="space-y-3 p-5">
-            {[0, 1, 2].map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-2xl bg-paper-raised px-4 py-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--brass-subtle)] text-xs font-semibold text-[var(--brass)]">
-                  {item + 1}
-                </span>
-                <span className={cn('h-3 animate-pulse rounded-full bg-paper-recessed', item === 0 ? 'w-52' : item === 1 ? 'w-40' : 'w-48')} />
-              </div>
-            ))}
-          </div>
+        <Skeleton className="h-72 rounded-2xl" />
+        <div className="grid gap-4 md:grid-cols-2">
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
         </div>
       </div>
-
       <aside className="space-y-4">
-        <div className="rounded-[28px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6">
-          <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Friend feedback</p>
-          <h2 className="mt-2 font-serif text-2xl font-semibold text-foreground">Getting reactions ready</h2>
-          <p className="mt-2 text-sm leading-relaxed text-ink-2">
-            The feedback form and existing notes will appear with the map.
-          </p>
-          <div className="mt-5 space-y-3">
-            <div className="h-11 animate-pulse rounded-2xl bg-paper-recessed" />
-            <div className="h-11 animate-pulse rounded-2xl bg-paper-recessed" />
-            <div className="h-24 animate-pulse rounded-2xl bg-paper-recessed" />
-          </div>
-        </div>
-        <div className="rounded-[28px] border border-[color:var(--brass)]/30 bg-[linear-gradient(135deg,var(--brass-subtle),var(--paper-raised))] p-5 shadow-[var(--panel-shadow)] md:p-6">
-          <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-[var(--brass)]">Shareable artifact</p>
-          <div className="mt-4 h-3 w-40 animate-pulse rounded-full bg-paper-recessed" />
-          <div className="mt-3 h-3 w-56 animate-pulse rounded-full bg-paper-recessed" />
-          <div className="mt-5 h-11 animate-pulse rounded-full bg-[var(--brass)]/35" />
-        </div>
+        <Skeleton className="h-96 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
       </aside>
+      <span className="sr-only">Loading the itinerary, route, and group notes.</span>
     </section>
   )
 }
@@ -245,84 +199,73 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
   }
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-paper text-foreground" aria-label="Shared itinerary">
-      <div className="absolute inset-0 opacity-70">
-        <ContourOverlay density="sparse" />
-      </div>
-      <div className="paper-grain absolute inset-0 pointer-events-none" />
-      <div className="absolute inset-x-0 top-0 h-64 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--brass),transparent_86%),transparent)]" />
+    <main className="relative min-h-dvh overflow-x-hidden bg-background text-foreground" aria-label="Shared itinerary">
+      <div aria-hidden className="bg-glow pointer-events-none absolute inset-x-0 top-0 h-72" />
 
-      <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 md:px-6 md:py-6">
-        <Link href="/" className="touch-target inline-flex items-center">
-          <GlobeBrand compact />
+      <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 md:px-6">
+        <Link href="/" aria-label="Globe.travel home" className="inline-flex items-center">
+          <GlobeBrand />
         </Link>
-        <Link
-          href={trip ? starterHref : '/chat'}
-          prefetch={false}
-          className="touch-target inline-flex items-center justify-center gap-2 rounded-full border border-rule bg-paper-raised px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-paper-hover"
-        >
-          Start your own trip
-          <ArrowRight className="h-4 w-4" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button asChild variant="outline" className="rounded-full">
+            <Link href={trip ? starterHref : '/chat'} prefetch={false}>
+              Start your own trip
+              <ArrowRight />
+            </Link>
+          </Button>
+        </div>
       </header>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-5 md:px-6 md:pt-7">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-4 md:px-6 md:pt-6">
         {isLoading ? (
           <SharedTripLoadingState />
         ) : isError || !trip ? (
           <section className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center text-center">
-            <Compass className="h-10 w-10 text-[var(--brass)]" />
-            <h1 className="mt-5 font-serif text-4xl font-semibold text-foreground">This itinerary link is unavailable.</h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-2">
-              It may have been made private or removed. You can still start a new Globe.travel plan.
+            <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Compass className="size-7" />
+            </span>
+            <h1 className="mt-5 text-3xl font-bold md:text-4xl">This itinerary link is unavailable</h1>
+            <p className="mt-3 text-muted-foreground">
+              It may have been made private or removed. You can still plan your own trip with Globe.travel.
             </p>
-            <Link href="/chat" className="mt-8 rounded-full bg-[var(--brass)] px-5 py-3 text-sm font-semibold text-[var(--brass-text)]">
-              Open planner
-            </Link>
+            <Button asChild size="lg" className="mt-8 rounded-full">
+              <Link href="/api/guest/start?next=/chat">Plan a trip</Link>
+            </Button>
           </section>
         ) : (
-          <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
-            <div className="space-y-7">
-              <motion.section
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, ease: [0, 0, 0.2, 1] }}
-              >
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+            <div className="space-y-8">
+              <section>
                 <div className="mb-6 max-w-2xl">
-                  <p className="t-mono text-[0.6875rem] uppercase tracking-[0.24em] text-[var(--brass)]">
-                    Shared Globe.travel map
-                  </p>
-                  <h1 className="mt-3 break-words font-serif text-4xl font-semibold leading-[1.02] text-foreground md:text-6xl">
-                    {displayTitleParts.title}
-                  </h1>
+                  <Badge variant="brass" className="mb-3">Shared trip</Badge>
+                  <h1 className="break-words text-4xl font-bold md:text-5xl">{displayTitleParts.title}</h1>
                   {displayTitleParts.timing && (
-                    <p className="mt-3 t-mono text-[0.6875rem] uppercase tracking-[0.2em] text-[var(--brass)]">
-                      In {displayTitleParts.timing}
-                    </p>
+                    <p className="mt-2 text-sm font-medium text-primary">In {displayTitleParts.timing}</p>
                   )}
-                  <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-2">
+                  <p className="mt-4 text-lg text-muted-foreground">
                     Review the route, react to the day plan, and help the group turn the {meta.destination} plan into the trip everyone can say yes to.
                   </p>
                 </div>
                 <TripPosterPreview trip={trip} days={days} forceStaticMap={qaForceMapFallback} />
-              </motion.section>
+              </section>
 
-              <section className="rounded-[30px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6 lg:p-7">
-                <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+              <section>
+                <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
                   <div>
-                    <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Day-by-day itinerary</p>
-                    <h2 className="mt-1 font-serif text-2xl font-semibold text-foreground">What the group will actually do</h2>
+                    <h2 className="text-2xl font-bold">Day-by-day itinerary</h2>
+                    <p className="text-sm text-muted-foreground">What the group will actually do</p>
                   </div>
-                  <span className="rounded-full border border-rule bg-paper-recessed px-3 py-1.5 text-xs text-ink-2">
+                  <Badge variant="secondary">
                     {days.length} day{days.length === 1 ? '' : 's'}
-                  </span>
+                  </Badge>
                 </div>
                 <div className="grid gap-5 xl:grid-cols-2">
                   {days.map((day, index) => (
                     <KeepsakeRouteCard key={day.id} day={day} active={index === 0} forceStaticMap={qaForceMapFallback} />
                   ))}
                   {days.length === 0 && (
-                    <p className="rounded-2xl border border-dashed border-rule bg-paper-recessed px-4 py-8 text-center text-sm text-ink-2">
+                    <p className="rounded-xl border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
                       This shared trip does not have itinerary days yet.
                     </p>
                   )}
@@ -331,24 +274,17 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
             </div>
 
             <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
-              <section className="rounded-[26px] border border-rule bg-paper-raised p-5 shadow-[var(--panel-shadow)] md:p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink-3">Add your reaction</p>
-                    <h2 className="mt-1 font-serif text-xl font-semibold text-foreground">Help tune the plan</h2>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                      Keep it short. What should stay, what needs a question, and what could cause friction?
-                    </p>
-                  </div>
-                  <Sparkles className="h-5 w-5 text-[var(--brass)]" />
-                </div>
-
-                <div className="mt-5 space-y-3">
-                  <div className="space-y-1.5">
-                    <label htmlFor="public-feedback-name" className="block text-xs font-medium text-ink-2">
-                      Your name
-                    </label>
-                    <input
+              <Card>
+                <CardHeader>
+                  <CardTitle>Help tune the plan</CardTitle>
+                  <CardDescription>
+                    Keep it short. What should stay, what needs a question, and what could cause friction?
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="public-feedback-name">Your name</Label>
+                    <Input
                       id="public-feedback-name"
                       type="text"
                       value={authorName}
@@ -357,14 +293,14 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                         setAuthorName(e.target.value)
                       }}
                       placeholder="Maya"
-                      className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
+                      className="h-11"
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <label htmlFor="public-feedback-email" className="block text-xs font-medium text-ink-2">
-                      Email <span className="font-normal text-ink-3">(optional)</span>
-                    </label>
-                    <input
+                  <div className="space-y-2">
+                    <Label htmlFor="public-feedback-email">
+                      Email <span className="font-normal text-muted-foreground">(optional)</span>
+                    </Label>
+                    <Input
                       id="public-feedback-email"
                       type="email"
                       aria-label="Email optional"
@@ -376,16 +312,16 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                         setAuthorEmail(e.target.value)
                       }}
                       placeholder="maya@example.com"
-                      className="w-full rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
+                      className="h-11"
                     />
+                    {!emailIsValid && (
+                      <p id="public-feedback-email-error" className="text-sm text-destructive">
+                        Use a valid email address or leave it blank.
+                      </p>
+                    )}
                   </div>
-                  {!emailIsValid && (
-                    <p id="public-feedback-email-error" className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
-                      Use a valid email address or leave it blank.
-                    </p>
-                  )}
                   <fieldset className="grid gap-2">
-                    <legend className="mb-1 text-xs font-medium text-ink-2">Reaction</legend>
+                    <legend className="mb-1 text-sm font-medium">Reaction</legend>
                     {sentimentOptions.map((option) => (
                       <button
                         key={option.value}
@@ -397,28 +333,20 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                         aria-pressed={sentiment === option.value}
                         aria-label={`${option.label}: ${option.helper}`}
                         className={cn(
-                          'touch-target rounded-2xl border px-4 py-3 text-left transition-colors',
+                          'min-h-11 rounded-lg border px-4 py-2.5 text-left transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
                           sentiment === option.value
                             ? sentimentClasses[option.value]
-                            : 'border-rule bg-paper-recessed text-ink-2 hover:text-foreground'
+                            : 'bg-background text-muted-foreground hover:bg-accent hover:text-foreground'
                         )}
                       >
-                        <span className="block text-sm font-semibold">{option.label}</span>
-                        {' '}
-                        <span className="mt-0.5 block text-xs">{option.helper}</span>
+                        <span className="block text-sm font-semibold">{option.label}</span>{' '}
+                        <span className="block text-xs">{option.helper}</span>
                       </button>
                     ))}
                   </fieldset>
-                  {submitError && (
-                    <p role="alert" className="rounded-2xl border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-4 py-3 text-sm text-[var(--terracotta)]">
-                      {submitError}
-                    </p>
-                  )}
-                  <div className="space-y-1.5">
-                    <label htmlFor="public-feedback-comment" className="block text-xs font-medium text-ink-2">
-                      What should the group know?
-                    </label>
-                    <textarea
+                  <div className="space-y-2">
+                    <Label htmlFor="public-feedback-comment">What should the group know?</Label>
+                    <Textarea
                       id="public-feedback-comment"
                       aria-label="Trip feedback"
                       value={comment}
@@ -429,60 +357,57 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
                       maxLength={600}
                       rows={5}
                       placeholder="Example: Day 2 looks perfect, but can we leave more space before dinner?"
-                      className="w-full resize-none rounded-2xl border border-rule bg-paper-recessed px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-ink-3 focus:border-[color:var(--brass)]/40 focus:outline-none"
+                      className="resize-none"
                     />
                   </div>
-                  <div className="flex items-center justify-between gap-3 text-xs text-ink-3">
+                  {submitError && (
+                    <Alert variant="destructive">
+                      <TriangleAlert />
+                      <AlertDescription>{submitError}</AlertDescription>
+                    </Alert>
+                  )}
+                  <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                     <span>{feedbackHelperText}</span>
                     <span>{trimmedCommentLength}/600</span>
                   </div>
-                  <button
-                    onClick={submitFeedback}
-                    disabled={!canSubmit}
-                    className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-not-allowed disabled:opacity-45"
-                  >
-                    <Send className="h-4 w-4" />
+                  <Button onClick={submitFeedback} disabled={!canSubmit} size="lg" className="w-full rounded-full">
+                    <Send />
                     {submitting ? 'Sending...' : submitted ? 'Feedback sent' : 'Send feedback'}
-                  </button>
-                </div>
-              </section>
+                  </Button>
+                </CardContent>
+              </Card>
 
               {feedbackError && (
-                <section className="rounded-[26px] border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] p-5 text-sm text-[var(--terracotta)] shadow-[var(--panel-shadow)] md:p-6">
-                  <p className="font-semibold">Friend feedback could not load.</p>
-                  <p className="mt-1 leading-relaxed">
-                    The itinerary is still available. Try refreshing reactions in a moment.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => refetchFeedback()}
-                    className="touch-target mt-3 rounded-full border border-[color:var(--terracotta)]/30 bg-paper-raised px-4 py-2 text-xs font-semibold text-[var(--terracotta)]"
-                  >
-                    Retry feedback
-                  </button>
-                </section>
+                <Alert variant="destructive">
+                  <TriangleAlert />
+                  <AlertDescription>
+                    <p className="font-medium">Friend feedback could not load.</p>
+                    <p>The itinerary is still available. Try refreshing reactions in a moment.</p>
+                    <Button type="button" variant="outline" size="sm" onClick={() => refetchFeedback()} className="mt-2">
+                      Retry feedback
+                    </Button>
+                  </AlertDescription>
+                </Alert>
               )}
               <FriendFeedbackPanel feedback={feedback} />
               <ShareLinkCard shareUrl={shareUrl} title={displayTitle} />
 
-              <section className="overflow-hidden rounded-[26px] border border-[color:var(--brass)]/30 bg-[linear-gradient(135deg,var(--brass-subtle),var(--paper-raised))] p-5 shadow-[var(--panel-shadow)] md:p-6">
-                <p className="t-mono text-[0.625rem] uppercase tracking-[0.22em] text-[var(--brass)]">
-                  Make one for your group
-                </p>
-                <h2 className="mt-2 font-serif text-2xl font-semibold leading-tight text-foreground">
-                  Turn your own city idea into a Globe.travel map.
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                  Start with a destination, build a day-by-day route, then send a polished link for friend feedback.
-                </p>
-                <Link
-                  href={starterHref}
-                  className="touch-target mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
-                >
-                  Start your own trip
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </section>
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader>
+                  <CardTitle>Plan your own trip</CardTitle>
+                  <CardDescription>
+                    Start with a destination, build a day-by-day route, then send a link for friend feedback.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild size="lg" className="w-full rounded-full">
+                    <Link href={starterHref}>
+                      Start your own trip
+                      <ArrowRight />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </aside>
           </div>
         )}

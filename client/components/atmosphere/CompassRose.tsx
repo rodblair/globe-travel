@@ -99,7 +99,7 @@ export function CompassRose({
             <span
               key={letter}
               className={cn(
-                "absolute t-serif text-[0.6875rem] font-medium tracking-[0.1em] text-ink-2",
+                "absolute t-serif text-xs font-medium text-muted-foreground",
                 pos,
               )}
             >

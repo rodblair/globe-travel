@@ -5,64 +5,27 @@ type GlobeBrandProps = {
   textClassName?: string
   markClassName?: string
   compact?: boolean
+  /** Hide the wordmark and render the mark only. */
+  markOnly?: boolean
 }
 
-function GlobeMark({ className, compact = false }: { className?: string; compact?: boolean }) {
+/** The Globe.travel mark: a globe with a route pin. Colours follow the theme tokens. */
+export function GlobeMark({ className }: { className?: string }) {
   return (
     <svg
       role="img"
-      aria-label="Globe.travel logo mark"
+      aria-label="Globe.travel"
       viewBox="0 0 64 64"
       fill="none"
-      className={cn(
-        'shrink-0 overflow-visible text-[var(--brass)]',
-        compact ? 'h-8 w-8' : 'h-10 w-10',
-        className
-      )}
+      className={cn('size-9 shrink-0', className)}
     >
-      <circle
-        cx="32"
-        cy="32"
-        r="29"
-        fill="color-mix(in oklch, var(--paper-raised), transparent 4%)"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <circle
-        cx="32"
-        cy="32"
-        r="23.5"
-        stroke="color-mix(in oklch, var(--ink), transparent 76%)"
-        strokeWidth="0.9"
-        strokeDasharray="2.2 4"
-      />
-      <path
-        d="M10 35.5C19.8 25.9 29.3 24.1 37.2 31.2C39.3 33.1 42.7 33 45.1 31.1C50.1 27.1 54.3 28.3 58 35"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8 35.7C18.5 30.6 28.2 31.9 37.2 39.6C42.4 34.4 49 32.8 58 35.7"
-        stroke="color-mix(in oklch, var(--ink), transparent 20%)"
-        strokeWidth="2.1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M35.9 31.2C37.8 33.9 39.1 37.4 39.4 41.8"
-        stroke="color-mix(in oklch, var(--ink), transparent 14%)"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M22 47C27.6 50.1 38.1 50.2 44 47"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        opacity="0.42"
-      />
+      <rect width="64" height="64" rx="16" className="fill-primary" />
+      <g className="stroke-primary-foreground" strokeWidth="3.4" strokeLinecap="round">
+        <circle cx="32" cy="33" r="17" />
+        <ellipse cx="32" cy="33" rx="7.5" ry="17" />
+        <path d="M15 33h34" />
+      </g>
+      <circle cx="46" cy="18" r="6.2" className="stroke-primary" strokeWidth="3" fill="#ffb84d" />
     </svg>
   )
 }
@@ -72,26 +35,22 @@ export function GlobeBrand({
   textClassName,
   markClassName,
   compact = false,
+  markOnly = false,
 }: GlobeBrandProps) {
   return (
-    <span className={cn('inline-flex items-center leading-none', compact ? 'gap-2' : 'gap-2.5', className)}>
-      <GlobeMark className={markClassName} compact={compact} />
-      <span className={cn('inline-flex flex-col', compact ? 'gap-0.5' : 'gap-1')}>
+    <span className={cn('inline-flex items-center gap-2.5 leading-none', className)}>
+      <GlobeMark className={cn(compact ? 'size-8' : 'size-9', markClassName)} />
+      {!markOnly && (
         <span
           className={cn(
-            't-serif font-semibold tracking-[-0.035em] text-foreground',
-            compact ? 'text-[1.0625rem]' : 'text-[1.25rem]',
-            textClassName
+            'font-semibold tracking-tight text-foreground',
+            compact ? 'text-base' : 'text-lg',
+            textClassName,
           )}
         >
-          Globe<span className="text-ink-3">.travel</span>
+          Globe<span className="text-muted-foreground">.travel</span>
         </span>
-        {!compact && (
-          <span className="t-mono text-[0.5rem] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
-            Group trip maps
-          </span>
-        )}
-      </span>
+      )}
     </span>
   )
 }

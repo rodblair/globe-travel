@@ -127,9 +127,9 @@ export default function ChatInterface({
       {/* Messages area */}
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
         {showEmptyState && (
-          <div className="rounded-md border border-rule bg-paper-recessed/55 p-3">
+          <div className="rounded-md border border-border bg-muted/55 p-3">
             {emptyState?.eyebrow && (
-              <p className="text-[10px] uppercase tracking-[0.18em] text-foreground/38">{emptyState.eyebrow}</p>
+              <p className="text-xs text-muted-foreground">{emptyState.eyebrow}</p>
             )}
             <p className="mt-1 text-sm font-semibold text-foreground">{emptyState?.title}</p>
             <div className="mt-3 grid gap-2">
@@ -138,11 +138,11 @@ export default function ChatInterface({
                   key={prompt.prompt}
                   type="button"
                   onClick={() => onSendMessage(prompt.prompt)}
-                  className="touch-target rounded-md border border-rule bg-paper px-3 py-2 text-left transition-colors hover:bg-paper-hover"
+                  className="touch-target rounded-md border border-border bg-background px-3 py-2 text-left transition-colors hover:bg-accent"
                 >
                   <span className="block text-xs font-semibold text-foreground">{prompt.label}</span>
                   {prompt.detail && (
-                    <span className="mt-1 block text-[11px] leading-relaxed text-foreground/56">{prompt.detail}</span>
+                    <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{prompt.detail}</span>
                   )}
                 </button>
               ))}
@@ -160,7 +160,7 @@ export default function ChatInterface({
         {showTyping && <TypingIndicator />}
 
         {error && (
-          <div className="rounded-md border border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] px-4 py-3 text-body-sm text-[var(--terracotta)]">
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-body-sm text-destructive">
             {error}
           </div>
         )}
@@ -170,7 +170,7 @@ export default function ChatInterface({
 
       {/* Input bar */}
       <div
-        className="flex-shrink-0 border-t border-rule bg-paper-raised/90 px-4 pt-3 backdrop-blur-md sm:px-6"
+        className="flex-shrink-0 border-t border-border bg-card/90 px-4 pt-3 backdrop-blur-md sm:px-6"
         style={{ paddingBottom: 'max(0.9rem, env(safe-area-inset-bottom))' }}
       >
         {showSuggestions && (
@@ -179,15 +179,15 @@ export default function ChatInterface({
               <button
                 key={s}
                 onClick={() => onSendMessage(s)}
-                className="touch-target rounded-full border border-rule bg-paper px-3 py-1.5 text-caption text-ink-2 transition-colors hover:bg-paper-hover hover:text-foreground"
+                className="touch-target rounded-full border border-border bg-background px-3 py-1.5 text-caption text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 {s}
               </button>
             ))}
           </div>
         )}
-        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-md border border-rule bg-[var(--paper-recessed)]/60 px-3 py-2 transition-all focus-within:border-[var(--brass)] focus-within:ring-2 focus-within:ring-[var(--brass-glow)] sm:px-4">
-          <div className="mb-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-[var(--brass-subtle)] text-[var(--brass)]">
+        <div className="mx-auto flex min-h-14 max-w-3xl items-end gap-2 rounded-md border border-border bg-[var(--muted)]/60 px-3 py-2 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-[color-mix(in_oklch,var(--primary)_28%,transparent)] sm:px-4">
+          <div className="mb-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
             <Sparkles className="h-4 w-4" strokeWidth={1.5} />
           </div>
           <textarea
@@ -198,14 +198,14 @@ export default function ChatInterface({
             aria-label="Trip planning message"
             placeholder={placeholder}
             rows={1}
-            className="min-h-11 flex-1 resize-none bg-transparent px-1 py-2 text-base leading-5 text-foreground placeholder:text-ink-4 focus:outline-none sm:text-sm"
+            className="min-h-11 flex-1 resize-none bg-transparent px-1 py-2 text-base leading-5 text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-sm"
             style={{ maxHeight: '120px' }}
           />
 
           {isLoading ? (
             <button
               onClick={onStop}
-              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-[var(--pillar-desert-wash)] text-[var(--terracotta)] transition-colors hover:bg-[var(--terracotta)]/15"
+              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-destructive/10 text-destructive transition-colors hover:bg-destructive/15"
               aria-label="Stop"
             >
               <Square className="w-4 h-4" />
@@ -214,7 +214,7 @@ export default function ChatInterface({
             <button
               onClick={handleSend}
               disabled={!input.trim()}
-              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-[var(--brass)] text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:cursor-default disabled:bg-[var(--paper-recessed)] disabled:text-ink-4 disabled:opacity-60"
+              className="touch-target flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-default disabled:bg-[var(--muted)] disabled:text-muted-foreground disabled:opacity-60"
               aria-label="Send"
             >
               <Send className="w-4 h-4" />

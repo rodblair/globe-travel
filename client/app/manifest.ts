@@ -9,16 +9,12 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/?source=app-manifest",
     scope: "/",
     display: "standalone",
-    background_color: "#f6f1e6",
-    theme_color: "#0c1f33",
+    background_color: "#ffffff",
+    theme_color: "#3358e0",
     categories: ["travel", "lifestyle", "productivity"],
     icons: [
-      {
-        src: "/favicon.ico",
-        sizes: "any",
-        type: "image/x-icon",
-        purpose: "any",
-      },
+      { src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
+      { src: "/apple-icon", sizes: "180x180", type: "image/png", purpose: "any" },
     ],
   };
 }

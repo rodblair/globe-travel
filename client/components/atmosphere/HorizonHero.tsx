@@ -46,7 +46,7 @@ export function HorizonHero({
         <ContourOverlay density="sparse" className="opacity-60" />
       </div>
       {/* paper grain */}
-      <div aria-hidden className="paper-grain absolute inset-0 z-[1] pointer-events-none" />
+      <div aria-hidden className="hidden absolute inset-0 z-[1] pointer-events-none" />
 
       <div className="relative z-[2] flex flex-col w-full h-full min-h-inherit">
         {children}

@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { CalendarDays, Send, Sparkles, Users, Wallet } from 'lucide-react'
+import { Compass, Loader2, MapPin, Sparkles, Users } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -17,8 +17,11 @@ import {
   sortTripItemsForDisplay,
 } from '@/components/trips/derivedStops'
 import { extractDaysFromPrompt, extractDestinationFromPrompt } from '@/lib/planner/runtime'
-import { CompassRose } from '@/components/atmosphere/CompassRose'
-import { ContourOverlay } from '@/components/atmosphere/ContourOverlay'
+import { DEFAULT_TRIP_DETAILS, TripDetailsPopover, type TripDetails } from '@/components/chat/TripDetailsPopover'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
 type ChatMapStop = {
@@ -33,40 +36,24 @@ const CHAT_MAP_STORAGE_PREFIX = 'globe-travel:chat:explore:map-stops:'
 
 const STARTER_PROMPTS = [
   {
-    label: 'Plan 3 days in Lisbon',
-    sub: 'Food, viewpoints, relaxed mornings',
-    q: 'Plan 3 days in Lisbon for 4 friends who want great food, scenic viewpoints, relaxed mornings, and one memorable night out.',
+    label: '3 days in Lisbon',
+    sub: 'Food, viewpoints, slow mornings',
+    q: 'Plan 3 days in Lisbon with great food, scenic viewpoints, relaxed mornings, and one memorable night out.',
   },
   {
-    label: 'Compare Paris vs Rome',
-    sub: 'Tradeoffs before committing',
-    q: 'Compare Paris and Rome for a 4-day friend trip by budget, food, walkability, nightlife, and ease of planning.',
+    label: 'Weekend in Rome',
+    sub: 'Classics without the crowds',
+    q: 'Plan a weekend in Rome covering the classics while avoiding the biggest crowds, with great meals.',
   },
   {
-    label: 'Build a realistic group trip',
-    sub: 'Budget, pace, and consensus',
-    q: 'Build a realistic 3-day group trip with a mid-range budget, balanced pacing, food, sightseeing, and one standout evening.',
-  },
-] as const
-
-const PLANNING_STEPS = [
-  {
-    icon: Users,
-    label: 'Start with the crew',
-    value: 'Tell us who is going, the pace, budget, and what each person cares about.',
-    q: 'Ask me the right questions about my group, budget, dates, pace, and travel style before recommending where we should go.',
+    label: 'Paris or Rome?',
+    sub: 'Compare before you commit',
+    q: 'Compare Paris and Rome for a 4-day trip by budget, food, walkability, nightlife, and ease of planning.',
   },
   {
-    icon: Wallet,
-    label: 'Compare the tradeoffs',
-    value: 'See which cities fit the group before committing to a full itinerary.',
-    q: 'Compare possible city trip destinations for my group by budget, food, nightlife, walkability, and ease of travel.',
-  },
-  {
-    icon: CalendarDays,
-    label: 'Create the Globe.travel map',
-    value: 'Move the plan into a shareable itinerary map your friends can react to.',
-    q: 'Plan a balanced 3-day city trip for 4 friends with food, sightseeing, relaxed pacing, and one memorable night out.',
+    label: '4 days in Tokyo',
+    sub: 'Neighbourhoods and food',
+    q: 'Plan 4 days in Tokyo with neighbourhood walks, standout food, and one day trip.',
   },
 ] as const
 
@@ -198,19 +185,21 @@ function ChatPageContent() {
     return 'Trip Draft'
   }, [extractDraftDays])
 
+  const [tripDetails, setTripDetails] = useState<TripDetails>(DEFAULT_TRIP_DETAILS)
+
   const createDraftTrip = useCallback(async (prompt: string) => {
     const res = await fetch('/api/trips', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title: extractDraftTitle(prompt),
-        travelers_count: 4,
-        pace: 'balanced',
-        budget_level: 'mid',
+        travelers_count: tripDetails.travelers,
+        pace: tripDetails.pace,
+        budget_level: tripDetails.budget,
         constraints: {
           days: extractDraftDays(prompt),
           destination_query: extractDestinationFromPrompt(prompt) || undefined,
-          group_vibe: 'Balanced group trip with friends',
+          group_vibe: tripDetails.travelers > 1 ? `Trip for ${tripDetails.travelers} travelers` : 'Solo trip',
         },
       }),
     })
@@ -219,7 +208,7 @@ function ChatPageContent() {
     const json = await res.json() as { tripId: string }
     setActiveTripId(json.tripId)
     return json.tripId
-  }, [extractDraftDays, extractDraftTitle])
+  }, [extractDraftDays, extractDraftTitle, tripDetails])
 
   const activeMessages = exploreChat.messages
   const activeLoading = exploreChat.isLoading
@@ -246,13 +235,9 @@ function ChatPageContent() {
         if (qaForcePlannerDraftFailure) throw new Error('Forced planner draft failure')
         const tripId = resolvedActiveTripId || await createDraftTrip(trimmed)
         const target = `/trips/${tripId}?prompt=${encodeURIComponent(trimmed)}`
-        if (typeof window !== 'undefined') {
-          window.location.assign(target)
-        } else {
-          router.push(target)
-        }
+        router.push(target)
       } catch {
-        setPlanningError('Could not open Trip Studio. Your trip idea is still here, so you can try again.')
+        setPlanningError('We could not start your trip. Your idea is still here, so you can try again.')
         setDraftInput(trimmed)
         setPlanningInProgress(false)
       }
@@ -334,301 +319,206 @@ function ChatPageContent() {
     [tripPayload?.trip.title]
   )
 
+  const hasPreview = previewDays.length > 0 || Boolean(destinationFallback) || mapStops.length > 0
+  const isEmpty = activeMessages.length === 0
+
   return (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-paper text-foreground">
-      <div className="paper-grain absolute inset-0 pointer-events-none" />
-
-      {/* Header */}
-      <div className="relative z-10 flex-shrink-0 border-b border-rule bg-paper/80 backdrop-blur-md">
-        <div className="px-5 py-4 md:px-6">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <CompassRose size={36} showLabels={false} />
-              <div>
-                <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
-                  CHAT · DISCOVER
-                </p>
-                <h1 className="h2-app text-foreground leading-tight">Planner</h1>
-              </div>
-            </div>
-
-            <div className="hidden items-center gap-2 t-mono text-[0.6875rem] tracking-[0.16em] uppercase text-ink-3 sm:flex">
-              <Sparkles className="w-3.5 h-3.5 text-[var(--brass)]" strokeWidth={1.5} />
-              AI TRIP PLANNER
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-4 md:px-6 md:py-5 xl:overflow-hidden">
-        <div className="mx-auto grid min-h-full max-w-7xl gap-4 pb-6 md:gap-5 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_370px] xl:pb-0">
-          <div className="flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[390px] xl:min-h-0">
-            {activeMessages.length === 0 ? (
-              <div className="flex min-h-[360px] flex-col overflow-y-auto sm:min-h-[390px] xl:min-h-0">
-                <div className="relative flex flex-1 items-start justify-center px-5 py-4 md:px-8 md:py-6">
-                  <div className="absolute inset-0 -z-0 opacity-40">
-                    <ContourOverlay density="sparse" />
-                  </div>
-                  <div className="relative w-full max-w-3xl">
-                    <div className="mb-4 max-w-2xl">
-                      <p className="t-mono text-[0.625rem] tracking-[0.24em] uppercase text-[var(--brass)] mb-2">
-                        START HERE
-                      </p>
-                      <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.02] text-foreground mb-2 max-w-[18ch] sm:text-[clamp(2rem,5vw,3.35rem)]">
-                        Plan the trip friends can agree on.
-                      </h2>
-                      <p className="max-w-2xl text-sm leading-relaxed text-ink-2 md:text-[0.9375rem]">
-                        Start with a real group constraint. Globe turns it into a city choice,
-                        Trip Studio itinerary, and shareable map.
-                      </p>
-                    </div>
-
-                    <div className="mb-3 grid grid-cols-1 gap-1.5 sm:mb-4 sm:grid-cols-3 sm:gap-2">
-                      {PLANNING_STEPS.map((item, index) => {
-                        const Icon = item.icon
-                        return (
-                          <button
-                            key={item.label}
-                            onClick={() => sendMessage(item.q)}
-                            disabled={planningInProgress}
-                            className={cn(
-                              'touch-target group relative rounded-md border border-rule px-3 py-2 text-left sm:py-2.5',
-                              'bg-paper hover:bg-paper-hover transition-colors',
-                              planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
-                            )}
-                          >
-                            <div className="mb-1.5 flex items-center gap-2">
-                              <Icon className="w-3.5 h-3.5 text-[var(--brass)]" strokeWidth={1.4} />
-                              <span className="t-mono text-[0.625rem] tracking-[0.18em] uppercase text-ink-3">
-                                STEP {String(index + 1).padStart(2, '0')}
-                              </span>
-                            </div>
-                            <p className="text-[0.8125rem] font-medium text-foreground leading-snug">
-                              {item.label}
-                            </p>
-                            <p className="mt-1 hidden text-[0.6875rem] leading-snug text-ink-3 sm:block">
-                              {item.value}
-                            </p>
-                          </button>
-                        )
-                      })}
-                    </div>
-
-                    <div className="mb-2 flex items-center justify-between gap-4 sm:mb-2.5">
-                      <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
-                        Pick a starting point
-                      </p>
-                      <span className="hidden text-caption text-ink-3 sm:inline">
-                        type your own below
-                      </span>
-                    </div>
-                    <div className="grid gap-2 sm:grid-cols-3">
-                      {STARTER_PROMPTS.map((item) => (
-                        <button
-                          key={item.label}
-                          onClick={() => sendMessage(item.q)}
-                          disabled={planningInProgress}
-                          className={cn(
-                            'touch-target group min-h-12 rounded-md border border-rule bg-paper px-3 py-2.5 text-left transition-colors hover:bg-paper-hover sm:min-h-14 sm:p-3',
-                            planningInProgress && 'cursor-wait opacity-55 hover:bg-paper',
-                          )}
-                        >
-                          <p className="text-[0.8125rem] font-medium text-foreground group-hover:text-foreground transition-colors">
-                            {item.label}
-                          </p>
-                          <p className="mt-1 hidden text-[0.6875rem] leading-snug text-ink-3 sm:line-clamp-2">
-                            {item.sub}
-                          </p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <ChatInterface
-                messages={activeMessages}
-                isLoading={activeLoading}
-                error={activeError}
-                onSendMessage={sendMessage}
-                onStop={activeStop}
-                placeholder={resolvedActiveTripId ? 'Refine this group itinerary, adjust the pace, or rebalance it for the crew...' : 'Ask about city trips, friend-group destinations, or multi-day itineraries...'}
-                storageKey={resolvedActiveTripId ? `globe-travel:chat-input:plan:${resolvedActiveTripId}` : 'globe-travel:chat-input:explore'}
-                suggestions={[
-                  'Suggest 3 easy city trips for 4 friends this month',
-                  'Compare two cities for food, walkability, and nightlife',
-                  'Plan a balanced 3-day break for mixed travel styles',
-                ]}
-              />
-            )}
-          </div>
-
-          <aside className="flex min-h-[300px] flex-col overflow-hidden rounded-2xl border border-rule bg-paper-raised shadow-[var(--panel-shadow)] sm:min-h-[360px] xl:min-h-[280px]">
-            <div className="border-b border-rule px-4 py-3">
-              <p className="t-mono text-[0.625rem] tracking-[0.22em] uppercase text-ink-3">
-                {tripPayload ? 'ITINERARY MAPS' : 'PLAN PREVIEW'}
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground">
+      {isEmpty ? (
+        <div className="flex-1 overflow-y-auto">
+          <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col justify-center px-4 py-10 md:py-16">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold md:text-5xl">Where to next?</h1>
+              <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground md:text-lg">
+                Describe your trip and get a mapped, day-by-day itinerary you can share with your group.
               </p>
-              <h2 className="t-h3 text-foreground leading-tight mt-1">
-                {tripPayload ? tripPayload.trip.title : 'Globe.travel map preview'}
-              </h2>
-              <p className="text-caption text-ink-3 mt-1">{mapSubtitle}</p>
             </div>
-            <div className="flex-1 overflow-y-auto p-3">
-              {previewDays.length > 0 ? (
-                <div className="space-y-3">
-                  {previewDays.map(({ day, stops, routeGeojson, routeSummary, items }) => (
-                    <div key={day.id} className="rounded-md border border-rule bg-paper overflow-hidden">
-                      <TripDayMap
-                        stops={stops}
-                        routeGeojson={routeGeojson}
-                        title={`Day ${day.day_index}${day.title ? ` · ${day.title}` : ''}`}
-                        subtitle={`${stops.length} mapped stop${stops.length === 1 ? '' : 's'}`}
-                        routeSummary={routeSummary}
-                        ariaLabel={`Planner preview map for day ${day.day_index}${day.title ? `: ${day.title}` : ''}`}
-                        active={resolvedSelectedDayIndex === day.day_index}
-                        onClick={() => setSelectedDayIndex(day.day_index)}
-                        mapHeightClassName="h-44"
-                        className="min-w-0 border-0 rounded-none"
-                      />
-                      {items.length > 0 && (
-                        <div className="border-t border-rule px-3 py-2.5 space-y-1.5">
-                          {items.map((item: TripItem, idx: number) => {
-                            const placeLabel = getItineraryPlaceLabel(item)
 
-                            return (
-                              <div key={item.id} className="flex items-start gap-2.5">
-                                <span className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brass-subtle)] t-mono text-[0.625rem] font-semibold text-[var(--brass)]">
-                                  {idx + 1}
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[0.8125rem] font-medium text-foreground truncate leading-snug">{item.title}</p>
-                                  <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                                    {item.start_time && (
-                                      <span className="t-mono text-[0.625rem] text-ink-3 tabular-nums">
-                                        {item.start_time.slice(0, 5)}
-                                      </span>
-                                    )}
-                                    <span className="t-mono text-[0.625rem] px-1.5 py-0.5 rounded-full bg-[var(--paper-recessed)] text-ink-3 capitalize">
-                                      {item.type}
-                                    </span>
-                                    {placeLabel && (
-                                      <span className="text-caption text-ink-3 truncate">{placeLabel}</span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : destinationFallback ? (
-                <TripDayMap
-                  stops={[{
-                    id: `destination:${destinationFallback.title}`,
-                    title: destinationFallback.title,
-                    latitude: destinationFallback.latitude,
-                    longitude: destinationFallback.longitude,
-                    index: 1,
-                  }]}
-                  title={destinationFallback.title}
-                  subtitle="Destination preview"
-                  ariaLabel={`Destination preview map for ${destinationFallback.title}`}
-                  showDetails={false}
-                  mapHeightClassName="h-full min-h-[220px]"
-                  className="h-full min-h-[220px] min-w-0"
-                />
-              ) : (
-                <div className="flex h-full min-h-[260px] flex-col justify-between rounded-md border border-rule bg-paper px-4 py-4">
-                  <div>
-                    <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brass-subtle)] text-[var(--brass)]">
-                      <Sparkles className="h-4 w-4" strokeWidth={1.5} />
-                    </div>
-                    <h3 className="t-h3 text-foreground">Start with the trip idea.</h3>
-                    <p className="mt-2 text-body-sm leading-relaxed text-ink-2">
-                      Your shareable Globe.travel map appears after Globe has real stops to plot. First,
-                      describe the crew, city choices, or the kind of trip you want.
-                    </p>
-                  </div>
-                  <div className="mt-6 space-y-2 border-t border-rule pt-4">
-                    {['Choose the city fit', 'Draft the itinerary', 'Send one link to friends'].map((step, index) => (
-                      <div key={step} className="flex items-center gap-2 text-caption text-ink-2">
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--paper-recessed)] t-mono text-[0.625rem] text-[var(--brass)]">
-                          {index + 1}
-                        </span>
-                        {step}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </aside>
-        </div>
-      </div>
-
-      {activeMessages.length === 0 && (
-        <div
-          className="relative z-30 flex-shrink-0 border-t border-rule bg-paper-raised/92 px-4 py-3 shadow-[0_-8px_24px_rgba(12,31,51,0.06)] backdrop-blur-md md:py-4"
-          style={{ paddingBottom: 'max(0.85rem, env(safe-area-inset-bottom))' }}
-        >
-          {planningInProgress && (
-            <div className="mx-auto mb-3 flex max-w-2xl items-start gap-3 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] px-4 py-3 text-body-sm text-foreground">
-              <Sparkles className="mt-0.5 h-4 w-4 flex-shrink-0 animate-pulse text-[var(--brass)]" strokeWidth={1.5} />
-              <div className="min-w-0">
-                <p className="font-medium text-foreground">Opening Trip Studio…</p>
-                <p className="mt-1 line-clamp-2 text-ink-2">
-                  Building a draft for “{lastPlannerPrompt || queryPrompt || 'your trip idea'}”.
-                </p>
-              </div>
-            </div>
-          )}
-          {planningError && (
-            <div className="mx-auto mb-3 flex max-w-2xl flex-col gap-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] px-4 py-3 text-body-sm text-[var(--terracotta)] sm:flex-row sm:items-center sm:justify-between">
-              <span>{planningError}</span>
-              {lastPlannerPrompt && (
-                <button
+            <Card className="mt-8 gap-0 p-3 shadow-md focus-within:ring-[3px] focus-within:ring-ring/30">
+              <Textarea
+                aria-label="Describe your trip idea"
+                placeholder='Try "4 days in Athens with an island overnight, relaxed mornings and great food"'
+                disabled={planningInProgress}
+                value={draftInput}
+                onChange={(event) => setDraftInput(event.target.value)}
+                rows={3}
+                className="min-h-24 resize-none border-0 bg-transparent px-2 text-base shadow-none focus-visible:ring-0"
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault()
+                    submitDraftInput()
+                  }
+                }}
+              />
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <TripDetailsPopover value={tripDetails} onChange={setTripDetails} disabled={planningInProgress} />
+                <Button
                   type="button"
-                  onClick={() => sendMessage(lastPlannerPrompt)}
-                  className="touch-target inline-flex items-center justify-center rounded-sm border border-[color:var(--terracotta)]/30 bg-paper-raised px-3 py-2 text-xs font-semibold text-[var(--terracotta)] transition-colors hover:bg-paper"
+                  size="lg"
+                  onClick={submitDraftInput}
+                  disabled={!draftInput.trim() || planningInProgress}
+                  className="rounded-full"
+                  aria-label="Create itinerary"
                 >
-                  Try again
-                </button>
-              )}
+                  {planningInProgress ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                  {planningInProgress ? 'Creating…' : 'Create itinerary'}
+                </Button>
+              </div>
+            </Card>
+
+            {planningError && (
+              <Alert variant="destructive" className="mt-4">
+                <AlertDescription className="flex flex-wrap items-center justify-between gap-3 text-destructive">
+                  <span>{planningError}</span>
+                  {lastPlannerPrompt && (
+                    <Button type="button" size="sm" variant="outline" onClick={() => sendMessage(lastPlannerPrompt)}>
+                      Try again
+                    </Button>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="mt-8">
+              <p className="mb-3 text-center text-sm text-muted-foreground">Need inspiration?</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {STARTER_PROMPTS.map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => {
+                      setDraftInput(item.q)
+                    }}
+                    disabled={planningInProgress}
+                    className="group flex items-start gap-3 rounded-xl border bg-card p-4 text-left shadow-xs transition-all hover:border-primary/40 hover:shadow-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50"
+                  >
+                    <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      {item.label.includes('?') ? <Compass className="size-4" /> : <MapPin className="size-4" />}
+                    </span>
+                    <span>
+                      <span className="block text-sm font-medium">{item.label}</span>
+                      <span className="block text-sm text-muted-foreground">{item.sub}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Users className="size-4" />
+                Planning with friends? Share the finished plan with one link.
+              </p>
             </div>
-          )}
-          <div className={cn(
-            'flex items-center gap-3 max-w-2xl mx-auto',
-            'border border-rule bg-[var(--paper-recessed)]/60 rounded-md px-4 py-1.5',
-            'focus-within:border-[var(--brass)] focus-within:ring-2 focus-within:ring-[var(--brass-glow)] transition-all'
-          )}>
-            <input
-              type="text"
-              aria-label="Describe your trip idea"
-              placeholder={planningInProgress ? 'Opening Trip Studio...' : 'Try: "3 days in Lisbon for 4 friends"'}
-              disabled={planningInProgress}
-              value={draftInput}
-              onChange={(event) => setDraftInput(event.target.value)}
-              className="min-h-11 flex-1 bg-transparent py-2 text-body text-foreground placeholder:text-ink-3 focus:outline-none disabled:opacity-50"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                  submitDraftInput()
-                }
-              }}
-            />
-            <button
-              type="button"
-              onClick={submitDraftInput}
-              disabled={!draftInput.trim() || planningInProgress}
-              className="touch-target inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[var(--action)] text-[var(--action-foreground)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-45"
-              aria-label="Send trip idea"
-            >
-              <Send className="h-4 w-4" />
-            </button>
           </div>
         </div>
+      ) : (
+        <>
+          <header className="flex shrink-0 items-center justify-between gap-4 border-b px-4 py-3 md:px-6">
+            <div className="flex items-center gap-3">
+              <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Sparkles className="size-4" />
+              </span>
+              <div>
+                <h1 className="text-base font-semibold leading-tight">Planner</h1>
+                <p className="text-xs text-muted-foreground">Ask about destinations, compare cities, or build an itinerary.</p>
+              </div>
+            </div>
+          </header>
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-6 xl:overflow-hidden">
+            <div
+              className={cn(
+                'mx-auto grid min-h-full max-w-7xl gap-4 pb-6 xl:h-full xl:min-h-0 xl:pb-0',
+                hasPreview && 'xl:grid-cols-[minmax(0,1fr)_380px]',
+              )}
+            >
+              <Card className="min-h-[360px] gap-0 overflow-hidden p-0 xl:min-h-0">
+                <ChatInterface
+                  messages={activeMessages}
+                  isLoading={activeLoading}
+                  error={activeError}
+                  onSendMessage={sendMessage}
+                  onStop={activeStop}
+                  placeholder={resolvedActiveTripId ? 'Refine this itinerary, adjust the pace, or rebalance it…' : 'Ask about city trips, destinations, or multi-day itineraries…'}
+                  storageKey={resolvedActiveTripId ? `globe-travel:chat-input:plan:${resolvedActiveTripId}` : 'globe-travel:chat-input:explore'}
+                  suggestions={[
+                    'Suggest 3 easy city trips this month',
+                    'Compare two cities for food, walkability, and nightlife',
+                    'Plan a balanced 3-day break',
+                  ]}
+                />
+              </Card>
+
+              {hasPreview && (
+                <Card className="min-h-[300px] gap-0 overflow-hidden p-0 xl:min-h-[280px]">
+                  <div className="border-b px-4 py-3">
+                    <p className="text-xs font-medium text-muted-foreground">{tripPayload ? 'Itinerary map' : 'Map preview'}</p>
+                    <h2 className="mt-0.5 text-base font-semibold leading-tight">
+                      {tripPayload ? tripPayload.trip.title : 'Places from this chat'}
+                    </h2>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{mapSubtitle}</p>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-3">
+                    {previewDays.length > 0 ? (
+                      <div className="space-y-3">
+                        {previewDays.map(({ day, stops, routeGeojson, routeSummary, items }) => (
+                          <div key={day.id} className="overflow-hidden rounded-xl border bg-background">
+                            <TripDayMap
+                              stops={stops}
+                              routeGeojson={routeGeojson}
+                              title={`Day ${day.day_index}${day.title ? ` · ${day.title}` : ''}`}
+                              subtitle={`${stops.length} mapped stop${stops.length === 1 ? '' : 's'}`}
+                              routeSummary={routeSummary}
+                              ariaLabel={`Planner preview map for day ${day.day_index}${day.title ? `: ${day.title}` : ''}`}
+                              active={resolvedSelectedDayIndex === day.day_index}
+                              onClick={() => setSelectedDayIndex(day.day_index)}
+                              mapHeightClassName="h-44"
+                              className="min-w-0 rounded-none border-0"
+                            />
+                            {items.length > 0 && (
+                              <ol className="space-y-2 border-t px-3 py-3">
+                                {items.map((item: TripItem, idx: number) => {
+                                  const placeLabel = getItineraryPlaceLabel(item)
+                                  return (
+                                    <li key={item.id} className="flex items-start gap-2.5">
+                                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                        {idx + 1}
+                                      </span>
+                                      <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-medium leading-snug">{item.title}</p>
+                                        <p className="truncate text-xs text-muted-foreground">
+                                          {[item.start_time?.slice(0, 5), placeLabel].filter(Boolean).join(' · ')}
+                                        </p>
+                                      </div>
+                                    </li>
+                                  )
+                                })}
+                              </ol>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : destinationFallback ? (
+                      <TripDayMap
+                        stops={[{
+                          id: `destination:${destinationFallback.title}`,
+                          title: destinationFallback.title,
+                          latitude: destinationFallback.latitude,
+                          longitude: destinationFallback.longitude,
+                          index: 1,
+                        }]}
+                        title={destinationFallback.title}
+                        subtitle="Destination preview"
+                        ariaLabel={`Destination preview map for ${destinationFallback.title}`}
+                        showDetails={false}
+                        mapHeightClassName="h-full min-h-[220px]"
+                        className="h-full min-h-[220px] min-w-0"
+                      />
+                    ) : null}
+                  </div>
+                </Card>
+              )}
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
@@ -636,7 +526,7 @@ function ChatPageContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
+    <Suspense fallback={<div className="min-h-dvh bg-background" />}>
       <ChatPageContent />
     </Suspense>
   )

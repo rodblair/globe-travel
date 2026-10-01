@@ -14,7 +14,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <QueryProvider>
       <AuthProvider>
         {isFullscreenFlow ? (
-          <main className="h-dvh overflow-hidden bg-paper text-foreground">
+          <main className="h-dvh overflow-hidden bg-background text-foreground">
             {children}
           </main>
         ) : (

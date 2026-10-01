@@ -86,10 +86,10 @@ export default function ChatMessage({ message, index }: { message: Message; inde
       className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 rounded-full border border-rule bg-[var(--brass-subtle)] flex items-center justify-center">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full border border-border bg-primary/10 flex items-center justify-center">
           <svg width="14" height="14" viewBox="-50 -50 100 100" aria-hidden>
-            <circle cx="0" cy="0" r="42" fill="none" stroke="currentColor" strokeWidth="1" className="text-[var(--brass)]" opacity="0.6" />
-            <polygon points="0,-36 -3,0 0,2 3,0" fill="currentColor" className="text-[var(--brass)]" />
+            <circle cx="0" cy="0" r="42" fill="none" stroke="currentColor" strokeWidth="1" className="text-primary" opacity="0.6" />
+            <polygon points="0,-36 -3,0 0,2 3,0" fill="currentColor" className="text-primary" />
           </svg>
         </div>
       )}
@@ -97,12 +97,12 @@ export default function ChatMessage({ message, index }: { message: Message; inde
       <div
         className={`max-w-[80%] px-4 py-3 rounded-md text-sm leading-relaxed ${
           isUser
-            ? 'bg-[var(--brass-subtle)] border border-rule text-foreground'
-            : 'bg-paper-raised border border-rule text-foreground'
+            ? 'bg-primary/10 border border-border text-foreground'
+            : 'bg-card border border-border text-foreground'
         }`}
       >
         {message.content ? renderContent(message.content) : (
-          <span className="text-ink-3">\u2026</span>
+          <span className="text-muted-foreground">\u2026</span>
         )}
       </div>
     </motion.div>

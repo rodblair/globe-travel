@@ -1,37 +1,39 @@
-'use client'
+"use client"
 
-import Image from 'next/image'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
   ArrowRight,
   Check,
+  CheckCircle2,
   Crown,
   LogOut,
   Save,
-  Settings,
+  TriangleAlert,
   User,
+  UserPlus,
   Zap,
 } from 'lucide-react'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { StatusBadge } from '@/components/ui/status-badge'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { PLANS } from '@/lib/plans'
 import { openBillingPortal, startCheckout, useSubscription } from '@/hooks/useSubscription'
-import { cn } from '@/lib/utils'
 import { hasProAccess, type Subscription } from '@/lib/subscription'
 
 type AccountTab = 'profile' | 'billing'
 
-const tabs: { key: AccountTab; label: string; icon: typeof User }[] = [
-  { key: 'profile', label: 'Profile', icon: User },
-  { key: 'billing', label: 'Billing', icon: Crown },
-]
 const PROFILE_SAVE_NOTICE_TIMEOUT_MS = 8000
 
 function normalizeTab(value: string | null): AccountTab {
@@ -100,8 +102,9 @@ function billingSummary(subscription: Subscription | null | undefined, isPro: bo
 function AccountPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const activeTab = normalizeTab(searchParams.get('tab'))
-  const { profile, signOut, refreshProfile } = useAuth()
+  const { profile, isGuest, signOut, refreshProfile } = useAuth()
+  // Guests have no Stripe customer, so billing is account-only.
+  const activeTab: AccountTab = isGuest ? 'profile' : normalizeTab(searchParams.get('tab'))
   const { subscription, isPro, isLoading: subscriptionLoading, refetch: refetchSubscription } = useSubscription()
   const qaSubscription = useMemo(() => buildQaSubscription(searchParams.get('qaBillingState')), [searchParams])
   const displayedSubscription = qaSubscription || subscription
@@ -241,225 +244,180 @@ function AccountPageContent() {
       ? (PLANS.pro.yearlyPrice / 12).toFixed(2)
       : PLANS.pro.monthlyPrice
 
-  return (
-    <div className="min-h-screen bg-paper">
-      <div className="app-sticky-header">
-        <div className="mx-auto w-full max-w-5xl px-4 py-4 md:px-6 md:py-5">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <h1 className="flex items-center gap-3 text-3xl font-serif font-semibold text-foreground">
-                  <Settings className="h-7 w-7 text-foreground/40" />
-                  Account
-                </h1>
-                <p className="mt-1 text-sm text-foreground/45">
-                  Manage your identity, guest handoff, and subscription for shared trip planning.
-                </p>
-              </div>
-            </div>
+  const initials = (profile?.display_name || 'T').trim().slice(0, 2).toUpperCase()
 
-            <div className="hide-scrollbar flex items-center gap-2 overflow-x-auto rounded-2xl border border-rule bg-paper-recessed/60 p-2">
-              {tabs.map((tab) => {
-                const Icon = tab.icon
-                return (
-                  <Button
-                    key={tab.key}
-                    onClick={() => switchTab(tab.key)}
-                    variant="ghost"
-                    aria-pressed={activeTab === tab.key}
-                    className={cn(
-                      'flex-shrink-0 rounded-xl px-4 py-2',
-                      activeTab === tab.key
-                        ? 'bg-[var(--brass-subtle)] text-foreground'
-                        : 'text-foreground/45 hover:bg-paper-recessed/60 hover:text-foreground/75'
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {tab.label}
-                  </Button>
-                )
-              })}
-            </div>
-          </div>
+  return (
+    <div className="min-h-dvh bg-background">
+      <div className="app-sticky-header">
+        <div className="mx-auto w-full max-w-5xl px-4 py-4 md:px-6">
+          <h1 className="text-2xl font-bold md:text-3xl">Account</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {isGuest ? 'You are browsing as a guest.' : 'Manage your profile and subscription.'}
+          </p>
+          {!isGuest && (
+            <Tabs value={activeTab} onValueChange={(value) => switchTab(value as AccountTab)} className="mt-3">
+              <TabsList>
+                <TabsTrigger value="profile" className="gap-2">
+                  <User className="size-4" /> Profile
+                </TabsTrigger>
+                <TabsTrigger value="billing" className="gap-2">
+                  <Crown className="size-4" /> Billing
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          )}
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-5 md:px-6 md:py-8">
+      <div className="mx-auto w-full max-w-5xl px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 md:px-6 md:py-8">
+        {isGuest && (
+          <Card className="mb-6 border-primary/30 bg-primary/5">
+            <CardHeader>
+              <CardTitle>Keep your trips by creating an account</CardTitle>
+              <CardDescription>
+                Guest sessions are temporary and live in this browser only. Create a free account to save your trips,
+                use them on any device and unlock billing.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-3">
+              <Button asChild className="rounded-full">
+                <Link href="/signup?next=%2Ftrips">
+                  <UserPlus /> Create free account
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full">
+                <Link href="/login?next=%2Ftrips">I already have an account</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {activeTab === 'profile' && (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_320px] lg:gap-7">
-            <div className="space-y-6">
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-5 sm:p-6">
-                <div className="mb-5 flex items-center gap-3 sm:mb-6 sm:gap-4">
-                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-rule bg-paper-recessed sm:h-16 sm:w-16">
-                    {profile?.avatar_url ? (
-                      <Image
-                        src={profile.avatar_url}
-                        alt={profile.display_name || 'Traveler'}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                      />
-                    ) : (
-                      <User className="h-7 w-7 text-foreground/25" />
-                    )}
-                  </div>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <Avatar className="size-16">
+                    {profile?.avatar_url ? <AvatarImage src={profile.avatar_url} alt="" /> : null}
+                    <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+                  </Avatar>
                   <div className="min-w-0">
-                    <p className="truncate text-lg font-medium text-foreground">
-                      {profile?.display_name || 'Traveler'}
-                    </p>
-                    <p className="truncate text-sm text-foreground/40">
-                      {profile?.username ? `@${profile.username}` : 'Username not set'}
-                    </p>
-                    {profile?.bio && (
-                      <p className="mt-1 line-clamp-2 text-sm text-foreground/35">{profile.bio}</p>
-                    )}
+                    <CardTitle className="truncate">{profile?.display_name || (isGuest ? 'Guest traveler' : 'Traveler')}</CardTitle>
+                    <CardDescription className="truncate">
+                      {profile?.username ? `@${profile.username}` : 'No username set'}
+                    </CardDescription>
                   </div>
                 </div>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <Field>
+                  <FieldLabel htmlFor="profile-display-name">Display name</FieldLabel>
+                  <Input
+                    id="profile-display-name"
+                    type="text"
+                    value={displayName}
+                    onChange={(event) => setDisplayName(event.target.value)}
+                    placeholder="Your name"
+                    maxLength={80}
+                    className="h-11"
+                  />
+                  <FieldDescription>Shown to friends on feedback you leave. {displayName.length}/80</FieldDescription>
+                </Field>
 
-                <div className="space-y-4 sm:space-y-5">
-                  <Field>
-                    <FieldLabel htmlFor="profile-display-name">
-                      Display name
-                    </FieldLabel>
+                <Field>
+                  <FieldLabel htmlFor="profile-username">Username</FieldLabel>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-muted-foreground">@</span>
                     <Input
-                      id="profile-display-name"
+                      id="profile-username"
                       type="text"
-                      value={displayName}
-                      onChange={(event) => setDisplayName(event.target.value)}
-                      placeholder="Your name"
-                      maxLength={80}
-                      className="min-h-11 rounded-xl bg-paper/40 sm:py-3"
+                      value={username}
+                      onChange={(event) => setUsername(event.target.value)}
+                      placeholder="yourusername"
+                      maxLength={30}
+                      aria-describedby="profile-username-help"
+                      className="h-11 pl-7"
                     />
-                    <FieldDescription>{displayName.length}/80 characters</FieldDescription>
-                  </Field>
-
-                  <Field>
-                    <FieldLabel htmlFor="profile-username">
-                      Username
-                    </FieldLabel>
-                    <div className="relative">
-                      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-foreground/30">
-                        @
-                      </span>
-                      <Input
-                        id="profile-username"
-                        type="text"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
-                        placeholder="yourusername"
-                        maxLength={30}
-                        aria-describedby="profile-username-help"
-                        className="min-h-11 rounded-xl bg-paper/40 pl-8 sm:py-3"
-                      />
-                    </div>
-                    <FieldDescription id="profile-username-help">
-                      3-30 lowercase letters, numbers, hyphens, or underscores. Leave blank to stay private.
-                    </FieldDescription>
-                  </Field>
-
-                  <Field>
-                    <FieldLabel htmlFor="profile-bio">
-                      Bio
-                    </FieldLabel>
-                    <Textarea
-                      id="profile-bio"
-                      value={bio}
-                      onChange={(event) => setBio(event.target.value)}
-                      placeholder="A short note friends will recognize when you share itinerary feedback."
-                      rows={3}
-                      maxLength={240}
-                      className="resize-none rounded-xl bg-paper/40 sm:py-3"
-                    />
-                    <FieldDescription>{bio.length}/240 characters</FieldDescription>
-                  </Field>
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                      onClick={handleSave}
-                      disabled={saving}
-                      variant={saved ? 'outline' : 'default'}
-                      className={cn(
-                        'w-full rounded-xl sm:w-auto',
-                        saved && 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      )}
-                    >
-                      <Save className="h-4 w-4" />
-                      {saved ? 'Saved' : saving ? 'Saving…' : 'Save changes'}
-                    </Button>
-                    {profileError && (
-                      <Alert variant="destructive" className="border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]">
-                        <AlertDescription>{profileError}</AlertDescription>
-                      </Alert>
-                    )}
                   </div>
-                  {saved && !profileError && (
-                    <Alert className="border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]">
-                      <AlertDescription>
-                        Profile saved. Friends will see this identity on new feedback and shared planning links.
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                </div>
-              </div>
+                  <FieldDescription id="profile-username-help">
+                    3-30 lowercase letters, numbers, hyphens or underscores. Leave blank to stay private.
+                  </FieldDescription>
+                </Field>
 
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <h2 className="text-lg font-serif font-semibold text-foreground">Sharing profile</h2>
-                <p className="mt-2 text-sm leading-relaxed text-foreground/55">
-                  This is the lightweight identity friends see around itinerary feedback and shared planning links.
-                </p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  {['Name visible on feedback', 'Guest mode stays available', 'Share links remain view-only'].map((label) => (
-                    <div key={label} className="rounded-2xl border border-rule bg-paper px-3 py-3 text-sm text-foreground/70">
-                      <Check className="mb-2 h-4 w-4 text-[var(--brass)]" />
-                      {label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                <Field>
+                  <FieldLabel htmlFor="profile-bio">Bio</FieldLabel>
+                  <Textarea
+                    id="profile-bio"
+                    value={bio}
+                    onChange={(event) => setBio(event.target.value)}
+                    placeholder="A short note friends will recognize when you share itinerary feedback."
+                    rows={3}
+                    maxLength={240}
+                    className="resize-none"
+                  />
+                  <FieldDescription>{bio.length}/240</FieldDescription>
+                </Field>
+
+                {profileError && (
+                  <Alert variant="destructive">
+                    <TriangleAlert />
+                    <AlertDescription>{profileError}</AlertDescription>
+                  </Alert>
+                )}
+                {saved && !profileError && (
+                  <Alert>
+                    <CheckCircle2 className="text-success" />
+                    <AlertDescription>Profile saved. Friends will see this on new feedback.</AlertDescription>
+                  </Alert>
+                )}
+
+                <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
+                  <Save />
+                  {saved ? 'Saved' : saving ? 'Saving…' : 'Save changes'}
+                </Button>
+              </CardContent>
+            </Card>
 
             <div className="space-y-6">
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <h2 className="text-lg font-serif font-semibold text-foreground">Session</h2>
-                <p className="mt-1 text-sm text-foreground/40">Signed in and ready to pick up where you left off.</p>
-                <Button
-                  onClick={handleSignOut}
-                  variant="outline"
-                  className="mt-5 rounded-xl border-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] hover:bg-[color:var(--pillar-desert-wash)] hover:text-[var(--terracotta)]"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign out
-                </Button>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Session</CardTitle>
+                  <CardDescription>
+                    {isGuest ? 'This guest session ends when you clear your browser data.' : 'Signed in on this device.'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button onClick={handleSignOut} variant="outline" className="w-full">
+                    <LogOut /> {isGuest ? 'End guest session' : 'Sign out'}
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )}
 
-        {activeTab === 'billing' && (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        {activeTab === 'billing' && !isGuest && (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
             <div className="space-y-6">
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <div className="mb-6 flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-[var(--brass)]" />
-                  <h2 className="text-lg font-serif font-semibold text-foreground">Plan and billing</h2>
-                </div>
-
-                <div className="grid gap-5 md:grid-cols-[0.9fr_1.1fr] md:gap-6">
-                  <div className="min-w-0 border-b border-rule pb-5 md:border-b-0 md:border-r md:pb-0 md:pr-6">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/35">Current plan</p>
-                    <p className="mt-2 text-2xl font-serif font-semibold text-foreground">
-                      {displayedSubscription?.plan === 'pro' ? PLANS.pro.name : PLANS.free.name}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Current plan</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <p className="text-3xl font-bold">
+                        {displayedSubscription?.plan === 'pro' ? PLANS.pro.name : PLANS.free.name}
+                      </p>
+                      <StatusBadge tone={displayedIsPro ? 'success' : 'pending'}>
+                        {billingStatusLabel(displayedSubscription)}
+                      </StatusBadge>
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {billingChecking ? 'Checking subscription…' : billingSummary(displayedSubscription, displayedIsPro)}
                     </p>
-                    <p className="mt-1 text-sm text-foreground/45">
-                      {billingChecking
-                        ? 'Checking subscription…'
-                        : billingSummary(displayedSubscription, displayedIsPro)}
-                    </p>
-                    <StatusBadge tone={displayedIsPro ? 'success' : 'pending'} className="mt-3">
-                      {billingStatusLabel(displayedSubscription)}
-                    </StatusBadge>
                     {displayedSubscription?.currentPeriodEnd && (
-                      <p className="mt-3 text-xs text-foreground/35">
+                      <p className="mt-3 text-xs text-muted-foreground">
                         Current period ends{' '}
                         {new Date(displayedSubscription.currentPeriodEnd).toLocaleDateString('en-US', {
                           year: 'numeric',
@@ -469,160 +427,144 @@ function AccountPageContent() {
                       </p>
                     )}
                   </div>
+                  <ul className="space-y-2 text-sm">
+                    {(displayedSubscription?.plan === 'pro' ? PLANS.pro.features : PLANS.free.features).slice(0, 5).map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Check className="mt-0.5 size-4 shrink-0 text-success" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
 
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/35">What you get</p>
-                    <ul className="mt-3 space-y-2 text-sm text-foreground/55">
-                      {(displayedSubscription?.plan === 'pro' ? PLANS.pro.features : PLANS.free.features).slice(0, 5).map((feature) => (
-                        <li key={feature} className="flex items-start gap-2">
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brass)]" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h2 className="text-lg font-serif font-semibold text-foreground">
-                      {canOpenBillingPortal
-                        ? displayedSubscription?.status === 'past_due'
-                          ? 'Update billing'
-                          : 'Manage subscription'
-                        : `Upgrade to ${PLANS.pro.name}`}
-                    </h2>
-                    <p className="mt-1 text-sm text-foreground/40">
-                      {canOpenBillingPortal
-                        ? 'Open Stripe billing portal to manage payment details and billing.'
-                        : 'Unlock unlimited trip planning and richer sharing tools.'}
-                    </p>
-                  </div>
-                  {!canOpenBillingPortal && (
-                    <div className="flex items-center gap-1 rounded-xl border border-rule bg-paper-recessed/60 p-1">
-                      {(['month', 'year'] as const).map((value) => (
-                        <Button
-                          key={value}
-                          onClick={() => setInterval(value)}
-                          variant={interval === value ? 'default' : 'ghost'}
-                          size="sm"
-                          aria-pressed={interval === value}
-                          className={cn(
-                            'h-8 rounded-lg px-3 text-xs',
-                            interval !== value && 'text-foreground/45 hover:text-foreground'
-                          )}
-                        >
-                          {value === 'year' ? 'Yearly' : 'Monthly'}
-                        </Button>
-                      ))}
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <CardTitle>
+                        {canOpenBillingPortal
+                          ? displayedSubscription?.status === 'past_due'
+                            ? 'Update billing'
+                            : 'Manage subscription'
+                          : `Upgrade to ${PLANS.pro.name}`}
+                      </CardTitle>
+                      <CardDescription className="mt-1.5">
+                        {canOpenBillingPortal
+                          ? 'Open the Stripe billing portal to manage payment details and invoices.'
+                          : 'Unlock unlimited trips, AI messages and richer sharing.'}
+                      </CardDescription>
                     </div>
-                  )}
-                </div>
-
-                {!canOpenBillingPortal && (
-                  <div className="mb-5 border-y border-[color:var(--brass)]/25 bg-[var(--brass-subtle)] px-1 py-4 sm:px-0">
-                    <div className="flex flex-wrap items-end justify-between gap-3">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-bold text-foreground">${monthlyCost}</span>
-                        <span className="text-sm text-foreground/40">/ month</span>
+                    {!canOpenBillingPortal && (
+                      <ToggleGroup
+                        type="single"
+                        variant="outline"
+                        size="sm"
+                        value={interval}
+                        onValueChange={(value) => value && setInterval(value as 'month' | 'year')}
+                        aria-label="Billing interval"
+                      >
+                        <ToggleGroupItem value="month">Monthly</ToggleGroupItem>
+                        <ToggleGroupItem value="year">Yearly</ToggleGroupItem>
+                      </ToggleGroup>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {!canOpenBillingPortal && (
+                    <div className="rounded-xl bg-primary/5 p-4">
+                      <div className="flex flex-wrap items-end justify-between gap-3">
+                        <p className="text-4xl font-bold tracking-tight">
+                          ${monthlyCost}
+                          <span className="text-sm font-normal text-muted-foreground"> / month</span>
+                        </p>
+                        <Badge>7-day free trial</Badge>
                       </div>
-                      <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--brass)]">
-                        7-day free trial
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {interval === 'year' ? `$${PLANS.pro.yearlyPrice} billed yearly` : 'Billed monthly'}
                       </p>
                     </div>
-                    <p className="mt-2 text-sm text-foreground/45">
-                      {interval === 'year'
-                        ? `$${PLANS.pro.yearlyPrice} billed yearly`
-                        : 'Billed monthly'}
-                    </p>
-                  </div>
-                )}
-
-                {billingNotice && (
-                  <Alert className="mb-4 border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]">
-                    <AlertDescription>{billingNotice}</AlertDescription>
-                  </Alert>
-                )}
-
-                {billingError && (
-                  <Alert variant="destructive" className="mb-4 border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]">
-                    <AlertDescription>
-                      <p>{billingError}</p>
-                    <Button
-                      type="button"
-                      onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
-                      disabled={billingLoading}
-                      variant="outline"
-                      size="sm"
-                      className="mt-3 rounded-full border-[color:var(--terracotta)]/30 bg-paper-raised text-[var(--terracotta)] disabled:opacity-60"
-                    >
-                      Try again
-                    </Button>
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <Button
-                  onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
-                  disabled={billingActionDisabled}
-                  variant={canOpenBillingPortal ? 'secondary' : 'default'}
-                  size="xl"
-                  className={cn(
-                    'w-full rounded-xl text-sm font-semibold',
-                    canOpenBillingPortal && 'bg-paper-recessed hover:bg-paper-recessed'
                   )}
-                >
-                  {canOpenBillingPortal ? (
-                    <>
-                      Manage billing
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="h-4 w-4" />
-                      {billingLoading ? 'Redirecting…' : checkoutReturned ? 'Checking subscription…' : 'Start free trial'}
-                    </>
+
+                  {billingNotice && (
+                    <Alert>
+                      <CheckCircle2 className="text-success" />
+                      <AlertDescription>{billingNotice}</AlertDescription>
+                    </Alert>
                   )}
-                </Button>
-              </div>
+
+                  {billingError && (
+                    <Alert variant="destructive">
+                      <TriangleAlert />
+                      <AlertDescription>
+                        <p>{billingError}</p>
+                        <Button
+                          type="button"
+                          onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
+                          disabled={billingLoading}
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                        >
+                          Try again
+                        </Button>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Button
+                    onClick={canOpenBillingPortal ? handleManage : handleUpgrade}
+                    disabled={billingActionDisabled}
+                    variant={canOpenBillingPortal ? 'outline' : 'default'}
+                    size="lg"
+                    className="w-full"
+                  >
+                    {canOpenBillingPortal ? (
+                      <>
+                        Manage billing
+                        <ArrowRight />
+                      </>
+                    ) : (
+                      <>
+                        <Zap />
+                        {billingLoading ? 'Redirecting…' : checkoutReturned ? 'Checking subscription…' : 'Start free trial'}
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="space-y-6">
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <h2 className="text-lg font-serif font-semibold text-foreground">Plan comparison</h2>
-                <div className="mt-4 divide-y divide-rule border-y border-rule">
-                  {[
-                    ['Globe.travel maps', '2', 'Unlimited'],
-                    ['Saved trips', '2', 'Unlimited'],
-                    ['AI messages / day', '10', 'Unlimited'],
-                    ['Trip sharing', 'Basic links', 'Advanced feedback'],
-                  ].map(([feature, free, pro]) => (
-                    <div key={feature} className="grid gap-2 py-3 text-sm">
-                      <p className="font-medium text-foreground">{feature}</p>
-                      <div className="grid grid-cols-2 gap-2">
-                        <span className="rounded-xl bg-paper px-3 py-2 text-xs text-foreground/70">{PLANS.free.name}: {free}</span>
-                        <span className="rounded-xl bg-[var(--brass-subtle)] px-3 py-2 text-xs font-medium text-[var(--brass)]">{PLANS.pro.name}: {pro}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[28px] border border-rule bg-paper-recessed/60 p-6">
-                <h2 className="text-lg font-serif font-semibold text-foreground">Built for small groups</h2>
-                <p className="mt-1 text-sm text-foreground/40">
-                  Keep planning simple: create a city itinerary, share the Globe.travel map link, and collect feedback before anyone books.
-                </p>
-                <Button asChild variant="outline" className="mt-4 rounded-full border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-[var(--brass)] hover:bg-[var(--brass)] hover:text-[var(--brass-text)]">
-                  <Link href="/chat">
-                    Start a group trip
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
+            <Card className="h-fit">
+              <CardHeader>
+                <CardTitle className="text-base">Plan comparison</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead />
+                      <TableHead>{PLANS.free.name}</TableHead>
+                      <TableHead className="text-primary">{PLANS.pro.name}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[
+                      ['Saved trips', String(PLANS.free.limits.trips), 'Unlimited'],
+                      ['AI messages / day', String(PLANS.free.limits.aiMessagesPerDay), 'Unlimited'],
+                      ['Trip notes', String(PLANS.free.limits.journalEntries), 'Unlimited'],
+                      ['Sharing', 'Basic', 'Advanced'],
+                    ].map(([feature, free, pro]) => (
+                      <TableRow key={feature}>
+                        <TableCell className="font-medium whitespace-normal">{feature}</TableCell>
+                        <TableCell className="text-muted-foreground">{free}</TableCell>
+                        <TableCell>{pro}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>
@@ -632,7 +574,7 @@ function AccountPageContent() {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
+    <Suspense fallback={<div className="min-h-dvh bg-background" />}>
       <AccountPageContent />
     </Suspense>
   )

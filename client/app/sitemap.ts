@@ -6,6 +6,8 @@ const publicShareSlug = process.env.NEXT_PUBLIC_LAUNCH_SHARE_SLUG ?? "x3m2c8cnws
 const routes = [
   { path: "/", priority: 1 },
   { path: "/pricing", priority: 0.8 },
+  { path: "/terms", priority: 0.3 },
+  { path: "/privacy", priority: 0.3 },
   { path: `/t/${publicShareSlug}`, priority: 0.7 },
 ];
 

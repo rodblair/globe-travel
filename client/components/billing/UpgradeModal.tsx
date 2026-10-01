@@ -61,22 +61,22 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
       if (!open) onClose()
     }}>
       <DialogContent
-        className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-2xl border-rule bg-paper-raised p-0 shadow-[var(--shadow-lg)] sm:max-w-xl"
+        className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-2xl border-border bg-card p-0 shadow-lg sm:max-w-xl"
         showCloseButton={false}
       >
         <div className="relative overflow-hidden">
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,var(--brass-subtle),transparent)]" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--primary)_10%,transparent),transparent)]" />
 
               <DialogHeader className="relative flex-row items-start justify-between gap-4 p-5 pb-4 text-left sm:p-6 sm:pb-4">
                 <div className="min-w-0">
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/25 bg-[color:var(--brass-subtle)] px-3 py-1">
-                    <Crown className="h-4 w-4 text-[var(--brass)]" />
-                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brass)]">{PLANS.pro.name}</span>
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-[color:color-mix(in_oklch,var(--primary)_10%,transparent)] px-3 py-1">
+                    <Crown className="h-4 w-4 text-primary" />
+                    <span className="text-xs font-semibold text-primary">{PLANS.pro.name}</span>
                   </div>
-                  <DialogTitle className="font-serif text-2xl font-bold leading-tight text-foreground">
+                  <DialogTitle className="text-2xl font-bold leading-tight text-foreground">
                     Unlock the full planning workspace
                   </DialogTitle>
-                  <DialogDescription className="mt-2 max-w-md text-sm leading-relaxed text-ink-2">
+                  <DialogDescription className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                     {reason || 'Upgrade for unlimited trip notes, friend feedback, and richer planning tools.'}
                   </DialogDescription>
                 </div>
@@ -88,7 +88,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
               </DialogHeader>
 
               <div className="relative px-5 pb-4 sm:px-6">
-                <div className="grid grid-cols-2 gap-1 rounded-xl border border-rule bg-paper-recessed p-1">
+                <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-muted p-1">
                   {(['month', 'year'] as const).map((i) => (
                     <Button
                       type="button"
@@ -99,12 +99,12 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                       variant={interval === i ? 'default' : 'ghost'}
                       className={cn(
                         'relative min-h-11 rounded-lg shadow-none',
-                        interval !== i && 'text-ink-2 hover:bg-paper-hover hover:text-foreground'
+                        interval !== i && 'text-muted-foreground hover:bg-accent hover:text-foreground'
                       )}
                     >
                       {i === 'year' ? 'Yearly' : 'Monthly'}
                       {i === 'year' && (
-                        <span className="rounded-full bg-[color:var(--pillar-nature-wash)] px-2 py-0.5 text-[10px] font-bold text-[var(--moss)]">
+                        <span className="rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success">
                           Save 27%
                         </span>
                       )}
@@ -113,26 +113,26 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                 </div>
               </div>
 
-              <div className="relative border-y border-rule bg-paper/45 px-5 py-4 sm:px-6">
+              <div className="relative border-y border-border bg-background px-5 py-4 sm:px-6">
                 <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
                   <span className="text-5xl font-bold text-foreground">${monthlyCost}</span>
-                  <span className="pb-1 text-sm font-medium text-ink-2">/ month</span>
+                  <span className="pb-1 text-sm font-medium text-muted-foreground">/ month</span>
                 </div>
                 {interval === 'year' && (
-                  <p className="mt-1 text-sm text-ink-2">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Billed ${PLANS.pro.yearlyPrice}/year after your 7-day free trial.
                   </p>
                 )}
                 {interval === 'month' && (
-                  <p className="mt-1 text-sm text-ink-2">7-day free trial, then ${PLANS.pro.monthlyPrice}/month.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">7-day free trial, then ${PLANS.pro.monthlyPrice}/month.</p>
                 )}
               </div>
 
               <div className="relative px-5 py-5 sm:px-6">
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-4">
                   {PLANS.pro.features.map((f) => (
-                    <div key={f} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-ink-2">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--brass)]" />
+                    <div key={f} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-muted-foreground">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
                       <span className="min-w-0">{f}</span>
                     </div>
                   ))}
@@ -140,7 +140,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
               </div>
 
               {billingError && (
-                <Alert variant="destructive" aria-live="polite" className="relative mx-5 mb-4 border-[color:var(--terracotta)]/25 bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)] sm:mx-6">
+                <Alert variant="destructive" aria-live="polite" className="relative mx-5 mb-4 border-[color:var(--destructive)]/25 bg-destructive/10 text-destructive sm:mx-6">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
                     <div>
@@ -151,7 +151,7 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                         disabled={loading}
                         variant="outline"
                         size="sm"
-                        className="mt-3 border-[color:var(--terracotta)]/30 bg-paper-raised text-[var(--terracotta)] disabled:opacity-60"
+                        className="mt-3 border-[color:var(--destructive)]/30 bg-card text-destructive disabled:opacity-60"
                       >
                         Try again
                       </Button>
@@ -166,15 +166,15 @@ export function UpgradeModal({ isOpen, onClose, reason, checkoutFailureMessage }
                   onClick={handleUpgrade}
                   disabled={loading}
                   size="xl"
-                  className="w-full rounded-xl text-base font-bold shadow-lg shadow-[color:var(--brass-glow)] hover:scale-[1.01] disabled:scale-100"
+                  className="w-full rounded-xl text-base font-bold shadow-lg shadow-[color:color-mix(in_oklch,var(--primary)_28%,transparent)] hover:scale-[1.01] disabled:scale-100"
                 >
                   <Zap className="h-4 w-4" />
                   {loading ? 'Redirecting to checkout…' : 'Start 7-day free trial'}
                 </Button>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[11px] font-medium text-ink-3">
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-xs font-medium text-muted-foreground">
                   {trustItems.map((item) => (
                     <span key={item} className="inline-flex items-center gap-1">
-                      <ShieldCheck className="h-3.5 w-3.5 text-[var(--moss)]" />
+                      <ShieldCheck className="h-3.5 w-3.5 text-success" />
                       {item}
                     </span>
                   ))}

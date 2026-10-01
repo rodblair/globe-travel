@@ -4,22 +4,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center gap-1 rounded-full border px-2.5 py-0.5 text-[0.6875rem] font-medium tracking-[0.04em] uppercase whitespace-nowrap transition-colors",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap transition-colors [&>svg]:size-3 [&>svg]:pointer-events-none",
   {
     variants: {
       variant: {
-        default: "border-rule bg-[var(--paper-recessed)] text-foreground",
-        outline: "border-rule bg-transparent text-foreground",
-        brass:
-          "border-transparent bg-[var(--brass-subtle)] text-[var(--brass)]",
+        default: "border-transparent bg-primary text-primary-foreground",
+        secondary: "border-transparent bg-secondary text-secondary-foreground",
+        outline: "text-foreground",
+        brass: "border-transparent bg-primary/10 text-primary",
         ink: "border-transparent bg-foreground/[0.08] text-foreground",
-        city: "border-[color:var(--pillar-city-wash)] bg-[var(--pillar-city-wash)] text-[var(--pillar-city)]",
-        nature:
-          "border-[color:var(--pillar-nature-wash)] bg-[var(--pillar-nature-wash)] text-[var(--pillar-nature)]",
-        coastal:
-          "border-[color:var(--pillar-coastal-wash)] bg-[var(--pillar-coastal-wash)] text-[var(--pillar-coastal)]",
-        desert:
-          "border-[color:var(--pillar-desert-wash)] bg-[var(--pillar-desert-wash)] text-[var(--pillar-desert)]",
+        success: "border-transparent bg-success/10 text-success",
+        warning: "border-transparent bg-warning/15 text-foreground",
+        city: "border-transparent bg-[var(--pillar-city-wash)] text-[var(--pillar-city)]",
+        nature: "border-transparent bg-[var(--pillar-nature-wash)] text-[var(--pillar-nature)]",
+        coastal: "border-transparent bg-[var(--pillar-coastal-wash)] text-[var(--pillar-coastal)]",
+        desert: "border-transparent bg-[var(--pillar-desert-wash)] text-[var(--pillar-desert)]",
       },
     },
     defaultVariants: { variant: "default" },

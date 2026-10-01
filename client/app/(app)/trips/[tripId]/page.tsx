@@ -14,6 +14,9 @@ import TripDayMap from '@/components/trips/TripDayMap'
 import { buildDisplayStops, getRouteFallbackLabel, hasScheduleOrderConflict, hasTransitRouteCue, shouldUseSavedRoute, sortTripItemsForDisplay, sortTripItemsForVisibleItinerary } from '@/components/trips/derivedStops'
 import { getItineraryItemImage } from '@/lib/itinerary-images'
 import { formatTripTitleForDisplay } from '@/lib/trip-copy'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
 type Trip = {
@@ -124,9 +127,9 @@ const sentimentLabel: Record<TripFeedback['sentiment'], string> = {
 }
 
 const sentimentClasses: Record<TripFeedback['sentiment'], string> = {
-  love_it: 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
-  curious: 'border-[color:var(--pillar-coastal-wash)] bg-[color:var(--pillar-coastal-wash)] text-[var(--horizon)]',
-  practical: 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-foreground',
+  love_it: 'border-success/30 bg-success/10 text-success',
+  curious: 'border-info/30 bg-info/10 text-chart-2',
+  practical: 'border-primary/30 bg-primary/10 text-foreground',
 }
 
 function extractDestinationLabel(title: string | null | undefined) {
@@ -165,19 +168,19 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
   return (
     <section
       aria-labelledby="trip-studio-recovery-title"
-      className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--brass),transparent_82%),transparent_32%),linear-gradient(180deg,var(--paper),var(--paper-recessed))] px-5 py-10"
+      className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
     >
-      <div className="paper-grain pointer-events-none absolute inset-0" />
-      <div className="absolute inset-x-0 top-0 h-px bg-paper-recessed" />
-      <section className="relative mx-auto w-full max-w-4xl rounded-[32px] border border-rule bg-paper-raised/90 p-6 shadow-[var(--shadow-lg)] backdrop-blur-2xl md:p-8">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--terracotta)]">
+      <div className="hidden pointer-events-none absolute inset-0" />
+      <div className="absolute inset-x-0 top-0 h-px bg-muted" />
+      <section className="relative mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card/90 p-6 shadow-lg backdrop-blur-2xl md:p-8">
+        <div className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-3 py-1.5 text-xs font-semibold text-destructive">
           <AlertTriangle className="h-3.5 w-3.5" />
           Trip unavailable
         </div>
-        <h1 id="trip-studio-recovery-title" className="mt-5 max-w-2xl font-serif text-4xl leading-[1] text-foreground md:text-6xl">
+        <h1 id="trip-studio-recovery-title" className="mt-5 max-w-2xl text-4xl leading-[1] text-foreground md:text-6xl">
           We could not open this trip.
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/62 md:text-base">
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
           {isTimeout
             ? 'This itinerary took too long to respond. Try again, return to saved trips, or start a fresh plan while the service finishes responding.'
             : isAuthProblem
@@ -190,7 +193,7 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
             <button
               type="button"
               onClick={onRetry}
-              className="touch-target group rounded-[24px] border border-[color:var(--moss)]/25 bg-[color:var(--pillar-nature-wash)] p-4 text-left text-[var(--moss)] transition-colors hover:bg-[color:var(--moss)] hover:text-white sm:col-span-2"
+              className="touch-target group rounded-xl border border-[color:var(--success)]/25 bg-success/10 p-4 text-left text-success transition-colors hover:bg-[color:var(--success)] hover:text-white sm:col-span-2"
             >
               <span className="flex items-center gap-3 text-sm font-semibold">
                 <RefreshCcw className="h-4 w-4" />
@@ -203,25 +206,25 @@ function TripStudioRecovery({ status, onRetry }: { status?: number; onRetry?: ()
           )}
           <Link
             href="/saved"
-            className="touch-target group rounded-[24px] border border-[color:var(--brass)]/30 bg-[var(--brass)] p-4 text-[var(--brass-text)] shadow-[0_16px_42px_rgba(245,158,11,0.18)] transition-colors hover:bg-[var(--brass-hover)]"
+            className="touch-target group rounded-xl border border-primary/30 bg-primary p-4 text-primary-foreground shadow-[0_16px_42px_rgba(245,158,11,0.18)] transition-colors hover:bg-primary/90"
           >
             <span className="flex items-center gap-3 text-sm font-semibold">
               <MapPinned className="h-4 w-4" />
               Go to saved trips
             </span>
-            <span className="mt-2 block text-xs leading-relaxed text-[var(--brass-text)]/78">
+            <span className="mt-2 block text-xs leading-relaxed text-primary-foreground/78">
               Reopen an itinerary you still own or review trips saved to this session.
             </span>
           </Link>
           <Link
             href="/chat"
-            className="touch-target rounded-[24px] border border-rule bg-paper-recessed p-4 text-foreground transition-colors hover:bg-paper"
+            className="touch-target rounded-xl border border-border bg-muted p-4 text-foreground transition-colors hover:bg-background"
           >
             <span className="flex items-center gap-3 text-sm font-semibold">
-              <MessageSquareQuote className="h-4 w-4 text-[var(--brass)]" />
+              <MessageSquareQuote className="h-4 w-4 text-primary" />
               Plan a new trip
             </span>
-            <span className="mt-2 block text-xs leading-relaxed text-foreground/62">
+            <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">
               Start from a destination, a date, or a rough idea and move it into Trip Studio.
             </span>
           </Link>
@@ -1301,15 +1304,15 @@ function TripStudioPageContent() {
   }, [canEditTrip, chatReady, ensureSelectedDayExists, onBulkOps, qaForceRewriteUnavailable, selectedStudioDay?.sortedItems, sendMessage, showActionNotice])
 
   const renderPlannerEditShortcuts = useCallback((surface: 'panel' | 'drawer') => (
-    <div className="border-b border-rule bg-paper px-4 py-3">
+    <div className="border-b border-border bg-background px-4 py-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold text-foreground">Edit selected day</p>
-          <p className="mt-1 text-[11px] leading-relaxed text-foreground/58">
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
             Send a precise Planner edit to Day {ensureSelectedDayExists}. The itinerary refreshes when Globe applies it.
           </p>
         </div>
-        <span className="shrink-0 rounded-full border border-rule bg-paper-recessed px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/48">
+        <span className="shrink-0 rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
           Day {ensureSelectedDayExists}
         </span>
       </div>
@@ -1321,10 +1324,10 @@ function TripStudioPageContent() {
             data-testid={`planner-quick-edit-${edit.key}-${surface}`}
             onClick={() => void handlePlannerQuickEdit(edit)}
             disabled={chatLoading || !canEditTrip}
-            className="min-h-[58px] rounded-md border border-rule bg-paper-raised px-3 py-2 text-left transition-colors hover:border-[color:var(--brass)]/40 hover:bg-paper-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brass)]/35 disabled:cursor-not-allowed disabled:opacity-55"
+            className="min-h-[58px] rounded-md border border-border bg-card px-3 py-2 text-left transition-colors hover:border-primary/40 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/35 disabled:cursor-not-allowed disabled:opacity-55"
           >
             <span className="block truncate text-xs font-semibold text-foreground">{edit.label}</span>
-            <span className="mt-1 block text-[11px] leading-snug text-foreground/56">{edit.detail}</span>
+            <span className="mt-1 block text-xs leading-snug text-muted-foreground">{edit.detail}</span>
           </button>
         ))}
       </div>
@@ -1376,38 +1379,38 @@ function TripStudioPageContent() {
     return (
       <div
         ref={studioRef}
-        className="relative flex min-h-screen w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--brass),transparent_82%),transparent_32%),linear-gradient(180deg,var(--paper),var(--paper-recessed))] px-5 py-10"
+        className="relative flex min-h-dvh w-full items-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,color-mix(in_oklch,var(--primary),transparent_82%),transparent_32%),linear-gradient(180deg,var(--background),var(--muted))] px-5 py-10"
       >
-        <div className="absolute inset-x-0 top-0 h-px bg-paper-recessed" />
-        <div className="mx-auto w-full max-w-4xl rounded-[36px] border border-rule bg-paper-raised/85 p-6 shadow-[var(--shadow-lg)] backdrop-blur-2xl md:p-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brass-text)]">
+        <div className="absolute inset-x-0 top-0 h-px bg-muted" />
+        <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card/85 p-6 shadow-lg backdrop-blur-2xl md:p-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
             <Calendar className="h-3.5 w-3.5" />
             Trip Studio
           </div>
-          <h1 className="mt-5 max-w-2xl font-serif text-4xl leading-[1] text-foreground md:text-6xl">
+          <h1 className="mt-5 max-w-2xl text-4xl leading-[1] text-foreground md:text-6xl">
             Loading your itinerary.
           </h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-foreground/55 md:text-base">
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
             Gathering trip days, routed stops, and group planning tools into one clean workspace.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
-            <div className="rounded-[28px] border border-rule bg-paper/18 p-5">
-              <div className="mb-4 h-3 w-28 animate-pulse rounded-full bg-paper-recessed" />
+            <div className="rounded-2xl border border-border bg-background p-5">
+              <div className="mb-4 h-3 w-28 animate-pulse rounded-full bg-muted" />
               <div className="space-y-3">
                 {[0, 1, 2].map((item) => (
-                  <div key={item} className="h-14 animate-pulse rounded-2xl bg-paper-recessed" />
+                  <div key={item} className="h-14 animate-pulse rounded-2xl bg-muted" />
                 ))}
               </div>
             </div>
-            <div className="rounded-[28px] border border-rule bg-paper/18 p-5">
+            <div className="rounded-2xl border border-border bg-background p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <div className="h-3 w-32 animate-pulse rounded-full bg-paper-recessed" />
-                <div className="h-8 w-20 animate-pulse rounded-full bg-[var(--brass)]" />
+                <div className="h-3 w-32 animate-pulse rounded-full bg-muted" />
+                <div className="h-8 w-20 animate-pulse rounded-full bg-primary" />
               </div>
               <div className="space-y-3">
                 {[0, 1, 2, 3].map((item) => (
-                  <div key={item} className="h-16 animate-pulse rounded-2xl bg-paper-recessed" />
+                  <div key={item} className="h-16 animate-pulse rounded-2xl bg-muted" />
                 ))}
               </div>
             </div>
@@ -1422,101 +1425,83 @@ function TripStudioPageContent() {
   }
 
   return (
-    <div ref={studioRef} className="relative h-full min-h-full overflow-y-auto bg-paper text-foreground xl:overflow-hidden">
-      <div className="paper-grain pointer-events-none absolute inset-0" />
-      <div className="absolute inset-x-0 top-0 h-52 bg-[linear-gradient(180deg,var(--paper-raised),transparent)]" />
+    <div ref={studioRef} className="relative h-full min-h-full overflow-y-auto bg-background text-foreground xl:overflow-hidden">
+      <div className="hidden pointer-events-none absolute inset-0" />
+      <div className="absolute inset-x-0 top-0 h-52 bg-[linear-gradient(180deg,var(--card),transparent)]" />
 
       <div className="relative z-10 flex min-h-full flex-col">
-        <motion.header
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-3 border-b border-rule bg-paper-raised/86 px-4 py-3 backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between lg:px-6"
-        >
+        <header className="flex flex-col gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between lg:px-6">
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-foreground/42">
-              <span>Trip Studio</span>
-              <span className="h-1 w-1 rounded-full bg-foreground/24" />
-              <span>{isBuildingInitialItinerary ? 'Creating your itinerary' : `${mappedDayCount}/${Math.max(days.length, 1)} mapped days`}</span>
-            </div>
-            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-2">
-              <h1 className="min-w-0 max-w-full break-words font-serif text-2xl leading-tight text-foreground md:text-3xl">
+            <p className="text-xs text-muted-foreground">
+              {isBuildingInitialItinerary ? 'Creating your itinerary…' : `Trip Studio · ${mappedDayCount}/${Math.max(days.length, 1)} mapped days`}
+            </p>
+            <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-2">
+              <h1 className="min-w-0 max-w-full break-words text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
                 {tripDisplayTitle || 'Trip workspace'}
               </h1>
-              <span className="rounded-full border border-rule bg-paper px-2.5 py-1 text-[11px] text-foreground/62">
+              <Badge variant={canEditTrip ? 'secondary' : 'outline'}>
                 {canEditTrip ? 'Draft' : 'View only'}
-              </span>
+              </Badge>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center lg:justify-end">
+          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
             {canEditTrip ? (
               <>
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setChatOpen(true)}
-                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-medium text-foreground/78 transition-colors hover:bg-paper-hover 2xl:hidden"
+                  className="rounded-full 2xl:hidden"
                 >
-                  <MessageSquareQuote className="h-4 w-4" />
+                  <MessageSquareQuote />
                   Planner chat
-                </button>
-                <button
-                  onClick={saveTrip}
-                  disabled={isSavingTrip || !trip}
-                  className={cn(
-                    'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
-                    saveDone
-                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      : 'border-rule bg-paper text-foreground/82 hover:bg-paper-hover'
-                  )}
-                >
-                  {saveDone ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4 text-[var(--brass)]" />}
-                  {isSavingTrip ? 'Saving...' : saveDone ? 'Saved' : 'Save trip'}
-                </button>
-                <button
-                  onClick={() => hydrateMaps()}
-                  disabled={isHydratingMaps}
-                  className={cn(
-                    'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
-                    buildMapsDone
-                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      : 'border-rule bg-paper text-foreground/82 hover:bg-paper-hover'
-                  )}
-                >
-                  {buildMapsDone ? <Check className="h-4 w-4" /> : <Route className="h-4 w-4 text-[var(--dusty-aqua)]" />}
-                  {isHydratingMaps ? 'Building maps...' : buildMapsDone ? 'Maps built' : 'Build maps'}
-                </button>
-                <button
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon-sm" aria-label="More trip actions" className="rounded-full">
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onSelect={() => void saveTrip()} disabled={isSavingTrip || !trip}>
+                      {saveDone ? <Check /> : <Save />}
+                      {isSavingTrip ? 'Saving...' : saveDone ? 'Saved' : 'Save trip'}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => void hydrateMaps()} disabled={isHydratingMaps}>
+                      {buildMapsDone ? <Check /> : <Route />}
+                      {isHydratingMaps ? 'Building maps...' : buildMapsDone ? 'Maps built' : 'Build maps'}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
                   onClick={shareWithFriends}
                   disabled={isSharingTrip || !trip}
-                  className={cn(
-                    'touch-target col-span-2 inline-flex items-center justify-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50 sm:col-span-1',
-                    shareDone
-                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)] hover:bg-[var(--brass-hover)]'
-                  )}
+                  className="rounded-full"
+                  variant={shareDone ? 'secondary' : 'default'}
                 >
-                  {shareDone ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                  {shareDone ? <Check /> : <Share2 />}
                   {isSharingTrip ? 'Sharing...' : shareDone ? 'Link copied' : 'Share with friends'}
-                </button>
+                </Button>
               </>
             ) : trip?.is_public && trip.share_slug ? (
-              <Link
-                href={`/t/${trip.share_slug}`}
-                className="touch-target col-span-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-4 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] sm:col-span-1"
-              >
-                <Send className="h-4 w-4" />
-                View share
-              </Link>
+              <Button asChild className="rounded-full">
+                <Link href={`/t/${trip.share_slug}`}>
+                  <Send />
+                  View share
+                </Link>
+              </Button>
             ) : null}
           </div>
-        </motion.header>
+        </header>
 
         {(actionError || actionNotice || !canEditTrip) && (
-          <div className="border-b border-rule bg-paper px-4 py-2 lg:px-6">
+          <div className="border-b border-border bg-background px-4 py-2 lg:px-6">
             <p className={cn(
               'rounded-md border px-3 py-2 text-xs',
-              actionError && 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]',
-              actionNotice && !actionError && 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]',
-              !actionError && !actionNotice && 'border-rule bg-paper-recessed text-foreground/62'
+              actionError && 'border-destructive/30 bg-destructive/10 text-destructive',
+              actionNotice && !actionError && 'border-success/30 bg-success/10 text-success',
+              !actionError && !actionNotice && 'border-border bg-muted text-muted-foreground'
             )}>
               {actionError || actionNotice || 'Shared preview. Start your own trip to edit and save.'}
             </p>
@@ -1524,9 +1509,9 @@ function TripStudioPageContent() {
         )}
 
         <div className="grid min-h-0 flex-1 gap-4 p-4 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:p-5 xl:grid-cols-[minmax(0,1fr)_300px] xl:overflow-hidden 2xl:grid-cols-[300px_minmax(0,1fr)_320px]">
-          <section ref={plannerChatPanelRef} className="hidden min-h-0 overflow-hidden rounded-[22px] border border-rule bg-paper-raised/92 shadow-[var(--panel-shadow)] 2xl:flex 2xl:flex-col">
-            <div className="border-b border-rule px-4 py-3">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
+          <section ref={plannerChatPanelRef} className="hidden min-h-0 overflow-hidden rounded-xl border border-border bg-card/92 shadow-xs 2xl:flex 2xl:flex-col">
+            <div className="border-b border-border px-4 py-3">
+              <p className="text-xs text-muted-foreground">Planner chat</p>
               <p className="mt-1 text-sm font-medium text-foreground">Chat becomes itinerary edits</p>
             </div>
             {renderPlannerEditShortcuts('panel')}
@@ -1548,69 +1533,87 @@ function TripStudioPageContent() {
           </section>
 
           <section className="min-h-0 space-y-4 xl:overflow-y-auto">
-            <div className="overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--panel-shadow)]">
-              <div className="flex flex-col gap-3 border-b border-rule px-4 py-3 md:flex-row md:items-center md:justify-between">
+            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+              <div className="flex flex-col gap-3 border-b border-border px-4 py-3 md:flex-row md:items-center md:justify-between">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className={cn(
                       'inline-flex h-7 w-7 items-center justify-center rounded-full border',
                       mappingSummary.needsHydration
-                        ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] text-[var(--brass)]'
-                        : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                        ? 'border-primary/30 bg-primary/10 text-primary'
+                        : 'border-success/30 bg-success/10 text-success'
                     )}>
                       {mappingSummary.needsHydration ? <Navigation2 className="h-4 w-4" /> : <Check className="h-4 w-4" />}
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-foreground">Route quality: {routeQualityLabel}</p>
-                      <p className="mt-0.5 truncate text-xs text-foreground/55">{selectedMapSubtitle}</p>
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">{selectedMapSubtitle}</p>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => handleOptimize()}
                     disabled={isOptimizing || !canEditTrip}
-                    className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/82 transition-colors hover:bg-paper-hover disabled:opacity-50"
+                    className="rounded-full"
                   >
-                    {optimizeDone ? <Check className="h-4 w-4 text-[var(--moss)]" /> : <ArrowLeftRight className={cn('h-4 w-4 text-[var(--brass)]', isOptimizing && 'animate-pulse')} />}
+                    {optimizeDone ? <Check className="text-success" /> : <ArrowLeftRight className={cn('text-primary', isOptimizing && 'animate-pulse')} />}
                     {isOptimizing ? 'Optimizing...' : optimizeDone ? 'Optimized' : 'Optimize day'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => selectedStudioDay && handleRegenerateDay(selectedStudioDay.day.day_index)}
                     disabled={!selectedStudioDay || regeneratingDayIndex != null || isLoading || !canEditTrip}
-                    className="touch-target inline-flex items-center justify-center rounded-full border border-rule bg-paper px-3 py-2 text-foreground/70 transition-colors hover:bg-paper-hover disabled:opacity-50"
-                    aria-label="Rewrite selected day"
+                    className="rounded-full"
                   >
-                    <Sparkles className="h-4 w-4 text-[var(--brass)]" />
-                  </button>
-                  <button className="touch-target inline-flex items-center justify-center rounded-full border border-rule bg-paper px-3 py-2 text-foreground/60 transition-colors hover:bg-paper-hover" aria-label="More map actions">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
+                    <Sparkles className="text-primary" />
+                    Rewrite day
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="icon-sm" className="rounded-full" aria-label="More map actions">
+                        <MoreHorizontal />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuItem onSelect={() => void hydrateMaps()} disabled={isHydratingMaps || !canEditTrip}>
+                        <Route />
+                        {isHydratingMaps ? 'Rebuilding routes...' : 'Rebuild map routes'}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setChatOpen(true)} disabled={!canEditTrip}>
+                        <MessageSquareQuote />
+                        Open planner chat
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
 
               <div className="grid min-h-[520px] lg:grid-cols-[260px_minmax(0,1fr)] 2xl:grid-cols-[300px_minmax(0,1fr)]">
-                <div className="border-b border-rule bg-paper/70 lg:border-b-0 lg:border-r">
-                  <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-rule p-3 lg:block lg:space-y-2 lg:overflow-visible">
+                <div className="border-b border-border bg-background lg:border-b-0 lg:border-r">
+                  <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-border p-3 lg:block lg:space-y-2 lg:overflow-visible">
                     {studioDayMaps.map(({ day, mappedStops, routeSummary }) => (
                       <button
                         key={day.id}
                         onClick={() => selectDay(day.day_index)}
                         aria-pressed={day.day_index === ensureSelectedDayExists}
                         className={cn(
-                          'touch-target min-w-[220px] rounded-md border px-3 py-3 text-left transition-colors lg:min-w-0 lg:w-full',
+                          'touch-target w-56 shrink-0 rounded-md border px-3 py-3 text-left transition-colors lg:w-full',
                           day.day_index === ensureSelectedDayExists
-                            ? 'border-[color:var(--brass)]/40 bg-[var(--brass-subtle)] text-foreground'
-                            : 'border-transparent bg-transparent text-foreground/72 hover:bg-paper-hover'
+                            ? 'border-primary/40 bg-primary/10 text-foreground'
+                            : 'border-transparent bg-transparent text-muted-foreground hover:bg-accent'
                         )}
                       >
                         <div className="flex items-start gap-3">
-                          <span className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--brass)] text-xs font-semibold text-[var(--brass-text)]">
+                          <span className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                             {day.day_index}
                           </span>
                           <span className="min-w-0 flex-1">
                             <span className="block truncate text-sm font-medium">{day.title || `Day ${day.day_index}`}</span>
-                            <span className="mt-1 block truncate text-xs text-foreground/52">
+                            <span className="mt-1 block truncate text-xs text-muted-foreground">
                               {mappedStops.length} stops{routeSummary ? ` • ${routeSummary}` : ''}
                             </span>
                           </span>
@@ -1620,7 +1623,7 @@ function TripStudioPageContent() {
                   </div>
 
                   <div className="hidden p-4 lg:block">
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/38">Selected stops</p>
+                    <p className="text-xs text-muted-foreground">Selected stops</p>
                     <div className="mt-3 space-y-2">
                       {(selectedStudioDay?.displayStops || []).slice(0, 5).map((stop) => {
                         const stopImage = getItineraryItemImage({
@@ -1642,10 +1645,10 @@ function TripStudioPageContent() {
                           <div
                             key={stop.id}
                             className={cn(
-                              'group flex w-full items-start gap-2 rounded-md border px-2.5 py-2 transition-colors hover:bg-paper-hover',
+                              'group flex w-full items-start gap-2 rounded-md border px-2.5 py-2 transition-colors hover:bg-accent',
                               trackedMapStop?.id === stop.id || trackedMapStop?.itemId === stop.item.id
-                                ? 'border-[color:var(--brass)]/40 bg-[var(--brass-subtle)] shadow-[0_10px_24px_rgba(190,132,49,0.12)]'
-                                : 'border-rule bg-paper'
+                                ? 'border-primary/40 bg-primary/10 shadow-[0_10px_24px_rgba(190,132,49,0.12)]'
+                                : 'border-border bg-background'
                             )}
                           >
                             <button
@@ -1653,7 +1656,7 @@ function TripStudioPageContent() {
                               onClick={() => onSelectItem(stop.item)}
                               className="touch-target flex min-w-0 flex-1 items-start gap-2 text-left"
                             >
-                              <span className="relative h-12 w-14 shrink-0 overflow-hidden rounded-md border border-rule bg-paper-recessed">
+                              <span className="relative h-12 w-14 shrink-0 overflow-hidden rounded-md border border-border bg-muted">
                                 <Image
                                   src={stopImage.src}
                                   alt=""
@@ -1664,17 +1667,17 @@ function TripStudioPageContent() {
                                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
                                 />
                               <span className={cn(
-                                'absolute left-1.5 top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold shadow-sm',
+                                'absolute left-1.5 top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-semibold shadow-sm',
                                 trackedMapStop?.id === stop.id || trackedMapStop?.itemId === stop.item.id
-                                  ? 'bg-[var(--brass)] text-[var(--brass-text)]'
-                                  : 'bg-paper-raised/90 text-[var(--brass)]'
+                                  ? 'bg-primary text-primary-foreground'
+                                  : 'bg-card/90 text-primary'
                               )}>
                                   {stop.mapped ? stop.index : '—'}
                                 </span>
                               </span>
                               <span className="min-w-0 flex-1 pt-0.5">
                                 <span className="block truncate text-xs font-medium text-foreground">{stop.title}</span>
-                                <span className="mt-0.5 block truncate text-[11px] text-foreground/52">
+                                <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                                   {stop.timeLabel || 'Flexible'} {stop.mapped ? '• pinned' : '• needs map data'}
                                 </span>
                               </span>
@@ -1683,7 +1686,7 @@ function TripStudioPageContent() {
                               href={mapsUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="touch-target mt-1 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-rule bg-paper-raised text-foreground/60 transition-colors hover:border-[color:var(--brass)]/30 hover:bg-[var(--brass-subtle)] hover:text-foreground"
+                              className="touch-target mt-1 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-foreground"
                               aria-label={`Open maps URL for ${stop.title}`}
                               title="Open maps URL"
                             >
@@ -1708,12 +1711,12 @@ function TripStudioPageContent() {
                   focusedStopId={trackedMapStop?.id || null}
                   focusTarget={trackedMapStop}
                   onStopClick={handleMapStopClick}
-                  mapHeightClassName="h-[88px] sm:h-[360px] lg:h-full"
+                  mapHeightClassName="h-72 sm:h-[360px] lg:h-full"
                   className="min-w-0 rounded-none border-0"
                 />
               </div>
 
-              <div className="grid border-t border-rule bg-paper/80 md:grid-cols-5">
+              <div className="grid border-t border-border bg-background md:grid-cols-5">
                 {[
                   ['Overview', `${days.length} days · ${tripStops.length} stops`],
                   ['Highlights', tripDestination || 'Group trip'],
@@ -1721,15 +1724,15 @@ function TripStudioPageContent() {
                   ['Budget', groupBrief?.budget || 'Flexible'],
                   ['Missing details', mappingSummary.needsHydration ? 'Map pass needed' : 'Looks ready'],
                 ].map(([label, value]) => (
-                  <div key={label} className="border-b border-rule px-4 py-3 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0">
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-foreground/38">{label}</p>
+                  <div key={label} className="border-b border-border px-4 py-3 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0">
+                    <p className="text-xs text-muted-foreground">{label}</p>
                     <p className="mt-1 truncate text-sm font-medium text-foreground">{value}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--panel-shadow)]">
+            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
               <ItineraryArtifact
                 tripTitle={trip?.title || 'Trip'}
                 days={days}
@@ -1754,10 +1757,10 @@ function TripStudioPageContent() {
           </section>
 
           <aside className="min-h-0 space-y-4 xl:overflow-y-auto">
-            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Share with crew</p>
+                  <p className="text-xs text-muted-foreground">Share with crew</p>
                   <p className="mt-1 text-sm font-medium text-foreground">Public review link</p>
                 </div>
                 <button
@@ -1766,8 +1769,8 @@ function TripStudioPageContent() {
                   className={cn(
                     'touch-target rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50',
                     trip?.is_public
-                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      : 'border-rule bg-paper-recessed text-foreground/72 hover:bg-paper-hover'
+                      ? 'border-success/30 bg-success/10 text-success'
+                      : 'border-border bg-muted text-muted-foreground hover:bg-accent'
                   )}
                 >
                   {trip?.is_public ? 'On' : 'Off'}
@@ -1780,7 +1783,7 @@ function TripStudioPageContent() {
                   value={shareUrl || 'Enable public link to create one'}
                   onFocus={(event) => event.currentTarget.select()}
                   onClick={(event) => event.currentTarget.select()}
-                  className="min-w-0 flex-1 rounded-md border border-rule bg-paper-recessed px-3 py-2 text-xs text-foreground/62"
+                  className="min-w-0 flex-1 rounded-md border border-border bg-muted px-3 py-2 text-xs text-muted-foreground"
                 />
                 <button
                   onClick={copyInviteLink}
@@ -1788,8 +1791,8 @@ function TripStudioPageContent() {
                   className={cn(
                     'touch-target rounded-md border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-45',
                     copyDone
-                      ? 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
-                      : 'border-rule bg-paper text-foreground/78 hover:bg-paper-hover'
+                      ? 'border-success/30 bg-success/10 text-success'
+                      : 'border-border bg-background text-muted-foreground hover:bg-accent'
                   )}
                 >
                   {copyDone ? 'Copied' : 'Copy'}
@@ -1798,15 +1801,15 @@ function TripStudioPageContent() {
               <button
                 onClick={shareInvite}
                 disabled={!shareUrl}
-                className="touch-target mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-4 py-3 text-sm font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-45"
+                className="touch-target mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-primary/30 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-45"
               >
                 <Send className="h-4 w-4" />
                 Share invite
               </button>
             </section>
 
-            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Crew consensus</p>
+            <section className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
+              <p className="text-xs text-muted-foreground">Crew consensus</p>
               <div className="mt-4 space-y-3">
                 {[
                   ['Budget fit', groupBrief?.budget ? 'Good' : 'Needs detail'],
@@ -1815,28 +1818,28 @@ function TripStudioPageContent() {
                   ['Readiness', `${readinessCount}/4`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex items-center justify-between gap-3 text-sm">
-                    <span className="text-foreground/70">{label}</span>
-                    <span className="inline-flex items-center gap-2 font-medium text-[var(--moss)]">
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="inline-flex items-center gap-2 font-medium text-success">
                       {value}
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--moss)]" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
                     </span>
                   </div>
                 ))}
               </div>
             </section>
 
-            <section className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Friend feedback</p>
+                  <p className="text-xs text-muted-foreground">Friend feedback</p>
                   <p className="mt-1 text-sm font-medium text-foreground">{feedback.length} {feedback.length === 1 ? 'review' : 'reviews'}</p>
-                  <p className="mt-1 text-xs text-foreground/52">crew reacting to the plan</p>
+                  <p className="mt-1 text-xs text-muted-foreground">crew reacting to the plan</p>
                 </div>
                 <MessageSquareQuote className="h-5 w-5 text-foreground/25" />
               </div>
               <div className="mt-4 space-y-2">
                 {feedback.length === 0 ? (
-                  <p className="text-xs leading-relaxed text-foreground/58">Invite friends to flag what feels too busy, expensive, or worth keeping.</p>
+                  <p className="text-xs leading-relaxed text-muted-foreground">Invite friends to flag what feels too busy, expensive, or worth keeping.</p>
                 ) : (
                   <>
                     <div className="grid grid-cols-3 gap-2">
@@ -1847,23 +1850,23 @@ function TripStudioPageContent() {
                       ] as const).map(([key, label]) => (
                         <div key={key} className={cn('rounded-md border px-2 py-2 text-center', sentimentClasses[key])}>
                           <p className="text-sm font-semibold leading-none">{feedbackCounts[key]}</p>
-                          <p className="mt-1 text-[10px]">{label}</p>
+                          <p className="mt-1 text-xs">{label}</p>
                         </div>
                       ))}
                     </div>
                     {visibleFeedback.map((entry) => (
-                      <div key={entry.id} className="rounded-md border border-rule bg-paper-recessed p-3">
+                      <div key={entry.id} className="rounded-md border border-border bg-muted p-3">
                         <div className="flex items-center justify-between gap-2">
                           <p className="truncate text-xs font-medium text-foreground">{entry.author_name}</p>
-                          <span className={cn('shrink-0 rounded-full border px-2 py-1 text-[10px]', sentimentClasses[entry.sentiment])}>
+                          <span className={cn('shrink-0 rounded-full border px-2 py-1 text-xs', sentimentClasses[entry.sentiment])}>
                             {sentimentLabel[entry.sentiment]}
                           </span>
                         </div>
-                        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-foreground/66">{entry.comment}</p>
+                        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{entry.comment}</p>
                       </div>
                     ))}
                     {hiddenFeedbackCount > 0 && (
-                      <p className="rounded-md border border-dashed border-rule bg-paper-recessed px-3 py-2 text-xs leading-relaxed text-foreground/58">
+                      <p className="rounded-md border border-dashed border-border bg-muted px-3 py-2 text-xs leading-relaxed text-muted-foreground">
                         Showing latest 4 of {feedback.length} reviews. {hiddenFeedbackCount} more {hiddenFeedbackCount === 1 ? 'reaction is' : 'reactions are'} saved for refresh.
                       </p>
                     )}
@@ -1872,8 +1875,8 @@ function TripStudioPageContent() {
               </div>
             </section>
 
-            <section data-testid="trip-suggested-next-step" className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Suggested next step</p>
+            <section data-testid="trip-suggested-next-step" className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
+              <p className="text-xs text-muted-foreground">Suggested next step</p>
               {!canEditTrip ? (
                 <>
                   <p className="mt-2 text-sm font-medium leading-snug text-foreground">
@@ -1884,7 +1887,7 @@ function TripStudioPageContent() {
                       <Link
                         data-testid="trip-suggested-view-share"
                         href={`/t/${trip.share_slug}`}
-                        className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)]"
+                        className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
                       >
                         <Send className="h-4 w-4" />
                         View share
@@ -1893,7 +1896,7 @@ function TripStudioPageContent() {
                     <Link
                       data-testid="trip-suggested-start-trip"
                       href="/chat"
-                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover"
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-accent"
                     >
                       <Plus className="h-4 w-4" />
                       Start trip
@@ -1909,8 +1912,8 @@ function TripStudioPageContent() {
                     <p className={cn(
                       'mt-3 rounded-md border px-3 py-2 text-xs leading-relaxed',
                       suggestedNoticeIsWarning
-                        ? 'border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] text-[var(--terracotta)]'
-                        : 'border-[color:var(--pillar-nature-wash)] bg-[color:var(--pillar-nature-wash)] text-[var(--moss)]'
+                        ? 'border-destructive/30 bg-destructive/10 text-destructive'
+                        : 'border-success/30 bg-success/10 text-success'
                     )} aria-live="polite">
                       {suggestedStepNotice}
                     </p>
@@ -1926,7 +1929,7 @@ function TripStudioPageContent() {
                         : suggestedPrimaryAction === 'open-planner-chat'
                           ? 'Open Planner chat from suggested next step'
                           : `Rewrite Day ${ensureSelectedDayExists} from suggested next step`}
-                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-[color:var(--brass)]/30 bg-[var(--brass)] px-3 py-2 text-xs font-semibold text-[var(--brass-text)] transition-colors hover:bg-[var(--brass-hover)] disabled:opacity-50"
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                     >
                       {suggestedPrimaryAction === 'build-maps'
                         ? <Route className="h-4 w-4" />
@@ -1939,7 +1942,7 @@ function TripStudioPageContent() {
                       data-testid="trip-suggested-feedback-refresh"
                       onClick={() => startWorkflow('feedback_refresh')}
                       disabled={Boolean(creatingWorkflow)}
-                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-rule bg-paper px-3 py-2 text-xs font-semibold text-foreground/76 transition-colors hover:bg-paper-hover disabled:opacity-50"
+                      className="touch-target inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-accent disabled:opacity-50"
                     >
                       <RefreshCcw className="h-4 w-4" />
                       {suggestedRefreshLabel}
@@ -1949,33 +1952,33 @@ function TripStudioPageContent() {
               )}
             </section>
 
-            <section ref={workflowPanelRef} className="rounded-[22px] border border-rule bg-paper-raised px-4 py-4 shadow-[var(--panel-shadow)]">
+            <section ref={workflowPanelRef} className="rounded-xl border border-border bg-card px-4 py-4 shadow-xs">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner workflows</p>
+                  <p className="text-xs text-muted-foreground">Planner workflows</p>
                   <p className="mt-1 text-sm font-medium text-foreground">{latestWorkflowJob ? latestWorkflowJob.type.replace(/_/g, ' ') : 'Run async planning jobs'}</p>
                 </div>
                 <Wand2 className="h-5 w-5 text-foreground/25" />
               </div>
               <div className="mt-4 grid gap-2">
-                <button onClick={() => startWorkflow('decision_memo')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-hover disabled:opacity-50">
+                <button onClick={() => startWorkflow('decision_memo')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-border bg-muted px-3 py-3 text-left text-xs text-muted-foreground transition-colors hover:bg-accent disabled:opacity-50">
                   <span>{creatingWorkflow === 'decision_memo' ? 'Starting memo...' : 'Generate decision memo'}</span>
-                  <Scale3d className="h-4 w-4 text-[var(--brass)]" />
+                  <Scale3d className="h-4 w-4 text-primary" />
                 </button>
-                <button onClick={() => startWorkflow('generate_variants')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-rule bg-paper-recessed px-3 py-3 text-left text-xs text-foreground/78 transition-colors hover:bg-paper-hover disabled:opacity-50">
+                <button onClick={() => startWorkflow('generate_variants')} disabled={Boolean(creatingWorkflow) || !canEditTrip} className="touch-target flex items-center justify-between rounded-md border border-border bg-muted px-3 py-3 text-left text-xs text-muted-foreground transition-colors hover:bg-accent disabled:opacity-50">
                   <span>{creatingWorkflow === 'generate_variants' ? 'Starting variants...' : 'Create budget variants'}</span>
-                  <Wand2 className="h-4 w-4 text-[var(--dusty-aqua)]" />
+                  <Wand2 className="h-4 w-4 text-chart-2" />
                 </button>
               </div>
-              {workflowError && <p className="mt-3 rounded-md border border-[color:var(--pillar-desert-wash)] bg-[color:var(--pillar-desert-wash)] px-3 py-2 text-[11px] text-[var(--terracotta)]">{workflowError}</p>}
+              {workflowError && <p className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">{workflowError}</p>}
               {latestWorkflowJob && (
-                <div className="mt-3 rounded-md border border-rule bg-paper-recessed p-3">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-foreground/40">{latestWorkflowJob.status}</p>
+                <div className="mt-3 rounded-md border border-border bg-muted p-3">
+                  <p className="text-xs text-muted-foreground">{latestWorkflowJob.status}</p>
                   {latestWorkflowJob.status === 'completed' && latestWorkflowJob.result && (
-                    <pre className="mt-2 max-h-36 overflow-y-auto whitespace-pre-wrap text-[11px] leading-relaxed text-foreground/66">{JSON.stringify(latestWorkflowJob.result, null, 2)}</pre>
+                    <pre className="mt-2 max-h-36 overflow-y-auto whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground">{JSON.stringify(latestWorkflowJob.result, null, 2)}</pre>
                   )}
-                  {latestWorkflowJob.status === 'failed' && <p className="mt-2 text-[11px] text-[var(--terracotta)]">{latestWorkflowJob.error || 'Workflow failed'}</p>}
-                  {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && <p className="mt-2 text-[11px] text-foreground/55">Working through the planner job...</p>}
+                  {latestWorkflowJob.status === 'failed' && <p className="mt-2 text-xs text-destructive">{latestWorkflowJob.error || 'Workflow failed'}</p>}
+                  {(latestWorkflowJob.status === 'queued' || latestWorkflowJob.status === 'running') && <p className="mt-2 text-xs text-muted-foreground">Working through the planner job...</p>}
                 </div>
               )}
             </section>
@@ -1990,16 +1993,16 @@ function TripStudioPageContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-[22px] border border-rule bg-paper-raised shadow-[var(--shadow-lg)] 2xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] top-24 z-50 flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg 2xl:hidden"
           >
-            <div className="flex items-center justify-between border-b border-rule px-4 py-3">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-foreground/38">Planner chat</p>
+                <p className="text-xs text-muted-foreground">Planner chat</p>
                 <p className="text-sm font-medium text-foreground">Guide the crew itinerary</p>
               </div>
               <button
                 onClick={() => setChatOpen(false)}
-                className="touch-target flex h-9 w-9 items-center justify-center rounded-md border border-rule bg-paper text-foreground/60 transition-colors hover:bg-paper-hover"
+                className="touch-target flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-accent"
                 aria-label="Close planner chat"
               >
                 ×
@@ -2030,7 +2033,7 @@ function TripStudioPageContent() {
 
 export default function TripStudioPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
+    <Suspense fallback={<div className="min-h-dvh bg-background" />}>
       <TripStudioPageContent />
     </Suspense>
   )
