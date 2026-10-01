@@ -14,6 +14,13 @@ type TripDayMapStop = {
   index: number
 }
 
+type TripMapFocusTarget = {
+  id?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  zoom?: number
+}
+
 function coerceCoordinate(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : null
   if (typeof value === 'string' && value.trim().length > 0) {
@@ -38,6 +45,9 @@ type TripDayMapProps = {
   forceStatic?: boolean
   className?: string
   ariaLabel?: string
+  focusedStopId?: string | null
+  focusTarget?: TripMapFocusTarget | null
+  onStopClick?: (stop: TripDayMapStop) => void
 }
 
 function buildStopPath(stops: TripDayMapStop[]) {
@@ -125,6 +135,11 @@ function findNearestPageScrollSurface(startElement: HTMLElement, deltaY: number,
   return null
 }
 
+function isFocusedStop(stop: TripDayMapStop, focusedStopId?: string | null) {
+  if (!focusedStopId) return false
+  return stop.id === focusedStopId || stop.id.startsWith(`${focusedStopId}:`)
+}
+
 export default function TripDayMap({
   stops,
   routeGeojson,
@@ -140,6 +155,9 @@ export default function TripDayMap({
   forceStatic = false,
   className,
   ariaLabel,
+  focusedStopId,
+  focusTarget,
+  onStopClick,
 }: TripDayMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
@@ -229,6 +247,7 @@ export default function TripDayMap({
   const stopOnlyPreview = useMemo(() => buildStopPath(validStops), [validStops])
   const startStop = validStops[0] || null
   const endStop = validStops.length > 1 ? validStops[validStops.length - 1] : validStops[0] || null
+  const focusedStop = validStops.find((stop) => isFocusedStop(stop, focusedStopId)) || null
   const usingStaticFallback = !shouldRenderMap && validStops.length > 0
   const mapLabel = usingStaticFallback
     ? 'Static Route'
@@ -239,6 +258,8 @@ export default function TripDayMap({
     ariaLabel ||
     `${title} ${mapLabel.toLowerCase()} with ${validStops.length} mapped stop${validStops.length === 1 ? '' : 's'}`
   const canvasAriaLabelRef = useRef(canvasAriaLabel)
+  const onStopClickRef = useRef(onStopClick)
+  const validStopsRef = useRef(validStops)
 
   const handleCardKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
     if (!onClick) return
@@ -273,6 +294,14 @@ export default function TripDayMap({
   useEffect(() => {
     canvasAriaLabelRef.current = canvasAriaLabel
   }, [canvasAriaLabel])
+
+  useEffect(() => {
+    onStopClickRef.current = onStopClick
+  }, [onStopClick])
+
+  useEffect(() => {
+    validStopsRef.current = validStops
+  }, [validStops])
 
   const fitMapToStops = useCallback((map: mapboxgl.Map) => {
     if (validStops.length === 0) {
@@ -378,6 +407,22 @@ export default function TripDayMap({
           'text-halo-width': 0.9,
         },
       })
+
+      map.on('mouseenter', 'day-stop-labels', () => {
+        map.getCanvas().style.cursor = onStopClickRef.current ? 'pointer' : ''
+      })
+
+      map.on('mouseleave', 'day-stop-labels', () => {
+        map.getCanvas().style.cursor = ''
+      })
+
+      map.on('click', 'day-stop-labels', (event) => {
+        const id = event.features?.[0]?.properties?.id
+        if (typeof id !== 'string') return
+        const stop = validStopsRef.current.find((candidate) => candidate.id === id)
+        if (!stop) return
+        onStopClickRef.current?.(stop)
+      })
     })
 
     return () => {
@@ -431,12 +476,52 @@ export default function TripDayMap({
 
     if (map.getLayer('day-stop-labels')) {
       map.setLayoutProperty('day-stop-labels', 'visibility', 'visible')
-      map.setLayoutProperty('day-stop-labels', 'text-size', interactive ? 12 : 10)
-      map.setPaintProperty('day-stop-labels', 'text-color', active ? 'rgba(112,73,26,0.96)' : 'rgba(28,42,55,0.94)')
+      map.setLayoutProperty('day-stop-labels', 'text-size', [
+        'case',
+        ['==', ['get', 'id'], focusedStop?.id || ''],
+        interactive ? 16 : 13,
+        interactive ? 12 : 10,
+      ])
+      map.setPaintProperty('day-stop-labels', 'text-color', [
+        'case',
+        ['==', ['get', 'id'], focusedStop?.id || ''],
+        'rgba(159,105,32,1)',
+        active ? 'rgba(112,73,26,0.96)' : 'rgba(28,42,55,0.94)',
+      ])
+      map.setPaintProperty('day-stop-labels', 'text-halo-width', [
+        'case',
+        ['==', ['get', 'id'], focusedStop?.id || ''],
+        1.8,
+        0.9,
+      ])
     }
 
-    fitMapToStops(map)
-  }, [validStops, active, mapReady, interactive, fitMapToStops, title])
+    const focusLatitude = coerceCoordinate(focusTarget?.latitude)
+    const focusLongitude = coerceCoordinate(focusTarget?.longitude)
+    const cameraTarget: { latitude: number; longitude: number; zoom?: number } | null = focusLatitude != null && focusLongitude != null
+      ? {
+          latitude: focusLatitude,
+          longitude: focusLongitude,
+          zoom: focusTarget?.zoom,
+        }
+      : focusedStop
+        ? {
+            latitude: focusedStop.latitude,
+            longitude: focusedStop.longitude,
+          }
+        : null
+
+    if (cameraTarget) {
+      map.flyTo({
+        center: [cameraTarget.longitude, cameraTarget.latitude],
+        zoom: cameraTarget.zoom ?? (interactive ? 15 : 13),
+        duration: 650,
+        essential: true,
+      })
+    } else {
+      fitMapToStops(map)
+    }
+  }, [validStops, active, mapReady, interactive, fitMapToStops, title, focusedStop, focusTarget])
 
   useEffect(() => {
     const map = mapRef.current
@@ -450,11 +535,13 @@ export default function TripDayMap({
 
     const frame = window.requestAnimationFrame(() => {
       map.resize()
-      fitMapToStops(map)
+      if (!focusedStop && !focusTarget) {
+        fitMapToStops(map)
+      }
     })
 
     return () => window.cancelAnimationFrame(frame)
-  }, [mapHeightClassName, mapReady, interactive, validStops, fitMapToStops])
+  }, [mapHeightClassName, mapReady, interactive, validStops, fitMapToStops, focusedStop, focusTarget])
 
   return (
     <div
@@ -523,18 +610,19 @@ export default function TripDayMap({
                   />
                 )}
                 {(previewGeometry || stopOnlyPreview)!.pointNodes.map((point) => {
+                  const pointFocused = isFocusedStop(point, focusedStopId)
                   return (
                   <g key={point.id}>
                     <text
                       x={point.x}
                       y={point.y + 0.8}
                       textAnchor="middle"
-                      fontSize="5"
+                      fontSize={pointFocused ? '6.5' : '5'}
                       fontWeight="800"
-                      fill={active ? 'rgba(112,73,26,0.96)' : 'rgba(28,42,55,0.94)'}
+                      fill={pointFocused ? 'rgba(159,105,32,1)' : active ? 'rgba(112,73,26,0.96)' : 'rgba(28,42,55,0.94)'}
                       paintOrder="stroke"
                       stroke="rgba(255,252,244,0.96)"
-                      strokeWidth="1.15"
+                      strokeWidth={pointFocused ? '1.6' : '1.15'}
                     >
                       {point.index}
                     </text>

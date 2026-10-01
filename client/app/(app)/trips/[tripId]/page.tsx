@@ -91,6 +91,17 @@ type GroupBrief = {
   destination?: string
 }
 
+type TrackedMapStop = {
+  id: string | null
+  itemId?: string | null
+  title: string
+  index?: number | null
+  dayIndex?: number | null
+  latitude: number
+  longitude: number
+  zoom?: number
+}
+
 type PlannerQuickEdit = {
   key: string
   label: string
@@ -248,6 +259,7 @@ function TripStudioPageContent() {
   const [workflowError, setWorkflowError] = useState<string | null>(null)
   const [suggestedStepNotice, setSuggestedStepNotice] = useState<string | null>(null)
   const [mapPassNeedsPlanEdits, setMapPassNeedsPlanEdits] = useState(false)
+  const [trackedMapStop, setTrackedMapStop] = useState<TrackedMapStop | null>(null)
   const qaForceRewriteUnavailable = process.env.NODE_ENV === 'development' && searchParams.get('qaRewriteUnavailable') === '1'
   const qaForceBuildMapsFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaBuildMapsFailure') === '1'
   const qaForceOptimizeFailure = process.env.NODE_ENV === 'development' && searchParams.get('qaOptimizeFailure') === '1'
@@ -323,7 +335,6 @@ function TripStudioPageContent() {
   const studioRef = useRef<HTMLDivElement>(null)
   const plannerChatPanelRef = useRef<HTMLElement>(null)
   const workflowPanelRef = useRef<HTMLElement>(null)
-  const flyToRef = useRef<((lat: number, lng: number, zoom?: number) => void) | null>(null)
   const hydrationAttemptedRef = useRef<string | null>(null)
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['trip', tripId],
@@ -365,6 +376,11 @@ function TripStudioPageContent() {
   const canEditTrip = trip?.is_owner !== false
   const urlPrompt = searchParams.get('prompt')?.trim() || ''
   const totalItineraryItems = days.reduce((sum, day) => sum + (day.items?.length ?? 0), 0)
+
+  const selectDay = useCallback((dayIndex: number) => {
+    setSelectedDayIndex(dayIndex)
+    setTrackedMapStop(null)
+  }, [])
 
   const { data: feedback = [] } = useQuery({
     queryKey: ['trip-feedback', tripId],
@@ -480,12 +496,31 @@ function TripStudioPageContent() {
   }, [tripId, refetch])
 
   const onSelectItem = useCallback((item: TripItem) => {
-    const latitude = coerceCoordinate(item.place?.latitude)
-    const longitude = coerceCoordinate(item.place?.longitude)
-    if (latitude != null && longitude != null) {
-      flyToRef.current?.(latitude, longitude, 4)
+    const itemDay = days.find((day) => (day.items || []).some((candidate) => candidate.id === item.id)) || null
+    const displayStops = itemDay
+      ? buildDisplayStops(sortTripItemsForVisibleItinerary((itemDay.items || []) as TripItem[]), { preserveOrder: true })
+      : []
+    const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped) || null
+    const latitude = coerceCoordinate(mappedStop?.latitude ?? item.place?.latitude)
+    const longitude = coerceCoordinate(mappedStop?.longitude ?? item.place?.longitude)
+
+    if (itemDay) {
+      setSelectedDayIndex(itemDay.day_index)
     }
-  }, [])
+
+    if (latitude != null && longitude != null) {
+      setTrackedMapStop({
+        id: mappedStop?.id || item.id,
+        itemId: item.id,
+        title: mappedStop?.title || item.title,
+        index: mappedStop?.index ?? null,
+        dayIndex: itemDay?.day_index ?? null,
+        latitude,
+        longitude,
+        zoom: item.type === 'lodging' ? 15.5 : 15,
+      })
+    }
+  }, [days])
 
   const { messages, isReady: chatReady, isLoading: chatLoading, error: chatError, sendMessage, stop } = useChat({
     type: 'plan',
@@ -494,8 +529,17 @@ function TripStudioPageContent() {
       void refetch()
     },
     onNavigate: (nav) => {
-      if (coerceCoordinate(nav.latitude) != null && coerceCoordinate(nav.longitude) != null) {
-        flyToRef.current?.(Number(nav.latitude), Number(nav.longitude), 4)
+      const latitude = coerceCoordinate(nav.latitude)
+      const longitude = coerceCoordinate(nav.longitude)
+      if (latitude != null && longitude != null) {
+        setTrackedMapStop({
+          id: null,
+          title: [nav.name, nav.country].filter(Boolean).join(', ') || 'Planner map focus',
+          dayIndex: ensureSelectedDayExists,
+          latitude,
+          longitude,
+          zoom: 14.5,
+        })
       }
     },
   })
@@ -895,6 +939,20 @@ function TripStudioPageContent() {
     () => studioDayMaps.find(({ day }) => day.day_index === ensureSelectedDayExists) || studioDayMaps[0] || null,
     [ensureSelectedDayExists, studioDayMaps]
   )
+  const handleMapStopClick = useCallback((stop: { id: string; title: string; latitude: number; longitude: number; index: number }) => {
+    const displayStop = selectedStudioDay?.displayStops.find((candidate) => candidate.id === stop.id) || null
+
+    setTrackedMapStop({
+      id: stop.id,
+      itemId: displayStop?.item.id ?? null,
+      title: stop.title,
+      index: stop.index,
+      dayIndex: selectedStudioDay?.day.day_index ?? ensureSelectedDayExists,
+      latitude: stop.latitude,
+      longitude: stop.longitude,
+      zoom: 15,
+    })
+  }, [ensureSelectedDayExists, selectedStudioDay])
   const mappedDayCount = useMemo(
     () => studioDayMaps.filter(({ mappedStops }) => mappedStops.length > 0).length,
     [studioDayMaps]
@@ -913,6 +971,22 @@ function TripStudioPageContent() {
         selectedStudioDay.routeSummary,
       ].filter(Boolean).join(' • ')
     : 'Map appears once Globe has routeable stops.'
+  const selectedMapSubtitle = trackedMapStop
+    ? `Following ${trackedMapStop.index ? `stop ${trackedMapStop.index}: ` : ''}${trackedMapStop.title}`
+    : selectedDaySubtitle
+
+  useEffect(() => {
+    if (!trackedMapStop?.itemId && !trackedMapStop?.id) return
+
+    const trackedStillExists = studioDayMaps.some(({ displayStops }) =>
+      displayStops.some((stop) =>
+        (trackedMapStop.id && stop.id === trackedMapStop.id) ||
+        (trackedMapStop.itemId && stop.item.id === trackedMapStop.itemId)
+      )
+    )
+
+    if (!trackedStillExists) setTrackedMapStop(null)
+  }, [studioDayMaps, trackedMapStop?.id, trackedMapStop?.itemId])
   const plannerChatEmptyState = useMemo(() => ({
     eyebrow: 'Ready edits',
     title: 'Start with one itinerary move',
@@ -1488,7 +1562,7 @@ function TripStudioPageContent() {
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-foreground">Route quality: {routeQualityLabel}</p>
-                      <p className="mt-0.5 truncate text-xs text-foreground/55">{selectedDaySubtitle}</p>
+                      <p className="mt-0.5 truncate text-xs text-foreground/55">{selectedMapSubtitle}</p>
                     </div>
                   </div>
                 </div>
@@ -1521,7 +1595,7 @@ function TripStudioPageContent() {
                     {studioDayMaps.map(({ day, mappedStops, routeSummary }) => (
                       <button
                         key={day.id}
-                        onClick={() => setSelectedDayIndex(day.day_index)}
+                        onClick={() => selectDay(day.day_index)}
                         aria-pressed={day.day_index === ensureSelectedDayExists}
                         className={cn(
                           'touch-target min-w-[220px] rounded-md border px-3 py-3 text-left transition-colors lg:min-w-0 lg:w-full',
@@ -1567,7 +1641,12 @@ function TripStudioPageContent() {
                         return (
                           <div
                             key={stop.id}
-                            className="group flex w-full items-start gap-2 rounded-md border border-rule bg-paper px-2.5 py-2 transition-colors hover:bg-paper-hover"
+                            className={cn(
+                              'group flex w-full items-start gap-2 rounded-md border px-2.5 py-2 transition-colors hover:bg-paper-hover',
+                              trackedMapStop?.id === stop.id || trackedMapStop?.itemId === stop.item.id
+                                ? 'border-[color:var(--brass)]/40 bg-[var(--brass-subtle)] shadow-[0_10px_24px_rgba(190,132,49,0.12)]'
+                                : 'border-rule bg-paper'
+                            )}
                           >
                             <button
                               type="button"
@@ -1584,7 +1663,12 @@ function TripStudioPageContent() {
                                   loading="lazy"
                                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
                                 />
-                              <span className="absolute left-1.5 top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-paper-raised/90 px-1 text-[10px] font-semibold text-[var(--brass)] shadow-sm">
+                              <span className={cn(
+                                'absolute left-1.5 top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold shadow-sm',
+                                trackedMapStop?.id === stop.id || trackedMapStop?.itemId === stop.item.id
+                                  ? 'bg-[var(--brass)] text-[var(--brass-text)]'
+                                  : 'bg-paper-raised/90 text-[var(--brass)]'
+                              )}>
                                   {stop.mapped ? stop.index : '—'}
                                 </span>
                               </span>
@@ -1621,6 +1705,9 @@ function TripStudioPageContent() {
                   ariaLabel={`Trip Studio map for ${selectedStudioDay?.day.title || trip?.title || 'the selected trip'}`}
                   showDetails={false}
                   interactive={true}
+                  focusedStopId={trackedMapStop?.id || null}
+                  focusTarget={trackedMapStop}
+                  onStopClick={handleMapStopClick}
                   mapHeightClassName="h-[88px] sm:h-[360px] lg:h-full"
                   className="min-w-0 rounded-none border-0"
                 />
@@ -1647,7 +1734,8 @@ function TripStudioPageContent() {
                 tripTitle={trip?.title || 'Trip'}
                 days={days}
                 selectedDayIndex={ensureSelectedDayExists}
-                setSelectedDayIndex={setSelectedDayIndex}
+                setSelectedDayIndex={selectDay}
+                focusedItemId={trackedMapStop?.itemId || null}
                 onSelectItem={onSelectItem}
                 onBulkOps={onBulkOps}
                 onRegenerateDay={handleRegenerateDay}

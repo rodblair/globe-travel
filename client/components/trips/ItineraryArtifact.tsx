@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { GripVertical, Trash2, Pencil, Clock, Sparkles, Maximize2, Minimize2, MapPin, ArrowLeftRight, Check, ArrowUp, ArrowDown, BedDouble, ExternalLink, CalendarCheck, Utensils } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -100,6 +100,7 @@ type ItineraryArtifactProps = {
   loadingLabel?: string
   readOnly?: boolean
   showMapPanel?: boolean
+  focusedItemId?: string | null
 }
 
 const SWAP_OPTIONS = [
@@ -214,6 +215,7 @@ export default function ItineraryArtifact({
   loadingLabel,
   readOnly = false,
   showMapPanel = true,
+  focusedItemId,
 }: ItineraryArtifactProps) {
   const selectedDay = useMemo(
     () => days.find((d) => d.day_index === selectedDayIndex) || days[0],
@@ -236,12 +238,23 @@ export default function ItineraryArtifact({
     startY: number
   } | null>(null)
   const editingInputRef = useRef<HTMLInputElement>(null)
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const [applyingSwapId, setApplyingSwapId] = useState<string | null>(null)
   const [mapExpanded, setMapExpanded] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
   const [optimizeDone, setOptimizeDone] = useState(false)
   const [pendingDeleteItemId, setPendingDeleteItemId] = useState<string | null>(null)
   const [itemActionError, setItemActionError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!focusedItemId) return
+
+    const frame = window.requestAnimationFrame(() => {
+      itemRefs.current[focusedItemId]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [focusedItemId, selectedDayIndex])
 
   const handleSwapChoice = async (item: TripItem, preference: string) => {
     if (!onSwapItem || swappingItemId) return
@@ -374,6 +387,11 @@ export default function ItineraryArtifact({
       stopDetails: selectedCard.displayStops,
     }
   }, [dayMapCards, selectedDay])
+
+  const selectedDayFocusedStop = useMemo(
+    () => selectedDayMap?.stopDetails.find((stop) => stop.item.id === focusedItemId && stop.mapped) || null,
+    [focusedItemId, selectedDayMap]
+  )
 
   const selectedDayCard = useMemo(
     () => dayMapCards.find(({ day }) => day.day_index === selectedDay?.day_index) || null,
@@ -657,6 +675,11 @@ export default function ItineraryArtifact({
                 ariaLabel={`Focused route map for day ${selectedDay.day_index}${selectedDay.title ? `: ${selectedDay.title}` : ''}`}
                 showDetails={false}
                 interactive={true}
+                focusedStopId={selectedDayFocusedStop?.id || null}
+                onStopClick={(stop) => {
+                  const displayStop = selectedDayMap.stopDetails.find((candidate) => candidate.id === stop.id)
+                  if (displayStop) onSelectItem?.(displayStop.item)
+                }}
                 mapHeightClassName={mapExpanded ? 'h-80' : 'h-56'}
                 className="min-w-0 overflow-hidden"
               />
@@ -664,6 +687,7 @@ export default function ItineraryArtifact({
 
             <div className="mt-3 grid gap-2">
               {selectedDayMap.stopDetails.map((stop) => {
+                const isFocusedItem = focusedItemId === stop.item.id
                 const mapsUrl = getMapsUrl({
                   title: stop.title,
                   placeName: stop.placeName,
@@ -677,7 +701,9 @@ export default function ItineraryArtifact({
                   key={stop.id}
                   className={cn(
                     'flex items-start gap-3 rounded-2xl border px-3 py-2.5 transition-colors',
-                    stop.mapped
+                    isFocusedItem
+                      ? 'border-[color:var(--brass)]/45 bg-[var(--brass-subtle)] shadow-[0_10px_26px_rgba(190,132,49,0.12)]'
+                      : stop.mapped
                       ? 'border-rule bg-paper-recessed/60 hover:border-rule hover:bg-paper-recessed/60'
                       : 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)] hover:bg-[var(--brass-subtle)]'
                   )}
@@ -691,7 +717,9 @@ export default function ItineraryArtifact({
                       className={cn(
                         'mt-0.5 inline-flex h-6 min-w-6 flex-shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums',
                         stop.mapped
-                          ? 'bg-[var(--brass)] text-[var(--brass-text)]'
+                          ? isFocusedItem
+                            ? 'bg-[var(--brass-hover)] text-[var(--brass-text)]'
+                            : 'bg-[var(--brass)] text-[var(--brass-text)]'
                           : 'border border-rule bg-paper-raised text-foreground/42'
                       )}
                       aria-label={stop.mapped ? `Map stop ${stop.index}` : 'Not numbered on map'}
@@ -799,6 +827,7 @@ export default function ItineraryArtifact({
                     {lodgingItems.length > 0 && (
                       <div className="mt-3 grid gap-2">
                         {lodgingItems.map((item) => {
+                          const isFocusedItem = focusedItemId === item.id
                           const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped)
                           const locationLabel = mappedStop?.placeName || getItineraryPlaceLabel(item)
                           const countryLabel = mappedStop?.country || item.place?.country || null
@@ -823,7 +852,18 @@ export default function ItineraryArtifact({
                           })
 
                           return (
-                            <div key={item.id} className="rounded-2xl border border-rule bg-paper-recessed p-3">
+                            <div
+                              key={item.id}
+                              ref={(node) => {
+                                itemRefs.current[item.id] = node
+                              }}
+                              className={cn(
+                                'rounded-2xl border p-3 transition-colors',
+                                isFocusedItem
+                                  ? 'border-[color:var(--brass)]/45 bg-[var(--brass-subtle)] shadow-[0_12px_30px_rgba(190,132,49,0.14)]'
+                                  : 'border-rule bg-paper-recessed'
+                              )}
+                            >
                               <div className="flex flex-col gap-3">
                                 <div className="min-w-0 flex-1 text-left">
                                   <div className="flex min-w-0 gap-3">
@@ -841,7 +881,10 @@ export default function ItineraryArtifact({
                                     <div className="min-w-0 flex-1">
                                       <div className="flex flex-wrap items-center gap-2">
                                         {mappedStop && (
-                                          <span className="inline-flex items-center rounded-full border border-[color:var(--brass)]/30 bg-[var(--brass)] px-2 py-1 text-[10px] font-semibold tabular-nums text-[var(--brass-text)]">
+                                          <span className={cn(
+                                            'inline-flex items-center rounded-full border border-[color:var(--brass)]/30 px-2 py-1 text-[10px] font-semibold tabular-nums text-[var(--brass-text)]',
+                                            isFocusedItem ? 'bg-[var(--brass-hover)]' : 'bg-[var(--brass)]'
+                                          )}>
                                             Map {mappedStop.index}
                                           </span>
                                         )}
@@ -989,6 +1032,7 @@ export default function ItineraryArtifact({
                   />
 
                   {timelineItems.map((item) => {
+                    const isFocusedItem = focusedItemId === item.id
                     const sortedItemIndex = sortedItems.findIndex((sortedItem) => sortedItem.id === item.id)
                     const mappedStop = displayStops.find((stop) => stop.item.id === item.id && stop.mapped)
                     const locationLabel = mappedStop?.placeName || getItineraryPlaceLabel(item)
@@ -1014,7 +1058,12 @@ export default function ItineraryArtifact({
                     })
 
                     return (
-                    <div key={item.id}>
+                    <div
+                      key={item.id}
+                      ref={(node) => {
+                        itemRefs.current[item.id] = node
+                      }}
+                    >
                         <div
                         data-trip-drop-day={day.day_index}
                         data-trip-drop-index={sortedItemIndex}
@@ -1032,7 +1081,9 @@ export default function ItineraryArtifact({
                         }}
                         className={cn(
                           'group rounded-2xl border p-3 transition-colors',
-                          dragOverItemId === item.id ? 'border-[color:var(--brass)]/30 bg-[var(--brass-subtle)]' : 'border-rule bg-paper-recessed hover:border-rule'
+                          dragOverItemId === item.id || isFocusedItem
+                            ? 'border-[color:var(--brass)]/40 bg-[var(--brass-subtle)] shadow-[0_12px_30px_rgba(190,132,49,0.12)]'
+                            : 'border-rule bg-paper-recessed hover:border-rule'
                         )}
                       >
                         <div className="flex flex-col gap-3">
@@ -1100,7 +1151,9 @@ export default function ItineraryArtifact({
                                     className={cn(
                                       'inline-flex items-center rounded-full border px-2 py-1 text-[10px] font-semibold tabular-nums',
                                       mappedStop
-                                        ? 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)]'
+                                        ? isFocusedItem
+                                          ? 'border-[color:var(--brass)]/40 bg-[var(--brass-hover)] text-[var(--brass-text)]'
+                                          : 'border-[color:var(--brass)]/30 bg-[var(--brass)] text-[var(--brass-text)]'
                                         : 'border-rule bg-paper-raised/85 text-foreground/38'
                                     )}
                                   >
