@@ -65,7 +65,6 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useSubscription } from '@/hooks/useSubscription'
 import { PLANS } from '@/lib/plans'
 import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
-import { cn } from '@/lib/utils'
 
 type SavedTab = 'trips' | 'journal'
 
