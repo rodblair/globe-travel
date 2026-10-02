@@ -15,7 +15,6 @@ import {
   Pencil,
   Plus,
   Search,
-  Share2,
   Sparkles,
   Trash2,
   TriangleAlert,
@@ -57,7 +56,8 @@ import {
 import { EmptyState } from '@/components/ui/empty-state'
 import { IconButton } from '@/components/ui/icon-button'
 import { Input } from '@/components/ui/input'
-import { CartographicPlate } from '@/components/brand/CartographicPlate'
+import { Postmark } from '@/components/brand/Postmark'
+import { Scene, sceneForTitle } from '@/components/brand/Scene'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -65,6 +65,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useSubscription } from '@/hooks/useSubscription'
 import { PLANS } from '@/lib/plans'
 import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
+import { cn } from '@/lib/utils'
 
 type SavedTab = 'trips' | 'journal'
 
@@ -286,7 +287,7 @@ function SavedPageContent() {
       <div className="app-sticky-header">
         <div className="app-container flex flex-wrap items-center justify-between gap-3 py-4">
           <div>
-            <h1 className="text-3xl md:text-4xl">{activeTab === 'journal' ? 'Trip notes' : 'Your trips'}</h1>
+            <h1 className="text-[2.5rem] leading-none tracking-[-0.035em] md:text-5xl">{activeTab === 'journal' ? 'Trip notes' : 'Your trips'}</h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
               {activeTab === 'journal'
                 ? 'Private decisions, reminders and memories tied to your trips.'
@@ -395,14 +396,23 @@ function SavedPageContent() {
                       return (
                         <Card
                           key={trip.id}
-                          className="group relative gap-0 overflow-hidden border-foreground/80 p-0 transition-transform hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_var(--foreground)]"
+                          className="group relative gap-0 overflow-hidden rounded-[1.5rem] p-3 pb-5 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl"
                         >
-                          <div className="h-36 border-b">
-                            <CartographicPlate seed={trip.id} stops={Math.min(7, Math.max(3, (days ?? 3) + 1))} />
+                          <div className="relative aspect-[3/2] overflow-hidden rounded-xl">
+                            <Scene scene={sceneForTitle(displayTitle, trip.id)} />
+                            <span
+                              className={cn(
+                                'absolute top-3 left-3 rounded-full bg-[#fffbf3] px-3 py-1 text-[0.8125rem] font-bold text-[#0f2431]',
+                                trip.is_public && 'text-[#2b6f78]',
+                              )}
+                            >
+                              {trip.is_public ? 'Shared' : 'Private'}
+                            </span>
+                            {trip.is_public ? <Postmark className="absolute top-2 right-12 size-12" /> : null}
                           </div>
-                          <div className="flex flex-1 flex-col gap-3 p-4">
+                          <div className="flex flex-1 flex-col gap-3 px-2 pt-4">
                             <div className="min-w-0">
-                              <h2 className="text-2xl leading-tight">
+                              <h2 className="font-serif text-[1.75rem] leading-[1.08] font-medium tracking-[-0.025em]">
                                 <Link
                                   href={`/trips/${trip.id}`}
                                   className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:rounded-lg"
@@ -421,10 +431,6 @@ function SavedPageContent() {
                                   <Clock /> {days} {days === 1 ? 'day' : 'days'}
                                 </Badge>
                               ) : null}
-                              <Badge variant={trip.is_public ? 'success' : 'outline'}>
-                                {trip.is_public ? <Share2 /> : null}
-                                {trip.is_public ? 'Shared' : 'Private'}
-                              </Badge>
                               <span className="ml-auto text-xs text-muted-foreground">
                                 {new Date(trip.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                               </span>

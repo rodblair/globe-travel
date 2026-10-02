@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { fraunces, instrumentSans, jetbrainsMono } from "@/lib/fonts";
+import { caveat, fraunces, instrumentSans, jetbrainsMono } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -58,7 +58,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${instrumentSans.variable} ${jetbrainsMono.variable}`}
+      className={`${fraunces.variable} ${instrumentSans.variable} ${caveat.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <link rel="preconnect" href="https://api.mapbox.com" />

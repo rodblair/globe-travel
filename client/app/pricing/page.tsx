@@ -55,14 +55,14 @@ export default function PricingPage() {
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
       <SiteHeader />
       <main className="flex-1">
-        <section className="border-b border-foreground">
+        <section>
           <div className="mx-auto w-full max-w-7xl px-4 pt-14 pb-20 md:px-6 md:pt-20">
             <p className="flex items-center gap-3 text-sm font-semibold">
               <span aria-hidden className="h-px w-10 bg-primary" />
               Pricing
             </p>
-            <h1 className="mt-4 max-w-4xl text-[clamp(2.75rem,6vw,5.25rem)] leading-[0.98] tracking-[-0.03em]">
-              Start free. Upgrade when the trip gets real.
+            <h1 className="mt-4 max-w-4xl text-[clamp(2.75rem,6.4vw,6rem)] leading-[0.96] tracking-[-0.04em]">
+              Start free. Upgrade when the trip gets <em className="font-normal text-primary italic">real.</em>
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
               Plan a city trip, map the days, share the itinerary and collect feedback before anyone commits. Upgrade when
@@ -74,10 +74,10 @@ export default function PricingPage() {
           </div>
         </section>
 
-        <section className="bg-card py-20">
+        <section className="bg-secondary py-20">
           <div className="mx-auto w-full max-w-4xl px-4 md:px-6">
             <h2 className="text-4xl leading-tight md:text-5xl">Compare plans</h2>
-            <div className="mt-8 overflow-hidden border border-foreground bg-background">
+            <div className="mt-8 overflow-hidden rounded-2xl border bg-card">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -115,13 +115,13 @@ export default function PricingPage() {
         </section>
 
         <section className="px-4 pb-20 md:px-6">
-          <div className="mx-auto max-w-7xl border border-foreground bg-primary px-6 py-14 text-primary-foreground md:px-12">
+          <div className="mx-auto max-w-7xl rounded-[2rem] bg-dusk-deep px-6 py-16 text-[#fff8ec] md:px-14">
             <h2 className="max-w-3xl text-4xl leading-[1.02] md:text-6xl">Give the group one plan to react to.</h2>
-            <p className="mt-4 max-w-xl text-lg text-primary-foreground/85">
+            <p className="mt-4 max-w-xl text-lg text-[#fff8ec]/85">
               Start with the free workspace, or begin Adventurer when you already know this trip needs more room.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <Button asChild size="lg" className="bg-background text-foreground hover:bg-background/90">
+              <Button asChild size="lg" variant="bone">
                 <Link href="/signup?next=%2Faccount%3Ftab%3Dbilling">Start free trial</Link>
               </Button>
               <Link href={GUEST_HREF} className="font-semibold underline decoration-2 underline-offset-[6px]">

@@ -22,6 +22,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useSubscription } from '@/hooks/useSubscription'
 import { APP_NAV } from '@/lib/nav'
 import { PLANS } from '@/lib/plans'
+import { sceneForTitle, type SceneName } from '@/components/brand/Scene'
 import { cn } from '@/lib/utils'
 
 type RecentTrip = { id: string; title: string | null }
@@ -38,6 +39,13 @@ function useRecentTrips() {
     },
     staleTime: 1000 * 60,
   })
+}
+
+const SCENE_DOT: Record<SceneName, string> = {
+  lisbon: 'bg-[#f28a5e]',
+  kyoto: 'bg-[#9a5a86]',
+  athens: 'bg-[#7fcde6]',
+  marrakech: 'bg-[#f5b83d]',
 }
 
 function initials(name: string | null | undefined) {
@@ -90,7 +98,7 @@ export function Sidebar() {
               href={item.href}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'relative flex h-11 items-center gap-3 rounded-md px-3 text-[0.9375rem] font-medium transition-colors',
+                'relative flex h-12 items-center gap-3 rounded-2xl px-4 text-base font-semibold transition-colors',
                 isActive
                   ? 'bg-sidebar-accent text-sidebar-accent-foreground before:absolute before:inset-y-2 before:-left-px before:w-[3px] before:rounded-full before:bg-sidebar-primary'
                   : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground',
@@ -106,7 +114,7 @@ export function Sidebar() {
       <div className="mt-6 min-h-0 flex-1 overflow-y-auto px-3">
         {recents && recents.length > 0 ? (
           <>
-            <p className="px-3 pb-2 text-xs font-semibold text-sidebar-foreground/50">Recent trips</p>
+            <p className="px-4 pb-2 text-sm font-bold text-sidebar-foreground/55">Recent trips</p>
             <ul className="space-y-0.5">
               {recents.map((trip) => {
                 const href = `/trips/${trip.id}`
@@ -117,13 +125,14 @@ export function Sidebar() {
                       href={href}
                       aria-current={active ? 'page' : undefined}
                       className={cn(
-                        'block truncate rounded-md px-3 py-2 text-sm transition-colors',
+                        'flex items-center gap-3 truncate rounded-xl px-4 py-2.5 text-[0.9375rem] transition-colors',
                         active
                           ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
                           : 'text-sidebar-foreground/65 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground',
                       )}
                     >
-                      {trip.title || 'Untitled trip'}
+                      <span aria-hidden className={cn('size-2.5 shrink-0 rounded-full', SCENE_DOT[sceneForTitle(trip.title || '', trip.id)])} />
+                      <span className="truncate">{trip.title || 'Untitled trip'}</span>
                     </Link>
                   </li>
                 )
@@ -137,13 +146,13 @@ export function Sidebar() {
         <div className="px-3 pb-3">
           <Link
             href="/pricing"
-            className="flex items-center gap-3 rounded-md border border-sidebar-border bg-sidebar-accent/50 p-3 transition-colors hover:bg-sidebar-accent"
+            className="flex items-center gap-3 rounded-2xl border border-sidebar-border bg-sidebar-accent/60 p-4 transition-colors hover:bg-sidebar-accent"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-sidebar-primary text-sidebar-primary-foreground">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sun text-[#0f2431]">
               <Sparkles className="size-4" />
             </span>
             <span className="min-w-0">
-              <span className="block text-sm font-medium leading-tight">Try {PLANS.pro.name}</span>
+              <span className="block font-serif text-lg font-medium leading-tight">Try {PLANS.pro.name}</span>
               <span className="block text-xs text-sidebar-foreground/60">7-day free trial</span>
             </span>
           </Link>
@@ -152,7 +161,7 @@ export function Sidebar() {
 
       {isGuest && (
         <div className="px-3 pb-3">
-          <div className="rounded-md border border-sidebar-border bg-sidebar-accent/50 p-3">
+          <div className="rounded-2xl border border-sidebar-border bg-sidebar-accent/60 p-4">
             <p className="text-sm font-medium">You&apos;re browsing as a guest</p>
             <p className="mt-0.5 text-xs text-sidebar-foreground/60">Create a free account to keep your trips.</p>
             <Button asChild size="sm" className="mt-3 w-full">

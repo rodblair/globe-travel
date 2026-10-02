@@ -9,6 +9,7 @@ import type { TripDay } from '@/components/trips/ItineraryArtifact'
 import { buildDisplayStops, getItineraryPlaceLabel, getRouteFallbackLabel, shouldUseSavedRoute, sortTripItemsForDisplay } from '@/components/trips/derivedStops'
 import { getTravelBookingAction, type TravelBookingAction } from '@/lib/travel-booking-links'
 import { formatTripTitleForDisplay, getTripKeepsakeMeta } from '@/lib/trip-copy'
+import { Sticky } from '@/components/brand/Sticky'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -71,7 +72,7 @@ export function ArtifactFrame({
   ribbon?: boolean
 }) {
   return (
-    <div className={cn('relative overflow-hidden rounded-lg border border-foreground bg-card text-card-foreground shadow-[6px_6px_0_0_var(--foreground)]', className)}>
+    <div className={cn('relative overflow-hidden rounded-lg border border-foreground bg-card text-card-foreground shadow-lg', className)}>
       {children}
     </div>
   )
@@ -320,16 +321,15 @@ export function FriendFeedbackPanel({
           </p>
         ) : (
           <>
-            {visibleFeedback.map((entry) => (
-              <div key={entry.id} className="rounded-lg border bg-muted/40 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="min-w-0 truncate text-sm font-semibold text-foreground">{entry.author_name}</p>
-                  <span className={cn('shrink-0 rounded-full border px-2 py-0.5 text-xs', toneClass[entry.sentiment])}>
-                    {toneLabel[entry.sentiment]}
-                  </span>
-                </div>
-                <p className="mt-2 line-clamp-3 break-words text-sm leading-relaxed text-muted-foreground">{entry.comment}</p>
-              </div>
+            {visibleFeedback.map((entry, index) => (
+              <Sticky
+                key={entry.id}
+                author={`${entry.author_name} · ${toneLabel[entry.sentiment]}`}
+                tone={entry.sentiment === 'love_it' ? 'note' : entry.sentiment === 'curious' ? 'glass' : 'peach'}
+                tilt={index % 2 === 0 ? -1.5 : 1.5}
+              >
+                <span className="line-clamp-3 break-words">{entry.comment}</span>
+              </Sticky>
             ))}
             {remainingFeedbackCount > 0 && (
               <p className="rounded-lg border border-dashed px-4 py-3 text-sm leading-relaxed text-muted-foreground">

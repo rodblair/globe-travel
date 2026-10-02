@@ -10,10 +10,11 @@ import {
   FriendFeedbackPanel,
   KeepsakeRouteCard,
   ShareLinkCard,
-  TripPosterPreview,
   getTripKeepsakeMeta,
 } from '@/components/trips/KeepsakeArtifacts'
 import { GlobeBrand } from '@/components/atmosphere/GlobeBrand'
+import { Postcard } from '@/components/brand/Postcard'
+import { sceneForTitle } from '@/components/brand/Scene'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -235,18 +236,25 @@ function SharedTripPageInner({ shareSlug }: { shareSlug: string }) {
         ) : (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
             <div className="space-y-8">
-              <section>
-                <div className="mb-6 max-w-2xl">
-                  <Badge variant="route" className="mb-3">Shared trip</Badge>
-                  <h1 className="break-words text-4xl font-medium md:text-5xl">{displayTitleParts.title}</h1>
+              <section className="grid items-center gap-8 md:grid-cols-[19rem_1fr] md:gap-12">
+                <Postcard
+                  scene={sceneForTitle(displayTitle, trip.id)}
+                  title={meta.destination.split(/ with | and | for /i)[0]}
+                  caption={`${days.length} day${days.length === 1 ? '' : 's'} · shared with you`}
+                  tilt={-3}
+                  postmark
+                  className="mx-auto w-full max-w-[19rem]"
+                />
+                <div>
+                  <Badge variant="note" className="mb-3">Shared trip</Badge>
+                  <h1 className="break-words text-[clamp(2.5rem,5vw,4rem)] leading-[1] tracking-[-0.035em]">{displayTitleParts.title}</h1>
                   {displayTitleParts.timing && (
-                    <p className="mt-2 text-sm font-medium text-primary">In {displayTitleParts.timing}</p>
+                    <p className="mt-2 text-base font-semibold text-primary">In {displayTitleParts.timing}</p>
                   )}
-                  <p className="mt-4 text-lg text-muted-foreground">
+                  <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
                     Review the route, react to the day plan, and help the group turn the {meta.destination} plan into the trip everyone can say yes to.
                   </p>
                 </div>
-                <TripPosterPreview trip={trip} days={days} forceStaticMap={qaForceMapFallback} />
               </section>
 
               <section>

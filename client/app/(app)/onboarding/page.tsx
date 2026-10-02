@@ -116,11 +116,11 @@ export default function OnboardingPage() {
       {/* Main layout */}
       <div className="relative z-10 flex h-full">
         {/* Left side - live map plate (desktop only) */}
-        <div className="relative hidden overflow-hidden border-r border-border bg-plate text-plate-foreground lg:flex lg:w-[45%] lg:flex-col lg:justify-between lg:p-12">
-          <GlobeBrand className="text-plate-foreground" markClassName="text-plate-foreground [--mark-bg:var(--plate)]" />
+        <div className="relative hidden overflow-hidden border-r border-border bg-dusk text-[#fff8ec] lg:flex lg:w-[45%] lg:flex-col lg:justify-between lg:p-12">
+          <GlobeBrand className="text-[#fff8ec]" markClassName="text-[#fff8ec] [--mark-bg:#4a2a63]" />
 
           <div>
-            <div className="overflow-hidden rounded-lg border border-plate-foreground/60 bg-card shadow-[6px_6px_0_0_oklch(0.955_0.013_88/0.9)]">
+            <div className="overflow-hidden rounded-lg bg-card shadow-xl">
               <div className="aspect-[4/3]">
                 <CartographicPlate
                   seed={`onboarding-${globePins.length}`}
@@ -129,9 +129,9 @@ export default function OnboardingPage() {
                 />
               </div>
             </div>
-            <ol className="mt-8 divide-y divide-plate-foreground/20 border-y border-plate-foreground/20">
+            <ol className="mt-8 divide-y divide-[#fff8ec]/25 border-y border-[#fff8ec]/25">
               {globePins.length === 0 ? (
-                <li className="py-3 text-plate-foreground/70">Places you mention appear here as numbered stops.</li>
+                <li className="py-3 text-[#fff8ec]/85">Places you mention appear here as numbered stops.</li>
               ) : (
                 globePins.slice(-5).map((pin, index) => (
                   <li key={`${pin.name}-${index}`} className="flex items-center gap-3 py-3">
@@ -145,7 +145,7 @@ export default function OnboardingPage() {
             </ol>
           </div>
 
-          <p className="text-sm text-plate-foreground/60">
+          <p className="text-sm text-[#fff8ec]/85">
             {globePins.length === 0 ? 'Start chatting to draw your first route.' : `${globePins.length} idea${globePins.length !== 1 ? 's' : ''} ready to plan`}
           </p>
         </div>

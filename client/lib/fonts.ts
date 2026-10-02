@@ -1,10 +1,10 @@
-import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { Caveat, Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 
-/** Display serif: headlines, trip titles, big numerals. */
+/** Display serif with the SOFT axis, for headlines, trip titles and big numerals. */
 export const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
-  axes: ["opsz"],
+  axes: ["opsz", "SOFT"],
   style: ["normal", "italic"],
   display: "swap",
 });
@@ -13,6 +13,14 @@ export const fraunces = Fraunces({
 export const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-instrument",
+  display: "swap",
+});
+
+/** Handwritten margin notes (friends' reactions). Use sparingly. */
+export const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  weight: ["500", "600"],
   display: "swap",
 });
 

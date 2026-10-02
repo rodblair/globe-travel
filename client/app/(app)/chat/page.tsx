@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { Compass, Loader2, MapPin, Sparkles, Users } from 'lucide-react'
+import { Loader2, Sparkles, Users } from 'lucide-react'
 import { useChat, type NavigateEvent, type PlaceEvent } from '@/hooks/useChat'
 import ChatInterface from '@/components/chat/ChatInterface'
 import TripDayMap from '@/components/trips/TripDayMap'
@@ -17,7 +17,8 @@ import {
   sortTripItemsForDisplay,
 } from '@/components/trips/derivedStops'
 import { extractDaysFromPrompt, extractDestinationFromPrompt } from '@/lib/planner/runtime'
-import { CartographicPlate } from '@/components/brand/CartographicPlate'
+import { HorizonGlobe, Stars } from '@/components/brand/HorizonGlobe'
+import { Postcard } from '@/components/brand/Postcard'
 import { DEFAULT_TRIP_DETAILS, TripDetailsPopover, type TripDetails } from '@/components/chat/TripDetailsPopover'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -37,24 +38,28 @@ const CHAT_MAP_STORAGE_PREFIX = 'globe-travel:chat:explore:map-stops:'
 
 const STARTER_PROMPTS = [
   {
+    scene: 'lisbon',
     label: '3 days in Lisbon',
-    sub: 'Food, viewpoints, slow mornings',
     q: 'Plan 3 days in Lisbon with great food, scenic viewpoints, relaxed mornings, and one memorable night out.',
+    tilt: -2,
   },
   {
-    label: 'Weekend in Rome',
-    sub: 'Classics without the crowds',
-    q: 'Plan a weekend in Rome covering the classics while avoiding the biggest crowds, with great meals.',
+    scene: 'kyoto',
+    label: '4 days in Kyoto',
+    q: 'Plan 4 days in Kyoto with temple walks, markets, standout food, and tea at dusk.',
+    tilt: 1.5,
   },
   {
-    label: 'Paris or Rome?',
-    sub: 'Compare before you commit',
-    q: 'Compare Paris and Rome for a 4-day trip by budget, food, walkability, nightlife, and ease of planning.',
+    scene: 'athens',
+    label: 'Weekend in Athens',
+    q: 'Plan a weekend in Athens covering the classics while avoiding the biggest crowds, with great meals.',
+    tilt: -1,
   },
   {
-    label: '4 days in Tokyo',
-    sub: 'Neighbourhoods and food',
-    q: 'Plan 4 days in Tokyo with neighbourhood walks, standout food, and one day trip.',
+    scene: 'marrakech',
+    label: '3 days in Marrakech',
+    q: 'Plan 3 days in Marrakech with souks, rooftop dinners, and a slow morning in a garden.',
+    tilt: 2,
   },
 ] as const
 
@@ -327,104 +332,101 @@ function ChatPageContent() {
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground">
       {isEmpty ? (
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto grid min-h-full w-full max-w-6xl items-center gap-10 px-4 py-10 md:px-8 md:py-16 xl:grid-cols-[1.1fr_0.9fr] xl:gap-14">
-            <div className="flex flex-col">
+          <div className="mx-auto grid min-h-full w-full max-w-7xl items-center gap-12 px-5 py-10 md:px-10 md:py-14 xl:grid-cols-[minmax(0,1fr)_27.5rem]">
             <div>
-              <p className="flex items-center gap-3 text-sm font-semibold">
-                <span aria-hidden className="h-px w-8 bg-primary" />
+              <p className="flex items-center gap-3 text-base font-bold text-primary">
+                <span aria-hidden className="h-0.5 w-9 bg-current" />
                 New trip
               </p>
-              <h1 className="mt-3 text-[clamp(2.75rem,5.4vw,4.75rem)] leading-[0.98] tracking-[-0.03em]">Where to next?</h1>
-              <p className="mt-4 max-w-lg text-lg text-muted-foreground">
-                Describe the trip. You get a mapped, day-by-day plan to refine and share with your group.
+              <h1 className="mt-4 text-[clamp(3.25rem,6.5vw,6.5rem)] leading-[0.95] tracking-[-0.04em]">
+                Where to <em className="font-normal text-primary italic">next?</em>
+              </h1>
+              <p className="mt-6 max-w-xl text-xl leading-relaxed text-muted-foreground">
+                Describe the trip in your own words. We&apos;ll draw it on a map, day by day.
               </p>
-            </div>
 
-            <Card className="mt-8 gap-0 border-foreground p-3 shadow-[5px_5px_0_0_var(--foreground)] focus-within:ring-[3px] focus-within:ring-ring/30">
-              <Textarea
-                aria-label="Describe your trip idea"
-                placeholder='Try "4 days in Athens with an island overnight, relaxed mornings and great food"'
-                disabled={planningInProgress}
-                value={draftInput}
-                onChange={(event) => setDraftInput(event.target.value)}
-                rows={3}
-                className="min-h-24 resize-none border-0 bg-transparent px-2 text-base shadow-none focus-visible:ring-0"
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' && !event.shiftKey) {
-                    event.preventDefault()
-                    submitDraftInput()
-                  }
-                }}
-              />
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                <TripDetailsPopover value={tripDetails} onChange={setTripDetails} disabled={planningInProgress} />
-                <Button
-                  type="button"
-                  size="lg"
-                  onClick={submitDraftInput}
-                  disabled={!draftInput.trim() || planningInProgress}
-                  
-                  aria-label="Create itinerary"
-               >
-                  {planningInProgress ? <Loader2 className="animate-spin" /> : <Sparkles />}
-                  {planningInProgress ? 'Creating…' : 'Create itinerary'}
-                </Button>
-              </div>
-            </Card>
+              <Card className="mt-9 gap-0 rounded-[1.75rem] border-2 border-foreground p-5 shadow-lg focus-within:ring-[3px] focus-within:ring-ring/30">
+                <Textarea
+                  aria-label="Describe your trip idea"
+                  placeholder="4 days in Athens with an island overnight, slow mornings and great food"
+                  disabled={planningInProgress}
+                  value={draftInput}
+                  onChange={(event) => setDraftInput(event.target.value)}
+                  rows={3}
+                  className="min-h-24 resize-none border-0 bg-transparent px-1 text-xl shadow-none focus-visible:ring-0 md:text-xl"
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                      event.preventDefault()
+                      submitDraftInput()
+                    }
+                  }}
+                />
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <TripDetailsPopover value={tripDetails} onChange={setTripDetails} disabled={planningInProgress} />
+                  <Button
+                    type="button"
+                    size="lg"
+                    onClick={submitDraftInput}
+                    disabled={!draftInput.trim() || planningInProgress}
+                    aria-label="Create itinerary"
+                  >
+                    {planningInProgress ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                    {planningInProgress ? 'Creating…' : 'Create itinerary'}
+                  </Button>
+                </div>
+              </Card>
 
-            {planningError && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertDescription className="flex flex-wrap items-center justify-between gap-3 text-destructive">
-                  <span>{planningError}</span>
-                  {lastPlannerPrompt && (
-                    <Button type="button" size="sm" variant="outline" onClick={() => sendMessage(lastPlannerPrompt)}>
-                      Try again
-                    </Button>
-                  )}
-                </AlertDescription>
-              </Alert>
-            )}
+              {planningError && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertDescription className="flex flex-wrap items-center justify-between gap-3 text-destructive">
+                    <span>{planningError}</span>
+                    {lastPlannerPrompt && (
+                      <Button type="button" size="sm" variant="outline" onClick={() => sendMessage(lastPlannerPrompt)}>
+                        Try again
+                      </Button>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-            <div className="mt-8">
-              <p className="mb-3 text-sm font-semibold">Need inspiration?</p>
-              <div className="grid gap-2 sm:grid-cols-2">
+              <p className="mt-9 mb-4 text-base font-bold">Need inspiration?</p>
+              <div className="flex flex-wrap gap-3">
                 {STARTER_PROMPTS.map((item) => (
                   <button
                     key={item.label}
                     type="button"
-                    onClick={() => {
-                      setDraftInput(item.q)
-                    }}
+                    onClick={() => setDraftInput(item.q)}
                     disabled={planningInProgress}
-                    className="group flex items-start gap-3 rounded-lg border bg-card p-4 text-left shadow-xs transition-all hover:border-primary/40 hover:shadow-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50"
+                    className="w-[8.25rem] rounded-md text-left transition-transform hover:-translate-y-1 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50"
                   >
-                    <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      {item.label.includes('?') ? <Compass className="size-4" /> : <MapPin className="size-4" />}
-                    </span>
-                    <span>
-                      <span className="block text-sm font-medium">{item.label}</span>
-                      <span className="block text-sm text-muted-foreground">{item.sub}</span>
-                    </span>
+                    <Postcard
+                      scene={item.scene}
+                      title={item.label}
+                      tilt={item.tilt}
+                      aspect="aspect-[4/3]"
+                      className="w-full"
+                      titleClassName="text-lg"
+                    />
                   </button>
                 ))}
               </div>
-              <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+              <p className="mt-7 flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="size-4" />
                 Planning with friends? Share the finished plan with one link.
               </p>
             </div>
-            </div>
 
-            <figure className="hidden xl:block">
-              <div className="overflow-hidden rounded-lg border border-foreground bg-card shadow-[6px_6px_0_0_var(--foreground)]">
-                <div className="aspect-[4/3]">
-                  <CartographicPlate seed={draftInput.trim() || 'your-next-trip'} stops={5} label="A sample route that redraws as you type" />
-                </div>
+            <aside className="relative isolate hidden h-[46rem] overflow-hidden rounded-[2.5rem] bg-dusk shadow-xl xl:block" aria-hidden="true">
+              <Stars className="absolute inset-x-0 top-0 h-48" />
+              <div className="absolute inset-x-9 top-10 text-[#fff8ec]">
+                <p className="font-serif text-[2.5rem] leading-[1.02] font-medium tracking-[-0.03em]">Your plan will be drawn right here.</p>
+                <p className="mt-3 text-lg leading-snug text-[#fff8ec]/90">Stops, walking routes and a link to share.</p>
               </div>
-              <figcaption className="mt-3 text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Your plate.</span> Stops, walking routes and a share link appear here once the plan is drawn.
-              </figcaption>
-            </figure>
+              <p className="font-hand absolute top-56 left-10 text-[1.875rem] leading-none text-[#ffe29a]" style={{ transform: 'rotate(-5deg)' }}>
+                it redraws as you type
+              </p>
+              <HorizonGlobe labels={false} className="absolute inset-x-0 bottom-0 h-[21rem]" />
+            </aside>
           </div>
         </div>
       ) : (

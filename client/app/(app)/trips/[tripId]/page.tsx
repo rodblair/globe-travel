@@ -1855,7 +1855,7 @@ function TripStudioPageContent() {
               </div>
             </section>
 
-            <section data-testid="trip-suggested-next-step" className="rounded-lg border border-foreground bg-card p-4 shadow-[4px_4px_0_0_var(--foreground)]">
+            <section data-testid="trip-suggested-next-step" className="rounded-2xl border bg-card p-5 shadow-md">
               <h2 className="text-xl leading-tight">Next step</h2>
               {!canEditTrip ? (
                 <>

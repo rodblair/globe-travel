@@ -29,11 +29,11 @@ export const FAQ_ITEMS = [
 
 export function LandingFaq() {
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion type="single" collapsible defaultValue={FAQ_ITEMS[0].q} className="w-full border-t-2 border-foreground">
       {FAQ_ITEMS.map((item) => (
         <AccordionItem key={item.q} value={item.q}>
-          <AccordionTrigger className="text-left text-base font-medium">{item.q}</AccordionTrigger>
-          <AccordionContent className="text-base text-muted-foreground">{item.a}</AccordionContent>
+          <AccordionTrigger className="py-6 text-left font-serif text-[1.625rem] leading-tight font-medium tracking-[-0.02em] hover:no-underline">{item.q}</AccordionTrigger>
+          <AccordionContent className="max-w-2xl text-lg leading-relaxed text-muted-foreground">{item.a}</AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>

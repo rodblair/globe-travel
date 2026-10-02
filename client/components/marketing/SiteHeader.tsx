@@ -19,15 +19,26 @@ import { cn } from '@/lib/utils'
 
 export const SITE_NAV = [
   { href: '/#how', label: 'How it works' },
-  { href: '/#features', label: 'Features' },
+  { href: '/#trips', label: 'Destinations' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/#faq', label: 'FAQ' },
 ] as const
 
 export const GUEST_HREF = '/api/guest/start?next=/chat'
 
-export function SiteHeader({ className }: { className?: string }) {
+/**
+ * `dusk` floats transparently over the hero sky (bone text); `light` is a
+ * sticky bar on paper for inner pages.
+ */
+export function SiteHeader({
+  variant = 'light',
+  className,
+}: {
+  variant?: 'light' | 'dusk'
+  className?: string
+}) {
   const [scrolled, setScrolled] = useState(false)
+  const dusk = variant === 'dusk'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -39,36 +50,57 @@ export function SiteHeader({ className }: { className?: string }) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 w-full border-b border-foreground bg-background/95 backdrop-blur-sm transition-shadow',
-        scrolled && 'shadow-[0_1px_0_0_var(--foreground)]',
+        'z-40 w-full transition-shadow',
+        dusk
+          ? 'absolute inset-x-0 top-0 text-[#fff8ec]'
+          : 'sticky top-0 border-b bg-background/90 backdrop-blur-md',
+        !dusk && scrolled && 'shadow-sm',
         className,
       )}
     >
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 md:px-6">
+      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 md:px-10">
         <Link href="/" aria-label="Globe.travel home" className="flex items-center rounded-lg">
-          <GlobeBrand />
+          <GlobeBrand
+            className={dusk ? 'text-[#fff8ec]' : undefined}
+            markClassName={dusk ? 'text-[#fff8ec] [--mark-bg:#7a3c62]' : undefined}
+          />
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-9 md:flex">
           {SITE_NAV.map((item) => (
-            <Link key={item.href} href={item.href} className="text-[0.9375rem] font-medium text-foreground/75 transition-colors hover:text-primary">
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'text-base font-medium transition-colors',
+                dusk ? 'text-[#fff8ec]/90 hover:text-white' : 'text-foreground/75 hover:text-primary',
+              )}
+            >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-1.5">
-          <ThemeToggle className="hidden md:inline-flex" />
-          <Link href="/login" className="hidden px-3 text-[0.9375rem] font-medium hover:text-primary md:inline-block">
+        <div className="flex items-center gap-2">
+          {!dusk ? <ThemeToggle className="hidden md:inline-flex" /> : null}
+          <Link
+            href="/login"
+            className={cn('hidden px-3 text-base font-semibold md:inline-block', dusk ? 'hover:text-white' : 'hover:text-primary')}
+          >
             Sign in
           </Link>
-          <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link href="/signup">Start free</Link>
+          <Button asChild size="default" variant={dusk ? 'bone' : 'default'} className="hidden sm:inline-flex">
+            <Link href="/signup">Start planning</Link>
           </Button>
 
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn('md:hidden', dusk && 'border border-[#fff8ec]/50 text-[#fff8ec] hover:bg-white/10 hover:text-white')}
+                aria-label="Open menu"
+              >
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
@@ -82,23 +114,20 @@ export function SiteHeader({ className }: { className?: string }) {
               <nav aria-label="Mobile" className="flex flex-col gap-1 px-4">
                 {SITE_NAV.map((item) => (
                   <SheetClose asChild key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="flex min-h-11 items-center rounded-lg px-3 text-base font-medium hover:bg-accent"
-                    >
+                    <Link href={item.href} className="flex min-h-12 items-center rounded-xl px-3 font-serif text-2xl hover:bg-accent">
                       {item.label}
                     </Link>
                   </SheetClose>
                 ))}
               </nav>
               <div className="mt-auto flex flex-col gap-2 p-4">
-                <Button asChild size="lg" >
-                  <Link href="/signup">Start free</Link>
+                <Button asChild size="lg">
+                  <Link href="/signup">Start planning free</Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" >
+                <Button asChild size="lg" variant="outline">
                   <Link href={GUEST_HREF}>Try as guest</Link>
                 </Button>
-                <Button asChild size="lg" variant="ghost" >
+                <Button asChild size="lg" variant="ghost">
                   <Link href="/login">Sign in</Link>
                 </Button>
                 <div className="flex justify-center pt-1">
