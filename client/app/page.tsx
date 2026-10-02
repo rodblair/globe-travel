@@ -95,7 +95,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="pointer-events-none absolute top-28 right-4 hidden h-[26rem] w-[33rem] lg:block xl:right-0 xl:top-32">
+            <div className="pointer-events-none absolute top-32 right-0 hidden h-[26rem] w-[33rem] xl:block">
               <Postcard scene="lisbon" title="Lisbon" caption="3 days · 5 friends" tilt={-7} className="absolute top-8 right-[16rem] w-56" aspect="aspect-[226/200]" />
               <Postcard scene="kyoto" title="Kyoto" caption="5 days · 3 friends" tilt={5} postmark className="absolute top-0 right-0 w-56" aspect="aspect-[226/200]" />
               <Postcard scene="athens" title="Athens" caption="4 days · 4 friends" tilt={-2} className="absolute top-[17rem] right-[8.5rem] w-56 -translate-y-6" aspect="aspect-[226/170]" />
