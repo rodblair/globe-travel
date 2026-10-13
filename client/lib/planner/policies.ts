@@ -1,5 +1,6 @@
 import type { PlanIntent, PlannerPolicyHookResult, PlannerPromptSet, PlannerRuntimeContext } from '@/lib/planner/types'
 import { extractDaysFromPrompt, extractDestinationFromPrompt } from '@/lib/planner/runtime'
+import { inferPlanIntent, isScopedEditIntent } from '@/lib/planner/tools'
 
 export const PLANNER_SYSTEM_PROMPTS: PlannerPromptSet = {
   onboarding: `You are a warm, enthusiastic travel companion helping someone set up their Globe.travel profile for short city breaks with friends. Be concise and energetic — keep responses to 2-3 sentences max.
@@ -116,7 +117,13 @@ function buildTripContextBlock(runtime: PlannerRuntimeContext) {
 function buildLatestRequestBlock(runtime: PlannerRuntimeContext) {
   if (runtime.mode !== 'plan') return ''
 
-  const requestedDestination = extractDestinationFromPrompt(runtime.latestUserText)
+  const intent = inferPlanIntent({
+    latestUserText: runtime.latestUserText,
+    hasExistingTrip: Boolean(runtime.trip),
+    hasExistingDays: Boolean(runtime.trip?.hasExistingDays),
+    hasExistingItems: Boolean(runtime.trip?.hasExistingItems),
+  })
+  const requestedDestination = isScopedEditIntent(intent) ? '' : extractDestinationFromPrompt(runtime.latestUserText)
   const requestedDays = extractDaysFromPrompt(runtime.latestUserText)
   if (!requestedDestination && !requestedDays) return ''
 
@@ -351,7 +358,7 @@ export function runPlannerPolicyHooks({
     guidance.push('- For full-plan generation, anchor each day around a neighborhood or area, then layer meals and highlights around it.')
   }
 
-  const requestedDestination = extractDestinationFromPrompt(runtime.latestUserText)
+  const requestedDestination = isScopedEditIntent(intent) ? '' : extractDestinationFromPrompt(runtime.latestUserText)
   const requestedDays = extractDaysFromPrompt(runtime.latestUserText)
   if (requestedDestination) {
     guidance.push(`- Destination lock for this turn: ${requestedDestination}. Do not save or describe a full-plan itinerary for any other destination.`)

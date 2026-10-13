@@ -160,6 +160,8 @@ export const REGIONAL_PLACE_OVERRIDES: RegionalPlaceOverride[] = [
   { pattern: /karamanlidika/i, name: 'Karamanlidika', country: 'Greece', country_code: 'GR', latitude: 37.97964, longitude: 23.72454, manualId: 'manual:athens:karamanlidika' },
   { pattern: /couleur locale/i, name: 'Couleur Locale', country: 'Greece', country_code: 'GR', latitude: 37.97625, longitude: 23.72424, manualId: 'manual:athens:couleur-locale' },
   { pattern: /stavros niarchos|snfcc/i, name: 'Stavros Niarchos Foundation Cultural Center', country: 'Greece', country_code: 'GR', latitude: 37.93952, longitude: 23.69165, manualId: 'manual:athens:stavros-niarchos-foundation-cultural-center' },
+  { pattern: /temple of poseidon|cape sounion|\bsounion\b|\bsounio\b/i, name: 'Temple of Poseidon at Cape Sounion', country: 'Greece', country_code: 'GR', latitude: 37.6503, longitude: 24.0245, manualId: 'manual:athens:temple-of-poseidon-sounion' },
+  { pattern: /lake vouliagmeni|vouliagmeni lake/i, name: 'Lake Vouliagmeni', country: 'Greece', country_code: 'GR', latitude: 37.8118, longitude: 23.7856, manualId: 'manual:athens:lake-vouliagmeni' },
   { pattern: /canal caf[eé]/i, name: 'Canal Cafe', country: 'Greece', country_code: 'GR', latitude: 37.94041, longitude: 23.69095, manualId: 'manual:athens:canal-cafe' },
   { pattern: /flisvos marina/i, name: 'Flisvos Marina', country: 'Greece', country_code: 'GR', latitude: 37.93183, longitude: 23.68647, manualId: 'manual:athens:flisvos-marina' },
   { pattern: /istioploikos/i, name: 'Istioploikos', country: 'Greece', country_code: 'GR', latitude: 37.92951, longitude: 23.6881, manualId: 'manual:athens:istioploikos' },

@@ -8,6 +8,15 @@ export const PLANNER_TOOL_GROUPS = {
   routing: ['computeDayRoute'],
 } as const
 
+/** Stops for a new full plan must stay near the destination; stops named in an edit may reach out for a day trip. */
+export const PLAN_PLACE_RADIUS_KM = 35
+export const EDIT_PLACE_RADIUS_KM = 120
+
+/** Edits to an existing itinerary never re-target the trip's destination. */
+export function isScopedEditIntent(intent: PlanIntent) {
+  return intent === 'day-rewrite' || intent === 'item-edit' || intent === 'add-items'
+}
+
 export function inferPlanIntent({
   latestUserText,
   hasExistingTrip,

@@ -15,7 +15,14 @@ import { geocodePlace, directionsGeojson } from '@/app/api/trips/_mapbox'
 import { randomSlug } from '@/app/api/trips/_utils'
 import { buildPlannerSystemPrompt, runPlannerPolicyHooks } from '@/lib/planner/policies'
 import { REGIONAL_PLACE_OVERRIDES } from '@/lib/planner/regional-place-overrides'
-import { getPlanToolChoice, getPlanToolSelection, inferPlanIntent } from '@/lib/planner/tools'
+import {
+  EDIT_PLACE_RADIUS_KM,
+  PLAN_PLACE_RADIUS_KM,
+  getPlanToolChoice,
+  getPlanToolSelection,
+  inferPlanIntent,
+  isScopedEditIntent,
+} from '@/lib/planner/tools'
 import { extractDaysFromPrompt, extractDestinationFromPrompt, extractDestinationFromTitle, normalizeDestinationLabel } from '@/lib/planner/runtime'
 import { loadPlannerSession } from '@/lib/planner/session'
 import { compareDestinations, listScoredDestinations } from '@/lib/planner/scoring'
@@ -347,12 +354,14 @@ async function resolvePlannerPlace({
   placeQuery,
   destinationLabel,
   destinationAnchor,
+  maxDistanceKm = PLAN_PLACE_RADIUS_KM,
 }: {
   db: any
   token: string
   placeQuery?: string
   destinationLabel?: string | null
   destinationAnchor?: { latitude: number; longitude: number; country_code?: string | null } | null
+  maxDistanceKm?: number
 }) {
   if (!placeQuery) return null
 
@@ -401,11 +410,12 @@ async function resolvePlannerPlace({
       proximity: destinationAnchor,
       countryCode: destinationAnchor?.country_code,
       strictName: true,
+      ...(maxDistanceKm > PLAN_PLACE_RADIUS_KM ? { maxProximityKm: maxDistanceKm } : {}),
     })
     if (!result) continue
 
     const tooFar = destinationAnchor != null &&
-      haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > 35
+      haversineKm(result.latitude, result.longitude, destinationAnchor.latitude, destinationAnchor.longitude) > maxDistanceKm
 
     if (tooFar) continue
 
@@ -666,10 +676,25 @@ export async function POST(req: Request) {
       conversationId,
     })
     const latestUserText = plannerSession.latestUserText
-    const requestedDestinationLabel = normalizeDestinationLabel(extractDestinationFromPrompt(latestUserText))
-    const requestedDayCount = extractDaysFromPrompt(latestUserText)
     const hasExistingDays = Boolean(plannerSession.runtime.trip?.hasExistingDays)
     const hasExistingItems = Boolean(plannerSession.runtime.trip?.hasExistingItems)
+    const planMode = type === 'plan'
+    const latestPlanIntent = planMode
+      ? inferPlanIntent({
+          latestUserText,
+          hasExistingTrip: Boolean(tripId),
+          hasExistingDays,
+          hasExistingItems,
+        })
+      : 'clarify'
+    // Edits to an existing itinerary keep the trip's own destination, so a phrase like
+    // "lunch in Koukaki, ..." can't be mistaken for a new destination.
+    const requestedDestinationLabel = isScopedEditIntent(latestPlanIntent)
+      ? ''
+      : normalizeDestinationLabel(extractDestinationFromPrompt(latestUserText))
+    const requestedDayCount = extractDaysFromPrompt(latestUserText)
+    // Stops the user names in an edit may sit outside the city (a day trip); new plans stay local.
+    const placeRadiusKm = isScopedEditIntent(latestPlanIntent) ? EDIT_PLACE_RADIUS_KM : PLAN_PLACE_RADIUS_KM
     const systemPrompt = buildPlannerSystemPrompt(plannerSession.runtime)
 
     // Create tools with user context for DB operations
@@ -910,7 +935,7 @@ export async function POST(req: Request) {
           const normalizedType = normalizeTripItemType(type)
           const resolvedPlaceQuery = getPlannerPlaceQuery({ type: normalizedType, title, placeQuery: place_query })
           const place = token
-            ? await resolvePlannerPlace({ db, token, placeQuery: resolvedPlaceQuery, destinationLabel, destinationAnchor })
+            ? await resolvePlannerPlace({ db, token, placeQuery: resolvedPlaceQuery, destinationLabel, destinationAnchor, maxDistanceKm: placeRadiusKm })
             : null
           if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(destinationLabel)) && !place?.id) {
             return JSON.stringify({
@@ -1221,6 +1246,7 @@ export async function POST(req: Request) {
               placeQuery: resolvedPlaceQuery,
               destinationLabel,
               destinationAnchor,
+              maxDistanceKm: placeRadiusKm,
             })
             if (itemNeedsDestinationLockedPlace(normalizedType, Boolean(destinationLabel)) && !place?.id) {
               return JSON.stringify({
@@ -1316,6 +1342,7 @@ export async function POST(req: Request) {
             placeQuery: place_query,
             destinationLabel,
             destinationAnchor,
+            maxDistanceKm: placeRadiusKm,
           })
           if (!resolvedPlace?.id) {
             return JSON.stringify({ kind: 'error', message: `Could not resolve replacement place: ${place_query}` })
@@ -1416,6 +1443,7 @@ export async function POST(req: Request) {
                 placeQuery: place_query,
                 destinationLabel,
                 destinationAnchor,
+                maxDistanceKm: placeRadiusKm,
               })
             : null
           const resolvedType = normalizeTripItemType(fields.type || currentItem?.type)
@@ -1521,15 +1549,6 @@ export async function POST(req: Request) {
     }
 
     const modelName = process.env.OPENAI_MODEL || 'gpt-5.4'
-    const planMode = type === 'plan'
-    const latestPlanIntent = planMode
-      ? inferPlanIntent({
-          latestUserText,
-          hasExistingTrip: Boolean(tripId),
-          hasExistingDays,
-          hasExistingItems,
-        })
-      : 'clarify'
     const activePlanTools = getPlanToolSelection(latestPlanIntent, Boolean(tripId)) as Array<keyof typeof userTools>
 
     const result = streamText({

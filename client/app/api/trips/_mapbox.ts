@@ -657,6 +657,8 @@ function scoreFeature(
     proximity?: { latitude: number; longitude: number } | null
     countryCode?: string | null
     strictName?: boolean
+    /** Farthest a strict-name match may sit from `proximity`; defaults to 20 km. */
+    maxProximityKm?: number
   }
 ) {
   const center = feature.center
@@ -711,7 +713,7 @@ function scoreFeature(
 
   if (options.proximity) {
     const distanceKm = haversineKm(latitude, longitude, options.proximity.latitude, options.proximity.longitude)
-    if (options.strictName && distanceKm > 20) return null
+    if (options.strictName && distanceKm > (options.maxProximityKm ?? 20)) return null
     if (distanceKm <= 2) score += 18
     else if (distanceKm <= 10) score += 13
     else if (distanceKm <= 30) score += 7
@@ -731,6 +733,8 @@ export async function geocodePlace(
     proximity?: { latitude: number; longitude: number } | null
     countryCode?: string | null
     strictName?: boolean
+    /** Farthest a strict-name match may sit from `proximity`; defaults to 20 km. */
+    maxProximityKm?: number
   } = {}
 ): Promise<GeocodeResult | null> {
   const destinationOverride = DESTINATION_OVERRIDES[normalizeText(query)]
